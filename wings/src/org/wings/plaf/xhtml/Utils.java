@@ -231,8 +231,19 @@ public final class Utils implements SConstants
     	throws IOException
      {
         if (!hasSpanAttributes(component))
-            return;
+           return;
             
+           Utils.writeAttributes(d, component);
+     }
+    
+
+    /**
+     * Write some attributes which are interesting for cellRendere Option Lists !
+     * @return null, the attributes  in css syntax 
+     */
+    public static void writeAttributes(Device d, SComponent component)
+    	throws IOException
+     {
         java.awt.Color bgcolor = component.getBackground();
         java.awt.Color fgcolor = component.getForeground();
         SFont font = component.getFont();

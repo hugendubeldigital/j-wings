@@ -40,9 +40,14 @@
                 if (list.isSelectedIndex(i)) {
                     %> selected="selected"<%
                 }
-                if ((renderer!=null) && (renderer.getToolTipText() != null)) {
-                   %> title="<%
-                   %><%=renderer.getToolTipText()%><%
+                if (renderer!=null) {
+                   if (renderer.getToolTipText() != null) {
+                      %> title="<%
+                      %><%=renderer.getToolTipText()%><%
+                      %>"<%
+                   }
+                   %> style="<%                   
+                   org.wings.plaf.xhtml.Utils.writeAttributes(device, renderer);
                    %>"<%
                 }
                 %>><%
