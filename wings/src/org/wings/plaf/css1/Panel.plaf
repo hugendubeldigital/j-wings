@@ -1,0 +1,8 @@
+<template name="Panel" for="org.wings.SPanel">
+
+<write>
+<%
+Utils.renderContainer(device, component);
+%>
+</write>
+</template>
