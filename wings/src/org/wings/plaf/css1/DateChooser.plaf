@@ -5,7 +5,8 @@
 <import>org.wings.script.*</import>
 <import>org.wings.externalizer.*</import>
 
-public static final StringResource CALENDAR_SCRIPT = new StringResource(
+public static final JavaScriptListener CALENDAR_SCRIPT =
+	new JavaScriptListener("", "",
 
 "/*\n" +
 "*****************************************************************************************************\n" +
@@ -436,21 +437,16 @@ public static final StringResource CALENDAR_SCRIPT = new StringResource(
 "if (browser.ns4) window.onresize = function(){\n" +
 "    if (document.NSfix.initWidth!=window.innerWidth || document.NSfix.initHeight!=window.innerHeight) window.location.reload(false);\n" +
 "} // ns4 resize bug workaround\n" +
-"window.document.onclick=handleDocumentClick;"
-,"js", "application/x-javascript", ExternalizeManager.GLOBAL | ExternalizeManager.FINAL);
+"window.document.onclick=handleDocumentClick;");
 
 static final ResourceImageIcon ICON = new ResourceImageIcon("org/wings/icons/ArrowDown.gif");
 
 <install>
-
-
-
+        component.addScriptListener(CALENDAR_SCRIPT);
 </install>
 
 <write>
 <%
-    %><script language="JavaScript" src="<%=CALENDAR_SCRIPT.getURL()%>" type="text/javascript"></script><%
-
     SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy", component.getLocale());
     dateFormatter.setCalendar(component.getCalendar());
 

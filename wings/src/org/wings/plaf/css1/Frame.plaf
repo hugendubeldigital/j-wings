@@ -17,7 +17,7 @@
         // dynamic java script resource.
         DynamicResource scriptResource = new DynamicScriptResource(component);
         component.addDynamicResource(scriptResource);
-        component.addHeader(new Script("JavaScript", "application/x-javascript", scriptResource));
+        component.addHeader(new Script("JavaScript", "text/javascript", scriptResource));
 
         // static stylesheet, coming with the CG
         CGManager cgManager = component.getSession().getCGManager();
@@ -63,6 +63,9 @@
                 %><%=it.next().toString()%><%
             }
         }
+
+/*    %><script language="JavaScript" src="<%=DateChooserCG.CALENDAR_SCRIPT.getURL()%>" type="text/javascript"></script><%
+*/
 
         %></head><%
 
