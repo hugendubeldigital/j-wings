@@ -35,7 +35,7 @@ public class SBorderLayout
      */
     private static final String cgClassID = "BorderLayoutCG";
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     /**
      * TODO: documentation

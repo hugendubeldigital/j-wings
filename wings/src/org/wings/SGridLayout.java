@@ -35,7 +35,7 @@ public class SGridLayout
      */
     private static final String cgClassID = "GridLayoutCG";
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     // nur zu Debug Zwecken, macht den HTML Code uebersichtlicher !!
     /**

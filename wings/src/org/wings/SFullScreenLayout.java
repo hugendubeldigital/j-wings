@@ -39,7 +39,7 @@ public class SFullScreenLayout
      */
     private static final String _cgClassID = "FullScreenLayoutCG";
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     
     private final static SDimension fDim = new SDimension("100%", "100%");
 

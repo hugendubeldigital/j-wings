@@ -44,7 +44,7 @@ public abstract class WingServlet extends HttpServlet
     /**
      * TODO: documentation
      */
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     /**
      * if this is not a transient element, set the expiration header to

@@ -49,7 +49,7 @@ public class SList
     extends SComponent
     implements Scrollable, SGetListener
 {
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     /**
      * @see #getCGClassID

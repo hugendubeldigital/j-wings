@@ -24,7 +24,7 @@ import org.wings.io.Device;
  */
 public class SFont implements SConstants
 {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     /**
      * TODO: documentation

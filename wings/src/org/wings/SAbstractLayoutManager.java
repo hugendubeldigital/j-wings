@@ -30,7 +30,7 @@ import org.wings.session.*;
 public abstract class SAbstractLayoutManager
     implements SLayoutManager
 {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     /**
      * TODO: documentation

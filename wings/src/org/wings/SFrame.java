@@ -52,7 +52,7 @@ public class SFrame
      */
     private static final String cgClassID = "FrameCG";
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     /**
      * The container for the contentPane.

@@ -58,7 +58,7 @@ public abstract class SessionServlet
     /**
      * TODO: documentation
      */
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     /**
      * TODO: documentation
