@@ -28,11 +28,6 @@ import org.wings.session.*;
 public class LdapBrowser
     extends WingServlet
 {
-    protected void initExternalizer(ServletConfig config) {
-        // we want to use the servlet externalizer
-        getExternalizeManager().setExternalizer(new ServletExternalizer(config));
-    }
- 
     public SessionServlet generateSessionServlet(HttpServletRequest req)
         throws Exception
     {

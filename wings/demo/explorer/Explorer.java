@@ -15,6 +15,7 @@
 package explorer;
 
 import java.io.IOException;
+import java.net.URL;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -33,18 +34,13 @@ import org.wings.session.*;
 public class Explorer
     extends WingServlet
 {
-    protected void initExternalizer(ServletConfig config) {
-        // we want to use the servlet externalizer
-        getExternalizeManager().setExternalizer(new ServletExternalizer(config));
-    }
-
     public SessionServlet generateSessionServlet(HttpServletRequest req)
         throws Exception
     {
         // create new default session and set plaf
         DefaultSession session = new DefaultSession();
-        session.getCGManager().setLookAndFeel(new org.wings.plaf.xhtml.css1.CSS1LookAndFeel());
-
+        session.getCGManager().setLookAndFeel(new URL(new URL(HttpUtils.getRequestURL(req).toString()),
+                                                      "../css1.jar"));
         // return a new explorer session
         return new ExplorerSession(session, req);
     }

@@ -23,16 +23,9 @@ import org.wings.servlet.*;
 import org.wings.session.*;
 
 
- 
-
 public class LdapClient
     extends WingServlet
 {
-    protected void initExternalizer(ServletConfig config) {
-        // we want to use the servlet externalizer
-        getExternalizeManager().setExternalizer(new ServletExternalizer(config));
-    }
- 
     public SessionServlet generateSessionServlet(HttpServletRequest req)
         throws Exception
     {

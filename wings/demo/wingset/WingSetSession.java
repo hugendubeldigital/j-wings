@@ -86,7 +86,8 @@ public class WingSetSession
         tab.add(new FileChooserExample(), "FileChooser");
         tab.add(new ScrollPaneExample(), "ScrollPane");
         //tab.add(new LayoutExample(), "Simple Layout");
-        tab.addTab("Template Layout", new ResourceImageIcon(WingSet.class, "cowSmall.gif"), 
+        tab.addTab("Template Layout", new ResourceImageIcon(WingSet.class, 
+                                                            "cowSmall.gif"), 
                    new TemplateExample(), "Template Layout Manager");
         //tab.add(new DateChooserExample(), "DateChooser");
 
@@ -106,10 +107,10 @@ public class WingSetSession
                         URL contextURL = new URL(getFrame().getServerAddress().getAbsoluteAddress());
                         if (css1.isSelected())
                             getSession().getCGManager()
-                                .setLookAndFeel(new URL(contextURL, "css1.jar"));
+                                .setLookAndFeel(new URL(contextURL, "../css1.jar"));
                         else
                             getSession().getCGManager()
-                                .setLookAndFeel(new URL(contextURL, "old.jar"));
+                                .setLookAndFeel(new URL(contextURL, "../old.jar"));
                     }
                     catch (Exception e) {
                         System.out.println(e.getMessage());

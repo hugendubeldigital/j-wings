@@ -32,18 +32,13 @@ import org.wings.session.*;
 public class Desktop
     extends WingServlet
 {
-    protected void initExternalizer(ServletConfig config) {
-        // we want to use the servlet externalizer
-        getExternalizeManager().setExternalizer(new ServletExternalizer(config));
-    }
-
     public SessionServlet generateSessionServlet(HttpServletRequest req)
         throws Exception
     {
         // create new default session and set plaf
         DefaultSession session = new DefaultSession();
         session.getCGManager().setLookAndFeel(new URL(new URL(HttpUtils.getRequestURL(req).toString()),
-                                                      "css1.jar"));
+                                                      "../css1.jar"));
 
         // return a new desktop session
         return new DesktopSession(session);

@@ -20,11 +20,6 @@ import org.wings.session.*;
 public class FrameSet
     extends WingServlet
 {
-    protected void initExternalizer(ServletConfig config) {
-        // we want to use the servlet externalizer
-        getExternalizeManager().setExternalizer(new ServletExternalizer(config));
-    }
-
     protected void initExtObjectHandler(ServletConfig config) {
         extManager.addObjectHandler(new ImageObjectHandler("gif"));
         extManager.addObjectHandler(new ImageIconObjectHandler("gif"));
@@ -38,7 +33,7 @@ public class FrameSet
     {
         DefaultSession session = new DefaultSession();
         session.getCGManager().setLookAndFeel(new URL(new URL(HttpUtils.getRequestURL(req).toString()),
-                                                      "css1.jar"));
+                                                      "../css1.jar"));
         return new FrameSetSession(session, req);
     }
 }
