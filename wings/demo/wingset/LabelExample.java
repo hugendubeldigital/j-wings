@@ -160,11 +160,13 @@ public class LabelExample
         Icon icon = new ResourceImageIcon(SConstants.class, "icons/Wait.gif");
 
         final SLabel testLabel = new SLabel("LabelText");
-        testLabel.setHorizontalAlignment(CENTER);
+        testLabel.setHorizontalAlignment(LEFT);
         testLabel.setBackground(new java.awt.Color(180, 180, 255));
         testLabel.setIcon(icon);
-        all.add(testLabel, "West");
-        all.add(createRoundRadio(testLabel), "East");
+
+        all.add(createRoundRadio(testLabel), "West");
+        all.add(testLabel, "East");
+
         return all;
     }
 }
