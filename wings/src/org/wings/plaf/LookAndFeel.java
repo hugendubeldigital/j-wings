@@ -150,6 +150,35 @@ public class LookAndFeel
     }
 
     /**
+     * Utility method that creates an java.awt.Color from a html color hex string
+     * @return the create color
+     */
+    public static Color makeColor(String colorString) {
+        if ( colorString!=null ) {
+            colorString = colorString.trim();
+            if ( colorString.charAt(0)=='#' && colorString.length()==7 ) {
+                return new Color(Integer.parseInt(colorString.substring(1),16));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Utility method that creates an java.awt.Color from a html color hex string
+     * @return the create color
+     */
+    public static SDimension makeDimension(String dimensionString) {
+        if ( dimensionString!=null ) {
+            int commaIndex = dimensionString.indexOf(',');
+            if ( commaIndex>0 ) {
+                return new SDimension(dimensionString.substring(0, commaIndex),
+                                      dimensionString.substring(commaIndex+1));
+            }
+        }
+        return null;
+    }
+
+    /**
      * Utility method that creates an Icon from a resource
      * located realtive to the given base class. Uses the ClassLoader
      * of the LookAndFeel
@@ -306,6 +335,10 @@ public class LookAndFeel
                 value = makeAttributeSet(property);
             else if (type.isAssignableFrom(StyleSheet.class))
                 value = makeStyleSheet(property);
+            else if (type.isAssignableFrom(Color.class))
+                value = makeColor(property);
+            else if (type.isAssignableFrom(SDimension.class))
+                value = makeDimension(property);
             else
                 value = makeObject(property, type);
             
