@@ -1,20 +1,8 @@
 BODY {
    background: #ffffff;
    padding: 0;
-   margin: 18pt;
+   margin: 10pt;
    border-width: 0
-}
-
-.menu {
-   background: #000077;
-   padding: 0;
-   margin: 0;
-   font-family: sans-serif;
-   font-size: 12pt;
-   font-weight: bold;
-   font-style: normal;
-   border-width: 0; 
-   color: #ffffff
 }
 
 P {
@@ -57,40 +45,40 @@ SMALL {
 A:link {
    color: #000099;
    text-decoration: none;
-   font-weight: bold 
+   font-weight: bold
 }
 
 A:active {
    color: #0000FF;
-   text-decoration: none 
+   text-decoration: none
 }
 
 A:visited {
    color: #000077;
-   text-decoration: none 
+   text-decoration: none
 }
 
 HR {
    padding-top: 0;
-   padding-bottom: 0 
+   padding-bottom: 0
 }
 
 H1 {
    font-size: 16pt;
    font-weight: bold;
-   font-family: sans-serif 
+   font-family: sans-serif
 }
 
-H2 { 
+H2 {
    font-size: 14pt;
    font-weight: bold;
-   font-family: sans-serif 
+   font-family: sans-serif
 }
 
 H3 { 
    font-size: 12pt;
    font-weight: bold;
-   font-family: sans-serif 
+   font-family: sans-serif
 }
 
 .wings {
@@ -98,7 +86,7 @@ H3 {
    font-size: 12pt;
    font-weight: bold;
    font-style: normal;
-   color: #770000 
+   color: #770000
 }
 
 .is {
@@ -123,6 +111,52 @@ H3 {
    font-weight: normal;
    font-style: normal;
    color: #000077;
+}
+
+.menu {
+   background: #000077;
+   padding: 0;
+   margin: 0;
+   font-family: sans-serif;
+   font-size: 12pt;
+   font-weight: bold;
+   font-style: normal;
+   border-width: 0;
+   color: #ffffff
+}
+
+A:link.menu {
+   color: #ffffff;
+   text-decoration: none;
+   font-weight: bold
+}
+
+A:visited.menu {
+   color: #ffffff;
+   text-decoration: none
+}
+
+A:active.menu {
+   color: #66ffff;
+   text-decoration: none
+}
+
+.question {
+   margin: 3pt;
+   font-family: sans-serif;
+   font-size: 12pt;
+   font-weight: bold;
+   font-style: normal;
+   color: #007700
+}
+
+.answer {
+   margin: 3pt;
+   font-family: sans-serif;
+   font-size: 12pt;
+   font-weight: normal;
+   font-style: normal;
+   color: #000077
 }
 
 .label { 
