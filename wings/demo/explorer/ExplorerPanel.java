@@ -86,7 +86,9 @@ public class ExplorerPanel
         SButton submit = new SButton("upload");
         submit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                uploadFile(chooser.getSelectedFile(), chooser.getFilename());
+                if ( chooser.getSelectedFile()!=null &&
+                     chooser.getFilename()!=null )
+                    uploadFile(chooser.getSelectedFile(), chooser.getFilename());
             } });
         p.add(submit);
         add(p, "UploadForm");
