@@ -90,7 +90,7 @@ public class LabelExample extends WingSetPane
         final SRadioButton n  = createRadio(b,"p=n",  g, "North", 1);
         final SRadioButton ne = createRadio(b,"p=ne", g, "North East", 2);
         final SRadioButton w  = createRadio(b,"p=w",  g, "West", 3);
-        b.add(new SDummy());
+        b.add(new SLabel());
         final SRadioButton e  = createRadio(b,"p=e",  g, "East", 4);
         final SRadioButton sw = createRadio(b,"p=sw", g, "South West", 5);
         final SRadioButton s  = createRadio(b,"p=s",  g, "South", 6);
