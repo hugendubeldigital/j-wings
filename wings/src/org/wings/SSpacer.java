@@ -28,8 +28,10 @@ public class SSpacer
     extends SComponent
     implements SConstants
 {
+    private static final String cgClassID = "SpacerCG";
+
     protected int spaces = 1;
-    protected int alignment = HORIZONTAL;
+    protected int orientation = HORIZONTAL;
 
     /**
      * Creates a new horizontal spacer, one space long.
@@ -51,14 +53,14 @@ public class SSpacer
      * of spaces.
      *
      * @param spaces Number of spaces
-     * @param alignment One of the following constants from
+     * @param orientation One of the following constants from
      *        <code>SConstants</code>:
      *        <code>HORIZONTAL</code> or <code>VERTICAL</code>.
      * @see SConstants
      */
-    public SSpacer(int spaces, int alignment) {
+    public SSpacer(int spaces, int orientation) {
         setSpaces(spaces);
-        setAlignment(alignment);
+        setOrientation(orientation);
     }
 
     /**
@@ -71,26 +73,36 @@ public class SSpacer
     }
 
     /**
-     * Sets the alignment? Why do we need an alignment???
+     * gets the number of spaces.
      *
-     * @param a
+     * @param s Number of spaces.
      */
-    public void setAlignment(int a) {
-        alignment = a;
+    public int getSpaces() {
+        return spaces;
     }
 
     /**
-     * internal writing function
-     *
-     * @param s
+     * sets the orientation of this space: HORIZONTAL or VERTICAL.
+     * @param orientation one of SConstants.HORIZONTAL or SConstants.VERTICAL
      */
-    public void appendBody(Device s) {
-        for ( int i=0; i<spaces; i++ ) {
-            if ( alignment == VERTICAL )
-                s.append("<br />");
-            else
-                s.append("&nbsp;");
-        }
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
+    }
+
+    /**
+     * returns the current orientation; one of SConstants.HORIZONTAL or
+     * SConstants.VERTICAL
+     */
+    public int getOrientation() {
+        return orientation;
+    }
+
+    public String getCGClassID() {
+        return cgClassID;
+    }
+
+    public void setCG(SpacerCG cg) {
+        super.setCG(cg);
     }
 }
 
