@@ -42,8 +42,8 @@ public final class LowLevelEventDispatcher
 
     public LowLevelEventDispatcher() {}
 
-    private final void addLowLevelEventListener(LowLevelEventListener gl, 
-                                                String eventId) {
+    public final void addLowLevelEventListener(LowLevelEventListener gl, 
+                                               String eventId) {
         List l = (List)listener.get(eventId);
         if ( l==null ) {
             l = new ArrayList(2);
@@ -54,8 +54,8 @@ public final class LowLevelEventDispatcher
             l.add(gl);
     }
     
-    private final void removeLowLevelEventListener(LowLevelEventListener gl,
-                                                   String eventId) {
+    public final void removeLowLevelEventListener(LowLevelEventListener gl,
+                                                  String eventId) {
         List l = (List)listener.get(eventId);
         if ( l!=null ) {
             l.remove(gl);
@@ -125,10 +125,10 @@ public final class LowLevelEventDispatcher
      */
     public boolean dispatch(String name, String[] values) {
         /*
-        System.out.println("Dispatcher LLE: " + name);
-        for (int i = 0; i < values.length; ++i) {
-            System.out.println("\t"+i+"="+values[i]);
-        }
+          System.out.println("Dispatcher LLE: " + name);
+          for (int i = 0; i < values.length; ++i) {
+          System.out.println("\t"+i+"="+values[i]);
+          }
         */
         boolean result = false;
         int dividerIndex = name.indexOf(SConstants.UID_DIVIDER);
@@ -179,8 +179,8 @@ public final class LowLevelEventDispatcher
                 LowLevelEventListener gl = (LowLevelEventListener)l.get(i);
                 if ( checkEpoch(epoch, name, gl) ) {
                     logger.fine("process event '" + name + "' by " +
-                                 gl.getClass() + "(" + gl.getLowLevelEventId() +
-                                 ")" );
+                                gl.getClass() + "(" + gl.getLowLevelEventId() +
+                                ")" );
                     gl.processLowLevelEvent(name, values);
                     result = true;
                 }
