@@ -26,34 +26,34 @@ import java.util.logging.Logger;
 /**
  * A filechooser shows a textfield with a browse-button to enter a file.
  * The file is uploaded via HTTP and made accessible to the WingS application.
- *
+ * <p/>
  * <p>The uploaded file is stored temporarily in the filesystem of the
  * server with a unique name, so that uploaded files with the same
  * filename do not clash. You can access this internal name with
- * the {@link #getFileDir()} and {@link #getFileId()} methods. 
- * The user provided filename can be queried with the 
+ * the {@link #getFileDir()} and {@link #getFileId()} methods.
+ * The user provided filename can be queried with the
  * {@link #getFileName()} method.
- *
+ * <p/>
  * Since the file is stored temporarily in the filesystem, you should
  * {@link File#delete()} it, when you are done with it.
- * However, if you don't delete the file yourself, it is eventually 
+ * However, if you don't delete the file yourself, it is eventually
  * being removed by the Java garbage collector, if you haven't renamed it
  * (see {@link #getFile()}).
- *
+ * <p/>
  * <p>The form, you add this SFileChooser to, needs to have the encoding type
- * <code>multipart/form-data</code> set 
+ * <code>multipart/form-data</code> set
  * (form.{@link SForm#setEncodingType(String) setEncodingType("multipart/form-data")}).
- *
+ * <p/>
  * <p>You can limit the size of files to be uploaded, so it is hard to make
  * a denial-of-service (harddisk, bandwidth) attack from outside to your
  * server. You can modify the maximum content length to be posted in
  * {@link org.wings.session.Session#setMaxContentLength(int)}. This is
  * 64 kByte by default, so you might want to change this in your application.
- *
- * <p>
- * The SFileChooser notifies the form if something has gone 
- * wrong with uploading a file. 
- * <p>
+ * <p/>
+ * <p/>
+ * The SFileChooser notifies the form if something has gone
+ * wrong with uploading a file.
+ * <p/>
  * <b>Szenario</b>
  * Files that are too big to be uploaded are blocked
  * very early in the upload-process (if you are curious: this is done in
@@ -67,7 +67,7 @@ import java.util.logging.Logger;
  * an error message to the user. So in that case, only <em>one</em> event
  * is delivered to the enclosing <em>form</em>, that contains this
  * SFileChooser.
- *
+ * <p/>
  * <p>Note, that in this case, this will <em>not</em> trigger the action
  * listener that you might have added to the submit-button.
  * This means, that you <em>always</em> should add your action listener
@@ -79,9 +79,8 @@ import java.util.logging.Logger;
  * @version $Revision$
  */
 public class SFileChooser
-    extends SComponent
-    implements LowLevelEventListener
-{
+        extends SComponent
+        implements LowLevelEventListener {
     private static final String cgClassID = "FileChooserCG";
     private final static Logger logger = Logger.getLogger("org.wings");
 
@@ -92,10 +91,10 @@ public class SFileChooser
 
     protected String fileNameFilter = null;
 
-    protected Class filter    = null;
-    protected String fileDir  = null;
+    protected Class filter = null;
+    protected String fileDir = null;
     protected String fileName = null;
-    protected String fileId   = null;
+    protected String fileId = null;
     protected String fileType = null;
 
     /**
@@ -111,9 +110,10 @@ public class SFileChooser
     protected IOException exception = null;
 
     /**
-     * Creates a new FileChooser. 
+     * Creates a new FileChooser.
      */
-    public SFileChooser() {}
+    public SFileChooser() {
+    }
 
     /**
      * Find the form, this FileChooser is embedded in.
@@ -121,22 +121,22 @@ public class SFileChooser
     protected final SForm getParentForm() {
         SComponent parent = getParent();
 
-        while ( parent!=null && !(parent instanceof SForm) ) {
+        while (parent != null && !(parent instanceof SForm)) {
             parent = parent.getParent();
         }
 
-        return (SForm)parent;
+        return (SForm) parent;
     }
 
     /**
-     * notifies the parent form, to fire action performed. This is necessary, 
-     * if an exception in parsing a MultiPartRequest occurs, e.g. upload 
+     * notifies the parent form, to fire action performed. This is necessary,
+     * if an exception in parsing a MultiPartRequest occurs, e.g. upload
      * file is too big.
      */
     protected final void notifyParentForm() {
         SForm form = getParentForm();
 
-        if ( form!=null ) {
+        if (form != null) {
             SForm.addArmedComponent(form);
         }
     }
@@ -167,14 +167,14 @@ public class SFileChooser
      * this sets the <em>mimetype</em> to be accepted. This filter may be fully
      * qualified like <code>text/html</code> or can contain
      * a wildcard in the subtype like <code>text/ *</code>. Some browsers
-     * may as well accept a file-suffix wildcard as well. 
-     *
+     * may as well accept a file-suffix wildcard as well.
+     * <p/>
      * <p>In any case, you hould check the result, since you cannot assume,
      * that the browser
      * actually does filter. Worse, browsers may not guess the
      * correct type so users cannot upload a file even if it has the correct
-     * type. So, bottomline, it is generally a good idea to let the file 
-     * name filter untouched, unless you know bugs of the browser at the 
+     * type. So, bottomline, it is generally a good idea to let the file
+     * name filter untouched, unless you know bugs of the browser at the
      * other end of the wire...
      *
      * @param mimeFilter the mime type to be filtered.
@@ -186,9 +186,9 @@ public class SFileChooser
     /**
      * returns the current filename filter. This is a mimetype-filter
      *
-     * @see #setFileNameFilter(String)
      * @return the current filename filter or 'null', if no filename filter
      *         is provided.
+     * @see #setFileNameFilter(String)
      */
     public String getFileNameFilter() {
         return fileNameFilter;
@@ -206,12 +206,12 @@ public class SFileChooser
      * upload text-field.
      *
      * @return the filename, given by the user.
-     * @exception IOException if something went wrong with the upload (most
-     *            likely, the maximum allowed filesize is exceeded, see
-     *            {@link org.wings.session.Session#setMaxContentLength(int)})
+     * @throws IOException if something went wrong with the upload (most
+     *                     likely, the maximum allowed filesize is exceeded, see
+     *                     {@link org.wings.session.Session#setMaxContentLength(int)})
      */
     public String getFileName() throws IOException {
-        if ( exception!=null )
+        if (exception != null)
             throw exception;
 
         return fileName;
@@ -225,18 +225,18 @@ public class SFileChooser
     }
 
     /**
-     * Returns the name of the system directory, the file has been stored 
+     * Returns the name of the system directory, the file has been stored
      * temporarily in. You won't need this, unless you want to access the
-     * file directly.  Don't store the value you receive here for use later, 
+     * file directly.  Don't store the value you receive here for use later,
      * since the SFileChooser does its own garbage collecting of unused files.
      *
      * @return the pathname of the system directory, the file is stored in.
-     * @exception IOException if something went wrong with the upload (most
-     *            likely, the maximum allowed filesize is exceeded, see
-     *            {@link org.wings.session.Session#setMaxContentLength(int)})
+     * @throws IOException if something went wrong with the upload (most
+     *                     likely, the maximum allowed filesize is exceeded, see
+     *                     {@link org.wings.session.Session#setMaxContentLength(int)})
      */
     public String getFileDir() throws IOException {
-        if ( exception!=null )
+        if (exception != null)
             throw exception;
 
         return fileDir;
@@ -257,13 +257,12 @@ public class SFileChooser
      * does its own garbage collecting of unused files.
      *
      * @return the internal, unique file id given to the uploaded file.
-     * @exception IOException if something went wrong with the upload (most
-     *            likely, the maximum allowed filesize is exceeded, see
-     *            {@link org.wings.session.Session#setMaxContentLength(int)})
-
+     * @throws IOException if something went wrong with the upload (most
+     *                     likely, the maximum allowed filesize is exceeded, see
+     *                     {@link org.wings.session.Session#setMaxContentLength(int)})
      */
     public String getFileId() throws IOException {
-        if ( exception!=null )
+        if (exception != null)
             throw exception;
 
         return fileId;
@@ -280,12 +279,12 @@ public class SFileChooser
      * Returns the mime type of this file, if known.
      *
      * @return the mime type of this file.
-     * @exception IOException if something went wrong with the upload (most
-     *            likely, the maximum allowed filesize is exceeded, see
-     *            {@link org.wings.session.Session#setMaxContentLength(int)})
+     * @throws IOException if something went wrong with the upload (most
+     *                     likely, the maximum allowed filesize is exceeded, see
+     *                     {@link org.wings.session.Session#setMaxContentLength(int)})
      */
     public String getFileType() throws IOException {
-        if ( exception!=null )
+        if (exception != null)
             throw exception;
 
         return fileType;
@@ -295,16 +294,16 @@ public class SFileChooser
      * pseudonym for {@link #getFile()} (see there).
      *
      * @return a File to access the content of the uploaded file.
-     * @exception IOException if something went wrong with the upload (most
-     *            likely, the maximum allowed filesize is exceeded, see
-     *            {@link org.wings.session.Session#setMaxContentLength(int)})
+     * @throws IOException if something went wrong with the upload (most
+     *                     likely, the maximum allowed filesize is exceeded, see
+     *                     {@link org.wings.session.Session#setMaxContentLength(int)})
      */
     public File getSelectedFile() throws IOException {
         return getFile();
     }
 
     /**
-     * resets this FileChooser (no file selected). It does not remove an 
+     * resets this FileChooser (no file selected). It does not remove an
      * upload filter!.
      * reset() will <em>not</em> remove a previously selected file from
      * the local tmp disk space, so as long as you have a reference to
@@ -314,7 +313,7 @@ public class SFileChooser
      */
     public void reset() {
         currentFile = null;
-        fileId  = null;
+        fileId = null;
         fileDir = null;
         fileType = null;
         fileName = null;
@@ -327,33 +326,33 @@ public class SFileChooser
      * to query the actual filename given by the user, since this file
      * wraps a system generated file with a different (unique) name.
      * Use {@link #getFileName()} instead.
-     *
+     * <p/>
      * <p>The file returned here
      * will delete itself if you loose the reference to it and it is
-     * garbage collected to avoid filling up the filesystem (This doesn't 
-     * mean, that you shouldn't be a good programmer and delete the 
+     * garbage collected to avoid filling up the filesystem (This doesn't
+     * mean, that you shouldn't be a good programmer and delete the
      * file yourself, if you don't need it anymore :-).
      * If you rename() the file to use it somewhere else,
-     * it is regarded not temporary anymore and thus will <em>not</em> 
+     * it is regarded not temporary anymore and thus will <em>not</em>
      * be removed from the filesystem.
      *
      * @return a File to access the content of the uploaded file.
-     * @exception IOException if something went wrong with the upload (most
-     *            likely, the maximum allowed filesize is exceeded, see
-     *            {@link org.wings.session.Session#setMaxContentLength(int)})
+     * @throws IOException if something went wrong with the upload (most
+     *                     likely, the maximum allowed filesize is exceeded, see
+     *                     {@link org.wings.session.Session#setMaxContentLength(int)})
      */
     public File getFile() throws IOException {
-        if ( exception!=null )
+        if (exception != null)
             throw exception;
 
         return currentFile;
     }
 
     /**
-     * An FilterOutputStream, that filters incoming files. You can use 
+     * An FilterOutputStream, that filters incoming files. You can use
      * UploadFilters to inspect the stream or rewrite it to some own
      * format.
-     * 
+     *
      * @param filter the Class that is instanciated to filter incoming
      *               files.
      */
@@ -370,7 +369,9 @@ public class SFileChooser
      *
      * @return
      */
-    public Class getUploadFilter() { return filter; }
+    public Class getUploadFilter() {
+        return filter;
+    }
 
     /**
      * TODO: documentation
@@ -396,7 +397,7 @@ public class SFileChooser
 
         String value = values[0];
 
-        if ( "exception".equals(value) ) {
+        if ("exception".equals(value)) {
             exception = new IOException(values[1]);
 
             notifyParentForm();
@@ -404,19 +405,18 @@ public class SFileChooser
             try {
                 Hashtable params = HttpUtils.parseQueryString(value);
                 String[] arr;
-                arr = (String[])params.get("dir");
-                this.fileDir = (arr != null)?arr[0]:null;
-                arr = (String[])params.get("name");
-                this.fileName = (arr != null)?arr[0]:null;
-                arr = (String[])params.get("id");
-                this.fileId = (arr != null)?arr[0]:null;
-                arr = (String[])params.get("type");
-                this.fileType = (arr != null)?arr[0]:null;
+                arr = (String[]) params.get("dir");
+                this.fileDir = (arr != null) ? arr[0] : null;
+                arr = (String[]) params.get("name");
+                this.fileName = (arr != null) ? arr[0] : null;
+                arr = (String[]) params.get("id");
+                this.fileId = (arr != null) ? arr[0] : null;
+                arr = (String[]) params.get("type");
+                this.fileType = (arr != null) ? arr[0] : null;
                 if (fileDir != null && fileId != null) {
                     currentFile = new TempFile(fileDir, fileId);
                 }
-            }
-            catch ( Exception e ) {
+            } catch (Exception e) {
                 logger.log(Level.SEVERE, null, e);
             }
         }
@@ -439,8 +439,10 @@ public class SFileChooser
      */
     private static class TempFile extends File {
         private boolean isTemp;
+
         public TempFile(String parent, String child) {
             super(parent, child);
+            deleteOnExit();
             isTemp = true;
         }
 
@@ -463,7 +465,7 @@ public class SFileChooser
                 delete();
             }
         }
-        
+
         /**
          * do a cleanup, if this temporary file is garbage collected.
          */
