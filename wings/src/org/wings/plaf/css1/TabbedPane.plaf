@@ -53,13 +53,13 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
 
         /* selection colors set? */
         java.awt.Color selFg = comp.getSelectionForeground();
-        String selFgStr = "#"+
+        final String selFgStr = "#"+
             org.wings.plaf.xhtml.css1.Utils.toColorString(selFg==null?comp.getForeground():selFg);
         
         
         /* border stuff */
-        String borderWidth = "1px";
-        String borderType = "outset";
+        final String borderWidth = "1px";
+        final String borderType = "outset";
 
         SimpleAttributeSet attrset = new SimpleAttributeSet();
         
@@ -88,7 +88,17 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
         attrset.put(StyleConstants.MARGIN,                 "0px");
         attrset.put(StyleConstants.PADDING,                "0px");
         fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnpanel", attrset));
-        
+
+        SFont font = comp.getFont();
+        if (font != null) {
+            attrset.put(StyleConstants.FONT_SIZE,   font.getSize()+"px");
+            attrset.put(StyleConstants.FONT_FAMILY, font.getFace());
+        }
+        else
+        if (asForm) {
+            attrset.put(StyleConstants.FONT_SIZE,   "12px"); // reset "1px"
+        }
+
         // # no selection
         attrset = (SimpleAttributeSet) attrset.clone();
         if (hasIcons) {
@@ -278,8 +288,13 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
 
 protected void writeTabs(Device device, STabbedPane component) throws IOException
 {
-      boolean vert = component.getTabPlacement() == SConstants.LEFT ||
-                     component.getTabPlacement() == SConstants.RIGHT;
+    final boolean vert = component.getTabPlacement() == SConstants.LEFT
+                   || component.getTabPlacement() == SConstants.RIGHT;
+    final boolean isMSIE = SessionManager
+        .getSession()
+        .getUserAgent()
+        .getBrowserName()
+        .equals("MSIE");
     %><td valign="top"<%
     %><%|class="tp_"+component.getComponentId()+"_btnpanel"%><%
     %><%|align=(component.getTabPlacement()==SConstants.LEFT?"right":"left")%><%
@@ -355,7 +370,18 @@ protected void writeTabs(Device device, STabbedPane component) throws IOExceptio
       {
           for (int i=0; i < loops; ++i) {
           selected = (i == component.getSelectedIndex());
-          %><img align="absmiddle"<%
+          final boolean hasIcon = (component.isEnabledAt(i) 
+                  ? component.getIconAt(i) 
+                  : component.getDisabledIconAt(i))
+              != null;
+
+          %><img <%
+          if (!isMSIE) {
+            %> align="absmiddle"<%
+          }
+          else if (isMSIE && hasIcon) {
+            %> align="baseline"<%
+          }
           if (newLine || vert) {
               if (selected) { %><%|src=firstIconSelected.getURL()%><% }
               else          { %><%|src=firstIconNormal.getURL()%><% }
@@ -373,14 +399,14 @@ protected void writeTabs(Device device, STabbedPane component) throws IOExceptio
               }
           }
           %> /><% // close image tag.
-          selected = (i == component.getSelectedIndex());
+          // selected = (i == component.getSelectedIndex());
           String style_btn = "tp_"+component.getComponentId()+(selected?"_btnsel":"_btnnonsel");
 
-          writeAnchor(device, component, i, style_btn);
+          writeAnchor(device, component, i, style_btn, isMSIE);
 
           if ( vert || (maxTabsPerLine > 0 && ((i+1) % maxTabsPerLine == 0) )) {
-                    %><img<%
-                  %><%|align="absmiddle"%><%
+              %><img<%
+              %><%|align="absmiddle"%><%
               if (selected) { %><%|src=lastIconSelected.getURL()%><% }
               else          { %><%|src=lastIconNormal.getURL()%><% }
               %> /><br /><%
@@ -388,11 +414,14 @@ protected void writeTabs(Device device, STabbedPane component) throws IOExceptio
           }
           selectedBefore = selected;
           if (vert)
-                    %><br><%
-           }
-           if (!newLine) {
-                 // closed tab if not already written..
-                  %><img align="absmiddle"<%
+              %><br><%
+          }
+          if (!newLine) {
+              // closed tab if not already written..
+              %><img <%
+              if (!isMSIE) {
+                %> align="absmiddle"<%
+              }
               if (selected) { %><%|src=lastIconSelected.getURL()%><% }
               else          { %><%|src=lastIconNormal.getURL()%><% }
               %> /><%
@@ -405,7 +434,7 @@ protected void writeTabs(Device device, STabbedPane component) throws IOExceptio
  * even when tab is already selected, because links are used for 
  * style definition too.
  */
-protected void writeAnchor(final Device device, STabbedPane tabbed, int index, String attr)
+protected void writeAnchor(final Device device, STabbedPane tabbed, int index, String attr, boolean isMSIE)
     throws IOException
 {
     String text = tabbed.getTitleAt(index);
@@ -423,8 +452,14 @@ protected void writeAnchor(final Device device, STabbedPane tabbed, int index, S
         ? tabbed.getIconAt(index) 
         : tabbed.getDisabledIconAt(index);
     if (icon != null) {
-        %><img align="top" border="0" src="<%
+        %><img border="0" src="<%
         %><%=icon.getURL()%>"<%
+        if (isMSIE) {
+            %> align="absmiddle"<%
+        }
+        else {
+            %> align="top" <%
+        }
         %><%|width=icon.getIconWidth()%><%
         %><%|height=icon.getIconHeight()%><%
         %><%|alt=tooltip%> /><%
