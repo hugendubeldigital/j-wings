@@ -157,7 +157,10 @@ public class SDimension
     
     public String toString()
     {
-        return "width: " + width + "; height: " + height;
+      StringBuffer sb = new StringBuffer();
+      if (!"".equals(width) && width != null) sb.append("width: ").append(width).append("; ");
+      if (!"".equals(height) && height != null) sb.append("height: ").append(height).append("; ");
+      return sb.toString();
     }
 }
 
