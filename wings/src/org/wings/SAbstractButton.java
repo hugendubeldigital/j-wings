@@ -107,13 +107,9 @@ public class SAbstractButton
      */
     protected boolean noBreak = false;
 
-    /*
-     * Erzeugt einen Submit Button mit dem angebenen Text.
-     */
     /**
-     * TODO: documentation
-     *
-     * @param text
+     * Create a button with given text.
+     * @param the button text.
      */
     public SAbstractButton(String text) {
         this(text, SConstants.SUBMIT_BUTTON);
@@ -142,30 +138,41 @@ public class SAbstractButton
     /**
      * If the text of the button should not be wrapped, set this to true. This
      * inserts a &lt;NOBREAK&gt; Tag around the label
-     *
+     * @see #isNoBreak()
      * @param b
      */
     public void setNoBreak(boolean b) {
         noBreak = b;
     }
+
     /**
-     * TODO: documentation
-     *
-     * @return
+     * Test, if "noBreak" is set for this button.
+     * @see #setNoBreak(boolean)
+     * @return true, if nobreak is set, false otherwise.
      */
     public boolean isNoBreak() {
         return noBreak;
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param showAsFormComponent
+     * Set display mode (href or form-component).
+     * An AbstractButton can appear as HTML-Form-Button or as 
+     * HTML-HREF. If button is inside a {@link org.wings.SFrom} the default
+     * is displaying it as html form button.
+     * Setting <i>showAsFormComponent</i> to <i>false</i> will
+     * force displaying as href even if button is inside 
+     * a form.
+     * @param showAsFormComponent if true, display as link, if false as html form component.
      */
     public void setShowAsFormComponent(boolean showAsFormComponent) {
         this.showAsFormComponent = showAsFormComponent;
     }
 
+	/**
+      * Test, what display method is set.
+      * @see #setShowAsFormComponent(boolean)
+      * @return treu, if displayed as link, false when displayed as html form component.
+      */
     public boolean getShowAsFormComponent() {
         return showAsFormComponent && getResidesInForm();
     }

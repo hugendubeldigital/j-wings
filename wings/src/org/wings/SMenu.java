@@ -30,6 +30,7 @@ import org.wings.externalizer.ExternalizeManager;
 /**
  * TODO: documentation
  *
+ * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
  * @author Dominik Bartenstein
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$

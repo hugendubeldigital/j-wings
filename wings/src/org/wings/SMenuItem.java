@@ -29,6 +29,7 @@ import org.wings.externalizer.ExternalizeManager;
 /**
  * TODO: documentation
  *
+ * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
  * @author Dominik Bartenstein
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -36,15 +37,28 @@ import org.wings.externalizer.ExternalizeManager;
 public class SMenuItem extends SButton
 {
     private static final String cgClassID = "ButtonCG";
-	
+
+	/**
+      * Create a new MenuItem.
+      * <i>noBreak</i> is set to true
+      * @see org.wings.SAbstractButton#setNoBreak(boolean)
+      * @param text is display this text ( as href )
+      */	
 	public SMenuItem( String text )
 	 {
 		super( text );
+        setNoBreak( true );
 	 }
 
+	/**
+      * Create a new MenuItem with default test "Button".
+      * <i>noBreak</i> is set to true
+      * @see org.wings.SAbstractButton#setNoBreak(boolean)
+      */	
 	public SMenuItem( )
 	 {
 		super( "Button" );
+        setNoBreak( true );
 	 }
 }
 
