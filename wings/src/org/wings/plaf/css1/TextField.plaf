@@ -8,6 +8,7 @@
     %><%|size=component.getColumns()%><%
     %><%|maxlength=component.getMaxColumns()%><%
     %><%|class=Utils.style(component)%><%
+    %><%|style=component.getPreferredSize()%><%
     if (!component.isEditable() || !component.isEnabled() ) { %> readonly="1"<% }
     if (component.isEnabled())   { %> name="<%?namePrefix%>"<% }
     %><%|tabindex=component.getFocusTraversalIndex()%><%
