@@ -156,6 +156,7 @@ public class DelegatingHttpServletRequest
      *
      * @param path the virtual path to be translated to a real path
      * @return
+     * @deprecated
      */
     public String getRealPath(String path) {
         return req.getRealPath(path);
@@ -381,8 +382,7 @@ public class DelegatingHttpServletRequest
      *
      * @return
      */
-    public boolean isRequestedSessionIdValid()
-    {
+    public boolean isRequestedSessionIdValid() {
         return req.isRequestedSessionIdValid();
     }
 
@@ -433,6 +433,7 @@ public class DelegatingHttpServletRequest
      * TODO: documentation
      *
      * @return
+     * @deprecated
      */
     public boolean isRequestedSessionIdFromUrl() {
         return req.isRequestedSessionIdFromUrl();

@@ -143,6 +143,7 @@ public class ServletRequest
      *
      * @param path
      * @return
+     * @deprecated
      */
     public String getRealPath(String path) {
         return orig.getRealPath(path);
@@ -372,6 +373,7 @@ public class ServletRequest
      * TODO: documentation
      *
      * @return
+     * @deprecated
      */
     public boolean isRequestedSessionIdFromUrl() {
         return orig.isRequestedSessionIdFromUrl();

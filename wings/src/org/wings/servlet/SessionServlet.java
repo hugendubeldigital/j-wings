@@ -491,6 +491,7 @@ public abstract class SessionServlet
      * </UL>
      * Ist synchronized, damit nur ein Frame gleichzeitig bearbeitet werden kann.
      * {@link org.wings.SFrameSet}
+     * @deprecated
      */
     public final synchronized void doGet(HttpServletRequest req,
                                          HttpServletResponse response)
