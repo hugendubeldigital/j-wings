@@ -24,14 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * <!--
- * Erstellt: 17.03.2004 12:37:26   Von: Armin Haaf
- * Copyright:     Copyright (c) 2004
- * Organisation:  Müller GmbH & Co. KG
- * -->
- * <p/>
  * actual this is a static resource, but buffering is not neccessary, so to save resources implement it as resource
- *
+ * 
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
