@@ -145,6 +145,13 @@ public final class Utils implements SConstants
  
         d.append("</div>");
     }                                                                                                             
+    static void writeHiddenComponent(Device d, String name, String value)
+        throws IOException
+    {
+        d.append("<input type=\"hidden\" name=\"").
+	  append(name).append("\" value=\"").
+	  append(value).append("\" />\n");
+    }
 }
 
 /*
