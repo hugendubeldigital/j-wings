@@ -103,6 +103,7 @@ public class GridBagLayoutCG
                         }
 
                         Utils.printTableCellAlignment(d, comp);
+                        Utils.printTableCellColors(d, comp);
 
                         int gridwidth = c.gridwidth;
                         if (gridwidth == GridBagConstraints.RELATIVE) {
@@ -132,11 +133,6 @@ public class GridBagLayoutCG
                             d.print(" height=\""+
                                     (int) (100*c.weighty/grid.rowweight[col])+
                                     "%\"");
-                        }
-
-                        if (comp.getBackground() != null) {
-                            d.print(" bgcolor=\"").
-                                print(Utils.toColorString(comp.getBackground())).print("\"");
                         }
 
                         d.print(">");

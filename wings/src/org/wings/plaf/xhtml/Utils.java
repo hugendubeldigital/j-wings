@@ -126,6 +126,14 @@ public final class Utils implements SConstants
     public static String toColorString(java.awt.Color c) {
         return toColorString(c.getRGB());
     }
+    
+    public static void printTableToolTip(Device s, SComponent c)
+        throws IOException {
+        String tooltip = null;
+        if ( ( tooltip = c.getToolTipText() ) != null ) {
+            s.print(" title=\""+tooltip+"\"");
+        }
+    }
 
     public static void printTableCellAlignment(Device s, SComponent c) 
         throws IOException {
@@ -169,10 +177,14 @@ public final class Utils implements SConstants
         //     s.print(" COLOR=#").
         //         print(toColorString(c.getForeground()));
 
-        if (c.getBackground()!=null)
+        if (c.getBackground()!=null){
             s.print(" bgcolor=\"#")
                 .print(toColorString(c.getBackground()))
                 .print("\"");
+            s.print(" style=\"background-color:#")
+                .print(toColorString(c.getBackground()))
+                .print(";\"");
+        }
     }
 
     public static void printTableCellSpan(Device s, SComponent c) {
