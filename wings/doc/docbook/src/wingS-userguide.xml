@@ -10,6 +10,8 @@
     <section>
       <title>Target Audience</title>
 
+      <para>TODO: This paragraph has to be reworked.</para>
+
       <para>This document is intended as an architectural orientation to aid
       in understanding how wingS works. It is not a step-by-step tutorial on
       how to write a wingS application. Instead it tries to fill in enough
@@ -28,52 +30,59 @@
 
       <para>SessionManager.getSession() - source code fragment</para>
     </section>
+
+    <section>
+      <title>Credits</title>
+
+      <para>Contributions to this documentation were provided by Ian Gardner,
+      Volker Fritzsch, and Oliver Scheck.</para>
+    </section>
   </preface>
 
   <chapter>
     <title>The Basics</title>
 
-    <para></para>
+    <para>TODO</para>
 
     <section>
       <title>The Swing in wingS</title>
 
-      <para></para>
+      <para>TODO</para>
 
       <section>
         <title>MVC - Events and Listeners</title>
 
-        <para></para>
+        <para>TODO</para>
       </section>
 
       <section>
         <title>Widgets</title>
 
-        <para></para>
+        <para>TODO</para>
       </section>
     </section>
 
     <section>
       <title>Web-related Concepts</title>
 
-      <para></para>
+      <para>TODO</para>
 
       <section>
         <title>Servlet API</title>
 
-        <para></para>
+        <para>TODO</para>
       </section>
 
       <section>
         <title>Templates - Separating UI and Logic</title>
 
-        <para></para>
+        <para>TODO</para>
       </section>
 
       <section>
         <title>Style</title>
 
-        <para></para>
+        <para>TODO</para>
       </section>
     </section>
   </chapter>
@@ -81,48 +90,48 @@
   <chapter>
     <title>The 3-Step Quick Start</title>
 
-    <para></para>
+    <para>TODO</para>
 
     <section>
       <title>Writing a wingS Frame</title>
 
-      <para></para>
+      <para>TODO</para>
     </section>
 
     <section>
       <title>Preparing the web.xml File</title>
 
-      <para></para>
+      <para>TODO</para>
     </section>
 
     <section>
       <title>Deployment in Servlet Container and Go!</title>
 
-      <para></para>
+      <para>TODO</para>
     </section>
   </chapter>
 
   <chapter>
     <title>The Developer's Perspective</title>
 
-    <para></para>
+    <para>TODO</para>
 
     <sect1>
       <title>Application Startup and Configuration</title>
 
-      <para></para>
+      <para>TODO</para>
     </sect1>
 
     <sect1>
       <title>Frames and Top Level Components</title>
 
-      <para></para>
+      <para>TODO</para>
     </sect1>
 
     <sect1>
       <title>Layout Managers</title>
 
-      <para></para>
+      <para>TODO</para>
     </sect1>
 
     <sect1>
@@ -183,7 +192,7 @@ submit.addActionListener(al);</programlisting>
 
         <programlisting>form.addActionListener(al);</programlisting>
 
-        <para>The ActionEvent::getSource() will determine whether the event
+        <para>The ActionEvent.getSource() will determine whether the event
         comes from the button or the form so you can use the following tests
         in your callback:</para>
 
@@ -226,7 +235,8 @@ frame.addHeader(new Link("stylesheet",
                          null,
                          "text/css",
                          null, 
-                         new ClasspathResource("/wingset/css/myapp.css", "text/css")));</programlisting>
+                         new ClasspathResource("/wingset/css/myapp.css",
+                                               "text/css")));</programlisting>
 
         <para>The stylesheet contains various customised styles, in this case
         a custom table header:</para>
@@ -245,22 +255,73 @@ frame.addHeader(new Link("stylesheet",
     </sect1>
 
     <sect1>
-      <title>Cross Servlet Communication</title>
+      <title>Sharing Resources Among Servlets</title>
 
-      <para></para>
+      <para>Architectural requirements often suggest a break-up of a web
+      application into multiple servlets. Sharing common resources can be
+      achieved with the ServletContext interface's methods for handling
+      attributes. </para>
+
+      <para>To make a resource (any Java object) available across servlets use
+      the setAttribute() method:</para>
+
+      <para><programlisting>ServletContext context = SessionManager.getSession().getServletContext();
+context.setAttribute("app.resource", new SharedResource());</programlisting>Within
+      a second servlet use getAttribute() to retrieve a reference to the
+      resource:</para>
+
+      <para><programlisting>ServletContext context = SessionManager.getSession().getServletContext();
+SharedResource resource = context.getAttribute("app.resource");</programlisting>Attention
+      has to be paid to the attribute's namespace, as it might interfer with
+      other servlets. Prefixing the package name is an advisable
+      convention.</para>
+
+      <para>The approach presented above particularily makes sense if you have
+      decided to use a mixed approach of wingS and other Servlet API based
+      components as ServletContext is a Servlet API interface.</para>
     </sect1>
 
     <sect1>
       <title>File Upload and Download</title>
 
-      <para></para>
+      <sect2>
+        <title>File Upload</title>
+
+        <para>TODO</para>
+      </sect2>
+
+      <sect2>
+        <title>File Download</title>
+
+        <para>One way of providing a download is to implement your own Servlet
+        with the Servlet API directly:</para>
+
+        <para><programlisting>public class XLSServlet extends HttpServlet {
+
+  protected void doGet(HttpServletRequest request, 
+                       HttpServletResponse response)
+      throws ServletException, IOException {
+
+    doPost(request, response);
+  }
+
+  protected void doPost(HttpServletRequest request, 
+                        HttpServletResponse response)
+      throws ServletException, IOException {
+
+    HSSFWorkbook sheet = HSSFWorkbook();
+    response.setContentType("application/x-msexcel");
+    ServletOutputStream out = response.getOutputStream();
+    out.write(sheet.toBytes()));
+    response.flushBuffer();
+  }
+} </programlisting></para>
+      </sect2>
     </sect1>
   </chapter>
 
   <chapter>
-    <title id="chapGutsOfwingS">The Guts of wingS</title>
-
-    <para></para>
+    <title id="chapInsidewingS">Inside wingS</title>
 
     <section>
       <title>Session Management</title>
@@ -351,12 +412,16 @@ frame.addHeader(new Link("stylesheet",
       data required by different modules by using named session attributes.
       This keeps the code decoupled. For example:</para>
 
-      <programlisting>public void setSessionFoo(HttpServletRequest request, MyFoo foo) throws ServletException {
+      <programlisting>public void setSessionFoo(HttpServletRequest request, MyFoo foo) 
+    throws ServletException {
+  
   HttpSession session = request.getSession();
   session.setAttribute("MySharedFoo", foo);
 }
 
-public MyFoo getSessionHelper(HttpServletRequest request) throws ServletException {
+public MyFoo getSessionHelper(HttpServletRequest request) 
+    throws ServletException {
+  
   HttpSession session = request.getSession();
   Object x = session.getAttribute("MySharedFoo");
   if (x == null)
@@ -417,7 +482,9 @@ public MyFoo getSessionHelper(HttpServletRequest request) throws ServletExceptio
                     but you are very likely to need the derived
                     ResourceImageIcon class which is for static images, and
                     would in fact be required for a JPEG file.</para>
+                  </listitem>
 
+                  <listitem>
                     <para>FileResource - a static resource wrapped around a
                     file stream. If the resource is an image then use the
                     derived FileImageIcon, which will try and deduce
@@ -573,7 +640,7 @@ public MyFoo getSessionHelper(HttpServletRequest request) throws ServletExceptio
       dynamic resources delegate to the interface Renderable. This is probably
       the simplest interface, but can have a very complicated implementation !
       The majority of objects you are likely to be interested in externalise
-      themselves via the Renderable interface. </para>
+      themselves via the Renderable interface.</para>
     </section>
   </chapter>
 </book>
