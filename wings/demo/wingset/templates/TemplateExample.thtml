@@ -1,10 +1,10 @@
 <h4 align=center>Using Templates as LayoutManager</h4>
-<table bgcolor=#EEEEEE>
+<table>
 <tr><td>
 This is an example for the Template Layout Manager. Like any
 other layout manager it allows to place arbitrary elements, but you can
-write a simple HTML-page being the template for your components. Thus,
-this is a very flexible approach. The <em>constraints</em> of this
+write a simple HTML-page being the template for your components.
+The <em>constraints</em> of this
 layout manager are just the names of the components. Components can be 
 any of 
 <code>&lt;input name=&quot;compname&quot; ../&gt;</code> 
@@ -13,13 +13,14 @@ or simply anything which is embedded in
 and are replaced by the actual component given with the 
 constraint named <code>&quot;compname&quot;</code>.
 <hr size="1" noshade="noshade" />
-In this example we just place input elements and a tree in a table:
+In this example we just place input elements and a tree in a table; Note, that
+the size parameters of the input elements are taken from the template.
 <table cellpadding=2>
-<tr bgcolor=#5555FF>
+<tr>
    <td>Name:</td><td><input size=30 name="NAME"></td>
-   <td rowspan=2 bgcolor=#5555FF><object name="TREE"></object></td>
+   <td rowspan=2><object name="TREE"></object></td>
 </tr>
-<tr valign=top bgcolor=#5555FF>
+<tr valign=top>
    <td>Firstname:</td><td><input size=15 type=text name="FIRSTNAME"></td>
 </tr>
 </table>
