@@ -69,6 +69,7 @@ public class LdapClientSession
     private SForm otherAttrsF;
     private SButton select;
     private SButton commitButton;
+    private SButton removeButton;
     private AddObjectsPanel addPanel;
     private SPanel treePanel;
 
@@ -215,6 +216,9 @@ public class LdapClientSession
         commitButton = new SButton("Commit");
         commitButton.addActionListener(this);
 	
+	removeButton = new SButton("Remove entry");
+	removeButton.addActionListener(this);
+
         addPanel = new AddObjectsPanel();
         tabbedPane.add(addPanel, "Add new Object");
 	
@@ -291,47 +295,48 @@ public class LdapClientSession
 	String oldValue = null;
 	String oValue;
 
-	System.out.println(">> commit <<");
+	if (evt.getSource().equals(commitButton)) {
+	    System.out.println(">> commit <<");
 
-	LdapWorker worker = getLdapWorker();
-	BasicAttributes attributes = new BasicAttributes();
-	Enumeration enumer = componentTable.keys();
-	while (enumer != null && enumer.hasMoreElements()) {
-	    String key = (String)enumer.nextElement();
-	    System.out.println(key);
-
-	    oldValue = (String)(textHashtable.get(key));
-	    System.out.println("fuer " + key + " old value " +oldValue);
-
-	    if (oldValue != null )
-		newValue = ((STextField)componentTable.get(key)).getText();
-
-	    System.out.println("new value " +newValue);
-	    System.out.println("old value " +oldValue);
-
-	    if (oldValue!=null) {
-		if (!oldValue.equals(newValue)) {
-		    BasicAttribute attr = new BasicAttribute((String)key);
-		    StringTokenizer st = new StringTokenizer(newValue,",");
-		    String atV;
-		    boolean b = (st !=null && st.hasMoreTokens());
-		    if (b)
-			while (st !=null && st.hasMoreTokens())
-			    attr.add(st.nextToken());
-		    else attr.add(newValue);
-		    attributes.put(attr);
+	    LdapWorker worker = getLdapWorker();
+	    BasicAttributes attributes = new BasicAttributes();
+	    Enumeration enumer = componentTable.keys();
+	    while (enumer != null && enumer.hasMoreElements()) {
+		String key = (String)enumer.nextElement();
+		System.out.println(key);
+		
+		oldValue = (String)(textHashtable.get(key));
+		System.out.println("fuer " + key + " old value " +oldValue);
+		
+		if (oldValue != null )
+		    newValue = ((STextField)componentTable.get(key)).getText();
+		
+		System.out.println("new value " +newValue);
+		System.out.println("old value " +oldValue);
+		
+		if (oldValue!=null) {
+		    if (!oldValue.equals(newValue)) {
+			BasicAttribute attr = new BasicAttribute((String)key);
+			StringTokenizer st = new StringTokenizer(newValue,",");
+			String atV;
+			boolean b = (st !=null && st.hasMoreTokens());
+			if (b)
+			    while (st !=null && st.hasMoreTokens())
+				attr.add(st.nextToken());
+			else attr.add(newValue);
+			attributes.put(attr);
+		    }
 		}
 	    }
-	}
-
-	if (attributes !=null && attributes.size() > 0)
-	    worker.modifyAttributes(dn,attributes);
-
-	if (chooser.getFilename()!="" && chooser.getFilename()!=null) {
+	    
+	    if (attributes !=null && attributes.size() > 0)
+		worker.modifyAttributes(dn,attributes);
+	    
+	    if (chooser.getFilename()!="" && chooser.getFilename()!=null) {
 	    String attribut = "jpegPhoto";
 	    BasicAttributes attrs = new BasicAttributes();
 	    BasicAttribute attr = new BasicAttribute("jpegPhoto");
-
+	    
 	    try {
 		fis = new FileInputStream("/home/nengels/jpg/" + chooser.getFilename());
 		System.out.println("dir" + chooser.getFiledir());
@@ -359,10 +364,25 @@ public class LdapClientSession
 	    attrs.put(attr);
 	    if (attrs.size() > 0)
 		worker.modifyAttributes(dn,attrs);
-
+	    
+	    }
 	}
-
-
+	
+	if (evt.getSource().equals(removeButton)) {
+	    System.out.println("please remove entry");
+	    String dn = getDN();
+	    System.out.println("dn is " + dn);
+	    LdapWorker worker = getLdapWorker();
+	    worker.removeEntry(dn);
+	    LdapTreeNode nd= (LdapTreeNode)getNode();
+	    LdapTreeNode parent = (LdapTreeNode)nd.getParent();
+	    DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
+	    if (parent!=null) {
+		//parent.removeChild(node);
+		//model.removeNodeFromParent(nd);
+		model.nodesWereRemoved(parent,new int[]{parent.getIndex(node)}, new Object[] {node});
+	    }
+	}
     }
 
 
@@ -505,6 +525,7 @@ public class LdapClientSession
 		}
 	}
 	existentAttrsF.add(commitButton);
+	existentAttrsF.add(removeButton);
     }
 
 

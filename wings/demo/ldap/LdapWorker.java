@@ -534,6 +534,15 @@ public class LdapWorker
 	}
 	return attrs;
     }
-    
+
+    public void removeEntry(String dn) {
+	try { 
+	    System.out.println("entry " + dn + "removed");
+	    ctx.destroySubcontext(dn);
+	}
+	catch (NamingException exc) {
+	    System.out.println("entry to remove not found");
+	}
+    }
     
 }

@@ -107,5 +107,10 @@ public class LdapTreeNode implements TreeNode {
 	child.parent = this;
 	children.add(child);
     }
+    
+    public void removeChild(LdapTreeNode child) {
+	children.remove(child);
+    }
+    
 }
                                                                                                                
