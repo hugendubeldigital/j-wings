@@ -7,7 +7,7 @@ BODY {
 
 P {
    font-family: sans-serif;
-   font-size: 10pt;
+   font-size: 12pt;
    font-weight: normal;
    font-style: normal;
    color: #000077;
@@ -16,7 +16,7 @@ P {
 
 UL {
    font-family: sans-serif;
-   font-size: 10pt;
+   font-size: 12pt;
    font-weight: normal;
    font-style: normal;
    color: #000077;
@@ -55,7 +55,8 @@ A:active {
 
 A:visited {
    color: #000077;
-   text-decoration: none
+   text-decoration: none;
+   font-weight: bold
 }
 
 HR {
@@ -64,26 +65,26 @@ HR {
 }
 
 H1 {
-   font-size: 16pt;
+   font-size: 18pt;
    font-weight: bold;
    font-family: sans-serif;
 }
 
 H2 {
-   font-size: 14pt;
+   font-size: 16pt;
    font-weight: bold;
    font-family: sans-serif;
 }
 
 H3 { 
-   font-size: 12pt;
+   font-size: 14pt;
    font-weight: bold;
    font-family: sans-serif
 }
 
 .wings {
    font-family: sans-serif;
-   font-size: 10pt;
+   font-size: 12pt;
    font-weight: bold;
    font-style: normal;
    color: #770000
@@ -91,7 +92,7 @@ H3 {
 
 .is {
    font-family: sans-serif;
-   font-size: 10pt;
+   font-size: 12pt;
    font-weight: normal;
    font-style: normal;
    color: #000077
@@ -153,7 +154,7 @@ A:active.menu {
 .question {
    margin: 3pt;
    font-family: sans-serif;
-   font-size: 10pt;
+   font-size: 12pt;
    font-weight: bold;
    font-style: normal;
    color: #007700
@@ -162,7 +163,7 @@ A:active.menu {
 .answer {
    margin: 3pt;
    font-family: sans-serif;
-   font-size: 10pt;
+   font-size: 12pt;
    font-weight: normal;
    font-style: normal;
    color: #000077
