@@ -373,8 +373,9 @@ public class SComboBox
         addEventListener(ItemListener.class, listener);
     }
 
-    /** Removes an ItemListener
-     *
+    /** 
+     * Removes an ItemListener.
+     * 
      * @param listener  the ItemListener to remove
      */
     public void removeItemListener(ItemListener listener) {
@@ -383,7 +384,8 @@ public class SComboBox
 
     /** 
      * Adds an ActionListener. The listener will receive an action event
-     * when the user changed the selection.
+     * when the user changed the selection. The SComboBox needs to reside 
+     * within a {@link SForm} component for receiving action events.
      *
      * @param listener  the ActionListener that is to be notified
      */
