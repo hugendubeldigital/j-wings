@@ -208,17 +208,17 @@ public final class WingServlet
     {
         try {
             logger.fine("new session");
-            HttpSession session = request.getSession(true);
+            HttpSession httpSession = request.getSession(true);
 
             SessionServlet sessionServlet = new SessionServlet();
-
+            sessionServlet.init(servletConfig, request);
             /*
              * the constructor of SessionServlet associates the Session with 
              * the thread: it sets it in the SessionManager. Thus we can access
              * it here.
              */
-            SessionManager.getSession().setServletRequest(request);
-            SessionManager.getSession().setServletResponse(response);
+            sessionServlet.getSession().setServletRequest(request);
+            sessionServlet.getSession().setServletResponse(response);
             
             /* the request URL is needed already in the setup-phase. Note,
              * that at this point, the URL will always be encoded, since
@@ -230,13 +230,10 @@ public final class WingServlet
             RequestURL requestURL = 
                 new RequestURL("",SessionServlet.getSessionEncoding(response));
                                
-            ((PropertyService)sessionServlet.getSession())
-                .setProperty("request.url", requestURL);
+            sessionServlet.getSession().setProperty("request.url", requestURL);
 
             sessionServlet.setParent(this);
-            sessionServlet.setExternalizeManager(new ExternalizeManager(response));
-            sessionServlet.init(servletConfig);
-            session.setAttribute(lookupName, sessionServlet);
+            httpSession.setAttribute(lookupName, sessionServlet);
 
             return sessionServlet;
         }

@@ -14,27 +14,41 @@
 
 package org.wings.session;
 
+
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.*;
-import java.util.logging.*;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-import org.wings.*;
-
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
+import javax.servlet.http.HttpUtils;
+import org.wings.DynamicCodeResource;
+import org.wings.RequestURL;
+import org.wings.Resource;
+import org.wings.SForm;
+import org.wings.SFrame;
+import org.wings.SLabel;
+import org.wings.STemplateLayout;
+import org.wings.event.SRequestEvent;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.externalizer.ExternalizedResource;
-import org.wings.io.ServletDevice;
 import org.wings.io.Device;
 import org.wings.io.DeviceFactory;
+import org.wings.io.ServletDevice;
+import org.wings.plaf.LookAndFeelFactory;
 import org.wings.util.ComponentVisitor;
-import org.wings.session.*;
 import org.wings.util.DebugUtil;
 import org.wings.util.TimeMeasure;
-import org.wings.plaf.LookAndFeelFactory;
-import org.wings.event.SRequestEvent;
 
 /**
  * TODO: documentation
@@ -62,10 +76,12 @@ final class SessionServlet
     /**
      * TODO: documentation
      */
-    protected HttpServlet parent = this;
+    protected transient HttpServlet parent = this;
 
     /**
-     * All supported Locales.
+     * Which locales are supported by this servlet. If null, every locale from
+     * the browser is accepted. If not null only locales listed in this array
+     * are supported.
      */
     private Locale[] supportedLocales = null;
 
@@ -82,7 +98,7 @@ final class SessionServlet
     /**
      * The session.
      */
-    private Session session = null;
+    private Session session;
 
     private boolean firstRequest = true;
 
@@ -92,8 +108,6 @@ final class SessionServlet
      * @param session
      */
     protected SessionServlet() {
-        this.session = new Session();
-        SessionManager.setSession(session);
     }
 
     /**
@@ -144,57 +158,6 @@ final class SessionServlet
         return session.getLocale();
     }
 
-    /*
-     * A String, containing a comma separated list of canonical locale names.
-     */
-    private final void setLocale(String locales) {
-        if (locales == null)
-            return;
-        StringTokenizer tokenizer = new StringTokenizer(locales, ",");
-
-        while (tokenizer.hasMoreTokens()) {
-            try {
-                setLocale(getLocale(tokenizer.nextToken()));
-                return;
-            } catch (IllegalArgumentException e) {
-                logger.throwing(SessionServlet.class.getName(), "setLocale", e);
-            }
-        }
-    }
-
-    /*
-     * An array of canonical locale names.
-     */
-    private final void setLocale(String[] locales) {
-        if (locales == null)
-            return;
-
-        for (int i=0; i<locales.length; i++) {
-            try {
-                setLocale(locales[i]);
-                return;
-            } catch (IllegalArgumentException e) {
-                logger.throwing(SessionServlet.class.getName(), "setLocale", e);
-            }
-        }
-    }
-
-    /**
-     * creates a locale object from a string (de, de-AT, en-US,...).
-     */
-    private final Locale getLocale(String localeString) {
-        String args[] = {"", "", ""};
-        StringTokenizer tokenizer = new StringTokenizer(localeString, "-");
-        int index = 0;
-        while (tokenizer.hasMoreTokens()) {
-            if (index>args.length)
-                break;
-            args[index++] = tokenizer.nextToken();
-        }
-
-        return new Locale(args[0], args[1], args[2]);
-    }
-
     /**
      * sets a new locale for this session. The locale is <em>only</em> set,
      * if it is one of the supported locales {@link #setSupportedLocales},
@@ -224,9 +187,7 @@ final class SessionServlet
 
     /*
      * Das Locale des Servlets wird ueber das Locale des Browsers bestimmt und den
-     * verfuegbaren Locales bestimmt. Wird jedoch ueber einen Parameter
-     * <PRE>Lang</PRE> dem Servlet mitgeteilt, ein spezielles Locale zu setzen,
-     * wird der Header ignoriert. Uber den Parameter <PRE>LocaleFromHeader</PRE>
+     * verfuegbaren Locales bestimmt.Uber den Parameter <PRE>LocaleFromHeader</PRE>
      * mit Werten true/false, kann diese Verhalten gesteuert werden.
      */
     /**
@@ -235,11 +196,16 @@ final class SessionServlet
     protected final void handleLocale(HttpServletRequest req) {
         setLocaleFromHeader(req.getParameterValues("LocaleFromHeader"));
 
-        if (localeFromHeader)
-            setLocale(req.getHeader("Accept-Language"));
-        if (req.getParameterValues("Lang")!=null) {
-            setLocale(req.getParameterValues("Lang"));
-            setLocaleFromHeader(false);
+        if (localeFromHeader) {
+            for ( Enumeration en=req.getLocales(); en.hasMoreElements(); ) {
+                Locale locale = (Locale)en.nextElement();
+                try {
+                    setLocale(locale);
+                    return;
+                } catch ( Exception ex ) {
+                    logger.warning("locale not supported " + locale);
+                } // end of try-catch
+            } // end of for ()
         }
     }
 
@@ -334,27 +300,18 @@ final class SessionServlet
     }
 
     /**
-     * set the externalize manager
-     */
-    protected void setExternalizeManager(ExternalizeManager em) {
-        session.setExternalizeManager(em);
-    }
-
-    /**
      * init
      */
-    public final void init(ServletConfig config) throws ServletException {
+    public final void init(ServletConfig config,
+                           HttpServletRequest request) throws ServletException {
         try {
-            try {
-                session.init(config);
-                initErrorTemplate(config);
-                session.getCGManager().setLookAndFeel(LookAndFeelFactory.createLookAndFeel());
-            }
-            catch (Exception e) {
-                logger.log(Level.SEVERE, "could not load look and feel: " +
-                           config.getInitParameter("wings.lookandfeel.factory"), e);
-                throw new ServletException(e);
-            }
+            initErrorTemplate(config);
+
+            session = new Session();
+            SessionManager.setSession(session);
+
+            session.init(config, request);
+
 
             try {
                 String mainClassName = config.getInitParameter("wings.mainclass");
@@ -371,10 +328,10 @@ final class SessionServlet
                 }
                 Object main = mainClass.newInstance();
             }
-            catch (Exception e) {
+            catch (Exception ex) {
                 logger.log(Level.SEVERE, "could not load wings.mainclass: " +
-                           config.getInitParameter("wings.mainclass"), e);
-                throw new ServletException(e);
+                           config.getInitParameter("wings.mainclass"), ex);
+                throw new ServletException(ex);
             }
         }
         finally {

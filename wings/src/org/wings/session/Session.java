@@ -14,22 +14,41 @@
 
 package org.wings.session;
 
+
+
 import java.beans.PropertyChangeListener;
-import java.util.*;
-import java.util.logging.*;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.Serializable;
+import java.lang.ref.WeakReference;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.event.EventListenerList;
-
-import org.wings.*;
-import org.wings.plaf.CGManager;
-import org.wings.util.WeakPropertyChangeSupport;
-import org.wings.util.StringUtil;
+import org.wings.DefaultReloadManager;
+import org.wings.ReloadManager;
+import org.wings.SContainer;
+import org.wings.SFrame;
+import org.wings.event.SRequestEvent;
+import org.wings.event.SRequestListener;
+import org.wings.event.WeakRequestListenerProxy;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.externalizer.ExternalizedResource;
-import org.wings.event.SRequestListener;
-import org.wings.event.SRequestEvent;
+import org.wings.plaf.CGManager;
+import org.wings.plaf.LookAndFeelFactory;
+import org.wings.util.StringUtil;
+import org.wings.util.WeakPropertyChangeSupport;
 
 /**
  * TODO: documentation
@@ -37,49 +56,104 @@ import org.wings.event.SRequestEvent;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class Session
-    implements PropertyService
-{
-    public static String LOCALE_PROPERTY = "locale";
-    public static String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
+public final class Session
+    implements PropertyService, Serializable {
+
     private static Logger logger = Logger.getLogger("org.wings.session");
 
-    private ServletContext servletContext;
-    private CGManager cgManager = new CGManager();
-    private ReloadManager reloadManager = null;
-    private ExternalizeManager extManager = null;
-    private final LowLevelEventDispatcher dispatcher = new LowLevelEventDispatcher();
-    private Map props = new HashMap();
-
-    private int uniqueIdCounter = 1;
-    private int maxContentLength = 64;
-
-    private final Set frames = new HashSet();
-    
-    private Browser browser;
+    /**
+     * The property name of the locale
+     *
+     */
+    public static String LOCALE_PROPERTY = "locale";
 
     /**
-     * listeners registered for {@link SRequestEvent}
+     * The property name of the look&feel
+     *
      */
-    private List requestListener;
+    public static String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
+
+    /**
+     * Every session has its own {@link CGManager}. 
+     *
+     */
+    private final CGManager cgManager = new CGManager();
+
+    private ReloadManager reloadManager = null;
+    private final ExternalizeManager extManager = new ExternalizeManager();
+    private final LowLevelEventDispatcher dispatcher = new LowLevelEventDispatcher();
+
+    private final HashMap props = new HashMap();
+    private final HashSet frames = new HashSet();
+
+    private int uniqueIdCounter = 1;
+    
+    /**
+     * Maximum upload content length. This is used by the {@link SessionServlet}
+     * to avoid denial of service attacks.
+     */
+    private int maxContentLength = 64;
+
+    private transient ServletContext servletContext;
+    
+    private transient Browser browser;
+
+    private transient HttpServletResponse servletResponse;
+
+    private transient HttpServletRequest servletRequest;
+
+    private String redirectAddress;
+    private String exitAddress;
+
+
+    /**
+     * Store here only weak references. 
+     *
+     */
+    private final EventListenerList listenerList = new EventListenerList();
+    
 
     /**
      * TODO: documentation
      *
      */
-    public Session() {}
+    public Session()  {
+    }
 
     /**
      * TODO: documentation
      *
      * @param config
+     * @param request a <code>HttpServletRequest</code> value
+     * @exception ServletException if an error occurs
      */
-    public void init(ServletConfig config) {
+    public void init(ServletConfig config, HttpServletRequest request) throws ServletException {
+        servletContext = config.getServletContext();
+        setServletRequest(request);
+        setUserAgentFromRequest(request);
+
         if (config == null)
             return;
-        initProps(config);
-        servletContext = config.getServletContext();
 
+        initProps(config);
+        initMaxContentLength(config);
+
+        try {
+            getCGManager().setLookAndFeel(LookAndFeelFactory.createLookAndFeel());
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "could not load look and feel: " +
+                       config.getInitParameter("wings.lookandfeel.factory"), ex);
+            throw new ServletException(ex);
+        }
+
+    }
+
+    /**
+     * Describe <code>initMaxContentLength</code> method here.
+     *
+     * @param config a <code>ServletConfig</code> value
+     */
+    protected void initMaxContentLength(ServletConfig config) {
         String maxCL = config.getInitParameter("content.maxlength");
         if (maxCL != null) {
             try {
@@ -104,43 +178,55 @@ public class Session
         }
     }
 
-    private HttpServletRequest servletRequest;
     void setServletRequest(HttpServletRequest servletRequest) {
         this.servletRequest = servletRequest;
-        if (browser == null) {
-            try
-            {
-                browser = new Browser(servletRequest.getHeader("User-Agent"));
-            	logger.fine("User-Agent is "+browser);
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
-        }
     }
     
     
+    /**
+     * Describe <code>getServletRequest</code> method here.
+     *
+     * @return a <code>HttpServletRequest</code> value
+     */
     public HttpServletRequest getServletRequest() {
         return servletRequest;
     }
 
-    private HttpServletResponse servletResponse;
     void setServletResponse(HttpServletResponse servletResponse) {
         this.servletResponse = servletResponse;
     }
+    /**
+     * Describe <code>getServletResponse</code> method here.
+     *
+     * @return a <code>HttpServletResponse</code> value
+     */
     public HttpServletResponse getServletResponse() {
         return servletResponse;
     }
 
+    /**
+     * Describe <code>getServletContext</code> method here.
+     *
+     * @return a <code>ServletContext</code> value
+     */
     public ServletContext getServletContext() {
         return servletContext;
     }
 
+    /**
+     * Describe <code>getCGManager</code> method here.
+     *
+     * @return a <code>CGManager</code> value
+     */
     public CGManager getCGManager() {
         return cgManager;
     }
 
+    /**
+     * Describe <code>setReloadManager</code> method here.
+     *
+     * @param reloadManager a <code>ReloadManager</code> value
+     */
     public void setReloadManager(ReloadManager reloadManager) {
         this.reloadManager = reloadManager;
     }
@@ -166,21 +252,27 @@ public class Session
     }
 
     /**
-     * TODO: documentation
-     *
+     * Get the user agent (browser) used for
+     * this session by the user.
+     * @return a <code>Browser</code> value
      */
-    void setExternalizeManager(ExternalizeManager em) {
-        extManager = em;
+    public Browser getUserAgent() {
+        return browser;
     }
 
-	/**
-	 * Get the user agent (browser) used for
-	 * this session by the user.
-	 */
-	public Browser getUserAgent()
-	{
-	    return browser;
-	}
+    /**
+     * Describe <code>setUserAgentFromRequest</code> method here.
+     *
+     * @param request a <code>HttpServletRequest</code> value
+     */
+    public void setUserAgentFromRequest(HttpServletRequest request) {
+        try {
+            browser = new Browser(request.getHeader("User-Agent"));
+            logger.fine("User-Agent is " + browser);
+        } catch (Exception ex)  {
+            logger.log(Level.WARNING, "Cannot get User-Agent from request", ex);
+        }
+    }
 
     /**
      * TODO: documentation
@@ -191,18 +283,34 @@ public class Session
         return dispatcher;
     }
 
+    /**
+     * Describe <code>addFrame</code> method here.
+     *
+     * @param frame a <code>SFrame</code> value
+     */
     public void addFrame(SFrame frame) {
         frames.add(frame);
     }
+    /**
+     * Describe <code>removeFrame</code> method here.
+     *
+     * @param frame a <code>SFrame</code> value
+     */
     public void removeFrame(SFrame frame) {
         frames.remove(frame);
     }
+    /**
+     * Describe <code>frames</code> method here.
+     *
+     * @return a <code>Set</code> value
+     */
     public Set frames() {
         return frames;
     }
 
     /**
      * The root frame is the first shown frame.
+     * @return a <code>SFrame</code> value
      */
     public SFrame getRootFrame() {
         if ( frames.size() == 0)
@@ -215,7 +323,12 @@ public class Session
         return rootFrame;
     }
 
-    public Map getProperties() {
+    /**
+     * Describe <code>getProperties</code> method here.
+     *
+     * @return a <code>Map</code> value
+     */
+    public final Map getProperties() {
         return Collections.unmodifiableMap(props);
     }
 
@@ -240,10 +353,11 @@ public class Session
      * @see        org.wings.session.PropertyService#getProperties()
      */
     public synchronized Object getProperty(String key, Object def) {
-        Object value = props.get(key);
-        if (value == null)
-            value = def;
-        return value;
+        if ( !props.containsKey(key) ) {
+            return def;
+        } else {
+            return props.get(key);
+        }
     }
 
     /**
@@ -263,7 +377,8 @@ public class Session
         return old;
     }
 
-    private final WeakPropertyChangeSupport propertyChangeSupport = new WeakPropertyChangeSupport(this);
+    private final WeakPropertyChangeSupport propertyChangeSupport = 
+        new WeakPropertyChangeSupport(this);
 
     /**
      * TODO: documentation
@@ -283,11 +398,23 @@ public class Session
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
+    /**
+     * Describe <code>addPropertyChangeListener</code> method here.
+     *
+     * @param propertyName a <code>String</code> value
+     * @param listener a <code>PropertyChangeListener</code> value
+     */
     public void addPropertyChangeListener(String propertyName, 
                                           PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(propertyName,listener);
     }
 
+    /**
+     * Describe <code>removePropertyChangeListener</code> method here.
+     *
+     * @param propertyName a <code>String</code> value
+     * @param listener a <code>PropertyChangeListener</code> value
+     */
     public void removePropertyChangeListener(String propertyName, 
                                              PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(propertyName,listener);
@@ -309,6 +436,7 @@ public class Session
 
     /**
      * TODO: documentation
+     * @return a <code>Locale</code> value
      */
     public final Locale getLocale() {
         return locale;
@@ -318,6 +446,11 @@ public class Session
         return uniqueIdCounter++;
     }
 
+    /**
+     * Describe <code>createUniqueId</code> method here.
+     *
+     * @return a <code>String</code> value
+     */
     public final String createUniqueId() {
         return StringUtil.toShortestAlphaNumericString(getUniqueId());
     }
@@ -342,6 +475,10 @@ public class Session
         maxContentLength = l;
     }
 
+    /**
+     * Describe <code>destroy</code> method here.
+     *
+     */
     protected void destroy() {
         Iterator it = frames.iterator();
         while (it.hasNext()) {
@@ -349,14 +486,7 @@ public class Session
             if (container != null)
                 container.removeAll();
         }
-
-        extManager = null;
-        reloadManager = null;
-        cgManager = null;
     }
-
-    private String redirectAddress;
-    private String exitAddress;
 
     /**
      * Exit the current session and redirect to other URL.
@@ -410,6 +540,11 @@ public class Session
         return redirectAddress;
     }
 
+    /**
+     * Describe <code>setRedirectAddress</code> method here.
+     *
+     * @param redirectAddress a <code>String</code> value
+     */
     public void setRedirectAddress(String redirectAddress) {
         this.redirectAddress = redirectAddress;
     }
@@ -420,10 +555,8 @@ public class Session
      * @param listener
      */
     public void addRequestListener(SRequestListener listener) {
-        if ( requestListener==null ) {
-            requestListener = new LinkedList();
-        }
-        requestListener.add(listener);
+        listenerList.add(SRequestListener.class,
+                         new WeakRequestListenerProxy(listener));
     }
 
     /**
@@ -432,10 +565,8 @@ public class Session
      * @param listener
      */
     public void removeRequestListener(SRequestListener listener) {
-        if ( requestListener==null ) {
-            return;
-        }
-        requestListener.remove(listener);
+        listenerList.remove(SRequestListener.class,
+                            new WeakRequestListenerProxy(listener));
     }
 
     /**
@@ -449,12 +580,17 @@ public class Session
      * Fire an RequestEvent at each registered listener.
      */
     final void fireRequestEvent(int type, ExternalizedResource resource) {
-        if ( requestListener==null || requestListener.size()<=0 )
-            return;
-
-        SRequestEvent event = new SRequestEvent(this, type, resource);
-        for ( Iterator iter=requestListener.iterator(); iter.hasNext(); ) {
-            ((SRequestListener)iter.next()).processRequest(event);
+        SRequestEvent event = null;
+        
+        Object[] listeners = listenerList.getListenerList();
+        for ( int i = listeners.length-2; i>=0; i -= 2 ) {
+            if ( listeners[i]==SRequestListener.class ) {
+                // Lazily create the event:
+                if ( event==null ) {
+                    event = new SRequestEvent(this, type, resource);
+                }
+                ((SRequestListener)listeners[i+1]).processRequest(event);
+            }
         }
     }
 

@@ -60,17 +60,15 @@ public class ExternalizeManager extends AbstractExternalizeManager
      * TODO: documentation
      *
      */
-    public ExternalizeManager(HttpServletResponse response) {
-        this(response, true);
+    public ExternalizeManager() {
+        this(true);
     }
     
     /**
      * TODO: documentation
      *
      */
-    public ExternalizeManager(HttpServletResponse response,
-                              boolean initWithDefaultExternalizers) {
-        super(response);
+    public ExternalizeManager(boolean initWithDefaultExternalizers) {
         if ( initWithDefaultExternalizers ) {
             addDefaultExternalizers();
         }

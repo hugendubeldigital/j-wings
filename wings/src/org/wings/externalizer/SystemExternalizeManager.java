@@ -48,7 +48,6 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
      * 
      */
     private SystemExternalizeManager () {
-        super(null);
     }
 
     /**

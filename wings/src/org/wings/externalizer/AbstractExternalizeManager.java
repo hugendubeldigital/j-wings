@@ -144,24 +144,16 @@ public abstract class AbstractExternalizeManager
      */
     protected String sessionEncoding = "";
 
-    protected HttpServletResponse response;
-
     /**
      *
      */
-    public AbstractExternalizeManager(HttpServletResponse response) {
-        this.response = response;
+    public AbstractExternalizeManager() {
     }
 
     public void setResponse(HttpServletResponse response) {
-        this.response = response;
         if (response != null) {
             sessionEncoding = response.encodeURL("foo").substring(3);
         }
-    }
-
-    public String encodeURL(String url) {
-        return response.encodeURL(url);
     }
 
     /**
