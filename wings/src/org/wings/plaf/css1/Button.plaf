@@ -40,7 +40,7 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
 	    Utils.writeEvents(device, abstractButton);
         %><%|title=abstractButton.getToolTipText()%><%
         %><%|accesskey=abstractButton.getMnemonic()%><%
-
+        %>style="<% Utils.writeAttributes(device, abstractButton);%>"<%
     }
     else {
         %><span<%
