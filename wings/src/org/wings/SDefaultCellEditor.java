@@ -16,12 +16,14 @@ package org.wings;
 
 
 
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.EventObject;
-import javax.swing.event.*;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.EventListenerList;
 import org.wings.event.SRequestEvent;
 import org.wings.event.SRequestListener;
-import org.wings.event.WeakRequestListenerProxy;
 import org.wings.session.SessionManager;
 import org.wings.table.STableCellEditor;
 
@@ -145,7 +147,7 @@ public class SDefaultCellEditor
 
         // add request listener as weak reference. This is the only way to make
         // this object garbage collectable inside the session
-	SessionManager.getSession().addRequestListener(new WeakRequestListenerProxy(eventChecker));
+	SessionManager.getSession().addRequestListener(eventChecker);
     }
 
     /**
