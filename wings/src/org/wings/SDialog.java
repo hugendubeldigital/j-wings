@@ -106,7 +106,7 @@ public class SDialog
         //ActionEvent e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, state);
         //fireActionPerformed(e);
         fireActionPerformed();
-        listenerList = new EventListenerList();
+        //listenerList = new EventListenerList();
     }
 
     /**
@@ -134,9 +134,9 @@ public class SDialog
     }
 
     /**
-     * shows this dialog in the given frame. If the component given is
-     * not a frame, then it is shown in the frame, the component resides
-     * in.
+     * shows this dialog in the given SRootContainer. If the component is
+     * not a root container, then the root container the component is in
+     * is used.
      *
      * @param c
      */
