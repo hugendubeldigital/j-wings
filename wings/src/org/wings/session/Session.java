@@ -23,7 +23,8 @@ import org.wings.plaf.CGManager;
 import org.wings.externalizer.ExternalizeManager;
 
 /**
- * TODO: documentation
+ * A Session contains information which is associated with one
+ * user session. More doc needed.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
