@@ -544,6 +544,19 @@ public class SList
 
 
     /**
+     * Returns an array of all the <code>ListSelectionListener</code>s added
+     * to this JList with addListSelectionListener().
+     *
+     * @return all of the ListSelectionListener added 
+     * @since 1.4
+     */
+    public ListSelectionListener[] getListSelectionListeners() {
+        return (ListSelectionListener[])getListeners(
+                ListSelectionListener.class);
+    }
+
+
+    /**
      * Set the selectionModel for the list.
      * The selection model keeps track of which items are selected.
      *
