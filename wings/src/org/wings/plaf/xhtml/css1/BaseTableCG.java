@@ -14,53 +14,53 @@ public final class BaseTableCG
     extends org.wings.plaf.xhtml.BaseTableCG
 {
     public void writePrefix(Device d, SBaseTable baseTable)
-	throws IOException
+        throws IOException
     {
-	String width = baseTable.getWidth();
-	Style style = baseTable.getStyle();
-	
-	d.append("<table");
-	if (width != null && width.trim().length() > 0)
-	    d.append(" width=\"").append(width).append("\"");
-	Utils.writeStyleAttribute(d, style);
-	d.append(">\n");
+        String width = baseTable.getWidth();
+        Style style = baseTable.getStyle();
+
+        d.append("<table");
+        if (width != null && width.trim().length() > 0)
+            d.append(" width=\"").append(width).append("\"");
+        Utils.writeStyleAttribute(d, style);
+        d.append(">\n");
     }
-    
+
     public void writeBody(Device d, SBaseTable baseTable)
-	throws IOException
+        throws IOException
     {
-	Style style = baseTable.getStyle();
-	
+        Style style = baseTable.getStyle();
+
         int originRow = 0;
         int originCol = 0;
         int rowCount = baseTable.getRowCount();
         int colCount = baseTable.getColumnCount();
-	Rectangle viewport = baseTable.getViewportSize();
-	if (viewport != null) {
-	    originRow = viewport.y;
-	    originCol = viewport.x;
-	    rowCount = viewport.height;
-	    colCount = viewport.width;
+        Rectangle viewport = baseTable.getViewportSize();
+        if (viewport != null) {
+            originRow = viewport.y;
+            originCol = viewport.x;
+            rowCount = viewport.height;
+            colCount = viewport.width;
         }
-	
-	SCellRendererPane rendererPane = getCellRendererPane(baseTable);
-	if (baseTable.isHeaderVisible()) {
-	    d.append("<tr");
-	    Utils.writeStyleAttribute(d, style, "header");
-	    d.append(">\n");
-	    for (int c = originCol; c < colCount; c++) {
-		writeHeaderCell(d, baseTable, rendererPane, c);
-	    }
-	    d.append("</tr>\n");
-	}
+
+        SCellRendererPane rendererPane = baseTable.getCellRendererPane();
+        if (baseTable.isHeaderVisible()) {
+            d.append("<tr");
+            Utils.writeStyleAttribute(d, style, "header");
+            d.append(">\n");
+            for (int c = originCol; c < colCount; c++) {
+                writeHeaderCell(d, baseTable, rendererPane, c);
+            }
+            d.append("</tr>\n");
+        }
         for (int r = originRow; r < rowCount; r++) {
-	    d.append("<tr");
-	    Utils.writeStyleAttribute(d, style, "cell");
-	    d.append(">\n");
-	    for (int c = originCol; c < colCount; c++) {
-		writeCell(d, baseTable, rendererPane, r, c);
-	    }
-	    d.append("</tr>\n");
+            d.append("<tr");
+            Utils.writeStyleAttribute(d, style, "cell");
+            d.append(">\n");
+            for (int c = originCol; c < colCount; c++) {
+                writeCell(d, baseTable, rendererPane, r, c);
+            }
+            d.append("</tr>\n");
         }
     }
 }
