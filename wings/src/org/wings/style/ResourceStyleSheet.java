@@ -48,9 +48,7 @@ public class ResourceStyleSheet
      * @throws IOException
      */
     public InputStream getInputStream() throws IOException {
-        InputStream resource = null;
-        resource = baseClass.getResourceAsStream(fileName);
-        return resource;
+        return baseClass.getResourceAsStream(fileName);
     }
 
     public boolean isStable() {
