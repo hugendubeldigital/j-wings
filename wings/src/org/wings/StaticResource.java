@@ -43,7 +43,7 @@ public abstract class StaticResource extends Resource
     /**
      * A buffer for temporal storage of the resource
      */
-    protected LimitedBuffer buffer;
+    protected transient LimitedBuffer buffer;
     
     /**
      * The size of this resource. Initially, this will be '-1', but
