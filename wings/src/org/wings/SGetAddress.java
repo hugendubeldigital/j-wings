@@ -29,14 +29,14 @@ public class SGetAddress
     private static final byte[] _ampStr    = "&amp;".getBytes();
     private static final byte[] _questMark = "?".getBytes();
 
-    private String absoluteAddress = "";
+    private String absoluteAddress;
 
     /*
      * these values are derived from the absolute address
-     * and are cached for performance.
+     * and are cached for performance (for output).
      */
-    private String relativeAddress = null;
-    private byte[] relativeAddressByte = null;
+    private String contextAddress;
+    private byte[] contextAddressByte;
     private boolean hasQuestMark;
 
     private StringBuffer parameters = null;
@@ -45,7 +45,9 @@ public class SGetAddress
      * TODO: documentation
      *
      */
-    public SGetAddress() {}
+    public SGetAddress() { 
+        this("");
+    }
 
     /**
      * TODO: documentation
@@ -63,8 +65,8 @@ public class SGetAddress
      */
     public void setAbsoluteAddress(String addr) {
         absoluteAddress = addr;
-        relativeAddress = null;
-        relativeAddressByte = null;
+        contextAddress = null;
+        contextAddressByte = null;
     }
 
     /**
@@ -76,21 +78,36 @@ public class SGetAddress
         return absoluteAddress;
     }
 
+    private void breakdownAddress() {
+    }
+
     /**
-     * TODO: documentation
+     * returns the relative address of this GET-address.
+     * For the absoulte address 'http://www.domain.org/wingset/WingSet/?blub',
+     * the relative address would be '/wingset/WingSet?blub'.
      *
      * @return
      */
     public String getRelativeAddress() {
-        if (relativeAddress == null) {
-            int pos = absoluteAddress.indexOf('/', "http://".length() + 1);
-            if (pos == -1)
-                pos = 0;  // we already got an relative address without host.
-            relativeAddress = absoluteAddress.substring(pos);
-            relativeAddressByte = relativeAddress.getBytes();
-            hasQuestMark = (relativeAddress.indexOf ('?') >= 0);
+        int pos = absoluteAddress.indexOf('/', 8); // after "http://"
+        if (pos == -1)
+            pos = 0;  // we already got an relative address without host.
+        return absoluteAddress.substring(pos);
+    }
+    
+    /**
+     * returns the relative address of this GET-address.
+     * For the absoulte address 'http://www.domain.org/wingset/WingSet/?blub',
+     * the relative address would be '?blub'.
+     */
+    public String getContextURL() { 
+        if (contextAddress == null) {
+            int pos = absoluteAddress.lastIndexOf('/') + 1;
+            contextAddress     = absoluteAddress.substring(pos);
+            contextAddressByte = contextAddress.getBytes();
+            hasQuestMark = (contextAddress.indexOf ('?') >= 0);
         }
-        return relativeAddress;
+        return contextAddress;
     }
 
     /**
@@ -130,17 +147,17 @@ public class SGetAddress
     }
 
     /**
-     * writes the relative Address to the output Device. Tries to avoid
+     * writes the context Address to the output Device. Tries to avoid
      * charset conversion as much as possible by precalculating the
      * byteArray representation of the non-parameter part.
      *
      * @param d the Device to write to 
      */
     public void write(Device d) throws IOException {
-        if (relativeAddressByte == null) {
-            getRelativeAddress();
+        if (contextAddressByte == null) {
+            getContextURL();
         }
-        d.write(relativeAddressByte);
+        d.write(contextAddressByte);
 
         if (parameters != null && parameters.length() > 0) {
             d.write (hasQuestMark ? _ampStr : _questMark);
@@ -175,9 +192,9 @@ public class SGetAddress
             erg.parameters = new StringBuffer(parameters.toString());
         
         // pass computed cache
-        erg.relativeAddress     = relativeAddress;
-        erg.relativeAddressByte = relativeAddressByte;
-        erg.hasQuestMark        = hasQuestMark;
+        erg.contextAddress     = contextAddress;
+        erg.contextAddressByte = contextAddressByte;
+        erg.hasQuestMark       = hasQuestMark;
 
         return erg;
     }
@@ -186,7 +203,7 @@ public class SGetAddress
      * TODO: documentation
      */
     public static void main(String args[]) throws Exception {
-        SGetAddress adr1 = new SGetAddress("/servlet/WingSet?JServSessionIdroot=8eapsqkqj1");
+        SGetAddress adr1 = new SGetAddress("http://localhost/servlet/WingSet/?JServSessionIdroot=8eapsqkqj1");
         SGetAddress adr2 = (SGetAddress)adr1.clone();
         adr2.add("cloned=1");
         System.out.println("adr1 " + adr1);
