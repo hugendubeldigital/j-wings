@@ -861,9 +861,8 @@ public abstract class SComponent
             if (visible) {
                 cg.write(s, this);
             }
-        } catch (Throwable t) {
-            System.err.println(t.getMessage());
-            t.printStackTrace(System.err);
+        }
+        catch (Throwable t) {
             logger.log(Level.SEVERE, "exception during code generation for " +
                                      getClass().getName(), t);
         }

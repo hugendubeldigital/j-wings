@@ -7,7 +7,7 @@
 
     <!-- Initialize some variables                                          -->
     <property name="wings.home" value="../../../../"/>
-    <property name="wings.lib.dir" value="${wings.home}/build/dist/lib"/>
+    <property name="wings.lib.dir" value="${wings.home}/dist/lib"/>
     <property name="ant.home" value="."/>
     <property name="Name" value="${ant.project.name}"/>
     <property name="year" value="2002"/>

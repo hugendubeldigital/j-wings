@@ -146,7 +146,6 @@ public final class WingServlet
             extMgr = getExternalizeManager(request);
         }
         catch (Exception e) {
-            System.err.println("lastModified");
             return System.currentTimeMillis();
         }
         String pathInfo = request.getPathInfo();

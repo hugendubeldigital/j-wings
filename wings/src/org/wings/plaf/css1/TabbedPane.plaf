@@ -47,8 +47,8 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
 
         /* ns4 and styles */
         boolean oldNS =
-            (browser.getBrowserName().equals("Netscape") ||
-             browser.getBrowserName().equals("Mozilla")) &&
+            ("Netscape".equals(browser.getBrowserName()) ||
+             "Mozilla".equals(browser.getBrowserName())) &&
              browser.getMajorVersion() > 0 &&
              browser.getMajorVersion() < 5;
 
@@ -103,12 +103,12 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
         attrset = (SimpleAttributeSet) attrset.clone();
         if (hasIcons) {
             attrset.put(StyleConstants.HEIGHT,
-                (tabHeight+(browser.getBrowserName().equals("MSIE")?2:5))+"px");
+                (tabHeight+("MSIE".equals(browser.getBrowserName())?2:5))+"px");
         }
         attrset.putAll(comp.getAttributes());
         attrset.remove(StyleConstants.PADDING);
         attrset.remove(StyleConstants.TEXT_ALIGN);
-        if (!browser.getBrowserName().equals("MSIE"))
+        if (!"MSIE".equals(browser.getBrowserName()))
         {
             attrset.put(StyleConstants.PADDING_LEFT,    "2px");
             attrset.put(StyleConstants.PADDING_RIGHT,    "2px");

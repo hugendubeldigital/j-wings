@@ -4,6 +4,7 @@ import bsh.Interpreter;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.logging.*;
 
 import org.wings.SComponent;
 import org.wings.session.SessionManager;
@@ -20,6 +21,7 @@ import org.wings.session.SessionManager;
  */
 public class DefaultPropertyManager implements PropertyManager {
 
+    private static final Logger logger = Logger.getLogger("org.wings.template");
     static final Class[] classes = {SComponent.class};
 
     public final HashMap propertyValueConverters = new HashMap();
@@ -45,7 +47,7 @@ public class DefaultPropertyManager implements PropertyManager {
             Interpreter interpreter = createInterpreter();
 
             try {
-                System.out.println("eval script " + value);
+                logger.finer("eval script " + value);
 
                 interpreter.set("component", comp);
                 interpreter.set("session", SessionManager.getSession());
@@ -116,6 +118,11 @@ public class DefaultPropertyManager implements PropertyManager {
 
 /*
    $Log$
+   Revision 1.6  2003/10/31 10:15:38  hengels
+   o java logging instead of system.out / system.err
+   o patches from doug porter
+   o fixed form action problem
+
    Revision 1.5  2003/10/15 06:48:43  arminhaaf
    o make methods accessible
 

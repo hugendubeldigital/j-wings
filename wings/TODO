@@ -3,7 +3,6 @@
 - undo-redo (back-forward support for browser)
 - developers guide
 - asynchronous event handling for components (Holger)
-- high level events (TreeExpansion...) for tree component
 - tutorial article for iX, c't magazin
 - wings logo
 
@@ -13,15 +12,6 @@
 * are sessions serializable ?
 
 * SWindow      -> use technique from frames.
-  SProgressBar -> simple implementation would have two states: 'working' and
-                  'done'. This could be implemented with some table that
-                   has one row/column, loaded with some animated background
-                   picture (some rolling spiral for example: {/////////}).
-                   This background picture is displayed immediately. The
-                   column contains one icon, whose download is postponed
-                   by the externalizer, until the progress-bar has 100%.
-                   Drawback: one open connection until the progress-bar is
-                   complete which means one occupied socket and thread..
 
 * website: make links to WingSet example and Explorer example (without
   write-access). Visualize the links to the examples as iconized screenshots

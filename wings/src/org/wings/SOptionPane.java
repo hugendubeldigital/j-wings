@@ -18,6 +18,7 @@ import java.awt.Insets;
 import java.util.Locale;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.util.logging.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -35,6 +36,7 @@ import org.wings.plaf.*;
 public class SOptionPane
     extends SDialog
     implements ActionListener {
+    private final static Logger logger = Logger.getLogger("org.wings");
 
 
     /**
@@ -460,7 +462,7 @@ public class SOptionPane
      * @param e
      */
     public void actionPerformed(ActionEvent e) {
-        System.out.println("soption pane action " + e);
+        logger.fine("action " + e);
         hide();
         selected = e.getSource();
 

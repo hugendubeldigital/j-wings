@@ -81,7 +81,7 @@ public class LookAndFeel
         this.properties.load(in);
         in.close();
 
-        System.out.println("create LookAndFeel");
+        logger.fine("create LookAndFeel");
     }
 
     /**

@@ -67,8 +67,7 @@
         String encoding = SessionManager.getSession().getCharacterEncoding();
 
 
-    if ( browser.getBrowserName() != null &&
-         browser.getBrowserName().equals("MSIE") &&
+    if (  "MSIE".equals(browser.getBrowserName()) &&
          browser.getMajorVersion()<4 ) {
         %><html>
 <%

@@ -64,7 +64,7 @@ public class Recorder
                 }
                 else if (list != null) {
                     String resource = httpServletRequest.getPathInfo();
-                    System.out.println("PATH_INFO: " + resource);
+                    logger.finer("PATH_INFO: " + resource);
 
                     Request record;
                     if ("GET".equalsIgnoreCase(httpServletRequest.getMethod()))
@@ -76,8 +76,6 @@ public class Recorder
                     while (parameterNames.hasMoreElements()) {
                         String name = (String)parameterNames.nextElement();
                         String[] values = httpServletRequest.getParameterValues(name);
-                        System.out.println("name before = " + name);
-                        System.out.println("name after = " + name);
                         addEvent(record, name, values);
                     }
                     Enumeration headerNames = httpServletRequest.getHeaderNames();

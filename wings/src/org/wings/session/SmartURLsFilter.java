@@ -57,10 +57,10 @@ public class SmartURLsFilter
                 if ("get".equalsIgnoreCase(httpServletRequest.getMethod()))
                     request = requestWrapper;
 
-                System.out.println("wrap " + requestWrapper.getPathInfo());
+                logger.finer("wrap " + requestWrapper.getPathInfo());
             }
             else
-                System.out.println("don't wrap " + requestWrapper.getPathInfo());
+                logger.finer("don't wrap " + requestWrapper.getPathInfo());
         }
         filterChain.doFilter(request, response);
     }
@@ -99,9 +99,9 @@ public class SmartURLsFilter
             pathInfo = httpServletRequest.getPathInfo();
             queryString = httpServletRequest.getQueryString();
             parameterMap = httpServletRequest.getParameterMap();
-            System.out.println("pathInfo = " + pathInfo);
-            System.out.println("queryString = " + queryString);
-            System.out.println("parameterMap = " + parameterMap);
+            logger.finer("pathInfo = " + pathInfo);
+            logger.finer("queryString = " + queryString);
+            logger.finer("parameterMap = " + parameterMap);
 
             if (pathInfo == null)
                 return;
@@ -121,9 +121,9 @@ public class SmartURLsFilter
                     matcher.appendReplacement(buffer, "&$2=$4");
                 }
                 queryString = buffer.substring(1);
-                System.out.println("modified pathInfo = " + pathInfo);
-                System.out.println("modified queryString = " + queryString);
-                System.out.println("modified parameterMap = " + parameterMap);
+                logger.finer("modified pathInfo = " + pathInfo);
+                logger.finer("modified queryString = " + queryString);
+                logger.finer("modified parameterMap = " + parameterMap);
             }
         }
 

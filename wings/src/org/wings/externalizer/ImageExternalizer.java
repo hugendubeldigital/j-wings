@@ -22,6 +22,7 @@ import org.wings.io.DeviceOutputStream;
 import Acme.JPM.Encoders.GifEncoder;
 import com.keypoint.PngEncoder;
 import java.util.Collection;
+import java.util.logging.*;
 
 /**
  * TODO: documentation
@@ -33,6 +34,8 @@ import java.util.Collection;
 public class ImageExternalizer
     implements Externalizer
 {
+    private final static Logger logger = Logger.getLogger("org.wings.externalizer");
+
     public static final String FORMAT_PNG = "png";
     public static final String FORMAT_GIF = "gif";
 
@@ -117,7 +120,7 @@ public class ImageExternalizer
                                          PngEncoder.FILTER_NONE, 6);
         byte[] pngbytes = png.pngEncode();
         if (pngbytes == null) {
-            System.err.println("Null image");
+            logger.severe("null image");
         }
         else {
             out.write(pngbytes);

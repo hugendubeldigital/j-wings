@@ -21,7 +21,6 @@ import java.io.InputStream;
  * A <CODE>StreamDataSource</CODE> implements a DataSource
  * as a wrapper around a Stream.
  *
- * @see org.wings.template.parser.DataSource
  * @author <A href="mailto:joachim.karrer@mercatis.de">Joachim Karrer</A>
  * @version $Revision$
  */
@@ -99,11 +98,6 @@ public class StreamTemplateSource implements TemplateSource {
     public InputStream getInputStream() throws IOException {
         iStream.reset();
         return iStream;
-    }
-
-    private static final void debug(String mesg) {
-        if ( DEBUG )
-            org.wings.util.DebugUtil.printDebugMessage(StreamTemplateSource.class, mesg);
     }
 }
 

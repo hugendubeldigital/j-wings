@@ -15,6 +15,7 @@
 package org.wings;
 
 import java.util.ArrayList;
+import java.util.logging.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -34,6 +35,8 @@ import org.wings.session.*;
  */
 public class SDialog extends SForm
 {
+    private final static Logger logger = Logger.getLogger("org.wings");
+
     /**
      * @see #getCGClassID
      */
@@ -163,7 +166,7 @@ public class SDialog extends SForm
      * Remove this dialog from its frame.
      */
     public void hide() {
-        System.out.println("hide dialog");
+        logger.fine("hide dialog");
         if (owner != null) {
             owner.popDialog();
         }
@@ -196,7 +199,7 @@ public class SDialog extends SForm
      * @param c
      */
     public void show(SComponent c) {
-        System.out.println("show dialog");
+        logger.fine("show dialog");
         if (c == null)
             c = SessionManager.getSession().getRootFrame();
 

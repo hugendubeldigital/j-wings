@@ -15,6 +15,8 @@
 package org.wings;
 
 import java.util.*;
+import java.util.logging.*;
+
 import org.wings.style.DynamicStyleSheetResource;
 import org.wings.script.DynamicScriptResource;
 
@@ -27,6 +29,7 @@ import org.wings.script.DynamicScriptResource;
 public class DefaultReloadManager
     implements ReloadManager
 {
+    private final static Logger logger = Logger.getLogger("org.wings");
     /**
      * a set of all resources, manged by this ReloadManager, that are marked
      * dirty.
@@ -57,7 +60,7 @@ public class DefaultReloadManager
 
     public synchronized void markDirty(DynamicResource d) {
         if (d == null) {
-            System.err.println("markDirty: null");
+            logger.warning("markDirty: null");
             return;
         }
         dirtyResources.add(d);
