@@ -151,7 +151,15 @@ public final class TableCG
         }
 
         for (int r = originRow; r < rowCount; r++) {
-            d.print("<tr>\n");
+            d.print("<tr ");
+
+            Style rowStyle = table.isRowSelected(r) ? 
+                table.getSelectionStyle() : table.getStyle();
+            
+            if (rowStyle != null)
+                d.print(" class=\"").print(rowStyle.getName()).print("\"");
+
+            d.print(">\n");
 
             boolean selectionWritten = table.getRowSelectionColumn()<0;
 
@@ -188,12 +196,7 @@ public final class TableCG
         else
             comp = table.prepareRenderer(table.getCellRenderer(row, col), row, col);
 
-        Style cellStyle = table.isRowSelected(row) ? table.getSelectionStyle() : table.getStyle();
-
-        d.print("<td");
-        if (cellStyle != null)
-            cellStyle.write(d);
-        d.print(">");
+        d.print("<td>");
 
         if (!isEditingCell && table.isCellEditable(row, col)) {
             RequestURL editAddr = table.getRequestURL();
@@ -241,12 +244,7 @@ public final class TableCG
                                                                table.isRowSelected(row),
                                                                row, -1);
 
-        Style cellStyle = table.isRowSelected(row) ? table.getSelectionStyle() : table.getStyle();
-
-        d.print("<td");
-        if (cellStyle != null)
-            cellStyle.write(d);
-        d.print(">");
+        d.print("<td>");
 
         RequestURL toggleSelectionAddr = table.getRequestURL();
         toggleSelectionAddr.addParameter(table.getNamePrefix() + "=" + 
@@ -280,7 +278,7 @@ public final class TableCG
         Style headerStyle = table.getHeaderStyle();
         d.print("<th");
         if (headerStyle != null)
-            headerStyle.write(d);
+            d.print(" class=\"").print(headerStyle.getName()).print("\"");
         d.print(">");
         rendererPane.writeComponent(d, comp, table);
         d.print("</th>");
@@ -292,7 +290,7 @@ public final class TableCG
         Style headerStyle = table.getHeaderStyle();
         d.print("<th");
         if (headerStyle != null)
-            headerStyle.write(d);
+            d.print(" class=\"").print(headerStyle.getName()).print("\"");
         d.print(">&nbsp;</th>");
     }
 }

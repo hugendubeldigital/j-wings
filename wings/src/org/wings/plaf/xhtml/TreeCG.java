@@ -193,7 +193,11 @@ public class TreeCG
             d.print("</td>");
         }
 
-        d.print("\n<td nowrap colspan=\"" + (depth - (path.getPathCount()-1)) + "\">");
+        d.print("\n<td nowrap colspan=\"").
+            print(depth - (path.getPathCount()-1)).print("\"");
+        
+        d.print(">");
+
 
         // render control icons
         if ( !(isLeaf && leafIcon==null) ) {
@@ -239,16 +243,7 @@ public class TreeCG
             ((ClickableRenderComponent)renderer).setEventURL(selectionAddr);
             rendererPane.writeComponent(d, renderer, tree);
         } else {
-            d.print("<a href=\"").print(selectionAddr.toString()).print("\"");
-
-            Style cellStyle = isSelected ? 
-                tree.getSelectionStyle() : tree.getStyle();
-            
-            if (cellStyle != null)
-                cellStyle.write(d);
-            
-            d.print(">");
-            
+            d.print("<a href=\"").print(selectionAddr.toString()).print("\">");
             rendererPane.writeComponent(d, renderer, tree);
             d.print("</a>");
         }
@@ -256,7 +251,6 @@ public class TreeCG
         if ( renderer instanceof ClickableRenderComponent ) {
             ((ClickableRenderComponent)renderer).setEventURL(null);
         }
-
 
         if ( !(isLeaf && leafIcon==null) ) {
             d.print("</td></tr></table>");

@@ -20,6 +20,7 @@ import java.io.IOException;
 import javax.swing.tree.*;
 
 import org.wings.io.Device;
+import org.wings.style.Style;
 
 /**
  * TODO: documentation
@@ -121,6 +122,11 @@ public class SDefaultTreeCellRenderer
 	return leafIcon;
     }
 
+    /** Style to use for the foreground for selected nodes. */
+    protected Style selectionStyle = null;
+
+    /** Style to use for the foreground for non-selected nodes. */
+    protected Style nonSelectionStyle = null;
 
     public SComponent getTreeCellRendererComponent(STree tree,
                                                    Object value,
@@ -160,9 +166,53 @@ public class SDefaultTreeCellRenderer
 		setIcon(getClosedIcon());
 	    }
 	}
-
+        
+        if ( selected )
+            setStyle(selectionStyle!=null ? selectionStyle : 
+                     tree.getSelectionStyle());
+        else
+            setStyle(nonSelectionStyle!=null ? nonSelectionStyle :
+                     tree.getStyle());
+        
         return this;
     }
+
+    /**
+     * Sets the style the cell is drawn with when the cell is selected.
+     *
+     * @param newStyle
+     */
+    public void setSelectionStyle(Style newStyle) {
+        selectionStyle = newStyle;
+    }
+
+    /**
+     * Returns the style the cell is drawn with when the cell is selected.
+     *
+     * @return
+     */
+    public Style getSelectionStyle() {
+        return selectionStyle;
+    }
+
+    /**
+     * Sets the style the cell is drawn with when the cell isn't selected.
+     *
+     * @param newStyle
+     */
+    public void setNonSelectionStyle(Style newStyle) {
+        nonSelectionStyle = newStyle;
+    }
+
+    /**
+     * Returns the style the cell is drawn with when the cell isn't selected.
+     *
+     * @return
+     */
+    public Style getNonSelectionStyle() {
+        return nonSelectionStyle;
+    }
+
 }
 
 /*

@@ -32,18 +32,6 @@ public class SDefaultTableCellRenderer
     extends SLabel
     implements STableCellRenderer
 {
-    /** Color to use for the foreground for selected nodes. */
-    protected Color foregroundSelectionColor = null;
-
-    /** Color to use for the foreground for non-selected nodes. */
-    protected Color foregroundNonSelectionColor = null;
-
-    /** Color to use for the background when a node is selected. */
-    protected Color backgroundSelectionColor = null;
-
-    /** Color to use for the background when the node isn't selected. */
-    protected Color backgroundNonSelectionColor = null;
-
     /** Style to use for the foreground for selected nodes. */
     protected Style selectionStyle = null;
 
@@ -55,7 +43,6 @@ public class SDefaultTableCellRenderer
      *
      */
     public SDefaultTableCellRenderer() {
-        setEscapeSpecialChars(true);
     }
 
     public SComponent getTableCellRendererComponent(SBaseTable baseTable,
@@ -74,104 +61,14 @@ public class SDefaultTableCellRenderer
         else
             setText(value.toString());
 
-        if (baseTable instanceof STable) {
-            STable table = (STable)baseTable;
-            if (selected) {
-                if (table.getSelectionBackground() == null) {
-                    setBackground(backgroundSelectionColor);
-                }
-                else {
-                    setBackground(table.getSelectionBackground());
-                }
-                if (table.getSelectionForeground() == null) {
-                    setForeground(foregroundSelectionColor);
-                }
-                else {
-                    setForeground(table.getSelectionForeground());
-                }
-                setStyle(selectionStyle);
-            }
-            else {
-                setBackground(backgroundNonSelectionColor);
-                setForeground(foregroundNonSelectionColor);
-                setStyle(nonSelectionStyle);
-            }
+
+        if ( selected && selectionStyle!=null ) {
+            setStyle(selectionStyle);
+        } else {
+            setStyle(nonSelectionStyle);
         }
 
         return this;
-    }
-
-    /**
-     * Sets the color the foreground is drawn with when the cell is selected.
-     *
-     * @param newColor
-     */
-    public void setForegroundSelectionColor(Color newColor) {
-        foregroundSelectionColor = newColor;
-    }
-
-    /**
-     * Returns the color the foreground is drawn with when the cell is selected.
-     *
-     * @return
-     */
-    public Color getForegroundSelectionColor() {
-        return foregroundSelectionColor;
-    }
-
-    /**
-     * Sets the color the foreground is drawn with when the cell isn't selected.
-     *
-     * @param newColor
-     */
-    public void setForegroundNonSelectionColor(Color newColor) {
-        foregroundNonSelectionColor = newColor;
-    }
-
-    /**
-     * Returns the color the foreground is drawn with when the cell isn't selected.
-     *
-     * @return
-     */
-    public Color getForegroundNonSelectionColor() {
-        return foregroundNonSelectionColor;
-    }
-
-    /**
-     * Sets the color to use for the background if cell is selected.
-     *
-     * @param newColor
-     */
-    public void setBackgroundSelectionColor(Color newColor) {
-        backgroundSelectionColor = newColor;
-    }
-
-
-    /**
-     * Returns the color to use for the background if cell is selected.
-     *
-     * @return
-     */
-    public Color getBackgroundSelectionColor() {
-        return backgroundSelectionColor;
-    }
-
-    /**
-     * Sets the background color to be used for non selected cells.
-     *
-     * @param newColor
-     */
-    public void setBackgroundNonSelectionColor(Color newColor) {
-        backgroundNonSelectionColor = newColor;
-    }
-
-    /**
-     * Returns the background color to be used for non selected cells.
-     *
-     * @return
-     */
-    public Color getBackgroundNonSelectionColor() {
-        return backgroundNonSelectionColor;
     }
 
     /**
