@@ -1,7 +1,7 @@
 <table border=4>
 <tr>
 <th align=left bgcolor=#CCCCCC>Directory</th>
-<th align=center bgcolor=#CCCCCC>Content <font size=+1>[ <object name="currentDir"></object> ]</font></th>
+<th align=center bgcolor=#CCCCCC>Content <font size=+1>[&nbsp;<object name="currentDir"></object>&nbsp;]</font></th>
 </tr>
 <tr>
 <td align=left valign=top bgcolor=#f0f0ff><object name=DirTree></object></td>
