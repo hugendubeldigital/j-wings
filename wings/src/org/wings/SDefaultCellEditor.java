@@ -210,9 +210,7 @@ public class SDefaultCellEditor
                         bool = false;
                     }
 
-                    System.out.println("set value " + bool);
                     if ( fastEditSupport ) {
-                        System.out.println("fast edit, set value " + !bool);
                         ((SCheckBox)editorComponent).setSelected(!bool);
                         SDefaultCellEditor.this.stopCellEditing();
                     } else {
@@ -314,8 +312,6 @@ public class SDefaultCellEditor
         // something is to be done, if the editor form has fired an action
         // event, so the fireStoppedEvent flag is true
         if ( fireStoppedEvent ) {
-            System.out.println("fireStoppedEvent " + fireStoppedEvent);
-            System.out.println("fireCanceledEvent " + fireCanceledEvent);
             // process cancel and undo events before stopped event, because the
             // form fires a stopped event in any case...
             if ( fireCanceledEvent ) {
