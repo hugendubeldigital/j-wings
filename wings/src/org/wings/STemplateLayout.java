@@ -84,16 +84,16 @@ public class STemplateLayout
     private static final PropertyManager defaultPropertyManager =
         new PropertyManager() {
                 final Class[] empty = new Class[0];
-                
-                public void setProperty(SComponent c, String name, 
+
+                public void setProperty(SComponent c, String name,
                                         String value) {
                 }
-                
+
                 public Class[] getSupportedClasses() {
                     return empty;
                 }
             };
-    
+
     /*
      * Alle Property Manager
      */
@@ -105,6 +105,7 @@ public class STemplateLayout
      */
     static {
         addPropertyManager(new SComponentPropertyManager());
+        addPropertyManager(new SAbstractIconTextCompoundPropertyManager());
         addPropertyManager(new SAbstractButtonPropertyManager());
         addPropertyManager(new SLabelPropertyManager());
         addPropertyManager(new STextFieldPropertyManager());
@@ -124,7 +125,7 @@ public class STemplateLayout
      * PageParser to use
      */
     protected PageParser pageParser = PageParser.getInstance();
-    
+
     /**
      * TODO: documentation
      *
@@ -133,7 +134,7 @@ public class STemplateLayout
 
     /**
      * Create a TemplateLayout that reads its content from the generic
-     * {@linke TemplateSource}. The template source can be implemented
+     * {@link TemplateSource}. The template source can be implemented
      * to be read from any source you want to, e.g. database BLOBs. Whenever
      * the source changes (i.e. lastModified() returns a different
      * modification time the last time this source has been parsed), the
@@ -171,7 +172,7 @@ public class STemplateLayout
     /**
      * Read the template from an URL.
      * The content is cached.
-     * 
+     *
      * @param  url the URL to read the template from.
      * @throws java.io.IOException
      */
@@ -186,15 +187,15 @@ public class STemplateLayout
     public static final PropertyManager getPropertyManager(Class c) {
         if ( c == null )
             return defaultPropertyManager;
-        
+
         PropertyManager p = (PropertyManager) propertyManager.get(c);
-        
+
         if ( p == null )
             return getPropertyManager(c.getSuperclass());
-        
+
         return p;
     }
-    
+
     /**
      * Adds a PropertyManager.
      * A Property Manager provides a mapping from properties given in
@@ -216,14 +217,14 @@ public class STemplateLayout
                 propertyManager.put(cl[i], p);
         }
     }
-    
+
     /**
      * Set the template to the template given as file name.
      *
      * @param templateFileName
      * @throws java.io.IOException
      */
-    public void setTemplate(String templateFileName) 
+    public void setTemplate(String templateFileName)
         throws java.io.IOException {
         setTemplate(new File(templateFileName));
     }
@@ -242,7 +243,7 @@ public class STemplateLayout
      * Set the template to the template which can be retrieved from the
      * given URL.
      *
-     * @param templateFile
+     * @param templateURL
      * @throws java.io.IOException
      */
     public void setTemplate(URL templateURL) throws java.io.IOException {
