@@ -40,8 +40,9 @@ public class ExternalizedInfo
         mimeType    = mt;
         this.flags  = flags;
         
-        if ( externalizer==null || extObject==null )
+        if ( externalizer==null || extObject==null ) {
             throw new IllegalArgumentException("no externalizer or null object");
+        }
         
         lastModified = System.currentTimeMillis();
         this.headers = headers;
