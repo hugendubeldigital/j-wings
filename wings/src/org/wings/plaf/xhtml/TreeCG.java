@@ -75,7 +75,7 @@ public class TreeCG
         STree tree = (STree)component;
 
         int depth = tree.getMaximumExpandedDepth();
-        d.append("<table>");
+        d.append("<table cellpadding=\"0\">");
         for (int i=0; i < tree.getRowCount(); i++)
             writeTreeNode(tree, d, tree.getPathForRow(i), depth);
         d.append("</table>");

@@ -57,15 +57,14 @@ public abstract class WingServlet
 
     private String lookupName = "SessionServlet";
 
-    private final ExternalizeManager extManager = new ExternalizeManager();
+    protected final ExternalizeManager extManager = new ExternalizeManager();
 
 
     /**
      * TODO: documentation
      *
      */
-    public WingServlet() {
-    }
+    public WingServlet() {}
 
 
     /**
@@ -74,8 +73,7 @@ public abstract class WingServlet
      *
      * @param config the serlvet configuration
      */
-    protected void preInit(ServletConfig config) throws ServletException {
-    }
+    protected void preInit(ServletConfig config) throws ServletException {}
 
 
     /**
