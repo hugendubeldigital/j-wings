@@ -809,6 +809,8 @@ public class STabbedPane
             }
             page.component = component;
             contents.addComponent(page.component, page.component.getComponentId());
+            if (getSelectedIndex() == index)
+            	card.show(component);
         }
     }
 

@@ -234,8 +234,7 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
 
 	SComponent contents;
     contents = component.getComponent(0);
-    SComponent selComp = ((SCardLayout) ((SContainer) contents).
-    	getLayout()).getVisibleComponent();
+    SComponent selComp = component.getSelectedComponent();
 
 	switch (component.getTabPlacement())
 	{
