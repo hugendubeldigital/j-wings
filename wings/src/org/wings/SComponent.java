@@ -307,7 +307,7 @@ public abstract class SComponent
      * Adds the specified component listener to receive component events from
      * this component.
      * If l is null, no exception is thrown and no action is performed.
-     * @param    l   the component listener.
+     * @param    listener   the component listener.
      * @see      org.wings.event.SComponentEvent
      * @see      org.wings.event.SComponentListener
      * @see      org.wings.SComponent#removeComponentListener
@@ -322,7 +322,7 @@ public abstract class SComponent
      * no function, nor does it throw an exception, if the listener
      * specified by the argument was not previously added to this component.
      * If l is null, no exception is thrown and no action is performed.
-     * @param    l   the component listener.
+     * @param    listener   the component listener.
      * @see      org.wings.event.SComponentEvent
      * @see      org.wings.event.SComponentListener
      * @see      org.wings.SComponent#addComponentListener
@@ -417,7 +417,7 @@ public abstract class SComponent
 
     /**
      * Set the class of the laf-provided style.
-     * @param style the new value for style
+     * @param value the new value for style
      */
     public void setStyle(String value) {
         reloadIfChange(ReloadManager.RELOAD_CODE, style, value);
@@ -433,7 +433,7 @@ public abstract class SComponent
 
     /**
      * Set the class of the laf-provided style.
-     * @param style the new value for style
+     * @param value the new value for style
      */
     public void setDisabledStyle(String value) {
         reloadIfChange(ReloadManager.RELOAD_CODE, disabledStyle, value);
@@ -484,7 +484,7 @@ public abstract class SComponent
 
     /**
      * Set the attributes.
-     * @param attributes the attributes
+     * @param newAttributes the attributes
      */
     public void setAttributes(AttributeSet newAttributes) {
         if (newAttributes == null) {
@@ -503,7 +503,7 @@ public abstract class SComponent
 
     /**
      * Set the background color.
-     * @param c the new background color
+     * @param color the new background color
      */
     public void setBackground(Color color) {
         setAttribute(Style.BACKGROUND_COLOR,
@@ -520,7 +520,7 @@ public abstract class SComponent
 
     /**
      * Set the foreground color.
-     * @param c the new foreground color
+     * @param color the new foreground color
      */
     public void setForeground(Color color) {
         setAttribute(Style.COLOR, CSSStyleSheet.getAttribute(color));
@@ -550,7 +550,7 @@ public abstract class SComponent
 
     /**
      * Set the font.
-     * @param f the new font
+     * @param font the new font
      */
     public void setFont(SFont font) {
         boolean changed = attributes.putAll(CSSStyleSheet.getAttributes(font));
@@ -613,7 +613,7 @@ public abstract class SComponent
     /**
      * Set wether this component should be enabled.
      *
-     * @param v true if the component is enabled, false otherwise
+     * @param enabled true if the component is enabled, false otherwise
      */
     public void setEnabled(boolean enabled) {
         if (firePropertyChangeEvents) {
@@ -649,7 +649,7 @@ public abstract class SComponent
     /**
      * Set the name of this component.
      *
-     * @param n the new name for this component
+     * @param name the new name for this component
      */
     public void setName(String name) {
         if (firePropertyChangeEvents) {
@@ -947,8 +947,7 @@ public abstract class SComponent
      */
     public String getNamePrefix() {
         if (this instanceof LowLevelEventListener) {
-            return encodeLowLevelEventId(((LowLevelEventListener)this).
-                                         getLowLevelEventId());
+            return encodeLowLevelEventId(this.getLowLevelEventId());
         }
         return getComponentId();
     }
@@ -1046,7 +1045,7 @@ public abstract class SComponent
 
     /**
      * Set the horizontal alignment.
-     * @param the new value for the horizontal alignment
+     * @param alignment new value for the horizontal alignment
      * @see SConstants
      */
     public void setHorizontalAlignment(int alignment) {
@@ -1055,7 +1054,7 @@ public abstract class SComponent
 
     /**
      * Set the vertical alignment.
-     * @param the new value for the vertical alignment
+     * @param alignment new value for the vertical alignment
      * @see SConstants
      */
     public void setVerticalAlignment(int alignment) {
@@ -1193,7 +1192,7 @@ public abstract class SComponent
         } else if (getSession().getCGManager() == null) {
             logger.warning("no CGManager");
         } else {
-            setCG((ComponentCG)getSession().getCGManager().getCG(this));
+            setCG(getSession().getCGManager().getCG(this));
         }
         if (border != null)
             border.updateCG();
@@ -1205,7 +1204,7 @@ public abstract class SComponent
      *
      * @return content of private static final cgClassID attribute
      * @see SComponent#getCGClassID
-     * @see org.wings.plaf.CGDefaults#getCG
+     * @see org.wings.plaf.CGDefaults
      */
     public String getCGClassID() {
         return cgClassID;
@@ -1251,7 +1250,7 @@ public abstract class SComponent
      * <code>JComponent</code> subclasses (such as <code>JButton</code> and
      * <code>JTree</code>) is look-and-feel dependent.
      *
-     * @param isOpaque  true if this component should be opaque
+     * @param opaque true if this component should be opaque
      * @see #isOpaque
      * @beaninfo
      *        bound: true
@@ -1364,7 +1363,7 @@ public abstract class SComponent
     /**
      * Removes a {@link PropertyChangeListener} from this component. If it was the last
      * {@link PropertyChangeListener} it forces the
-     * {@link #setfirePropertyChangeEvents firePropertyChangeEvents}
+     * {@link #setFirePropertyChangeEvents firePropertyChangeEvents}
      * flags to be set to false
      * @param listener
      */
@@ -1392,7 +1391,7 @@ public abstract class SComponent
 
     /**
      * Indicates, if PropertyChangeEvents are fired.
-     * @see #setfirePropertyChangeEvents
+     * @see #setFirePropertyChangeEvents
      * @return true, if PropertyChangeEvents are fired, false otherwise
      */
     public final boolean getFirePropertyChangeEvents() {
@@ -1530,7 +1529,7 @@ public abstract class SComponent
 
     /**
      * Fires a PropertyChangedEvent to all listeners if the
-     * {@link #getfirePropertyChangeEvents firePropertyChangeEvents} is set.
+     * {@link #getFirePropertyChangeEvents firePropertyChangeEvents} is set.
      * @param property The property which has changed
      * @param oldValue The old value of the property before the change
      * @param newValue The new value of the property
