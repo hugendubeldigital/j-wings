@@ -35,11 +35,6 @@ public final class SDummy
 {
     /**
      * TODO: documentation
-     */
-    public static final SDummy DUMMY = new SDummy();
-
-    /**
-     * TODO: documentation
      *
      */
     public SDummy() {
