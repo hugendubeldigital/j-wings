@@ -64,8 +64,10 @@ public class GridLayoutCG
 
         if (cellPadding >= 0)
             d.print(" cellpadding=\"").print(cellPadding).print("\"");
-
-		CGUtil.writeSize( d, container );
+        else
+            d.print(" cellpadding=\"0\"");
+        
+        CGUtil.writeSize( d, container );
 
         if (border > 0)
             d.print(" border=\"").print(border).print("\"");

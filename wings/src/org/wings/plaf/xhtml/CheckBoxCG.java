@@ -72,7 +72,7 @@ public class CheckBoxCG
 
         if (icon == null )
             writeAnchorText(d, checkBox);
-        else if (text == null)
+        else if (text == null || text.length() == 0)
             writeAnchorIcon(d, checkBox);
         else {
             // Hauptsache, es funktioniert !!!
