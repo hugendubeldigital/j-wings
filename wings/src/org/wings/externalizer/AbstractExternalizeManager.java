@@ -189,7 +189,7 @@ public abstract class AbstractExternalizeManager {
     /**
      * removes the {@link ExternalizedResource} by identifier.
      */
-    protected abstract void removeExternalizedResource(String identifier);
+    public abstract void removeExternalizedResource(String identifier);
 
     /**
      * externalizes (make a java object available for a browser) an object with
@@ -363,6 +363,9 @@ public abstract class AbstractExternalizeManager {
      * @return a URL for accessing the externalized object relative to the base URL.
      */
     public String getId(String url) {
+        if (url == null || url.length() == 0) {
+            return url;
+        }
         String result;
         if (url.charAt(0) == '-') {
             result = url;

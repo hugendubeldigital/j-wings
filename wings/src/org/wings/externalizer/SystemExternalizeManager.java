@@ -91,7 +91,7 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
         return (ExternalizedResource)externalized.get(identifier);
     }
 
-    protected final void removeExternalizedResource(String identifier) {
+    public final void removeExternalizedResource(String identifier) {
         externalized.remove(identifier);
     }
 }

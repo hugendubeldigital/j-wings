@@ -25,8 +25,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class ExternalizeManager extends AbstractExternalizeManager
-{
+public class ExternalizeManager extends AbstractExternalizeManager {
     /**
      *
      */
@@ -38,24 +37,25 @@ public class ExternalizeManager extends AbstractExternalizeManager
         new StaticResourceExternalizer(),
         new StringResourceExternalizer(),
         new DynamicResourceExternalizer(),
+        new ResourceExternalizer(),
     };
 
     /**
      * TODO: documentation
      */
     protected final HashMap externalizerByClass = new HashMap();
-    
+
     /**
      * TODO: documentation
      */
     protected final HashMap externalizerByMimeType = new HashMap();
-    
+
     /**
      * TODO: documentation
      */
-    protected final Map externalized = Collections.synchronizedMap( new HashMap() );
-    
-    
+    protected final Map externalized = Collections.synchronizedMap(new HashMap());
+
+
     /**
      * TODO: documentation
      *
@@ -63,13 +63,13 @@ public class ExternalizeManager extends AbstractExternalizeManager
     public ExternalizeManager() {
         this(true);
     }
-    
+
     /**
      * TODO: documentation
      *
      */
     public ExternalizeManager(boolean initWithDefaultExternalizers) {
-        if ( initWithDefaultExternalizers ) {
+        if (initWithDefaultExternalizers) {
             addDefaultExternalizers();
         }
     }
@@ -78,12 +78,12 @@ public class ExternalizeManager extends AbstractExternalizeManager
      *
      */
     public final void addDefaultExternalizers() {
-        for ( int i=0; i<DEFAULT_EXTERNALIZERS.length; i++ ) {
+        for (int i = 0; i < DEFAULT_EXTERNALIZERS.length; i++) {
             addExternalizer(DEFAULT_EXTERNALIZERS[i]);
         }
     }
 
-    protected final void storeExternalizedResource(String identifier, 
+    protected final void storeExternalizedResource(String identifier,
                                                    ExternalizedResource extInfo) {
         if (logger.isLoggable(Level.FINER)) {
             logger.finer("store identifier " + identifier + " " + extInfo.getObject().getClass());
@@ -95,17 +95,17 @@ public class ExternalizeManager extends AbstractExternalizeManager
     public final Object getExternalizedObject(String identifier) {
         ExternalizedResource info = getExternalizedResource(identifier);
 
-        if ( info!=null )
+        if (info != null)
             return info.getObject();
-        
+
         return null;
     }
-    
+
     /**
      * stripts the identifier from attachments to the external names.
      */
     private String stripIdentifier(String identifier) {
-        if ( identifier == null || identifier.length() < 1 )
+        if (identifier == null || identifier.length() < 1)
             return null;
 
         int pos = identifier.indexOf(org.wings.SConstants.UID_DIVIDER);
@@ -116,7 +116,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
         if (pos > -1) {
             identifier = identifier.substring(0, pos);
         }
-        
+
         if (identifier.length() < 1) {
             return null;
         }
@@ -128,15 +128,15 @@ public class ExternalizeManager extends AbstractExternalizeManager
         if (identifier == null) return null;
 
         // SystemExternalizeManager hat Minus as prefix.
-        if ( identifier.charAt(0) == '-' ) {
+        if (identifier.charAt(0) == '-') {
             return SystemExternalizeManager.getSharedInstance().
                 getExternalizedResource(identifier);
         }
 
-        return (ExternalizedResource)externalized.get(identifier);
+        return (ExternalizedResource) externalized.get(identifier);
     }
 
-    protected final void removeExternalizedResource(String identifier) {
+    public final void removeExternalizedResource(String identifier) {
         identifier = stripIdentifier(identifier);
         if (identifier == null) return;
         externalized.remove(identifier);
@@ -157,7 +157,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
      *
      * @return
      */
-    public String externalize(Object obj, Set headers) {
+    public String externalize(Object obj, Collection headers) {
         return externalize(obj, headers, SESSION);
     }
 
@@ -167,7 +167,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
      * @return
      */
     public String externalize(Object obj, int flags) {
-        return externalize(obj, (Set)null, flags);
+        return externalize(obj, (Collection) null, flags);
     }
 
     /**
@@ -175,8 +175,8 @@ public class ExternalizeManager extends AbstractExternalizeManager
      *
      * @return
      */
-    public String externalize(Object obj, Set headers, int flags) {
-        if ( obj == null )
+    public String externalize(Object obj, Collection headers, int flags) {
+        if (obj == null)
             throw new IllegalArgumentException("object must not be null");
 
         Externalizer externalizer = getExternalizer(obj.getClass());
@@ -194,8 +194,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
      *
      * @return
      */
-    public String externalize(Object obj, String mimeType)
-    {
+    public String externalize(Object obj, String mimeType) {
         return externalize(obj, mimeType, SESSION);
     }
 
@@ -204,8 +203,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
      *
      * @return
      */
-    public String externalize(Object obj, String mimeType, Set headers) 
-    {
+    public String externalize(Object obj, String mimeType, Collection headers) {
         return externalize(obj, mimeType, headers, SESSION);
     }
 
@@ -214,8 +212,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
      *
      * @return
      */
-    public String externalize(Object obj, String mimeType, int flags)
-    {
+    public String externalize(Object obj, String mimeType, int flags) {
         return externalize(obj, mimeType, null, flags);
     }
 
@@ -224,23 +221,17 @@ public class ExternalizeManager extends AbstractExternalizeManager
      *
      * @return
      */
-    public String externalize(Object obj, String mimeType, 
-                              Set headers, int flags)
-    {
-        if ( obj == null )
+    public String externalize(Object obj, String mimeType,
+                              Collection headers, int flags) {
+        if (obj == null)
             throw new IllegalStateException("no externalizer");
-        
-        if ( mimeType == null )
-            return externalize(obj);
 
-        Externalizer externalizer = getExternalizer(mimeType);
-        if ( externalizer == null ) {
-            logger.warning("could not find externalizer for " +
-                           obj.getClass().getName());
-            return NOT_FOUND_IDENTIFIER;
+        Externalizer externalizer = mimeType != null ? getExternalizer(mimeType) : null;
+        if (externalizer == null) {
+            return externalize(obj, headers, flags);
+        } else {
+            return externalize(obj, externalizer, headers, flags);
         }
-
-        return externalize(obj, externalizer, headers, flags);
     }
 
     /**
@@ -248,29 +239,29 @@ public class ExternalizeManager extends AbstractExternalizeManager
      * registered for a class or a mime type, it will be replaced.
      */
     public void addExternalizer(Externalizer externalizer) {
-        if ( externalizer != null ) {
+        if (externalizer != null) {
             Class c[] = externalizer.getSupportedClasses();
-            if ( c != null )
-                for ( int i=0; i<c.length; i++ ) 
-                    if ( c[i]!=null )
+            if (c != null)
+                for (int i = 0; i < c.length; i++)
+                    if (c[i] != null)
                         externalizerByClass.put(c[i], externalizer);
 
             String mimeTypes[] = externalizer.getSupportedMimeTypes();
-            if ( mimeTypes != null )
-                for ( int i=0; i<mimeTypes.length; i++ ) 
-                    if ( mimeTypes[i]!=null &&
-                         mimeTypes[i].trim().length()>0 )
-                        externalizerByMimeType.put(mimeTypes[i].trim().toLowerCase(), 
-                                              externalizer);
+            if (mimeTypes != null)
+                for (int i = 0; i < mimeTypes.length; i++)
+                    if (mimeTypes[i] != null &&
+                        mimeTypes[i].trim().length() > 0)
+                        externalizerByMimeType.put(mimeTypes[i].trim().toLowerCase(),
+                                                   externalizer);
         }
     }
-    
+
     /**
      * Adds an Externalizer
      */
     public void addExternalizer(Externalizer externalizer, String mimeType) {
-        if ( externalizer != null && mimeType != null )
-	    externalizerByMimeType.put(mimeType, externalizer);
+        if (externalizer != null && mimeType != null)
+            externalizerByMimeType.put(mimeType, externalizer);
     }
 
     /**
@@ -285,9 +276,9 @@ public class ExternalizeManager extends AbstractExternalizeManager
      */
     public Externalizer getExternalizer(Class c) {
         Externalizer externalizer = null;
-        if ( c != null ) {
+        if (c != null) {
             externalizer = getSuperclassExternalizer(c);
-            if ( externalizer == null )
+            if (externalizer == null)
                 externalizer = getInterfaceExternalizer(c);
         }
         return externalizer;
@@ -298,9 +289,9 @@ public class ExternalizeManager extends AbstractExternalizeManager
      */
     private Externalizer getSuperclassExternalizer(Class c) {
         Externalizer externalizer = null;
-        if ( c != null ) {
-            externalizer = (Externalizer)externalizerByClass.get(c);
-            if ( externalizer == null )
+        if (c != null) {
+            externalizer = (Externalizer) externalizerByClass.get(c);
+            if (externalizer == null)
                 externalizer = getExternalizer(c.getSuperclass());
         }
         return externalizer;
@@ -312,9 +303,9 @@ public class ExternalizeManager extends AbstractExternalizeManager
     private Externalizer getInterfaceExternalizer(Class c) {
         Externalizer externalizer = null;
         Class[] ifList = c.getInterfaces();
-        for ( int i = 0; i < ifList.length; i++ ) {
-            externalizer = (Externalizer)externalizerByClass.get(ifList[i]);
-            if ( externalizer != null )
+        for (int i = 0; i < ifList.length; i++) {
+            externalizer = (Externalizer) externalizerByClass.get(ifList[i]);
+            if (externalizer != null)
                 break;
         }
         return externalizer;
@@ -326,10 +317,10 @@ public class ExternalizeManager extends AbstractExternalizeManager
     public Externalizer getExternalizer(String mimeType) {
         Externalizer externalizer = null;
         if (mimeType != null && mimeType.length() > 0) {
-            externalizer = (Externalizer)externalizerByMimeType.get(mimeType);
+            externalizer = (Externalizer) externalizerByMimeType.get(mimeType);
             if (externalizer == null) {
-                if ( mimeType.indexOf('/') >=0 )
-                    externalizer = 
+                if (mimeType.indexOf('/') >= 0)
+                    externalizer =
                         getExternalizer(mimeType.substring(0, mimeType.indexOf('/')));
             }
         }
