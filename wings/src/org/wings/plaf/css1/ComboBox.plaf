@@ -15,6 +15,7 @@ protected void writeFormComboBox(Device device, SComboBox comboBox) throws IOExc
     %><select size="1"<%
     %><%|class=Utils.style(comboBox)%><%
     %><%|name=Utils.event(comboBox)%><%
+    %><%|id=comboBox.getComponentId()%><%
     %><%|style=comboBox.getPreferredSize()%><%
     %><%|tabindex=comboBox.getFocusTraversalIndex()%><%
 	if ( !comboBox.isEnabled() ) {
