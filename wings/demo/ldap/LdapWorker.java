@@ -27,20 +27,19 @@ public class LdapWorker
     private String password;
     private String server;
     
-    public LdapWorker (String server, String baseDN, String bindDN, String password) {
+    public LdapWorker (String s, String base, String bind, String p) {
 	
-	this.baseDN = baseDN;
-	this.bindDN = bindDN;
-	this.password = password;
+	setBaseDN(base);
+	setBindDN(bind);
+	setServer(s);
+
+	
+	this.password = p;
 	Hashtable env = new Hashtable();
 	env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
-	env.put(Context.PROVIDER_URL, "ldap://" + server);
-	//env.put(Context.PROVIDER_URL, "ldap://192.168.10.21:389");
-	env.put(Context.SECURITY_PRINCIPAL,"cn=admin,engels,dc=de");
-	env.put(Context.SECURITY_PRINCIPAL,bindDN);
-	//env.put(Context.SECURITY_PRINCIPAL,"cn=admin,dc=engels,dc=de");
+	env.put(Context.PROVIDER_URL, "ldap://" + getServer());
+	env.put(Context.SECURITY_PRINCIPAL,getBindDN());
 	env.put(Context.SECURITY_CREDENTIALS,password);
-	//env.put(Context.SECURITY_CREDENTIALS,"secret");
 	try {
 	    ctx = new InitialDirContext(env);
 	}
@@ -48,12 +47,24 @@ public class LdapWorker
 	    setSuccess(false);
 	    System.err.println("Problem " + e);
 	}
-	//setSuccess(true);
     }
+
+    private void setBaseDN(String b) {
+	baseDN = b;
+    }
+    private void setBindDN(String b) {
+	bindDN = b;
+    }
+    private void setServer(String b) {
+	server = b;
+    }
+    
     
     public String getBaseDN() {
 	return baseDN;
     }
+    
+
 
     public String getBindDN() {
 	return bindDN;
@@ -303,7 +314,7 @@ public class LdapWorker
 	    matchAttrs.put(new BasicAttribute(attrName));
 	    //matchAttrs.put(new BasicAttribute("cn", o));
 	    //Search for objects that have those matching attributes
-	    System.out.println(o + "," + "dc=engels,dc=de");
+	    System.out.println(o + "," + getBaseDN());
 	    System.out.println(attrName);
 	    SearchControls c = new SearchControls();
 	    c.setSearchScope(0);
@@ -316,8 +327,10 @@ public class LdapWorker
 		System.out.println("hallo>>>" + sr.getName());
 	     BasicAttributes bas = (BasicAttributes)sr.getAttributes();
 	     BasicAttribute ba = (BasicAttribute)bas.get(attrName);
-	     val = ba.get();
-		 }
+	     if (ba != null)
+		 val = ba.get();
+	     else val = "";
+	    }
 	}
 	catch(NamingException u) {
 	}
@@ -326,7 +339,7 @@ public class LdapWorker
     }
     
     //attribute-dn mapping
-    public HashMap  getAttributeValues(String attribute,String baseDN) {
+    public HashMap  getAttributeDNValues(String attribute,String baseDN) {
 	
 	ArrayList attrList = new ArrayList();
 	HashMap peopleDNMap = new HashMap(); 
@@ -338,7 +351,7 @@ public class LdapWorker
          
          // Search for objects that have those matching attributes
 	//NamingEnumeration enum = ctx.search("", matchAttrs);
-	NamingEnumeration enum = ctx.search("dc=engels,dc=de", matchAttrs);
+	NamingEnumeration enum = ctx.search(getBaseDN(), matchAttrs);
 
      
          while (enum.hasMore()) {
@@ -360,7 +373,7 @@ public class LdapWorker
 	String [] attribs = {attr};
 	ArrayList l = new ArrayList();
 	try {
-	    NamingEnumeration en = search("dc=engels,dc=de",filter,attribs,2);
+	    NamingEnumeration en = search("dc=tiscon,dc=de",filter,attribs,2);
 	    while (en!=null && en.hasMoreElements()) {
 		SearchResult sr = (SearchResult)en.next();
 		System.out.println(">>>" + sr.getName());
@@ -378,11 +391,13 @@ public class LdapWorker
 	
 	}*/
     
-    public ArrayList getFilteredAllDN(String baseDN,String filter) {
+    public ArrayList getFilteredAllDN(String baseDN,String f) {
+	String filter = f;
 	String [] attribs = {"cn"};
+	System.out.println("im worker" + filter);
 	ArrayList l = new ArrayList();
 	try {
-	    NamingEnumeration en = search("dc=engels,dc=de","(cn=*)",attribs,2);
+	    NamingEnumeration en = search(getBaseDN(),f,attribs,2);
 	    while (en!=null && en.hasMoreElements()) {
 		SearchResult sr = (SearchResult)en.next();
 		System.out.println(">>>" + sr.getName());
