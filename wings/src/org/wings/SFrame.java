@@ -119,6 +119,8 @@ public class SFrame
      */
     private boolean fireInvalidLowLevelEvents = false;        
 
+    private boolean resizable = true;
+    
     /**
      * Creates a new SFrame
      */
@@ -449,6 +451,14 @@ public class SFrame
         }
         super.setVisible(b);
     }
+    
+    public boolean isResizable() {
+        return this.resizable;
+    }
+    
+    public void setResizable ( boolean resizable ) {
+        this.resizable = resizable;
+    }    
 
     public void propertyChange(PropertyChangeEvent pe) {
         if ("lookAndFeel".equals(pe.getPropertyName())) {

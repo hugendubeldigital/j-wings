@@ -104,7 +104,8 @@ public class SFrameSetLayout
 	throws IOException
     {
 	SFrameSet frameSet = (SFrameSet)getContainer();
-
+        List headers = frameSet.getHeaders();
+        
 	if (frameSet.getParent() == null) {
 	    String language = "en"; // TODO: ???
 	    String title = frameSet.getTitle();
@@ -121,8 +122,20 @@ public class SFrameSetLayout
 	    d.print(language);
 	    d.print("\">\n");
 	    d.print("<head>\n<title>");
-	    d.print(title);
+            org.wings.plaf.compiler.Utils.write( d, title );
 	    d.print("</title>\n");
+            
+            Iterator it = headers.iterator();
+            while (it.hasNext()) {
+                Object next = it.next();
+                if (next instanceof Renderable) {
+                    ((Renderable)next).write(d);
+                } else {
+                    d.print(next.toString());
+                }
+                d.print("\n");
+            }
+         
 	    d.print("</head>\n");
 	}
 
@@ -179,6 +192,9 @@ public class SFrameSetLayout
 		d.print('"');
 	    }
 	}
+        if ( !frame.isResizable() ){
+            d.print(" noresize");
+        }
 	d.print("/>\n");
     }
 
