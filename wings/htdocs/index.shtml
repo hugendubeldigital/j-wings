@@ -1,5 +1,5 @@
-<!--#set var="titel" value="wingS"-->
-<!--#set var="subtitle" value="<em>i</em>s <em>n</em>et <em>g</em>eneration <em>s</em>wing"-->
+<!--#set var="title" value="wingS"-->
+<!--#set var="subtitle" value="is net generation swing"-->
 <!--#include virtual="header.shtml"-->
 
 <p>
@@ -24,8 +24,7 @@ There are also some <a href="mailinglists.html">mailing lists</a> for <span clas
 
 <p><br /></p>
 
-<div align="center">
-<table>
+<table align="center">
 <tr>
 <td><p>sponsored by</p></td>
 <td width="60">&nbsp;</td>
@@ -36,6 +35,5 @@ There are also some <a href="mailinglists.html">mailing lists</a> for <span clas
 <td><a href="http://www.to.com/" target="_new_to"><img src="tologo3klein100.gif" alt="Thinking Objects Software GmbH" border="0" height="100" width="107" /></a></td>
 </tr>
 </table>
-</div>
 
 <!--#include virtual="footer.shtml"-->
