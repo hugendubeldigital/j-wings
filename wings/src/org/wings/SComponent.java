@@ -15,6 +15,7 @@
 package org.wings;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.Font;
 import java.beans.*;
 import java.io.IOException;
@@ -157,6 +158,18 @@ public abstract class SComponent
     transient ArrayList componentListeners;
 
     /**
+      * x-position of the component.
+      * @see #getLocation
+      */
+    int x = -1;
+
+    /**
+      * y-position of the component.
+      * @see #getLocation
+      */
+    int y = -1;
+
+    /**
      * Default constructor.
      * The method updateCG is called to get a cg delegate installed.
      */
@@ -246,6 +259,7 @@ public abstract class SComponent
      */
     public void setPreferredSize(SDimension preferredSize) {
         this.preferredSize = preferredSize;
+        System.out.println("!!!!!!! setPreferredSize(" + preferredSize +")");
     }
 
     /**
@@ -347,7 +361,6 @@ public abstract class SComponent
     }
 
     /**
->>>>>>> 1.14
      * Return a jvm wide unique id.
      * @return an id
      */
@@ -405,6 +418,38 @@ public abstract class SComponent
      */
     public Locale getLocale() {
         return getSession().getLocale();
+    }
+    
+    
+    /**
+      * Moves this component to a new location.
+      * The top-left corner of the new location is specified by the x 
+      * and y  parameters in this component's browser window.
+      * Currently it is only implemented in {@link org.wings.SInternalFrame}!<br>
+      * Fires {@link org.wings.event.SComponentEvent}
+      * ({@link org.wings.event.SComponentEvent#COMPONENT_MOVED}).
+      * @param x The x-coordinate of the new location's top-left corner in the browser window.
+      * @param y The y-coordinate of the new location's top-left corner in the browser window.
+      */
+    public void setLocation(int x, int y) {
+        boolean moved = (this.x != x) || (this.y != y);
+        this.x = x;
+        this.y = y;
+		if (moved) {
+		    if (componentListeners != null)
+                fireComponentChangeEvent(
+                    new SComponentEvent( this, SComponentEvent.COMPONENT_MOVED ));
+		}
+    }
+    
+    /**
+      * Gets the location of this component in the form of a point 
+      * specifying the component's top-left corner. The location will 
+      * be absolute to the browser window's top-left corner.
+      * @see setLocation(int,int)
+      */
+    public Point getLocation() {
+        return new Point(this.x, this.y);
     }
 
     /*

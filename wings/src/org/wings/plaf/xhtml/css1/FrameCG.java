@@ -32,6 +32,10 @@ public final class FrameCG
     protected void writeAdditionalHeaders(Device d, SFrame frame)
         throws IOException
     {
+        // frame modifiers
+        super.writeAdditionalHeaders(d, frame);
+        
+        // write stylesheets
         StyleSheet styleSheet = frame.getStyleSheet();
 
         if (styleSheet != null) {
@@ -56,6 +60,7 @@ public final class FrameCG
         else {
             System.err.println("Frame.styleSheet == null!");
         }
+        
     }
 }
 

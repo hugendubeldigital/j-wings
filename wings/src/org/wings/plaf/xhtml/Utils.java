@@ -218,6 +218,7 @@ public final class Utils implements SConstants
         SFont font = component.getFont();
         SBorder border = component.getBorder();
         SDimension dim = component.getPreferredSize();
+        java.awt.Point loc = component.getLocation();
         
         if (bgcolor != null) d.append("background-color:#").append(toColorString(bgcolor)).append(";");
         if (fgcolor != null) d.append("font-color:#").append(toColorString(fgcolor)).append(";");
@@ -236,6 +237,9 @@ public final class Utils implements SConstants
             if (dim.width != null) d.append("width:").append(dim.width).append(";");
             if (dim.height != null) d.append("height:").append(dim.height).append(";");
         }
+
+        if (loc.x != -1) d.append("left:").append(loc.x).append("px;");
+        if (loc.y != -1) d.append("top:").append(loc.y).append("px;");
      }
 }
 

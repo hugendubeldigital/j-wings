@@ -34,7 +34,7 @@ import org.wings.io.Device;
  */
 public class SDesktopPane
     extends SContainer
-    implements SConstants
+    implements SConstants, SFrameModifier
 {
     /**
      * @see #getCGClassID
@@ -50,6 +50,28 @@ public class SDesktopPane
     public SDesktopPane() {
         super();
         super.setLayout(layout);
+    }
+
+    /**
+     * Sets the parent frame and
+     * adds the needed javascript to it.
+     *
+     * @param f the frame
+     */
+    protected void setParentFrame(SFrame f) {
+        super.setParentFrame(f);
+        ClassLoader cl = this.getClass().getClassLoader();
+        f.addJavascript(new Javascript(cl, "org/wings/dhtml/dynapi.js"));
+        f.addJavascript(new Javascript(cl, "org/wings/dhtml/dynapi/api/browser.js"));
+        f.addJavascript(new Javascript(cl, "org/wings/dhtml/dynapi/api/dynlayer.js"));
+        f.addJavascript(new Javascript(cl, "org/wings/dhtml/dynapi/api/dyndocument.js"));
+        f.addJavascript(new Javascript(cl, "org/wings/dhtml/dynapi/event/listeners.js"));
+        f.addJavascript(new Javascript(cl, "org/wings/dhtml/dynapi/event/mouse.js"));
+        f.addJavascript(new Javascript(cl, "org/wings/dhtml/dynapi/event/dragevent.js"));
+        f.addJavascript(new Javascript(cl, "org/wings/dhtml/dynapi/ext/inline.js"));
+        f.addJavascript(new Javascript(cl, "org/wings/dhtml/cookies.js"));
+        f.addJavascript(new Javascript(cl, "org/wings/dhtml/windows.js"));
+        f.addFrameModifier(this);
     }
 
     /**
@@ -201,8 +223,37 @@ public class SDesktopPane
                     d.append("</td></tr>\n");
                 }
             }
-            d.append("</td></tr></table>\n");
+            d.append("</table>\n");
         }
+    }
+
+    /**
+      * Write javascript code to initialize frame windows.
+      */
+    public void writeHead(org.wings.io.Device d, org.wings.SFrame f)
+        throws IOException
+    {
+        StringBuffer strb = new StringBuffer(100);
+        int componentCount = getComponentCount();
+        strb.append("DynAPI.onLoad=function() { \nvar wm = new WindowManager();\n");
+        for (int i=0; i < componentCount; i++) {
+            strb.append("new DragWindow(\"wl");
+            strb.append(getComponentAt(i).getUnifiedId());
+            strb.append("-");
+            strb.append(getComponentAt(i).getNamePrefix());
+            strb.append("\", wm);\n");
+        }
+        strb.append("};");
+        new Javascript(strb.toString()).write(d, f);
+    }
+
+
+    /**
+      * Compare to SDesktopPanes, {@link org.wings.SComponent#getUnifiedId()}
+      * is used.
+      */
+    public boolean equals(java.lang.Object obj) {
+        return this.getUnifiedId() == ((SComponent) obj).getUnifiedId();
     }
 
     /**

@@ -88,13 +88,21 @@ public class InternalFrameCG
             }
         }
 
-        SGetAddress addr;
+        // write layer for dragging window
+        d.append("<div id=\"wl");
+        d.append(c.getUnifiedId());
+        d.append("-");
+        d.append(frame.getNamePrefix());
+        d.append("\" STYLE=\"position: absolute; overflow:hidden;");
+        org.wings.plaf.xhtml.Utils.writeSpanAttributes( d, c );
+        d.append("\">");
 
+        SGetAddress addr;
         d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\"><tr>");
         if (iconAdr != null) {
             d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><img src=\"")
                 .append(iconAdr)
-                .append("\" width=\"16\" height=\"16\" border=\"0\"></a></td>");
+                .append("\" width=\"16\" height=\"16\" border=\"0\"></td>");
             cols ++;
         }
 
@@ -173,6 +181,7 @@ public class InternalFrameCG
         }
 
         d.append("</table>\n");
+        d.append("</div>");
     }
 }
 

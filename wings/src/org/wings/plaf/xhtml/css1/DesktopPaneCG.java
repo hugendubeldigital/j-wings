@@ -28,13 +28,13 @@ public final class DesktopPaneCG
     protected void writePrefix(Device d, SDesktopPane c)
         throws IOException
     {
-	Utils.writeDivWithStyleAttributePrefix(d, c.getStyle());
+	//Utils.writeDivWithStyleAttributePrefix(d, c.getStyle());
     }
 
     protected void writePostfix(Device d, SDesktopPane c)
         throws IOException
     {
-	Utils.writeDivWithStyleAttributePostfix(d, c.getStyle());
+	//Utils.writeDivWithStyleAttributePostfix(d, c.getStyle());
     }
 }
 

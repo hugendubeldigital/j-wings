@@ -58,7 +58,7 @@ public abstract class SessionServlet
     /**
      * TODO: documentation
      */
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     /**
      * TODO: documentation
@@ -529,10 +529,18 @@ public abstract class SessionServlet
                         System.out.println("   " + header + ": " + req.getHeader(header));
                     }
                     System.out.println();
+                    Cookie[] cookies = req.getCookies();
+                    for (int i=0; i<cookies.length;i++)
+                        System.out.println("   cookie #" + i + ": " + 
+                                        cookies[i].getName() + ", " +
+                                        cookies[i].getPath() + ", " +
+                                        cookies[i].getValue()
+                                        ); 
+                    System.out.println();
                 }
 
                 handleLocale(req);
-                getFrame().setServer(response.encodeUrl(HttpUtils.getRequestURL(req).toString()));
+                getFrame().setServer(response.encodeURL(HttpUtils.getRequestURL(req).toString()));
             }
             finally {
                 prepareRequest(req, response);
@@ -544,6 +552,7 @@ public abstract class SessionServlet
                 if ( DEBUG )
                     measure.start("time to dispatch");
 
+                // GET Parameters
                 boolean eventsContained = false;
                 Enumeration en = null;
                 en = req.getParameterNames();
@@ -555,9 +564,32 @@ public abstract class SessionServlet
                     else
                         eventsContained = true;
                 }
+                
+                // COOKIES
+                Cookie[] cookies = req.getCookies();
+                for(int i=0;i<cookies.length;i++) {
+                    if (!cookies[i].getName().startsWith("wings."))
+                        continue;
+                    String value = java.net.URLDecoder.decode(cookies[i].getValue());
+                    int pindex = value.indexOf(".");
+                    if (pindex < 0)
+                        continue;
+                    String paramName = value.substring(0, pindex);
+                    String[] values = new String[1];
+                    values[0] = value.substring(pindex+1);
+                    if (!getDispatcher().dispatch(paramName, values))
+                        asreq.addParam(paramName,values);
+                    else
+                        eventsContained = true;
+                    
+                    // remove the cookie
+                    cookies[i].setMaxAge(0);
+                    response.addCookie(cookies[i]);
+                }
 
                 if (req.getMethod().toUpperCase().equals("POST")) {
-                    eventsContained = dispatchPostQuery(req.getQueryString()) || eventsContained;
+                    eventsContained = dispatchPostQuery(req.getQueryString()) ||
+                                        eventsContained;
                 }
 
                 if ( DEBUG ) {

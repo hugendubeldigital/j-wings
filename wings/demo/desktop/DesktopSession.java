@@ -51,7 +51,7 @@ public class DesktopSession
 
     void initGUI() {
         SContainer contentPane = getFrame().getContentPane();
-
+        
         SMenuBar menuBar = createMenu();
         contentPane.add(menuBar);
 
@@ -60,6 +60,7 @@ public class DesktopSession
 
         Editor editor = new Editor();
         editor.setText(getStory());
+        editor.setPreferredSize(new SDimension(300,200));
         desktop.add(editor);
     }
 
@@ -103,11 +104,13 @@ public class DesktopSession
 
     public void newEditor() {
         Editor editor = new Editor();
+        editor.setPreferredSize(new SDimension(300,200));
         desktop.add(editor);
     }
 
     public void openEditor() {
         final Editor editor = new Editor();
+        editor.setPreferredSize(new SDimension(300,200));
         desktop.add(editor);
 
         final SDialog dialog = new SDialog(new SFlowDownLayout());

@@ -49,6 +49,7 @@ public class FrameCG
         List metas = frame.metas();
         List headers = frame.headers();
 
+        /*
         d.append("<?xml version=\"1.0\" encoding=\"");
         d.append(frame.getSession().getCharSet());
         d.append("\"?>\n");
@@ -60,6 +61,8 @@ public class FrameCG
         d.append("\" lang=\"");
         d.append(language);
         d.append("\">\n");
+        */
+        d.append("<html>\n");
         d.append("<head>\n<title>");
         d.append(title);
         d.append("</title>\n");
@@ -67,19 +70,26 @@ public class FrameCG
         if (frame.getBaseTarget() != null)
             d.append("<base target=\"")
                 .append(frame.getBaseTarget())
-                .append("\" />");
+                // .append("\" />");
+                .append("\">");
 
         d.append("<meta http-equiv=\"Content-type\" content='text/html; charset=\"");
         d.append(frame.getSession().getCharSet());
+        /*
         d.append("\"' />\n");
         d.append("<meta http-equiv=\"expires\" content=\"0\" />\n");
         d.append("<meta http-equiv=\"pragma\" content=\"no-cache\" />\n");
-
+        */
+        d.append("\"'>\n");
+        d.append("<meta http-equiv=\"expires\" content=\"0\">\n");
+        d.append("<meta http-equiv=\"pragma\" content=\"no-cache\">\n");
+        
         Iterator it = metas.iterator();
         while (it.hasNext()) {
             d.append("<meta ");
             d.append(it.next());
-            d.append(" />\n");
+            // d.append(" />\n");
+            d.append(">\n");
         }
 
         // JavaScript ist in Kommentaren nicht mehr erlaubt, weil xml-Parser Kommentare entfernen dürfen
@@ -100,7 +110,13 @@ public class FrameCG
     }
 
     protected void writeAdditionalHeaders(Device d, SFrame frame)
-        throws IOException {}
+        throws IOException
+    {
+        ListIterator it = frame.getFrameModifiers().listIterator();
+        while(it.hasNext()) {
+            ((SFrameModifier) it.next()).writeHead(d, frame);
+        }
+    }
 
     protected void writeBody(Device d, SFrame frame)
         throws IOException

@@ -46,6 +46,8 @@ public class SInternalFrame
     private boolean iconified = false;
     private boolean maximized = false;
     private boolean closed = false;
+    
+    private java.awt.Dimension normalsize = new java.awt.Dimension();
 
     /**
      * TODO: documentation
@@ -101,10 +103,24 @@ public class SInternalFrame
     public boolean isClosable() { return closable; }
 
     public void setIconified(boolean v) {
-        boolean old = iconified;
-        iconified = v;
-        if (old != iconified)
+        if (iconified != v) {
+            // was iconified, restore normal size
+            if (iconified) {
+                iconified = false;
+                setPreferredSize(
+                    new SDimension(normalsize.width, normalsize.height));
+            }
+            // had normal size, save the size
+            else {
+                normalsize = new java.awt.Dimension( 
+                        getPreferredSize().getIntWidth(),
+                        getPreferredSize().getIntHeight());
+                setPreferredSize(
+                    new SDimension(getPreferredSize().getIntWidth(), 20));
+            }
             reload();
+        }
+        iconified = v;
     }
     public boolean isIconified() { return iconified; }
 
@@ -285,6 +301,28 @@ public class SInternalFrame
     private SInternalFrameEvent event;
 
     public void getPerformed(String name, String value) {
+    System.out.println("SInternalFrame.getPerformed("+name+","+value+")");
+    
+        // cookie values
+        if (value.charAt(0) == 'i') {
+            String nvalue = value.substring(2);
+            switch(value.charAt(1)) {
+                case 'l':
+                    int x = 0,y = 0;
+                    x = new Integer(nvalue.substring(0,nvalue.indexOf("x"))).intValue();
+                    y = new Integer(nvalue.substring(nvalue.indexOf("x")+1)).intValue();
+                    setLocation(x,y);
+                    break;
+                case 's':
+                    int w = 0,h = 0;
+                    w = new Integer(nvalue.substring(0,nvalue.indexOf("x"))).intValue();
+                    h = new Integer(nvalue.substring(nvalue.indexOf("x")+1)).intValue();
+                    setPreferredSize(new SDimension(w,h));
+                    break;
+            }
+            return;
+        }
+    
         switch (new Integer(value).intValue()) {
         case SInternalFrameEvent.INTERNAL_FRAME_CLOSED:
             setClosed(true);
@@ -359,6 +397,19 @@ public class SInternalFrame
      */
     public String getCGClassID() {
         return cgClassID;
+    }
+
+    public void setPreferredSize(SDimension dim) {
+        /* if iconified, do not overwrite that size,
+           just save it for restoring the original size
+        */
+        if (!iconified)
+            super.setPreferredSize(dim);
+        else {
+            normalsize.width = dim.getIntWidth();
+            normalsize.height = dim.getIntHeight();
+        }
+        
     }
 
     private class SStackLayout extends SAbstractLayoutManager

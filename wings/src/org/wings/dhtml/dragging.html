@@ -1,0 +1,221 @@
+<HTML><HEAD>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<SCRIPT language=JavaScript src="dynapi.js"></SCRIPT>
+
+<script language="javascript" src="dynapi/api/browser.js"></script>
+<script language="javascript" src="dynapi/api/dynlayer.js"></script>
+<script language="javascript" src="dynapi/api/dyndocument.js"></script>
+<script language="javascript" src="dynapi/event/listeners.js"></script>
+<script language="javascript" src="dynapi/event/mouse.js"></script>
+<script language="javascript" src="dynapi/event/dragevent.js"></script>
+<script language="javascript" src="dynapi/ext/inline.js"></script>
+<script language="javascript" src="windows.js"></script>
+
+<script language="javascript">
+DynAPI.onLoad=function() {
+ var wm = new WindowManager();
+ new DragWindow("windowlayer1", wm);
+ new DragWindow("windowlayer2", wm);
+ new DragWindow("windowlayer3", wm);
+ new DragWindow("windowlayer4", wm);
+};
+</SCRIPT>
+<!--
+    NORMAL PAGE
+-->
+</HEAD>
+<BODY>
+<div>
+<form name="form1" method="post" action="">
+  <table width="75%" border="1">
+    <tr> 
+      <td>Button</td>
+      <td> 
+        <input type="submit" name="Abschicken" value="Abschicken">
+      </td>
+    </tr>
+    <tr> 
+      <td>Select</td>
+      <td> 
+        <select name="select">
+        </select>
+      </td>
+    </tr>
+    <tr> 
+      <td>Textfield</td>
+      <td> 
+        <input type="text" name="textfield">
+      </td>
+    </tr>
+    <tr>
+      <td>Checkbox</td>
+      <td>
+        <input type="checkbox" name="checkbox" value="checkbox" checked>
+      </td>
+    </tr>
+    <tr> 
+      <td>Textarea</td>
+      <td> 
+        <textarea name="textfield2"></textarea>
+      </td>
+    </tr>
+  </table>
+</form>
+<!-- 
+    FIRST LAYER
+-->
+<div id="windowlayer1" STYLE="position: absolute; background:#cccccc;left:100px;top:100px;width:260px;height:260px; border: 2px outset #cccccc; padding: 2px;overflow:hidden">
+<table width="100%" height="20" border="0" cellpadding="0" cellspacing="0">
+ <tr>
+  <td width="20">
+  o
+  </td>
+  <td width="100%">
+  edit customer 1
+  </td>
+  <td width="20">
+  _
+  </td>
+  <td width="20">
+  x
+  </td>
+ </tr>
+</table>  
+<form name="form2" method="post" action="">
+  <table border="0" cellpadding="0" cellspacing="0" width=100% height=100% bgcolor="blue">
+    <tr> 
+      <td>Button</td>
+      <td> 
+        <input type="submit" name="Abschicken" value="Abschicken">
+      </td>
+    </tr>
+    <tr> 
+      <td>Select</td>
+      <td> 
+        <select name="select">
+        </select>
+      </td>
+    </tr>
+    <tr> 
+      <td>Textfield</td>
+      <td> 
+        <input type="text" name="textfield">
+      </td>
+    </tr>
+    <tr>
+      <td>Checkbox</td>
+      <td>
+        <input type="checkbox" name="checkbox" value="checkbox" checked>
+      </td>
+    </tr>
+    <tr> 
+      <td>Textarea</td>
+      <td> 
+        <textarea name="textfield2"></textarea>
+      </td>
+    </tr>
+  </table>
+</form>
+</div>
+<!--
+    SECOND LAYER
+-->
+<div id="windowlayer2" STYLE="position: absolute; background:#cccccc;left:400px;top:400px;width:260px;height:260px; border: 2px outset #cccccc; padding: 2px;overflow:hidden">
+<table width="100%" height="20" border="0" cellpadding="0" cellspacing="0">
+ <tr>
+  <td width="20">
+  o
+  </td>
+  <td width="100%">
+  edit customer 2
+  </td>
+  <td width="20">
+  _
+  </td>
+  <td width="20">
+  x
+  </td>
+ </tr>
+</table>  
+<form name="form2" method="post" action="">
+  <table border="0" cellpadding="0" cellspacing="0">
+    <tr> 
+      <td>Button</td>
+      <td> 
+        <input type="submit" name="Abschicken" value="Abschicken">
+      </td>
+    </tr>
+    <tr> 
+      <td>Select</td>
+      <td> 
+        <select name="select">
+        </select>
+      </td>
+    </tr>
+    <tr> 
+      <td>Textfield</td>
+      <td> 
+        <input type="text" name="textfield">
+      </td>
+    </tr>
+    <tr>
+      <td>Checkbox</td>
+      <td>
+        <input type="checkbox" name="checkbox" value="checkbox" checked>
+      </td>
+    </tr>
+    <tr> 
+      <td>Textarea</td>
+      <td> 
+        <textarea name="textfield2"></textarea>
+      </td>
+    </tr>
+  </table>
+</form>
+</div>
+<!--
+    THIRD LAYER
+-->
+<div id="windowlayer3" STYLE="position: absolute; background:#cccccc;left:420px;top:420px;width:260px;height:260px; border: 2px outset #cccccc; padding: 2px;overflow:hidden">
+<table width="100%" height="20" border="0" cellpadding="0" cellspacing="0">
+ <tr>
+  <td width="20">
+  o
+  </td>
+  <td width="100%">
+  edit customer 3
+  </td>
+  <td width="20">
+  _
+  </td>
+  <td width="20">
+  x
+  </td>
+ </tr>
+</table> 
+<h3>TEST</h3>
+</div>
+<!--
+    THIRD LAYER
+-->
+<div id="windowlayer4" STYLE="position: absolute; background:#cccccc;left:420px;top:420px;width:260px;height:260px; border: 2px outset #cccccc; padding: 2px;overflow:hidden">
+<table width="100%" height="20" border="0" cellpadding="0" cellspacing="0">
+ <tr>
+  <td width="20">
+  o
+  </td>
+  <td width="100%">
+  edit customer 4
+  </td>
+  <td width="20">
+  _
+  </td>
+  <td width="20">
+  x
+  </td>
+ </tr>
+</table> 
+<h3>TEST 4</h3><form><textarea>sdf hal;skdjhf alsjkdhf lasdf hasdjfk</textarea></form>
+</div>
+</div>
+</BODY></HTML>

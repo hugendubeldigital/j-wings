@@ -143,4 +143,8 @@ public class SDimension
         setWidth(width);
         setHeight(height);
     }
+    
+    public String toString() {
+        return "SDimension[width="+width+", height="+height+"]";
+    }
 }

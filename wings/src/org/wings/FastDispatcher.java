@@ -39,7 +39,7 @@ public class FastDispatcher
     /**
      * TODO: documentation
      */
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     HashMap listener = new HashMap();
 

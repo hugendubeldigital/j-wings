@@ -263,6 +263,8 @@ public class SContainer
             // processContainerEvent(new ContainerEvent(this,
             // ContainerEvent.COMPONENT_REMOVED, c));
         }
+        if (c instanceof SFrameModifier)
+            getParentFrame().removeFrameModifier((SFrameModifier)c);
         return erg;
     }
 

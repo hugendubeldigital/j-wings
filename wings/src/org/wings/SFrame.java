@@ -84,6 +84,12 @@ public class SFrame
     protected final ArrayList javaScript = new ArrayList(2);
 
 
+    /**
+      * List of headModifieres which add code during writing of page code
+      * @see org.wings.SFrameModifier
+      */
+    private final ArrayList framemodifiers = new ArrayList(2);
+    
     private Color textColor = null;
     private Color linkColor = null;
     private Color vLinkColor = null;
@@ -203,6 +209,34 @@ public class SFrame
       */
     public ArrayList getJavascript() {
         return javaScript;
+    }
+
+    /**
+      * Add FrameModifier
+      * @param mod add this modifier
+      */
+    public void addFrameModifier(SFrameModifier mod) {
+        framemodifiers.add(mod);
+    }
+
+    /**
+      * Get all FrameModifiers
+      * @return ArrayList of {@link org.wings.SFrameModifier}
+      */
+    public ArrayList getFrameModifiers() {
+        return framemodifiers;
+    }
+
+    /**
+      * Remove given FrameModifier
+      * @param mod remove this modifier
+      * @return <code>true</code>, if modifier was found, <code>false</code> otherwise
+      */
+    public boolean removeFrameModifier(SFrameModifier mod) {
+        int i = framemodifiers.indexOf(mod);
+        if (i == -1) return false;
+        framemodifiers.remove(i);
+        return true;
     }
 
     /**

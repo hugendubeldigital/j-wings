@@ -138,17 +138,17 @@ public class FrameSetSession
         mainFrame.setBaseTarget("frame" + reloadManagerFrame.getUnifiedId());
 
         // set target resource
-        toolbarFrame.setBaseTarget(reloadManagerFrame.getUnifiedId());
-        menuFrame.setBaseTarget(reloadManagerFrame.getUnifiedId());
-        mainFrame.setBaseTarget(reloadManagerFrame.getUnifiedId());
+        // toolbarFrame.setBaseTarget(reloadManagerFrame.getUnifiedId());
+        // menuFrame.setBaseTarget(reloadManagerFrame.getUnifiedId());
+        // mainFrame.setBaseTarget(reloadManagerFrame.getUnifiedId());
     }
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse response)
         throws ServletException, IOException
     {
-        Set dirtyResources = getSession().getReloadManager().getDirtyResources();
-        reloadManagerFrame.setDirtyResources(dirtyResources);
-	getSession().getReloadManager().clear();
+        // Set dirtyResources = getSession().getReloadManager().getDirtyResources();
+        // reloadManagerFrame.setDirtyResources(dirtyResources);
+	// getSession().getReloadManager().clear();
     }
 
     /**
