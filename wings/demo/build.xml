@@ -40,6 +40,7 @@
       <fileset dir="${src}">
         <include name="**/*.properties" />
         <include name="**/*.gif" />
+        <include name="**/*.png" />
         <include name="**/*.jpg" />
         <include name="**/*.css" />
         <include name="**/*.thtml" />
