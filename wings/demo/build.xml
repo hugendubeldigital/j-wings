@@ -162,6 +162,7 @@
       <classes dir=".">
         <include name="desktop/*.png"/>
         <include name="desktop/*.thtml"/>
+        <include name="desktop/*.js"/>
       </classes>
       <fileset dir="desktop">
         <include name="index.html"/>

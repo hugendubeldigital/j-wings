@@ -67,7 +67,7 @@ public final class Utils
         if (component.getAttributes().size() > 0)
             return "_" + component.getComponentId();
         else if (component.getStyle() != null)
-            return component.getStyle().getName();
+            return component.getStyle();
         return null;
     }
 
@@ -76,7 +76,7 @@ public final class Utils
         if (sel.getSelectionAttributes().size() > 0)
             return "__" + component.getComponentId();
         else if (sel.getSelectionStyle() != null)
-            return sel.getSelectionStyle().getName();
+            return sel.getSelectionStyle();
         return null;
     }
 }

@@ -1,6 +1,6 @@
 <template name="TabbedPaneCG" for="org.wings.STabbedPane">
-  <comp-property type="Style" name="style">tabselected</comp-property>
-  <comp-property type="Style" name="selectionStyle">tabselected</comp-property>
+  <comp-property type="String" name="style">tabselected</comp-property>
+  <comp-property type="String" name="selectionStyle">tabselected</comp-property>
 
   <property type="SIcon" name="firstIconNormal">org/wings/icons/TabbedPaneFirst.gif</property>
   <property type="SIcon" name="connectIconNormal">org/wings/icons/TabbedPaneNormal.gif</property>

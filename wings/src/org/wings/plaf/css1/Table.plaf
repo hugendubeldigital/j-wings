@@ -13,8 +13,8 @@
 <comp-property type="org.wings.table.STableCellRenderer" name="headerRenderer">new org.wings.table.SDefaultTableCellRenderer()</comp-property>
 <comp-property type="org.wings.table.STableCellRenderer" name="rowSelectionRenderer">new org.wings.table.SDefaultTableRowSelectionRenderer()</comp-property>
 
-<comp-property type="Style" name="style">table</comp-property>
-<comp-property type="Style" name="selectionStyle">tableselection</comp-property>
+<comp-property type="String" name="style">table</comp-property>
+<comp-property type="String" name="selectionStyle">tableselection</comp-property>
 
 <write>
 <%
@@ -64,7 +64,7 @@
         if (table.getHeaderAttributes().size() > 0)
             style = "_" + table.getComponentId();
         else if (table.getHeaderStyle() != null)
-            style = table.getHeaderStyle().getName();
+            style = table.getHeaderStyle();
 
         %><tr<%|class=style%>><%
 

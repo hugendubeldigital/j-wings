@@ -31,7 +31,6 @@ import javax.swing.Action;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
-import org.wings.style.Style;
 
 /**
  * An abstract class, which compounds icon and text. It is the base class for 
@@ -98,7 +97,7 @@ public abstract class SAbstractIconTextCompound
     /**
      * TODO: documentation
      */
-    private Style selectionStyle;
+    private String selectionStyle;
 
 
     /**
@@ -405,14 +404,14 @@ public abstract class SAbstractIconTextCompound
     /**
      * @param selectionStyle
      */
-    public void setSelectionStyle(Style selectionStyle) {
+    public void setSelectionStyle(String selectionStyle) {
         this.selectionStyle = selectionStyle;
     }
 
     /**
      * @return
      */
-    public final Style getSelectionStyle() { 
+    public final String getSelectionStyle() { 
         return selectionStyle; 
     }
     /**

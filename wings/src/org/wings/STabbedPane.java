@@ -83,7 +83,7 @@ public class STabbedPane
     ArrayList changeListener = new ArrayList(2);
 
     /** The style of selected tabs */
-    protected Style selectionStyle;
+    protected String selectionStyle;
 
     /** The dynamic attributes of selected tabs */
     protected AttributeSet selectionAttributes = new SimpleAttributeSet();
@@ -133,14 +133,14 @@ public class STabbedPane
     /**
      * @param style the style of selected cells
      */
-    public void setSelectionStyle(Style selectionStyle) {
+    public void setSelectionStyle(String selectionStyle) {
         this.selectionStyle = selectionStyle;
     }
 
     /**
      * @return the style of selected cells.
      */
-    public Style getSelectionStyle() { return selectionStyle; }
+    public String getSelectionStyle() { return selectionStyle; }
 
     /**
      * Set a selectionAttribute.
@@ -659,7 +659,7 @@ public class STabbedPane
      *
      * @see #setStyleAt
      */
-    public Style getStyleAt(int index) {
+    public String getStyleAt(int index) {
         return getPageAt(index).getStyle();
     }
 
@@ -756,7 +756,7 @@ public class STabbedPane
      *
      * @see #getStyleAt
      */
-    public void setStyleAt(int index, Style style) {
+    public void setStyleAt(int index, String style) {
         getPageAt(index).setStyle(style);
     }
 
@@ -855,7 +855,7 @@ public class STabbedPane
         String title;
         Color background;
         Color foreground;
-        Style style;
+        String style;
         SIcon icon;
         SIcon disabledIcon;
         STabbedPane parent;
@@ -924,7 +924,7 @@ public class STabbedPane
          *
          * @return
          */
-        public Style getStyle() {
+        public String getStyle() {
             return ((style != null) ? style : parent.getStyle());
         }
 
@@ -933,7 +933,7 @@ public class STabbedPane
          *
          * @param c
          */
-        public void setStyle(Style s) {
+        public void setStyle(String s) {
             style = s;
         }
 

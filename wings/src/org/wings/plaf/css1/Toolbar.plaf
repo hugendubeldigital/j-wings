@@ -1,6 +1,6 @@
 <template name="ToolbarCG" for="org.wings.SToolbar">
 <comp-property type="SLayoutManager" name="layout" cache="false">new org.wings.SFlowLayout()</comp-property>
-<comp-property type="Style" name="style"></comp-property>
+<comp-property type="String" name="style"></comp-property>
 <write>
 <%
 Utils.renderContainer(device, component);

@@ -33,10 +33,9 @@ import org.wings.style.*;
 public class SComponentPropertyManager
     implements PropertyManager
 {
-    static final Class[] classes = {SComponent.class};
+    static final Class[] classes = { SComponent.class };
 
-    public SComponentPropertyManager() {
-    }
+    public SComponentPropertyManager() {}
 
     public void setProperty(SComponent comp, String name, String value) {
         if ( "BACKGROUND".equals(name) )
@@ -52,7 +51,7 @@ public class SComponentPropertyManager
             comp.setAttributes(laf.makeAttributeSet(value));
         }
         else if ( "CLASS".equals(name) )
-            comp.setStyle(new Style(value, null));
+            comp.setStyle(value);
     }
 
     public Class[] getSupportedClasses() {

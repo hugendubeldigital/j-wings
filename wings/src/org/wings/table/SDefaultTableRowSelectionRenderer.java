@@ -23,8 +23,6 @@ import org.wings.SLabel;
 import org.wings.SIcon;
 import org.wings.ResourceImageIcon;
 
-import org.wings.style.Style;
-
 /**
  * TODO: documentation
  *
@@ -49,7 +47,7 @@ public class SDefaultTableRowSelectionRenderer extends SLabel
         new ResourceImageIcon("org/wings/icons/NotSelectedRadioButton.gif");
 
     /** Style to use for the foreground for non-selected nodes. */
-    protected Style nonSelectionStyle = null;
+    protected String nonSelectionStyle = null;
 
     protected ResourceImageIcon multiSelectionIcon = DEFAULT_MULTI_SELECTION_ICON;
 
@@ -101,7 +99,7 @@ public class SDefaultTableRowSelectionRenderer extends SLabel
      *
      * @param newStyle
      */
-    public void setNonSelectionStyle(Style newStyle) {
+    public void setNonSelectionStyle(String newStyle) {
         nonSelectionStyle = newStyle;
     }
 
@@ -110,7 +108,7 @@ public class SDefaultTableRowSelectionRenderer extends SLabel
      *
      * @return
      */
-    public Style getNonSelectionStyle() {
+    public String getNonSelectionStyle() {
         return nonSelectionStyle;
     }
 

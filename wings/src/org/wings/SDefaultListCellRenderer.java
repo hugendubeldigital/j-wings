@@ -14,8 +14,6 @@
 
 package org.wings;
 
-import org.wings.style.Style;
-
 /**
  * TODO: documentation
  *
@@ -27,11 +25,11 @@ public class SDefaultListCellRenderer
     implements SListCellRenderer
 {
 
-    /** Style to use for the foreground for selected nodes. */
-    protected Style selectionStyle = null;
+    /** Style class to use for the foreground for selected nodes. */
+    protected String selectionStyle = null;
 
-    /** Style to use for the foreground for non-selected nodes. */
-    protected Style nonSelectionStyle = null;
+    /** Style class to use for the foreground for non-selected nodes. */
+    protected String nonSelectionStyle = null;
 
     /**
      * Create a SDefaultListCellRenderer with default properties.
@@ -44,7 +42,7 @@ public class SDefaultListCellRenderer
      *
      * @param newStyle
      */
-    public void setSelectionStyle(Style newStyle) {
+    public void setSelectionStyle(String newStyle) {
         selectionStyle = newStyle;
     }
 
@@ -53,7 +51,7 @@ public class SDefaultListCellRenderer
      *
      * @return
      */
-    public Style getSelectionStyle() {
+    public String getSelectionStyle() {
         return selectionStyle;
     }
 
@@ -62,7 +60,7 @@ public class SDefaultListCellRenderer
      *
      * @param newStyle
      */
-    public void setNonSelectionStyle(Style newStyle) {
+    public void setNonSelectionStyle(String newStyle) {
         nonSelectionStyle = newStyle;
     }
 
@@ -71,7 +69,7 @@ public class SDefaultListCellRenderer
      *
      * @return
      */
-    public Style getNonSelectionStyle() {
+    public String getNonSelectionStyle() {
         return nonSelectionStyle;
     }
 

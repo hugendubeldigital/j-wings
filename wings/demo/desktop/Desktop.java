@@ -46,9 +46,22 @@ public class Desktop
     public Desktop() {
         frame = new SFrame("Desktop");
 
+        StaticResource staticResource = new ClasspathResource(getClass().getClassLoader(),
+                                                              "desktop/menu.js");
+        staticResource.setMimeType("text/javascript");
+        frame.addHeader("<script type=\"text/javascript\" src=\"" + staticResource.getURL() + "\" />");
+
         SContainer contentPane = frame.getContentPane();
         editorNumber = 0;
         SMenuBar menuBar = createMenu();
+        try {
+            Class clazz = SessionManager.getSession().getCGManager().getLookAndFeel().getClassLoader().loadClass("org.wings.plaf.css1.MenuBarClientCG");
+            
+            menuBar.setCG((org.wings.plaf.MenuBarCG)clazz.newInstance());
+        }
+        catch (Exception e) {
+            System.err.println(e);
+        }
         contentPane.add(menuBar);
 
         desktop = new SDesktopPane();

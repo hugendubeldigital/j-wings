@@ -85,7 +85,7 @@ public final class FrameCG
     {
         d.print("<body");
         String style = ((frame.getStyle() != null) 
-                              ? frame.getStyle().getName() 
+                              ? frame.getStyle()
                               : null);
         if ( style == null ) {
             style = ((frame.getAttributes().size() > 0) 

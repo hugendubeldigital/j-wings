@@ -1,6 +1,6 @@
 <!-- -*- html -*- -->
 <template name="InternalFrameCG" for="org.wings.SInternalFrame">
-<comp-property type="Style" name="style"></comp-property>
+<comp-property type="String" name="style"></comp-property>
 <property type="SIcon" name="iconifyIcon">org/wings/icons/iconify.gif</property>
 <property type="SIcon" name="deiconifyIcon">org/wings/icons/deiconify.gif</property>
 <property type="SIcon" name="maximizeIcon">org/wings/icons/maximize.gif</property>

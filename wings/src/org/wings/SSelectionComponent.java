@@ -22,8 +22,8 @@ import org.wings.style.*;
  */
 public interface SSelectionComponent
 {
-    void setSelectionStyle(Style selectionStyle);
-    Style getSelectionStyle();
+    void setSelectionStyle(String selectionStyle);
+    String getSelectionStyle();
 
     /*
     void setSelectionAttribute(String name, String value);

@@ -18,7 +18,6 @@ import org.wings.SComponent;
 import org.wings.STable;
 import org.wings.SLabel;
 import org.wings.SIcon;
-import org.wings.style.Style;
 
 /**
  * TODO: documentation
@@ -32,10 +31,10 @@ public class SDefaultTableCellRenderer
     implements STableCellRenderer
 {
     /** Style to use for the foreground for selected nodes. */
-    protected Style selectionStyle = null;
+    protected String selectionStyle = null;
 
     /** Style to use for the foreground for non-selected nodes. */
-    protected Style nonSelectionStyle = null;
+    protected String nonSelectionStyle = null;
 
     /**
      * TODO: documentation
@@ -86,7 +85,7 @@ public class SDefaultTableCellRenderer
      *
      * @param newStyle
      */
-    public void setSelectionStyle(Style newStyle) {
+    public void setSelectionStyle(String newStyle) {
         selectionStyle = newStyle;
     }
 
@@ -95,7 +94,7 @@ public class SDefaultTableCellRenderer
      *
      * @return
      */
-    public Style getSelectionStyle() {
+    public String getSelectionStyle() {
         return selectionStyle;
     }
 
@@ -104,7 +103,7 @@ public class SDefaultTableCellRenderer
      *
      * @param newStyle
      */
-    public void setNonSelectionStyle(Style newStyle) {
+    public void setNonSelectionStyle(String newStyle) {
         nonSelectionStyle = newStyle;
     }
 
@@ -113,7 +112,7 @@ public class SDefaultTableCellRenderer
      *
      * @return
      */
-    public Style getNonSelectionStyle() {
+    public String getNonSelectionStyle() {
         return nonSelectionStyle;
     }
 

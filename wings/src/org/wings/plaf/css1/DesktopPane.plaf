@@ -1,5 +1,5 @@
 <template name="DesktopPaneCG" for="org.wings.SDesktopPane">
-<comp-property type="Style" name="style"></comp-property>
+<comp-property type="String" name="style"></comp-property>
 <write>
 <%
     SDesktopPane desktop = (SDesktopPane)component;

@@ -19,7 +19,6 @@ import org.wings.STree;
 import org.wings.SIcon;
 import org.wings.SLabel;
 import org.wings.io.Device;
-import org.wings.style.Style;
 
 /**
  * TODO: documentation
@@ -122,10 +121,10 @@ public class SDefaultTreeCellRenderer
     }
 
     /** Style to use for the foreground for selected nodes. */
-    protected Style selectionStyle = null;
+    protected String selectionStyle = null;
 
     /** Style to use for the foreground for non-selected nodes. */
-    protected Style nonSelectionStyle = null;
+    protected String nonSelectionStyle = null;
 
     public SComponent getTreeCellRendererComponent(STree tree,
                                                    Object value,
@@ -181,7 +180,7 @@ public class SDefaultTreeCellRenderer
      *
      * @param newStyle
      */
-    public void setSelectionStyle(Style newStyle) {
+    public void setSelectionStyle(String newStyle) {
         selectionStyle = newStyle;
     }
 
@@ -190,7 +189,7 @@ public class SDefaultTreeCellRenderer
      *
      * @return
      */
-    public Style getSelectionStyle() {
+    public String getSelectionStyle() {
         return selectionStyle;
     }
 
@@ -199,7 +198,7 @@ public class SDefaultTreeCellRenderer
      *
      * @param newStyle
      */
-    public void setNonSelectionStyle(Style newStyle) {
+    public void setNonSelectionStyle(String newStyle) {
         nonSelectionStyle = newStyle;
     }
 
@@ -208,7 +207,7 @@ public class SDefaultTreeCellRenderer
      *
      * @return
      */
-    public Style getNonSelectionStyle() {
+    public String getNonSelectionStyle() {
         return nonSelectionStyle;
     }
 

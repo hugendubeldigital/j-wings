@@ -1,6 +1,5 @@
 // $Revision$
 - documentation
-- faq
 - undo-redo (back-forward support for browser)
 - developers guide
 - asynchronous event handling for components (Holger)

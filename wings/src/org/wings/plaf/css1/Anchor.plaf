@@ -1,5 +1,5 @@
 <template name="AnchorCG" for="org.wings.SAnchor">
-<comp-property type="Style" name="style">anchor</comp-property>
+<comp-property type="String" name="style">anchor</comp-property>
 
 <write>
 <%

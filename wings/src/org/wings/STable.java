@@ -102,7 +102,7 @@ public class STable
     protected final HashMap editors = new HashMap();
 
     /** The style of selected cells */
-    protected Style selectionStyle;
+    protected String selectionStyle;
 
     /** The dynamic attributes of selected cells */
     protected AttributeSet selectionAttributes = new SimpleAttributeSet();
@@ -114,7 +114,7 @@ public class STable
     protected boolean headerVisible = true;
 
     /** The style of header cells */
-    protected Style headerStyle;
+    protected String headerStyle;
 
     /** The dynamic attributes of header cells */
     protected AttributeSet headerAttributes = new SimpleAttributeSet();
@@ -930,14 +930,14 @@ public class STable
     /**
      * @param style the style of selected cells
      */
-    public void setSelectionStyle(Style selectionStyle) {
+    public void setSelectionStyle(String selectionStyle) {
         this.selectionStyle = selectionStyle;
     }
 
     /**
      * @return the style of selected cells.
      */
-    public Style getSelectionStyle() { return selectionStyle; }
+    public String getSelectionStyle() { return selectionStyle; }
 
 
     /**
@@ -1023,14 +1023,14 @@ public class STable
      *
      * @return
      */
-    public void setHeaderStyle(Style style) {
+    public void setHeaderStyle(String style) {
         this.headerStyle = style;
     }
 
     /**
      * TODO: documentation
      */
-    public Style getHeaderStyle() { return headerStyle; }
+    public String getHeaderStyle() { return headerStyle; }
 
     /**
      * Set the headerAttributes.

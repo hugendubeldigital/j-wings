@@ -72,6 +72,14 @@ public class Editor
 
     public Editor() {
         menuBar = createMenu();
+        try {
+            Class clazz = SessionManager.getSession().getCGManager().getLookAndFeel().getClassLoader().loadClass("org.wings.plaf.css1.MenuBarClientCG");
+            
+            menuBar.setCG((org.wings.plaf.MenuBarCG)clazz.newInstance());
+        }
+        catch (Exception e) {
+            System.err.println(e);
+        }
         getContentPane().add(menuBar);
         toolbar = createToolbar();
 

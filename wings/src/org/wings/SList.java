@@ -28,10 +28,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.wings.plaf.ListCG;
-import org.wings.style.Style;
-import org.wings.style.AttributeSet;
-import org.wings.style.SimpleAttributeSet;
-import org.wings.style.CSSStyleSheet;
+import org.wings.style.*;
 import org.wings.io.Device;
 
 /**
@@ -133,7 +130,7 @@ public class SList
     protected int start = 0;
 
     /** The style of selected cells */
-    protected Style selectionStyle;
+    protected String selectionStyle;
 
     /** The dynamic attributes of selected cells */
     protected AttributeSet selectionAttributes = new SimpleAttributeSet();
@@ -244,7 +241,7 @@ public class SList
     /**
      * @param style the style of selected cells
      */
-    public void setSelectionStyle(Style selectionStyle) {
+    public void setSelectionStyle(String selectionStyle) {
         if ( isDifferent(this.selectionStyle, selectionStyle) ) {
             this.selectionStyle = selectionStyle;
             reload(ReloadManager.RELOAD_STYLE);
@@ -254,7 +251,7 @@ public class SList
     /**
      * @return the style of selected cells.
      */
-    public final Style getSelectionStyle() { return selectionStyle; }
+    public final String getSelectionStyle() { return selectionStyle; }
 
     /**
      * Set a selectionAttribute.

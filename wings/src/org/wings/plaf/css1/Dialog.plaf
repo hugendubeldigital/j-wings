@@ -1,6 +1,6 @@
 <template name="DialogCG" for="org.wings.SDialog">
 <property type="SIcon" name="closeIcon">org/wings/icons/close.gif</property>
-<comp-property type="Style" name="style">form</comp-property>
+<comp-property type="String" name="style">form</comp-property>
 
 private void writeIcon(Device device, SIcon icon) throws IOException {
         %><img border="0"<%

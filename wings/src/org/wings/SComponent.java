@@ -68,8 +68,8 @@ public abstract class SComponent
     /** Horizontal alignment */
     protected int horizontalAlignment = NO_ALIGN;
 
-    /** The style class */
-    protected Style style;
+    /** The name of the style class */
+    protected String style;
 
     /** The attributes */
     protected AttributeSet attributes = new SimpleAttributeSet();
@@ -426,13 +426,15 @@ public abstract class SComponent
      * Set the class of the laf-provided style.
      * @param style the new value for style
      */
-    public void setStyle(Style style) {
-        this.style = style;
+    public void setStyle(String value) {
+        reloadIfChange(ReloadManager.RELOAD_CODE, style, value);
+        this.style = value;
     }
+
     /**
      * @return the current style
      */
-    public final Style getStyle() { return style; }
+    public final String getStyle() { return style; }
 
     /**
      * Set a attribute.
@@ -689,13 +691,7 @@ public abstract class SComponent
      * renders the component into a string.
      */
     public String toString() {
-        Device d = new StringBufferDevice();
-        try {
-            write(d);
-        }
-        catch (IOException e) {}
-
-        return d.toString();
+        return paramString();
     }
 
 
@@ -716,7 +712,7 @@ public abstract class SComponent
             for (int i=0; i < descriptors.length; i++) {
                 try {
                     Method getter = descriptors[i].getReadMethod();
-                    if (getter == null)
+                    if (getter == null || "getParent". equals(getter.getName()))
                         continue;
                     Object value = getter.invoke(this, null);
                     if (first)

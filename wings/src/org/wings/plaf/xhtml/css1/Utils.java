@@ -59,7 +59,7 @@ public final class Utils
         return toColorString(c.getRGB());
     }
 
-    public static void writeStyleAttribute(Device d, String prefix, Style style)
+    public static void writeStyleAttribute(Device d, String prefix, String style)
         throws IOException
     {
         if (style == null)
@@ -67,20 +67,12 @@ public final class Utils
         writeStyleAttribute(d, prefix, style, "");
     }
 
-    public static void writeStyleAttribute(Device d, String prefix, Style style, String postfix)
+    public static void writeStyleAttribute(Device d, String prefix, String style, String postfix)
         throws IOException
     {
         if (style == null)
             return;
-        writeStyleAttribute(d, prefix + style.getName() + postfix);
-    }
-
-    public static void writeStyleAttribute(Device d, Style style)
-        throws IOException
-    {
-        if (style == null)
-            return;
-        writeStyleAttribute(d, style.getName());
+        writeStyleAttribute(d, prefix + style + postfix);
     }
 
     public static void writeStyleAttribute(Device d, String style)
@@ -103,7 +95,7 @@ public final class Utils
     public static void writeSpanWithStyleAttributePrefix(Device d, SComponent component )
         throws IOException
     {
-    	Style style = component.getStyle();
+    	String style = component.getStyle();
         boolean hasAttr = org.wings.plaf.xhtml.Utils.hasSpanAttributes( component );
         if ( style == null && ! hasAttr )
             return;
@@ -137,7 +129,7 @@ public final class Utils
         d.print("</span>");
     }
 
-    public static void writeSpanWithStyleAttributePrefix(Device d, Style style)
+    public static void writeSpanWithStyleAttributePrefix(Device d, String style)
         throws IOException
     {
         if (style == null)
@@ -148,7 +140,7 @@ public final class Utils
         d.print(">");
     }
 
-    public static void writeSpanWithStyleAttributePostfix(Device d, Style style)
+    public static void writeSpanWithStyleAttributePostfix(Device d, String style)
         throws IOException
     {
         if (style == null)
@@ -157,7 +149,7 @@ public final class Utils
         d.print("</span>");
     }
 
-    public static void writeDivWithStyleAttributePrefix(Device d, Style style)
+    public static void writeDivWithStyleAttributePrefix(Device d, String style)
         throws IOException
     {
         if (style == null)
@@ -168,7 +160,7 @@ public final class Utils
         d.print(">");
     }
  
-    public static void writeDivWithStyleAttributePostfix(Device d, Style style)
+    public static void writeDivWithStyleAttributePostfix(Device d, String style)
         throws IOException
     {
         if (style == null)

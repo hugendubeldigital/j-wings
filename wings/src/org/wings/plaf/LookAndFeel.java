@@ -51,7 +51,6 @@ public class LookAndFeel
 
     protected final ClassLoader classLoader;
     protected Properties properties;
-    protected StyleSheet styleSheet;
 
     /**
      * Instantiate a laf using the war's classLoader.
@@ -75,7 +74,7 @@ public class LookAndFeel
         this.properties = new Properties();
         InputStream in = classLoader.getResourceAsStream("default.properties");
         if (in == null) {
-            throw new IOException ("'default.properties' not found in toplevel package in classpath.");
+            throw new IOException("'default.properties' not found in toplevel package of classpath");
         }
         this.properties.load(in);
     }
@@ -115,37 +114,6 @@ public class LookAndFeel
      */
     public CGDefaults createDefaults() {
         return new ResourceFactory();
-    }
-
-    /**
-     * Return the <code>lookandfeel.stylesheet</code>
-     * @return the laf's style sheet
-     */
-    public StyleSheet getStyleSheet() {
-        if (styleSheet == null) {
-            styleSheet = new CSSStyleSheet();
-
-            try {
-                InputStream in = classLoader.getResourceAsStream(properties.getProperty("lookandfeel.stylesheet"));
-                ((CSSStyleSheet)styleSheet).read(in);
-                if (logger.isLoggable(Level.FINEST)) {
-                    System.out.println("sucessfully parsed the lookandfeel.stylesheet:");
-                    Iterator it = styleSheet.styles().iterator();
-                    while (it.hasNext()) {
-                        Style style = (Style)it.next();
-                        System.out.println("" + style);
-                    }
-                }
-            }
-            catch (Exception e) {
-                logger.log(Level.WARNING, null, e);
-            }
-        }
-        if (styleSheet == null) {
-            throw new RuntimeException("a stylsheet is required");
-        }
-
-        return styleSheet;
     }
 
     /**
@@ -251,20 +219,6 @@ public class LookAndFeel
     }
 
     /**
-     * Utility method that fetches the style with the specified <code>name</code>
-     * from the <code>lookandfeel.stylesheet</code>
-     * @param value styleSheet as a string
-     * @return the style
-     */
-    public Style makeStyle(String name) {
-        Style style = getStyleSheet().getStyle(name);
-        if (style == null)
-            logger.warning("the style specification '" + name +
-                           "' has no corresponding style definition in the 'lookandfeel.stylesheet'");
-        return style;
-    }
-
-    /**
      * Utility method that creates an Object of class <code>clazz</code>
      * using the single String arg constructor.
      * @param classLoader the classLoader to be used
@@ -339,11 +293,9 @@ public class LookAndFeel
             if (ComponentCG.class.isAssignableFrom(type)
                 || LayoutCG.class.isAssignableFrom(type)
                 || BorderCG.class.isAssignableFrom(type)) {
-                /*
-                 * some CG is requested. We do not check, whether the
-                 * value returned actually fulfills
-                 * type.isAssignableFrom(value.getClass());
-                 */
+                // some CG is requested. We do not check, whether the
+                // value returned actually fulfills
+                // type.isAssignableFrom(value.getClass());
                 value = makeCG(property);
             }
             else if (type.isAssignableFrom(SIcon.class))
@@ -352,18 +304,14 @@ public class LookAndFeel
                 value = makeResource(property);
             else if (type.isAssignableFrom(AttributeSet.class))
                 value = makeAttributeSet(property);
-            else if (type.isAssignableFrom(Style.class))
-                value = makeStyle(property);
             else if (type.isAssignableFrom(StyleSheet.class))
                 value = makeStyleSheet(property);
             else
                 value = makeObject(property, type);
             
-            /*
-             * cache the object requested here for future use. A property,
-             * whose name ends with '.nocache' is not cached, thus always
-             * a new instance is created.
-             */
+            // cache the object requested here for future use. A property,
+            // whose name ends with '.nocache' is not cached, thus always
+            // a new instance is created.
             if (!id.endsWith(".nocache")) {
                 put(id, value);
             }

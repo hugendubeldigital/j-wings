@@ -127,7 +127,7 @@ public class STree
     protected Rectangle viewport;
 
     /** The style of selected cells */
-    protected Style selectionStyle;
+    protected String selectionStyle;
 
     /** The dynamic attributes of selected cells */
     protected AttributeSet selectionAttributes = new SimpleAttributeSet();
@@ -1153,14 +1153,14 @@ public class STree
     /**
      * @param style the style of selected cells
      */
-    public void setSelectionStyle(Style selectionStyle) {
+    public void setSelectionStyle(String selectionStyle) {
         this.selectionStyle = selectionStyle;
     }
 
     /**
      * @return the style of selected cells.
      */
-    public Style getSelectionStyle() { return selectionStyle; }
+    public String getSelectionStyle() { return selectionStyle; }
 
 
     /**

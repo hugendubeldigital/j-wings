@@ -289,6 +289,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
             processContainerEvent(new SContainerEvent(this,
                                   SContainerEvent.COMPONENT_REMOVED, c));
             c.setParent(null);
+            reload(ReloadManager.RELOAD_CODE);
         }
         return isRemoved;
     }
@@ -443,8 +444,8 @@ public class SContainer extends SComponent implements ClickableRenderComponent
             getConstraintList().add(index, constraint);
             c.setParent(this);
 
-            processContainerEvent(new SContainerEvent(this,
-                                  SContainerEvent.COMPONENT_ADDED, c));
+            processContainerEvent(new SContainerEvent(this, SContainerEvent.COMPONENT_ADDED, c));
+            reload(ReloadManager.RELOAD_ALL);
         }
 
         return c;
@@ -531,12 +532,3 @@ public class SContainer extends SComponent implements ClickableRenderComponent
  * compile-command: "ant -emacs -find build.xml"
  * End:
  */
-
-
-
-
-
-
-
-
-

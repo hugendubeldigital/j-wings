@@ -13,7 +13,7 @@
 <property type="SIcon" name="emptyFillIcon">org/wings/icons/transdot.gif</property>
 
 <comp-property type="org.wings.tree.STreeCellRenderer" name="cellRenderer">new org.wings.tree.SDefaultTreeCellRenderer()</comp-property>
-<comp-property type="Style" name="selectionStyle">treenodeselection</comp-property>
+<comp-property type="String" name="selectionStyle">treenodeselection</comp-property>
 
 <write>
 <%
