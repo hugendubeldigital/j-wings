@@ -177,12 +177,14 @@ public final class LowLevelEventDispatcher
             logger.fine("process event '" + epoch + "_" + name + "'");
             for (int i=0; i < l.size(); ++i) {
                 LowLevelEventListener gl = (LowLevelEventListener)l.get(i);
-                if ( checkEpoch(epoch, name, gl) ) {
-                    logger.fine("process event '" + name + "' by " +
-                                gl.getClass() + "(" + gl.getLowLevelEventId() +
-                                ")" );
-                    gl.processLowLevelEvent(name, values);
-                    result = true;
+                if ( gl.isEnabled() ) {
+                    if ( checkEpoch(epoch, name, gl) ) {
+                        logger.fine("process event '" + name + "' by " +
+                                    gl.getClass() + "(" + gl.getLowLevelEventId() +
+                                    ")" );
+                        gl.processLowLevelEvent(name, values);
+                        result = true;
+                    }
                 }
             }
         }
