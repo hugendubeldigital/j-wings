@@ -123,6 +123,7 @@ public class STemplateLayout
         addPropertyManager(new STextAreaPropertyManager());
         addPropertyManager(new STablePropertyManager());
         addPropertyManager(new SFileChooserPropertyManager());
+        addPropertyManager(new SListPropertyManager());
     }
 
     /**
