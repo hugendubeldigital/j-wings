@@ -14,6 +14,8 @@
 
 package org.wings;
 
+import org.wings.plaf.*;
+
 /**
  * TODO: documentation
  *
@@ -61,6 +63,10 @@ public class SResetButton
      */
     public String getCGClassID() {
         return cgClassID;
+    }
+
+    public void setCG(ResetButtonCG cg) {
+        super.setCG(cg);
     }
 }
 

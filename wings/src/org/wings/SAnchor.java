@@ -94,6 +94,10 @@ public class SAnchor
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(AnchorCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

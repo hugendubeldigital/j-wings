@@ -572,6 +572,10 @@ public class SComboBox
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(ComboBoxCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

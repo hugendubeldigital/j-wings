@@ -97,6 +97,10 @@ public class SHRef
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(HRefCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

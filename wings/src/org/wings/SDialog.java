@@ -159,6 +159,10 @@ public class SDialog
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(DialogCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

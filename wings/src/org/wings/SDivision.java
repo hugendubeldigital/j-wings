@@ -62,6 +62,10 @@ public class SDivision
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(DivisionCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

@@ -395,6 +395,10 @@ public class SCheckBox extends SButton
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(CheckBoxCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

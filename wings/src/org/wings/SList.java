@@ -1007,6 +1007,10 @@ public class SList
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(ListCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

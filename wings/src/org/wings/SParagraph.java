@@ -66,6 +66,10 @@ public class SParagraph
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(ParagraphCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

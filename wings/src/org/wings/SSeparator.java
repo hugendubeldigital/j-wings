@@ -14,6 +14,8 @@
 
 package org.wings;
 
+import org.wings.plaf.*;
+
 /**
  * TODO: documentation
  *
@@ -39,6 +41,10 @@ public class SSeparator
      */
     public String getCGClassID() {
         return cgClassID;
+    }
+
+    public void setCG(SeparatorCG cg) {
+        super.setCG(cg);
     }
 }
 

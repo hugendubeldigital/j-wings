@@ -46,6 +46,10 @@ public class SPasswordField
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(PasswordFieldCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

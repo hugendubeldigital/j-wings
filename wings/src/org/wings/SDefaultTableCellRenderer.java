@@ -72,6 +72,7 @@ public class SDefaultTableCellRenderer
     public SDefaultTableCellRenderer() {
         setLayout(null);
         contents = new SLabel();
+        contents.setStyle(null);
         edit = new SLabel();
         add(contents);
         add(edit);

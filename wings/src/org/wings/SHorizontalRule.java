@@ -138,6 +138,10 @@ public class SHorizontalRule
         return cgClassID;
     }
 
+
+    public void setCG(HorizontalRuleCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

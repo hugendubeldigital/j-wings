@@ -235,6 +235,10 @@ public class SDesktopPane
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(DesktopPaneCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

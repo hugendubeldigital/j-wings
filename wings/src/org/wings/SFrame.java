@@ -83,15 +83,11 @@ public class SFrame
 
 
     private Color textColor = null;
-
     private Color linkColor = null;
-
     private Color vLinkColor = null;
-
     private Color aLinkColor = null;
 
     private Icon backgroundImage = null;
-
     private String backgroundURL = null;
 
     /**
@@ -100,16 +96,13 @@ public class SFrame
     protected boolean resizable = true;
 
     /** the style sheet used in certain look and feels. */
-    protected StyleSheet styleSheet;  // IMPORTANT: initialization with null causes severe errors
+    protected StyleSheet styleSheet;  // IMPORTANT: initialization with null causes errors
 
     /**
      * TODO: documentation
      */
     protected String statusLine = null;
 
-    private final DeviceBuffer bodyBuffer = new DeviceBuffer();
-
-    // warum steht das hier?
     /**
      * TODO: documentation
      */
@@ -298,14 +291,14 @@ public class SFrame
      */
     public final void setServer(String path) {
         serverAddress.clear();
-        serverAddress.setBaseAddress(path);
+        serverAddress.setAbsoluteAddress(path);
     }
 
     /**
      * TODO: documentation
      */
     public final SGetAddress getServerAddress() {
-        if  ( DEBUG && serverAddress.getBaseAddress()==null && getParent()!=null )
+        if  ( DEBUG && serverAddress.getRelativeAddress()==null && getParent()!=null )
             System.out.println("Frame " + serverAddress);
 
         return (SGetAddress)serverAddress.clone();
@@ -315,7 +308,7 @@ public class SFrame
      * TODO: documentation
      */
     public final SGetAddress getServerAddress(boolean target) {
-        if ( DEBUG && serverAddress.getBaseAddress()==null && getParent()!=null )
+        if ( DEBUG && serverAddress.getRelativeAddress()==null && getParent()!=null )
             System.out.println("Frame " + serverAddress);
 
         SGetAddress addr = (SGetAddress)serverAddress.clone();
@@ -517,6 +510,7 @@ public class SFrame
                 updateComponentTreeCG(children[i]);
             }
         }
+        updateCG();
     }
 
     /**
@@ -562,6 +556,10 @@ public class SFrame
             SComponent comp = (SComponent)container.getComponent(topmost);
             comp.write(s);
         }
+    }
+
+    public void setCG(FrameCG cg) {
+        super.setCG(cg);
     }
 }
 

@@ -19,6 +19,7 @@ import java.awt.Graphics;
 import javax.swing.ImageIcon;
 
 import org.wings.io.*;
+import org.wings.plaf.*;
 
 /**
  * <form>
@@ -111,6 +112,10 @@ public class SRadioButton
      */
     public String getCGClassID() {
         return cgClassID;
+    }
+
+    public void setCG(RadioButtonCG cg) {
+        super.setCG(cg);
     }
 }
 

@@ -20,15 +20,8 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionBindingListener;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
 import org.wings.FastDispatcher;
 import org.wings.SForm;
@@ -498,11 +491,9 @@ public abstract class SessionServlet
 
             handleLocale(req);
 
-            getFrame().setServer(response.encodeUrl(req.getRequestURI()));
+            getFrame().setServer(response.encodeUrl(HttpUtils.getRequestURL(req).toString()));
         }
         finally {
-            // das sollte auf alle Faelle ausgefuehrt werden, also evtl in finally
-            // packen
             prepareRequest(req, response);
         }
 

@@ -100,6 +100,10 @@ public class STextField
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(TextFieldCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

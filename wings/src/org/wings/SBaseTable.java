@@ -102,11 +102,6 @@ public class SBaseTable
     /**
      * TODO: documentation
      */
-    protected boolean showGrid = true;
-
-    /**
-     * TODO: documentation
-     */
     protected boolean showHorizontalLines = false;
 
     /**
@@ -117,12 +112,12 @@ public class SBaseTable
     /**
      * TODO: documentation
      */
-    protected Dimension intercellSpacing = new Dimension(1,1);
+    protected Dimension intercellSpacing = null;
 
     /**
      * TODO: documentation
      */
-    protected Dimension intercellPadding = null;
+    protected Dimension intercellPadding = new Dimension(1,1);
 
     /**
      * TODO: documentation
@@ -179,16 +174,8 @@ public class SBaseTable
      * @param b
      */
     public void setShowGrid(boolean b) {
-        showGrid = b;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public boolean getShowGrid() {
-        return showGrid;
+        showHorizontalLines = b;
+        showVerticalLines = b;
     }
 
     /**
@@ -489,13 +476,10 @@ public class SBaseTable
         return borderLines;
     }
 
-    /*
-     * Gibt maximale Groesse der Komponente an.
-     */
     /**
-     * TODO: documentation
+     * Returns the maximum size of this table.
      *
-     * @return
+     * @return maximum size
      */
     public Dimension getScrollableViewportSize() {
         return new Dimension(getColumnCount(), getRowCount());
@@ -525,13 +509,13 @@ public class SBaseTable
 
     public void setParent(SContainer p) {
         super.setParent(p);
-        if ( getCellRendererPane() != null )
+        if (getCellRendererPane() != null)
             getCellRendererPane().setParent(p);
     }
 
     protected void setParentFrame(SFrame f) {
         super.setParentFrame(f);
-        if ( getCellRendererPane() != null )
+        if (getCellRendererPane() != null)
             getCellRendererPane().setParentFrame(f);
     }
 
@@ -579,6 +563,10 @@ public class SBaseTable
      */
     public String getCGClassID() {
         return cgClassID;
+    }
+
+    public void setCG(BaseTableCG cg) {
+        super.setCG(cg);
     }
 }
 

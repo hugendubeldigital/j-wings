@@ -856,6 +856,10 @@ public class STable
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(TableCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

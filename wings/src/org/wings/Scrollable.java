@@ -28,6 +28,7 @@ import javax.swing.event.ChangeListener;
 public interface Scrollable {
     Dimension getScrollableViewportSize();
     void setViewportSize(Rectangle d);
+    Rectangle getViewportSize();
 }
 
 /*

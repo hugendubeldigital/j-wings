@@ -311,6 +311,10 @@ public class SForm
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(FormCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

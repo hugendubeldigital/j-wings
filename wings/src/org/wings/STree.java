@@ -14,6 +14,9 @@
 
 package org.wings;
 
+import java.awt.Dimension;
+import java.awt.Rectangle;
+
 import java.util.Enumeration;
 import java.util.ArrayList;
 
@@ -31,7 +34,7 @@ import org.wings.io.Device;
  */
 public class STree
     extends SComponent
-    implements SGetListener, TreeSelectionListener
+    implements SGetListener, TreeSelectionListener, Scrollable
 {
     private static final String cgClassID = "TreeCG";
 
@@ -67,6 +70,11 @@ public class STree
      * TODO: documentation
      */
     protected AbstractLayoutCache treeState = new VariableHeightLayoutCache();
+
+    /**
+     * TODO: documentation
+     */
+    protected Rectangle viewport = null;
 
     /**
      * TODO: documentation
@@ -968,6 +976,40 @@ public class STree
      */
     public String getCGClassID() {
         return cgClassID;
+    }
+
+    /**
+     * Returns the maximum size of this tree.
+     *
+     * @return maximum size
+     */
+    public Dimension getScrollableViewportSize() {
+        return new Dimension(1, getRowCount());
+    }
+
+    /*
+     * Setzt den anzuzeigenden Teil
+     */
+    /**
+     * TODO: documentation
+     *
+     * @param d
+     */
+    public void setViewportSize(Rectangle d) {
+        viewport = d;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public Rectangle getViewportSize() {
+        return viewport;
+    }
+
+    public void setCG(TreeCG cg) {
+        super.setCG(cg);
     }
 }
 

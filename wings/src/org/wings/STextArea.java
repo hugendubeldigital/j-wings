@@ -126,6 +126,10 @@ public class STextArea
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(TextAreaCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

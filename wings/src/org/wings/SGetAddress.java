@@ -31,7 +31,8 @@ import org.wings.io.Device;
 public class SGetAddress
     implements Cloneable
 {
-    private String baseAddress = "";
+    private String relativeAddress = "";
+    private String absoluteAddress = "";
 
     private StringBuffer parameters = null;
 
@@ -39,16 +40,15 @@ public class SGetAddress
      * TODO: documentation
      *
      */
-    public SGetAddress() {
-    }
+    public SGetAddress() {}
 
     /**
      * TODO: documentation
      *
      * @param base
      */
-    public SGetAddress(String base) {
-        setBaseAddress(base);
+    public SGetAddress(String absolute) {
+        setAbsoluteAddress(absolute);
     }
 
     /**
@@ -56,8 +56,9 @@ public class SGetAddress
      *
      * @param addr
      */
-    public void setBaseAddress(String addr) {
-        baseAddress = addr;
+    public void setAbsoluteAddress(String addr) {
+        absoluteAddress = addr;
+        relativeAddress = null;
     }
 
     /**
@@ -65,8 +66,21 @@ public class SGetAddress
      *
      * @return
      */
-    public String getBaseAddress() {
-        return baseAddress;
+    public String getAbsoluteAddress() {
+        return absoluteAddress;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public String getRelativeAddress() {
+        if (relativeAddress == null) {
+            int pos = absoluteAddress.indexOf('/', "http://".length() + 1);
+            relativeAddress = absoluteAddress.substring(pos);
+        }
+        return relativeAddress;
     }
 
     /**
@@ -86,8 +100,8 @@ public class SGetAddress
      * @return
      */
     public SGetAddress addParameter(String parameter) {
-        if ( parameter!=null ) {
-            if ( parameters==null )
+        if (parameter!=null) {
+            if (parameters == null)
                 parameters = new StringBuffer();
             else
                 parameters.append("&amp;");
@@ -101,7 +115,7 @@ public class SGetAddress
      *
      */
     public void clear() {
-        if ( parameters!=null )
+        if (parameters != null)
             parameters.setLength(0);
     }
 
@@ -111,12 +125,12 @@ public class SGetAddress
      * @return
      */
     public String toString() {
-        StringBuffer erg = new StringBuffer(baseAddress);
+        StringBuffer erg = new StringBuffer(getRelativeAddress());
 
-        boolean qmark = (baseAddress.indexOf ('?') >= 0);
+        boolean qmark = (relativeAddress.indexOf ('?') >= 0);
 
-        if ( parameters!=null && parameters.length()>0 ) {
-            erg.append (qmark ? "&amp;" : "?");
+        if (parameters != null && parameters.length() > 0) {
+            erg.append(qmark ? "&amp;" : "?");
             erg.append(parameters);
         }
 
@@ -128,16 +142,9 @@ public class SGetAddress
      */
     public Object clone()
     {
-        /*  try {
-         return super.clone();
-         } catch(java.lang.CloneNotSupportedException e) {
-         e.printStackTrace();
-         return null;
-         }*/
+        SGetAddress erg = new SGetAddress(absoluteAddress);
 
-        SGetAddress erg = new SGetAddress(baseAddress);
-
-        if (  parameters!=null )
+        if (parameters != null)
             erg.parameters = new StringBuffer(parameters.toString());
 
         return erg;

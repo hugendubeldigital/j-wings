@@ -220,6 +220,10 @@ public class SFileChooser
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(FileChooserCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

@@ -326,6 +326,10 @@ public class SLabel
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(LabelCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

@@ -624,6 +624,10 @@ public class SOptionPane
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(OptionPaneCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

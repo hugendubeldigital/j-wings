@@ -179,6 +179,10 @@ public class SInternalFrame
             comp.write(s);
         }
     }
+
+    public void setCG(InternalFrameCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

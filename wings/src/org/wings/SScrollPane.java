@@ -14,9 +14,7 @@
 
 package org.wings;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.AdjustmentEvent;
 import java.io.IOException;
@@ -36,17 +34,7 @@ public class SScrollPane
     /**
      * @see #getCGClassID
      */
-    private static final String cgClassID = "ContainerCG";
-
-    /**
-     * The name says all I think
-     */
-    protected SScrollBar horizontalScroller;
-
-    /**
-     * The name says all I think
-     */
-    protected SScrollBar verticalScroller;
+    private static final String cgClassID = "ScrollPaneCG";
 
     /**
      * The element which should be scrolled.
@@ -59,27 +47,7 @@ public class SScrollPane
     /**
      * Sets the new viewport of the scrollable
      */
-    AdjustmentListener adjustmentListener = new AdjustmentListener() {
-        /**
-         * TODO: documentation
-         *
-         * @param e
-         */
-        public void adjustmentValueChanged(AdjustmentEvent e) {
-            if (scrollable != null) {
-                Rectangle newViewport =
-                    new Rectangle(horizontalScroller.getValue(),
-                                  verticalScroller.getValue(),
-                                  Math.min(horizontalScroller.getMaximum(),
-                                           horizontalScroller.getValue() +
-                                           horizontalScroller.getVisibleAmount()),
-                                  Math.min(verticalScroller.getMaximum(),
-                                           verticalScroller.getValue() +
-                                           verticalScroller.getVisibleAmount()));
-                scrollable.setViewportSize(newViewport);
-            }
-        }
-    };
+    AdjustmentListener adjustmentListener;
 
     /**
      * TODO: documentation
@@ -87,58 +55,35 @@ public class SScrollPane
      * @param c
      */
     public SScrollPane(SComponent c) {
-        super.setLayout(new SBorderLayout());
-
-        initScrollBars();
         add(c);
     }
 
-    /**
-     * generates and adds the scrollbars
-     */
-    protected void initScrollBars() {
-        verticalScroller = new SScrollBar(SConstants.VERTICAL);
-        super.addComponent(verticalScroller, SBorderLayout.EAST);
-        verticalScroller.addAdjustmentListener(adjustmentListener);
+    public AdjustmentListener getAdjustmentListener() {
+        if (adjustmentListener == null) {
+            adjustmentListener = new AdjustmentListener() {
+                    public void adjustmentValueChanged(AdjustmentEvent e) {
+                        if (scrollable != null) {
+                            Adjustable adjustable = e.getAdjustable();
+                            Rectangle viewport = scrollable.getViewportSize();
 
-        SPanel tmp = new SPanel(new SFlowLayout(CENTER));
-        horizontalScroller = new SScrollBar(SConstants.HORIZONTAL);
-        tmp.add(horizontalScroller);
-        super.addComponent(tmp, SBorderLayout.SOUTH);
-        horizontalScroller.addAdjustmentListener(adjustmentListener);
-    }
-
-    /**
-     * Adjust the scrollbars to the scrollable
-     */
-    protected void adjustScrollBars() {
-        if (scrollable != null) {
-            //setScrollBarsVisible(true);
-
-            Dimension scrollableViewport = scrollable.getScrollableViewportSize();
-            verticalScroller.setMinimum(0);
-            verticalScroller.setVisibleAmount(verticalExtent);
-            verticalScroller.setMaximum(scrollableViewport.height);
-            verticalScroller.setVisible(verticalExtent < scrollableViewport.height);
-
-            horizontalScroller.setMinimum(0);
-            horizontalScroller.setVisibleAmount(horizontalExtent);
-            horizontalScroller.setMaximum(scrollableViewport.width);
-            horizontalScroller.setVisible(horizontalExtent < scrollableViewport.width);
+                            if (adjustable.getOrientation() == Adjustable.HORIZONTAL) {
+                                viewport.x     = adjustable.getValue();
+                                viewport.width = Math.min(adjustable.getMaximum(),
+                                                          adjustable.getValue() +
+                                                          adjustable.getVisibleAmount());
+                            }
+                            else {
+                                viewport.y      = adjustable.getValue();
+                                viewport.height = Math.min(adjustable.getMaximum(),
+                                                           adjustable.getValue() +
+                                                           adjustable.getVisibleAmount());
+                            }
+                            scrollable.setViewportSize(viewport);
+                        }
+                    }
+                };
         }
-        else {
-            setScrollBarsVisible(false);
-        }
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param b
-     */
-    protected void setScrollBarsVisible(boolean b) {
-        horizontalScroller.setVisible(b);
-        verticalScroller.setVisible(b);
+        return adjustmentListener;
     }
 
     /**
@@ -147,29 +92,29 @@ public class SScrollPane
      * @param c
      */
     protected void setScrollable(SComponent c) {
-        if ( c instanceof Scrollable && c!=null ) {
+        if (c instanceof Scrollable && c != null) {
             scrollable = (Scrollable)c;
+            Rectangle viewport = new Rectangle(0, 0, horizontalExtent, verticalExtent);
+            scrollable.setViewportSize(viewport);
         }
         else {
             scrollable = null;
         }
-        adjustScrollBars();
     }
+
+    public Scrollable getScrollable() { return scrollable; }
 
     public SComponent addComponent(SComponent c, Object constraint) {
-        removeComponent((SComponent)scrollable);
-        SComponent erg = super.addComponent(c, SBorderLayout.CENTER);
-        setScrollable(erg);
-        return erg;
-    }
-
-    /**
-     * Only a null layout is allowed. This is because the SContainer tries to
-     * set a null layout
-     */
-    public void setLayout(SLayoutManager l) {
-        if ( l != null )
-            throw new IllegalArgumentException("Cannot set Layout in SScrollPane");
+        SComponent ret;
+        if (c instanceof Scrollable) {
+            removeComponent((SComponent)scrollable);
+            ret = super.addComponent(c, constraint, 0);
+            setScrollable(ret);
+        }
+        else {
+            ret = super.addComponent(c, constraint);
+        }
+        return ret;
     }
 
 
@@ -178,13 +123,11 @@ public class SScrollPane
      *
      * @param s
      */
-    public void write(Device s)
+    public void write(Device d)
         throws IOException
     {
-        if (visible) {
-            adjustScrollBars();
-            cg.write(s, this);
-        }
+        if (visible)
+            cg.write(d, this);
     }
 
     /**
@@ -233,6 +176,10 @@ public class SScrollPane
      */
     public String getCGClassID() {
         return cgClassID;
+    }
+
+    public void setCG(ScrollPaneCG cg) {
+        super.setCG(cg);
     }
 }
 

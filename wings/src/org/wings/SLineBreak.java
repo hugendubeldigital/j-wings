@@ -75,6 +75,10 @@ public class SLineBreak
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(LineBreakCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

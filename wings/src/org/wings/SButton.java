@@ -364,6 +364,10 @@ public class SButton extends SAbstractButton
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(ButtonCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

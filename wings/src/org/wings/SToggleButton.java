@@ -138,6 +138,10 @@ public class SToggleButton
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(ToggleButtonCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

@@ -57,6 +57,10 @@ public class SPanel
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(PanelCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

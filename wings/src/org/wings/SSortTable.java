@@ -131,6 +131,10 @@ public class SSortTable
     public String getCGClassID() {
         return cgClassID;
     }
+
+    public void setCG(SortTableCG cg) {
+        super.setCG(cg);
+    }
 }
 
 /*

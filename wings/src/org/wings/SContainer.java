@@ -43,7 +43,7 @@ public class SContainer
      */
     protected ArrayList containerListener;
 
-    SLayoutManager layout = null;
+    SLayoutManager layout;
 
     /**
      * TODO: documentation
@@ -58,9 +58,7 @@ public class SContainer
      * TODO: documentation
      *
      */
-    public SContainer() {
-        this(null);
-    }
+    public SContainer() {}
 
 
     public void updateCG() {
@@ -171,22 +169,22 @@ public class SContainer
     /**
      * The components in this container.
      */
-    private ArrayList componentList = new ArrayList(3);
+    private ArrayList componentList;
 
     protected ArrayList getComponentList() {
-        // if ( componentList == null )
-        //    componentList = new ArrayList(3);
+        if ( componentList == null )
+            componentList = new ArrayList(3);
         return componentList;
     }
 
     /**
      * The constraints for the components.
      */
-    private ArrayList constraintList = new ArrayList(3);
+    private ArrayList constraintList;
 
     protected ArrayList getConstraintList() {
-        // if ( constraintList == null )
-        //    constraintList = new ArrayList(3);
+        if ( constraintList == null )
+            constraintList = new ArrayList(3);
         return constraintList;
     }
 
@@ -430,6 +428,10 @@ public class SContainer
      */
     public String getCGClassID() {
         return cgClassID;
+    }
+
+    public void setCG(ContainerCG cg) {
+        super.setCG(cg);
     }
 }
 
