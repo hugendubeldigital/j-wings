@@ -28,13 +28,23 @@ public class ScrollBarCG
     extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.ScrollBarCG
 {
-    public static final int SCROLLBAR_STEPS = 15;
+    public static final int SCROLLBAR_STEPS        = 15;
+    /*
+     * these colors should be distinguishable, otherwise the scroller
+     * looks wierd on some browsers: some browsers make very large
+     * button columns which shouldn't be confused with the actual
+     * Scroller.
+     */
+    public static final String SCROLLER_COLOR      = "\"#888888\" ";
+    public static final String SCROLLER_BACKGROUND = "\"#FFFFFF\" ";
+    public static final String BUTTON_BACKGROUND   = "\"#C6C6C6\" ";
 
     Icon transIcon;
 
     public void installCG(SComponent component) {
         super.installCG(component);
-        transIcon = LookAndFeel.makeIcon(TabbedPaneCG.class, "/org/wings/icons/transdot.gif");
+        transIcon = LookAndFeel.makeIcon(ScrollBarCG.class, 
+                                         "/org/wings/icons/transdot.gif");
     }
 
     public void uninstallCG(SComponent component)
@@ -103,7 +113,7 @@ public class ScrollBarCG
          }
          
          // bw
-         d.append( "<td bgcolor=\"#C6C6C6\" " );
+         d.append( "<td bgcolor=").append( BUTTON_BACKGROUND );
          d.append( bwalign );
          d.append( el_s );
          d.append( "1%\">" );
@@ -115,7 +125,7 @@ public class ScrollBarCG
          
          // fw
          d.append( el_pre );
-         d.append( "<td bgcolor=\"#C6C6C6\" " );
+         d.append( "<td bgcolor=").append( BUTTON_BACKGROUND );
          d.append( fwalign );
          d.append( el_s );
          d.append( "1%\">" );
@@ -166,11 +176,11 @@ public class ScrollBarCG
         for ( int i = 0; i < SCROLLBAR_STEPS; ++i ) {
             d.append( prefix );
             if ( i >= mark && len-- > 0 ) {
-                d.append( "<td style=\"border-width: 1px; border-style: outset;\" bgcolor=\"#CCCCCC\" " );
+                d.append( "<td style=\"border-width: 1px; border-style: outset;\" bgcolor=").append( SCROLLER_COLOR );
                 bordercorrection = 2;
             }
             else {
-                d.append( "<td bgcolor=\"#FFFFFF\" " );
+                d.append( "<td bgcolor=").append( SCROLLER_BACKGROUND );
                 bordercorrection = 0;
             }
             d.append( size ).append("%");
