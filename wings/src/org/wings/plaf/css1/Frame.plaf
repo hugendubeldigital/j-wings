@@ -14,10 +14,10 @@
 <property type="String"  name="documentType"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd"></property>
 
 
-
+/*
 public static final JavaScriptListener DATE_CHOOSER_SCRIPT_LOADER =
 	new JavaScriptListener("", "", loadScript("org/wings/plaf/css1/DateChooser.js"));
-
+*/
 public static final JavaScriptListener FORM_SCRIPT_LOADER =
 	new JavaScriptListener("", "", loadScript("org/wings/plaf/css1/Form.js"));
 
@@ -86,7 +86,7 @@ static final SResourceIcon ICON = new SResourceIcon("org/wings/icons/ArrowDown.g
 
         component.headers().add(0, staticCgSytles);
 
-        component.addScriptListener(DATE_CHOOSER_SCRIPT_LOADER);
+        /* component.addScriptListener(DATE_CHOOSER_SCRIPT_LOADER); */
         component.addScriptListener(FORM_SCRIPT_LOADER);
 
 
@@ -96,7 +96,7 @@ static final SResourceIcon ICON = new SResourceIcon("org/wings/icons/ArrowDown.g
 	component.removeDynamicResource(DynamicCodeResource.class);
 	component.removeDynamicResource(DynamicStyleSheetResource.class);
 	component.removeDynamicResource(DynamicScriptResource.class);
-	component.removeScriptListener(DATE_CHOOSER_SCRIPT_LOADER);
+/*	component.removeScriptListener(DATE_CHOOSER_SCRIPT_LOADER); */
 	component.removeScriptListener(FORM_SCRIPT_LOADER);
 	component.clearHeaders();
 </uninstall>

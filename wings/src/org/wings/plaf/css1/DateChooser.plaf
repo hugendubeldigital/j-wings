@@ -7,9 +7,12 @@
 <import>org.wings.script.*</import>
 <import>org.wings.externalizer.*</import>
 
-
+public static final JavaScriptListener DATE_CHOOSER_SCRIPT_LOADER =
+	new JavaScriptListener("", "", loadScript());
+/*
 public static final JavaScriptListener SCRIPT_LOADER =
 	new JavaScriptListener("", "", loadScript());
+*/
 
 public static String loadScript() {
     InputStream in = null;
@@ -37,8 +40,13 @@ public static String loadScript() {
 static final SResourceIcon ICON = new SResourceIcon("org/wings/icons/ArrowDown.gif");
 
 <install>
-        component.addScriptListener(SCRIPT_LOADER);
+        component.addScriptListener(DATE_CHOOSER_SCRIPT_LOADER);
 </install>
+
+
+<uninstall>
+	component.removeScriptListener(DATE_CHOOSER_SCRIPT_LOADER); 
+</uninstall>
 
 <write>
 <%
