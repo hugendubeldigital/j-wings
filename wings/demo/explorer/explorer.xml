@@ -20,10 +20,10 @@
 
   <servlet>
     <servlet-name>
-      FrameExplorer
+      FExplorer
     </servlet-name>
     <servlet-class>
-      explorer.FrameExplorer
+      explorer.FExplorer
     </servlet-class>
     <init-param>
       <param-name>ExplorerBaseDir</param-name>
@@ -44,10 +44,10 @@
 
   <servlet-mapping>
     <servlet-name>
-      FrameExplorer
+      FExplorer
     </servlet-name>
     <url-pattern>
-      /FrameExplorer/*
+      /FExplorer/*
     </url-pattern>
   </servlet-mapping>
 </web-app>
