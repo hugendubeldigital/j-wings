@@ -1,3 +1,17 @@
+/*
+ * $Id$
+ * (c) Copyright 2000 wingS development team.
+ *
+ * This file is part of wingS (http://wings.mercatis.de).
+ *
+ * wingS is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * Please see COPYING for the complete licence.
+ */
+
 package org.wings.plaf;
 
 import java.beans.PropertyChangeEvent;
@@ -13,24 +27,24 @@ import org.wings.style.*;
 public class CGDefaults extends Hashtable
 {
     private PropertyChangeSupport changeSupport;
-    
+
     /**
      * Create an empty defaults table.
      */
     public CGDefaults() {
         super();
     }
-    
+
     /**
      * Create a defaults table initialized with the specified
      * key/value pairs.  For example:
      * <pre>
-        Object[] uiDefaults = {
-             "Font", new Font("Dialog", Font.BOLD, 12),
-            "Color", Color.red,
-             "five", new Integer(5)
-        }
-        UIDefaults myDefaults = new UIDefaults(uiDefaults);
+     Object[] uiDefaults = {
+     "Font", new Font("Dialog", Font.BOLD, 12),
+     "Color", Color.red,
+     "five", new Integer(5)
+     }
+     UIDefaults myDefaults = new UIDefaults(uiDefaults);
      * </pre>
      */
     public CGDefaults(Object[] keyValueList) {
@@ -39,15 +53,15 @@ public class CGDefaults extends Hashtable
             super.put(keyValueList[i], keyValueList[i + 1]);
         }
     }
-    
-    
+
+
     /**
      * Set the value of <code>key</code> to <code>value</code>.
      * If <code>key</code> is a string and the new value isn't
      * equal to the old one, fire a PropertyChangeEvent.  If value
      * is null, the key is removed from the table.
      *
-     * @param key    the unique Object who's value will be used to 
+     * @param key    the unique Object who's value will be used to
      *               retreive the data value associated with it
      * @param value  the new Object to store as data under that key
      * @return the previous Object value, or null
@@ -95,38 +109,38 @@ public class CGDefaults extends Hashtable
             String className = (String)get(cgClassID);
             Object instance = get(className);
             if (instance == null) {
-		Class cgClass = Class.forName(className);
+                Class cgClass = Class.forName(className);
                 if (cgClass != null) {
-		    instance = cgClass.newInstance();
+                    instance = cgClass.newInstance();
                     // Save shared instance for future use
                     put(className, instance);
                 }
             }
             return instance;
-        } 
-	catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             getCGError("no ComponentCG class for: " + cgClassID);
             return null;
-        } 
-	catch (ClassCastException e) {
+        }
+        catch (ClassCastException e) {
             getCGError("ComponentCG class for: " + cgClassID + " does not implement the ComponentCG interface");
             return null;
         }
-	catch (InstantiationException e) {
-	    getCGError("instantiation of shared instance failed for " + cgClassID + " " + e);
+        catch (InstantiationException e) {
+            getCGError("instantiation of shared instance failed for " + cgClassID + " " + e);
             return null;
         }
-	catch (IllegalAccessException e) {
+        catch (IllegalAccessException e) {
             getCGError("Constructor of ComponentCG class for: " + cgClassID + " is not accessible");
             return null;
         }
-	catch (NullPointerException e) {
-	    getCGError("there's no value for " + cgClassID + " in the defaults table");
+        catch (NullPointerException e) {
+            getCGError("there's no value for " + cgClassID + " in the defaults table");
             return null;
         }
     }
-    
-    
+
+
     /**
      * If getCG() fails for any reason, it calls this method before
      * returning null.  Subclasses may choose to do more or
@@ -144,7 +158,7 @@ public class CGDefaults extends Hashtable
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Create a ComponentCG implementation for the
      * specified component.  In other words create the look
@@ -168,7 +182,7 @@ public class CGDefaults extends Hashtable
     public BorderCG getCG(SBorder target) {
         return (BorderCG)getCGInstance(target.getCGClassID());
     }
-    
+
     /**
      * Return the Style for the
      * specified key.
@@ -177,7 +191,7 @@ public class CGDefaults extends Hashtable
         Object value = get(key);
         return (value instanceof Style) ? (Style)value : null;
     }
-    
+
     /**
      * Return the Icon for the
      * specified key.
@@ -186,7 +200,7 @@ public class CGDefaults extends Hashtable
         Object value = get(key);
         return (value instanceof Icon) ? (Icon)value : null;
     }
-    
+
     /**
      * Add a PropertyChangeListener to the listener list.
      * The listener is registered for all properties.
@@ -203,8 +217,8 @@ public class CGDefaults extends Hashtable
         }
         changeSupport.addPropertyChangeListener(listener);
     }
-    
-    
+
+
     /**
      * Remove a PropertyChangeListener from the listener list.
      * This removes a PropertyChangeListener that was registered
@@ -236,3 +250,10 @@ public class CGDefaults extends Hashtable
         }
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

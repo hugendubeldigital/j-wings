@@ -1,3 +1,17 @@
+/*
+ * $Id$
+ * (c) Copyright 2000 wingS development team.
+ *
+ * This file is part of wingS (http://wings.mercatis.de).
+ *
+ * wingS is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * Please see COPYING for the complete licence.
+ */
+
 package org.wings.plaf.xhtml;
 
 import java.awt.*;
@@ -9,13 +23,13 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.externalizer.ExternalizeManager;
 
-
-public class TableCG implements org.wings.plaf.TableCG, SConstants
+public class TableCG
+    implements org.wings.plaf.TableCG, SConstants
 {
-    private final static String propertyPrefix = "Table" + ".";
-    private final static String selectionPropertyPrefix = "TableSelection.";
-    private final static String nonSelectionPropertyPrefix = "TableNonSelection.";
-    private final static String headerPropertyPrefix = "TableHeader.";
+    private final static String propertyPrefix = "Table";
+    private final static String selectionPropertyPrefix = "TableSelection";
+    private final static String nonSelectionPropertyPrefix = "TableNonSelection";
+    private final static String headerPropertyPrefix = "TableHeader";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
@@ -23,7 +37,8 @@ public class TableCG implements org.wings.plaf.TableCG, SConstants
 
     public void installCG(SComponent c) {
         STable table = (STable)c;
-        c.setStyle(c.getSession().getCGManager().getStyle(propertyPrefix + "style"));
+        c.setStyle(c.getSession().getCGManager().
+                   getStyle(getPropertyPrefix() + ".style"));
         table.setCellRendererPane(new SCellRendererPane());
         installCellRenderer(table);
     }
@@ -64,13 +79,13 @@ public class TableCG implements org.wings.plaf.TableCG, SConstants
 
     protected void configureDefaultRenderer(STable table, SDefaultTableCellRenderer cellRenderer) {
         CGManager cgManager = table.getSession().getCGManager();
-        cellRenderer.setCellSelectionStyle(cgManager.getStyle(selectionPropertyPrefix + "style"));
-        cellRenderer.setCellNonSelectionStyle(cgManager.getStyle(nonSelectionPropertyPrefix + "style"));
+        cellRenderer.setCellSelectionStyle(cgManager.getStyle(selectionPropertyPrefix + ".style"));
+        cellRenderer.setCellNonSelectionStyle(cgManager.getStyle(nonSelectionPropertyPrefix + ".style"));
     }
 
     protected void configureHeaderRenderer(STable table, SDefaultTableCellRenderer cellRenderer) {
         CGManager cgManager = table.getSession().getCGManager();
-        cellRenderer.setCellNonSelectionStyle(cgManager.getStyle(headerPropertyPrefix + "style"));
+        cellRenderer.setCellNonSelectionStyle(cgManager.getStyle(headerPropertyPrefix + ".style"));
     }
 
     public void write(Device d, SComponent c)
@@ -173,3 +188,10 @@ public class TableCG implements org.wings.plaf.TableCG, SConstants
         }
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

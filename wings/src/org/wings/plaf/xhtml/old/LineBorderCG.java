@@ -1,3 +1,17 @@
+/*
+ * $Id$
+ * (c) Copyright 2000 wingS development team.
+ *
+ * This file is part of wingS (http://wings.mercatis.de).
+ *
+ * wingS is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * Please see COPYING for the complete licence.
+ */
+
 package org.wings.plaf.xhtml.old;
 
 import java.awt.Color;
@@ -20,68 +34,75 @@ public final class LineBorderCG
     private final static Insets none = new Insets(0,0,0,0);
 
     public void writePrefix(Device d, SBorder b)
-	throws IOException
+        throws IOException
     {
-	SLineBorder border = (SLineBorder)b;
-	int thickness = border.getThickness();
-	Color lineColor = border.getLineColor();
-	Insets insets = b.getInsets();
+        SLineBorder border = (SLineBorder)b;
+        int thickness = border.getThickness();
+        Color lineColor = border.getLineColor();
+        Insets insets = b.getInsets();
 
-	d.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n<tr>");
-	writeTD(d, lineColor, 3);
-	writeIMG(d, 1, thickness);
-	d.append("</td></tr>\n<tr>");
-	writeTD(d, lineColor, 1);
-	writeIMG(d, thickness, 1);
-	d.append("</td>\n<td>");
-	if (insets != null && none.equals(insets))
-	    d.append("<table border=\"0\" cellpadding=\"")
-		.append(insets.left)
-		.append("\"><tr><td>\n");
+        d.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n<tr>");
+        writeTD(d, lineColor, 3);
+        writeIMG(d, 1, thickness);
+        d.append("</td></tr>\n<tr>");
+        writeTD(d, lineColor, 1);
+        writeIMG(d, thickness, 1);
+        d.append("</td>\n<td>");
+        if (insets != null && none.equals(insets))
+            d.append("<table border=\"0\" cellpadding=\"")
+                .append(insets.left)
+                .append("\"><tr><td>\n");
     }
 
     public void writePostfix(Device d, SBorder b)
-	throws IOException
+        throws IOException
     {
-	SLineBorder border = (SLineBorder)b;
-	int thickness = border.getThickness();
-	Color lineColor = border.getLineColor();
-	Insets insets = b.getInsets();
+        SLineBorder border = (SLineBorder)b;
+        int thickness = border.getThickness();
+        Color lineColor = border.getLineColor();
+        Insets insets = b.getInsets();
 
-	if (insets != null && none.equals(insets))
-	    d.append("\n</td></tr></table>");
+        if (insets != null && none.equals(insets))
+            d.append("\n</td></tr></table>");
 
-	d.append("</td>\n");
-	writeTD(d, lineColor, 1);
-	writeIMG(d, thickness, 1);
-	d.append("</td></tr>\n<tr>");
-	writeTD(d, lineColor, 3);
-	writeIMG(d, 1, thickness);
-	d.append("</td></tr></table>\n");
+        d.append("</td>\n");
+        writeTD(d, lineColor, 1);
+        writeIMG(d, thickness, 1);
+        d.append("</td></tr>\n<tr>");
+        writeTD(d, lineColor, 3);
+        writeIMG(d, 1, thickness);
+        d.append("</td></tr></table>\n");
     }
 
     public void writeTD(Device d, Color color, int colspan)
-	throws IOException
+        throws IOException
     {
-	d.append("<td bgcolor=\"")
-	    .append(Utils.toHexString(color))
-	    .append("\"");
+        d.append("<td bgcolor=\"")
+            .append(Utils.toHexString(color))
+            .append("\"");
 
-	if (colspan > 1)
-	    d.append(" colspan=\"")
-		.append(colspan)
-		.append("\">");
-	else
-	    d.append(">");
+        if (colspan > 1)
+            d.append(" colspan=\"")
+                .append(colspan)
+                .append("\">");
+        else
+            d.append(">");
     }
 
     public void writeIMG(Device d, int width, int height)
-	throws IOException
+        throws IOException
     {
-	d.append("<img height=\"")
-	    .append(height)
-	    .append("\" width=\"")
-	    .append(width)
-	    .append("\">");
+        d.append("<img height=\"")
+            .append(height)
+            .append("\" width=\"")
+            .append(width)
+            .append("\">");
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

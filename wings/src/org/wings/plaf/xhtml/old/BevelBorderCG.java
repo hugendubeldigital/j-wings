@@ -1,3 +1,17 @@
+/*
+ * $Id$
+ * (c) Copyright 2000 wingS development team.
+ *
+ * This file is part of wingS (http://wings.mercatis.de).
+ *
+ * wingS is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * Please see COPYING for the complete licence.
+ */
+
 package org.wings.plaf.xhtml.old;
 
 import java.awt.Insets;
@@ -17,64 +31,71 @@ public final class BevelBorderCG
     private final static Insets none = new Insets(0,0,0,0);
 
     public void writePrefix(Device d, SBorder b)
-	throws IOException
+        throws IOException
     {
-	SBevelBorder border = (SBevelBorder)b;
-	int bevelType = border.getBevelType();
-	Insets insets = b.getInsets();
+        SBevelBorder border = (SBevelBorder)b;
+        int bevelType = border.getBevelType();
+        Insets insets = b.getInsets();
 
-	d.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n<tr>");
-	writeTD(d, bevelType == SBevelBorder.RAISED, 3);
-	writeIMG(d);
-	d.append("</td></tr>\n<tr>");
-	writeTD(d, bevelType == SBevelBorder.RAISED, 1);
-	writeIMG(d);
-	d.append("</td>\n<td>");
-	if (insets != null && none.equals(insets))
-	    d.append("<table border=\"0\" cellpadding=\"")
-		.append(insets.left)
-		.append("\"><tr><td>\n");
+        d.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n<tr>");
+        writeTD(d, bevelType == SBevelBorder.RAISED, 3);
+        writeIMG(d);
+        d.append("</td></tr>\n<tr>");
+        writeTD(d, bevelType == SBevelBorder.RAISED, 1);
+        writeIMG(d);
+        d.append("</td>\n<td>");
+        if (insets != null && none.equals(insets))
+            d.append("<table border=\"0\" cellpadding=\"")
+                .append(insets.left)
+                .append("\"><tr><td>\n");
     }
 
     public void writePostfix(Device d, SBorder b)
-	throws IOException
+        throws IOException
     {
-	SBevelBorder border = (SBevelBorder)b;
-	int bevelType = border.getBevelType();
-	Insets insets = b.getInsets();
+        SBevelBorder border = (SBevelBorder)b;
+        int bevelType = border.getBevelType();
+        Insets insets = b.getInsets();
 
-	if (insets != null && none.equals(insets))
-	    d.append("\n</td></tr></table>");
+        if (insets != null && none.equals(insets))
+            d.append("\n</td></tr></table>");
 
-	d.append("</td>\n");
-	writeTD(d, bevelType != SBevelBorder.RAISED, 1);
-	writeIMG(d);
-	d.append("</td></tr>\n<tr>");
-	writeTD(d, bevelType == SBevelBorder.RAISED, 1);
-	d.append("</td>");
-	writeTD(d, bevelType != SBevelBorder.RAISED, 2);
-	writeIMG(d);
-	d.append("</td></tr></table>\n");
+        d.append("</td>\n");
+        writeTD(d, bevelType != SBevelBorder.RAISED, 1);
+        writeIMG(d);
+        d.append("</td></tr>\n<tr>");
+        writeTD(d, bevelType == SBevelBorder.RAISED, 1);
+        d.append("</td>");
+        writeTD(d, bevelType != SBevelBorder.RAISED, 2);
+        writeIMG(d);
+        d.append("</td></tr></table>\n");
     }
 
     public void writeTD(Device d, boolean color, int colspan)
-	throws IOException
+        throws IOException
     {
-	if (color == WHITE)
-	    d.append("<td bgcolor=\"white\"");
-	else
-	    d.append("<td bgcolor=\"BLACK\"");
-	if (colspan > 1)
-	    d.append(" colspan=\"")
-		.append(colspan)
-		.append("\">");
-	else
-	    d.append(">");
+        if (color == WHITE)
+            d.append("<td bgcolor=\"white\"");
+        else
+            d.append("<td bgcolor=\"BLACK\"");
+        if (colspan > 1)
+            d.append(" colspan=\"")
+                .append(colspan)
+                .append("\">");
+        else
+            d.append(">");
     }
 
     public void writeIMG(Device d)
-	throws IOException
+        throws IOException
     {
-	d.append("<img height=\"1\" width=\"1\">");
+        d.append("<img height=\"1\" width=\"1\">");
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */
