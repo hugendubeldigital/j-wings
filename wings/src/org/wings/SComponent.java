@@ -110,7 +110,7 @@ public abstract class SComponent
     protected boolean opaque = true;
 
     /** The container, this component resides in. */
-    protected SContainer parent;
+    protected SFrame parent;
 
     /** The frame, this component resides in. */
     protected SFrame parentFrame;
@@ -182,7 +182,7 @@ public abstract class SComponent
      * Return the parent container.
      * @return the container this component resides in
      */
-    public final SContainer getParent() {
+    public final SFrame getParent() {
         return parent;
     }
 
@@ -191,7 +191,7 @@ public abstract class SComponent
      *
      * @param p the container
      */
-    public void setParent(SContainer p) {
+    public void setParent(SFrame p) {
         parent = p;
         if (p != null)
             setParentFrame(p.getParentFrame());
@@ -256,7 +256,8 @@ public abstract class SComponent
     }
 
     /**
-     * Removes the specified component listener so that it no longer
+     * 
+     s the specified component listener so that it no longer
      * receives component events from this component. This method performs
      * no function, nor does it throw an exception, if the listener
      * specified by the argument was not previously added to this component.
@@ -1048,6 +1049,7 @@ public abstract class SComponent
         }
       } else {
         ToolTipManager.sharedInstance().unregisterComponent(this);
+        tooltip = t;
       }
       
     }
@@ -1705,6 +1707,15 @@ public abstract class SComponent
         if (getParentFrame() != null) {
             getParentFrame().focusRequest(this); 
         }
+    }
+    
+   /**
+    * Makes this <code>SComponent</code> unavalable
+    * This Method is called internal and shudl not be called directly
+    **/
+    
+    public void removeNotify() {
+        /* currently nothing to do, but great to overwrite for some dangling eventListener :) */
     }
 }
 

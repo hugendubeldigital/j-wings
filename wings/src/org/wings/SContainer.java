@@ -304,7 +304,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
         int index = getComponentList().indexOf(c);
         if ( getComponentList().remove(c) ) {
             getConstraintList().remove(index);
-
+            c.removeNotify();
             fireContainerEvent(SContainerEvent.COMPONENT_REMOVED, c);
 
             c.setParent(null);
