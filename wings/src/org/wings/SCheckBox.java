@@ -99,7 +99,7 @@ public class SCheckBox extends SButton
     }
 
     /**
-     * TODO: documentation
+     * create a checkbox with a text-label.
      *
      * @param text
      */
