@@ -17,15 +17,22 @@ package org.wings;
 
 import java.awt.event.ActionEvent;
 import javax.swing.Action;
-import org.wings.plaf.*;
 
 /**
- * TODO: documentation
- * A button implementation.
- * This is also a button for usage in a renderer (e.g {@link STableCellRenderer}).
+ * This is a button implementation.
+ * <p>
+ * A button can be composed of either text, an image, or both. When inside a
+ * {@link org.wings.SForm} it will be rendered as HTML button, otherwise as
+ * HTML anchor. You can influence this behaviour calling 
+ * {@link #setShowAsFormComponent(boolean)}.      
+ * <p>
+ * Besides a button's typical usage you may return SButton objects in  
+ * renders, e.g. in a {@link org.wings.table.STableCellRenderer} 
+ * implementation.
+ * <p>
  * This button implementation encodes its action command into the low level
- * event and fires the encoded action command and not the actual action command,
- * if an low level event triggers a button press.
+ * event and fires the encoded action command and not the actual action 
+ * command, if a low level event triggers a push of a button.
  *
  * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -45,23 +52,23 @@ public class SButton extends SAbstractButton {
      * Creates a button where properties are taken from the
      * Action supplied.
      *
-     * @param a the Action used to specify the new button
+     * @param action the Action used to specify the new button
      */
     public SButton(Action action) {
         super(action);
     }
   
     /**
-     * Creates a button with no set text or icon.
+     * Creates a button with no text or icon set.
      */
     public SButton() {
         super();
     }
   
     /**
-     * Creates a button with a icon
+     * Creates a button with a icon.
      *
-     * @param icon  the Icon image to display on the button
+     * @param i the Icon image to display on the button
      */
     public SButton(SIcon i) {
         super();
@@ -71,8 +78,8 @@ public class SButton extends SAbstractButton {
     /**
      * Creates a button with initial text and an icon.
      *
-     * @param text  the text of the button
-     * @param icon  the Icon image to display on the button
+     * @param text the text of the button
+     * @param i    the Icon image to display on the button
      */
   
     public SButton(String text, SIcon i) {
