@@ -53,7 +53,7 @@ public class SDefaultTableCellRenderer
         setIcon(null);
 
         if (value == null)
-            setText("&nbsp;");
+            setText("<html>&nbsp;");
         else if (value instanceof SIcon)
             setIcon((SIcon)value);
         else if ( value instanceof SComponent ) {
