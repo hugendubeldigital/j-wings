@@ -284,16 +284,20 @@ public class SCheckBox extends SButton
     }
 
     /**
-     * TODO: documentation
-     *
+     * Add this button to a button group. This influences the event-prefix
+     * this button reports to the request dispatcher: it will change to
+     * the button group's prefix.
      * @param g
      */
     protected void setGroup(SButtonGroup g) {
-        group = g;
-
-        if ( group!=g && getDispatcher()!=null ) {
-            getDispatcher().unregister(this);
-            getDispatcher().register(this);
+        if ( group!=g ) {
+            if (getDispatcher()!=null ) {
+                getDispatcher().unregister(this);
+                group = g;
+                getDispatcher().register(this);
+            }
+            else
+                group = g;
         }
     }
 
