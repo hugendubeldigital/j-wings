@@ -23,27 +23,30 @@ import org.wings.template.parser.SGMLTag;
 
 class PlafCompiler {
     final static String varPrefix = "__";
-
+    
     public static void main(String argv[]) throws Exception {
         File cwd = (new File(".")).getCanonicalFile();
+        boolean verbose = true;
+
 	if (argv.length == 0) {
 	    usage();
 	    return;
 	}
 	for (int arg=0; arg < argv.length; ++arg) {
+            TemplateParser parser = null;
             try {
                 PlafReader input = new PlafReader(cwd, argv[arg]);
-                TemplateParser parser;
                 SGMLTag tag = new SGMLTag(input);
                 while (!tag.finished()) {
                     String name = tag.getAttribute("NAME", null);
                     String forClass = tag.getAttribute("FOR", null);
                     if (name == null || forClass == null) {
-                        throw new IOException ("'name' and 'for' as template attributes expected");
+                        throw new IOException (argv[arg] +": 'name' and 'for' as template attributes expected");
                     }
-                    System.err.println ("template for " + name);
+                    if (verbose)
+                        System.err.println ("template for " + name);
                     parser = new TemplateParser(name, cwd, new File(argv[arg]),
-                                                "org.wings.plaf.css1",
+                                                "org.wings.plaf.css1", // hack.
                                                 forClass);
                     parser.parse(input);
                     parser.generate(cwd);
@@ -53,6 +56,9 @@ class PlafCompiler {
             }
             catch (IOException e) {
                 System.err.println(e.getMessage());
+            }
+            catch (ParseException pe) {  // exits parsing of current file.
+                parser.reportError(pe.getMessage());
             }
 	}
     }

@@ -79,6 +79,7 @@ public class JavaBuffer {
      */
     public void removeTailNewline() {
         int length = output.length();
+        if (length == 0) return;
         boolean done = false;
         do {
             --length;
