@@ -51,84 +51,84 @@ public class TabbedPaneExample extends WingSetPane
         final STabbedPane tpane = new STabbedPane();
         tpane.setPreferredSize(new SDimension(400, 200));
         tpane.setBackground(new java.awt.Color(200, 200, 255));
-        tpane.setShowAsFormComponent(true);
+        tpane.setShowAsFormComponent(false);
 
         SButtonGroup grp = new SButtonGroup();
         SPanel choice = new SPanel(new SFlowLayout());
         choice.add(new SLabel("Tab Placement: "));
         Object[] btns = {
-                "Top",		new Integer(SConstants.TOP),
-                "Left",		new Integer(SConstants.LEFT),
-                "Bottom",	new Integer(SConstants.BOTTOM),
-                "Right",	new Integer(SConstants.RIGHT),
-                };
+	    "Top",		new Integer(SConstants.TOP),
+	    "Left",		new Integer(SConstants.LEFT),
+	    "Bottom",	new Integer(SConstants.BOTTOM),
+	    "Right",	new Integer(SConstants.RIGHT),
+	};
 
         for (int i = 0; i < btns.length; i += 2)
-        {
-            SRadioButton btn = new SRadioButton(btns[i].toString());
-            btn.setActionCommand(btns[i + 1].toString());
-            btn.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    tpane.setTabPlacement(new Integer(ae.getActionCommand()).intValue());
-                }
-            });
-            btn.setShowAsFormComponent(false);
-            grp.add(btn);
-            if (i == 0)
-                grp.setSelected(btn, true);
-            choice.add(btn);
-        }
+	    {
+		SRadioButton btn = new SRadioButton(btns[i].toString());
+		btn.setActionCommand(btns[i + 1].toString());
+		btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+			    tpane.setTabPlacement(new Integer(ae.getActionCommand()).intValue());
+			}
+		    });
+		btn.setShowAsFormComponent(false);
+		grp.add(btn);
+		if (i == 0)
+		    grp.setSelected(btn, true);
+		choice.add(btn);
+	    }
         choice.setHorizontalAlignment(SConstants.CENTER);
         c.add(choice, "North");
 
         final STextArea text = new STextArea();
         text.setPreferredSize(new SDimension(400, 200));
         for (int i = 0; i < 12; ++i)
-        {
-            SPanel p = new SPanel(new SBorderLayout());
-            p.add(new SLabel("Tab # " + i), "North");
-            p.add(text);
-            tpane.add("Tab " + i, p);
-        }
-		tpane.setIconAt(3, new ResourceImageIcon("org/wings/icons/JavaCup.gif"));
-		tpane.setIconAt(8, new ResourceImageIcon("wingset/icons/cowSmall.gif"));
-		tpane.setEnabledAt(1, false);
+	    {
+		SPanel p = new SPanel(new SBorderLayout());
+		p.add(new SLabel("Tab # " + i), "North");
+		p.add(text);
+		tpane.add("Tab " + i, p);
+	    }
+	tpane.setIconAt(3, new ResourceImageIcon("org/wings/icons/JavaCup.gif"));
+	tpane.setIconAt(8, new ResourceImageIcon("wingset/icons/cowSmall.gif"));
+	tpane.setEnabledAt(1, false);
         tpane.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent ce) {
-                String t = text.getText();
-                t += "\n";
-                t += "wingS: Changed to tab " + tpane.getSelectedIndex() + "\n";
-                text.setText(t);
-            }
-        });
+		public void stateChanged(ChangeEvent ce) {
+		    String t = text.getText();
+		    t += "\n";
+		    t += "wingS: Changed to tab " + tpane.getSelectedIndex() + "\n";
+		    text.setText(t);
+		}
+	    });
         c.add(tpane, "Center");
 
         choice = new SPanel(new SFlowDownLayout());
         grp = new SButtonGroup();
         choice.add(new SLabel("Color: "));
         final Object[] clrs = {
-                "Yellow",		Color.yellow,
-                "Green",		Color.green,
-                "Lightblue",	new Color(200, 200, 255),
-                "Lightgray",	Color.lightGray,
-                "Orange",		new Color(255, 153, 0)};
+	    "Yellow",		Color.yellow,
+	    "Green",		Color.green,
+	    "Lightblue",	new Color(200, 200, 255),
+	    "Lightgray",	Color.lightGray,
+	    "Orange",		new Color(255, 153, 0)};
 
         for (int i = 0; i < clrs.length; i += 2)
-        {
-            SRadioButton btn = new SRadioButton(clrs[i].toString());
-            btn.setActionCommand("" + i);
-            btn.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    tpane.setBackground(
-                        (Color) clrs[new Integer(ae.getActionCommand()).intValue() + 1]);
-                }
-            });
-            btn.setShowAsFormComponent(false);
-            grp.add(btn);
-            if (i == 0)
-                grp.setSelected(btn, true);
-            choice.add(btn);
-        }
+	    {
+		SRadioButton btn = new SRadioButton(clrs[i].toString());
+		btn.setActionCommand("" + i);
+		btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+			    tpane.setBackground(
+						(Color) clrs[new Integer(ae.getActionCommand()).intValue() + 1]);
+			}
+		    });
+		btn.setShowAsFormComponent(false);
+		grp.add(btn);
+		if (i == 0)
+		    grp.setSelected(btn, true);
+		choice.add(btn);
+	    }
         choice.setHorizontalAlignment(SConstants.CENTER);
         c.add(choice, "West");
 
