@@ -1,0 +1,62 @@
+<template name="MenuItemCG" 
+          for="org.wings.SMenuItem"
+          extends="org.wings.plaf.css1.ButtonCG">
+
+<import>org.wings.script.*</import>
+
+<install>
+        component.addScriptListener(MenuCG.ENTER_ITEM);
+        component.addScriptListener(MenuCG.EXIT_ITEM);
+</install>
+
+protected void writeMenuItem(final Device device, SMenuItem menuItem, boolean withAnchor) 
+  throws IOException
+{
+    SIcon icon = getIcon(menuItem);
+
+    String text = menuItem.getText();
+
+    %><div class="menuitem" onMouseOver="enter_item(this)"<%
+    %> onMouseOut="exit_item(this)"><%
+
+    if ( withAnchor && menuItem.isEnabled() ) {
+        %><a href="<%
+        writeAnchorAddress(device, menuItem);
+        %>"><%
+    } 
+
+
+
+    %>&nbsp;&nbsp;<%
+
+    if ( icon!=null ) {	
+        %><img border="0" src="<%
+        %><%=icon.getURL()%>"<%
+        %><%|width=icon.getIconWidth()%><%
+        %><%|height=icon.getIconHeight()%><%
+        %> /><%
+    }
+
+    if ( text!=null ) {	
+        if ( menuItem.isEscapeSpecialChars()) {
+            %><%=text%><%
+        } else {
+            %><%#text%><% // write raw.
+        }
+    }
+
+    %>&nbsp;&nbsp;<%
+
+    if ( withAnchor && menuItem.isEnabled() ) {
+        %></a><%
+    } 
+    %></div><%
+}
+
+<write>
+
+<%
+    writeMenuItem(device, component, true);
+%>
+</write>
+</template>

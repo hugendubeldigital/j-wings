@@ -1,82 +1,8 @@
 <template name="MenuBarCG" for="org.wings.SMenuBar">
 <import>org.wings.script.*</import>
 
-private static final JavaScriptListener ENTER_ITEM =
-	new JavaScriptListener("dummy1", "dummy",
-            "function enter_item(item) {\n" +
-            "    item.setAttribute('class', 'amenuitem');\n" +
-            "}\n");
-
-private static final JavaScriptListener EXIT_ITEM =
-	new JavaScriptListener("dummy2", "dummy",
-            "function exit_item(item) {\n" +
-            "    item.setAttribute('class', 'menuitem');\n" +
-            "}\n");
-
-private static final JavaScriptListener TOGGLE_MENU =
-	new JavaScriptListener("dummy3", "dummy",
-            "{var active_popups = new Array();\n" +
-            "function toggle_menu(popup,depth) {\n" +
-            "    var show = (popup.style.display == 'none');\n" +
-            "    for ( var i=depth; i<active_popups.length; i++ ) {\n" +
-            "        if (active_popups[i] != null) {\n" +
-            "            active_popups[i].parentNode.setAttribute('class', 'menu');\n" +
-            "            active_popups[i].style.display = 'none'\n" +
-            "            active_popups[i] = null;\n" +
-            "        }\n" +
-            "    }\n" +
-            "    if (show == true) {\n" +
-            "        popup.parentNode.setAttribute('class', 'amenu');\n" +
-            "        popup.style.display = 'inline'\n" +
-            "        active_popups[depth] = popup;\n" +
-            "    }\n" +
-            "}}\n");
-
-
-<install>
-        component.addScriptListener(ENTER_ITEM);
-        component.addScriptListener(EXIT_ITEM);
-        component.addScriptListener(TOGGLE_MENU);
-</install>
-
-protected void writeMenu(final Device device, SMenu menu, int depth) 
-    throws IOException
-{
-    String menuClass = menu.isActive() ? "amenu" : "menu";
-    String id = "pop_" + menu.getComponentId();
-
-    %><div class="<%=menuClass%>"<%
-    %> onMouseDown="toggle_menu(document.getElementById('<%=id%>'),<%=depth%>)"><%
-    %>&nbsp;&nbsp;<a href="#"><%=menu.getText()%></a>&nbsp;&nbsp;</div><table><tr><td><%
-    %><div id="<%=id%>" class="pdmenu" style="display:none"><%
-
-    for ( int i=0; i<menu.getMenuComponentCount(); i++ ) {
-        SComponent menuComponent = menu.getMenuComponent(i);
-
-        if ( menuComponent instanceof SMenu ) {
-            writeMenu(device, (SMenu)menuComponent, depth+1);
-        } else {
-            writeMenuItem(device, (SMenuItem)menuComponent);
-        }
-    }
-
-    %></div></td></tr></table><%
-}
-
-protected void writeMenuItem(final Device device, SMenuItem menuItem) 
-    throws IOException
-{
-    %><div class="menuitem" onMouseOver="enter_item(this)"<%
-    %> onMouseOut="exit_item(this)">&nbsp;&nbsp;<%
-    menuItem.write(device);
-    %>&nbsp;&nbsp;</div><%
-}
-
-
-
 <write>
 <%
-        SButton b = null;
         SMenuBar mbar = (SMenuBar)component;
         int mcount = mbar.getMenuCount();
         
@@ -89,53 +15,13 @@ protected void writeMenuItem(final Device device, SMenuItem menuItem)
          * Due to the curreent Opera problems we are switching to the older Menue style
          * in all other cases we do a normal job
          ***/
-        if(!"Opera".equals(mbar.getSession().getUserAgent().getBrowserName())) {
-
             for (int i = 0; i < mcount; i++) {
-                %><td><%
-                SMenuItem menuItem = mbar.getMenuItem(i);
-                if ( menuItem instanceof SMenu ) {
-                    writeMenu(device, (SMenu)menuItem, 0);
-                } else {
-                    writeMenuItem(device, menuItem);
-                }
-                %></td><%
-            }
-        } else {
-            for (int i = 0; i < mcount; i++) {
-                SMenu menu = (SMenu)mbar.getComponentAtIndex(i);
-                if (menu.isActive()) {
-                    %><td class="amenu"><%
-                    menu.write(device);
-                    %><div id="MenuBarLayer" class="pdmenu"><%
-
-                    int micount = menu.getMenuComponentCount();
-                    for (int mi = 0; mi < micount; mi++) {
-                        SComponent menuitem = menu.getMenuComponent(mi);
-                        if (menuitem instanceof SSeparator) {
-                            %><br><img src="" class="menuseparator" width="<%
-                            %><%=((SSeparator)menuitem).getWidth()%><%
-                            %>" height="1"><br><%
-                        }
-                        else {
-                           %>&nbsp;<%
-                           menuitem.write(device);
-                            if ((mi + 1) < micount) {
-                                if (!(menu.getMenuComponent(mi + 1) instanceof SSeparator))
-                                    %>&nbsp;<br><%
-                            }
-                        }
-                    }
-                    %></div><%
-                    %></td><%
-                }
-                else {
-                    %><td class="menu"><%
-                    menu.write(device);
+                if ( mbar.getMenuItem(i).isVisible() ) {
+                    %><td valign="top"><%
+	            mbar.getMenuItem(i).write(device);
                     %></td><%
                 }
             }
-        }
         %></tr></table><%
         %></div><%
 %>

@@ -35,7 +35,9 @@ import org.wings.externalizer.ExternalizeManager;
  */
 public class SMenuItem extends SButton
 {
-    private static final String cgClassID = "ButtonCG";
+    private static final String cgClassID = "MenuItemCG";
+
+    protected SMenu parent;
 
     /**
      * Create a new MenuItem.
@@ -65,7 +67,23 @@ public class SMenuItem extends SButton
         super(text, icon);
         setNoBreak( true );
     }
-}
+
+    final void setParentMenu(SMenu parent) {
+        this.parent = parent;
+        setParentFrame(parent!=null ? parent.getParentFrame() : null);
+    }
+
+    public SMenu getParentMenu() {
+        return this.parent;
+    }
+
+    public String getCGClassID() {
+        return cgClassID;
+    }
+
+    public void setCG(MenuBarCG cg) {
+        super.setCG(cg);
+    }}
 
 /*
  * Local variables:

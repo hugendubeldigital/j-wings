@@ -1,0 +1,76 @@
+<template name="MenuCG" 
+          for="org.wings.SMenu"
+          extends="org.wings.plaf.css1.MenuItemCG">
+
+<import>org.wings.script.*</import>
+
+public static final JavaScriptListener ENTER_ITEM =
+	new JavaScriptListener("onMouseOver", "enter_item(this)",
+            "function enter_item(item) {\n" +
+            "    item.setAttribute('class', 'amenuitem');\n" +
+            "}\n");
+
+public static final JavaScriptListener EXIT_ITEM =
+	new JavaScriptListener("onMouseOut", "exit_item(this)",
+            "function exit_item(item) {\n" +
+            "    item.setAttribute('class', 'menuitem');\n" +
+            "}\n");
+
+public static final JavaScriptListener TOGGLE_MENU =
+	new JavaScriptListener("onMouseDown", "",
+            "{var active_popups = new Array();\n" +
+            "function toggle_menu(menuId, popupId,depth) {\n" +
+            "    var popup = document.getElementById(popupId);\n" +
+            "    var menu = document.getElementById(menuId);\n" +
+            "    var show = (popup.style.display == 'none');\n" +
+            "    for ( var i=depth; i<active_popups.length; i++ ) {\n" +
+            "        if (active_popups[i] != null) {\n" +
+            "            active_popups[i].parentNode.setAttribute('class', 'menu');\n" +
+            "            active_popups[i].style.display = 'none'\n" +
+            "            active_popups[i] = null;\n" +
+            "        }\n" +
+            "    }\n" +
+            "    if (show == true) {\n" +
+            "        popup.style.left = menu.offsetWidth;\n" +
+            "        popup.style.display = 'inline'\n" +
+            "        popup.style.zIndex = depth+1\n" +
+            "        active_popups[depth] = popup;\n" +
+            "    }\n" +
+            "}}\n");
+
+
+<install>
+        component.addScriptListener(ENTER_ITEM);
+        component.addScriptListener(EXIT_ITEM);
+        component.addScriptListener(TOGGLE_MENU);
+</install>
+
+protected int getMenuLevel(SMenu menu) {
+    if ( menu.getParentMenu()!=null ) {
+	return getMenuLevel(menu.getParentMenu()) + 1;
+    } else {
+	return 0;
+    }
+}
+
+<write>
+<%
+    SMenu menu = component;	
+
+    String menuClass = menu.isEnabled() ? "amenu" : "menu";
+    String popupId = "pop_" + menu.getComponentId();
+    String menuId = "menu_" + menu.getComponentId();
+    int level = getMenuLevel(menu);
+
+    %><div id="<%=menuId%>" class="menu" onMouseDown="toggle_menu('<%=menuId%>', '<%=popupId%>', <%=level%>)"><%
+    writeMenuItem(device, menu, false);
+    %></div><%
+    %><table id="<%=popupId%>" class="pdmenu" style="display:none"><tr><td><%
+
+    for ( int i=0; i<menu.getMenuComponentCount(); i++ ) {
+        menu.getMenuComponent(i).write(device);
+    }
+    %></td></tr></table><%
+%>
+</write>
+</template>

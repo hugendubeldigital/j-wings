@@ -34,9 +34,7 @@ import org.wings.externalizer.ExternalizeManager;
 public class SMenu extends SMenuItem {
     private static final String cgClassID = "MenuCG";
 
-    private boolean fActive = false;
-
-    private boolean fKeepOpen = false;
+    protected final ArrayList menuItems = new ArrayList();
 
     /**
      * TODO: documentation
@@ -70,43 +68,25 @@ public class SMenu extends SMenuItem {
 
 
     /**
-     * Set this menu opened or not.
+     * Add a menu item to this menu.
      */
-    public void setActive(boolean active) {
-        if (active != fActive) {
-            fActive = active;
-            reload(ReloadManager.RELOAD_CODE);
-        }
-    }
-
-    /**
-     * Is this menu opened or not
-     */
-    public boolean isActive() {
-        return fActive;
+    public void add(SMenuItem menuItem) {
+        menuItems.add(menuItem);
+        menuItem.setParentMenu(this);
     }
 
     /**
      * Add a menu item to this menu.
      */
-    public void add(SMenuItem menuitem) {
-        menuitem.addActionListener(new MenuItemAction(this));
-        menuitem.setParentFrame(getParentFrame());
-        fItems.add(menuitem);
-    }
-
-    /**
-     * Add a menu item to this menu.
-     */
-    public void add(SComponent menuitem) {
-        menuitem.setParentFrame(getParentFrame());
-        fItems.add(menuitem);
+    public void add(SComponent menuItem) {
+        menuItems.add(menuItem);
+        menuItem.setParentFrame(getParentFrame());
     }
 
     public void setParentFrame(SFrame f) {
         super.setParentFrame(f);
-        for ( int i = 0; i < fItems.size(); i++ )
-            ((SComponent) fItems.get( i )).setParentFrame( f );
+        for ( int i=0; i<menuItems.size(); i++ )
+            ((SComponent)menuItems.get(i)).setParentFrame(f);
     }
 
     /**
@@ -116,67 +96,48 @@ public class SMenu extends SMenuItem {
         this.add(new SMenuItem(menuitem));
     }
 
-
     public SComponent getMenuComponent(int pos) {
-        return (SComponent)fItems.get(pos);
+        return (SComponent)menuItems.get(pos);
     }
 
     /**
      * Return the number of items on the menu, including separators.
      */
     public int getMenuComponentCount() {
-        return fItems.size();
+        return menuItems.size();
     }
 
     /**
      * Remove all {@link SMenuItem} from this menu.
      */
     public void removeAll() {
-        fItems.clear();
+        while ( menuItems.size()>0 ) {
+            remove(0);
+        }
     }
 
     /**
      * Removes the menu item at specified index from the menu.
      */
     public void remove(int pos) {
-        fItems.remove(pos);
+        remove(getMenuComponent(pos));
     }
 
     /**
      * removes a specific menu item component.
      */
     public void remove(SComponent comp) {
-        fItems.remove(comp);
+        menuItems.remove(comp);
+        comp.setParentFrame(null);
     }
 
-    /**
-     * Define, if Menu should left open or not, after user
-     * clicked menuitem. Normal behaviour is false, that means
-     * that the menu closes, after user selected a menuitem.
-     */
-    public void setKeepOpen(boolean keepOpen)
-    {
-        this.fKeepOpen = keepOpen;
+    public String getCGClassID() {
+        return cgClassID;
     }
 
-    /**
-     * Close menu when an item was klicked.
-     */
-    class MenuItemAction implements ActionListener {
-        public MenuItemAction(SMenu menu) {
-            fMenu = menu;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            if (fKeepOpen) return;
-            SMenuItem menuitem = (SMenuItem)e.getSource();
-            fMenu.setActive(false);
-        }
-
-        private SMenu fMenu = null;
+    public void setCG(MenuBarCG cg) {
+        super.setCG(cg);
     }
-
-    protected final ArrayList fItems = new ArrayList();
 }
 
 /*

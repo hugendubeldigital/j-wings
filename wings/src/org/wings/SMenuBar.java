@@ -302,11 +302,11 @@ public class SMenuBar extends SContainer
      */
     public void closeAllMenus()
     {
-        for ( int i = 0; i < fComponents.size(); i++ ) {
+        /*        for ( int i = 0; i < fComponents.size(); i++ ) {
             if ( fComponents.get(i) instanceof SMenu ) {
                 ((SMenu) fComponents.get(i)).setActive( false );
             }
-        }
+            }*/
     }
 
     /**
@@ -324,9 +324,9 @@ public class SMenuBar extends SContainer
         public void actionPerformed( ActionEvent e )
         {
             SMenu menu = (SMenu) e.getSource();
-            boolean active = menu.isActive();
-            fMenuBar.closeAllMenus();
-            menu.setActive( ! active );
+            //            boolean active = menu.isActive();
+            //            fMenuBar.closeAllMenus();
+            //menu.setActive( ! active );
         }
     }
 
