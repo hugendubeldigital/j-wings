@@ -2,7 +2,7 @@ BODY {
    background: #dedede;
    padding: 0;
    margin: 10;
-   border-width: 0 
+   border-width: 0;
 }
 
 P { 
@@ -163,7 +163,7 @@ H3 {
    font-weight: normal;
 }
 
-.anchortabbedpaneselection {
+.tabselected {
    display: inline;
    color: #000000;
    background-color: #AAAAFF;
@@ -173,9 +173,10 @@ H3 {
    padding-top: 7px;
    padding-bottom: 0px;
    font-weight: bold;
+   white-space: nowrap;
 }
 
-.anchortabbedpanenonselection {
+.tabnotselected {
    display: inline;
    color: #000000;
    font-family: sans-serif;
@@ -184,6 +185,7 @@ H3 {
    padding-top: 7px;
    padding-bottom: 0px;
    font-weight: normal;
+   white-space: nowrap;
 }
 
 .topleft { 
@@ -221,9 +223,13 @@ H3 {
    vertical-align: middle;
 }
 
+.toolbar {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	background-color: #CCCCCC;
+}
+
 .menubar {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 80%;
 	background-color: #CCCCCC;
 	border-color: #EEEEEE #999999 #999999 #eeeeee;
 	padding-right: 8px;
@@ -239,7 +245,6 @@ H3 {
 
 .menu {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 80%;
 	background-color: #CCCCCC;
 	padding-right: 8px;
 	padding-left: 8px;
@@ -249,7 +254,6 @@ H3 {
 
 .amenu {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 80%
 	background-color: #CCCCCC;
 	border-color: #EEEEEE #999999 #999999 #eeeeee;
 	padding-right: 8px;
@@ -265,11 +269,11 @@ H3 {
 
 .pdmenu {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 80%
 	background-color: #CCCCCC;
 	border-color: #EEEEEE #999999 #999999 #eeeeee;
 	position: absolute;
 	overflow: visible;
+	z-index: 1;
 	padding-right: 8px;
 	padding-left: 8px;
 	padding-top: 2px;
@@ -284,7 +288,7 @@ H3 {
 }
 
 .menuseparator { 
-	color: #CCCCCC;
+    color: #CCCCCC;
     height: 0px;
     white-space: 0;
     margin-top: 0px; 
@@ -306,6 +310,7 @@ H3 {
 .framebutton {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 80%;
+        background-color: #DEDEDE;
 	border-color: #EEEEEE #999999 #999999 #eeeeee;
 	overflow: visible;
 	position: relative;
@@ -315,9 +320,9 @@ H3 {
 	padding-top: 0px;
 	padding-bottom: 0px;
 	border-style: solid;
-	border-top-width: 1px;
-	border-right-width: 1px;
-	border-bottom-width: 1px;
+	border-top-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 0px;
 	border-left-width: 1px
 }
 
@@ -326,6 +331,7 @@ H3 {
 	font-size: 80%;
 	border-color: #EEEEEE #999999 #999999 #eeeeee;
    	color: #ffffff;
+	background-color: #5555AA;
 	overflow: visible;
 	position: relative;
 	visibility: visible;
