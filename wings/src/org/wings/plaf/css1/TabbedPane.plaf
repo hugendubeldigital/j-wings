@@ -484,7 +484,12 @@ protected void writeAnchor(final Device device, STabbedPane tabbed, int index, S
     
     String bname = SessionManager.getSession().getUserAgent().getBrowserName();
     if ("Konqueror".equals(bname)) {
-        text = org.wings.plaf.xhtml.Utils.escapeSpecialChars(text);
+        if (text.startsWith("<html>")) {
+            text = text.substring(6);
+        }
+        else {
+             text = org.wings.plaf.xhtml.Utils.escapeSpecialChars(text);
+        }
         text = text.replaceAll(" ", "&nbsp;");
         %><%#text%><%
     }
