@@ -69,6 +69,7 @@ public class WingSetSession
         STabbedPane tab = new STabbedPane();
         tab.setBackground(new java.awt.Color(206, 206, 206));
 
+        tab.add(new WingsImage(), "wingS!");
         tab.add(new LabelExample(), "Label");
         tab.add(new BorderExample(), "Border");
         tab.add(new TextComponentExample(), "Text Component");
@@ -83,8 +84,9 @@ public class WingSetSession
         tab.add(new RadioButtonExample(), "RadioButton");
         tab.add(new FileChooserExample(), "FileChooser");
         tab.add(new ScrollPaneExample(), "ScrollPane");
-        tab.addTab("Template", new ResourceImageIcon(WingSet.class, 
-                                                     "cowSmall.gif"), 
+        tab.add(new LayoutExample(), "Simple Layout");
+        tab.addTab("Template Layout", new ResourceImageIcon(WingSet.class, 
+                                                            "cowSmall.gif"), 
                    new TemplateExample(), "Template Layout Manager");
         //tab.add(new DateChooserExample(), "DateChooser");
 
