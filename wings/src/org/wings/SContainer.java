@@ -136,7 +136,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @return current layout
      */
-    public final SLayoutManager getLayout() {
+    public SLayoutManager getLayout() {
         return layout;
     }
 
@@ -147,7 +147,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @param    l the container listener
      */
-    public final void addContainerListener(SContainerListener l) {
+    public void addContainerListener(SContainerListener l) {
         addEventListener(SContainerListener.class, l);
     }
 
@@ -158,7 +158,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @param 	l the container listener
      */
-    public final void removeContainerListener(SContainerListener l) {
+    public void removeContainerListener(SContainerListener l) {
         removeEventListener(SContainerListener.class, l);
     }
 
@@ -201,14 +201,14 @@ public class SContainer extends SComponent implements ClickableRenderComponent
         }
     }
 
-    protected final ArrayList getComponentList() {
+    protected ArrayList getComponentList() {
         if ( componentList == null ) {
             componentList = new ArrayList(3);
         }
         return componentList;
     }
 
-    protected final ArrayList getConstraintList() {
+    protected ArrayList getConstraintList() {
         if ( constraintList == null )
             constraintList = new ArrayList(3);
         return constraintList;
@@ -220,7 +220,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @return number of components
      */
-    public final int getComponentCount() {
+    public int getComponentCount() {
         return getComponentList().size();
     }
 
@@ -241,11 +241,11 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param i position
      * @return component at given pos
      */
-    public final SComponent getComponent(int i) {
+    public SComponent getComponent(int i) {
         return (SComponent)getComponentList().get(i);
     }
 
-    public final SComponent[] getComponents() {
+    public SComponent[] getComponents() {
         // vorsichtig mit Threads ( eigentlich TreeLock!!!)
         return (SComponent[])getComponentList().toArray(new SComponent[getComponentCount()]);
     }
@@ -257,7 +257,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param i position
      * @return constraint for component at given position
      */
-    public final Object getConstraintAt(int i) {
+    public Object getConstraintAt(int i) {
         return getConstraintList().get(i);
     }
 
@@ -299,7 +299,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @return the removed component
      * @deprecated use {@link #remove(int)} instead for swing conformity
      */
-    public final SComponent removeComponentAt(int i) {
+    public SComponent removeComponentAt(int i) {
         SComponent c = getComponentAt(i);
         remove(c);
         return c;
@@ -321,7 +321,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param index remove the component at position <i>index</i>
      * 	from this container
      */
-    public final void remove(int index) {
+    public void remove(int index) {
         removeComponentAt(index);
     }
 
@@ -330,14 +330,14 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * 
      * @deprecated use {@link #removeAll()} instead for swing conformity
      */
-    public final void removeAllComponents() {
+    public void removeAllComponents() {
         removeAll();
     }
 
     /**
      * Removes all components from the container.
      */
-    public final void removeAll() {
+    public void removeAll() {
         while ( getComponentCount() > 0 ) {
             removeComponentAt(0);
         }
@@ -351,7 +351,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param c the component to add
      * @return the added component
      */
-    public final SComponent add(SComponent c) {
+    public SComponent add(SComponent c) {
         return addComponent(c, null);
     }
 
@@ -363,7 +363,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param constraint the constraint for this component
      * @return the added component
      */
-    public final void add(SComponent c, Object constraint) {
+    public void add(SComponent c, Object constraint) {
         addComponent(c, constraint);
     }
 
@@ -375,7 +375,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param index the index of the component
      * @return the added component
      */
-    public final SComponent add(SComponent c, int index) {
+    public SComponent add(SComponent c, int index) {
         return addComponent(c, null, index);
     }
 
@@ -387,7 +387,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param index the index of the component
      * @return the added component
      */
-    public final void add(SComponent c, Object constraint, int index) {
+    public void add(SComponent c, Object constraint, int index) {
         addComponent(c, constraint, index);
     }
 
@@ -422,7 +422,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param index the index of the component
      * @return the added component
      */
-    public final SComponent addComponent(SComponent c, int index) {
+    public SComponent addComponent(SComponent c, int index) {
         return addComponent(c, null, index);
     }
 
@@ -514,7 +514,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param visitor an implementation of the {@link ComponentVisitor}
      *                interface.
      */
-    public final void inviteEachComponent(ComponentVisitor visitor) 
+    public void inviteEachComponent(ComponentVisitor visitor) 
         throws Exception {
 	Iterator iterator = getComponentList().iterator();
 	while (iterator.hasNext()) {
