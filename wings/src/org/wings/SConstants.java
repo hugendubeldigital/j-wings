@@ -47,7 +47,6 @@ public interface SConstants
     String MENU_LIST      = "menu";
     String DIR_LIST       = "dir";
 
-    /*
     String[] ORDER_TYPE_CIRCLE      = {"ul", "circle"};
     String[] ORDER_TYPE_SQUARE      = {"ul", "square"};
     String[] ORDER_TYPE_DISC        = {"ul", "disc"};
@@ -57,7 +56,6 @@ public interface SConstants
     String[] ORDER_TYPE_NORMAL      = {"ul", null};
     String[] ORDER_TYPE_BIG_ROMAN   = {"ol", "I"};
     String[] ORDER_TYPE_SMALL_ROMAN = {"ol", "i"};
-    */
     
     // Textarea related
     int NO_WRAP       = 0;
