@@ -72,7 +72,7 @@ public final class TabbedPaneCG
         d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">")
             .append("<tr><td width=\"17\"></td><td bgcolor=\"#000000\"><img src=\"")
             .append(transAdr)
-            .append("width=\"1\" height=\"1\" /></td></tr></table>\n");
+            .append("\" width=\"1\" height=\"1\" /></td></tr></table>\n");
 
         //d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">")
         //    .append("<tr><td width=\"17\"></td><td bgcolor=\"#000000\"><img height=\"1\" width=\"1\"/></td></tr></table>\n");

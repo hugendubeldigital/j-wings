@@ -39,7 +39,7 @@ public class FullScreenLayoutCG
     public void write(Device d, SLayoutManager l)
         throws IOException
     {
-		d.append("\n<div style=\"position:absolute; z-index:1; left: 0; top: 0; width: 100%; height: 100%\">"); 
+        d.append("\n<div style=\"position:absolute; z-index:1; left: 0; top: 0; width: 100%; height: 100%\">");
         super.write( d, l );
         d.append("</div>");
     }
