@@ -23,13 +23,16 @@
         %><%|size=list.getVisibleRowCount()%><%
         %><%|tabindex=list.getFocusTraversalIndex()%><%
         %><%|multiple=(list.getSelectionMode() == SConstants.MULTIPLE_SELECTION) ? "multiple" : null%><%
+	if ( !list.isEnabled() ) {
+	    %> disabled="1"<% // ="1" needed for XHTML
+        }	
 
         list.removeScriptListener(selectListener);
         if (list.getListSelectionListeners().length>0) {
              list.addScriptListener(selectListener);
         }
 
-		Utils.writeEvents(device, list);
+	Utils.writeEvents(device, list);
         %>><%
 
         javax.swing.ListModel model = list.getModel();
@@ -46,7 +49,7 @@
 
                 %><option<%
                 %><%|value=list.getSelectionParameter(i)%><%
-               
+
                 if (list.isSelectedIndex(i)) {
                     %> selected="selected"<%
                 }
@@ -189,11 +192,20 @@
 
 <write>
 <%
+   final AnchorProperties anchor = AnchorRenderStack.get();
+
     SList list = (SList)component;
     if (list.getShowAsFormComponent())
         writeFormList(device, list);
-    else
+    else {
+	if ( anchor!=null ) {
+	    %><a href="<%=anchor.getURL()%>"<%|target=anchor.getTarget()%>><% 
+        }
         writeAnchorList(device, list);
+        if (anchor != null) {
+	    %></a><%
+        } 
+   }    
 %>
 </write>
 </template>
