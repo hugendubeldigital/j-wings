@@ -1,14 +1,17 @@
 
 package ldap.editors;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
-import javax.naming.*;
-import javax.naming.directory.*;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
-import org.wings.*;
-import org.wings.session.*;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class EditorFactory
 {

@@ -1,12 +1,16 @@
 package ldap.editors;
 
-import java.util.*;
-import java.util.logging.*;
-import javax.naming.*;
-import javax.naming.directory.*;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
 
-import org.wings.*;
-import org.wings.session.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.SComponent;
+import org.wings.SFlowDownLayout;
+import org.wings.SPanel;
+import org.wings.SPasswordField;
 
 
 public class PasswordEditor

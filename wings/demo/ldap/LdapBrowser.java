@@ -1,5 +1,30 @@
 package ldap;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import javax.naming.Context;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+import javax.swing.AbstractAction;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
+
 import org.wings.SButton;
 import org.wings.SConstants;
 import org.wings.SDesktopPane;
@@ -17,30 +42,6 @@ import org.wings.STextField;
 import org.wings.border.SBevelBorder;
 import org.wings.session.Session;
 import org.wings.session.SessionManager;
-
-import javax.naming.Context;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
-import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
-import javax.swing.AbstractAction;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.Vector;
 
 public class LdapBrowser
     implements SConstants {

@@ -1,15 +1,41 @@
 package ldap;
 
-import java.awt.event.*; 
-import java.util.*;
-import java.io.*;
-import java.util.logging.*;
-import javax.naming.*;
-import javax.naming.directory.*;
-import javax.swing.tree.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import org.wings.*;
-import org.wings.session.*;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.BasicAttributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.InvalidAttributeValueException;
+import javax.swing.tree.DefaultTreeModel;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.SButton;
+import org.wings.SFlowDownLayout;
+import org.wings.SForm;
+import org.wings.SLabel;
+import org.wings.SList;
+import org.wings.SPanel;
+import org.wings.STextField;
+import org.wings.STree;
+import org.wings.session.Session;
+import org.wings.session.SessionManager;
 
 public class AddObjectPanel
     extends SForm

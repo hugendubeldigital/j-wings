@@ -1,11 +1,11 @@
 package ldap;
 
-import java.io.IOException;
-import javax.naming.*;
-import javax.naming.directory.*;
-import javax.swing.*;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.swing.ImageIcon;
 
-import org.wings.*;
+import org.wings.SComponent;
+import org.wings.STable;
 import org.wings.externalizer.ExternalizeManager;
 
 public class AttributesCellRenderer

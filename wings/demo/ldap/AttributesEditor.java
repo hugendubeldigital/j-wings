@@ -1,18 +1,29 @@
 package ldap;
 
-import java.util.*;
-import java.io.*;
-import javax.naming.*;
-import javax.naming.directory.*;
-import java.awt.Color; 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import java.util.logging.*;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.InvalidAttributesException;
 
-import org.wings.*;
-import org.wings.event.*;
-import org.wings.session.*;
-
-import ldap.editors.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.SGridLayout;
+import org.wings.SPanel;
+import org.wings.event.SRequestEvent;
+import org.wings.event.SRequestListener;
+import org.wings.session.Session;
+import org.wings.session.SessionManager;
 
 public class AttributesEditor
     extends SPanel

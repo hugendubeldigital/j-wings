@@ -1,6 +1,6 @@
 package ldap;
 
-import java.util.*;
+import java.util.ListResourceBundle;
 
 public class AttributeResources_de extends ListResourceBundle {
 

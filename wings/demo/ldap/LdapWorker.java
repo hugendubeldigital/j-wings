@@ -1,17 +1,25 @@
 package ldap;
 
 // uebergangsweise ..
-import org.wings.session.*;
-
-import javax.naming.*;
-import javax.naming.directory.*;
-import java.util.Hashtable;
-import java.lang.Object;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Vector;
-import java.util.StringTokenizer;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.BasicAttributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+
+import org.wings.session.SessionManager;
 
 public class LdapWorker
 {

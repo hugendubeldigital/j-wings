@@ -1,10 +1,13 @@
 package ldap;
 
-import javax.naming.*;
-import javax.naming.directory.*;
+import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
 
-import org.wings.*;
-import ldap.editors.*;
+import ldap.editors.Editor;
+import ldap.editors.EditorFactory;
+
+import org.wings.SComponent;
+import org.wings.SLabel;
 
 class Row
 {

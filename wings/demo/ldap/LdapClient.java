@@ -14,30 +14,42 @@
 
 package ldap;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
-import java.util.List;
-import java.util.logging.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Hashtable;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
-import javax.naming.*;
+import javax.naming.NamingException;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import javax.servlet.ServletException;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreeSelectionModel;
 
-import javax.naming.directory.*;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-import javax.swing.*;
-import javax.swing.tree.*;
-import javax.swing.event.*;
-
-import org.wings.*;
-import org.wings.border.*;
-import org.wings.io.Device;
-import org.wings.io.ServletDevice;
-import org.wings.session.*;
-import org.wings.util.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.SButton;
+import org.wings.SConstants;
+import org.wings.SContainer;
+import org.wings.SFlowLayout;
+import org.wings.SForm;
+import org.wings.SFrame;
+import org.wings.SGridLayout;
+import org.wings.SLabel;
+import org.wings.SPanel;
+import org.wings.SPasswordField;
+import org.wings.STabbedPane;
+import org.wings.STemplateLayout;
+import org.wings.STextField;
+import org.wings.STree;
+import org.wings.session.Session;
+import org.wings.session.SessionManager;
 
 
 public class LdapClient

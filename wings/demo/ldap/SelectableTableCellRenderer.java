@@ -1,13 +1,15 @@
 package ldap;
 
-import java.net.URL;
-import org.wings.*;
-import org.wings.table.*;
-import java.awt.event.*;
 import java.io.IOException;
-import javax.swing.event.EventListenerList;
-import org.wings.io.Device;
 import java.util.StringTokenizer;
+
+import javax.swing.event.EventListenerList;
+
+import org.wings.RequestURL;
+import org.wings.SComponent;
+import org.wings.STable;
+import org.wings.io.Device;
+import org.wings.table.SDefaultTableCellRenderer;
 
 public class SelectableTableCellRenderer
     extends SDefaultTableCellRenderer

@@ -1,14 +1,21 @@
 
 package ldap.editors;
 
-import java.util.*;
-import java.io.*;
-import javax.naming.*;
-import javax.naming.directory.*;
-import javax.swing.ImageIcon;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
-import org.wings.*;
-import org.wings.session.*;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+
+import org.wings.SComponent;
+import org.wings.SFileChooser;
+import org.wings.SFileIcon;
+import org.wings.SFlowDownLayout;
+import org.wings.SLabel;
+import org.wings.SPanel;
 
 
 public class JpegPhotoEditor

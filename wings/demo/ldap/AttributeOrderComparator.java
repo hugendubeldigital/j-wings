@@ -1,6 +1,6 @@
 package ldap;
 
-import java.util.*;
+import java.util.Comparator;
 
 class AttributeOrderComparator
     implements Comparator

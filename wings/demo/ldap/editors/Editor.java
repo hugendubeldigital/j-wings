@@ -1,10 +1,10 @@
 package ldap.editors;
 
-import java.util.*;
-import javax.naming.*;
-import javax.naming.directory.*;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
 
-import org.wings.*;
+import org.wings.SComponent;
 
 public interface Editor
 {

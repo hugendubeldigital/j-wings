@@ -1,15 +1,36 @@
 package ldap;
 
-import java.awt.event.*; 
-import java.io.*; 
-import java.util.*;
-import java.util.logging.*;
-import javax.naming.*;
-import javax.naming.directory.*;
-import javax.swing.tree.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.InputStream;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
 
-import org.wings.*;
-import org.wings.session.*;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.AttributeModificationException;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.InvalidAttributeValueException;
+import javax.naming.directory.ModificationItem;
+import javax.swing.tree.DefaultTreeModel;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.SButton;
+import org.wings.SFlowDownLayout;
+import org.wings.SForm;
+import org.wings.SLabel;
+import org.wings.SPanel;
+import org.wings.SResetButton;
+import org.wings.STree;
+import org.wings.session.Session;
+import org.wings.session.SessionManager;
 
 public class EditObjectPanel
     extends SForm

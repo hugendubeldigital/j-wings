@@ -1,11 +1,14 @@
 package ldap.editors;
 
-import java.util.*;
-import javax.naming.*;
-import javax.naming.directory.*;
+import java.util.StringTokenizer;
 
-import org.wings.*;
-import org.wings.session.*;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+
+import org.wings.SComponent;
+import org.wings.STextArea;
 
 
 public class MultiLineTextEditor
