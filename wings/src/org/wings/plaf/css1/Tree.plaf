@@ -88,11 +88,7 @@
         final boolean isExpanded = component.isExpanded(path);
         final boolean isSelected = component.isPathSelected(path);
 
-        /*
-	 * is selectable is not yet differentiated in wings, as it is not in swing
-	 * either. However, it might be a good idea to do this.
-	 */
-	final boolean isSelectable = true;
+	final boolean isSelectable = (component.getSelectionModel() != SDefaultTreeSelectionModel.NO_SELECTION_MODEL);
 
         SComponent cellComp =cellRenderer.getTreeCellRendererComponent(component, node,
 			                                               isSelected,
@@ -190,8 +186,8 @@
             } 
             else {
 	        /*
-		 * if it is not a ClickableRenderComponent, then surround it with
-		 * <a href=".."></a> and hope for the best...
+		 * if it is not a ClickableRenderComponent, then surround it 
+		 * with <a href=".."></a> and hope for the best...
 		 */
 		%><a href="<%
                 %><%=selectionAddr.toString()%><%
@@ -199,7 +195,8 @@
                 rendererPane.writeComponent(device, cellComp, component);
 		%></a><%
             }
-        } else {
+        } 
+        else {
             rendererPane.writeComponent(device, cellComp, component);
         }
 
