@@ -397,30 +397,14 @@ public class DelegatingHttpServletRequest
         return req.isRequestedSessionIdFromCookie();
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param value
-     * @return
-     */
     public HttpSession getSession(boolean value) {
         return req.getSession(value);
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
     public String getCharacterEncoding() {
         return req.getCharacterEncoding();
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
     public String getRequestedSessionId() {
         return req.getRequestedSessionId();
     }
@@ -429,78 +413,64 @@ public class DelegatingHttpServletRequest
         return req.getCookies();
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
     public boolean isRequestedSessionIdFromUrl() {
         return req.isRequestedSessionIdFromUrl();
     }
 
-
-    // TODO rhaag: Needed for JSDK in j2ee.jar
-
     public String getContextPath() {
-        return null;
+        return req.getContextPath();
     }
-
 
     public Enumeration getHeaders(String s) {
-        return null;
+        return req.getHeaders(s);
     }
 
-    
     public HttpSession getSession() {
-        return null;
+        return req.getSession();
     }
-
 
     public Principal getUserPrincipal() {
-        return null;
+        return req.getUserPrincipal();
     }
-
 
     public boolean isRequestedSessionIdFromURL() {
-        return false;
+        return req.isRequestedSessionIdFromURL();
     }
-
 
     public boolean isUserInRole(String s) {
-        return false;
+        return req.isUserInRole(s);
     }
-
 
     public Enumeration getAttributeNames() {
-        return null;
+        return req.getAttributeNames();
     }
-
 
     public Locale getLocale() {
-        return null;
+        return req.getLocale();
     }
-
 
     public Enumeration getLocales() {
-        return null;
+        return req.getLocales();
     }
 
-    // comment this out, if you compile against jsdk-2.0
     public RequestDispatcher getRequestDispatcher(String s) {
-        return null;
+        return req.getRequestDispatcher(s);
     }
 
     public boolean isSecure() {
-        return false;
+        return req.isSecure();
     }
 
-    
     public void removeAttribute(String s) {
+        req.removeAttribute(s);
     }
-
 
     public void setAttribute(String s, Object o) {
+        req.setAttribute(s, o);
     }
+
+
+    // the following methods are required for j2ee 1.3
 
     public void setCharacterEncoding(String enc)
         throws java.io.UnsupportedEncodingException
