@@ -53,7 +53,9 @@ public class ExternalizeManager
     /**
      * TODO: documentation
      */
-    protected static long DESTROYER_SLEEP = 5 * 60 * 1000; // 5 min
+    protected static long DEFAULT_DESTROYER_SLEEP = 5 * 60 * 1000; // 5 min
+
+    protected Timer sessionDestroyer;
 
 
     /**
@@ -61,7 +63,7 @@ public class ExternalizeManager
      *
      */
     public ExternalizeManager() {
-        Timer sessionDestroyer = new Timer(DESTROYER_SLEEP, this);
+        sessionDestroyer = new Timer(DEFAULT_DESTROYER_SLEEP, this);
         sessionDestroyer.start();
     }
 
@@ -86,7 +88,18 @@ public class ExternalizeManager
             externalizer.cleanAll();
             externalizer = null;
         }
+        sessionDestroyer.stop();
     }
+
+
+    /**
+     * TODO: documentation
+     *
+     */
+    public void setDestroyerTimeout(long timeout) {
+        sessionDestroyer.setDelay(timeout);
+    }
+
 
     /**
      * TODO: documentation

@@ -79,6 +79,24 @@ public abstract class WingServlet
 
 
     /**
+     * Initializes the externalize manager. Called by init().
+     *
+     * @param config the serlvet configuration
+     */
+    protected void initExternalizeManager(ServletConfig config) {
+        String timeout = config.getInitParameter("externalizer.timeout");
+        if ( timeout != null ) {
+            try {
+                extManager.setDestroyerTimeout(Long.parseLong(timeout));
+            }
+            catch ( NumberFormatException e ) {
+                System.err.println("invalid externalizer.timeout: " + timeout);
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
      * Initializes and registers the externalizer. Called by init(). <br>
      * Overwrite this method if you want to use another externalizer.
      *
@@ -110,14 +128,14 @@ public abstract class WingServlet
      */
     protected void initMaxContentLength(ServletConfig config) {
         String maxCL = config.getInitParameter("content.maxlength");
-        if ( maxCL!=null ) {
+        if ( maxCL != null ) {
             try {
                 maxContentLength = Integer.parseInt(maxCL);
             }
-            catch ( Exception e ) {
-                System.err.println("invalid MaximumContentLength: " + maxCL);
+            catch ( NumberFormatException e ) {
+                System.err.println("invalid content.maxlength: " + maxCL);
             }
-            debug("MaximumContentLength: " + maxContentLength);
+            debug("content.maxlength: " + maxContentLength);
         }
     }
 
@@ -155,6 +173,7 @@ public abstract class WingServlet
             }
         }
 
+        initExternalizeManager(config);
         initExternalizer(config);
         initExtObjectHandler(config);
         initMaxContentLength(config);

@@ -165,7 +165,7 @@ public final class Timer
      * <b>actionPerfomed()</b> messages to its listeners
      * @see #setInitialDelay
      */
-    public void setDelay(int delay) {
+    public void setDelay(long delay) {
         TimerQueue queue;
 
         if (delay < 0) {
