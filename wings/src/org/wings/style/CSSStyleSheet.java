@@ -7,6 +7,7 @@ import java.net.*;
 import java.util.*;
 
 import org.wings.*;
+import org.wings.io.Device;
 
 public class CSSStyleSheet
     implements StyleSheet
@@ -42,21 +43,17 @@ public class CSSStyleSheet
 	return new HashSet(map.values());
     }
 
-    public void write(OutputStream out)
-	throws IOException
+    public void write(Device out) throws IOException
     {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "8859_1"));
-
 	Iterator iterator = map.entrySet().iterator();
 	while (iterator.hasNext()) {
 	    Map.Entry entry = (Map.Entry)iterator.next();
-	    writer.write((String)entry.getKey());
-	    writer.write(" { ");
-	    writer.write(entry.getValue().toString());
-	    writer.write(" }");
-	    writer.newLine();
+            out.print((String)entry.getKey());
+	    out.print(" { ");
+	    out.print(entry.getValue().toString());
+	    out.print(" }\n");
 	}
-        writer.flush();
+        out.flush();
     }
 
     public void read(InputStream is)

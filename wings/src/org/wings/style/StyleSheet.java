@@ -11,11 +11,12 @@
  *
  * Please see COPYING for the complete licence.
  */
-
 package org.wings.style;
 
-import java.io.*;
-import java.util.*;
+import org.wings.Renderable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Set;
 
 /**
  * TODO: documentation
@@ -23,7 +24,7 @@ import java.util.*;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public interface StyleSheet
+public interface StyleSheet extends Renderable
 {
     void putStyle(Style style);
     Style getStyle(String name);
@@ -31,8 +32,7 @@ public interface StyleSheet
 
     Set styles();
     boolean isFinal();
-
-    void write(OutputStream out) throws IOException;
+    
     void read(InputStream inStream) throws IOException;
 }
 
