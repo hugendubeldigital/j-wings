@@ -1,69 +1,42 @@
 <template name="Button" for="org.wings.SButton">
-<write>
 <%!
-  Icon		icon = component.getIcon();
+  SIcon		icon = component.getIcon();
   String	text = component.getText();
   int		horizontalTextPosition = component.getHorizontalTextPosition();
-  int		verticalTextPosition = component.getVerticalTextPosition();
-  String	iconAddress = component.getIconAddress();
+  int		verticalTextPosition   = component.getVerticalTextPosition();
   
-  if (icon == null && iconAddress == null)
+  if (icon == null)
         writeAnchorText(device, button);
   else if (text == null)
         writeAnchorIcon(device, button);
-  else if (verticalTextPosition == TOP && horizontalTextPosition == LEFT) {%>\
+  else { %>
 <table>
-<tr><td valign="top"><%!writeAnchorText(device, component);%></td>
-    <td><%!writeAnchorIcon(device, component);%></td></tr>
-</table>
-
-<%! } else if (verticalTextPosition == CENTER && horizontalTextPosition == LEFT) { %>\
-<table>
-<tr><td><%!writeAnchorText(device, component);%></td>
-    <td><%!writeAnchorIcon(device, component);%></td></tr>
-</table>
-
-<%! } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == LEFT) {%>\
-<table>
-<tr><td valign="bottom"><%!writeAnchorText(device, component);%></td>
-    <td><%!writeAnchorIcon(device, component);%></td></tr>
-</table>
-
-<%! } else if (verticalTextPosition == TOP && horizontalTextPosition == CENTER) {%>\
-<table>
-<tr><td><%!writeAnchorText(device, component);%></td></tr>
-<tr><td><%!writeAnchorIcon(device, component);%></td></tr>
-</table>
-
-<%! } else if (verticalTextPosition == CENTER && horizontalTextPosition == CENTER) {%>\
-<table>
-<tr><td><%!writeAnchorText(device, component);%></td>
-    <td><%!writeAnchorIcon(device, component);%></td></tr>
-</table>
-
-<%! } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == CENTER) {%>\
-<table>
-<tr><td><%!writeAnchorIcon(device, component);%></td></tr>
-<tr><td><%!writeAnchorText(device, component);%></td></tr>
-</table>
-
 <%!
-            } else if (verticalTextPosition == TOP && horizontalTextPosition == RIGHT) {
-                writeAnchorIcon(device, component, "top");
-                writeAnchorText(device, component);
-            } else if (verticalTextPosition == CENTER && horizontalTextPosition == RIGHT) {
-                writeAnchorIcon(device, component, "middle");
-                writeAnchorText(device, component);
-            } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == RIGHT) {
-                writeAnchorIcon(device, component, "bottom");
-                writeAnchorText(device, component);
-            } else {
-                writeAnchorText(device, component);
-                writeAnchorIcon(device, component, "middle");
-            }
-%>
+// if we are on the top, create a top row
+if (verticalTextPosition == TOP) {%>
+ <tr><td><%! if (horizontalTextPosition == LEFT)   writeAnchorText(device,component);%></td>
+     <td><%! if (horizontalTextPosition == CENTER) writeAnchorText(device,component);%></td>
+     <td><%! if (horizontalTextPosition == RIGHT)  writeAnchorText(device,component);%></td></tr>
+<%!}
 
-</write>
-<support>
-</support>
+// we always have a center rows, since we have to write the icon
+if (verticalTextPosition == CENTER) {%>
+ <tr><td><%! if (horizontalTextPosition == LEFT)   writeAnchorText(device,component);%></td>
+     <td><%! if (horizontalTextPosition == CENTER) writeAnchorText(device,component);
+            /* the actually centered icon */
+             writeAnchorIcon(device, component);%></td>
+     <td><%! if (horizontalTextPosition == RIGHT)  writeAnchorText(device,component);%></td></tr>
+<%!} else {%>
+  <tr><td></td><td><%! writeAnchorIcon(device, component); %></td><td></td></tr>
+<%!}
+
+// ..
+if (verticalTextPosition == BOTTOM) {%>
+ <tr><td><%! if (horizontalTextPosition == LEFT)   writeAnchorText(device,component);%></td>
+     <td><%! if (horizontalTextPosition == CENTER) writeAnchorText(device,component);%></td>
+     <td><%! if (horizontalTextPosition == RIGHT)  writeAnchorText(device,component);%></td></tr>
+<%!} %>
+</table>
+}
+%>
 </template>
