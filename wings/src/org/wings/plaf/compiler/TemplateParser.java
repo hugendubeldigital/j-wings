@@ -187,6 +187,14 @@ public class TemplateParser {
             if (!directory.isDirectory())
                 throw new IllegalArgumentException(directory + " is not a directory");
         }
+        if (pkg != null) {
+            String dir = pkg.replace('.', '/');
+            directory = new File(directory.getCanonicalPath() + "/" + dir);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+        }
+
         File outFile = new File(directory, templateName + ".java");
         PrintWriter out = new PrintWriter(new FileWriter(outFile));
         outProps.add("#------------------- " + templateName);        

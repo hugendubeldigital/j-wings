@@ -1,6 +1,7 @@
 <template name="TabbedPaneCG" for="org.wings.STabbedPane">
   <comp-property type="String" name="style">tabselected</comp-property>
   <comp-property type="String" name="selectionStyle">tabselected</comp-property>
+  <comp-property type="java.awt.Color" name="selectionForeground">Color.black</comp-property>
 
   <property type="SIcon" name="firstIconNormal">org/wings/icons/TabbedPaneFirst.gif</property>
   <property type="SIcon" name="connectIconNormal">org/wings/icons/TabbedPaneNormal.gif</property>
@@ -10,7 +11,7 @@
   <property type="SIcon" name="connectIconSelectedLeft">org/wings/icons/TabbedPaneSelectedLeft.gif</property>
   <property type="SIcon" name="connectIconSelectedRight">org/wings/icons/TabbedPaneSelectedRight.gif</property>
   <property type="SIcon" name="lastIconSelected">org/wings/icons/TabbedPaneLast.gif</property>
- 
+
   <property type="String" name="imageAlign">absmiddle</property>
 
 public DynamicResource installStyleSheet(STabbedPane comp) {
@@ -24,11 +25,11 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
     public TabbedPaneStyleSheet(STabbedPane comp)
     {
         super(comp.getParentFrame(), "css", "text/css");
-        this.comp = comp;        
+        this.comp = comp;
         comp.getParentFrame().addDynamicResource(this);
         comp.getParentFrame().addHeader(new org.wings.header.Link("stylesheet", null, "text/css", null, this));
     }
-    
+
     public void write(Device d) throws IOException {
         org.wings.session.Browser browser = SessionManager.getSession().getUserAgent();
         boolean asForm = comp.getShowAsFormComponent();
@@ -45,7 +46,7 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
         }
 
         /* ns4 and styles */
-        boolean oldNS = 
+        boolean oldNS =
             (browser.getBrowserName().equals("Netscape") ||
              browser.getBrowserName().equals("Mozilla")) &&
              browser.getMajorVersion() > 0 &&
@@ -55,14 +56,14 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
         java.awt.Color selFg = comp.getSelectionForeground();
         final String selFgStr = "#"+
             org.wings.plaf.xhtml.css1.Utils.toColorString(selFg==null?comp.getForeground():selFg);
-        
-        
+
+
         /* border stuff */
         final String borderWidth = "1px";
         final String borderType = "outset";
 
         SimpleAttributeSet attrset = new SimpleAttributeSet();
-        
+
         //# CONTENT
         attrset.put(StyleConstants.BACKGROUND_COLOR,    CSSStyleSheet.getAttribute(comp.getBackground()));
         attrset.put(StyleConstants.BORDER_STYLE,         borderType);
@@ -73,7 +74,7 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
         attrset.put(StyleConstants.PADDING,             "5px");
         attrset.putAll(comp.getAttributes());
         fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_content", attrset));
-        
+
         //# BUTTON CELL
         attrset = (SimpleAttributeSet) attrset.clone();
         attrset.put(StyleConstants.TEXT_ALIGN,            comp.getTabPlacement()==SConstants.LEFT?"right":"left");
@@ -149,17 +150,17 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
         attrset.put(StyleConstants.FONT_STYLE, "normal");
         fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnnonsel", attrset));
         fStyleSheet.putStyle(new Style("a.tp_"+comp.getComponentId()+"_btnnonsel", attrset));
-        
+
         /* disabled not selected button wo icon */
         SimpleAttributeSet woicn = (SimpleAttributeSet) attrset.clone();
         woicn.put(StyleConstants.COLOR, "#AAAAAA");
         fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnnonseldis", woicn));
-        
+
         // # icon styles
         if (hasIcons && asForm && !oldNS) {
             String borderColorLight = CSSStyleSheet.getAttribute(comp.getBackground().brighter());
             String borderColorDark  = CSSStyleSheet.getAttribute(comp.getBackground().darker());
-        
+
             // # not selected icon
             SimpleAttributeSet icn = new SimpleAttributeSet();
             icn.put(StyleConstants.BACKGROUND_COLOR,     CSSStyleSheet.getAttribute(comp.getBackground().darker()));
@@ -180,7 +181,7 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
             icn = (SimpleAttributeSet) icn.clone();
             icn.put(StyleConstants.BACKGROUND_COLOR, CSSStyleSheet.getAttribute(comp.getBackground()));
             fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_icnsel", icn));
-            
+
             /* not selected button with icon */
             SimpleAttributeSet plusicn = (SimpleAttributeSet) attrset.clone();
             plusicn.put(StyleConstants.BORDER_LEFT_WIDTH, "0px");
@@ -210,8 +211,8 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
         woicn = (SimpleAttributeSet) attrset.clone();
         woicn.put(StyleConstants.FONT_STYLE,         "italic");
         fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnseldis", woicn));
-        
-        
+
+
         // # selection with icon
         if (hasIcons && asForm && !oldNS) {
             SimpleAttributeSet plusicn = (SimpleAttributeSet) attrset.clone();
@@ -223,13 +224,13 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
             plusicn.put(StyleConstants.FONT_STYLE, "italic");
             fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnicnseldis", plusicn));
         }
-        
+
         fStyleSheet.write(d);
     }
 }
 
   <write>
-<table 
+<table
       <%
       if (component.getPreferredSize() != null)
       {
