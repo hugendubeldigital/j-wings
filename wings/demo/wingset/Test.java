@@ -50,12 +50,6 @@ public class Test
         try {
             CGManager cgManager = session.getCGManager();
             cgManager.setLookAndFeel(new org.wings.plaf.xhtml.old.OldLookAndFeel());
-
-            /*
-            ExternalizeManager externalizeManager = new ExternalizeManager();
-            super.setExternalizeManager(externalizeManager);
-            externalizeManager.setExternalizer(new ServletExternalizer(config));
-            */
         }
         catch (Exception e) {
             System.err.println(e.getMessage());
