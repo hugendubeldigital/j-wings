@@ -163,7 +163,11 @@ protected org.wings.io.StringBufferDevice getStringBufferDevice() {
                                               list.getToggleSelectionParameter(i));
 
            if ( renderer instanceof ClickableRenderComponent ) {
-                      AnchorRenderStack.push(selectionAddr, null);
+               if ( list.getShowAsFormComponent() ) {
+                    AnchorRenderStack.push(Utils.event(list), list.getToggleSelectionParameter(i));
+               } else {
+                    AnchorRenderStack.push(selectionAddr, null);
+               }
                 rendererPane.writeComponent(device, renderer, list);
                       AnchorRenderStack.pop();
                    }

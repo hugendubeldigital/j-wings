@@ -200,15 +200,21 @@
 
         boolean pushedURL = false;
         if (!isEditingCell && table.isCellEditable(row, col)) {
-            RequestURL editAddr = table.getRequestURL();
-            editAddr.addParameter(table,
-                                  table.getEditParameter(row, col));
-
             if (comp instanceof ClickableRenderComponent) {
-                AnchorRenderStack.push(editAddr, null);
+                if ( table.getShowAsFormComponent() ) {
+                    AnchorRenderStack.push(Utils.event(table), table.getEditParameter(row, col));
+                } else {
+                    RequestURL editAddr = table.getRequestURL();
+                    editAddr.addParameter(table,
+                                          table.getEditParameter(row, col));
+                    AnchorRenderStack.push(editAddr, null);
+                }
                 pushedURL = true;
             }
             else {
+                RequestURL editAddr = table.getRequestURL();
+                editAddr.addParameter(table,
+                                      table.getEditParameter(row, col));
                 %><a href="<%=editAddr.toString()%>"><%
                 writeIcon(device, editIcon);
                 %></a>&nbsp;<%
@@ -267,6 +273,7 @@
 
         if (rowSelectionRenderer == null) {
             if (table.getShowAsFormComponent()) {
+
                 writeDefaultFormRowSelection(device, table, rendererPane, row);
                 return;
             }
@@ -284,14 +291,23 @@
 	String compStyle = comp.getStyle();
 	comp.setStyle(null);
         %>><%
-        RequestURL toggleSelectionAddr = table.getRequestURL();
-        toggleSelectionAddr.addParameter(table, table.getToggleSelectionParameter(row, col));
-
         if (comp instanceof ClickableRenderComponent) {
-            AnchorRenderStack.push(toggleSelectionAddr, null);
+            if ( table.getShowAsFormComponent() ) {
+                AnchorRenderStack.push(Utils.event(table), table.getToggleSelectionParameter(row, col));
+            } else {
+                RequestURL toggleSelectionAddr = table.getRequestURL();
+                toggleSelectionAddr.addParameter(table, table.getToggleSelectionParameter(row, col));
+                AnchorRenderStack.push(toggleSelectionAddr, null);
+            }
         }
         else {
-            %><a href="<%=toggleSelectionAddr.toString()%>"><%
+            if ( table.getShowAsFormComponent() ) {
+                %><button type="submit" name="<%=table.getEncodedLowLevelEventId()%>" value="<%=table.getToggleSelectionParameter(row, col)%>"><%
+            } else {
+                RequestURL toggleSelectionAddr = table.getRequestURL();
+                toggleSelectionAddr.addParameter(table, table.getToggleSelectionParameter(row, col));
+                %><a href="<%=toggleSelectionAddr.toString()%>"><%
+            }
         }
 
         rendererPane.writeComponent(device, comp, table);
@@ -300,7 +316,11 @@
             AnchorRenderStack.pop();
         }
         else {
-            %></a><%
+            if ( table.getShowAsFormComponent() ) {
+                %></button><%
+            } else {
+                %></a><%
+            }
         }
 
         %></td>
