@@ -213,17 +213,6 @@ public class SGetAddress
 
         return erg;
     }
-
-    /**
-     * TODO: documentation
-     */
-    public static void main(String args[]) throws Exception {
-        SGetAddress adr1 = new SGetAddress("http://localhost/servlet/WingSet/?JServSessionIdroot=8eapsqkqj1");
-        SGetAddress adr2 = (SGetAddress)adr1.clone();
-        adr2.add("cloned=1");
-        System.out.println("adr1 " + adr1);
-        System.out.println("adr2 " + adr2);
-    }
 }
 
 /*
