@@ -32,7 +32,7 @@ public interface SLayoutManager extends Serializable, Renderable
      * @param c The new component
      * @param constraint A (sometimes optional) constraint object
      */
-    void addComponent(SComponent c, Object constraint);
+    void addComponent(SComponent c, Object constraint, int index);
 
     /**
      * Removes a component from the layout manager

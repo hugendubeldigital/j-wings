@@ -180,9 +180,19 @@ public class SButtonGroup
     /**
      * TODO: documentation
      *
+     * @deprecated use {@link iterator}
      * @return
      */
     public Iterator getIterator() {
+        return iterator();
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public Iterator iterator() {
         return buttons.iterator();
     }
 

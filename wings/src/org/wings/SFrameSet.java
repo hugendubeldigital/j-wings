@@ -57,7 +57,7 @@ public class SFrameSet
 	    throw new IllegalArgumentException("Only SFrameSets or SFrames are allowed.");
 
 	if (layout != null)
-	    layout.addComponent(c, constraint);
+	    layout.addComponent(c, constraint, getComponentList().size());
 
 	getComponentList().add(c);
 	getConstraintList().add(constraint);

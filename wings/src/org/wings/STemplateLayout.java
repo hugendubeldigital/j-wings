@@ -58,7 +58,7 @@ import org.wings.template.*;
  * templateContainer.addComponent(new SLabel("Neu-Ulm"), "WOHNORT");
  * </CODE>
  *
- * @author Armin Haaf, Jochen Woehrle
+ * @author Armin Haaf
  * @author Henner Zeller
  */
 
@@ -266,7 +266,7 @@ public class STemplateLayout
      * @param c the component to be added
      * @param constraint the string describing the
      */
-    public void addComponent(SComponent c, Object constraint) {
+    public void addComponent(SComponent c, Object constraint, int index) {
         if ( constraint == null )
             throw new IllegalArgumentException("null constraint not allowed here");
         components.put(constraint.toString(), c);
@@ -303,25 +303,6 @@ public class STemplateLayout
         return PageParser.getInstance().getLabels(getDataSource());
     }
     
-    // testing purposes ..
-    /**
-     * TODO: documentation
-     */
-    public static void main(String[] arg) throws Exception {
-        STemplateLayout l =  new STemplateLayout("test.thtml");
-
-        SLabel wohnort = new SLabel("Ulm");
-        l.addComponent(new SLabel("Haaf"), "NAME");
-        l.addComponent(new SButton("Armin"), "VORNAME");
-        l.addComponent(wohnort, "WOHNORT");
-        // l.removeComponent(wohnort);
-        l.addComponent(new SLabel("Neu-Ulm"), "WOHNORT");
-
-        StringBufferDevice erg = new StringBufferDevice();
-        l.write(erg);
-        System.out.print(erg.toString());
-    }
-
     /**
      * TODO: documentation
      *

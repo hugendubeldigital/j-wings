@@ -48,7 +48,7 @@ public class SFullScreenLayout
         setPreferredSize(fDim);
     }
 
-    public void addComponent(SComponent c, Object constraint) {
+    public void addComponent(SComponent c, Object constraint, int index) {
         if (constraint == null)
             constraint = CENTER;
 
@@ -76,7 +76,7 @@ public class SFullScreenLayout
                         c.setVerticalAlignment(SConstants.CENTER);
         }
 
-        super.addComponent(c, constraint);
+        super.addComponent(c, constraint, index);
         setPreferredSize(fDim);
     }
 

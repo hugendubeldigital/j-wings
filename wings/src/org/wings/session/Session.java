@@ -75,6 +75,40 @@ public interface Session
     void removePropertyChangeListener(String propertyName,
                                       PropertyChangeListener listener);
 
+    /**
+     * Gets the session property indicated by the specified key.
+     *
+     * @param      key   the name of the session property.
+     * @return     the string value of the session property,
+     *             or <code>null</code> if there is no property with that key.
+     * @see        org.wings.session.PropertyService#getProperties()
+     */
+    Object getProperty(String key);
+
+    /**
+     * Gets the session property indicated by the specified key.
+     *
+     * @param      key   the name of the session property.
+     * @param      def   a default value.
+     * @return     the string value of the session property,
+     *             or the default value if there is no property with that key.
+     * @see        org.wings.session.PropertyService#getProperties()
+     */
+    Object getProperty(String key, Object def);
+
+    /**
+     * Sets the session property indicated by the specified key.
+     *
+     * @param      key   the name of the session property.
+     * @param      value the value of the session property.
+     * @return     the previous value of the session property,
+     *             or <code>null</code> if it did not have one.
+     * @see        org.wings.session.PropertyService#getProperty(java.lang.String)
+     * @see        org.wings.session.PropertyService#getProperty(java.lang.String, java.lang.String)
+     */
+    Object setProperty(String key, Object value);
+
+
     void setLocale(Locale l);
 
     Locale getLocale();

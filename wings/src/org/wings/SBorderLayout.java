@@ -55,7 +55,7 @@ public class SBorderLayout
      */
     public SBorderLayout() {}
 
-    public void addComponent(SComponent c, Object constraint) {
+    public void addComponent(SComponent c, Object constraint, int index) {
         if (constraint == null)
             constraint = CENTER;
 

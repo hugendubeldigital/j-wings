@@ -46,7 +46,7 @@ public class SCardLayout
     public SCardLayout() {
     }
 
-    public void addComponent(SComponent c, Object constraint) {
+    public void addComponent(SComponent c, Object constraint, int index) {
         if (tab.size() > 0)
             c.setVisible(false);
         tab.put(constraint, c);

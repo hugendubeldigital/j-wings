@@ -66,8 +66,8 @@ public class SBoxLayout
         setAlignment(alignment);
     }
 
-    public void addComponent(SComponent c, Object constraint) {
-        components.add(c);
+    public void addComponent(SComponent c, Object constraint, int index) {
+        components.add(index, c);
     }
 
     public void removeComponent(SComponent c) {

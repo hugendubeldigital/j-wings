@@ -87,7 +87,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
 
         if ( layout!=null ) {
             for ( int i=0; i<getComponentCount(); i++ ) {
-                layout.addComponent(getComponentAt(i), getConstraintAt(i));
+                layout.addComponent(getComponentAt(i), getConstraintAt(i), i);
             }
 
             layout.setContainer(this);
@@ -377,19 +377,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @return the added component
      */
     public SComponent addComponent(SComponent c, Object constraint) {
-        if (c != null) {
-            if (layout != null)
-                layout.addComponent(c, constraint);
-
-            getComponentList().add(c);
-            getConstraintList().add(constraint);
-            c.setParent(this);
-
-            processContainerEvent(new SContainerEvent(this,
-                                  SContainerEvent.COMPONENT_ADDED, c));
-        }
-
-        return c;
+        return addComponent(c, constraint, getComponentList().size());
     }
 
     /**
@@ -415,7 +403,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
     public SComponent addComponent(SComponent c, Object constraint, int index){
         if (c != null) {
             if (layout != null)
-                layout.addComponent(c, constraint);
+                layout.addComponent(c, constraint, index);
 
             getComponentList().add(index, c);
             getConstraintList().add(index, constraint);

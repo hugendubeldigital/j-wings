@@ -121,7 +121,7 @@ public abstract class SRootContainer extends SContainer {
         public SStackLayout() {}
 	
         public void updateCG() {}
-        public void addComponent(SComponent c, Object constraint) {}
+        public void addComponent(SComponent c, Object constraint, int index) {}
         public void removeComponent(SComponent c) {}
 	
         public SComponent getComponentAt(int i) {

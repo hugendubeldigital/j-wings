@@ -86,8 +86,8 @@ public class SFrameSetLayout
 
     public String getRows() { return rows; }
 
-    public void addComponent(SComponent c, Object constraint) {
-        components.add(c);
+    public void addComponent(SComponent c, Object constraint, int index) {
+        components.add(index, c);
 	constraints.add(constraint);
     }
 

@@ -42,19 +42,17 @@ public class SGridLayout
      */
     protected ArrayList components = new ArrayList(2);
 
-    int rows = 0;
-    int cols = 0;
+    protected int rows = 0;
+    protected int cols = 0;
 
-    int border = 0;
+    protected int border = 0;
 
-    boolean header = false;
-    boolean relative = false;
+    protected boolean header = false;
+    protected boolean relative = false;
 
-    int width = -1;
-    int cellPadding = -1;
-    int cellSpacing = -1;
-
-    private SContainer container = null;
+    protected int width = -1;
+    protected int cellPadding = -1;
+    protected int cellSpacing = -1;
 
     /**
      * creats a new grid layout with the given number of columns
@@ -108,8 +106,8 @@ public class SGridLayout
      */
     public int getRows() { return rows; }
 
-    public void addComponent(SComponent c, Object constraint) {
-        components.add(c);
+    public void addComponent(SComponent c, Object constraint, int index) {
+        components.add(index, c);
     }
 
     public void removeComponent(SComponent c) {

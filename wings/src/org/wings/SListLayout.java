@@ -57,8 +57,8 @@ public class SListLayout
     public SListLayout() {
     }
 
-    public void addComponent(SComponent c, Object constraint) {
-        components.add(c);
+    public void addComponent(SComponent c, Object constraint, int index) {
+        components.add(index, c);
     }
 
     /**
