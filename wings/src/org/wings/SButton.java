@@ -21,114 +21,122 @@ import org.wings.plaf.*;
 
 /**
  * TODO: documentation
- * A button implementation. 
- * This is also a button for usage in a renderer (e.g {@link STableCellRenderer}). 
+ * A button implementation.
+ * This is also a button for usage in a renderer (e.g {@link STableCellRenderer}).
  * This button implementation encodes its action command into the low level
  * event and fires the encoded action command and not the actual action command,
  * if an low level event triggers a button press.
-
+ *
  * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SButton extends SAbstractButton
-{
+public class SButton extends SAbstractButton {
+  /**
+   * Creates a button with text.
+   *
+   * @param text  the text of the button
+   */
+  public SButton(String text) {
+    super(text);
+  }
+  
+  /**
+   * Creates a button where properties are taken from the
+   * Action supplied.
+   *
+   * @param a the Action used to specify the new button
+   */
+  public SButton(Action action) {
+    super(action);
+  }
+  
+  /**
+   * Creates a button with no set text or icon.
+   */
+  public SButton() {
+    super();
+  }
+  
+  /**
+   * Creates a button with a icon
+   *
+   * @param icon  the Icon image to display on the button
+   */
+  public SButton(SIcon i) {
+    super();
+    setIcon(i);
+  }
+  
+  /**
+   * Creates a button with initial text and an icon.
+   *
+   * @param text  the text of the button
+   * @param icon  the Icon image to display on the button
+   */
+  
+  public SButton(String text, SIcon i) {
+    super(text);
+    setIcon(i);
+  }
+  
     /**
-     * TODO: documentation
-     *
-     * @param text
+     * Sets the state of the button. 
+     * But button is alwas not in a selcted state !
+     * @param b  true if the button is selected, otherwise false
      */
-    public SButton(String text) {
-        super(text);
+
+/*  public void setSelected(boolean b) {
+    // set in group as selected
+    if ( getGroup()!=null ) {
+      getGroup().setSelected(this, b);
     }
-
-    /**
-     * TODO: documentation
-     *
-     * @param text
-     */
-    public SButton(Action action) {
-        super(action);
+    
+    // button is never in a selected state...
+    super.setSelected(false);
+  }
+*/  
+  /**
+   * in form components the parameter value of an button is the button
+   * text. So just toggle selection, in process request, if it is a request
+   * for me.
+   */
+  protected boolean parseSelectionToggle(String toggleParameter) {
+    return true;
+  }
+  
+  public String getSelectionParameter() {
+    return getActionCommand()!=null ? getActionCommand() : "1";
+  }
+  
+  /**
+   * store here the action command which is set in an action event.
+   * if this is null, the actual action command is used.
+   *
+   */
+  protected String actionCommandToFire;
+  
+  /**
+   * Fire an ActionEvent, use actionCommandToFire if not null, else use actionCommand
+   */
+  protected void fireActionPerformed() {
+    if ( actionCommandToFire!=null ) {
+      fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,  actionCommandToFire));
+      actionCommandToFire = null;
+    } else {
+      super.fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, getActionCommand()));
+    } /// end of if ()
+  }
+  
+  public void processLowLevelEvent(String action, String[] values) {
+    
+    // a button can have only one event per request...
+    if (  values.length>0 ) {
+      // set the action command to fire at fireFinalEvents.
+      actionCommandToFire = values[0];
+      SForm.addArmedComponent(this);
     }
-
-    /**
-     * TODO: documentation
-     *
-     */
-    public SButton() {
-        super();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public SButton(SIcon i) {
-        super();
-        setIcon(i);
-    }
-
-    public SButton(String text, SIcon i) {
-        super(text);
-        setIcon(i);
-    }
-
-    /**
-     * 
-     */
-    public void setSelected(boolean b) {
-        // set in group as selected
-        if ( getGroup()!=null ) {
-            getGroup().setSelected(this, b);
-        }
-
-        // button is never in a selected state...
-        super.setSelected(false);
-    }
-
-    /**
-     * in form components the parameter value of an button is the button
-     * text. So just toggle selection, in process request, if it is a request
-     * for me.
-     */
-    protected boolean parseSelectionToggle(String toggleParameter) {
-        return true;
-    }
-
-    public String getSelectionParameter() {
-        return getActionCommand()!=null ? getActionCommand() : "1";
-    }
-
-    /**
-     * store here the action command which is set in an action event. 
-     * if this is null, the actual action command is used.
-     *
-     */
-    protected String actionCommandToFire;
-
-    /**
-     * Fire an ActionEvent, use actionCommandToFire if not null, else use actionCommand
-     */
-    protected void fireActionPerformed() {
-	if ( actionCommandToFire!=null ) {
-	    fireActionEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-					    actionCommandToFire));
-	    actionCommandToFire = null;
-	} else {
-	    super.fireActionPerformed();
-	} /// end of if ()
-    }
-
-    public void processLowLevelEvent(String action, String[] values) {
-
-	// a button can have only one event per request...
-        if (  values.length>0 ) {
-	    // set the action command to fire at fireFinalEvents.
-	    actionCommandToFire = values[0];
-            SForm.addArmedComponent(this);
-        }
-    }
-
+  }
+  
 }
 
 /*
