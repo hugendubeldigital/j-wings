@@ -84,9 +84,9 @@ public class ResourceImageIcon extends Resource implements SIcon
         try {
             bufferResource();
             
-            if ( buffer!=null ) {
-                ImageIcon icon = new ImageIcon(buffer);
-                width = icon.getIconWidth();
+            if ( buffer!=null && buffer.isValid()) {
+                ImageIcon icon = new ImageIcon(buffer.getBytes());
+                width  = icon.getIconWidth();
                 height = icon.getIconHeight();
             }
         } catch ( Exception e ) {

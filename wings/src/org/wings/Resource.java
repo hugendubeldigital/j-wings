@@ -17,6 +17,7 @@ package org.wings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.ByteArrayOutputStream;
 
 import org.wings.session.SessionManager;
 import org.wings.externalizer.ExternalizeManager;
@@ -33,12 +34,11 @@ import org.wings.externalizer.ExternalizeManager;
  * TODO: documentation
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
 public class Resource
 {
-    public static final int MAX_SIZE_TO_BUFFER = 100 * 1024;
-
     /**
      * TODO: documentation
      */
@@ -72,7 +72,57 @@ public class Resource
     /**
      * TODO: documentation
      */
-    protected byte[] buffer; 
+    protected LimitedBuffer buffer;
+    
+    /**
+     * An ByteArrayOutputStream that buffers up to the limit
+     * MAX_SIZE_TO_BUFFER.
+     */
+    protected final static class LimitedBuffer extends ByteArrayOutputStream {
+        public static final int MAX_SIZE_TO_BUFFER = 8 * 1024; // 8KByte
+        private boolean withinLimit;
+
+        /**
+         * creates a new buffer
+         */
+        LimitedBuffer() { 
+            /*
+             * don't waste too much memory; most resources (like icons)
+             * are tiny, so we should start with a small initial size.
+             */
+            super(64);
+            withinLimit = true;
+        }
+        
+        /**
+         * write to the stream. If the output size exceeds the limit,
+         * then set the stream to error state.
+         */
+        public void write(byte[] b, int off, int len) {
+            if (!withinLimit) return;
+            withinLimit = (count + len < MAX_SIZE_TO_BUFFER);
+            if (withinLimit) 
+                super.write(b, off, len);
+            else
+                reset(); // discard all input so far: it would become too large
+        }
+
+        // Don't use write(int b)! It does not check the size.
+
+        /**
+         * returns, whether the filled buffer is within the limits,
+         * and thus, its content is valid and can be used.
+         */
+        public boolean isValid() { return withinLimit; }
+        
+        /**
+         * returns the _raw_ buffer; i.e. the buffer may be larger than
+         * the current size().
+         */
+        public byte[] getBytes() {
+            return buf;
+        }
+    }
 
     /**
      * TODO: documentation
@@ -112,53 +162,64 @@ public class Resource
     }
 
     /**
-     * returns a byte array of the resource object and buffers(caches) it, if
-     * not to big {@link #MAX_SIZE_BUFFER} and the resouce isn't buffered
-     * already 
-     * @return buffered resource or null if resource is to big.
+     * Reads the resource into an LimitedBuffer and returns it. If the
+     * size of the resource is larger than 
+     * {@link LimitedBuffer#MAX_SIZE_BUFFER}, then the returned Buffer
+     * is empty and does not contain the Resource's content (and the
+     * isValid() flag is false).
+     *
+     * @return buffered resource as LimitedBuffer, that may be invalid,
+     *         if the size of the resource is beyond MAX_SIZE_BUFFER. It is
+     *         null, if the Resource returned an invalid stream.
      */
-    protected byte[] bufferResource() throws IOException {
+    protected LimitedBuffer bufferResource() throws IOException {
         if ( buffer==null ) {
             InputStream resource = getResourceStream();
             if ( resource!=null ) {
-                int size = resource.available();
-                if ( size <= MAX_SIZE_TO_BUFFER ) {
-                    buffer = new byte[size];
-                    resource.read(buffer);
-                    resource.close();
+                byte[] copyBuffer = new byte[1024];
+                buffer = new LimitedBuffer();
+                int read;
+                while (buffer.isValid()
+                       && (read = resource.read(copyBuffer)) > 0) {
+                    buffer.write(copyBuffer, 0, read);
                 }
+                resource.close();
             }
         }
         return buffer;
     }
 
+    /**
+     * writes the Resource to the given Stream. If the resource
+     * is not larger than {@link LimitedBuffer#MAX_SIZE_BUFFER}, then
+     * an internal buffer caches the content the first time, so that it
+     * is delivered as fast as possible at any subsequent calls.
+     *
+     * @param OutputStream the stream, the content of the resource should
+     *                     be written to.
+     */
     public final void write(OutputStream out) throws IOException {
-        if ( buffer==null ) {
+        if ( buffer == null ) {
+            bufferResource();
+            if ( buffer == null )     // no valid bufferable resource available
+                return;
+        }
+        
+        if ( buffer.isValid() ) {     // buffered and small enough. buffer->out
+            buffer.writeTo(out);
+        }
+        else {                        // too large to be buffered. res->out
             InputStream resource = getResourceStream();
             if ( resource!=null ) {
-                int size = resource.available();
-                if ( size > MAX_SIZE_TO_BUFFER ) {
-                    buffer = new byte[2000];
-                    while ( resource.available()>0 ) {
-                        int read = resource.read(buffer);
-                        out.write(buffer, 0, read);
-                    }
-                    resource.close();
-                    // no caching for that big icons
-                    buffer = null;
-                } else {
-                    buffer = new byte[size];
-                    resource.read(buffer);
-                    resource.close();
-                    out.write(buffer);
+                byte[] copyBuffer = new byte[1024];
+                int read;
+                while ((read = resource.read(copyBuffer)) > 0) {
+                    out.write(copyBuffer, 0, read);
                 }
-
+                resource.close();
             }
-            
-        } else {
-            out.write(buffer);
         }
-
+        
         out.flush();
     }
 
@@ -177,8 +238,8 @@ public class Resource
      * @return
      */
     public final int getLength() {
-        if ( buffer!=null )
-            return buffer.length;
+        if ( buffer!=null && buffer.isValid())
+            return buffer.size();
         else 
             return -1;
     }
