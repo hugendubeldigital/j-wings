@@ -1,51 +1,43 @@
 <!-- -*- html -*- -->
 <template name="LabelCG" for="org.wings.SLabel">
 
-/* Beispiele für Properties */
-<property type="SIcon" name="defaultIcon"></property>
-<property type="String" name="fallbackText">Ein Fallback text</property>
+<property type="SIcon" name="clickableFallbackIcon">org/wings/icons/Pencil.gif</property>
 
-void writeIcon(Device device, SLabel label) throws IOException {
-     SIcon icon = label.getIcon();
+void writeIcon(Device device, SIcon icon, RequestURL eventURL) 
+     throws IOException {
      if (icon != null) {
-        boolean hasEventLink = label.getEventURL()!=null;
-        if (hasEventLink) {
-           %><a href="<%=label.getEventURL()%>"><%
+        if (eventURL != null) {
+           %><a href="<%=eventURL%>"><%
         }     
 
         %><img<%
         /*
 	 * write optional attributes ..
 	 */
-        if (hasEventLink) { %> border="0"<% }
+        if (eventURL != null) { %> border='0'<% }
         %><%|src=icon.getURL()%><%
         %><%|width=icon.getIconWidth()%><%
         %><%|height=icon.getIconHeight()%><%
         %>><%
 
-        if (hasEventLink ) {
-            %></a><%
+        if (eventURL != null) {
+	    %></a><%
         }     
      }
 }
 
-void writeText(Device device, SLabel label) 
-      throws IOException {
-   if (label.getText() != null) {
-      if (label.isNoBreak()) { %><nobr><% }
+void writeText(Device device, SLabel label) throws IOException {
+    final String text = label.getText();
+    if (text != null) {
+        final RequestURL eventURL = label.getEventURL();
+        final boolean noBreak = label.isNoBreak();
 
-      if (label.getEventURL()!=null ) {
-          %><a href="<%=label.getEventURL()%>"><%
-      }     
-
-      %><%=label.getText()%><%
-
-      if (label.getEventURL()!=null ) {
-          %></a><%
-      }     
-
-      if (label.isNoBreak()) { %></nobr><% }
-   } 
+        if (noBreak) { %><nobr><% }
+        if (eventURL!=null) { %><a href="<%=eventURL%>"><% }
+        %><%=text%><%
+        if (eventURL!=null) { %></a><% }
+        if (noBreak) { %></nobr><% }
+   }
 }
 
 <write>
@@ -58,13 +50,18 @@ void writeText(Device device, SLabel label)
    final String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
    final String attr = (component.getAttributes().size() > 0) ? ("_" + component.getUnifiedId()) : null;
 
+   final RequestURL eventURL = component.getEventURL();
 
-   if (icon == null) {
-       icon = defaultIcon;
-   }
-   if (text == null) {
-       text = fallbackText;
-   }
+   /*
+    * fallback icon in case we are clickable, but there is nothing
+    * to click to (no icon nor text).
+    */
+    if (icon == null) {
+	if (eventURL != null && (text == null || text.length() == 0)) {
+	    // no text either.
+	    icon = clickableFallbackIcon;
+	}
+    }
    
    if (icon == null) {
       int spans = 0;
@@ -90,7 +87,7 @@ void writeText(Device device, SLabel label)
           %><span class="<%=attr%>"><%
           spans++;
       }
-      writeIcon(device, component);
+      writeIcon(device, icon, eventURL);
       if (spans == 1) { %></span><% }
       if (spans == 2) { %></span></span><% }
    }
@@ -126,7 +123,7 @@ void writeText(Device device, SLabel label)
 	       %><tr><td<%
                %><%|class=attr%><%
                %>><%
-	       if (horizontalTextPosition == LEFT) { 
+	       if (horizontalTextPosition == LEFT) {
                   writeText(device, component);
 	       }
 	       %></td><td align="center"<%
@@ -137,7 +134,7 @@ void writeText(Device device, SLabel label)
                   %><br/><%
 	       }
 	       // the rendered icon in the center
-	       writeIcon(device, component);
+	       writeIcon(device, icon, eventURL);
 	       %></td><td<%
                %><%|class=attr%><%
                %>><% 
@@ -149,7 +146,7 @@ void writeText(Device device, SLabel label)
 	       %><tr><td></td><td align="center"<%
                %><%|class=attr%><%
                %>><%
-	       writeIcon(device, component); 
+	       writeIcon(device, icon, eventURL); 
 	       %></td><td></td></tr><%
        }
 
