@@ -1,8 +1,25 @@
 <template name="ToolbarCG" for="org.wings.SToolbar">
-<comp-property type="SLayoutManager" name="layout" cache="false">new org.wings.SFlowLayout()</comp-property>
-<comp-property type="String" name="style"></comp-property>
 <write>
 <%
-Utils.renderContainer(device, component);
+        SToolbar toolbar = (SToolbar)component;
+        int mcount = toolbar.getComponentCount();
+        
+        %><div class="toolbar"><%
+        %><table cellspacing="0" cellpadding="0" vspace="0" hspace="0" width="100%"<%
+        %><%|class=Utils.style(component)%>><%
+        %><tr align="left"><%
+
+        for (int i = 0; i < mcount; i++) {
+            if ( toolbar.getComponentAt(i).isVisible() ) {
+                if ( toolbar.getComponentAt(i).getHorizontalAlignment()==SConstants.RIGHT_ALIGN ) {
+                    %><td width="100%"></td><%
+                }
+                %><td><%
+	            toolbar.getComponentAt(i).write(device);
+                %></td><%
+            }
+        }
+        %></tr></table><%
+        %></div><%
 %></write>
 </template>
