@@ -60,7 +60,10 @@ public class ResourceStyleSheet
      * @throws IOException
      */
     public InputStream getInputStream() throws IOException {
-        return classLoader.getResourceAsStream(fileName);
+        InputStream is = classLoader.getResourceAsStream(fileName);
+        if ( is == null )
+          throw new java.io.IOException( "Can not find StyleSheet " + fileName );
+        return is;
     }
 
     public boolean isStable() {

@@ -58,6 +58,9 @@ public class ResourceImageIconObjectHandler
     public Class getSupportedClass() {
         return ResourceImageIcon.class;
     }
+
+	public java.util.Set getHeaders(Object obj) { return null; }
+
 }
 
 /*

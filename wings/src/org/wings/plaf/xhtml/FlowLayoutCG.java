@@ -20,6 +20,7 @@ import java.util.*;
 import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
+import org.wings.util.CGUtil;
 
 public class FlowLayoutCG
     implements LayoutCG
@@ -56,13 +57,14 @@ public class FlowLayoutCG
                 if (comp.isVisible()) {
 		    if (count == 0)
              {
-				d.append("<table cellpadding=\"0\" cellspacing=\"0\"");
-        		if ( Utils.hasSpanAttributes( container ) )
-        		 {
-         			d.append("style=\"");
-        			Utils.writeSpanAttributes( d, (SComponent) container );
-            		d.append("\" ");
-				 }
+                d.append("<table cellpadding=\"0\" cellspacing=\"0\"");
+                CGUtil.writeSize( d, container );
+                if ( Utils.hasSpanAttributes( container ) )
+                 {
+                    d.append(" style=\"");
+                    Utils.writeSpanAttributes( d, (SComponent) container );
+                    d.append("\" ");
+                 }
 
                 d.append("><tr><td>");
 			 }

@@ -63,4 +63,6 @@ public class TextObjectHandler
     public Class getSupportedClass() {
 	return String.class;
     }
+
+	public java.util.Set getHeaders(Object obj) { return null; }
 }

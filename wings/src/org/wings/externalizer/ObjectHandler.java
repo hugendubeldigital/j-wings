@@ -47,6 +47,14 @@ public interface ObjectHandler
      * returns the supported class
      */
     Class getSupportedClass();
+    
+    /**
+      * Get additional http-headers.
+      * Returns <tt>null</tt>, if there are no additional headers to be set.
+      * @return Set of {@link java.util.Map.Entry} (key-value pairs)
+      * @param obj get headers for this object
+      */
+	java.util.Set getHeaders( Object obj );
 }
 
 /*

@@ -17,6 +17,10 @@ package org.wings.externalizer;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import java.util.Set;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -67,9 +71,16 @@ public class ExternalizerServlet
         throws ServletException, java.io.IOException
     {
         ExternalizedInfo info;
-
         info = ServletExternalizer.getExternalizedInfo(request);
+        Set headers = info.handler.getHeaders(info.extObject);
+        if ( headers != null )
+         for ( Iterator it = headers.iterator(); it.hasNext(); )
+          {
+            Entry entry = (Entry) it.next();
+            response.addHeader( (String) entry.getKey(), (String) entry.getValue());
+          }
         response.setContentType(info.handler.getMimeType(info.extObject));
+        
         // non-transient items can be cached by the browser
         if (!info.isTransient()) {
             response.setDateHeader("Expires", 

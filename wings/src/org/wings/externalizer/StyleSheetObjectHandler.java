@@ -55,6 +55,8 @@ public class StyleSheetObjectHandler
     public Class getSupportedClass() {
         return StyleSheet.class;
     }
+
+	public java.util.Set getHeaders(Object obj) { return null; }
 }
 
 /*
