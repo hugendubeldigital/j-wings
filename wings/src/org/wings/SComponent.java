@@ -59,13 +59,13 @@ public abstract class SComponent
     private final static Logger logger = Logger.getLogger("org.wings");
 
     /* */
-    private transient String componentId = null;
+    private transient String componentId;
 
     /** @see #getCGClassID */
     private static final String cgClassID = "ComponentCG";
 
     /** the session */
-    private transient Session session = null;
+    private transient Session session;
 
     /**
      * The code generation delegate, which is responsible for
@@ -86,7 +86,7 @@ public abstract class SComponent
     protected String disabledStyle;
 
     /** The attributes */
-    protected AttributeSet attributes = new SimpleAttributeSet();
+    protected AttributeSet attributes;
 
     /** Visibility. */
     protected boolean visible = true;
@@ -98,19 +98,19 @@ public abstract class SComponent
     protected boolean opaque = true;
 
     /** The container, this component resides in. */
-    protected SContainer parent = null;
+    protected SContainer parent;
 
     /** The frame, this component resides in. */
-    protected SFrame parentFrame = null;
+    protected SFrame parentFrame;
 
     /** The name of the component. */
-    protected String name = null;
+    protected String name;
 
     /** The border for the component. */
-    protected SBorder border = null;
+    protected SBorder border;
 
     /** The tooltip for this component. */
-    protected String tooltip = null;
+    protected String tooltip;
 
     /** The focus traversal Index */
     protected int focusTraversalIndex = -1;
@@ -460,6 +460,9 @@ public abstract class SComponent
      * @param value the attribute value
      */
     public void setAttribute(String name, String value) {
+        if ( attributes == null ) {
+            attributes = new SimpleAttributeSet();
+        }
         String oldVal = attributes.put(name, value);
         reloadIfChange(ReloadManager.RELOAD_STYLE, oldVal, value);
     }
@@ -469,7 +472,7 @@ public abstract class SComponent
      * @param name the attribute name
      */
     public String getAttribute(String name) {
-        return attributes.get(name);
+        return attributes == null ? null : attributes.get(name);
     }
 
     /**
@@ -477,7 +480,7 @@ public abstract class SComponent
      * @param name the attribute name
      */
     public String removeAttribute(String name) {
-        if (attributes.contains(name)) {
+        if (attributes!=null && attributes.contains(name)) {
             String value = attributes.remove(name);
 
             reload(ReloadManager.RELOAD_STYLE);
@@ -505,7 +508,7 @@ public abstract class SComponent
      * @return the current attributes
      */
     public AttributeSet getAttributes() {
-        return attributes;
+        return attributes==null ? AttributeSet.EMPTY_ATTRIBUTESET : attributes;
     }
 
     /**
@@ -522,7 +525,7 @@ public abstract class SComponent
      * @return the background color
      */
     public Color getBackground() {
-        return CSSStyleSheet.getBackground(attributes);
+        return attributes == null ? null : CSSStyleSheet.getBackground(attributes);
     }
 
     /**
@@ -538,7 +541,7 @@ public abstract class SComponent
      * @return the foreground color
      */
     public Color getForeground() {
-        return CSSStyleSheet.getForeground(attributes);
+        return attributes == null ? null : CSSStyleSheet.getForeground(attributes);
     }
 
     /**
@@ -560,6 +563,10 @@ public abstract class SComponent
      * @param font the new font
      */
     public void setFont(SFont font) {
+        if ( attributes==null ) {
+            attributes = new SimpleAttributeSet();
+        }
+
         boolean changed = attributes.putAll(CSSStyleSheet.getAttributes(font));
         if (changed) {
             reload(ReloadManager.RELOAD_STYLE);
@@ -571,7 +578,7 @@ public abstract class SComponent
      * @return the font
      */
     public SFont getFont() {
-        return CSSStyleSheet.getFont(attributes);
+        return attributes == null ? null : CSSStyleSheet.getFont(attributes);
     }
 
     /**
