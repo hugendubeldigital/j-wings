@@ -485,6 +485,10 @@ public abstract class SAbstractAdjustable
         getModel().fireDelayedFinalEvents();
     }
 
+    public boolean checkEpoch() {
+        return true;
+    }
+
 
     /**
      * Adds an AdjustmentListener.  Adjustment listeners are notified

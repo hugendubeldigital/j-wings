@@ -958,6 +958,10 @@ public class STable
         getSelectionModel().fireDelayedFinalEvents();
     }
 
+    public boolean checkEpoch() {
+        return true;
+    }
+
     /**
      * TODO: documentation
      *

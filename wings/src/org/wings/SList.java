@@ -981,6 +981,10 @@ public class SList
         getSelectionModel().fireDelayedFinalEvents();
     }
 
+    public boolean checkEpoch() {
+        return true;
+    }
+
     /*
      * Implement {@link LowLevelEventListener} interface.
      * @param action the name

@@ -194,6 +194,10 @@ public abstract class STextComponent
 
     public void fireFinalEvents() {}
 
+    public boolean checkEpoch() {
+        return true;
+    }
+
     public void insertUpdate(SDocumentEvent e) {
         fireTextValueChanged();
         reload(ReloadManager.RELOAD_CODE);

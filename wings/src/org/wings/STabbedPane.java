@@ -974,6 +974,10 @@ public class STabbedPane
         lleChangedIndex = -1;
     }
 
+    public boolean checkEpoch() {
+        return true;
+    }
+
     /**
      * When tab selection changed.
      * @see ChangeListener#stateChanged(ChangeEvent)

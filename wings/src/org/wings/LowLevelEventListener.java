@@ -108,6 +108,8 @@ public interface LowLevelEventListener
     void fireFinalEvents();
 
     boolean isEnabled();
+
+    boolean checkEpoch();
 }
 
 /*

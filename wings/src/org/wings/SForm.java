@@ -51,6 +51,9 @@ public class SForm
      */
     private static final String cgClassID = "FormCG";
 
+    public static final String MULTIPART_ENCODING = "multipart/form-data";
+    public static final String URL_ENCODING = "application/x-www-form-urlencoded";
+
     /**
      * Use method POST for submission of the data.
      */
@@ -225,7 +228,6 @@ public class SForm
             LowLevelEventListener component;
             // handle form special, form event should be fired last
             // hopefully there is only one form ;-)
-            LowLevelEventListener form = null;
             Iterator iterator = armedComponents.iterator();
             LinkedList formEvents = null;
             while (iterator.hasNext()) {
@@ -368,6 +370,10 @@ public class SForm
 
     public void fireFinalEvents() {
         fireActionPerformed();
+    }
+
+    public boolean checkEpoch() {
+        return true;
     }
 
     public SComponent addComponent(SComponent c, Object constraint, int index){

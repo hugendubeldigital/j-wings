@@ -644,6 +644,10 @@ public class SComboBox
 
     }
 
+    public boolean checkEpoch() {
+        return true;
+    }
+
     /**
      * TODO: documentation
      *

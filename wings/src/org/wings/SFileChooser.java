@@ -429,6 +429,10 @@ public class SFileChooser
     public void fireFinalEvents() {
     }
 
+    public boolean checkEpoch() {
+        return true;
+    }
+
     /**
      * A temporary file. This file removes its representation in the
      * filesysten, when there are no references to it (i.e. it is garbage

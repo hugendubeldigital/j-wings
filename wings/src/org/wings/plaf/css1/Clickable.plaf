@@ -65,6 +65,10 @@ void writeText(final Device device, SClickable clickable, String attr)
     
     if ( clickable.getEvent()!=null && clickable.getEventTarget()!=null) {
         RequestURL u = clickable.getRequestURL();
+        if ( !clickable.checkEpoch() ) {
+            u.setEpoch(null);
+            u.setResource(null);
+        }
         u.addParameter(clickable.getEventTarget(),
 	               clickable.getEvent());
         url = u;
@@ -110,6 +114,11 @@ void writeIcon(final Device device, SClickable clickable, String attr)
     
     if ( clickable.getEvent()!=null && clickable.getEventTarget()!=null) {
         RequestURL u = clickable.getRequestURL();
+        if ( !clickable.checkEpoch() ) {
+            u.setEpoch(null);
+            u.setResource(null);
+        }
+
         u.addParameter(clickable.getEventTarget(),
 	               clickable.getEvent());
         url = u;

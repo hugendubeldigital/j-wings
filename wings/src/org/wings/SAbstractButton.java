@@ -428,7 +428,11 @@ implements LowLevelEventListener {
             buttonGroup.fireDelayedFinalEvents();
         }
     }
-  
+
+    public boolean checkEpoch() {
+        return true;
+    }
+
     /**
      * @deprecated use {@link #getEventTarget}
      */

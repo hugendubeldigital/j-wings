@@ -126,6 +126,10 @@ public class SClickable
         this(text, null, horizontalAlignment);
     }
 
+    public boolean checkEpoch() {
+        return requestTarget==null ? true : requestTarget.checkEpoch();
+    }
+
     /**
      * if this is set (!=null) this event is rendered as anchor. If it is null,
      * the anchor in the AnchorRenderStack is rendered

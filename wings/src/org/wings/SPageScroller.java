@@ -467,6 +467,11 @@ public class SPageScroller
         }
     }
 
+    public boolean checkEpoch() {
+        return false;
+    }
+
+
 }
 
 /*

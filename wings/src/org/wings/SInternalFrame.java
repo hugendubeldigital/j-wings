@@ -292,6 +292,10 @@ public class SInternalFrame
         event = null;
     }
 
+    public boolean checkEpoch() {
+        return true;
+    }
+
     public String getCGClassID() {
         return cgClassID;
     }

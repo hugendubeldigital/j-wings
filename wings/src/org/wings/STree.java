@@ -368,6 +368,10 @@ public class STree
         getSelectionModel().fireDelayedFinalEvents();
     }
 
+    public boolean checkEpoch() {
+        return true;
+    }
+
     /**
      * TODO: documentation
      *
