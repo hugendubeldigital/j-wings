@@ -98,7 +98,12 @@ public class SForm
      * passieren. Also koennen Events nur vom erzeugenden Thread
      * gefeuert werden.
      */
-    private static final HashMap threads = new HashMap();
+    private static ThreadLocal threadArmedComponents = new ThreadLocal() {
+            protected synchronized Object initialValue() {
+                return new ArrayList(2);
+            }
+        };
+    
 
     /**
      * TODO: documentation
@@ -192,15 +197,24 @@ public class SForm
         }
     }
 
-    public final static void addArmedComponent(RequestListener component) {
-        Thread thread = Thread.currentThread();
+    /*
+     * fixme: the following static function should go in some global
+     * class.
+     */
 
-        List armedComponents = (List)threads.get(thread);
-        if (armedComponents == null) {
-            armedComponents = new ArrayList(2);
-            threads.put(thread, armedComponents);
-        }
+    public final static void addArmedComponent(RequestListener component) {
+        List armedComponents = (List) threadArmedComponents.get();
         armedComponents.add(component);
+    }
+
+    /**
+     * clear armed components. This is usually not necessary, since sessions
+     * clear clear their armed components. But if there was some Exception, it
+     * might well be, that this does not happen.
+     */
+    public static void clearArmedComponents() {
+        List armedComponents = (List) threadArmedComponents.get();
+        armedComponents.clear();
     }
 
     /*
@@ -212,20 +226,13 @@ public class SForm
      * der verschiedenen Threads werden in einer Map verwaltet.
      * Beim feuern wird dann die Queue, die dem aktuellen Thread
      * entspricht gefeuert und aus der Map entfernt.
-     * <P> <EM>VORSICHT:</EM><BR>
-     * Die Map verwaltet natuerlich die Threads und haelt Zeiger
-     * auf diese. Im Normalfall werden diese Zeiger durch das feuern
-     * geloescht, aber falls nicht, werden die Threads nicht
-     * aufgeraeumt!!!
      */
     /**
      * TODO: documentation
      */
     public static void fireEvents() {
-        Thread thread = Thread.currentThread();
-
-        List armedComponents = (List)threads.remove(thread);
-        if (armedComponents != null) {
+        List armedComponents = (List) threadArmedComponents.get();
+        try {
             RequestListener component;
             Iterator iterator = armedComponents.iterator();
             while (iterator.hasNext()) {
@@ -237,6 +244,9 @@ public class SForm
                 component = (RequestListener)iterator.next();
                 component.fireFinalEvents();
             }
+        }
+        finally {
+            armedComponents.clear();
         }
     }
 
@@ -326,6 +336,8 @@ public class SForm
     }
 
     public void processRequest(String name, String[] values) {
+        // we have to wait, until all changed states of our form have
+        // changed, before we anything can happen.
         SForm.addArmedComponent(this);
     }
 
