@@ -103,6 +103,7 @@ public class TableCG
     {
         String width = table.getWidth();
         Insets borderLines = table.getBorderLines();
+        boolean showGrid = table.getShowGrid();
         boolean showHorizontalLines = table.getShowHorizontalLines();
         boolean showVerticalLines = table.getShowVerticalLines();
         Dimension intercellPadding = table.getIntercellPadding();
@@ -111,6 +112,46 @@ public class TableCG
         d.append("<table");
         if (width != null && width.trim().length() > 0)
             d.append(" width=\"").append(width).append("\"");
+
+        if ( borderLines!=null ) {
+            d.append("border frame=");
+            if ( borderLines.top>0 || borderLines.bottom>0 ) {
+                if ( borderLines.bottom<=0 )
+                    d.append("\"above\" ");
+                else if ( borderLines.top<=0 ) 
+                    d.append("\"below\" ");
+                else if ( borderLines.left>0 && borderLines.right>0 )
+                    d.append("\"box\" ");
+                else 
+                    d.append("\"hsides\" ");
+            } else if ( borderLines.left>0 || borderLines.right>0 )
+                if ( borderLines.left<=0 ) 
+                    d.append("\"rhs\" ");
+                else if ( borderLines.right<=0 ) 
+                    d.append("\"lhs\" ");
+                else
+                    d.append("\"vsides\" ");
+        }
+
+
+        if ( intercellSpacing!=null )
+            d.append("cellspacing=").append(intercellSpacing.width).append(" "); 
+
+        if ( intercellPadding!=null )
+            d.append("cellpadding=").append(intercellPadding.width).append(" "); 
+
+        if ( showGrid ) {
+            if ( borderLines==null )
+                d.append("border frame=\"box\" ");
+            if ( showHorizontalLines ) 
+                d.append("rules=\"rows\" ");
+            else if ( showVerticalLines ) 
+                d.append("rules=\"cols\" ");
+            else 
+                d.append("rules=\"all\" ");
+        } else
+            d.append("rules=\"none\" border=0");
+    
         d.append(">\n");
     }
 
@@ -168,7 +209,10 @@ public class TableCG
         else
             comp = table.prepareRenderer(table.getCellRenderer(row, col), row, col);
 
-        d.append("<td>");
+        d.append("<td");
+        Utils.appendTableCellAttributes(d, comp);
+        d.append(">");
+
         rendererPane.writeComponent(d, comp, table);
         d.append("</td>");
     }
