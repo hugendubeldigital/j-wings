@@ -42,9 +42,7 @@ public class DefaultBorderCG
     
     public String getSpanAttributes(SBorder border) {
       StringBuffer sb = new StringBuffer();
-      sb.append("border: 1px solid;" );
-        /* color */
-      sb.append( "border-color: #000000;" );
+      sb.append("border: 1px black solid;" );
       return sb.toString();
 
     }

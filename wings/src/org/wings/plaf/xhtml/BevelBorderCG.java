@@ -40,16 +40,16 @@ public class BevelBorderCG
     sb.append( "border: ");
     sb.append( b.getThickness() );
     sb.append("px " );
-    sb.append(getBorderStyle(border));
-    sb.append( ";" );
-    
     /* color */
-    sb.append( "border-color: #" );
+//    sb.append( "border-color: #" );
     if ( color != null )
       sb.append( org.wings.plaf.xhtml.Utils.toColorString( b.getColor() ) );
     else
-      sb.append( "000000" );
+      sb.append( "000000 " );
+//    sb.append( ";" );
+    sb.append(getBorderStyle(border));
     sb.append( ";" );
+    
     
     /* padding */
     if ( insets != null ) {
