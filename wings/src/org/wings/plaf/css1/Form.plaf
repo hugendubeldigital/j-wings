@@ -1,8 +1,6 @@
 <template name="FormCG" for="org.wings.SForm">
 <write>
 <%
-  SBorder border = component.getBorder();
-  Utils.renderBorderPrefix(device, border);
   %><form method="<% 
   if (component.isPostMethod()) { %>post<% } else { %>get<% }
   %>"<%
@@ -14,7 +12,6 @@
 value="<%?unifiedId%><%=org.wings.SConstants.UID_DIVIDER%>" /><%
    Utils.renderContainer(device, component);
    %></form><%
-   Utils.renderBorderPostfix(device, border);
 %>
 </write>
 </template>
