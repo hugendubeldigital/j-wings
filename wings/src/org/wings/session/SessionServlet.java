@@ -489,18 +489,26 @@ final class SessionServlet
              *      not have sent anything to the output stream).
              */
             if (session.getExitAddress() != null) {
-                String redirectAddress;
-                if (session.getExitAddress().length() > 0) {
-                    // redirect to user requested URL.
-                    redirectAddress = session.getExitAddress();
-                }
-                else {
-                    // redirect to a fresh session.
-                    redirectAddress = HttpUtils.getRequestURL(req).toString();
-                }
-                req.getSession().invalidate(); // calls destroy implicitly
-                response.sendRedirect(redirectAddress);
-                return;
+
+                try {
+                    session.firePrepareExit();
+                    
+                    String redirectAddress;
+                    if (session.getExitAddress().length() > 0) {
+                        // redirect to user requested URL.
+                        redirectAddress = session.getExitAddress();
+                    }
+                    else {
+                        // redirect to a fresh session.
+                        redirectAddress = HttpUtils.getRequestURL(req).toString();
+                    }
+                    req.getSession().invalidate(); // calls destroy implicitly
+                    response.sendRedirect(redirectAddress);
+                     
+                    return;
+                } catch ( ExitVetoException ex ) {
+                    session.exit(null);
+                } // end of try-catch
             }
 
             if (session.getRedirectAddress()!=null) {

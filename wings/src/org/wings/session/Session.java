@@ -43,6 +43,8 @@ import org.wings.SFrame;
 import org.wings.event.SRequestEvent;
 import org.wings.event.SRequestListener;
 import org.wings.event.WeakRequestListenerProxy;
+import org.wings.event.SExitEvent;
+import org.wings.event.SExitListener;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.externalizer.ExternalizedResource;
 import org.wings.plaf.CGManager;
@@ -583,11 +585,11 @@ public final class Session
      */
     public void exit() { exit(""); }
 
-    String getExitAddress() {
+    public String getExitAddress() {
         return exitAddress;
     }
 
-    String getRedirectAddress() {
+    public String getRedirectAddress() {
         return redirectAddress;
     }
 
@@ -598,6 +600,55 @@ public final class Session
      */
     public void setRedirectAddress(String redirectAddress) {
         this.redirectAddress = redirectAddress;
+    }
+
+
+    /**
+     * TODO: documentation
+     *
+     * @param listener
+     */
+    public void addExitListener(SExitListener listener) {
+        listenerList.add(SExitListener.class,
+                         listener);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param listener
+     */
+    public void removeExitListener(SExitListener listener) {
+        listenerList.remove(SExitListener.class,
+                            listener);
+    }
+
+    /**
+     * Describe <code>getExitListeners</code> method here.
+     *
+     * @return a <code>SExitListener[]</code> value
+     */
+    public SExitListener[] getExitListeners() {
+        return (SExitListener[])listenerList.getListeners(SExitListener.class);
+    }
+
+
+    /**
+     * Fire an RequestEvent at each registered listener.
+     */
+    final void firePrepareExit() throws ExitVetoException {
+        SExitEvent event = null;
+        
+        Object[] listeners = listenerList.getListenerList();
+        for ( int i = listeners.length-2; i>=0; i -= 2 ) {
+            if ( listeners[i]==SExitListener.class ) {
+                // Lazily create the event:
+                if ( event==null ) {
+                    event = new SExitEvent(this);
+                }
+                ((SExitListener)listeners[i+1]).prepareExit(event);
+            }
+        }
     }
 
     /**
