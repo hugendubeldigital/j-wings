@@ -17,7 +17,7 @@
     Utils.writeEvents(device, component);
     %><%|size=columns%><%
     %><%|accept=component.getFileNameFilter()%><%
-    %><%|style=Utils.style(component)%>/><%
+    %><%|class=Utils.style(component)%>/><%
 %>
 </write>
 </template>
