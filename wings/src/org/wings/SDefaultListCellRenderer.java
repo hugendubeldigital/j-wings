@@ -67,7 +67,7 @@ public class SDefaultListCellRenderer
     {
         if (list.isEnabled()) {
             addr = list.getServerAddress();
-            addr.add(list.getNamePrefix() + "=" + index);
+            addr.addParameter(list.getNamePrefix() + "=" + index);
         }
         else
             addr = null;

@@ -285,7 +285,7 @@ public class SForm
     public SGetAddress getServerAddress() {
         SGetAddress addr = super.getServerAddress();
         if ( getAction()!=null )
-            addr.add(getAction().toString());
+            addr.addParameter(getAction().toString());
 
         return addr;
     }

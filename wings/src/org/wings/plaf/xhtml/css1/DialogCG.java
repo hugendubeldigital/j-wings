@@ -62,7 +62,8 @@ public final class DialogCG
         if (close != null) {
             SFrame frame = dialog.getParentFrame();
             addr = frame.getServerAddress();
-            addr.add(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_CLOSED);
+            addr.addParameter(frame.getNamePrefix() +
+                              "=" + SInternalFrameEvent.INTERNAL_FRAME_CLOSED);
 
             d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
                 .append(addr)

@@ -115,9 +115,9 @@ public class SDefaultTreeCellRenderer
                                                    boolean hasFocus)
     {
         handleAddr = tree.getServerAddress();
-        handleAddr.add(tree.getNamePrefix() + "=h" + value.hashCode());
+        handleAddr.addParameter(tree.getNamePrefix() + "=h" + value.hashCode());
         bodyAddr = tree.getServerAddress();
-        bodyAddr.add(tree.getNamePrefix() + "=b" + value.hashCode());
+        bodyAddr.addParameter(tree.getNamePrefix() + "=b" + value.hashCode());
 
         String text = "";
 

@@ -127,17 +127,6 @@ public class SGetAddress
      * @param parameter to be included in the GET parameters.
      * @return this SGetAddress that simplifies 'chaining'
      */
-    //public SGetAddress add(String parameter) {
-    // return addParameter(parameter);
-    //}
-    
-    /**
-     * Add an additional parameter to be included in the GET paramter
-     * list. Usually, this paramter will be in the form 'name=value'.
-     *
-     * @param parameter to be included in the GET parameters.
-     * @return this SGetAddress that simplifies 'chaining'
-     */
     public SGetAddress addParameter(String parameter) {
         if (parameter!=null) {
             if (parameters == null) 

@@ -210,7 +210,7 @@ public class HRefCG
         if (noBreak)
             d.append("</nobr>");
     }
-
+    
     protected void writeAnchorPostfix(Device d, SHRef hRef)
         throws IOException
     {

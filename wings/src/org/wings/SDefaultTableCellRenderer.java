@@ -90,7 +90,7 @@ public class SDefaultTableCellRenderer
                                                     int col)
     {
         addr = baseTable.getServerAddress();
-        addr.add(baseTable.getNamePrefix() + "=" + row + ":" + col);
+        addr.addParameter(baseTable.getNamePrefix() + "=" + row + ":" + col);
 
         contents.setText(null);
         contents.setIcon(null);

@@ -62,3 +62,7 @@
 * write a tutorial
 
 * log / debug
+
+* remove _all_ places, where HTML is output in org.wings.* - Components
+
+* are sessions serializable ?

@@ -72,7 +72,7 @@ public final class InternalFrameCG
 
         if (iconify != null) {
             addr = frame.getServerAddress();
-            addr.add(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_ICONIFIED);
+            addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_ICONIFIED);
 
             d.append("<td bgcolor=\"#dedede\" width=\"16\"><a href=\"")
                 .append(addr)
@@ -84,7 +84,7 @@ public final class InternalFrameCG
 
         if (deiconify != null) {
             addr = frame.getServerAddress();
-            addr.add(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_DEICONIFIED);
+            addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_DEICONIFIED);
 
             d.append("<td bgcolor=\"#dedede\" width=\"16\"><a href=\"")
                 .append(addr)
@@ -96,7 +96,7 @@ public final class InternalFrameCG
 
         if (maximize != null) {
             addr = frame.getServerAddress();
-            addr.add(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_MAXIMIZED);
+            addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_MAXIMIZED);
 
             d.append("<td bgcolor=\"#dedede\" width=\"16\"><a href=\"")
                 .append(addr)
@@ -108,7 +108,7 @@ public final class InternalFrameCG
 
         if (unmaximize != null) {
             addr = frame.getServerAddress();
-            addr.add(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_UNMAXIMIZED);
+            addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_UNMAXIMIZED);
 
             d.append("<td bgcolor=\"#dedede\" width=\"16\"><a href=\"")
                 .append(addr)
@@ -120,7 +120,7 @@ public final class InternalFrameCG
 
         if (close != null) {
             addr = frame.getServerAddress();
-            addr.add(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_CLOSED);
+            addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_CLOSED);
 
             d.append("<td bgcolor=\"#dedede\" width=\"16\"><a href=\"")
                 .append(addr)
