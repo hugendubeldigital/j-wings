@@ -1,8 +1,10 @@
 package org.wings.template;
 
 import bsh.Interpreter;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
+
 import org.wings.SComponent;
 import org.wings.session.SessionManager;
 
@@ -17,18 +19,18 @@ import org.wings.session.SessionManager;
  * @version $Revision$
  */
 public class DefaultPropertyManager implements PropertyManager {
-    
-    static final Class[] classes = { SComponent.class };
+
+    static final Class[] classes = {SComponent.class};
 
     public final HashMap propertyValueConverters = new HashMap();
 
-    public static final DefaultPropertyValueConverter 
-	DEFAULT_PROPERTY_VALUE_CONVERTER = DefaultPropertyValueConverter.INSTANCE;
+    public static final DefaultPropertyValueConverter
+        DEFAULT_PROPERTY_VALUE_CONVERTER = DefaultPropertyValueConverter.INSTANCE;
 
     private boolean scriptEnabled = false;
 
     /**
-     * 
+     *
      */
     public DefaultPropertyManager() {
 
@@ -39,70 +41,71 @@ public class DefaultPropertyManager implements PropertyManager {
     }
 
     public void setProperty(SComponent comp, String name, String value) {
-	if ( scriptEnabled && "SCRIPT".equals(name) ) {
-	    Interpreter interpreter = createInterpreter();
+        if (scriptEnabled && "SCRIPT".equals(name)) {
+            Interpreter interpreter = createInterpreter();
 
-	    try {
-		System.out.println("eval script " + value);
+            try {
+                System.out.println("eval script " + value);
 
-		interpreter.set("component", comp);
-		interpreter.set("session", SessionManager.getSession());
+                interpreter.set("component", comp);
+                interpreter.set("session", SessionManager.getSession());
 
-		interpreter.eval(value);
-	    } catch ( Exception ex ) {
-		ex.printStackTrace();
-		// ignore it, maybe log it
-	    } // end of try-catch
-	    
-            // reset interpreter
-	    
-	} // end of if ()
-	
+                interpreter.eval(value);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                // ignore it, maybe log it
+            } // end of try-catch
 
-	Method[] methods = comp.getClass().getMethods();
+// reset interpreter
 
-	for (int i=0; i<methods.length; i++) {
-	    Method method = methods[i];
-	    
-	    if ( method.getName().startsWith("set") &&
-		 name.equals(method.getName().substring(3).toUpperCase()) &&
-		 method.getParameterTypes().length==1 ) {
+        } // end of if ()
 
-		Class paramType = method.getParameterTypes()[0];
 
-		PropertyValueConverter valueConverter = getValueConverter(paramType);
-		
-		if ( valueConverter!=null ) {
-		    try {
-			//System.out.println("invoke " + method);
-			method.invoke(comp, 
-				      new Object[] {valueConverter.convertPropertyValue(value, paramType)});
-			return;
-		    } catch ( Exception ex ) {
-			// ignore it, maybe log it...
-		    } // end of try-catch
-		    
-		} // end of if ()
-	    } // end of if ()
-	} // end of for (int i=0; i<; i++)
+        Method[] methods = comp.getClass().getMethods();
+
+        for (int i = 0; i < methods.length; i++) {
+            Method method = methods[i];
+
+            if (method.getName().startsWith("set") &&
+                name.equals(method.getName().substring(3).toUpperCase()) &&
+                method.getParameterTypes().length == 1) {
+
+                Class paramType = method.getParameterTypes()[0];
+
+                PropertyValueConverter valueConverter = getValueConverter(paramType);
+
+                if (valueConverter != null) {
+                    try {
+                        //System.out.println("invoke " + method);
+                        method.setAccessible(true);                    
+                        method.invoke(comp,
+                                      new Object[]{valueConverter.convertPropertyValue(value, paramType)});
+                        return;
+                    } catch (Exception ex) {
+                        // ignore it, maybe log it...
+                    } // end of try-catch
+
+                } // end of if ()
+            } // end of if ()
+        } // end of for (int i=0; i<; i++)
     }
 
-    public void addPropertyValueConverter(PropertyValueConverter valueConverter, 
-					  Class clazz) {
-	
-	propertyValueConverters.put(clazz, valueConverter);
+    public void addPropertyValueConverter(PropertyValueConverter valueConverter,
+                                          Class clazz) {
+
+        propertyValueConverters.put(clazz, valueConverter);
     }
 
     protected PropertyValueConverter getValueConverter(Class clazz) {
-	if ( clazz==null ) {
-	    return DEFAULT_PROPERTY_VALUE_CONVERTER;
-	} // end of if ()
-	
-	if ( propertyValueConverters.containsKey(clazz) ) {
-	    return (PropertyValueConverter)propertyValueConverters.get(clazz);
-	} // end of if ()
-	
-	return getValueConverter(clazz.getSuperclass());
+        if (clazz == null) {
+            return DEFAULT_PROPERTY_VALUE_CONVERTER;
+        } // end of if ()
+
+        if (propertyValueConverters.containsKey(clazz)) {
+            return (PropertyValueConverter)propertyValueConverters.get(clazz);
+        } // end of if ()
+
+        return getValueConverter(clazz.getSuperclass());
     }
 
     public Class[] getSupportedClasses() {
@@ -113,6 +116,9 @@ public class DefaultPropertyManager implements PropertyManager {
 
 /*
    $Log$
+   Revision 1.5  2003/10/15 06:48:43  arminhaaf
+   o make methods accessible
+
    Revision 1.4  2002/11/19 15:39:05  ahaaf
    o use shared instance
 
