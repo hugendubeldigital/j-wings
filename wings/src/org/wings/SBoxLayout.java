@@ -50,20 +50,17 @@ public class SBoxLayout
      * TODO: documentation
      */
     protected int align = SConstants.LEFT_ALIGN;
+    
+    protected SComponent style = null;
 
     /**
-     * creates a new box layout with horizontal orientation and
-     * left alignment
-     */
-    public SBoxLayout() {}
-
-    /**
-     * creates a new box layout with the given alignment
+     * creates a new box layout with the given orientation
      *
-     * @param alignment alignment
+     * @param orinetation orientation
      */
-    public SBoxLayout(int alignment) {
-        setAlignment(alignment);
+    public SBoxLayout(SComponent style, int orientation) {
+        this.style = style;
+        setOrientation(orientation);
     }
 
     public void addComponent(SComponent c, Object constraint, int index) {
@@ -109,24 +106,19 @@ public class SBoxLayout
      */
     public int getOrientation() { return orientation; }
 
-    /**
-     * Sets the alignment. Use one of the following types:
-     *
-     * @param a One of the following constants:
-     *          {@link <code>SConstants#LEFT_ALIGN</code>},
-     *          {@link <code>SConstants#CENTER_ALIGN</code>} or
-     *          {@link <code>SConstants#RIGHT_ALIGN</code>}
-     */
-    public void setAlignment(int a) {
-        align = a;
-    }
 
     /**
      * returns the alignment
      * @return alignment
      */
-    public int getAlignment() {
-        return align;
+    public int getHorizontalAlignment() {
+        if (style != null) return style.getHorizontalAlignment();
+        return SConstants.LEFT_ALIGN;
+    }
+
+    public int getVerticalAlignment() {
+        if (style != null) return style.getVerticalAlignment();
+        return SConstants.TOP_ALIGN;
     }
 
     public String getCGClassID() {

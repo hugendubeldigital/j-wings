@@ -50,8 +50,9 @@ public final class Utils {
         if (layout != null) {
             layout.write(d);
         } else {
-            for (int i = 0; i < c.getComponentCount(); i++)
+            for (int i = 0; i < c.getComponentCount(); i++) {
                 c.getComponent(i).write(d);
+            }
         }
     }
 
@@ -144,9 +145,9 @@ public final class Utils {
     final static byte[] VALIGN_BOTTOM = " valign=\"bottom\"".getBytes();
     final static byte[] VALIGN_BASELINE = " valign=\"baseline\"".getBytes();
 
-    public static void printTableCellAlignment(Device d, SComponent c)
-        throws IOException {
-        switch (c.getHorizontalAlignment()) {
+    public static void printTableHorizontalAlignment(Device d, int align) 
+       throws IOException {
+        switch (align) {
         case SConstants.NO_ALIGN:
         case SConstants.LEFT:
             break;
@@ -160,8 +161,12 @@ public final class Utils {
             d.write(ALIGN_JUSTIFY);
             break;
         }
-
-        switch (c.getVerticalAlignment()) {
+      
+    }
+    
+    public static void printTableVerticalAlignment(Device d, int align) 
+     throws IOException {
+        switch (align) {
         case SConstants.NO_ALIGN:
         case SConstants.CENTER:
             break;
@@ -175,6 +180,12 @@ public final class Utils {
             d.write(VALIGN_BASELINE);
             break;
         }
+    }
+    
+    public static void printTableCellAlignment(Device d, SComponent c)
+        throws IOException {
+          printTableHorizontalAlignment(d, c.getHorizontalAlignment());
+          printTableVerticalAlignment(d, c.getVerticalAlignment());
     }
 
     public static String toColorString(int rgb) {

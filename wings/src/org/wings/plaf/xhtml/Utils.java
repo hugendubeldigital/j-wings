@@ -137,37 +137,8 @@ public final class Utils implements SConstants
 
     public static void printTableCellAlignment(Device s, SComponent c) 
         throws IOException {
-        switch (c.getHorizontalAlignment()) {
-        case NO_ALIGN:
-            break;
-        case CENTER:
-            s.print(" align=\"center\"");
-            break;
-        case LEFT:
-            s.print(" align=\"left\"");
-            break;
-        case RIGHT:
-            s.print(" align=\"right\"");
-            break;
-        case JUSTIFY:
-            s.print(" align=\"justify\"");
-            break;
-        }
-    
-        switch (c.getVerticalAlignment()) {
-        case NO_ALIGN:
-        case CENTER:
-            break;
-        case TOP:
-            s.print(" valign=\"top\"");
-            break;
-        case BOTTOM:
-            s.print(" valign=\"bottom\"");
-            break;
-        case BASELINE:
-            s.print(" valign=\"baseline\"");
-            break;
-        }
+          org.wings.plaf.css1.Utils.printTableHorizontalAlignment(s, c.getHorizontalAlignment());
+          org.wings.plaf.css1.Utils.printTableVerticalAlignment(s, c.getVerticalAlignment());
     }
 
    /** Encolors the actual table cell with the background of the contained component. */
