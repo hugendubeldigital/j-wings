@@ -127,9 +127,10 @@ public class WingSetSession
         {
             measure.start("time to generate HTML Code ");
             // then write the data of the response
-            // Dies ist ein Dummy-Aufruf, um die Zeit zu messen; es wird
-            // sozusagen die Seite zweimal aufgebaut, denn die Ausgabe der
-            // Zeit ist ja selbst wieder eine Component.
+            /*
+             * This is a dummy call to generate the HTML output, just
+             * to measure the time
+             */
             String erg = getFrame().show();
             measure.stop();
             timeMeasure.setText(measure.print());

@@ -30,18 +30,21 @@ public class LabelExample
 {
     public SComponent createExample() {
         SPanel all = new SPanel();
-        SBorderLayout layout = new SBorderLayout();
+        SGridLayout layout = new SGridLayout(2);
+        layout.setWidth(100);
+        layout.setRelative(true); // -> make 100 mean '%'
         all.setLayout(layout);
 
         Icon icon = new ResourceImageIcon(SConstants.class, "icons/Wait.gif");
 
         final SLabel testLabel = new SLabel("LabelText");
         testLabel.setHorizontalAlignment(LEFT);
-        testLabel.setBackground(new java.awt.Color(180, 180, 255));
         testLabel.setIcon(icon);
 
-        all.add(createRoundRadio(testLabel), "West");
-        all.add(testLabel, "East");
+        all.add(new SLabel("Control the LabelText's position"));
+        all.add(new SLabel("Result"));
+        all.add(createRoundRadio(testLabel));
+        all.add(testLabel);
 
         return all;
     }

@@ -36,6 +36,7 @@ public class ScrollPaneExample
 
         // table.setShowGrid(true);
         SBaseTable table = new SBaseTable(new MyTableModel());
+        table.setDefaultRenderer(new TableExample.MyCellRenderer());
         SScrollPane scroller = new SScrollPane(table);
         p.add(scroller);
         return p;

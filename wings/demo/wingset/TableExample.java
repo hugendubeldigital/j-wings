@@ -40,6 +40,7 @@ public class TableExample
         table.setShowGrid(true);
         table.setBorderLines(new Insets(1,1,1,1));
         table.setSelectionMode(MULTIPLE_SELECTION);
+        table.setDefaultRenderer(new MyCellRenderer());
         // table.setShowGrid(false);
         p.add(table);
 
@@ -49,6 +50,7 @@ public class TableExample
         formTable.setShowGrid(true);
         formTable.setBorderLines(new Insets(1,1,1,1));
         formTable.setSelectionMode(SINGLE_SELECTION);
+        formTable.setDefaultRenderer(new MyCellRenderer());
         form.add(formTable);
         form.add(new SButton("SUBMIT"));
         p.add(form);
@@ -71,6 +73,27 @@ public class TableExample
         Color.white,
         Color.blue
     };
+
+    static class MyCellRenderer extends SDefaultTableCellRenderer {
+        SLabel colorOut = new SLabel();
+
+        public SComponent getTableCellRendererComponent(SBaseTable baseTable,
+                                                        Object value,
+                                                        boolean selected,
+                                                        int row,
+                                                        int col) {
+            if (value instanceof Color) {
+                Color c = (Color) value;
+                colorOut.setText("[" + c.getRed() + "," 
+                                 + c.getGreen() + "," + c.getBlue() + "]");
+                colorOut.setForeground(c);
+                return colorOut;
+            }
+            else
+                return super.getTableCellRendererComponent(baseTable,value,
+                                                           selected,row,col);
+        }
+    }
 
     class MyTableModel extends AbstractTableModel implements TableSorter
     {
