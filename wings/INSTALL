@@ -1,7 +1,9 @@
 
 wingS demo installation with JServ and Apache under Linux
 
-0) make sure JServ is working (http://localhost/jserv/)
+0) make sure JServ is working
+   - try "http://localhost/jserv/" in your browser
+
 
 1) compile it (this step is only required if you download wingS via CVS)
    - customize Environment.sh
@@ -9,23 +11,39 @@ wingS demo installation with JServ and Apache under Linux
    - make
    - make jar
 
+
 2) edit <path_to_wings>/demo/zone.properties
    - adjust "repositories"
-   - the rest should be ok
+   - the rest should be OK
 
-3) edit jserv.properties (RedHat: /etc/httpd/conf/jserv/jserv.properties)
-   - either call "xhost +" before starting the httpd server
-     or add "wrapper.env=DISPLAY=:1" and start Xvfb on display 1
-     (/usr/X11R6/bin/Xvfb :1 -screen 0 640x480x8 &)
+
+3) edit jserv.properties (RedHat: /etc/httpd/conf/jserv/jserv.properties).
+   Please note that wingS requires access to an Xserver under Unix/Linux.
+   There are several possibilities to achieve this (you only need one!):
+
+   - xhost:
+     - add "wrapper.env=DISPLAY=localhost:0"
+     - call "xhost +localhost" before starting the httpd server
+
+   - or Xvfb:
+     - add "wrapper.env=DISPLAY=localhost:1"
+     - start Xvfb on display 1 (/usr/X11R6/bin/Xvfb :1 -screen 0 640x480x8 &)
+
    - add "wings" to "zones"
    - add "wings.properties=<path_to_wings>/demo/zone.properties"
+
 
 4) edit jserv.conf (RedHat: /etc/httpd/conf/jserv/jserv.conf)
    - add "ApJServMount /wings /wings"
 
-5) restart the httpd (don't forget the X server)
+
+5) restart the httpd (don't forget the X server - see 3)
+
 
 6) go to http://localhost/wings/WingSet
    - if you get an internal server error, have a look at jserv.log and
      error.log (both can normally be found under /var/log/httpd).
+
+
+That's it!
 
