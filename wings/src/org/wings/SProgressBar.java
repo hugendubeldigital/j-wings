@@ -41,7 +41,13 @@ import org.wings.plaf.ProgressBarCG;
 public class SProgressBar extends SComponent {
 
     private static final String cgClassID = "ProgressBarCG";
+
+    public static final String STRING_PROPERTY = "_String_Property";
+    public static final String STRING_PAINTED_PROPERTY = "_String_Painted_Property";
+    public static final String BORDER_PAINTED_PROPERTY = "_Border_Painted_Property";
+    public static final String ORIENTATION_PROPERTY = "_Orientation_Property";
  
+
     /**
      * Whether the progress bar is horizontal or vertical.
      * The default is <code>HORIZONTAL</code>.
@@ -164,7 +170,7 @@ public class SProgressBar extends SComponent {
      */
     public SProgressBar()
     {
-	this(defaultOrientation);
+        this(defaultOrientation);
     }
 
     /**
@@ -186,7 +192,7 @@ public class SProgressBar extends SComponent {
      */
     public SProgressBar(int orient)
     {
-	this(orient, defaultMinimum, defaultMaximum);
+        this(orient, defaultMinimum, defaultMaximum);
     }
 
 
@@ -211,7 +217,7 @@ public class SProgressBar extends SComponent {
      */
     public SProgressBar(int min, int max)
     {
-	this(defaultOrientation, min, max);
+        this(defaultOrientation, min, max);
     }
 
 
@@ -237,16 +243,16 @@ public class SProgressBar extends SComponent {
      */
     public SProgressBar(int orient, int min, int max)
     {
-	// Creating the model this way is a bit simplistic, but
-	//  I believe that it is the the most common usage of this
-	//  component - it's what people will expect.
+        // Creating the model this way is a bit simplistic, but
+        //  I believe that it is the the most common usage of this
+        //  component - it's what people will expect.
         setModel(new DefaultBoundedRangeModel(min, 0, min, max));
 
         setOrientation(orient);      // documented with set/getOrientation()
         setBorderPainted(true);      // documented with is/setBorderPainted()
-	setStringPainted(false);     // see setStringPainted
-	setString(null);             // see getString
-	setIndeterminate(false);     // see setIndeterminate
+        setStringPainted(false);     // see setStringPainted
+        setString(null);             // see getString
+        setIndeterminate(false);     // see setIndeterminate
     }
 
 
@@ -270,9 +276,9 @@ public class SProgressBar extends SComponent {
 
         setOrientation(defaultOrientation);  // see setOrientation()
         setBorderPainted(true);              // see setBorderPainted()
-	setStringPainted(false);             // see setStringPainted
-	setString(null);                     // see getString
-	setIndeterminate(false);             // see setIndeterminate
+        setStringPainted(false);             // see setStringPainted
+        setString(null);                     // see getString
+        setIndeterminate(false);             // see setIndeterminate
     }
 
 
@@ -314,12 +320,12 @@ public class SProgressBar extends SComponent {
             case HORIZONTAL:
                 int oldOrientation = orientation;
                 orientation = newOrientation;
-		reloadIfChange(ReloadManager.RELOAD_CODE, oldOrientation, newOrientation);
-                firePropertyChange("orientation", oldOrientation, newOrientation);
+                reloadIfChange(ReloadManager.RELOAD_CODE, oldOrientation, newOrientation);
+                firePropertyChange(ORIENTATION_PROPERTY, oldOrientation, newOrientation);
                 break;
             default:
                 throw new IllegalArgumentException(newOrientation +
-						   " is not a legal orientation");
+                                                   " is not a legal orientation");
             }
         }
     }
@@ -356,11 +362,11 @@ public class SProgressBar extends SComponent {
      */
     public void setStringPainted(boolean b) {
         //PENDING: specify that string not painted when in indeterminate mode?
-	//         or just leave that to the L&F?
+        //         or just leave that to the L&F?
         boolean oldValue = paintString;
         paintString = b;
-	reloadIfChange(ReloadManager.RELOAD_CODE, oldValue, paintString);
-        firePropertyChange("stringPainted", oldValue, paintString);
+        reloadIfChange(ReloadManager.RELOAD_CODE, oldValue, paintString);
+        firePropertyChange(STRING_PAINTED_PROPERTY, oldValue, paintString);
     }
 
 
@@ -375,9 +381,9 @@ public class SProgressBar extends SComponent {
      * @see    #setString
      */
     public String getString(){
-	if (progressString != null) {
-	    return progressString;
-	} else {
+        if (progressString != null) {
+            return progressString;
+        } else {
             if (format == null) {
                 format = NumberFormat.getPercentInstance();
             }
@@ -408,9 +414,9 @@ public class SProgressBar extends SComponent {
      */
     public void setString(String s){
         String oldValue = progressString;
-	progressString = s;
-	reloadIfChange(ReloadManager.RELOAD_CODE, oldValue, progressString);
-        firePropertyChange("string", oldValue, progressString);
+        progressString = s;
+        reloadIfChange(ReloadManager.RELOAD_CODE, oldValue, progressString);
+        firePropertyChange(STRING_PROPERTY, oldValue, progressString);
     }
 
     /**
@@ -420,10 +426,10 @@ public class SProgressBar extends SComponent {
      * @return the percent complete for this progress bar
      */
     public double getPercentComplete() {
-	long span = model.getMaximum() - model.getMinimum();
-	double currentValue = model.getValue();
-	double pc = (currentValue - model.getMinimum()) / span;
-	return pc;
+        long span = model.getMaximum() - model.getMinimum();
+        double currentValue = model.getValue();
+        double pc = (currentValue - model.getMinimum()) / span;
+        return pc;
     }
 
     /**
@@ -457,8 +463,8 @@ public class SProgressBar extends SComponent {
     public void setBorderPainted(boolean b) {
         boolean oldValue = paintBorder;
         paintBorder = b;
-	reloadIfChange(ReloadManager.RELOAD_CODE, oldValue, paintBorder);
-        firePropertyChange("borderPainted", oldValue, paintBorder);
+        reloadIfChange(ReloadManager.RELOAD_CODE, oldValue, paintBorder);
+        firePropertyChange(BORDER_PAINTED_PROPERTY, oldValue, paintBorder);
     }
 
     /**
@@ -467,7 +473,7 @@ public class SProgressBar extends SComponent {
      * @param c a <code>Color</code> value
      */
     public void setBorderColor(Color c) {
-	borderColor = c;
+        borderColor = c;
     }
 
     /**
@@ -476,7 +482,7 @@ public class SProgressBar extends SComponent {
      * @return a <code>Color</code> value
      */
     public Color getBorderColor() {
-	return borderColor;
+        return borderColor;
     }
 
     /**
@@ -485,7 +491,7 @@ public class SProgressBar extends SComponent {
      * @param c a <code>Color</code> value
      */
     public void setFilledColor(Color c) {
-	filledColor = c;
+        filledColor = c;
     }
 
     /**
@@ -494,7 +500,7 @@ public class SProgressBar extends SComponent {
      * @param c a <code>Color</code> value
      */
     public Color getFilledColor() {
-	return filledColor;
+        return filledColor;
     }
 
     /**
@@ -503,7 +509,7 @@ public class SProgressBar extends SComponent {
      * @param c a <code>Color</code> value
      */
     public void setUnfilledColor(Color c) {
-	unfilledColor = c;
+        unfilledColor = c;
     }
 
     /**
@@ -512,7 +518,7 @@ public class SProgressBar extends SComponent {
      * @param c a <code>Color</code> value
      */
     public Color getUnfilledColor() {
-	return unfilledColor;
+        return unfilledColor;
     }
 
     /**
@@ -655,9 +661,9 @@ public class SProgressBar extends SComponent {
                 newModel.addChangeListener(changeListener);
             }
 
-	    if (model != null) {
-		model.setExtent(0);
-	    }
+            if (model != null) {
+                model.setExtent(0);
+            }
         }
     }
 
@@ -718,8 +724,8 @@ public class SProgressBar extends SComponent {
      */
     public void setValue(int n) { 
         BoundedRangeModel brm = getModel();
-	int oldValue = brm.getValue();
-	brm.setValue(n);
+        int oldValue = brm.getValue();
+        brm.setValue(n);
     }
 
     /**
@@ -779,9 +785,9 @@ public class SProgressBar extends SComponent {
      * <a href="http://java.sun.com/docs/books/tutorial/uiswing/components/progress.html" target="_top">How to Monitor Progress</a>
      * for examples of using indeterminate progress bars.
      *
-     * @param newValue	<code>true</code> if the progress bar
-     * 			should change to indeterminate mode;
-     * 			<code>false</code> if it should revert to normal.
+     * @param newValue  <code>true</code> if the progress bar
+     *                  should change to indeterminate mode;
+     *                  <code>false</code> if it should revert to normal.
      *
      * @see #isIndeterminate
      * @see javax.swing.plaf.basic.BasicProgressBarUI
@@ -792,12 +798,12 @@ public class SProgressBar extends SComponent {
      *        bound: true
      *    attribute: visualUpdate true
      *  description: Set whether the progress bar is indeterminate (true)
-     * 		     or normal (false).
+     *               or normal (false).
      */
     public void setIndeterminate(boolean newValue) {
-	boolean oldValue = indeterminate;
-	indeterminate = newValue;
-	firePropertyChange("indeterminate", oldValue, indeterminate);
+        boolean oldValue = indeterminate;
+        indeterminate = newValue;
+        firePropertyChange("indeterminate", oldValue, indeterminate);
     }
 
     /**
@@ -821,6 +827,10 @@ public class SProgressBar extends SComponent {
 
 /*
    $Log$
+   Revision 1.2  2002/10/29 19:00:59  ahaaf
+   o use property constants
+   o remove tabs
+
    Revision 1.1  2002/10/28 19:56:54  ahaaf
    o add ProgressBar component
 
