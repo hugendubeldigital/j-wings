@@ -151,31 +151,61 @@ public class CheckBoxCG
     protected void writeAnchorIcon(Device d, SAbstractButton checkBox, String align)
         throws IOException
     {
-        SIcon icon = null;
-        SIcon disabledIcon = null;
-        if (checkBox.isSelected()) {
-            icon = checkBox.getSelectedIcon();
-            disabledIcon = checkBox.getDisabledSelectedIcon();
-        }
-        else {
-            icon = checkBox.getIcon();
-            disabledIcon = checkBox.getDisabledIcon();
-        }
-
         SIcon actualIcon = null;
-
-        if (!checkBox.isEnabled()){
-            actualIcon = disabledIcon;
+        if ( checkBox.isEnabled() ) {
+             actualIcon = 
+                 checkBox.isSelected() ? checkBox.getSelectedIcon() :
+                 checkBox.getIcon();
         } else {
-            actualIcon = icon;
-        }
+            actualIcon = checkBox.isSelected() ? checkBox.getDisabledSelectedIcon() :
+                 checkBox.getDisabledIcon();
 
-        if (icon != null) {
+        }
+            
+
+        if (actualIcon != null) {
+
             writeAnchorPrefix(d, checkBox);
 
             d.print("<img src=\"").
                 print(actualIcon.getURL()).
                 print("\"");
+
+            if ( checkBox.isEnabled() ) {
+                // render rollover
+                SIcon rolloverIcon = 
+                    checkBox.isSelected() ? checkBox.getRolloverSelectedIcon() :
+                    checkBox.getRolloverIcon();
+
+                SIcon pressedIcon = checkBox.getPressedIcon();
+
+                String iconName = "Icon_" + checkBox.getUnifiedId();
+                if ( rolloverIcon!=null || pressedIcon!=null ) {
+                    d.print(" name=\"").print(iconName).print("\"");
+                }
+
+                if ( rolloverIcon!=null ) {
+                    d.print(" onMouseOver=\"if(document.images){document.")
+                        .print(iconName).print(".src='").print(rolloverIcon.getURL())
+                        .print("';}\"")
+                        .print(" onMouseOut=\"if(document.images){document.")
+                        .print(iconName).print(".src='").print(actualIcon.getURL())
+                        .print("';}\"");
+                }
+
+                // render pressed
+                if ( pressedIcon!=null ) {
+                    d.print(" onMouseDown=\"if(document.images){document.")
+                        .print(iconName).print(".src='").print(pressedIcon.getURL())
+                        .print("';}\"")
+                        .print(" onMouse=\"if(document.images){document.")
+                        .print(iconName).print(".src='")
+                             .print(rolloverIcon!=null ? rolloverIcon.getURL() : 
+                                   actualIcon.getURL())
+                             .print("';}\"");
+                }
+
+            }
 
             if (align != null)
                 d.print(" align=\"").print(align).print("\"");
@@ -212,6 +242,12 @@ public class CheckBoxCG
     }
 
     protected void writeAnchorPrefix(Device d, SAbstractButton checkBox)
+        throws IOException 
+    {
+        writeAnchorPrefix(d, checkBox, null);
+    }
+
+    protected void writeAnchorPrefix(Device d, SAbstractButton checkBox, String params)
         throws IOException
     {
         String tooltip = checkBox.getToolTipText();
@@ -226,6 +262,10 @@ public class CheckBoxCG
 
             if (tooltip != null)
                 d.print(" title=\"").print(tooltip).print("\"");
+
+            if (params != null) {
+                d.print(params);
+            }
 
             d.print(">");
         }

@@ -80,10 +80,13 @@ public class RadioButtonExample
     SContainer createImageRadioButtonExample() {
         SButtonGroup group = new SButtonGroup();
 
-        SIcon sel = new ResourceImageIcon("org/wings/icons/radioSelected.gif");
-        SIcon nsel = new ResourceImageIcon("org/wings/icons/radio.gif");
-        SIcon dissel = new ResourceImageIcon("org/wings/icons/radioDisabledSelected.gif");
-        SIcon disnsel = new ResourceImageIcon("org/wings/icons/radioDisabled.gif");
+        SIcon sel = new ResourceImageIcon("wingset/icons/RadioButtonSelectedIcon.gif");
+        SIcon nsel = new ResourceImageIcon("wingset/icons/RadioButtonIcon.gif");
+        SIcon pressed = new ResourceImageIcon("wingset/icons/RadioButtonPressedIcon.gif");
+        SIcon dissel = new ResourceImageIcon("wingset/icons/RadioButtonDisabledSelectedIcon.gif");
+        SIcon disnsel = new ResourceImageIcon("wingset/icons/RadioButtonDisabledIcon.gif");
+        SIcon rollsel = new ResourceImageIcon("wingset/icons/RadioButtonRolloverSelectedIcon.gif");
+        SIcon rollnsel = new ResourceImageIcon("wingset/icons/RadioButtonRolloverIcon.gif");
 
         SRadioButton[] boxes = new SRadioButton[9];
         boxes[0] = new SRadioButton("testTL");
@@ -99,6 +102,13 @@ public class RadioButtonExample
         for ( int i=0; i<boxes.length; i++ ) {
             group.add(boxes[i]);
             boxes[i].setToolTipText("RadioButton " + i);
+            boxes[i].setIcon(nsel);
+            boxes[i].setSelectedIcon(sel);
+            boxes[i].setDisabledIcon(disnsel);
+            boxes[i].setDisabledSelectedIcon(dissel);
+            boxes[i].setRolloverIcon(rollnsel);
+            boxes[i].setRolloverSelectedIcon(rollsel);
+            boxes[i].setPressedIcon(pressed);
         }
 
         boxes[0].setVerticalTextPosition(SConstants.TOP);

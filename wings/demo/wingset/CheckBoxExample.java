@@ -74,10 +74,12 @@ public class CheckBoxExample
     }
 
     SContainer createImageCheckBoxExample() {
-        SIcon sel = new ResourceImageIcon("org/wings/icons/bulb2.gif");
-        SIcon nsel = new ResourceImageIcon("org/wings/icons/bulb1.gif");
-        SIcon dissel = new ResourceImageIcon("org/wings/icons/bulb3.gif");
-        SIcon disnsel = new ResourceImageIcon("org/wings/icons/bulb3.gif");
+        SIcon sel = new ResourceImageIcon("wingset/icons/ComboBoxSelectedIcon.gif");
+        SIcon nsel = new ResourceImageIcon("wingset/icons/ComboBoxIcon.gif");
+        SIcon dissel = new ResourceImageIcon("wingset/icons/ComboBoxDisabledSelectedIcon.gif");
+        SIcon disnsel = new ResourceImageIcon("wingset/icons/ComboBoxDisabledIcon.gif");
+        SIcon rollsel = new ResourceImageIcon("wingset/icons/ComboBoxRolloverSelectedIcon.gif");
+        SIcon rollnsel = new ResourceImageIcon("wingset/icons/ComboBoxRolloverIcon.gif");
 
         SCheckBox[] boxes = new SCheckBox[9];
         boxes[0] = new SCheckBox("testTL");
@@ -95,6 +97,9 @@ public class CheckBoxExample
             boxes[i].setSelectedIcon(sel);
             boxes[i].setDisabledIcon(disnsel);
             boxes[i].setDisabledSelectedIcon(dissel);
+            boxes[i].setRolloverIcon(rollnsel);
+            boxes[i].setRolloverSelectedIcon(rollsel);
+            boxes[i].setPressedIcon(sel);
             boxes[i].setToolTipText("CheckBox " + i);
         }
 

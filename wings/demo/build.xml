@@ -52,8 +52,8 @@
         <include name="wingset/**"/>
       </classes>
       <classes dir=".">
-        <include name="wingset/*.gif"/>
-        <include name="wingset/*.jpg"/>
+        <include name="wingset/icons/*.gif"/>
+        <include name="wingset/icons/*.jpg"/>
         <include name="wingset/templates/*.thtml"/>
       </classes>
       <fileset dir="wingset">

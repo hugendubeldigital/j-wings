@@ -175,7 +175,7 @@ public class DesktopSession
                                 writer.write(b);
                             
                             editor.setText(writer.toString());
-                            editor.setTitle(chooser.getFilename());
+                            editor.setTitle(chooser.getFileName());
                             chooser.reset();
                         }
                         catch (Exception e) {

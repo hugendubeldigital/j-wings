@@ -81,7 +81,7 @@ public abstract class SAbstractButton
     /**
      * TODO: documentation
      */
-    private SIcon selectedRolloverIcon;
+    private SIcon rolloverSelectedIcon;
 
     /**
      * TODO: documentation
@@ -320,9 +320,9 @@ public abstract class SAbstractButton
      *
      * @param i
      */
-    public void setSelectedRolloverIcon(SIcon i) {
-        if ( isDifferent(selectedRolloverIcon, i) ) {
-            selectedRolloverIcon = i;
+    public void setRolloverSelectedIcon(SIcon i) {
+        if ( isDifferent(rolloverSelectedIcon, i) ) {
+            rolloverSelectedIcon = i;
             reload(ReloadManager.RELOAD_CODE);
         }
     }
@@ -332,8 +332,8 @@ public abstract class SAbstractButton
      *
      * @return
      */
-    public final SIcon getSelectedRolloverIcon() {
-        return selectedRolloverIcon;
+    public final SIcon getRolloverSelectedIcon() {
+        return rolloverSelectedIcon;
     }
 
     /**

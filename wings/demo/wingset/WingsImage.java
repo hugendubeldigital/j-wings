@@ -42,7 +42,7 @@ public class WingsImage
         p.setBackground(new java.awt.Color(150, 168, 240));
 
         SLabel label = new SLabel(new ResourceImageIcon(getClass().getClassLoader(),
-                                                        "wingset/wingS.jpg"));
+                                                        "wingset/icons/wingS.jpg"));
         label.setHorizontalAlignment(CENTER);
         p.add(label, SBorderLayout.CENTER);
 
