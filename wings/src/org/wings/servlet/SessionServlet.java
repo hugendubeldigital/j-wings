@@ -411,6 +411,8 @@ public abstract class SessionServlet
      * TODO muss noch vervollstaendigt werden.
      */
     private final void dispatchPostQuery(String query) {
+        if (query == null)
+            return;
         // hier noch get Parameter der Form parsen und dispatchen!!
         debug("Dispatch Form Get");
         String paramName = query.substring(0, query.indexOf("="));
