@@ -62,6 +62,7 @@ public class WingSetSession
         STabbedPane tab = new STabbedPane();
 
         tab.add(new LabelExample(), "Label Example");
+        tab.add(new BorderExample(), "Border Example");
         tab.add(new TreeExample(), "Tree Example");
         tab.add(new OptionPaneExample(frame), "OptionPane Example");
         tab.add(new TableExample(), "Table Example");
