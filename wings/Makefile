@@ -57,3 +57,5 @@ dist: fun doc jar demojar
 
 distclean:
 	rm -rf dist
+        rm ${WINGS_DIR}.tar.gz ${WINGS_DEVEL_DIR}.tar.gz
+
