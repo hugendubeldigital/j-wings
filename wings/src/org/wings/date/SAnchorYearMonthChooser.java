@@ -67,14 +67,14 @@ public class SAnchorYearMonthChooser
         getSession().addPropertyChangeListener(Session.LOCALE_PROPERTY, this);
         initLocaleDependent();
 
-        backward.setIcon(new ResourceImageIcon("icons/ScrollLeft.gif"));
+        backward.setIcon(new ResourceImageIcon(SAnchorYearMonthChooser.class, "/org/wings/icons/ScrollLeft.gif"));
         backward.setToolTipText("&lt;");
         backward.setVerticalTextPosition(backward.TOP);
         backward.setHorizontalTextPosition(backward.RIGHT);
         backward.setShowAsFormComponent(false);
         backward.addActionListener(this);
 
-        forward.setIcon(new ResourceImageIcon("icons/ScrollRight.gif"));
+        forward.setIcon(new ResourceImageIcon(SAnchorYearMonthChooser.class, "/org/wings/icons/ScrollRight.gif"));
         forward.setToolTipText("&gt;");
         forward.setVerticalTextPosition(forward.TOP);
         forward.setHorizontalTextPosition(forward.RIGHT);
