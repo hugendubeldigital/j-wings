@@ -96,9 +96,9 @@ void writeFormText(final Device device, SButton button, String attr)
 {
     %><input type="submit" name="<%
     %><%=button.getNamePrefix()%>"<%
-    %><%|class=attr%>><%
+    %><%|class=attr%><%
     // writeEvents();
-    %><%|text=button.getText()%>/><%
+    %><%|value=button.getText()%>/><%
 }
 
 void writeFormIcon(final Device device, SButton button, String attr)
@@ -131,9 +131,9 @@ void writeFormIcon(final Device device, SButton button, String attr)
     int     verticalTextPosition   = component.getVerticalTextPosition();
   
     if (icon == null) {
-         writeAnchorText(device, component, attr);
+         writeText(device, component, attr);
     } else if (text == null) {
-         writeAnchorIcon(device, component, attr);
+         writeIcon(device, component, attr);
     } else {
         %><table><%
         // if we are on the top, create a top row
