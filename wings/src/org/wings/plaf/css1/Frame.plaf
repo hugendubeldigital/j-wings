@@ -3,6 +3,10 @@
 <import>org.wings.header.*</import>
 <import>org.wings.script.*</import>
 
+/* The IE "browser" renders web pages differently (bigger fonts, etc. if the HTML has a 
+   valid XML declaration header vs. if none. Property enables to beautify pages. */
+<property type="Boolean" name="renderXmlDeclaration">Boolean.TRUE</property>
+
 <install>
         DynamicCodeResource dynamicCodeRessource;
         DynamicStyleSheetResource styleSheetResource;
@@ -60,8 +64,7 @@
         String language = SessionManager.getSession().getLocale().getLanguage(); 
         String title = frame.getTitle();
         List headers = frame.headers();
-        String encoding = org.wings.util.LocaleCharSet.getInstance()
-	                     .getCharSet(frame.getSession().getLocale());
+        String encoding = SessionManager.getSession().getCharacterEncoding();
 
 
     if ( browser.getBrowserName().equals("MSIE") &&
@@ -69,9 +72,10 @@
         %><html>
 <%
     } else {
-
-        %><?xml version="1.0" encoding="<%=encoding%>"?>
-<%
+        if (renderXmlDeclaration.booleanValue()) {
+           %><?xml version="1.0" encoding="<%=encoding%>"?>
+<%    
+        }
         %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
 <%
         %><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=language%>" lang="<%=language%>">
