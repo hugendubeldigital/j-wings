@@ -22,21 +22,31 @@ import java.util.Enumeration;
 
 import org.wings.session.SessionManager;
 
-/*
- * Eine stinknormale ButtonGroup :-). Steckt aber schon ein bisschen
- * Grips dahinter. In HTML werden Gruppen dadurch generiert, dass sie
- * denselben Namen haben. Das ist natuerlich problematisch, da jede
- * {@link SComponent}, insbesondere {@link SCheckBox}, eine
- * eindeutige Bezeichnug als Name hat. Der Trick besteht darin, dass
- * Buttons in dieser ButtonGroup den Namen dieser ButtonGroup als
- * Namen haben, und im Value ihren eigentlichen Namen
- * kodieren. D.h. sie uebernehmen ein wenig Dispatcher Arbeit.
- */
 /**
- * TODO: documentation
+ * This class is used to create a multiple-exclusion scope for a set of 
+ * buttons. Creating a set of buttons with the same ButtonGroup object means
+ * that turning "on" one of those buttons turns off all other buttons in the 
+ * group. 
+ *
+ * <p>A SButtonGroup can be used with any set of objects that inherit from
+ * {@link SCheckBox}, because they support the selected state.
+ *
+ * <p>Initially, all buttons in the group are unselected. Once any button is 
+ * selected, one button is always selected in the group. There is no way to
+ * turn a button programmatically to "off", in order to clear the button 
+ * group.
+ *
+ * <p><em>Details:</em>The implementation of the button group is a 
+ * bit tricky for the HTML generation. In HTML, groups of components are
+ * usually formed by giving them all the same name. The problem is, that 
+ * any {@link SComponent}, especially the {@link SCheckBox}, have globally 
+ * <em>unique</em> names. So this implementation gives all buttons in the
+ * group the name of this SButtonGroup, and sets their <em>value</em> to
+ * their actual name. So a bit of dispatching is already done here.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
+ * @see javax.swing.ButtonGroup
  */
 public class SButtonGroup
 {
