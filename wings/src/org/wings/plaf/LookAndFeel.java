@@ -64,8 +64,8 @@ public class LookAndFeel
 
     /**
      * Instantiate a laf using the specified classLoader.
-     * The properties are read from the classLoader's classpath as a resource with
-     * name <i>default.properties</i>.
+     * The properties are read from the classLoader's classpath as a resource
+     * with name <i>default.properties</i>.
      * @param classLoader the classLoader that will load the CGs
      */
     public LookAndFeel(ClassLoader classLoader)
