@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.wings.util.StringUtil;
 
-
 /**
  * 
  *
@@ -47,30 +46,47 @@ public abstract class AbstractExternalizeManager
     public static final String NOT_FOUND_IDENTIFIER = "0";
 
     
+    /*---------------------------------------------------------------
+     * The externalized ID is just a counter start starts with zero. This
+     * happens with each start of the server, and thus generates the same
+     * ID if we restart the application (especially, if we are in the 
+     * development phase). Since we externalize the resource giving a long
+     * caching timeout, the browser might not refetch an resource externalized
+     * in a fresh instance of the web-application, since the browser has it
+     * already cached.
+     * Thus, we need an unique prefix for each externalized resource, that
+     * changes with each start of the server. 
+     * These static variables create a new ID every UNIQUE_TIMESLICE, which
+     * means, that, if we use a 2-character prefix, can offer the browser
+     * the timeframe of FINAL_EXPIRES for this resource to be cached (since
+     * after that time, we have an roll-over of the ID's).
+     *----------------------------------------------------------------*/
+
     /**
      * in seconds
      */
     public static final int UNIQUE_TIMESLICE = 20;
 
     /**
-     * in seconds
+     * in seconds; Computed from UNIQUE_TIMESLICE; do not change.
      */
     public static final long FINAL_EXPIRES = 
         (StringUtil.MAX_RADIX*StringUtil.MAX_RADIX - 1) * UNIQUE_TIMESLICE;
+
     /**
-     * in seconds
+     * in seconds as String. Computed, do not change.
      */
     public static final String FINAL_EXPIRES_STRING = 
         Long.toString(FINAL_EXPIRES);
 
     /**
-     *
+     * Prefix for the externalized ID; long. Computed, do not change.
      */
     protected static final long PREFIX_TIMESLICE = 
         ((System.currentTimeMillis()/1000)%FINAL_EXPIRES)/UNIQUE_TIMESLICE;
 
     /**
-     *
+     * String prefix for externalized ID as String. Computed, do not change.
      */
     protected static final String PREFIX_TIMESLICE_STRING = 
         StringUtil.toShortestAlphaNumericString(PREFIX_TIMESLICE, 2);
@@ -83,9 +99,9 @@ public abstract class AbstractExternalizeManager
     // Flags
 
     /**
-     * for an externalized object with the final flag on the expired date header
-     * is set to a big value. If the final flag is off, the browser or proxy did
-     * not cache the object.
+     * for an externalized object with the final flag on the expired date
+     * heade is set to a big value. If the final flag is off, the browser 
+     * or proxy did not cache the object.
      */
     public static final int FINAL = 8;
 
@@ -100,7 +116,8 @@ public abstract class AbstractExternalizeManager
      * for an externalized object with the session flag on, the externalized
      * object only available to requests within the session which created the
      * object. The object is not accessible anymore after the session is
-     * destroyed (it is garbage collected after the session is garbage collected)
+     * destroyed (it is garbage collected after the session is garbage 
+     * collected)
      */
     public static final int SESSION = 2;
 
@@ -114,11 +131,12 @@ public abstract class AbstractExternalizeManager
     /**
      * To generate the identifier for a externalized object.
      */
-    private long counter = 1;
+    private long counter = 0;
 
     /**
      * To search for an already externalized object. This performs way better
-     * than search in the value set of the identifier-{@link ExternalizedInfo} map.
+     * than search in the value set of the identifier-{@link ExternalizedInfo}
+     * map.
      */
     protected final Map reverseExternalized = Collections.synchronizedMap( new HashMap() );
 
@@ -142,7 +160,7 @@ public abstract class AbstractExternalizeManager
      *
      */
     protected final synchronized long getNextIdentifier() {
-        return counter++;
+        return ++counter;
     }
 
     /**
@@ -151,7 +169,7 @@ public abstract class AbstractExternalizeManager
     protected String getPrefix() {
         return PREFIX_TIMESLICE_STRING;
     }
-
+    
     /**
      *
      */
@@ -160,10 +178,9 @@ public abstract class AbstractExternalizeManager
     }
 
     /**
-     * store the {@link ExternalizedInfo} in a map. The {@link ExternalizedInfo}
-     * should later on accessible by the identifier 
-     * {@link #getExternalizedInfo}, {@link #removeExternalizedInfo}
-     *
+     * store the {@link ExternalizedInfo} in a map. 
+     * The {@link ExternalizedInfo} should later on accessible by the 
+     * identifier {@link #getExternalizedInfo}, {@link #removeExternalizedInfo}
      */
     protected abstract void storeExternalizedInfo(String identifier,
                                                   ExternalizedInfo extInfo);
@@ -178,7 +195,7 @@ public abstract class AbstractExternalizeManager
      * removes the {@link ExternalizedInfo} by identifier. 
      */
     protected abstract void removeExternalizedInfo(String identifier);
-
+    
     /**
      * externalizes (make a java object available for a browser) an object with
      * the given {@link Externalizer}. The object is externalized in the 
@@ -383,9 +400,12 @@ public abstract class AbstractExternalizeManager
 
             
         response.setContentType(extInfo.getMimeType());
-
-        if ( extInfo.getExternalizer().getLength(extInfo.getObject())>0 )
-            response.setContentLength(extInfo.getExternalizer().getLength(extInfo.getObject()));
+        
+        int resourceLen = extInfo
+            .getExternalizer().getLength(extInfo.getObject());
+        if ( resourceLen > 0 ) {
+            response.setContentLength( resourceLen );
+        }
         
         Set headers = extInfo.getHeaders();
         if ( headers != null ) {
@@ -402,7 +422,7 @@ public abstract class AbstractExternalizeManager
         } else {
             response.setDateHeader("expires", 0);
         }
-
+        
         OutputStream out = response.getOutputStream();
         extInfo.getExternalizer().write(extInfo.getObject(), out);
         out.flush();
@@ -420,5 +440,6 @@ public abstract class AbstractExternalizeManager
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

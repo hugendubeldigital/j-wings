@@ -89,5 +89,6 @@ public final class TemplateParseContext implements ParseContext
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

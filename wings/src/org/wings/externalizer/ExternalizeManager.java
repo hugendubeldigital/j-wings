@@ -53,18 +53,18 @@ public class ExternalizeManager extends AbstractExternalizeManager
      * TODO: documentation
      */
     protected final HashMap externalizerByClass = new HashMap();
-
+    
     /**
      * TODO: documentation
      */
     protected final HashMap externalizerByMimeType = new HashMap();
-
+    
     /**
      * TODO: documentation
      */
     protected final Map externalized = Collections.synchronizedMap( new HashMap() );
-
-
+    
+    
     /**
      * TODO: documentation
      *
@@ -72,7 +72,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
     public ExternalizeManager(HttpServletResponse response) {
         this(response, true);
     }
-
+    
     /**
      * TODO: documentation
      *
@@ -95,22 +95,20 @@ public class ExternalizeManager extends AbstractExternalizeManager
 
     protected final void storeExternalizedInfo(String identifier,
                                                ExternalizedInfo extInfo) {
-        //        debug("store identifier " + identifier + " " + extInfo.getObject().getClass());
-        //        debug("flags " + extInfo.getFlags());
-
-
+        //debug("store identifier " + identifier + " " + extInfo.getObject().getClass());
+        //debug("flags " + extInfo.getFlags());
         externalized.put(identifier, extInfo);
     }
-
+    
     public final Object getExternalizedObject(String identifier) {
         ExternalizedInfo info = getExternalizedInfo(identifier);
 
         if ( info!=null )
             return info.getObject();
-
+        
         return null;
     }
-
+    
     public final ExternalizedInfo getExternalizedInfo(String identifier) {
         if ( identifier == null || identifier.length() < 1 )
             return null;
@@ -334,5 +332,6 @@ public class ExternalizeManager extends AbstractExternalizeManager
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

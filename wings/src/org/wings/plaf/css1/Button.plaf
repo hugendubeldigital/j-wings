@@ -1,11 +1,15 @@
 <template name="Button" for="org.wings.SButton">
 
-<%!void foo() {%>
-  Hallo Welt
-<%!}%>
+/**
+ * this is a test.
+ */
+void foo() {
+ %>Hallo Welt<%
+}
 
 <write>
-<%!
+
+<%
   SIcon		icon = component.getIcon();
   String	text = component.getText();
   int		horizontalTextPosition = component.getHorizontalTextPosition();
@@ -17,33 +21,41 @@
         writeAnchorIcon(device, button);
   else { %>
 <table>
-<%!
+<%
 // if we are on the top, create a top row
 if (verticalTextPosition == TOP) {%>
- <tr><td><%! if (horizontalTextPosition == LEFT)   writeAnchorText(device,component);%></td>
-     <td><%! if (horizontalTextPosition == CENTER) writeAnchorText(device,component);%></td>
-     <td><%! if (horizontalTextPosition == RIGHT)  writeAnchorText(device,component);%></td></tr>
-<%!}
+ <tr><td><% if (horizontalTextPosition == LEFT)   writeAnchorText(device,component);%></td>
+     <td><% if (horizontalTextPosition == CENTER) writeAnchorText(device,component);%></td>
+     <td><% if (horizontalTextPosition == RIGHT)  writeAnchorText(device,component);%></td></tr>
+<%}
 
 // we always have a center rows, since we have to write the icon
 if (verticalTextPosition == CENTER) {%>
- <tr><td><%! if (horizontalTextPosition == LEFT)   writeAnchorText(device,component);%></td>
-     <td><%! if (horizontalTextPosition == CENTER) writeAnchorText(device,component);
+ <tr><td><% if (horizontalTextPosition == LEFT)   writeAnchorText(device,component);%></td>
+     <td><% if (horizontalTextPosition == CENTER) writeAnchorText(device,component);
             /* the actually centered icon */
              writeAnchorIcon(device, component);%></td>
-     <td><%! if (horizontalTextPosition == RIGHT)  writeAnchorText(device,component);%></td></tr>
-<%!} else {%>
-  <tr><td></td><td><%! writeAnchorIcon(device, component); %></td><td></td></tr>
-<%!}
+     <td><% if (horizontalTextPosition == RIGHT)  writeAnchorText(device,component);%></td></tr>
+<%} else {%>
+  <tr><td></td><td><% writeAnchorIcon(device, component); %></td><td></td></tr>
+<%}
 
 // ..
 if (verticalTextPosition == BOTTOM) {%>
- <tr><td><%! if (horizontalTextPosition == LEFT)   writeAnchorText(device,component);%></td>
-     <td><%! if (horizontalTextPosition == CENTER) writeAnchorText(device,component);%></td>
-     <td><%! if (horizontalTextPosition == RIGHT)  writeAnchorText(device,component);%></td></tr>
-<%!} %>
+ <tr><td><% if (horizontalTextPosition == LEFT)   writeAnchorText(device,component);%></td>
+     <td><% if (horizontalTextPosition == CENTER) writeAnchorText(device,component);%></td>
+     <td><% if (horizontalTextPosition == RIGHT)  writeAnchorText(device,component);%></td></tr>
+<%} %>
 </table>
 }
 %>
 </write>
+
+/**
+ * This is a test.
+ */
+void foobar() {
+}
+
 </template>
+

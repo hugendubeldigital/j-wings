@@ -155,3 +155,11 @@ public final class Utils implements SConstants {
 	System.out.println (d.toString());
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

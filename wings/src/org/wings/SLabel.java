@@ -337,5 +337,6 @@ public class SLabel
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

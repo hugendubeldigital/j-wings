@@ -26,24 +26,25 @@ import org.wings.session.Session;
  */
 public class ExternalizedInfo
 {
-    private String        mimeType;
-    private Object        extObject;
-    private Externalizer  externalizer;
-    private int           flags;
-    private long          lastModified;
-    private Set           headers;
+    private final String        mimeType;
+    private final Object        extObject;
+    private final Externalizer  externalizer;
+    private final int           flags;
+    private final long          lastModified;
+    private final Set           headers;
 
-    public ExternalizedInfo(Object obj, Externalizer ext, String mt, Set h, int f) {
+    public ExternalizedInfo(Object obj, Externalizer ext, 
+                            String mt, Set headers, int flags) {
         extObject   = obj;
         externalizer= ext;
-        mimeType = mt;
-        flags = f;
-
+        mimeType    = mt;
+        this.flags  = flags;
+        
         if ( externalizer==null || extObject==null )
             throw new IllegalArgumentException("no externalizer or null object");
-
+        
         lastModified = System.currentTimeMillis();
-        headers = h;
+        this.headers = headers;
     }
 
     /**
@@ -54,7 +55,7 @@ public class ExternalizedInfo
     public final String getMimeType() {
         return mimeType;
     }
-
+    
     /**
      * TODO: documentation
      *
@@ -81,7 +82,7 @@ public class ExternalizedInfo
     public final Set getHeaders() {
         return headers;
     }
-
+    
 
     /**
      * TODO: documentation
@@ -180,6 +181,7 @@ public class ExternalizedInfo
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */
 

@@ -370,7 +370,7 @@ public class CheckBoxCG
             append("\"");
 
         if (checkBox.isSelected())
-            d.append(" checked=\"checked\"");
+            d.append(" checked=\"1\"");
     }
 
     protected void writeFormPostfix(Device d, SCheckBox checkBox)
@@ -384,5 +384,6 @@ public class CheckBoxCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

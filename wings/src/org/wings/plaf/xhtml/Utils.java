@@ -69,9 +69,10 @@ public final class Utils implements SConstants
     public static void writeHiddenComponent(Device d, String name, String value)
         throws IOException
     {
-        d.append("<input type=\"hidden\" name=\"").
-	  append(name).append("\" value=\"").
-	  append(value).append("\" />\n");
+        // shouldn't this be without '\n'?  (hen)
+        d.append("<input type=\"hidden\" name=\"")
+            .append(name).append("\" value=\"")
+            .append(value).append("\" />\n"); 
     }
 
 
@@ -262,5 +263,6 @@ public final class Utils implements SConstants
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

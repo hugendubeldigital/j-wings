@@ -74,6 +74,7 @@
       <fileset dir="${src}">
         <include name="**/*.properties" />
         <include name="**/*.gif" />
+        <include name="**/*.png" />
         <include name="**/*.css" />
       </fileset>
     </copy>

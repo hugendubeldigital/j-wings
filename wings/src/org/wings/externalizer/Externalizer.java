@@ -53,26 +53,26 @@ public interface Externalizer
      * length is set.
      */
     int getLength( Object obj );
-
+    
     /**
      * Returns true if the object is final, false if transient. It is used to
      * control the caching in the browser. 
      */
     boolean isFinal( Object obj );
-
+    
     /**
      * Writes the given object into the given stream. 
      */
     void write( Object obj, OutputStream out )
         throws IOException;
-
+    
     /**
      * Returns the supported classes. The {@link ExternalizeManager} 
      * chooses the Externalizer (if not specified as parameter) by objects 
      * class.
      */
     Class[] getSupportedClasses();
-
+    
     /**
      * Returns the supported mime types. The {@link ExternalizeManager} 
      * chooses the Externalizer by mime type (if specified as parameter)
@@ -92,5 +92,6 @@ public interface Externalizer
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

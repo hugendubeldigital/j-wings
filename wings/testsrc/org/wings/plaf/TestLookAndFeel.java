@@ -103,3 +103,11 @@ public class TestLookAndFeel
 	Assert.assertEquals(Boolean.FALSE, defaults.get("test", Boolean.class));
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

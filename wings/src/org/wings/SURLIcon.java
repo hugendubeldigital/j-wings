@@ -55,3 +55,11 @@ public class SURLIcon implements SIcon {
   }
 
 }// SURLIcon
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

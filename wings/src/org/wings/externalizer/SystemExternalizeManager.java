@@ -22,8 +22,8 @@ import java.util.Collections;
 /**
  * This singleton externalizes 
  * {#link AbstractExternalizeManager#GLOBAL global} scope. Every object
- * externalized by the SystemExternalizeManager (global scope) is available over
- * the life time of the servlet container and is not garbage collected.
+ * externalized by the SystemExternalizeManager (global scope) is available 
+ * over the life time of the servlet container and is not garbage collected.
  *
  * Created: Sat Nov 10 15:49:15 2001
  *
@@ -45,17 +45,26 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
   
     private static final String MY_PREFIX_TIMESLICE_STRING = "-" + 
         AbstractExternalizeManager.PREFIX_TIMESLICE_STRING;
+
     /**
      * TODO: documentation
      */
     protected final Map externalized = Collections.synchronizedMap( new HashMap() );
 
-  
     /**
      * 
      */
     private SystemExternalizeManager () {
         super(null);
+    }
+
+    /**
+     * get the single system wide instance.
+     *
+     * @return the SystemExternalizeManager instance.
+     */
+    public static SystemExternalizeManager getSharedInstance() {
+        return sharedInstance;
     }
 
     /**
@@ -81,12 +90,6 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
         externalized.remove(identifier);
     }
 
-    /**
-     * get the singleton instance
-     */
-    public static SystemExternalizeManager getSharedInstance() {
-        return sharedInstance;
-    }
     
     private static final void debug(String msg) {
         if (DEBUG) {
@@ -100,6 +103,7 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */
 

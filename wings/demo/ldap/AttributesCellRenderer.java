@@ -70,3 +70,11 @@ public class AttributesCellRenderer
 	return super.getTableCellRendererComponent(baseTable, value, isSelected, row, col);
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */
