@@ -39,6 +39,7 @@ public final class Utils
         throws IOException
     {
         if (value != null && value.length() > 0) {
+            d.append(" ");
             d.append(attr);
             d.append(" =\"");
             d.append(value);
@@ -54,6 +55,7 @@ public final class Utils
         throws IOException
     {
         if (value > 0) {
+            d.append(" ");
             d.append(attr);
             d.append(" =\"");
             d.append(value);
