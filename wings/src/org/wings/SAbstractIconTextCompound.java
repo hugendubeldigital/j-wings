@@ -435,22 +435,20 @@ public abstract class SAbstractIconTextCompound
      */
     public void setSelected(boolean b) {
         if (b != selected) {
-        	selected = b;
-        	fireItemStateChanged(new ItemEvent(
-        		this, 
-        		ItemEvent.ITEM_STATE_CHANGED,
-        		this, 
-        		b?ItemEvent.SELECTED:ItemEvent.DESELECTED));
+            selected = b;
+            fireItemStateChanged(new ItemEvent(this,
+                                               ItemEvent.ITEM_STATE_CHANGED,
+                                               this, 
+                                               ((b)
+                                                ? ItemEvent.SELECTED
+                                                : ItemEvent.DESELECTED)));
+            // this leads to problems, don't know why...
+            //        reload(ReloadManager.RELOAD_CODE |
+            //        ReloadManager.RELOAD_STYLE);
+            // Answer: I think this was due to a bug in DefaultReloadManager
+            // once (it used a switch/case instead of '&')
+            reload(ReloadManager.RELOAD_CODE | ReloadManager.RELOAD_STYLE);
         }
-		else
-			return;
-
-        // this leads to problems, don't know why...
-        //        reload(ReloadManager.RELOAD_CODE |
-        //        ReloadManager.RELOAD_STYLE);
-        // Answer: I think this was due to a bug in DefaultReloadManager
-        // once (it used a switch/case instead of '&')
-        reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
