@@ -122,10 +122,8 @@ public class SInternalFrameEvent extends AWTEvent {
      * @return the SInternalFrame object that originated the event
      * @since 1.3
      */
-
     public SInternalFrame getInternalFrame () {
       return (source instanceof SInternalFrame)? (SInternalFrame)source : null;
     }
-    
 
 }

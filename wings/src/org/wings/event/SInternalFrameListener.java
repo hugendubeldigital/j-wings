@@ -25,6 +25,7 @@ import java.util.EventListener;
  * @author Holger Engels
  */
 public interface SInternalFrameListener extends EventListener {
+
     /**
      * Invoked when a internal frame has been opened.
      * @see org.wings.SInternalFrame#show
