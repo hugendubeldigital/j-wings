@@ -232,11 +232,8 @@ public class Editor
 
             // java script, that is executed "onload"; loads the file resource and triggers
             // the named event "clear=X"
-            String url = resource.getURL();
-            if (url.indexOf("?") > -1)
-                url = url + "&clear=X";
-            else
-                url = url + "?clear=X";
+            RequestURL url = (RequestURL) resource.getURL();
+            url.addParameter("clear=X");
 
             final ScriptListener script = new JavaScriptListener("onload", "parent.location='" + url + "'");
             final SFrame frame = getParentFrame();
