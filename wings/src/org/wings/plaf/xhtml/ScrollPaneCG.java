@@ -30,7 +30,7 @@ public class ScrollPaneCG
 
     public void uninstallCG(SComponent component) {
     }
-
+    
     public void write(Device d, SComponent c)
         throws IOException
     {
@@ -40,12 +40,12 @@ public class ScrollPaneCG
             )
             scrollPane.setPreferredSize(((SComponent)scrollPane.getScrollable()).getPreferredSize());
         updateScrollBars(scrollPane);
-		
+        
         writePrefix(d, scrollPane);
         ((SComponent) scrollPane.getScrollable()).write( d );
         writePostfix(d, scrollPane);
     }
-
+    
     protected void updateScrollBars(SScrollPane scrollPane) {
         SScrollBar horizontalScroller = scrollPane.getHorizontalScrollBar();
         SScrollBar verticalScroller = scrollPane.getVerticalScrollBar();
@@ -53,8 +53,8 @@ public class ScrollPaneCG
         
         horizontalScroller.setBlockIncrement( scrollPane.getHorizontalExtent() - 1 );
         verticalScroller.setBlockIncrement( scrollPane.getVerticalExtent() - 1 );
-
-		int policy = 0;
+        
+        int policy = 0;
         
         Dimension dim = scrollable.getScrollableViewportSize();
         if (dim.width != horizontalScroller.getMaximum()) {
@@ -66,15 +66,12 @@ public class ScrollPaneCG
             int maxValue = maximum - extent + 1;
             if (value > maxValue)
                 value = maxValue;
-
+            
             horizontalScroller.setValues(value, extent, 0, maximum);
             policy = scrollPane.getHorizontalScrollBarPolicy();
-            horizontalScroller.setVisible(
-            		( 
-                      maximum > extent || 
-                      policy == scrollPane.HORIZONTAL_SCROLLBAR_ALWAYS
-                    ) &&
-                    policy != scrollPane.HORIZONTAL_SCROLLBAR_NEVER );
+            horizontalScroller.setVisible((maximum > extent || 
+                                           policy == scrollPane.HORIZONTAL_SCROLLBAR_ALWAYS) &&
+                                          policy != scrollPane.HORIZONTAL_SCROLLBAR_NEVER );
         }
         if (dim.height != verticalScroller.getMaximum()) {
             int maximum = dim.height;
@@ -85,15 +82,15 @@ public class ScrollPaneCG
             int maxValue = maximum - extent + 1;
             if (value > maxValue)
                 value = maxValue;
-
+            
             verticalScroller.setValues(value, extent, 0, maximum);
             policy = scrollPane.getVerticalScrollBarPolicy();
             verticalScroller.setVisible(
-            		( 
-                      maximum > extent || 
-                      policy == scrollPane.VERTICAL_SCROLLBAR_ALWAYS
-                    ) &&
-                    policy != scrollPane.VERTICAL_SCROLLBAR_NEVER );
+                                        ( 
+                                         maximum > extent || 
+                                         policy == scrollPane.VERTICAL_SCROLLBAR_ALWAYS
+                                         ) &&
+                                        policy != scrollPane.VERTICAL_SCROLLBAR_NEVER );
         }
     }
 
@@ -103,45 +100,45 @@ public class ScrollPaneCG
         SScrollBar horizontalScroller = scrollPane.getHorizontalScrollBar();
         SScrollBar verticalScroller = scrollPane.getVerticalScrollBar();
         SBorder border = scrollPane.getBorder();
-
-    	int cspan = ( horizontalScroller.isVisible() )? ((ScrollBarCG) horizontalScroller.getCG()).SCROLLBAR_STEPS + 2 : 1 ;
-    	int rspan = ( verticalScroller.isVisible() )? ((ScrollBarCG) verticalScroller.getCG()).SCROLLBAR_STEPS + 2 : 1 ;
         
-		d.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"");
-        if ( border != null )
-         {
-			d.append("style=\"");
+    	int cspan = horizontalScroller.isVisible()
+            ? ((ScrollBarCG) horizontalScroller.getCG()).SCROLLBAR_STEPS + 2 
+            : 1;
+    	int rspan = verticalScroller.isVisible()
+            ? ((ScrollBarCG) verticalScroller.getCG()).SCROLLBAR_STEPS + 2 
+            : 1;
+        
+        d.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"");
+        if ( border != null ) {
+            d.append("style=\"");
             border.writeSpanAttributes( d );
             d.append("\"");
-         }
+        }
         d.append("><tr><td ");
-        if ( cspan > 1 )
-         {
-        	d.append( "colspan=\"" );
-        	d.append( cspan );
+        if ( cspan > 1 ) {
+            d.append( "colspan=\"" );
+            d.append( cspan );
             d.append( "\"" );
-		 }
-		if ( rspan > 1 )
-         {
-        	d.append( " rowspan=\"" );
-        	d.append( rspan );
+        }
+        if ( rspan > 1 ) {
+            d.append( " rowspan=\"" );
+            d.append( rspan );
             d.append( "\"" );
-		 }
-		d.append(">");
+        }
+        d.append(">");
     }
-
+    
     protected void writePostfix(Device d, SScrollPane scrollPane)
         throws IOException
     {
         SScrollBar horizontalScroller = scrollPane.getHorizontalScrollBar();
         SScrollBar verticalScroller = scrollPane.getVerticalScrollBar();
 
-		d.append( "</td>" );
+        d.append( "</td>" );
         verticalScroller.write( d );
         d.append( "</tr>" );
-		horizontalScroller.write( d );
+        horizontalScroller.write( d );
         d.append("</tr></table>");
-        
     }
 }
 
