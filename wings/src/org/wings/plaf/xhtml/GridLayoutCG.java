@@ -52,9 +52,13 @@ public class GridLayoutCG
         container.setPreferredSize(null);               /* Disable the Dimension, don't needed */
         
         d.print("\n<table ");
-        /*if ( Utils.hasSpanAttributes( container ) ) always because of 100% */
-        {
-            d.print("style=\"width:100%;");
+        if ( width >= 0 || Utils.hasSpanAttributes( container ) ) {
+            d.print("style=\"");
+            if (width >= 0) {
+                d.print("width:").print(width);
+                if (relative) d.print("%");
+                d.print(";");
+            }
             Utils.writeSpanAttributes( d, (SComponent) container );
             d.print("\" ");
         }
