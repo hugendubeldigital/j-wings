@@ -39,7 +39,8 @@ import org.wings.SForm;
 import org.wings.SFrame;
 import org.wings.SLabel;
 import org.wings.STemplateLayout;
-import org.wings.event.*;
+import org.wings.event.SRequestEvent;
+import org.wings.event.ExitVetoException;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.externalizer.ExternalizedResource;
 import org.wings.io.Device;
@@ -49,7 +50,6 @@ import org.wings.plaf.LookAndFeelFactory;
 import org.wings.util.ComponentVisitor;
 import org.wings.util.DebugUtil;
 import org.wings.util.TimeMeasure;
-import org.wings.event.ExitVetoException;
 
 /**
  * TODO: documentation
