@@ -40,11 +40,8 @@ public class Faces
     static final SIcon rollnsel = 
         new ResourceImageIcon(cl, "wingset/icons/RadioButtonRolloverIcon.gif");
 
-    static final SIcon xeyes = 
-        new ResourceImageIcon(cl, "wingset/icons/xeyes.gif");
-
     static final Face henner = new Face("Henner");
-    static final Face armin = new Face("Armin");
+    static final Face armin  = new Face("Armin");
     static final Face holger = new Face("Holger");
 
     static final Random random = new Random();
@@ -64,24 +61,8 @@ public class Faces
     SButtonGroup mouthGroup;
 
     public SComponent createExample() {
-        SPanel panel = new SPanel(new SBorderLayout());
-
-        panel.add(createSwitcher(), SBorderLayout.CENTER);
-
-        SPanel toolbar = new SPanel();
-
-        SForm shuffleForm = new SForm();
-        SButton shuffleButton = new SButton("Shuffle");
-        shuffleButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-		    shuffle();
-                }
-            });
-        shuffleForm.add(shuffleButton);
-        toolbar.add(shuffleForm);
-
-        panel.add(toolbar, SBorderLayout.SOUTH);
-        
+        SPanel panel = new SPanel();
+        panel.add(createSwitcher());
         return panel;
     }
 
@@ -103,8 +84,16 @@ public class Faces
         final SLabel mouth = new SLabel();
         mouth.setImageAbsBottom(true);
 
+        SForm shuffleForm = new SForm();
+        SButton shuffleButton = new SButton("Shuffle");
+        shuffleButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+		    shuffle();
+                }
+            });
+        shuffleForm.add(shuffleButton);
 
-        facePanel.add(new SLabel());
+        facePanel.add(shuffleForm);
         facePanel.add(hair);
         facePanel.add(eye);
         facePanel.add(mouth);
@@ -170,32 +159,45 @@ public class Faces
 
         layout.setColumns(faces.size()+2);
 
-        SLabel name = new SLabel(f.name);
+        SButton name = new SButton(f.name);
         name.setBorder(nameBorder);
         facePanel.add(name, faces.size() + 0*(faces.size()+2));
 
-
+        final int faceNumber = faces.size();
         // hair
-        SRadioButton hair = new SRadioButton();
+        final SRadioButton hair = new SRadioButton();
         decorateButton(hair);
-        hair.setActionCommand("" + faces.size());
+        hair.setActionCommand("" + faceNumber);
         hairGroup.add(hair);
         facePanel.add(hair, faces.size() + 1*(faces.size()+2));
 
         // eye
-        SRadioButton eye = new SRadioButton();
+        final SRadioButton eye = new SRadioButton();
         decorateButton(eye);
-        eye.setActionCommand("" + faces.size());
+        eye.setActionCommand("" + faceNumber);
         eyeGroup.add(eye);
         facePanel.add(eye, faces.size() + 2*(faces.size()+2));
-
-        SRadioButton mouth = new SRadioButton();
+        
+        // mouth
+        final SRadioButton mouth = new SRadioButton();
         decorateButton(mouth);
-        mouth.setActionCommand("" + faces.size());
+        mouth.setActionCommand("" + faceNumber);
         mouthGroup.add(mouth);
         facePanel.add(mouth, faces.size() + 3*(faces.size()+2));
-
+        
         faces.add(f);
+        
+        /*
+         * click on the name selects all buttons belonging to
+         * that Face.
+         */
+        name.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    hairGroup.setSelected(hair, true);
+                    eyeGroup.setSelected(eye, true);
+                    mouthGroup.setSelected(mouth, true);
+                }
+            });
 
     }
 
