@@ -216,7 +216,7 @@ public class Editor
 
     public void save() {
         try {
-            logger.info("save");
+            //logger.info("save");
             // write editor content to a temporary file
             File file = File.createTempFile("wings", "txt");
             PrintWriter out = new PrintWriter(new FileOutputStream(file));
@@ -245,7 +245,7 @@ public class Editor
             // register a request listener, that handles the named event "clear"
             getSession().getDispatcher().register(new RequestListener() {
                 public void processRequest(String name, String[] values) {
-                    logger.info("remove java script");
+                    //logger.info("remove java script");
                     frame.removeScriptListener(script);
                 }
 
@@ -337,7 +337,7 @@ public class Editor
                 Map headers = new HashMap();
                 headers.put("Content-Disposition", "attachment; filename=blub");
                 id = ext.getId(ext.externalize(this, headers.entrySet(), AbstractExternalizeManager.REQUEST));
-                logger.fine("new " + getClass().getName() + " with id " + id);
+                //logger.fine("new " + this.getClass().getName() + " with id " + id);
             }
             return id;
         }
