@@ -17,6 +17,9 @@
         %><%|class=Utils.style(comboBox)%><%
         %><%|name=comboBox.getNamePrefix()%><%
         %><%|style=comboBox.getPreferredSize()%><%
+	if ( !comboBox.isEnabled() ) {
+	    %> disabled="1"<% // ="1" needed for XHTML
+        }	
 
         comboBox.removeScriptListener(submitListener);
         if (comboBox.getActionListeners().length>0) {
