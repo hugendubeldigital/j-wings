@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.awt.Color;
 import java.util.*;
 
-import org.wings.*; import org.wings.border.*;
+import org.wings.*;
+import org.wings.util.AnchorRenderStack;
+import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 
@@ -54,7 +56,7 @@ public class FrameCG
              * cleanup, in case someone didn't do this
              * correctly.
              */
-            ClickableRenderUtil.reset();
+            AnchorRenderStack.reset();
         }
     }
 
