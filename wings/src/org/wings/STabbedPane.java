@@ -263,8 +263,10 @@ public class STabbedPane
         model.setSelectedIndex(index);
 
         Page p = getPageAt(index);
-        if (p != null)
+        if (p != null) {
+            p.button.setSelected(true);
             card.show(p.component);
+        }
     }
 
     /**
