@@ -183,6 +183,7 @@ public class WingSet
         tab.add(new FileChooserExample(), "FileChooser");
         tab.add(new ScrollPaneExample(), "ScrollPane");
         tab.add(new PageScrollerExample(), "PageScroller");
+        tab.add(new MenuExample(), "Menue");
         tab.add(new TabbedPaneExample(), "Tabbed Pane");
         //tab.add(new LayoutExample(), "Simple Layout");
         tab.addTab("Template Layout", 
