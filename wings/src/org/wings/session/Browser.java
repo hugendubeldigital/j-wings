@@ -177,6 +177,9 @@ public class Browser
     protected void detect()
         throws org.apache.regexp.RESyntaxException
     {
+	if (agent == null || agent.length() == 0)
+	    return;
+
         /* regexps are not threadsafe, we have to create them. */
         RE Start = new RE("^([a-zA-Z0-9_\\-]+)(/([0-9])\\.([0-9]+))?");
         RE MSIE = new RE("MSIE ([0-9])\\.([0-9]+)([a-z])?");
