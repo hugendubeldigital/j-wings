@@ -26,17 +26,16 @@ import org.wings.SIcon;
 /**
  * Utility functions to be used in generated plaf's.
  *
- * @author Henner Zeller
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
 public final class Utils implements SConstants {
     // fast conversion: translates directly into bytes (good for OutputStreams)
-    private final static byte[] _digits      = "0123456789ABCDEF".getBytes();
+    private final static byte[] digits      = "0123456789ABCDEF".getBytes();
 
     // byte representation of special characters
-    private final static int HASH_CHAR       = 0;
-    private final static int MINUS_CHAR      = 1;
-    private final static byte[] _specialChar = "#-".getBytes();
+    private final static byte HASH_CHAR      = (byte) '#';
+    private final static byte MINUS_CHAR     = (byte) '-';
 
     /**
      * This is just a collection of static functions, thus not instanciable
@@ -48,7 +47,7 @@ public final class Utils implements SConstants {
      * '"', '<', '>', '&'  become '&quot;', '&lt;', '&gt;', '&amp;'
      */
     // not optimized yet
-    public static void quote(Device d, String s) throws IOException {
+    private static void quote(Device d, String s) throws IOException {
 	if (s == null) return;
 	int len = s.length();
 	char c;
@@ -64,7 +63,9 @@ public final class Utils implements SConstants {
     }
 
     /**
-     * writes the given String to the device.
+     * writes the given String to the device. The string is quoted, i.e.
+     * for all special characters in *ML, their appropriate entity is
+     * returned.
      */
     public static void write(Device d, String s) throws IOException {
 	//d.print(s);
@@ -80,18 +81,18 @@ public final class Utils implements SConstants {
 	byte [] out = new byte[10];
 
 	if (num < 0) {
-	    d.write(_specialChar[ MINUS_CHAR ]);
+	    d.write( MINUS_CHAR );
 	    num = -(num);
 	    if (num < 0) {
 		/*
 		 * still negative ? Then we had Integer.MIN_VALUE
 		 */
-		out[--i] = _digits[ - (Integer.MIN_VALUE % 10) ];
+		out[--i] = digits[ - (Integer.MIN_VALUE % 10) ];
 		num = - (Integer.MIN_VALUE / 10);
 	    }
 	}
 	do {
-	    out[--i] = _digits[num % 10];
+	    out[--i] = digits[num % 10];
 	    num /= 10;
 	}
 	while (num > 0);
@@ -107,18 +108,18 @@ public final class Utils implements SConstants {
 	byte [] out = new byte[20];
 
 	if (num < 0) {
-	    d.write(_specialChar[ MINUS_CHAR ]);
+	    d.write( MINUS_CHAR );
 	    num = -(num);
 	    if (num < 0) {
 		/*
 		 * still negative ? Then we had Long.MIN_VALUE
 		 */
-		out[--i] = _digits[ - (int) (Long.MIN_VALUE % 10) ];
+		out[--i] = digits[ - (int) (Long.MIN_VALUE % 10) ];
 		num = - (Long.MIN_VALUE / 10);
 	    }
 	}
 	do {
-	    out[--i] = _digits[(int) (num % 10) ];
+	    out[--i] = digits[(int) (num % 10) ];
 	    num /= 10;
 	}
 	while (num > 0);
@@ -130,15 +131,18 @@ public final class Utils implements SConstants {
      * character conversion avoided.
      */
     public static void write(Device d, Color c) throws IOException {
-	d.write(_specialChar[ HASH_CHAR ]);
+	d.write( HASH_CHAR );
 	int rgb = (c == null) ? 0 : c.getRGB();
 	int mask = 0xf00000;
 	for (int bitPos=20; bitPos >= 0; bitPos -= 4) {
-            d.write(_digits[(rgb & mask) >>> bitPos]);
+            d.write(digits[(rgb & mask) >>> bitPos]);
             mask >>>= 4;
 	}
     }
-
+    
+    /**
+     * writes a RequestURL.
+     */
     public static void write(Device d, RequestURL a) throws IOException {
 	a.write(d);
     }
@@ -152,6 +156,7 @@ public final class Utils implements SConstants {
 	write(d, c);
 	quote(d, "\nThis is a <abc> string \"; foo & sons\n");
 	write(d, -42);
+        write(d, Integer.MIN_VALUE);
 	System.out.println (d.toString());
     }
 }
