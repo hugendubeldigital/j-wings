@@ -122,7 +122,7 @@
             RequestURL rowSelectionAddr = table.getRequestURL();
             rowSelectionAddr.addParameter(table,
                                           table.getToggleSelectionParameter(r,-1));
-            %> onclick="location.href='<%=rowSelectionAddr.toString()%>';"<%
+            %> style="cursor:pointer;" onclick="location.href='<%=rowSelectionAddr.toString()%>';"<%
         }
 
         %>><%
