@@ -90,7 +90,7 @@ public class SGetAddress
             if ( parameters==null )
                 parameters = new StringBuffer();
             else
-                parameters.append("&");
+                parameters.append("&amp;");
             parameters.append(parameter);
         }
         return this;
@@ -116,7 +116,7 @@ public class SGetAddress
         boolean qmark = (baseAddress.indexOf ('?') >= 0);
 
         if ( parameters!=null && parameters.length()>0 ) {
-            erg.append (qmark ? "&" : "?");
+            erg.append (qmark ? "&amp;" : "?");
             erg.append(parameters);
         }
 
