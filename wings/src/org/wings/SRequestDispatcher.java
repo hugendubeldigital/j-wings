@@ -26,6 +26,7 @@ import org.wings.session.SessionManager;
  * @version $Revision$
  */
 public final class SRequestDispatcher
+    implements java.io.Serializable
 {
     // the name is not the package name but that of the event dispatcher subsystem
     private static Logger logger = Logger.getLogger("org.wings.event");

@@ -34,15 +34,7 @@ public final class LabelCG
             final boolean escape   = label.isEscapeSpecialChars();
             final Style style = label.getStyle();
 
-            d.append("<span id=\"s_")
-                .append(label.getUnifiedId())
-                .append("\"");
-
-            if (style != null)
-                style.write(d);
-
-            d.append(">");
-
+            boolean spanWritten = writeSpan(d, true, label);
             if (noBreak)
                 d.append("<nobr>");
             if (escape)
@@ -51,8 +43,39 @@ public final class LabelCG
             if (noBreak)
                 d.append("</nobr>");
 
-            d.append("</span>");
+            if (spanWritten)
+                d.append("</span>");
         }
+    }
+
+    boolean writeSpan(final Device d, boolean writeSpan, final SComponent component)
+        throws IOException
+    {
+        boolean spanWritten = !writeSpan;
+        final AttributeSet attributes = component.getAttributes();
+        final Style style = component.getStyle();
+
+        if (attributes.size() > 0) { // script listeners
+            if (!spanWritten) {
+                d.append("<span");
+                spanWritten = true;
+            }
+            d.append(" id=\"s_")
+                .append(component.getUnifiedId())
+                .append("\"");
+        }
+
+        if (style != null) {
+            if (!spanWritten) {
+                d.append("<span");
+                spanWritten = true;
+            }
+            style.write(d);
+        }
+
+        if (spanWritten && writeSpan)
+            d.append(">");
+        return spanWritten;
     }
 }
 

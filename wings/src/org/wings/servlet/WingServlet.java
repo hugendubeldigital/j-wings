@@ -55,7 +55,7 @@ public abstract class WingServlet extends HttpServlet
         */
     }
 
-    private static Logger logger = Logger.getLogger("org.wings.servlet");
+    protected static Logger logger = Logger.getLogger("org.wings.servlet");
 
     /**
      * TODO: documentation
@@ -65,7 +65,7 @@ public abstract class WingServlet extends HttpServlet
     /**
      * The maximal length of data that is accepted in one POST request.
      * Data can be this big, if your application provides a capability
-     * to upload a file (SFileChoose). This constant limits the maximum
+     * to upload a file (SFileChooser). This constant limits the maximum
      * size that is accepted to avoid denial of service attacks.
      */
     protected int maxContentLength = 64; // in kByte
@@ -245,8 +245,8 @@ public abstract class WingServlet extends HttpServlet
             return sessionServlet;
         }
         catch (Exception e) {
-            e.printStackTrace();
-            throw new ServletException(e.toString());
+            logger.log(Level.SEVERE, null, e);
+            throw new ServletException(e);
         }
     }
 
@@ -375,6 +375,11 @@ public abstract class WingServlet extends HttpServlet
             }
 
             sessionServlet.doGet(req, response);
+        }
+        catch (Throwable e) {
+            logger.log(Level.SEVERE, "doGet", e);
+            e.printStackTrace(System.err);
+            throw new ServletException(e);
         }
         finally {
             m.stop();

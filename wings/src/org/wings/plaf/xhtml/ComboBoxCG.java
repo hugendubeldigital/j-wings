@@ -79,20 +79,22 @@ public class ComboBoxCG
                  */
                 StringBufferDevice device = getStringBufferDevice();
                 renderer.write(device);
+                boolean tags = false;
                 char[] chars = device.toString().toCharArray();
-                int pos = 0;
-                for (int c=0; c < chars.length; c++) {
-                    switch (chars[c]) {
-                    case '<':
-                        if (pos - c - 1 > 0)
-                            d.print(chars, pos, c - pos);
+                for(int count=0; count < chars.length; count++) {
+                    switch (chars[count]) {
+                    case '<' :
+                        tags = true;
                         break;
-                    case '>':
-                        pos = c+1;
+                    case '>' :
+                        tags = false;
+                        break;
+                    default :
+                        if(!tags) {
+                            d.print(chars[count]);
+                        }
                     }
                 }
-                d.print(chars, pos, chars.length - pos);
-
 
                 d.print("</option>\n");
             }

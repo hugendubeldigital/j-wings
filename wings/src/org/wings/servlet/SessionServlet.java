@@ -53,7 +53,7 @@ public abstract class SessionServlet
     extends HttpServlet
     implements HttpSessionBindingListener
 {
-    private static Logger logger = Logger.getLogger("org.wings.servlet");
+    protected static Logger logger = Logger.getLogger("org.wings.servlet");
 
     /**
      * Assembly of some messages is expensive. Thus it should not be done, if
@@ -615,8 +615,11 @@ public abstract class SessionServlet
                     measure.reset();
                 }
             }
-            catch (Exception e) {
+            catch (Throwable e) {
+                logger.log(Level.SEVERE, "doGet", e);
+                e.printStackTrace(System.err);
                 handleException(req, response, e);
+                throw new ServletException(e);
             }
             finally {
                 finalizeRequest(req, response);
@@ -642,7 +645,7 @@ public abstract class SessionServlet
     private SLabel errorStackTraceLabel;
     private SLabel errorMessageLabel;
 
-    protected void handleException(HttpServletRequest req, HttpServletResponse res, Exception e) {
+    protected void handleException(HttpServletRequest req, HttpServletResponse res, Throwable e) {
         try {
             if (errorFrame == null) {
                 errorFrame = new SFrame();
@@ -668,10 +671,7 @@ public abstract class SessionServlet
             errorMessageLabel.setText(e.getMessage());
             errorFrame.write(new ServletDevice (out));
         }
-        catch (Exception ex) {
-            // Ok, seems that we have no luck: write this to the error-Log.
-            logger.throwing(SessionServlet.class.getName(), "doGet", e);
-        }
+        catch (Exception ex) {}
     }
 
     /** --- HttpSessionBindingListener --- **/

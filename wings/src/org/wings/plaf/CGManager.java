@@ -17,6 +17,7 @@ package org.wings.plaf;
 import java.awt.*;
 import java.io.*;
 import java.net.*;
+import java.util.logging.*;
 
 import org.wings.*;
 import org.wings.session.*;
@@ -28,6 +29,8 @@ import org.wings.style.*;
  */
 public class CGManager
 {
+    private static Logger logger = Logger.getLogger("org.wings.plaf");
+
     private LookAndFeel lookAndFeel;
 
     /**
@@ -126,6 +129,8 @@ public class CGManager
      * @return the defaults table
      */
     public CGDefaults getDefaults() {
+        if (defaults == null)
+            logger.warning("defaults == null");
         return defaults;
     }
 
@@ -165,6 +170,7 @@ public class CGManager
             setDefaults(new CGDefaults(newLookAndFeel.getDefaults()));
         }
         else {
+            logger.warning("lookandfeel == null");
             setDefaults(null);
         }
 

@@ -16,8 +16,8 @@ package org.wings.plaf.xhtml;
 
 import java.awt.Color;
 import java.awt.Rectangle;
-
 import java.io.IOException;
+import java.util.logging.*;
 import javax.swing.tree.*;
 
 import org.wings.*;
@@ -150,15 +150,14 @@ public class TreeCG
     {
         int nodeIndentDepth = tree.getNodeIndentDepth();
         d.append("<tr height=\"1\">");
-        for (int i=((tree.isRootVisible())?0:1); i<path.getPathCount()-1; i++)
-         {
+        for (int i=((tree.isRootVisible())?0:1); i<path.getPathCount()-1; i++) {
             d.append("<td width=\"" + nodeIndentDepth + "\">");
             Utils.appendBlindIcon(d, BLIND_ICON, 1, tree.getNodeIndentDepth());
             d.append("</td>");
-         }
+        }
         d.append("\n<td nowrap colspan=\"" + (depth - (path.getPathCount()-1)) + "\">");
 
-        TreeNode node = (TreeNode)path.getLastPathComponent();
+        Object node = path.getLastPathComponent();
         STreeCellRenderer cellRenderer = tree.getCellRenderer();
 
         boolean isLeaf = tree.getModel().isLeaf(node);
@@ -174,12 +173,12 @@ public class TreeCG
         RequestURL selectionAddr = tree.getRequestURL();
         selectionAddr.addParameter(tree.getSelectionParameter(node));
 
-        if ( isLeaf ) {
+        if (isLeaf) {
             Utils.appendIcon(d, leafIcon, null);
         } else {
             RequestURL expansionAddr = tree.getRequestURL();
             expansionAddr.addParameter(tree.getExpansionParameter(node));
-            d.append("<a href=").append(expansionAddr.toString()).append(">");
+            d.append("<a href=\"").append(expansionAddr.toString()).append("\">");
             if (isExpanded) {
                 if (openIcon == null)
                     d.append("-");
@@ -195,7 +194,7 @@ public class TreeCG
         } 
         d.append("&nbsp;");
         
-        d.append("<a href=").append(selectionAddr.toString());
+        d.append("<a href=\"").append(selectionAddr.toString()).append("\"");
 
         Style cellStyle = isSelected ? 
             tree.getSelectionStyle() : tree.getStyle();
@@ -204,6 +203,7 @@ public class TreeCG
             cellStyle.write(d);
 
         d.append(">");
+
         SCellRendererPane rendererPane = tree.getCellRendererPane();
         rendererPane.writeComponent(d, renderer, tree);
         d.append("</a>");

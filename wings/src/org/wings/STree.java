@@ -840,7 +840,7 @@ public class STree
      * With this parameter the tree expands the given node 
      * ({@link #processRequest})
      */
-    public String getExpansionParameter(TreeNode node) {
+    public String getExpansionParameter(Object node) {
         return getNamePrefix() + "=h" + node.hashCode();
     } 
 
@@ -849,7 +849,7 @@ public class STree
      * With this parameter the tree selects the given node 
      * ({@link #processRequest})
      */
-    public String getSelectionParameter(TreeNode node) {
+    public String getSelectionParameter(Object node) {
         return getNamePrefix() + "=b" + node.hashCode();
     } 
 
@@ -857,11 +857,13 @@ public class STree
         boolean handle = values[0].charAt(0) == 'h';
         String value = values[0].substring(1);
         TreePath path = getPathForRow(getRow(value));
-        if ( path != null )
-            if ( ((TreeNode)path.getLastPathComponent()).isLeaf() || !handle ) {
+        if (path != null)
+            if (model.isLeaf(path.getLastPathComponent()) || !handle) {
+                logger.finer("toggle selection " + getRow(value));
                 togglePathSelection(path);
             }
             else {
+                logger.finer("toggle expansion " + getRow(value));
                 togglePathExpansion(path);
             }
     }

@@ -640,8 +640,15 @@ public abstract class SComponent
      *         for example when the user stops loading
      */
     public void write(Device s) throws IOException {
-        if (visible)
-            cg.write(s, this);
+        try {
+            if (visible)
+                cg.write(s, this);
+        }
+        catch (Throwable t) {
+            System.err.println(t.getMessage());
+            t.printStackTrace(System.err);
+            logger.log(Level.SEVERE, "exception during code generation", t);
+        }
     }
 
     /**
