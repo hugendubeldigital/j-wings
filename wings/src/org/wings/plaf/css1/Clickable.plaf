@@ -1,5 +1,57 @@
 <template name="ClickableCG" for="org.wings.SClickable">
 
+<comp-property type="String" name="selectionStyle">selection</comp-property>
+
+protected void writeDynamicIcons(final Device device, 
+                                 SAbstractIconTextCompound iconTextCompound, SIcon origIcon,
+                                 String iconName, boolean renderNameAttribute)
+     throws IOException
+{
+    if ( iconTextCompound.isEnabled() ) {
+       // render rollover
+       SIcon rolloverIcon = iconTextCompound.getRolloverIcon();
+       SIcon pressedIcon = iconTextCompound.getPressedIcon();
+
+       if ( rolloverIcon!=null || pressedIcon!=null ) {
+	   if ( renderNameAttribute) {
+	       %> name="<%=iconName%>"<%
+	   } // end of if ()
+	   
+   
+           if ( rolloverIcon!=null ) {
+               %> onMouseover="if(document.images){document.<%=iconName
+               %>.src='<%=rolloverIcon.getURL()
+               %>';}" onmouseout="if(document.images){document.<%=iconName
+               %>.src='<%=origIcon.getURL()
+               %>';}"<%
+           }
+
+           if ( pressedIcon!=null ) {
+               %> onMousedown="if(document.images){document.<%=iconName
+               %>.src='<%=pressedIcon.getURL()
+               %>';}" onmouseup="if(document.images){document.<%=iconName
+               %>.src='<%=rolloverIcon!=null ? rolloverIcon.getURL() : origIcon.getURL()
+               %>';}"<%
+           }
+        }
+    }
+
+}
+
+protected SIcon getIcon(SAbstractIconTextCompound iconTextCompound) {
+    if ( iconTextCompound.isSelected() ) {
+        return iconTextCompound.isEnabled() 
+	        ? iconTextCompound.getSelectedIcon()
+		: iconTextCompound.getDisabledSelectedIcon();
+    } else {
+	return iconTextCompound.isEnabled() 
+	        ? iconTextCompound.getIcon()
+                : iconTextCompound.getDisabledIcon();
+    }
+}
+
+
+
 void writeText(final Device device, SClickable clickable, String attr)
     throws IOException
 {
@@ -29,6 +81,7 @@ void writeText(final Device device, SClickable clickable, String attr)
     if ( writeAnchor ) {
         %><a href="<%=url%>"<% 
         Utils.writeEvents(device, clickable);
+        %><%|title=clickable.getToolTipText()%><%
     }
     else {
         %><span<%
@@ -46,15 +99,6 @@ void writeText(final Device device, SClickable clickable, String attr)
      else {
         %></span><%
     }
-}
-
-SIcon getIcon(SClickable clickable) {
-    if (clickable.isEnabled())
-        return clickable.isSelected() ? 
-           clickable.getSelectedIcon() : clickable.getIcon();
-    else
-        return clickable.isSelected() ? 
-           clickable.getDisabledSelectedIcon() :clickable.getDisabledIcon();
 }
 
 void writeIcon(final Device device, SClickable clickable, String attr)
@@ -93,39 +137,10 @@ void writeIcon(final Device device, SClickable clickable, String attr)
 
     %><img border="0" src="<%
     %><%=icon.getURL()%>"<%
-
-    if ( clickable.isEnabled() ) {
-       // render rollover
-       SIcon rolloverIcon = clickable.isSelected() ? 
-           clickable.getRolloverSelectedIcon() : clickable.getRolloverIcon();
-       SIcon pressedIcon = clickable.getPressedIcon();
-
-
-       if ( rolloverIcon!=null || pressedIcon!=null ) {
-           String iconName = "Icon_" + clickable.getComponentId();
-
-           %> name="<%=iconName%>"<%
-   
-           if ( rolloverIcon!=null ) {
-               %> onMouseover="if(document.images){document.<%=iconName
-               %>.src='<%=rolloverIcon.getURL()
-               %>';}" onMouseout="if(document.images){document.<%=iconName
-               %>.src='<%=icon.getURL()
-               %>';}"<%
-           }
-
-           if ( pressedIcon!=null ) {
-               %> onMousedown="if(document.images){document.<%=iconName
-               %>.src='<%=pressedIcon.getURL()
-               %>';}" onMouseUp="if(document.images){document.<%=iconName
-               %>.src='<%=rolloverIcon!=null ? rolloverIcon.getURL() : icon.getURL()
-               %>';}"<%
-           }
-        }
-    }
-
+    writeDynamicIcons(device, clickable, icon, "Icon_" + clickable.getComponentId(),true);
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
+    Utils.writeEvents(device, clickable);
     %><%|alt=tooltip%> /><%
 
     if ( writeAnchor ) {
@@ -138,7 +153,7 @@ void writeIcon(final Device device, SClickable clickable, String attr)
 
 <write>
 <%
-    String style = Utils.style(component);
+    String style = component.isSelected() ? Utils.selectionStyle(component) : Utils.style(component);
 
     SIcon icon = getIcon(component);
 
