@@ -32,6 +32,7 @@ public interface ClickableRenderComponent
 {
     /**
      * The event parameter generating the event
+     * CAVEAT: this must be stored in a ThreadLocal !
      */
     void setEventURL(RequestURL url);
 

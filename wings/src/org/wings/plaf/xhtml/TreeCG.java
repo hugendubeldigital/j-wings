@@ -231,7 +231,7 @@ public class TreeCG
         } 
 
         if ( !(isLeaf && leafIcon==null) ) {
-            d.print("&nbsp;</td><td nowrap>");
+            d.print("</td><td nowrap>");
         }
 
         SCellRendererPane rendererPane = tree.getCellRendererPane();

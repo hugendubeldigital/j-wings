@@ -62,7 +62,7 @@ public class SLabel
     // output formatting information in Labels .. (s)he shouldn't!
     private boolean escapeSpecialChars = false;
 
-    protected RequestURL eventURL;
+    private final ThreadLocal eventURL = new ThreadLocal();
 
 
     /**
@@ -335,11 +335,11 @@ public class SLabel
     }
 
     public void setEventURL(RequestURL url) {
-        eventURL = url;
+        eventURL.set(url);
     }
 
     public RequestURL getEventURL() {
-        return eventURL;
+        return (RequestURL)eventURL.get();
     }
 
 }
