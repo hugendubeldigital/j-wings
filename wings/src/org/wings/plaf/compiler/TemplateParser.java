@@ -42,6 +42,7 @@ public class TemplateParser {
     private final static String END_WRITE    = "</write>";
     private final static String START_JAVA   = "<%";
     private final static String END_JAVA     = "%>";
+    private final static String INCLUDE      = "<include";
 
     // state machine
     //private final static int IN_START_COMMON_JAVA = 0;
@@ -96,8 +97,10 @@ public class TemplateParser {
         }
         
         // common stuff.
-        out.println ("\n//--- code from common area in template.");
-        out.print( classJavaCode.toString() );
+        if (classJavaCode.length() > 0) {
+            out.println ("\n//--- code from common area in template.");
+            out.print( classJavaCode.toString() );
+        }
         
         // write function header.
         out.print ("\n\n    public void write("
@@ -122,17 +125,26 @@ public class TemplateParser {
      */
     public void parse(IncludingReader reader) throws IOException {
         StringBuffer tempBuffer = new StringBuffer();
+
         int trans;
-        String commonJavaTransitions[] = new String[] { END_JAVA, 
+        String commonJavaTransitions[] = new String[] { END_JAVA,
+                                                        START_JAVA,      // err
                                                         START_WRITE,
+                                                        END_WRITE,       // err
+                                                        INCLUDE,
                                                         END_TEMPLATE };
-        String commonTmplTransitions[] = new String[] { START_JAVA,
-                                                        START_WRITE };   // err
+        String commonTmplTransitions[] = new String[] { START_JAVA,  
+                                                        START_WRITE,     // err
+                                                        INCLUDE,
+                                                        END_TEMPLATE };  // err
         String writeTmplTransitions[]  = new String[] { START_JAVA, 
                                                         END_WRITE,
+                                                        INCLUDE,
                                                         END_TEMPLATE };  // err
         String writeJavaTransitions[]  = new String[] { END_JAVA,
+                                                        START_JAVA,      // err
                                                         END_WRITE,       // err
+                                                        INCLUDE,
                                                         END_TEMPLATE };  // err
         skipWhitespace(reader);
         for (;;) {
@@ -149,11 +161,22 @@ public class TemplateParser {
                 case 0:  // %>
                     state = IN_COMMON_TMPL;
                     break;
-                case 1:  // <write>
+                case 1:  // ERROR <%  errornous start java
+                    System.err.println(reader.getFileStackTrace() + ": " +
+                                       "opening scriptlet while in scriptlet");
+                    break;
+                case 2:  // <write>
                     skipWhitespace(reader);
                     state = IN_WRITE_TMPL;         // --> WRITE
                     break;
-                case 2:
+                case 3: // </write>
+                    System.err.println(reader.getFileStackTrace() + ": " +
+                                       "encountered </write> that has not been opened");
+                    break;
+                case 4: // <include
+                    handleIncludeTag(reader);
+                    break;
+                case 5:
                     return; // </template> -> done.
                 }
                 break;
@@ -166,12 +189,21 @@ public class TemplateParser {
                 case 0: // <%
                     state = IN_COMMON_JAVA;
                     break;
-                case 1: // <write>  .. errorhandling
-                    System.err.println(reader.getFilePosition() + ": "
+                case 1: // ERROR <write>  .. errorhandling
+                    System.err.println(reader.getFileStackTrace() + ": "
                                        + "<write> while still reading "
                                        + "text-template; '<%' missing?!");
                     state = IN_WRITE_TMPL;       // --> WRITE
                     break;
+                case 2: // <include
+                    handleIncludeTag(reader);
+                    break;
+                case 3: // ERROR unecpected </template>
+                    System.err.println(reader.getFileStackTrace() + ": "
+                                       + "</template> while still reading "
+                                       + "text-template; '<%' missing?!");
+                    break;
+
                 }
                 break;
                 
@@ -190,8 +222,11 @@ public class TemplateParser {
                     skipWhitespace(reader);
                     state = IN_COMMON_JAVA;      // --> COMMON
                     break;
-                case 2:  // errornous '</template>'
-                    System.err.println(reader.getFilePosition() + ": "
+                case 2: // <include
+                    handleIncludeTag(reader);
+                    break;
+                case 3:  // ERROR errornous '</template>'
+                    System.err.println(reader.getFileStackTrace() + ": "
                                        + "</template> occured; "
                                        + "missing </write>");
                     return;
@@ -206,23 +241,56 @@ public class TemplateParser {
                 case 0: // end java '%>'
                     state = IN_WRITE_TMPL;
                     break;
-                case 1: // errornous </write>
-                    System.err.println(reader.getFilePosition() + ": "
+                case 1:  // ERROR <%  errornous start java
+                    System.err.println(reader.getFileStackTrace() + ": "
+                                       + "opening scriptlet while in scriptlet");
+                    break;
+                case 2: // errornous </write>
+                    System.err.println(reader.getFileStackTrace() + ": "
                                        + "</write> while still reading "
                                        + "java-code; '%>' missing?!");
                     flushTemplateTo(tempBuffer, writeJavaCode);
                     state = IN_COMMON_JAVA;  // --> COMMON
+                case 3: // <include
+                    handleIncludeTag(reader);
+                    break;
+                case 4: // ERROR </template>
+                    System.err.println(reader.getFileStackTrace() + ": "
+                                       + "</template> occured; "
+                                       + "missing </write>");
+                    return;                    
                 }
             }
         }
     }
     
-    void flushTemplateTo(StringBuffer template, StringBuffer javaBuffer) {
+    private void handleIncludeTag(IncludingReader reader) 
+        throws IOException {
+        StringBuffer includeTag = new StringBuffer();
+        consumeTextUntil(reader, includeTag, ">");
+        reader.read(); // consume last character.
+        openIncludeFile(reader, includeTag);
+    }
+
+    private void flushTemplateTo(StringBuffer template, 
+                                 StringBuffer javaBuffer) {
         if (template.length() == 0) return;
         javaBuffer.append ("\tdevice.write(")
             .append(stringPool.getNameFor(template.toString()))
             .append(");\n");
         template.setLength(0);
+    }
+
+    public void openIncludeFile(IncludingReader reader,
+                                StringBuffer includeTag)
+        throws IOException {
+        AttributeParser p = new AttributeParser(includeTag.toString());
+        String filename = p.getAttribute("file");
+        if (filename != null && filename.length() > 0)
+            reader.open(filename);
+        else
+            System.err.println(reader.getFileStackTrace() + 
+                               ": cannot include file");
     }
 
     public void execJava(IncludingReader reader,
@@ -231,10 +299,8 @@ public class TemplateParser {
         char qualifier = input.charAt(0);
         switch (qualifier) {
         case '@':
-            AttributeParser p = new AttributeParser(input.toString());
-            String filename = p.getAttribute("file");
-            output.append("// include file '" + filename + "'\n");
-            reader.open(filename);
+            // the code describes an include tag.
+            openIncludeFile(reader, input);
             break;
             
         case '=':
