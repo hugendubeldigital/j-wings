@@ -179,7 +179,7 @@ public class SAnchorYearMonthChooser
             makeConsistent();
         }
 
-        repaint();;
+        repaint();
         fireActionPerformed();
     }
 

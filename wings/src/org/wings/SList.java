@@ -140,7 +140,6 @@ public class SList
             throw new IllegalArgumentException("dataModel must not be null");
         }
 
-        if (this.dataModel != null) this.dataModel.removeListDataListener(this);
         this.dataModel = dataModel;
         this.dataModel.addListDataListener(this);
         selectionModel = createSelectionModel();

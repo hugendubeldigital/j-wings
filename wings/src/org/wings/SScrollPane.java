@@ -476,7 +476,7 @@ public class SScrollPane
             remove(viewComponent);
         }
         add(view);
-        viewComponent = view;;
+        viewComponent = view;
     }
 
     public void scrollRectToVisible(Rectangle aRect) {
