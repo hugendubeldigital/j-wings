@@ -71,6 +71,36 @@
 <%
         }
 
+%>
+<style type="text/css">
+<%
+if ( frame.getBackground()!=null || frame.getForeground()!=null ) {
+%>    body { <%
+       if ( frame.getBackground()!=null ) {
+           %>background-color:#<%=org.wings.plaf.xhtml.css1.Utils.toColorString(frame.getBackground())%>;<%
+       }
+       if ( frame.getForeground()!=null ) {
+           %>color:#<%=org.wings.plaf.xhtml.css1.Utils.toColorString(frame.getForeground())%>;<%
+       }
+%>
+    }<%
+}
+if ( frame.getLinkColor()!=null ) {
+%>    a:link { color:#<%=org.wings.plaf.xhtml.css1.Utils.toColorString(frame.getLinkColor())%>; }
+<%
+}
+if ( frame.getVLinkColor()!=null ) {
+%>    a:visited { color:#<%=org.wings.plaf.xhtml.css1.Utils.toColorString(frame.getVLinkColor())%>; }
+<%
+}
+if ( frame.getALinkColor()!=null ) {
+%>    a:active { color:#<%=org.wings.plaf.xhtml.css1.Utils.toColorString(frame.getALinkColor())%>; }
+<%
+}
+%>
+</style>
+<%
+
         %><meta http-equiv="Content-type" content="text/html; charset=<%=encoding%>"/>
 <%
         Iterator it = headers.iterator();

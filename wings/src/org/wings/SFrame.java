@@ -14,20 +14,17 @@
 
 package org.wings;
 
-import java.awt.Color;
-import java.beans.*;
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-import java.util.logging.*;
-
-import org.wings.*;
-import org.wings.header.*;
-import org.wings.io.Device;
-import org.wings.plaf.*;
+import org.wings.plaf.FrameCG;
+import org.wings.session.SessionManager;
 import org.wings.style.StyleSheet;
-import org.wings.session.*;
-import org.wings.util.*;
+import org.wings.util.ComponentVisitor;
+
+import java.awt.Color;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * The frame is the root component in every component hierarchie.
@@ -63,8 +60,6 @@ public class SFrame
     protected List headers;
 
 
-    // do not initialize with null
-    private Color textColor;
     private Color linkColor;
     private Color vLinkColor;
     private Color aLinkColor;
@@ -262,7 +257,6 @@ public class SFrame
     /**
      * TODO: documentation
      *
-     * @param t
      */
     public void setTitle(String title) {
         this.title = title;
@@ -278,18 +272,20 @@ public class SFrame
      * TODO: documentation
      *
      * @param c
+     * @deprecated use setForeground instead
      */
     public void setTextColor(Color c) {
-        textColor = c;
+        setForeground(c);
     }
 
     /**
      * TODO: documentation
      *
      * @return
+     * @deprecated use getForeground instead
      */
     public Color getTextColor() {
-        return textColor;
+        return getForeground();
     }
 
     /**
