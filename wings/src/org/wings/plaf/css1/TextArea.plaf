@@ -1,11 +1,40 @@
 <template name="TextAreaCG" for="org.wings.STextArea">
 <write>
 <%
+	SDimension dim = component.getPreferredSize();
+	/*
+        if ((preferredSize == null && this.preferredSize == null) ||
+        	(this.preferredSize != null && this.preferredSize.equals(preferredSize)))
+        	return;
+        this.preferredSize = preferredSize;
+		if (preferredSize != null) {
+		    if (style != null) {
+				style.put(StyleConstants.WIDTH, preferredSize.getWidth());
+				style.put(StyleConstants.HEIGHT, preferredSize.getHeight());
+		    }
+		    else {
+				setAttribute(StyleConstants.WIDTH, preferredSize.getWidth());
+				setAttribute(StyleConstants.HEIGHT, preferredSize.getHeight());
+		    }
+		}
+		else {
+			removeAttribute(StyleConstants.WIDTH);
+			removeAttribute(StyleConstants.HEIGHT);
+		}
+	*/
+
     %><textarea<%
     %><%|class=Utils.style(component)%><%
     Utils.writeEvents(device, component);
     %><%|cols=component.getColumns()%><%
     %><%|rows=component.getRows()%><%
+	if (dim != null) {
+		%>style="height:<%
+		device.print(dim.getHeight());
+		%>;width:<%
+		device.print(dim.getWidth());
+		%>;" <%
+	}
     if (!component.isEditable()) { %> readonly="1"<% }
     if (component.isEnabled())   { %> name="<%?namePrefix%>"<% }
 
