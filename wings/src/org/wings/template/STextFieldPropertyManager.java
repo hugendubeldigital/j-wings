@@ -35,9 +35,9 @@ public class STextFieldPropertyManager
         STextField c = (STextField)comp;
         if ( name.equals("COLS") )
             c.setColumns(Integer.parseInt(value));
-        if ( name.equals("SIZE") )
+        else if ( name.equals("SIZE") )
             c.setColumns(Integer.parseInt(value));
-        if ( name.equals("MAXSIZE") )
+        else if ( name.equals("MAXSIZE") )
             c.setMaxColumns(Integer.parseInt(value));
         else
             super.setProperty(comp, name, value);
