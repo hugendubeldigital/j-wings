@@ -34,8 +34,12 @@ import org.wings.externalizer.ExternalizeManager;
  * passen, also ein Image bzw. ImageIcon sein. ImageIcon ist einfacher zu
  * benutzen und implementiert schon alles was benoetigt wird...
  */
+
 /**
- * An SIcon of this type is externalized globally. It is not bound to a session.
+ * An SIcon of this type is externalized globally. It is not bound 
+ * to a session. This SIcon gets the content of the image from an image
+ * found in the classpath, i.e. an image that is deployed in the 
+ * classes/jar/war file.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$

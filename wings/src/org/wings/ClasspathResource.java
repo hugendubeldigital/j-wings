@@ -25,7 +25,8 @@ import org.wings.externalizer.ExternalizeManager;
 import org.wings.externalizer.AbstractExternalizeManager;
 
 /**
- * TODO: documentation
+ * A Classpath Resource is a static resource whose content is 
+ * read from a classloader.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
@@ -105,7 +106,7 @@ public class ClasspathResource
 
     /**
      * resources using the same classloader and are denoting the same
-     * name do have the same hasCode(). Thus the same resources get the
+     * name, do have the same hashCode(). Thus the same resources get the
      * same ID in the System externalizer.
      *
      * @return a hashcode, comprised from the hashcodes of the classloader
@@ -124,8 +125,9 @@ public class ClasspathResource
     public boolean equals(Object o) {
         if (o instanceof ClasspathResource) {
             ClasspathResource other = (ClasspathResource) o;
-            return (classLoader.equals(other.classLoader)
-                    && resourceFileName.equals(other.resourceFileName));
+            return ((this == other)
+                    || (classLoader.equals(other.classLoader)
+                        && resourceFileName.equals(other.resourceFileName)));
         }
         return false;
     }
