@@ -16,6 +16,7 @@ package org.wings.session;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -36,7 +37,7 @@ import org.wings.io.Device;
 import org.wings.io.ServletDevice;
 
 /**
- * TODO: documentation
+ * Central servlet delegating all requests to the according j-wings session servlet.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
@@ -99,7 +100,7 @@ public final class WingServlet
         logger.info("use session servlet lookup name " + lookupName);
     }
 
-    /*
+    /**
      * The following init parameters are known by wings.
      *
      * <dl compact>
@@ -162,7 +163,7 @@ public final class WingServlet
     }
 
     /**
-     * TODO: documentation
+     * Parse POST request with <code>MultipartRequest</code> and passes to <code>doGet()</code>
      */
     public final void doPost(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException
@@ -291,6 +292,54 @@ public final class WingServlet
 
             sessionServlet.getSession().getExternalizeManager().setResponse(response);
 
+            /* Handling of the requests character encoding.
+             * --------------------------------------------
+             * The following block is needed for a correct handling of 
+             * non-ISO-8859-1 data:
+             * 
+             * Using LocaleCharacterSet and/or charset.properties we can 
+             * advise the client to use i.e. UTF-8 as character encoding. 
+             * Once told the browser consequently also encodes his requests 
+             * in the choosen characterset of the sings session. This is 
+             * achieved by adding the HTML code 
+             * <meta http-equiv="Content-Type" content="text/html;charset="<charset>"> 
+             * to the generated pages. 
+             *
+             * If the user hasn't overridden the encoding in their browser, 
+             * then all form data (e.g. müller) is submitted with data encoded 
+             * like m%C3%BCller because byte pair C3 BC is how the german 
+             * u-umlaut is represented in UTF-8. If the form is 
+             * iso-8859-1 encoded then you get m%FCller, because byte FC is 
+             * how it is presented in iso-8859-1.
+             * 
+             * So the browser behaves correctly by sending his form input 
+             * correctly encoded in the advised character encoding. The issue
+             * is that the servlet container is typically unable to determine
+             * the correct encoding of this form data. By proposal the browser
+             * should als declare the used character encoding for his data.
+             * But actual browsers omit this information and hence the servlet
+             * container is unable to guess the right encoding (Tomcat actually
+             * thenalways guesses ISO 8859-1). This results in totally 
+             * scrumbled up data for all non ISO-8859-1 character encodings.
+             * With the block below we tell the servlet container about the
+             * character encoding we expect in the browsers request and hence
+             * the servlet container can do the correct decoding.
+             * This has to be done at very first, otherwise the servlet
+             * container will ignore this setting.
+             */
+             
+            // TODO: Actually the whole character encoding is depending 
+            if ((request.getCharacterEncoding() == null)) { // was servlet container able to identify encoding? 
+                try {
+                    String sessionCharacterEncoding = sessionServlet.getSession().getCharacterEncoding();                 
+                    // We know better about the used character encoding than tomcat
+                    logger.finer("Advising servlet container to interpret request as " + sessionCharacterEncoding);              
+                    request.setCharacterEncoding(sessionCharacterEncoding);
+                } catch (UnsupportedEncodingException e) {
+                    logger.log(Level.WARNING, "Problem on applying current session character encoding", e);
+                }                
+            }            
+            
             return sessionServlet;
         }
     }

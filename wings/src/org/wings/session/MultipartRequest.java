@@ -234,12 +234,13 @@ class MultipartRequest
     }
 
     /**
-     * TODO: documentation
+     * Indicates if this class was successfully able to parse request as multipart request.
      */
     public final boolean isMultipart() {
         return !urlencodedRequest;
     }
 
+    /** Store exception as request parameter. */
     protected void setException(String param, Exception ex) {
         parameters.clear();
         files.clear();
@@ -249,10 +250,8 @@ class MultipartRequest
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param req
-     * @throws IOException
+     * Parses passed request and stores contained parameters.  
+     * @throws IOException On unrecoverable parsing bugs due to old Tomcat version.
      */
     protected void processRequest(HttpServletRequest req)
         throws IOException
@@ -265,8 +264,8 @@ class MultipartRequest
         urlencodedRequest = false;
 
 
-        String boundary = extractBoundary(type);
-        if (boundary == null) {
+        String boundaryToken = extractBoundaryToken(type);
+        if (boundaryToken == null) {
             /*
              * this could happen due to a bug in Tomcat 3.2.2 in combination
              * with Opera.
@@ -285,29 +284,27 @@ class MultipartRequest
             MultipartInputStream(req.getInputStream(), req.getContentLength(), maxSize);
 
         StringBuffer header = new StringBuffer();
-        StringBuffer buffer = new StringBuffer();
+        StringBuffer content = new StringBuffer();        
         HashMap headers = null;
-        int current = 0, last = -1;
-        boolean done = false;
-
-        String currentParam = null;
-        
+        int currentByte = 0;
+        int currentPos = 0;
+        int currentTransformByte = 0;
+        String currentParam = null;        
         File uploadFile = null;
         OutputStream fileStream = null;
+        boolean done;
+        int last = -1;
 
         try {
-            while(current != -1) {
-                done = false;
-                
-                while ((current = mimeStream.read()) != -1 && !done) {
-                    header.append((char)current);
-                    
-                    if (last == '\n' && current == '\r') {
-                        done = true;
-                    }
-                    last = current;
+            while(currentByte != -1) {
+                // Read MIME part header line
+                done = false;                
+                while ((currentByte = mimeStream.read()) != -1 && !done) {
+                    header.append((char)currentByte); // okay -- let us asume no special characters in the header                    
+                    done = (last == '\n' && currentByte == '\r');                     
+                    last = currentByte;
                 }
-                if (current == -1)
+                if (currentByte == -1)
                     break;
                 
                 headers = parseHeader(header.toString());
@@ -315,22 +312,36 @@ class MultipartRequest
                 
                 currentParam = (String)headers.get("name"); 
                 
-                if (headers.size() == 1) {              // .. it's not a file
-                    int i;
-                    int blength = boundary.length();
-                    while ((current = mimeStream.read()) != -1) {
-                        buffer.append((char)current);
-                        if (buffer.length() >= blength) {
-                            for (i=0; i<blength; i++) {
-                                if(boundary.charAt(blength - i -1 ) != buffer.charAt(buffer.length() - i - 1)) {
+                if (headers.size() == 1) {                // .. it's not a file
+                    byte[] bytes = new byte[req.getContentLength()];
+                    currentPos = 0;
+                    while ((currentByte = mimeStream.read()) != -1) {
+                        bytes[currentPos] = (byte)currentByte;
+                        currentPos++;
+                        if (currentPos >= boundaryToken.length()) {
+                            int i;
+                            for (i=0; i<boundaryToken.length(); i++) {
+                                if(boundaryToken.charAt(boundaryToken.length() - i -1 ) != bytes[currentPos - i - 1]) {
                                     i = 0;
                                     break;
                                 }
                             }
-                            if (i == blength) {             // end of part ..
-                                putParameter( currentParam,
-                                              (buffer.toString()).substring(0,
-                                                                            buffer.length()-boundary.length()-4));
+                            if (i == boundaryToken.length()) {  // end of part ..
+                                ByteArrayInputStream bais = new ByteArrayInputStream(bytes, 0, currentPos-boundaryToken.length()-4);
+                                InputStreamReader ir;
+                                if (req.getCharacterEncoding() != null)
+                                    // It's common behaviour of browsers to encode their form input in the character
+                                    // encoding of the page, though they don't declare the used characterset explicetly
+                                    // for backward compatibility.
+                                    ir =  new InputStreamReader(bais, req.getCharacterEncoding());
+                                else 
+                                    ir = new InputStreamReader(bais);
+                                content.setLength(0);                                
+                                while ((currentTransformByte = ir.read()) != -1) {
+                                    content.append((char)currentTransformByte);
+                                }
+                                
+                                putParameter( currentParam, content.toString());
                                 break;
                             }
                         }
@@ -370,12 +381,12 @@ class MultipartRequest
                         AccessibleByteArrayOutputStream byteArray = new AccessibleByteArrayOutputStream();
                         byte[] bytes = null;
                         
-                        int blength = boundary.length();
+                        int blength = boundaryToken.length();
                         int i;
-                        while ((current = mimeStream.read()) != -1) {
-                            byteArray.write(current);
+                        while ((currentByte = mimeStream.read()) != -1) {
+                            byteArray.write(currentByte);
                             for (i=0; i<blength; i++) {
-                                if(boundary.charAt(blength - i - 1) != byteArray.charAt(-i - 1)) {
+                                if(boundaryToken.charAt(blength - i - 1) != byteArray.charAt(-i - 1)) {
                                     i = 0;
                                     if (byteArray.size() > 512 + blength + 2)
                                         byteArray.writeTo(fileStream, 512);
@@ -394,12 +405,12 @@ class MultipartRequest
                     }
                     else {                  // workaround for some netscape bug
                         int i;
-                        int blength = boundary.length();
-                        while ((current = mimeStream.read()) != -1) {
-                            buffer.append((char)current);
-                            if (buffer.length() >= blength) {
+                        int blength = boundaryToken.length();
+                        while ((currentByte = mimeStream.read()) != -1) {
+                            content.append((char)currentByte);
+                            if (content.length() >= blength) {
                                 for (i=0; i<blength; i++) {
-                                    if(boundary.charAt(blength -i -1) != buffer.charAt(buffer.length() -i -1)) {
+                                    if(boundaryToken.charAt(blength -i -1) != content.charAt(content.length() -i -1)) {
                                         i = 0;
                                         break;
                                     }
@@ -410,13 +421,12 @@ class MultipartRequest
                         }
                     }
                 }
-                buffer.setLength(0);
 
-                current = mimeStream.read();
-                if (current == '\r' && mimeStream.read() != '\n')
-                    System.err.println("na so was: " + current);
-                if (current == '-' && mimeStream.read() != '-')
-                    System.err.println("na so was: " + current);
+                currentByte = mimeStream.read();
+                if (currentByte == '\r' && mimeStream.read() != '\n')
+                    System.err.println("na so was: " + currentByte);
+                if (currentByte == '-' && mimeStream.read() != '-')
+                    System.err.println("na so was: " + currentByte);
             }
         }
         catch (IOException ex) {
@@ -430,12 +440,6 @@ class MultipartRequest
 
     private static class AccessibleByteArrayOutputStream extends ByteArrayOutputStream
     {
-        /**
-         * TODO: documentation
-         *
-         * @param index
-         * @return
-         */
         public byte charAt(int index) {
             if (count + index < 0) {
                 logger.log(Level.WARNING, "count: " + count + ", index: " + index + ", buffer: " + new String(buf));
@@ -452,9 +456,6 @@ class MultipartRequest
             return buf;
         }
 
-        /**
-         * TODO: documentation
-         */
         public void writeTo(OutputStream out, int num)
             throws IOException
         {
@@ -529,7 +530,7 @@ class MultipartRequest
         return nameValuePairs;
     }
 
-    //This method gets the substring enclosed in trimChar  ; "string" returns string
+    /** This method gets the substring enclosed in trimChar  ; "string" returns string */
     private String trim(String source, String trimChar )
     {
         String target = "";
@@ -556,21 +557,14 @@ class MultipartRequest
             this.maxLength = maxLength;
         }
 
-        /**
-         * TODO: documentation
-         *
-         * @return
-         * @throws IOException
-         */
+        /** @return bytes available in stream.     */
         public int available() throws IOException {
             return len - pos - 1;
         }
 
         /**
-         * TODO: documentation
-         *
-         * @return
-         * @throws IOException
+         * @return Next byte in Request.
+         * @throws IOException 
          */
         public int read() throws IOException {
             if ( pos>=maxLength )
@@ -606,13 +600,6 @@ class MultipartRequest
             return num;
         }
 
-        /**
-         * TODO: documentation
-         *
-         * @param num
-         * @return
-         * @throws IOException
-         */
         public long skip(long num) throws IOException {
             if(pos >= len)
                 return -1;
@@ -629,19 +616,12 @@ class MultipartRequest
             return num;
         }
 
-        /**
-         * TODO: documentation
-         *
-         * @throws IOException
-         */
         public void close() throws IOException {
             //Ignore closing of the input stream ..
         }
     }
 
-    /**
-     * TODO: documentation
-     */
+    /** Stores a parameter identified in this request.  */
     protected void putParameter (String name, String value) {
         ArrayList v = (ArrayList) parameters.get (name);
         // there is no Parameter yet; create one
@@ -652,9 +632,8 @@ class MultipartRequest
         v.add (value);
     }
 
-    // Extracts and returns the boundary token from a line.
-    //
-    private String extractBoundary(String line) {
+    /** Extracts and returns the boundary token from a line. */
+    private String extractBoundaryToken(String line) {
         int index = line.indexOf("boundary=");
         if (index == -1) {
             return null;
@@ -666,9 +645,10 @@ class MultipartRequest
         return boundary;
     }
 
-    // Extracts and returns the content type from a line, or null if the
-    // line was empty.  Throws an IOException if the line is malformatted.
-    //
+    /** 
+     * Extracts and returns the content type from a line, or null if the line was empty.  
+     * @throws an IOException if the line is malformatted.
+     */
     private String extractContentType(String line) throws IOException {
         String contentType = null;
 
@@ -698,8 +678,7 @@ class MultipartRequest
     }
 
 
-    // A class to hold information about an uploaded file.
-    //
+    /** A class to hold information about an uploaded file. */
     class UploadedFile
     {
         private String fileName;
@@ -712,11 +691,7 @@ class MultipartRequest
             this.type = type;
         }
 
-        /**
-         * TODO: documentation
-         *
-         * @return
-         */
+        /** @return  Path of uploaded file*/
         public String getDir() {
             if ( uploadedFile!=null )
                 return uploadedFile.getParentFile().getPath();
@@ -724,36 +699,21 @@ class MultipartRequest
                 return null;
         }
 
-        /**
-         * TODO: documentation
-         *
-         * @return
-         */
+        /** @return Filename passed by browser */
         public String getFileName() {
             return fileName;
         }
-        /**
-         * TODO: documentation
-         *
-         * @return
-         */
+        /** @return MIME type passed by browser */
         public String getContentType() {
             return type;
         }
 
-        /**
-         * TODO: documentation
-         *
-         * @return
-         */
+        /** @return Uploaded file */
         public File getFile() {
             return uploadedFile;
         }
 
-        /**
-         *
-         * @return
-         */
+        /** @return Uploaded file name */
         public String getId() {
             if ( uploadedFile!=null )
                 return uploadedFile.getName();
