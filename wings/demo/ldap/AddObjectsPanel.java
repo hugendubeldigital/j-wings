@@ -34,7 +34,9 @@ public class AddObjectsPanel
     SButton suspend = new SButton("suspend");
     SForm tisconUserForm;
     SForm tisconUserOClForm;
-    private final int columns = 40;
+    private final int columns = 70;
+    private final int maxcolumns = 100;
+    private final String DELIM = ":";
     
 	public AddObjectsPanel() {
 	setLayout(new SFlowDownLayout());
@@ -97,7 +99,8 @@ public class AddObjectsPanel
 	attrForm.setLayout(new SGridLayout(0,2));
 	SLabel dnLabel = new SLabel("dn");
 	dnText = new STextField("");
-	dnText.setColumns(columns);
+        dnText.setColumns(columns);
+	dnText.setMaxColumns(maxcolumns);
 	STextField val;
 	String tval;
 
@@ -117,7 +120,7 @@ public class AddObjectsPanel
 		    String [] oc = tu.objectClasses;
 		    for (int j= 0; j< oc.length; j++) {
 			if (!tval.equals(""))
-			    tval = tval + "," + oc[j];
+			    tval = tval + DELIM + oc[j];
 			else tval = oc[j];
 		    }
 		    val = new STextField(tval); 
@@ -125,6 +128,7 @@ public class AddObjectsPanel
 		else
 		    val = new STextField("");
 		val.setColumns(columns);
+                val.setMaxColumns(maxcolumns);
 		attrForm.add(label);
 		attrForm.add(val);
 		comp.put(label,val);
@@ -150,6 +154,8 @@ public class AddObjectsPanel
 	
 	dnText = new STextField("");
 	dnText.setColumns(columns);
+        dnText.setMaxColumns(maxcolumns);
+
 	attrForm.add(dnLabel);
 	attrForm.add(dnText);
 	    
@@ -159,8 +165,7 @@ public class AddObjectsPanel
 	    Enumeration e = attr.keys();
 	    while(e!=null && e.hasMoreElements()) {
 		Object key = e.nextElement();
-		System.out.println(key + ":");
-		String label = (String)key;
+                String label = (String)key;
 		if (label.substring(0,1).equals("*")) {
 		    al  =new SLabel(label.substring(1));
 		    al.setBorder(new SLineBorder());
@@ -172,14 +177,12 @@ public class AddObjectsPanel
 		values = (ArrayList)attr.get(key);
 		int i = 0;
 		while(i<values.size()) {
-		    atv = atv.concat((String)values.get(i) + ",");
+		    atv = atv.concat((String)values.get(i) + DELIM);
 			
-			System.out.println(values.get(i));
-			System.out.println(atv);
-			i++;
+                    i++;
 		}
 		if (atv.length() > 1) {
-		    int l = atv.lastIndexOf(",");
+		    int l = atv.lastIndexOf(DELIM);
 		atv = atv.substring(0,l);
 		}
 		SComponent tf;
@@ -189,9 +192,10 @@ public class AddObjectsPanel
 		else {
 		    tf = new STextField(atv);
 		    ((STextField)tf).setColumns(columns);
+		    ((STextField)tf).setMaxColumns(maxcolumns);
+                    
 		}
-		System.out.println("text field " + atv);
-		attrForm.add(al);
+                attrForm.add(al);
 		attrForm.add(tf);
 		comp.put(al,tf);
 	    }
@@ -250,8 +254,7 @@ public class AddObjectsPanel
 	    int i = 0;
 	    //System.out.println
 	    while (obj!=null && i< obj.size()) {
-		System.out.println("***" + obj.get(i));
-		String o = (String)obj.get(i);
+                String o = (String)obj.get(i);
 		list = findParent(old,o);
 		old = list;
 		i++;
@@ -307,8 +310,7 @@ public class AddObjectsPanel
 	    while (e!=null && e.hasMoreElements()) {
 		Object key = e.nextElement();
 		String ats = ((SLabel)key).getText();
-		System.out.println("label" + ats);
-		String val = null;
+                String val = null;
 		if (comp.get(key).getClass().getName().equals("org.wings.SLabel")) {
 		    SLabel tf = (SLabel)comp.get(key);
 		    val = tf.getText();
@@ -317,26 +319,28 @@ public class AddObjectsPanel
 		    STextField tf = (STextField)comp.get(key);
 		    val = tf.getText();
 		}
-		System.out.println("mit val" + val);
-		if (val.length() > 0) {
-		    System.out.println("auch was drin");
-		    StringTokenizer tok = new StringTokenizer(ats,"(");
+                if (val.length() > 0) {
+                    StringTokenizer tok = new StringTokenizer(ats,"(");
 		    String at = tok.nextToken();
 		    vals.put(at,val);
 		}
 	    }
-	    System.out.println("dn ist" + dnText.getText());
-	    DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
+            DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
 	    LdapTreeNode root = (LdapTreeNode)model.getRoot();
 	    LdapTreeNode parent = getParentForNewNode(root, dnText.getText().trim());
             String part = dnText.getText();
-            part = part.substring(0, part.indexOf(",")).trim();
+            int ind = part.indexOf(",");
+            if (ind>0)
+                part = part.substring(0, part.indexOf(",")).trim();
 
-	    System.out.println("name: " + part);
-	    LdapTreeNode newNode = new LdapTreeNode(worker.getContext(), parent, part);
-	    parent.add(newNode);
-	    model.nodesWereInserted(parent, new int[] {parent.getChildCount()-1});
-	    worker.addNewEntry(dnText.getText().trim(),vals); 
+            if (parent!=null) {
+                LdapTreeNode newNode = new LdapTreeNode(worker.getContext(), parent, part);
+                parent.add(newNode);
+                model.nodesWereInserted(parent, new int[] {parent.getChildCount()-1});
+            }
+            else
+                System.out.println("eingefuegt, aber in dem Baum nicht angezeigt");
+            worker.addNewEntry(dnText.getText().trim(),vals); 
 	    
 	    objForm.setVisible(true);
 	    tisconUserForm.setVisible(true);
@@ -346,21 +350,49 @@ public class AddObjectsPanel
     }
 
     private LdapTreeNode getParentForNewNode(LdapTreeNode parent,String dn) {
-	LdapTreeNode node;
-	String parentDN = parent.getDN();
-	Enumeration children = parent.children();	
-	while (children!=null && children.hasMoreElements()) {
-	    node = (LdapTreeNode)children.nextElement();
-	    if (partOf(node.getDN(),dn)) {
-		parent = node;
-		getParentForNewNode(node,dn);
-	    }
-	}
-	
-	System.out.println("unterhalb von " + parent.getDN());
+        /**den parent brauche ich  nur fuer die anzeige, ansonsten wird versucht
+         * das einzufuegen und wird halt nicht in dem baum angezeigt
+         */
+
+        if (independentNode(parent.getDN(),dn))
+            return null;
+        else {
+            LdapTreeNode node;
+            String parentDN = parent.getDN();
+            Enumeration children = parent.children();
+            while (children!=null && children.hasMoreElements()) {
+                node = (LdapTreeNode)children.nextElement();
+                if (partOf(node.getDN(),dn)) {
+                    parent = node;
+                    getParentForNewNode(node,dn);
+                }
+            }
+        }
+        
 	return parent;
     }
     
+    private boolean independentNode(String root, String dn) {
+        StringTokenizer rootToken = new StringTokenizer(root," ");
+        StringTokenizer dnToken = new StringTokenizer(dn," ");
+        String dnS="";
+        String rootS="";
+        while(rootToken.hasMoreTokens()) {
+            rootS.concat(rootToken.nextToken());
+        }
+        if (rootS.length()==0)
+            rootS=root;
+        
+        while(dnToken.hasMoreTokens())
+            dnS.concat(dnToken.nextToken());
+        if (dnS.length()==0)
+            dnS = dn;
+        if (dnS.endsWith(rootS))
+            return false;
+        else
+            return true;
+    }
+        
 
     private boolean partOf(String a, String inB ) {
 
@@ -376,11 +408,8 @@ public class AddObjectsPanel
 	    anotherA = a;
 	if (anotherInB.equals(""))
 	    anotherInB = inB;
-	System.out.println(" a is "+ anotherA);
-	System.out.println("b is " + anotherInB);
-	if (anotherInB.endsWith(anotherA)) return true;
+        if (anotherInB.endsWith(anotherA)) return true;
 	return false;
-	
     }
 
 
@@ -388,16 +417,13 @@ public class AddObjectsPanel
 	obj = new ArrayList();
 	for (int i = 0; i < elements.length; i++) {
 	    obj.add(elements[i]);
-	    System.out.println("elements    " +elements[i] );
-	}
+        }
     }
 
     public void valueChanged(ListSelectionEvent evt) {
 	SList source = (SList)evt.getSource();
 	//Object [] elements = new Object [];
 	Object [] elements = source.getSelectedValues();
-	System.out.println("size is            " + elements.length);
-	System.out.println("valueChanged ...");
 	setSelectedObjects(elements);
     }
 	
