@@ -138,7 +138,7 @@ public class SFrame
      *
      */
     public void addDynamicResource(DynamicResource d) {
-        if ( dynamicResources==null )
+        if (dynamicResources == null)
             dynamicResources = new HashMap();
         dynamicResources.put(d.getClass(), d);
     }
@@ -148,6 +148,8 @@ public class SFrame
      *
      */
     public DynamicResource getDynamicResource(Class c) {
+        if (dynamicResources == null)
+            dynamicResources = new HashMap();
         return (DynamicResource)dynamicResources.get(c);
     }
 

@@ -122,21 +122,6 @@ public class SFrameSet
     }
 
     /**
-     * Set server address and propagate it to all frames
-    public void setRequestURL(RequestURL requestURL) {
-        super.setRequestURL(requestURL);
-
-	// propagate it to all frame(set)s
-	Iterator iterator = getComponentList().iterator();
-	while (iterator.hasNext()) {
-	    Object object = iterator.next();
-	    if (object instanceof SFrame)
-		((SFrame)object).setRequestURL(requestURL);
-	}
-    }
-    */
-
-    /**
      * Set the base target and propagate it to all frames
      */
     public void setBaseTarget(String baseTarget) {

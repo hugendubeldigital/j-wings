@@ -124,11 +124,22 @@ public class FrameSetSession
 
         menuButton.addActionListener(menuDecrement);
         mainButton.addActionListener(mainDecrement);
+
+        final SCheckBox toggleReloadManager = new SCheckBox("use reload manager frame");
+        toggleReloadManager.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    if (toggleReloadManager.isSelected())
+                        installReloadManagerFrame();
+                    else
+                        uninstallReloadManagerFrame();
+                }
+            });
+        toolbar.getContentPane().add(toggleReloadManager);
     }
 
     void installReloadManagerFrame() {
         // add reload manager frame
-        vertical.setLayout(new SFrameSetLayout(null, "30,*, 10"));
+        vertical.setLayout(new SFrameSetLayout(null, "30,*,10"));
         reloadManagerFrame = new ReloadManagerFrame();
         vertical.add(reloadManagerFrame);
 
@@ -137,18 +148,40 @@ public class FrameSetSession
         menuFrame.setBaseTarget("frame" + reloadManagerFrame.getUnifiedId());
         mainFrame.setBaseTarget("frame" + reloadManagerFrame.getUnifiedId());
 
+        DynamicResource targetResource
+            = reloadManagerFrame.getDynamicResource(DynamicCodeResource.class);
         // set target resource
-        toolbarFrame.setBaseTarget(reloadManagerFrame.getUnifiedId());
-        menuFrame.setBaseTarget(reloadManagerFrame.getUnifiedId());
-        mainFrame.setBaseTarget(reloadManagerFrame.getUnifiedId());
+        toolbarFrame.setTargetResource(targetResource.getId());
+        menuFrame.setTargetResource(targetResource.getId());
+        mainFrame.setTargetResource(targetResource.getId());
+    }
+
+    void uninstallReloadManagerFrame() {
+        Set dirtyResources = new HashSet();
+        dirtyResources.add(vertical.getDynamicResource(DynamicCodeResource.class));
+        reloadManagerFrame.setDirtyResources(dirtyResources);
+
+        vertical.remove(reloadManagerFrame);
+        vertical.setLayout(new SFrameSetLayout(null, "30,*"));
+        reloadManagerFrame = null;
+
+        toolbarFrame.setBaseTarget("_top");
+        menuFrame.setBaseTarget("_top");
+        mainFrame.setBaseTarget("_top");
+
+        toolbarFrame.setTargetResource(null);
+        menuFrame.setTargetResource(null);
+        mainFrame.setTargetResource(null);
     }
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse response)
         throws ServletException, IOException
     {
-        Set dirtyResources = getSession().getReloadManager().getDirtyResources();
-        reloadManagerFrame.setDirtyResources(dirtyResources);
-	getSession().getReloadManager().clear();
+        if (reloadManagerFrame != null) {
+            Set dirtyResources = new HashSet(getSession().getReloadManager().getDirtyResources());
+            reloadManagerFrame.setDirtyResources(dirtyResources);
+            getSession().getReloadManager().clear();
+        }
     }
 
     /**

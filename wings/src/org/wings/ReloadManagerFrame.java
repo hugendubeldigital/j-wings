@@ -68,7 +68,7 @@ public class ReloadManagerFrame
      * @param p the container
      */
     public void setParent(SContainer p) {
-	if (!(p instanceof ReloadManagerFrame))
+	if (!(p == null || p instanceof SFrameSet))
 	    throw new IllegalArgumentException("The ReloadManagerFrame can only be added to SFrameSets.");
 
         parent = p;
@@ -114,16 +114,45 @@ public class ReloadManagerFrame
 	d.append("<script language=\"javascript\">\n");
 	d.append("function reload() {\n");
 
-        Iterator it = dirtyResources.iterator();
-        while (it.hasNext()) {
-            DynamicResource resource = (DynamicResource)it.next();
-            resource.invalidate();
+        boolean all = false;
+        DynamicResource toplevel = null;
+        {
+            Iterator it = dirtyResources.iterator();
+            while (it.hasNext()) {
+                DynamicResource resource = (DynamicResource)it.next();
+                if (!(resource.getFrame() instanceof ReloadManagerFrame) &&
+                    resource.getFrame().getParent() == null) {
+                    toplevel = resource;
+                    all = true;
+                }
+            }
+        }
 
-            d.append("parent.frame");
-            d.append(resource.getId());
-            d.append(".location='");
-            d.append(resource.getURL());
+        if (all) {
+            // reload the _whole_ document
+            d.append("parent.location='");
+            d.append(toplevel.getURL());
             d.append("';\n");
+
+            // invalidate resources
+            Iterator it = dirtyResources.iterator();
+            while (it.hasNext()) {
+                DynamicResource resource = (DynamicResource)it.next();
+                resource.invalidate();
+            }
+        }
+        else {
+            Iterator it = dirtyResources.iterator();
+            while (it.hasNext()) {
+                DynamicResource resource = (DynamicResource)it.next();
+                resource.invalidate();
+
+                d.append("parent.frame");
+                d.append(resource.getFrame().getUnifiedId());
+                d.append(".location='");
+                d.append(resource.getURL());
+                d.append("';\n");
+            }
         }
 
 	d.append("}\n");
@@ -131,8 +160,6 @@ public class ReloadManagerFrame
 	d.append("</head>\n");
 	d.append("<body onload=\"reload()\"></body>");
     }
-
-    public void updateCG() {}
 }
 
 /*
