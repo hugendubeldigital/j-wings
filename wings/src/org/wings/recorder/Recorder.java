@@ -34,7 +34,8 @@ public class Recorder
             lookupName = "SessionServlet:" + filterConfig.getInitParameter("wings.mainclass");
         }
 
-        logger.info("use session servlet lookup name " + lookupName);
+        logger.config("wings.servlet.lookupname " + lookupName);
+        logger.config("wings.servlet.recorder.script " + scriptName);
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
