@@ -28,6 +28,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import org.wings.plaf.*;
+import org.wings.style.*;
 import org.wings.util.*;
 import org.wings.io.Device;
 
@@ -93,6 +94,12 @@ public class SList
      * <li start="...">
      */
     protected int start = 0;
+
+    /** The style of selected cells */
+    protected Style selectionStyle;
+
+    /** The dynamic attributes of selected cells */
+    protected AttributeSet selectionAttributes = new SimpleAttributeSet();
 
     /**
      * Construct a SList that displays the elements in the specified model.
@@ -187,73 +194,107 @@ public class SList
 
 
     /**
-     * Returns the foreground color.
-     *
-     * @return the Color object for the foreground property
-     * @see #setSelectionForeground
-     * @see #setSelectionBackground
+     * @param style the style of selected cells
      */
-    public Color getSelectionForeground() {
-        return selectionForeground;
+    public void setSelectionStyle(Style selectionStyle) {
+        this.selectionStyle = selectionStyle;
+    }
+
+    /**
+     * @return the style of selected cells.
+     */
+    public Style getSelectionStyle() { return selectionStyle; }
+
+    /**
+     * Set a selectionAttribute.
+     * @param name the selectionAttribute name
+     * @param value the selectionAttribute value
+     */
+    public void setSelectionAttribute(String name, String value) {
+        boolean changed = selectionAttributes.isDefined(name);
+        selectionAttributes.putAttribute(name, value);
+
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * return the value of an selectionAttribute.
+     * @param name the selectionAttribute name
+     */
+    public String getSelectionAttribute(String name) {
+        return selectionAttributes.getAttribute(name);
+    }
+
+    /**
+     * remove an selectionAttribute
+     * @param name the selectionAttribute name
+     */
+    public String removeSelectionAttribute(String name) {
+        if ( selectionAttributes.isDefined(name) ) {
+            String value = selectionAttributes.removeAttribute(name);
+
+            reload(ReloadManager.RELOAD_STYLE);
+
+            return value;
+        }
+
+        return null;
     }
 
 
     /**
-     * Set the foreground color for selected cells.  Cell renderers
-     * can use this color to render text and graphics for selected
-     * cells.
-     * 
-     * @param selectionForeground  the Color to use in the foreground
-     *                             for selected list items
-     * @see #getSelectionForeground
-     * @see #setSelectionBackground
-     * @see #setForeground
-     * @see #setBackground
-     * @see #setFont
-     * @beaninfo
-     *       bound: true
-     * description: The foreground color of selected cells.
+     * Set the selectionAttributes.
+     * @param selectionAttributes the selectionAttributes
      */
-    public void setSelectionForeground(Color selectionForeground) {
-        Color oldValue = this.selectionForeground;
-        this.selectionForeground = selectionForeground;
-        //firePropertyChange("selectionForeground", oldValue, selectionForeground);
+    public void setSelectionAttributes(AttributeSet selectionAttributes) {
+        if (selectionAttributes == null)
+            throw new IllegalArgumentException("null not allowed");
+
+        if (!this.selectionAttributes.equals(selectionAttributes)) {
+            this.selectionAttributes = selectionAttributes;
+            reload(ReloadManager.RELOAD_STYLE);
+        }
     }
 
+    /**
+     * @return the current selectionAttributes
+     */
+    public AttributeSet getSelectionAttributes() {
+        return selectionAttributes;
+    }
 
     /**
-     * Returns the background color for selected cells.
-     *
-     * @return the Color used for the background of selected list items
-     * @see #setSelectionBackground
-     * @see #setSelectionForeground
+     * Set the background color.
+     * @param c the new background color
+     */
+    public void setSelectionBackground(Color color) {
+        setSelectionAttribute("background-color", CSSStyleSheet.getAttribute(color));
+    }
+
+    /**
+     * Return the background color.
+     * @return the background color
      */
     public Color getSelectionBackground() {
-        return selectionBackground;
+        return CSSStyleSheet.getBackground(selectionAttributes);
     }
-
 
     /**
-     * Set the background color for selected cells.  Cell renderers
-     * can use this color to the fill selected cells.
-     * <p>
-     * @param selectionBackground  the Color to use for the background
-     *                             of selected cells
-     * @see #getSelectionBackground
-     * @see #setSelectionForeground
-     * @see #setForeground
-     * @see #setBackground
-     * @see #setFont
-     * @beaninfo
-     *       bound: true
-     * description: The background color of selected cells.
+     * Set the foreground color.
+     * @param c the new foreground color
      */
-    public void setSelectionBackground(Color selectionBackground) {
-        Color oldValue = this.selectionBackground;
-        this.selectionBackground = selectionBackground;
-        //firePropertyChange("selectionBackground", oldValue, selectionBackground);
+    public void setSelectionForeground(Color color) {
+        setSelectionAttribute("color", CSSStyleSheet.getAttribute(color));
     }
 
+    /**
+     * Return the foreground color.
+     * @return the foreground color
+     */
+    public Color getSelectionForeground() {
+        return CSSStyleSheet.getForeground(selectionAttributes);
+    }
 
     /**
      * Return the preferred number of visible rows. If rendered as a form

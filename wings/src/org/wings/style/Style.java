@@ -28,21 +28,26 @@ import org.wings.io.*;
 public final class Style
     extends SimpleAttributeSet
 {
-    StyleSheet sheet;
-    byte[] attr;
-
-    public Style(String name, AttributeSet attributes) {
-        super(attributes);
-        this.name = name;
-    }
-
+    private StyleSheet sheet;
+    private String selector;
     private String name;
 
-    public void setName(String name) {
-        this.name = name;
-        attr = null;
+    public Style(String selector, AttributeSet attributes) {
+        super(attributes);
+        this.selector = selector;
     }
-    public String getName() { return name; }
+
+    public void setSelector(String selector) {
+        this.selector = selector;
+        name = null;
+    }
+    public String getSelector() { return selector; }
+
+    public String getName() {
+        if (name == null && selector != null)
+            name = selector.substring(selector.indexOf(".") + 1);
+        return name;
+    }
 
     public void setSheet(StyleSheet sheet) {
         this.sheet = sheet;
@@ -52,13 +57,14 @@ public final class Style
     public void write(Device d)
         throws IOException
     {
-        if (attr == null)
-            attr = (" class=\"" + name.substring(name.indexOf(".") + 1) + "\"").getBytes();
-        d.write(attr);
+        d.append(selector);
+        d.append(" { ");
+        super.write(d);
+        d.append("}\n");
     }
 
     public String toString() {
-        return name + " { " + super.toString() + "}";
+        return selector + " { " + super.toString() + "}";
     }
 }
 

@@ -15,31 +15,44 @@
 package org.wings;
 
 import java.io.IOException;
+import java.lang.reflect.*;
 import java.util.Set;
 
 import org.wings.io.Device;
 import org.wings.util.StringUtil;
 
 /**
- * TODO: documentation
+ * Traverses the component hierarchy of a frame and lets the CGs compose
+ * the document.
  *
  * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class DynamicCodeResource extends DynamicResource
+public class DynamicCodeResource
+    extends DynamicResource
 {
     /**
-     *
+     * Create a code resource for the specified frame.
      */
     public DynamicCodeResource(SFrame f) {
         super(f, null, "text/html");
     }
 
     /**
-     *
+     * Write the code of the whole frame to the Device.
      */
-    public void write(Device out) throws IOException {
-        getFrame().write(out);
+    public void write(Device out)
+        throws IOException
+    {
+        try {
+            getFrame().write(out);
+        }
+        catch (IOException e) {
+            throw e;
+        }
+        catch (Exception e) {
+            throw new UndeclaredThrowableException(e);
+        }
     }
 }
 

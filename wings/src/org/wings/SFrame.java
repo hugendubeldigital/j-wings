@@ -532,7 +532,9 @@ public class SFrame
         super.setCG(cg);
     }
 
-    public void invite(ComponentVisitor visitor) {
+    public void invite(ComponentVisitor visitor)
+        throws Exception
+    {
         visitor.visit(this);
         getContentPane().invite(visitor);
     }

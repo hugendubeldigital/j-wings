@@ -17,14 +17,20 @@ package org.wings.util;
 import org.wings.*;
 
 /**
- * TODO: documentation
+ * A visitor that is visits component hierarchies.
+ * The SComponent and SContainer implement the corresponding
+ * invite method.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
 public interface ComponentVisitor
 {
-    void visit(SComponent component);
+    /**
+     * Visit a SComponent
+     * @param component the component to be visited
+     */
+    void visit(SComponent component) throws Exception;
 }
 
 /*

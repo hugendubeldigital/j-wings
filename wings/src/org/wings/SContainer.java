@@ -430,7 +430,7 @@ public class SContainer
     }
 
     /**
-     * Sets the parent frame
+     * Sets the parent frame.
      *
      * @param f parent frame
      */
@@ -470,7 +470,7 @@ public class SContainer
     }
 
     /**
-     * invite a ComponentVisitor.
+     * Invite a ComponentVisitor.
      * This visitor is called with the container itself and all
      * components, that this container has. Use this, if you want to
      * iterate through all elements.
@@ -478,7 +478,9 @@ public class SContainer
      * @param visitor an implementation of the {@linke ComponentVisitor}
      *                interface.
      */
-    public void invite(ComponentVisitor visitor) {
+    public void invite(ComponentVisitor visitor)
+        throws Exception
+    {
         visitor.visit(this); // FIXME: explain: why visit ourself ?
 
 	Iterator iterator = getComponentList().iterator();

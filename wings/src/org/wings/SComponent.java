@@ -1043,7 +1043,14 @@ public abstract class SComponent
         return cgClassID;
     }
 
-    public void invite(ComponentVisitor visitor) {
+    /**
+     * Invite a ComponentVisitor.
+     * Invokes visit on the ComponentVisitor.
+     * @param visitor the visitor to be invited 
+     */
+    public void invite(ComponentVisitor visitor)
+        throws Exception
+    {
         visitor.visit(this);
     }
 }

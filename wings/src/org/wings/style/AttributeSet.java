@@ -13,9 +13,11 @@
  */
 package org.wings.style;
 
+import java.io.*;
+import java.util.*;
+
 import org.wings.io.Device;
 
-import java.util.*;
 
 /**
  * A generic interface for a mutable collection of unique attributes.
@@ -95,9 +97,9 @@ public interface AttributeSet
     public void clear();
 
     /**
-     * Write style definition to the device
+     * Write attribute definitions to the device
      */
-    void write(Device d, String selector);
+    void write(Device d) throws IOException;
 }
 
 /*

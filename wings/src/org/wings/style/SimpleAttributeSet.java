@@ -192,9 +192,9 @@ public class SimpleAttributeSet
     /**
      * Write style definition to the device
      */
-    public void write(Device d, String selector) {
-        d.append(selector);
-        d.append(" { ");
+    public void write(Device d)
+        throws IOException
+    {
         Iterator names = map.entrySet().iterator();
         while (names.hasNext()) {
             Map.Entry next = (Map.Entry)names.next();
@@ -203,7 +203,6 @@ public class SimpleAttributeSet
             d.append(next.getValue());
             d.append("; ");
         }
-        d.append("}\n");
     }
 
     /**

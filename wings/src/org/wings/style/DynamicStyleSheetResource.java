@@ -1,6 +1,21 @@
+/*
+ * $Id$
+ * (c) Copyright 2000 wingS development team.
+ *
+ * This file is part of wingS (http://wings.mercatis.de).
+ *
+ * wingS is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
+ * of the License, or (at your option) any later version.
+ *
+ * Please see COPYING for the complete licence.
+ */
+
 package org.wings.style;
 
 import java.io.IOException;
+import java.lang.reflect.*;
 
 import org.wings.SComponent;
 import org.wings.SFrame;
@@ -8,6 +23,13 @@ import org.wings.DynamicResource;
 import org.wings.io.Device;
 import org.wings.util.ComponentVisitor;
 
+/**
+ * Traverses the component hierarchy of a frame and gathers the dynamic styles
+ * (attributes) of all components in a style sheet.
+ *
+ * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
+ * @version $Revision$
+ */
 public class DynamicStyleSheetResource
     extends DynamicResource
 {
@@ -18,8 +40,16 @@ public class DynamicStyleSheetResource
     public void write(Device out)
         throws IOException
     {
-        StyleSheetWriter visitor = new StyleSheetWriter(out);
-        getFrame().invite(visitor);
+        try {
+            StyleSheetWriter visitor = new StyleSheetWriter(out);
+            getFrame().invite(visitor);
+        }
+        catch (IOException e) {
+            throw e;
+        }
+        catch (Exception e) {
+            throw new UndeclaredThrowableException(e);
+        }
     }
 
     protected static class StyleSheetWriter
@@ -31,11 +61,16 @@ public class DynamicStyleSheetResource
             this.out = out;
         }
 
-        public void visit(SComponent component) {
+        public void visit(SComponent component)
+            throws IOException
+        {
             AttributeSet attributes = component.getAttributes();
             if (attributes.size() == 0)
                 return;
-            attributes.write(out, "._" + component.getUnifiedId());
+            out.append("._" + component.getUnifiedId());
+            out.append(" {");
+            attributes.write(out);
+            out.append("}\n");
         }
     }
 }
