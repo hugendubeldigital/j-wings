@@ -15,8 +15,7 @@
 package wingset;
 
 import java.awt.*;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
+import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -35,6 +34,7 @@ public class PageScrollerExample
 
     SList list;
     SPageScroller scrollbar;
+    SScrollPane scroller;
 
     public SComponent createExample() {
         SPanel p = new SPanel(new SBorderLayout());
@@ -53,8 +53,8 @@ public class PageScrollerExample
         scrollbar.setLayoutMode(Adjustable.HORIZONTAL);
         scrollbar.setDirectPages(10);
 
-        SScrollPane scroller = new SScrollPane(list);
-        scroller.setHorizontalScrollBar(scrollbar);
+        scroller = new SScrollPane(list);
+        scroller.setHorizontalScrollBar(null);
         scroller.setVerticalScrollBar(null);
         // maximum of 50 visible rows...
         scroller.setVerticalExtent(50);
@@ -69,9 +69,6 @@ public class PageScrollerExample
     private SForm createControlForm() {
         SForm controlForm = new SForm(new SFlowLayout());
         
-        /*
-         * modify the displayed indentation depth.
-         */
         controlForm.add(new SLabel("Visible Rows: "));
         Object[] visRowsValues = {new Integer(4), new Integer(8), new Integer(12), 
                            new Integer(16), new Integer(20), new Integer(50)};
@@ -84,9 +81,6 @@ public class PageScrollerExample
         visRows.setSelectedItem(new Integer(list.getVisibleRowCount()));
         controlForm.add(visRows);
 
-        /*
-         * modify the displayed indentation depth.
-         */
         controlForm.add(new SLabel("Direct Pages: "));
         Object[] values = {new Integer(5), new Integer(10), new Integer(15), 
                            new Integer(20), new Integer(50)};
@@ -98,6 +92,56 @@ public class PageScrollerExample
             });
         comboBox.setSelectedItem(new Integer(scrollbar.getDirectPages()));
         controlForm.add(comboBox);
+
+
+        controlForm.add(new SLabel("Layout: "));
+        Object[] constraints = { "Top", "Left", "Bottom", "Right" };
+        final SComboBox layout = new SComboBox(constraints);
+        layout.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent e) {
+                    if ( "Top".equals(layout.getSelectedItem()) ) {
+                        scrollbar.setLayoutMode(Adjustable.HORIZONTAL);
+                        scroller.setHorizontalScrollBar(scrollbar, 
+                                                        SBorderLayout.NORTH);
+                    } else if ( "Bottom".equals(layout.getSelectedItem()) ) {
+                        scrollbar.setLayoutMode(Adjustable.HORIZONTAL);
+                        scroller.setHorizontalScrollBar(scrollbar, 
+                                                        SBorderLayout.SOUTH);
+                    } else if ( "Left".equals(layout.getSelectedItem()) ) {
+                        scrollbar.setLayoutMode(Adjustable.VERTICAL);
+                        scroller.setHorizontalScrollBar(scrollbar, 
+                                                        SBorderLayout.WEST);
+                    } else if ( "Right".equals(layout.getSelectedItem()) ) {
+                        scrollbar.setLayoutMode(Adjustable.VERTICAL);
+                        scroller.setHorizontalScrollBar(scrollbar, 
+                                                        SBorderLayout.EAST);
+                    } 
+                }
+            });
+        layout.setSelectedItem("Bottom");
+        controlForm.add(layout);
+
+
+        final SCheckBox margin = new SCheckBox("Margin:");
+        margin.setHorizontalTextPosition(SCheckBox.LEFT);
+        margin.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    scrollbar.setMarginVisible(margin.isSelected());
+                }
+            });
+        margin.setSelected(scrollbar.isMarginVisible());
+        controlForm.add(margin);
+
+        final SCheckBox step = new SCheckBox("Step:");
+        step.setHorizontalTextPosition(SCheckBox.LEFT);
+        step.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    scrollbar.setStepVisible(step.isSelected());
+                }
+            });
+        step.setSelected(scrollbar.isStepVisible());
+        controlForm.add(step);
+
         
         SButton submit = new SButton("OK");
         controlForm.add(submit);
