@@ -26,10 +26,10 @@ import org.wings.style.*;
 
 /**
  * The CGManager holds a reference to the current laf.
- * It delegates to a session related CGDefaults table, that is backed by the laf's defaults.
+ * It delegates to a session related CGDefaults table, that is backed by 
+ * the laf's defaults.
  */
-public class CGManager
-    implements Serializable
+public class CGManager implements Serializable
 {
     private final static Logger logger = Logger.getLogger("org.wings.plaf");
 
@@ -147,7 +147,6 @@ public class CGManager
         return lookAndFeel;
     }
 
-
     /**
      * Set the current default look and feel by name.
      *
@@ -169,7 +168,7 @@ public class CGManager
         lookAndFeel = newLookAndFeel;
         
         if (newLookAndFeel != null) {
-            setDefaults(new CGDefaults(newLookAndFeel.getDefaults()));
+            setDefaults(new CGDefaults(newLookAndFeel.createDefaults()));
         }
         else {
             logger.warning("lookandfeel == null");
