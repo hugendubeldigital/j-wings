@@ -119,12 +119,17 @@ public class FileTableModel
     }
 
     public void setFileName(int row, String name) {
-        File oldFile = getFile(filenames[row]);
-        File newFile = new File(oldFile.getParent() + File.separator + name);
-
-        filenames[row] = name;
-
-        oldFile.renameTo(newFile);
+        // avoid moving a File by renaming it !!
+        if ( name.indexOf("..")<0 &&
+             name.indexOf("/")<0 &&
+             name.indexOf("\\")<0 ) {
+            File oldFile = getFile(filenames[row]);
+            File newFile = new File(oldFile.getParent() + File.separator + name);
+            
+            filenames[row] = name;
+            
+            oldFile.renameTo(newFile);
+        } 
     }
 
     public File getFile(String filename) {
