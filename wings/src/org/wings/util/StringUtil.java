@@ -16,10 +16,6 @@ package org.wings.util;
 
 import java.util.StringTokenizer;
 
-/*
- * Eine Sammlung von Methoden um Strings zu bearbeiten.
- * @see ResourceManager
- */
 /**
  * TODO: documentation
  *
@@ -42,11 +38,11 @@ public class StringUtil
         int indexOf = s.indexOf(toFind);
         if ( indexOf == -1 ) return s;
         while ( indexOf != -1 )
-        {
-            erg.append(s.substring(lastindex, indexOf)).append(replace);
-            lastindex = indexOf + toFind.length();
-            indexOf = s.indexOf(toFind, lastindex);
-        }
+            {
+                erg.append(s.substring(lastindex, indexOf)).append(replace);
+                lastindex = indexOf + toFind.length();
+                indexOf = s.indexOf(toFind, lastindex);
+            }
 
         erg.append(s.substring(lastindex));
 
@@ -91,56 +87,99 @@ public class StringUtil
         return erg;
     }
 
-  /**
-   * All possible chars for representing a number as a String
-   */
-  final static char[] digits = {
-    '0' , '1' , '2' , '3' , '4' , '5' ,
-    '6' , '7' , '8' , '9' , 'a' , 'b' ,
-    'c' , 'd' , 'e' , 'f' , 'g' , 'h' ,
-    'i' , 'j' , 'k' , 'l' , 'm' , 'n' ,
-    'o' , 'p' , 'q' , 'r' , 's' , 't' ,
-    'u' , 'v' , 'w' , 'x' , 'y' , 'z' ,
-    'A' , 'B' ,
-    'C' , 'D' , 'E' , 'F' , 'G' , 'H' ,
-    'I' , 'J' , 'K' , 'L' , 'M' , 'N' ,
-    'O' , 'P' , 'Q' , 'R' , 'S' , 'T' ,
-    'U' , 'V' , 'W' , 'X' , 'Y' , 'Z'
-  };
+    /**
+     * All possible chars for representing a number as a String
+     */
+    final static char[] digits = {
+        '0' , '1' , '2' , '3' , '4' , '5' ,
+        '6' , '7' , '8' , '9' , 'a' , 'b' ,
+        'c' , 'd' , 'e' , 'f' , 'g' , 'h' ,
+        'i' , 'j' , 'k' , 'l' , 'm' , 'n' ,
+        'o' , 'p' , 'q' , 'r' , 's' , 't' ,
+        'u' , 'v' , 'w' , 'x' , 'y' , 'z' ,
+        'A' , 'B' ,
+        'C' , 'D' , 'E' , 'F' , 'G' , 'H' ,
+        'I' , 'J' , 'K' , 'L' , 'M' , 'N' ,
+        'O' , 'P' , 'Q' , 'R' , 'S' , 'T' ,
+        'U' , 'V' , 'W' , 'X' , 'Y' , 'Z'
+    };
+
+    public static final int MAX_RADIX = digits.length;
 
 
-  /**
-   * Geht hoch bis Radix 62 !!
-   */
-  public static String toString(long i, int radix) {
-    char[] buf = new char[65];
-    int charPos = 64;
-    boolean negative = (i < 0);
+    /**
+     * Codes number up to radix 62.
+     * @parameter minDigits returns a string with a least minDigits digits
+     */
+    public static String toString(long i, int radix, int minDigits) {
+        char[] buf = new char[65];
+
+        radix = Math.min(Math.abs(radix), MAX_RADIX);
+        minDigits = Math.min(buf.length-1, Math.abs(minDigits));
+
+
+        int charPos = buf.length-1;
+
+
+
+        boolean negative = (i < 0);
     
-    if (!negative) {
-      i = -i;
+        if (negative) {
+            i = -i;
+        }
+
+        while (i >= radix) {
+            buf[charPos--] = digits[(int)(i % radix)];
+            i /= radix;
+        }
+        buf[charPos] = digits[(int)i];
+
+        // if minimum length of the result string is set, fill it with 0
+        while ( charPos>buf.length-minDigits )
+            buf[--charPos] = digits[0];
+            
+
+
+        if (negative) {
+            buf[--charPos] = '-';
+        }
+
+        return new String(buf, charPos, buf.length-charPos);
+    }
+
+    /**
+     * 
+     */
+    public static String toShortestAlphaNumericString(long i) {
+        return toString(i, MAX_RADIX, 0);
+    }
+
+    /**
+     * 
+     */
+    public static String toShortestAlphaNumericString(long i, int minDigits) {
+        return toString(i, MAX_RADIX, minDigits);
     }
     
-    while (i <= -radix) {
-      buf[charPos--] = digits[(int)(-(i % radix))];
-      i = i / radix;
-    }
-    buf[charPos] = digits[(int)(-i)];
-    
-    if (negative) {
-      buf[--charPos] = '-';
-    }
-    
-    return new String(buf, charPos, (65 - charPos));
-  }
+    /*
+    public static void main(String args[]) {
+        System.out.println(StringUtil.toString(9124, 10, 0));
 
-  /**
-   * 
-   */
-  public static String toShortestAlphaNumericString(long i) {
-    return toString(i, digits.length-1);
-  }
+        System.out.println(StringUtil.toShortestAlphaNumericString(9124));
+        System.out.println(StringUtil.toShortestAlphaNumericString(-9124));
 
+        System.out.println(StringUtil.toString(1, MAX_RADIX, 4));
+
+        System.out.println(StringUtil.toString(9124, MAX_RADIX, 1));
+        System.out.println(StringUtil.toString(9124, MAX_RADIX, 4));
+        System.out.println(StringUtil.toString(9124, MAX_RADIX, 5));
+
+        System.out.println(StringUtil.toString(-1, MAX_RADIX, 64));
+
+        System.out.println("\"" + StringUtil.toShortestAlphaNumericString(3843,
+                                                                          2));
+    }
+    */
 }
 
 /*
@@ -149,3 +188,6 @@ public class StringUtil
  * indent-tabs-mode: nil
  * End:
  */
+
+
+

@@ -93,8 +93,8 @@ public class ExternalizeManager extends AbstractExternalizeManager
 
     protected final void storeExternalizedInfo(String identifier,
                                                ExternalizedInfo extInfo) {
-        debug("store identifier " + identifier + " " + extInfo.getObject().getClass());
-        debug("flags " + extInfo.getFlags());
+        //        debug("store identifier " + identifier + " " + extInfo.getObject().getClass());
+        //        debug("flags " + extInfo.getFlags());
 
 
         externalized.put(identifier, extInfo);

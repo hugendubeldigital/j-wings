@@ -46,6 +46,40 @@ public abstract class AbstractExternalizeManager
      */
     public static final String NOT_FOUND_IDENTIFIER = "0";
 
+    
+    /**
+     * in seconds
+     */
+    public static final int UNIQUE_TIMESLICE = 20;
+
+    /**
+     * in seconds
+     */
+    public static final long FINAL_EXPIRES = 
+        (StringUtil.MAX_RADIX*StringUtil.MAX_RADIX - 1) * UNIQUE_TIMESLICE;
+    /**
+     * in seconds
+     */
+    public static final String FINAL_EXPIRES_STRING = 
+        Long.toString(FINAL_EXPIRES);
+
+    /**
+     *
+     */
+    protected static final long PREFIX_TIMESLICE = 
+        ((System.currentTimeMillis()/1000)%FINAL_EXPIRES)/UNIQUE_TIMESLICE;
+
+    /**
+     *
+     */
+    protected static final String PREFIX_TIMESLICE_STRING = 
+        StringUtil.toShortestAlphaNumericString(PREFIX_TIMESLICE, 2);
+
+    static {
+        debug("final scope expires in " + FINAL_EXPIRES_STRING + " seconds");
+        debug("use prefix " + PREFIX_TIMESLICE_STRING);
+    }
+    
     // Flags
 
     /**
@@ -107,15 +141,22 @@ public abstract class AbstractExternalizeManager
     /**
      *
      */
-    protected synchronized long getNextIdentifier() {
+    protected final synchronized long getNextIdentifier() {
         return counter++;
     }
 
     /**
      *
      */
+    protected String getPrefix() {
+        return PREFIX_TIMESLICE_STRING;
+    }
+
+    /**
+     *
+     */
     protected final String createIdentifier() {
-        return StringUtil.toShortestAlphaNumericString(getNextIdentifier());
+        return getPrefix() + StringUtil.toShortestAlphaNumericString(getNextIdentifier());
     }
 
     /**
@@ -347,7 +388,7 @@ public abstract class AbstractExternalizeManager
 
         // non-transient items can be cached by the browser
         if (extInfo.isFinal() ) {
-            response.setDateHeader("expires", 365*24*60*60); // 1 Year
+            response.setHeader("expires", FINAL_EXPIRES_STRING);
         } else {
             response.setDateHeader("expires", 0);
         }

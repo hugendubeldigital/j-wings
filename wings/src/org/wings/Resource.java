@@ -104,7 +104,6 @@ public class Resource
      */
     public final String getURL() {
 	if (url == null) {
-            System.out.println("[Resource] externalize with " + externalizerFlags);
 	    url = SessionManager.getSession()
 		.getExternalizeManager()
 		.externalize(this, externalizerFlags);
@@ -169,7 +168,7 @@ public class Resource
      * @return
      */
     public final String getMimeType() {
-        return extension;
+        return mimeType;
     }
 
     /**

@@ -43,18 +43,12 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
      */
     private static final SystemExternalizeManager sharedInstance = new SystemExternalizeManager();
   
+    private static final String MY_PREFIX_TIMESLICE_STRING = "-" + 
+        AbstractExternalizeManager.PREFIX_TIMESLICE_STRING;
     /**
      * TODO: documentation
      */
     protected final Map externalized = Collections.synchronizedMap( new HashMap() );
-
-    /**
-     * To generate the identifier for a externalized object. This is overwritten
-     * to generate negative numbers. This is necessary to distinguish between
-     * object externalized by the SystemExternalizeManager and the
-     * {@link ExternalizeManager}
-     */
-    private long counter = -1;
 
   
     /**
@@ -65,19 +59,16 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
     }
 
     /**
-     * To generate the identifier for a externalized object. This is overwritten
-     * to generate negative numbers. This is necessary to distinguish between
-     * object externalized by the SystemExternalizeManager and the
-     * {@link ExternalizeManager}
+     *
      */
-    protected synchronized final long getNextIdentifier() {
-        return counter--;
+    protected String getPrefix() {
+        return MY_PREFIX_TIMESLICE_STRING;
     }
 
     protected void storeExternalizedInfo(String identifier,
                                          ExternalizedInfo extInfo) {
-        debug("store identifier " + identifier + " " + extInfo.getObject().getClass());
-        debug("flags " + extInfo.getFlags());
+        //        debug("store identifier " + identifier + " " + extInfo.getObject().getClass());
+        //        debug("flags " + extInfo.getFlags());
 
         externalized.put(identifier, extInfo);
    }
