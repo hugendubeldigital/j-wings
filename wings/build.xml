@@ -146,6 +146,7 @@
              windowtitle="wingS ${wings.version}"
              doctitle="wingS ${wings.version}"
              bottom="wingS swings ;-)"
+             link="http://java.sun.com/j2se/1.4/docs/api/"
     />
   </target>
 
