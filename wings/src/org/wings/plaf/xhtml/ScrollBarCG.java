@@ -116,7 +116,7 @@ public class ScrollBarCG
          d.append( "<td bgcolor=").append( BUTTON_BACKGROUND );
          d.append( bwalign );
          d.append( el_s );
-         d.append( "1%\">" );
+         d.append( "0\">" );
          sb.getComponentAt(0).write( d );
          d.append( "</td>" );
          d.append( el_post );
@@ -128,7 +128,7 @@ public class ScrollBarCG
          d.append( "<td bgcolor=").append( BUTTON_BACKGROUND );
          d.append( fwalign );
          d.append( el_s );
-         d.append( "1%\">" );
+         d.append( "0\">" );
          sb.getComponentAt(1).write( d );
          d.append( "</td>" );
      }

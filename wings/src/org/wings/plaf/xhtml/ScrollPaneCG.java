@@ -138,7 +138,7 @@ public class ScrollPaneCG
         verticalScroller.write( d );
         d.append( "</tr>" );
         horizontalScroller.write( d );
-        d.append("</tr></table>");
+        d.append("<td width=\"0%\" height=\"0%\"></td></tr></table>");
     }
 }
 
