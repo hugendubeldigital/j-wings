@@ -18,7 +18,7 @@ wingS demo installation with JServ and Apache under Linux
       api to your bootclasspath. So you need to modify your tomcat.sh
       to include the logging.jar on the commandline
       (you find in the lib/ directory):
-         -Xbootclasspath/p:/usr/src/wings/lib/logging.jar
+         -Xbootclasspath/p:/usr/src/wingS-1.0-alpha/lib/logging.jar
 
   2.2)
    To determine the size of images, wingS needs access to an Xserver under
