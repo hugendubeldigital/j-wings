@@ -479,6 +479,9 @@ public abstract class SessionServlet
                                          HttpServletResponse response)
         throws ServletException, IOException
     {
+
+        SessionManager.setSession(session);
+
         try {
             if ( DEBUG ) {
                 System.out.println("\nHEADER: ");
@@ -500,7 +503,6 @@ public abstract class SessionServlet
         try {
             ServletRequest asreq = new ServletRequest(req);
 
-            SessionManager.setSession(session);
 
             if ( DEBUG )
                 measure.start("time to dispatch");
