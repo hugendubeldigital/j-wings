@@ -16,6 +16,6 @@ import java.util.EventListener;
 
 public interface SExitListener extends EventListener {
     
-    public void prepareExit(SExitEvent e) throws org.wings.session.ExitVetoException;
+    public void prepareExit(SExitEvent e) throws ExitVetoException;
     
 }// SExitListener

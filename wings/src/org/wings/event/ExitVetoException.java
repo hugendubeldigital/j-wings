@@ -1,4 +1,4 @@
-package org.wings.session;
+package org.wings.event;
 
 /**
  * ExitVetoException.java
@@ -29,6 +29,9 @@ public class ExitVetoException extends Exception  {
 
 /*
    $Log$
+   Revision 1.2  2003/01/04 13:07:08  arminhaaf
+   o fix packages
+
    Revision 1.1  2002/12/10 17:15:22  arminhaaf
    o support for exit listener
 
