@@ -122,6 +122,7 @@ public class TemplateParser {
     private PlafReader in;
     private boolean anyError;
     private int parseMode;
+    private boolean writeBorder;
 
     /*
      * simple java validation. Counts open/closed braces.
@@ -149,6 +150,7 @@ public class TemplateParser {
         this.writeJavaCode = new JavaBuffer(2, INDENT);
         this.commonJavaCode= new JavaBuffer(1, INDENT);
         this.stringPool    = new StringPool( VAR_PREFIX, VAR_LEN );
+        this.writeBorder  = true;
     }
 
     /**
@@ -327,11 +329,23 @@ public class TemplateParser {
         out.println(INDENT + INDENT
                     + "final " + forClassName + " component = ("
                     + forClassName + ") _c;");
+
+        if (writeBorder) {
+            out.println(INDENT + INDENT
+                        + "final SBorder _border = component.getBorder();");
+            out.println(INDENT + INDENT
+                        + "if (_border != null) { _border.writePrefix(device); }");
+        }
         
         out.println ("\n//--- code from write-template.");
         // collected write stuff.
         out.print ( writeJavaCode.toString());
         out.println ("\n//--- end code from write-template.");
+
+        if (writeBorder) {
+            out.println(INDENT + INDENT
+                        + "if (_border != null) { _border.writePostfix(device); }");
+        }
         out.println ("\n" + INDENT + "}");
 
         if (cgProperties.size() > 0) {
