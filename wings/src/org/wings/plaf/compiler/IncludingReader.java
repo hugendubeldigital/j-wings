@@ -49,11 +49,14 @@ public class IncludingReader extends Reader {
 
     public void open(String fileName) throws IOException {
 	File f = new File(fileName);
-        fileStack.push(currentFile);
-        currentFile = f.getCanonicalPath();
-        if (openFiles.containsKey(currentFile))
+        String newCanonicalName = f.getCanonicalPath();
+        if (openFiles.containsKey(newCanonicalName)) {
             throw new IOException ("cannot recursively include files: '"
-                                   + fileName + "' at " + getFilePosition());
+                                   + fileName + "'\n\tincluded at " 
+                                   + getFileStackTrace());
+        }
+        fileStack.push(currentFile);
+        currentFile = newCanonicalName;
 	in = new LineNumberReader(new BufferedReader(new FileReader(f)));
         openFiles.put(currentFile, in);
     }
@@ -69,7 +72,7 @@ public class IncludingReader extends Reader {
     
     public String getFilePosition() {
         if (in == null) return "";
-        return currentFile + ":" + ((LineNumberReader) in).getLineNumber();
+        return currentFile + ":" + getCurrentLineNumber();
     }
     
     public String getCurrentFile() {
@@ -77,7 +80,25 @@ public class IncludingReader extends Reader {
     }
 
     public int getCurrentLineNumber() {
-        return ((LineNumberReader) in).getLineNumber();
+        // seems, that they count from '1'.
+        return ((LineNumberReader) in).getLineNumber() + 1;
+    }
+    
+    /**
+     * returns a Stack trace of current file positions.
+     */
+    public String getFileStackTrace() {
+        StringBuffer result = new StringBuffer();
+        result.append(getFilePosition());
+        for (int pos = fileStack.size()-1; pos > 0; --pos) {
+            result.append("\n\tincluded at ");
+            String filename = (String) fileStack.elementAt(pos);
+            LineNumberReader openReader 
+                = (LineNumberReader) openFiles.get(filename);
+            result.append(filename).append(':')
+                .append(openReader.getLineNumber() + 1);
+        }
+        return result.toString();
     }
 
     public int read()  throws IOException {
