@@ -17,9 +17,11 @@ package org.wings.plaf.compiler;
  * Buffer for generated java code that behaves a bit like a StringBuffer.
  * The code append()ed is indented according to the brace structure; So
  * statements for if/while etc. are not indented correctly, if these are not
- * braced.
- * Strings are as well not handled: so if there is a '{' '}' in any String,
- * this will influence the output as well.
+ * braced. Normal parenthesis influencing the indentation as well.
+ *
+ * This is a very simple parser, so strings are not handled well: if there 
+ * is a '{' '}' in any String, this will influence the indent output, even 
+ * though it shouldn't.
  *
  * <p>Overall: Good enough for code generation.
  */
@@ -63,6 +65,9 @@ public class JavaBuffer {
 		output.append(c);
                 nextIndent = true;
 		break;
+                // all these braces fall through the indentIfNeeded() call.
+            case '(': if (c == '(') ++braceDepth; // fall through
+            case ')': if (c == ')') --braceDepth; // fall through
             case '{': if (c == '{') ++braceDepth; // fall through
             case '}': if (c == '}') --braceDepth; // fall through
 	    default:
