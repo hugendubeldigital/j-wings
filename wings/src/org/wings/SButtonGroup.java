@@ -96,11 +96,12 @@ public class SButtonGroup
 
         selection = button;
 
+        if ( oldSelection!=null && oldSelection.getGroup()==this )
+            oldSelection.setSelected(false);
+
         if ( selection!=null ) 
             selection.setSelected(true);
 
-        if ( oldSelection!=null && oldSelection.getGroup()==this )
-            oldSelection.setSelected(false);
 
         fireActionPerformed(selection!=null ? selection.getActionCommand() : 
                             SELECTION_CHANGED);
@@ -217,7 +218,7 @@ public class SButtonGroup
                 return b.getParentFrame().getEventEpoch() + SConstants.UID_DIVIDER +
                     getUnifiedId(); // + SConstants.UID_DIVIDER;
         }
-        return unifiedId + SConstants.UID_DIVIDER;
+        return SConstants.UID_DIVIDER + unifiedId;
     }
 
     /**
