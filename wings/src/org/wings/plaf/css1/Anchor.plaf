@@ -4,13 +4,15 @@
 <%
 SBorder border = component.getBorder();
 Utils.renderBorderPrefix(device, border);
-%><a<% 
+%>
+<a<% 
 Utils.printStyle(device, component.getStyle());
 Utils.printOptAttr(device, "name", component.getName());
 Utils.printOptAttr(device, "href", component.getReference());
 %>><%
 Utils.renderContainer(device, component);
-%></a><%
+%></a>
+<%
 Utils.renderBorderPostfix(device, border);
 %>
 </write>

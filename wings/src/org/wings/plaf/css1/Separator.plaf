@@ -10,6 +10,6 @@ switch (component.getAlignment()) {
    case SSeparator.CENTER_ALIGN: %> align="center"<%; break;
    case SSeparator.BLOCK_ALIGN : %> align="justify"<%; break;
 };
-if (!component.getShade()) %> noshade<%;%>>
+if (!component.getShade()) %> noshade<%;%> />
 </write>
 </template>

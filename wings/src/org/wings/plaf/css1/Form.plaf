@@ -1,0 +1,21 @@
+<template name="Form" for="org.wings.SForm">
+
+<write>
+<%
+SBorder border = component.getBorder();
+Utils.renderBorderPrefix(device, border);
+%>
+<form method="<% form.getMethod() ? %>post<% : %>get<%; %>"<%
+Utils.printOptAttr(device, "enctype", component.getEncodingType());
+%> action="<%?serverAddress%>">
+<input type="hidden" name="<%?namePrefix%>" \
+value="<%?unifiedIdString%><%=org.wings.SConstants.UID_DIVIDER%>" />
+<%
+Utils.renderContainer(device, component);
+%>
+</form>
+<%
+Utils.renderBorderPostfix(device, border);
+%>
+</write>
+</template>
