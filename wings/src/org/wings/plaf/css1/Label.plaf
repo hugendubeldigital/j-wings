@@ -92,7 +92,7 @@ void writeText(Device device, SLabel label) throws IOException {
       if (spans == 2) { %></span></span><% }
    }
    else {
-       %><table cellpadding="0" cellspacing="0" border="0"<%
+       %><table cellpadding="0"<%
        %><%|class=style%><%
        %>><%
        // if we are on the top, create a top row
