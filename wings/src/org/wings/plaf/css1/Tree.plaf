@@ -37,7 +37,7 @@
   %><%|class=Utils.style(component)%><%
   %>><%
   
-  for (int i=start; i < count; ++i) {
+  for (int i=start; i < start + count; ++i) {
      writeTreeNode(component, device, i, depth);
   }
 
