@@ -190,10 +190,6 @@ public final class LowLevelEventDispatcher
         }
         return true;
     }
-
-    protected void finalize() {
-        logger.fine(LowLevelEventDispatcher.class.getName() + ".finalize");
-    }
 }
 
 /*
