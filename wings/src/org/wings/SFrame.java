@@ -47,7 +47,9 @@ import org.wings.session.SessionManager;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SFrame extends SContainer implements PropertyChangeListener
+public class SFrame
+    extends SContainer
+    implements PropertyChangeListener
 {
     /**
      * @see #getCGClassID
@@ -64,13 +66,12 @@ public class SFrame extends SContainer implements PropertyChangeListener
     /**
      * The container for the contentPane.
      */
-    protected SContainer contentPane = new FrameContainer();
+    protected SContainer contentPane = new SContainer();
 
     /**
      * The container for the optionPane, if present.
      */
-    protected final SContainer optionPaneContainer =
-        new FrameContainer();
+    protected final SContainer optionPaneContainer = new SContainer();
 
     /**
      * The currently active optionPane.
@@ -156,9 +157,9 @@ public class SFrame extends SContainer implements PropertyChangeListener
 
         setLayout(card);
         super.addComponent(getContentPane(), CONTENT_PANEL);
-        super.addComponent(optionPaneContainer, OPTION_PANEL);
+        super.addComponent(getOptionPaneContainer(), OPTION_PANEL);
         card.show(this, CONTENT_PANEL);
-        
+
         getSession().addPropertyChangeListener("lookAndFeel", this);
     }
 
@@ -209,6 +210,7 @@ public class SFrame extends SContainer implements PropertyChangeListener
     public void setBackgroundImage(Icon icon) {
         backgroundImage = icon;
     }
+
     /**
      * TODO: documentation
      *
@@ -305,9 +307,11 @@ public class SFrame extends SContainer implements PropertyChangeListener
      * TODO: documentation
      */
     public final SContainer getContentPane() {
-        if ( contentPane==null )
-            contentPane = new SContainer();
         return contentPane;
+    }
+
+    public final SContainer getOptionPaneContainer() {
+        return optionPaneContainer;
     }
 
     /**
@@ -537,14 +541,6 @@ public class SFrame extends SContainer implements PropertyChangeListener
         return erg.toString();
     }
 
-
-    private final class FrameContainer extends SContainer {
-        public SComponent addComponent(SComponent c, Object constraint) {
-            SComponent result = super.addComponent(c, constraint);
-            c.addedToFrame();
-            return result;
-        }
-    }
 
     public void propertyChange(PropertyChangeEvent pe) {
         if ("lookAndFeel".equals(pe.getPropertyName())) {

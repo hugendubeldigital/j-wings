@@ -78,24 +78,16 @@ public abstract class SComponent
      */
     protected transient ComponentCG cg;
 
-    /*
-     * Background color.
-     */
+    /** Background color */
     protected Color background;
 
-    /*
-     * Foreground color.
-     */
+    /** Foreground color */
     protected Color foreground;
 
-    /**
-     * Vertical alignment.
-     */
+    /** Vertical alignment */
     protected int verticalAlignment = NO_ALIGN;
 
-    /**
-     * Horizontal alignment.
-     */
+    /** Horizontal alignment */
     protected int horizontalAlignment = NO_ALIGN;
 
     /**
@@ -150,7 +142,7 @@ public abstract class SComponent
     protected String tooltip = null;
 
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-    
+
     /**
      * Default constructor.
      * The method updateCG is called to get a cg delegate installed.
@@ -184,7 +176,7 @@ public abstract class SComponent
     }
 
     /**
-     * Set the parent container.
+     * Sets the parent container. Also gets the parent frame from the parent.
      *
      * @param p the container
      */
@@ -197,7 +189,7 @@ public abstract class SComponent
     }
 
     /**
-     * Set the parent frame.
+     * Sets the parent frame.
      *
      * @param f the frame
      */
@@ -215,10 +207,12 @@ public abstract class SComponent
      * @return the server address
      */
     public SGetAddress getServerAddress() {
-        SFrame p = getParentFrame(this);
-        if ( p!=null )
-            return p.getServerAddress();
-        return new SGetAddress();
+        SFrame p = getParentFrame();
+        if ( p==null )
+            throw new IllegalStateException("no parent frame");
+
+        return p.getServerAddress();
+        // return new SGetAddress();
     }
 
     /**
@@ -226,12 +220,6 @@ public abstract class SComponent
      */
     public static final synchronized int createUnifiedId() {
         return UNIFIED_ID++;
-    }
-
-    /**
-     * This method gets called when a component is added to its container.
-     */
-    protected void addedToFrame() {
     }
 
     /**
@@ -562,9 +550,7 @@ public abstract class SComponent
      * @throws IOException Thrown when the connection to the client gets broken,
      *         for example when the user stops loading
      */
-    public void write(Device s)
-        throws IOException
-    {
+    public void write(Device s) throws IOException {
         if (visible)
             cg.write(s, this);
     }
@@ -578,6 +564,7 @@ public abstract class SComponent
 
         return d.toString();
     }
+
 
     /**
      * Generic implementation for generating a string that represents the components
@@ -625,14 +612,6 @@ public abstract class SComponent
                 + getUnifiedIdString() + SConstants.UID_DIVIDER;
         else
             return getUnifiedIdString() + SConstants.UID_DIVIDER;
-    }
-
-    /**
-     * Return the frame the specified component is contained in.
-     * @return the frame
-     */
-    public static SFrame getParentFrame(SComponent c) {
-        return c.getParentFrame();
     }
 
     /**
@@ -927,11 +906,12 @@ public abstract class SComponent
      * @see SComponent#updateCG
      */
     public void updateCG() {
-        if (SessionManager.getSession() == null)
+        if (getSession() == null)
             System.err.println("noch keine Session - das darf nicht sein!");
-        if (SessionManager.getSession().getCGManager() == null)
+        if (getSession().getCGManager() == null)
             System.err.println("kein CGManager - das darf nicht sein!");
-        setCG((ComponentCG)SessionManager.getSession().getCGManager().getCG(this));
+
+        setCG((ComponentCG)getSession().getCGManager().getCG(this));
 
         if (border != null)
             border.updateCG();
