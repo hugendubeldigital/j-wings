@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 
-import org.wings.template.parser.PageParser;
+// import org.wings.template.parser.PageParser;
 import org.wings.template.parser.DataSource;
 
 import org.wings.*;
@@ -72,6 +72,11 @@ public class STemplateLayout
     extends SAbstractLayoutManager
 {
     /**
+     * @see #getCGClassID
+     */
+    static private final String cgClassID = "TemplateLayoutCG";
+
+    /**
      * TODO: documentation
      */
     public static final String COMPONENT = "COMPONENT";
@@ -103,11 +108,11 @@ public class STemplateLayout
      */
     private static final Hashtable propertyManager = new Hashtable();
 
-    /**
-     * Der PageParser. Damit der eine chance hat, die Templates
-     * zu cachen, ist der static ..
-     */
-    private static PageParser parser;
+//    /**
+//     * Der PageParser. Damit der eine chance hat, die Templates
+//     * zu cachen, ist der static ..
+//     */
+//    private static PageParser parser;
 
     /*
      * Setzen von ein paar default PropertyManagern
@@ -120,8 +125,8 @@ public class STemplateLayout
         addPropertyManager(new STextAreaPropertyManager());
         addPropertyManager(new SBaseTablePropertyManager());
         addPropertyManager(new STablePropertyManager());
-        parser = new PageParser();
-        parser.addTagHandler (COMPONENT, TemplateTagHandler.class);
+//        parser = new PageParser();
+//        parser.addTagHandler (COMPONENT, TemplateTagHandler.class);
     }
 
     /**
@@ -239,27 +244,41 @@ public class STemplateLayout
     }
 
     /**
-     * TODO: documentation
      *
-     * @param s
-     * @throws IOException
      */
-    public void write(Device s)
-        throws IOException
-    {
-        if ( dataSource == null ) {
-            s.append("unable to open template-file <b>'" + dataSource + "'</b>");
-            // use FlowLayout instead.
-            return;
-        }
-        try {
-            parser.process(dataSource,
-                           new TemplateParseContext(s, components));
-        }
-        catch ( java.io.IOException e ) {
-            // ignore until toString() itself throws IOExceptions
-        }
+    public DataSource getDataSource() {
+        return dataSource;
     }
+
+    /**
+     *
+     */
+    public Hashtable getComponents() {
+        return components;
+    }
+
+//    /**
+//     * TODO: documentation
+//     *
+//     * @param s
+//     * @throws IOException
+//     */
+//    public void write(Device s)
+//        throws IOException
+//    {
+//        if ( dataSource == null ) {
+//            s.append("unable to open template-file <b>'" + dataSource + "'</b>");
+//            // use FlowLayout instead.
+//            return;
+//        }
+//        try {
+//            parser.process(dataSource,
+//                           new TemplateParseContext(s, components));
+//        }
+//        catch ( java.io.IOException e ) {
+//            // ignore until toString() itself throws IOExceptions
+//        }
+//    }
 
     /*
      * ... muss noch ausgelagert werden. Setzt die Properties unter Verwendung des
@@ -323,6 +342,18 @@ public class STemplateLayout
      * @param c
      */
     public void setContainer(SContainer c) {
+    }
+
+    /**
+     * Returns the name of the CGFactory class that generates the
+     * look and feel for this layout.
+     *
+     * @return "TemplateLayoutCG"
+     * @see SLayoutManager#getCGClassID
+     * @see org.wings.plaf.CGDefaults#getCG
+     */
+    public String getCGClassID() {
+        return cgClassID;
     }
 }
 

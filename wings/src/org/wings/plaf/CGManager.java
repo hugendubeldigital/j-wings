@@ -11,10 +11,10 @@ public class CGManager
     LookAndFeel lookAndFeel;
     
     public CGManager() {
-	try {
-	    setLookAndFeel(new org.wings.plaf.xhtml.css1.CSS1LookAndFeel());
-	}
-	catch(Exception e) {}
+        // try {
+        //     setLookAndFeel(new org.wings.plaf.xhtml.css1.CSS1LookAndFeel());
+        // }
+        // catch(Exception e) {}
     }
     
     public ComponentCG getCG(SComponent target) {

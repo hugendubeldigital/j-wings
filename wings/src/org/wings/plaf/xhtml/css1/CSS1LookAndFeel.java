@@ -87,6 +87,7 @@ public final class CSS1LookAndFeel
 	       "CardLayoutCG", css1PackageName + "CardLayoutCG",
 	       "FlowLayoutCG", css1PackageName + "FlowLayoutCG",
 	       "GridLayoutCG", css1PackageName + "GridLayoutCG",
+	   "TemplateLayoutCG", css1PackageName + "TemplateLayoutCG",
         };
 	
 	table.putDefaults(layoutCgDefaults);

@@ -16,6 +16,7 @@ fun:
 	make -C org/wings/plaf $@
 	make -C org/wings/plaf/xhtml $@
 	make -C org/wings/plaf/xhtml/css1 $@
+	make -C org/wings/plaf/xhtml/old $@
 	make -C org/wings/template $@
 	make -C org/wings/date $@
 

@@ -16,5 +16,5 @@ doc: dummy
 
 jar: dummy
 	rm wings.jar ; cd src ; \
-	${JAVA_HOME}/bin/jar cvf wings.jar `find org -name "*.class" -o -name "*.gif" -o -name "*.css"`
+	${JAVA_HOME}/bin/jar cvf ../wings.jar `find org -name "*.class" -o -name "*.gif" -o -name "*.css"`
 

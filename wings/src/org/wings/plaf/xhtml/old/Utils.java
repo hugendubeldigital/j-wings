@@ -56,9 +56,9 @@ public final class Utils implements SConstants
 	int style = PLAIN;
 	int size = Integer.MIN_VALUE;
 	if (font != null) {
-	    font.getFace();
-	    font.getStyle();
-	    font.getSize();
+	    face = font.getFace();
+	    style = font.getStyle();
+	    size = font.getSize();
 	}
 	d.append("<font");
 	
