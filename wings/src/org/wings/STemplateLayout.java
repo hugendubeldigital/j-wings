@@ -79,7 +79,7 @@ public class STemplateLayout
     /**
      * TODO: documentation
      */
-    public static final String COMPONENT = "COMPONENT";
+    public static final String COMPONENT = "OBJECT";
     static final String INLINE = "INLINE";
 
     /*
