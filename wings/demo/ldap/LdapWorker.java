@@ -25,13 +25,14 @@ public class LdapWorker
 	setBaseDN(base);
 	setBindDN(bind);
 	setServer(s);
+	setPassword(p);
 
 	this.password = p;
 	Hashtable env = new Hashtable();
 	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 	env.put(Context.PROVIDER_URL, "ldap://" + getServer());
 	env.put(Context.SECURITY_PRINCIPAL, getBindDN());
-	env.put(Context.SECURITY_CREDENTIALS, password);
+	env.put(Context.SECURITY_CREDENTIALS, getPassword());
 
 	try {
 	    ctx = new InitialDirContext(env);
@@ -51,6 +52,10 @@ public class LdapWorker
     private void setServer(String b) {
 	server = b;
     }
+    
+    private void setPassword(String p) {
+	password = p;
+    }
         
     public String getBaseDN() {
 	return baseDN;
@@ -62,6 +67,10 @@ public class LdapWorker
     
     public String getServer() {
 	return server;
+    }
+
+    private String getPassword() {
+	return password;
     }
 
     private void setSuccess(boolean s) {
@@ -140,7 +149,10 @@ public class LdapWorker
 		    StringTokenizer suptok = new StringTokenizer(rest," ");
 		    sup = suptok.nextToken();
 		}
-		if (sup!=null && !sup.equals("top")) obj = obj + " SUP " +"(" + sup + ")";
+		if (sup!=null && !sup.equals("top")) {
+		    obj = obj + " SUP " +"(" + sup + ")";
+		    System.out.println("obj is" + obj );
+		}
 		
 		objArray.add(obj);
 	    }
@@ -321,6 +333,7 @@ public class LdapWorker
     //gibt alle Attribute fuer die Liste zurueck, die must attr. objectclass haben schon ihr value zugeordnet
     public Hashtable getAttributes(ArrayList objectClasses) {
 	
+		
 	Hashtable attributes = new Hashtable();
 	ArrayList attrValues;
 	try {
@@ -337,8 +350,8 @@ public class LdapWorker
 	    Attribute oc = new BasicAttribute("objectclass");
 	    for (int i = 0; i < objectClasses.size(); i++) {
 		System.out.println("i  " + (String)objectClasses.get(i));
-		attrValues.add(objectClasses.get(i));
-		oc.add(objectClasses.get(i));
+		attrValues.add(((String)objectClasses.get(i)).trim());
+		oc.add(((String)objectClasses.get(i)).trim());
 	    }
 	    attrs.put(oc);
 	    attributes.put("objectclass",attrValues);
@@ -347,15 +360,15 @@ public class LdapWorker
 		String name = (String)(attrNames[0].elementAt(i));
 		Attributes attrSchema = 
 		sch.getAttributes("AttributeDefinition/" + name);
-		Attribute syntax = attrSchema.get("SYNTAX");
+		//Attribute syntax = attrSchema.get("SYNTAX");
 		
 		//die must attribute haben noch ein sternchen
 		String msg;
-		if (syntax != null) {
-		    msg = "*" + name + "(" + syntax.get() + ")";
-		} else {
-		    msg = "*" + name;
-		}
+		//if (syntax != null) {
+		//    msg = "*" + name + "(" + syntax.get() + ")";
+		//} else {
+		msg = "*" + name;
+		    //}
 		attrValues  = new ArrayList();
  		attributes.put(msg,attrValues);
 	    }
@@ -364,20 +377,21 @@ public class LdapWorker
 		String name = (String)(attrNames[1].elementAt(i));
 		Attributes attrSchema = 
 		sch.getAttributes("AttributeDefinition/" + name);
-		Attribute syntax = attrSchema.get("SYNTAX");
+		//Attribute syntax = attrSchema.get("SYNTAX");
 		
 		String msg;
-		if (syntax != null) {
-		    msg = name + "(" + syntax.get() + ")";
-		} else {
-		    msg = name;
-		}
+		//if (syntax != null) {
+		//  msg = name + "(" + syntax.get() + ")";
+		//} else {
+		msg = name;
+		    //}
 		attrValues  = new ArrayList();
  		attributes.put(msg,attrValues);
 	    }
 	}
-	catch (NamingException except) {
-	    System.out.println("da fehler");
+	catch (NamingException e) {
+	    System.out.println(e.getMessage());
+	    e.printStackTrace();
 	}
 	return attributes;
     }
@@ -389,10 +403,12 @@ public class LdapWorker
 	
         Vector mandatory = new Vector();
 	Vector optional = new Vector();
-
+		
 	for (int i = 0; i < objectClasses.size(); i++) {
 	    String oc = (String)objectClasses.get(i);
-	    Attributes ocAttrs = schema.getAttributes("ClassDefinition/" + objectClasses.get(i));
+	    System.out.println("da noch O.K " + oc  );
+	    Attributes ocAttrs = schema.getAttributes("ClassDefinition/" + oc.trim());
+	    System.out.println("gut");
 	    Attribute must = ocAttrs.get("MUST");
 	    Attribute may = ocAttrs.get("MAY");
 	    if (must !=null) {
@@ -427,7 +443,8 @@ public class LdapWorker
 	ctx.createSubcontext(dn,attrs);
 	}
 	catch (NamingException e){
-	    System.out.println("neuer Eintrag einfuegen gescheitert");
+	    e.printStackTrace();
+	    //System.out.println("neuer Eintrag einfuegen gescheitert");
 	}
     }
     

@@ -107,6 +107,8 @@ public class AddObjectsPanel
 	TisconUser tu = new TisconUser();
 	String [] attrs = tu.attributes;
 	String [] objectclasses  = tu.objectClasses;
+
+	comp.clear();
 	for (int i =0; i<attrs.length;i++)
 	    {
 		SLabel label = new SLabel(attrs[i]);
@@ -135,7 +137,8 @@ public class AddObjectsPanel
     }
 
     private void fillAttributePanel(ArrayList selectedObjects) {
-	Hashtable attr;
+	comp.clear();
+	Hashtable attr = null;
 	ArrayList values;
 	attr = worker.getAttributes(selectedObjects);
 	
@@ -179,10 +182,16 @@ public class AddObjectsPanel
 		    int l = atv.lastIndexOf(",");
 		atv = atv.substring(0,l);
 		}
-		STextField tf = new STextField(atv);
+		SComponent tf;
+		if (al.getText().equals("objectclass")) {
+		    tf = new SLabel(atv);
+		}
+		else {
+		    tf = new STextField(atv);
+		    ((STextField)tf).setColumns(columns);
+		}
 		System.out.println("text field " + atv);
 		attrForm.add(al);
-		tf.setColumns(columns);
 		attrForm.add(tf);
 		comp.put(al,tf);
 	    }
@@ -200,10 +209,11 @@ public class AddObjectsPanel
 	String arg = null;
 	ArrayList objects = worker.getObjects();
 	
-	int index = o.indexOf("TOP");
+	int index = o.indexOf("SUP");
 	    	    
 	if (index > 0) {
 	    String s = o.substring(0,index);
+	  
 	    
 	    if (!(list.contains(s)))
 		list.add(o.substring(0,index));
@@ -298,8 +308,15 @@ public class AddObjectsPanel
 		Object key = e.nextElement();
 		String ats = ((SLabel)key).getText();
 		System.out.println("label" + ats);
-		STextField tf = (STextField)comp.get(key);
-		String val = tf.getText();
+		String val = null;
+		if (comp.get(key).getClass().getName().equals("org.wings.SLabel")) {
+		    SLabel tf = (SLabel)comp.get(key);
+		    val = tf.getText();
+		}
+		if  (comp.get(key).getClass().getName().equals("org.wings.STextField")) {
+		    STextField tf = (STextField)comp.get(key);
+		    val = tf.getText();
+		}
 		System.out.println("mit val" + val);
 		if (val.length() > 0) {
 		    System.out.println("auch was drin");
