@@ -4,26 +4,32 @@
 <write>
 <%
         SMenuBar mbar = (SMenuBar)component;
-        int mcount = mbar.getMenuCount();
+        int mcount = mbar.getComponentCount();
         
-        %><div class="menubar"><%
-        %><table cellspacing="0" cellpadding="0" vspace="0" hspace="0"<%
+        %><table class="menubar" cellspacing="0" cellpadding="0" vspace="0" hspace="0" width="100%"<%
         %><%|class=Utils.style(component)%>><%
         %><tr align="left"><%
 
         /***
-         * Due to the curreent Opera problems we are switching to the older Menue style
+         * Due to the current Opera problems we are switching to the older Menue style
          * in all other cases we do a normal job
          ***/
-            for (int i = 0; i < mcount; i++) {
-                if ( mbar.getMenuItem(i).isVisible() ) {
-                    %><td valign="top"><%
-	            mbar.getMenuItem(i).write(device);
-                    %></td><%
-                }
-            }
-        %></tr></table><%
-        %></div><%
+	 boolean rightAligned = false;
+         for (int i = 0; i < mcount; i++) {
+             if ( mbar.getComponentAt(i).isVisible() ) {
+                 if ( mbar.getComponentAt(i).getHorizontalAlignment()==SConstants.RIGHT_ALIGN ) {
+                     %><td width="100%"></td><%
+                     rightAligned = true;
+                 }
+                 %><td><%
+	             mbar.getComponentAt(i).write(device);
+                 %></td><%
+             }
+         }
+         if ( !rightAligned ) {
+	     %><td width="100%">&nbsp;</td><%
+         }
+         %></tr></table><%
 %>
 </write>
 </template>
