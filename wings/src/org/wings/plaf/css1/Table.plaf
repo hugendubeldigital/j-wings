@@ -50,8 +50,8 @@
     if (viewport != null) {
         startRow = viewport.y;
         startCol = viewport.x;
-        endRow = startRow+viewport.height;
-        endCol = startCol+viewport.width;
+        endRow = Math.min(startRow+viewport.height, endRow);
+        endCol = Math.min(startCol+viewport.width, endCol);
     }
 
     SCellRendererPane rendererPane = table.getCellRendererPane();
