@@ -111,24 +111,22 @@ public class SFileChooser
     }
 
     public void getPerformed(String action, String value) {
-    	System.out.println( action + "->" + value + "<");
-        try
-         {
-        	Hashtable params = HttpUtils.parseQueryString(value);
-        	String[] arr;
-        	arr = (String[])params.get("dir");
-        	this.filedir = (arr != null)?arr[0]:null;
-        	arr = (String[])params.get("name");
-        	this.filename = (arr != null)?arr[0]:null;
-        	arr = (String[])params.get("id");
-        	this.fileid = (arr != null)?arr[0]:null;
-        	arr = (String[])params.get("type");
-        	this.filetype = (arr != null)?arr[0]:null;
-		}
-        catch ( Exception ex )
-         {
-			System.out.println( "ex: " + ex );
-         }
+    	System.out.println( action + "-> '" + value + "'");
+        try {
+            Hashtable params = HttpUtils.parseQueryString(value);
+            String[] arr;
+            arr = (String[])params.get("dir");
+            this.filedir = (arr != null)?arr[0]:null;
+            arr = (String[])params.get("name");
+            this.filename = (arr != null)?arr[0]:null;
+            arr = (String[])params.get("id");
+            this.fileid = (arr != null)?arr[0]:null;
+            arr = (String[])params.get("type");
+            this.filetype = (arr != null)?arr[0]:null;
+        }
+        catch ( Exception ex ) {
+            System.out.println( "ex: " + ex );
+        }
     }
 
     /**

@@ -366,7 +366,7 @@ public class SContainer
         return addComponent(c, null, index);
     }
 
-    public SComponent addComponent(SComponent c, Object constraint, int index) {
+    public SComponent addComponent(SComponent c, Object constraint, int index){
         if (c != null) {
             if (layout != null)
                 layout.addComponent(c, constraint);
