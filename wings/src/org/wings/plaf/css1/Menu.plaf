@@ -11,20 +11,26 @@ public static final JavaScriptListener SCRIPT_LOADER =
 	new JavaScriptListener("", "", loadScript());
 
 public static String loadScript() {
+    InputStream in = null;
+    BufferedReader reader = null;
+
     try {
-        InputStream in = MenuCG.class.getClassLoader().getResourceAsStream("org/wings/plaf/css1/Menu.js");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        in = MenuCG.class.getClassLoader().getResourceAsStream("org/wings/plaf/css1/Menu.js");
+        reader = new BufferedReader(new InputStreamReader(in));
         StringBuffer buffer = new StringBuffer();
         String line;
         while ((line = reader.readLine()) != null)
             buffer.append(line).append("\n");
-        in.close();
+            buffer.append(line).append("\n");
 
         return buffer.toString();
     }
     catch (Exception e) {
         e.printStackTrace();
         return "";
+    } finally {
+        try { in.close(); } catch (Exception ign) {} 
+        try { reader.close(); } catch (Exception ign1) {}
     }
 }
 
