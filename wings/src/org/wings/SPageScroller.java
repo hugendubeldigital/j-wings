@@ -75,12 +75,11 @@ public class SPageScroller
 
             for ( int direction=0; direction<postfixes.length; direction++ ) {
                 DEFAULT_ICONS[orientation][direction][ENABLED] =
-                    new ResourceImageIcon("icons/" + "BlockScroll" + postfixes[direction] +
-                                          ".gif");
+                    new ResourceImageIcon("org/wings/icons/BlockScroll" +
+                                          postfixes[direction] + ".gif");
                 DEFAULT_ICONS[orientation][direction][DISABLED] =
-                    new ResourceImageIcon("icons/Disabled" + "BlockScroll" +
-                                          postfixes[direction] +
-                                          ".gif");
+                    new ResourceImageIcon("org/wings/icons/DisabledBlockScroll"
+                                          + postfixes[direction] + ".gif");
             }
         }
     }

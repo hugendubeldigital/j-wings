@@ -921,7 +921,8 @@ public class STable
      *
      */
     protected void createDefaultIcons() {
-        setEditIcon(new ResourceImageIcon(STable.class, "icons/Pencil.gif"));
+        setEditIcon(new ResourceImageIcon(STable.class, 
+                                          "/org/wings/icons/Pencil.gif"));
     }
 
     /**
