@@ -5,10 +5,13 @@
   if (component.isPostMethod()) { %>post<% } else { %>get<% }
   %>"<%
 
-  Utils.printStyle(device, component.getStyle());
-  Utils.printOptAttr(device, "enctype", component.getEncodingType());
-  %> action="<%?requestURL%>">
-<input type="hidden" name="<%?namePrefix%>" \
+   final String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
+   if (style != null) {
+       %><span class="<%=style%>"><%
+   }
+   %><%|enctype=component.getEncodingType()%><%
+   %><%|action=component.getRequestURL()%><%
+   %><input type="hidden" name="<%?namePrefix%>" \
 value="<%?unifiedId%><%=org.wings.SConstants.UID_DIVIDER%>" /><%
    Utils.renderContainer(device, component);
    %></form><%

@@ -23,6 +23,7 @@ import org.wings.RequestURL;
 import org.wings.io.Device;
 import org.wings.SIcon;
 import org.wings.style.Style;
+import org.wings.Renderable;
 
 /**
  * Utility functions to be used in generated plaf's.
@@ -130,6 +131,20 @@ public final class Utils implements SConstants {
     }
 
     /**
+     * Prints an optional, renderable attribute.
+     */
+    public static void optAttribute(Device d, String attr, Renderable r) 
+    throws IOException {
+        if (r != null) {
+            d.write( SPACE );
+            d.print( attr );
+            d.write( EQUALS_QUOT );
+            r.write(d);
+            d.write( QUOT );
+        }
+    }
+
+    /**
      * Prints an optional attribute. If the integer value is greater than 0,
      * the attrib is added otherwise it is left out
      */
@@ -213,10 +228,10 @@ public final class Utils implements SConstants {
     }
     
     /**
-     * writes a RequestURL.
+     * writes anything Renderable
      */
-    public static void write(Device d, RequestURL a) throws IOException {
-	a.write(d);
+    public static void write(Device d, Renderable r) throws IOException {
+	r.write(d);
     }
     
     /*

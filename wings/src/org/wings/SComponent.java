@@ -42,7 +42,7 @@ import org.wings.border.SBorder;
  * @version $Revision$
  */
 public abstract class SComponent
-    implements SConstants, Cloneable, Serializable
+    implements SConstants, Cloneable, Serializable, Renderable
 {
     private final static Logger logger = Logger.getLogger("org.wings");
 

@@ -25,7 +25,7 @@ import org.wings.io.Device;
  * @version $Revision$
  */
 public class RequestURL
-    implements Cloneable, Serializable
+    implements Cloneable, Serializable, Renderable
 {
     private static final byte[] _delimiter = "_".getBytes();
     private static final byte[] _ampStr    = "&amp;".getBytes();

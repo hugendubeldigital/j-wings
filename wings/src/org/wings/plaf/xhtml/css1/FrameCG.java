@@ -65,6 +65,12 @@ public final class FrameCG
         throws IOException
     {
         d.print("<body");
+        final String style = ((frame.getStyle() != null) 
+                              ? frame.getStyle().getName() 
+                              : null);
+        if (style != null) {
+            d.print(" style=\"").print(style).print("\"");
+        }
         //System.err.println("blubber");
         Iterator it = frame.getScriptListeners().iterator();
         while (it.hasNext()) {

@@ -17,7 +17,7 @@ import java.io.*;
 import java.util.*;
 
 import org.wings.io.Device;
-
+import org.wings.Renderable;
 
 /**
  * A generic interface for a mutable collection of unique attributes.
@@ -29,7 +29,7 @@ import org.wings.io.Device;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public interface AttributeSet
+public interface AttributeSet extends Renderable
 {
     /**
      * Returns the number of attributes contained in this set.

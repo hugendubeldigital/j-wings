@@ -31,8 +31,7 @@ import org.wings.event.SContainerEvent;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SContainer
-    extends SComponent
+public class SContainer extends SComponent
 {
     /**
      * @see #getCGClassID

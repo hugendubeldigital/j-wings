@@ -19,13 +19,14 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * Creates a 'normal' 
+ * &lt;a href=&quothttp://whatever/&quot&gt;...&lt;/a&gt;
+ * HTML link around some components that are stored in the container.
  *
  * @author Dominik Bartenstein
  * @version $Revision$
  */
-public class SAnchor
-    extends SContainer
+public class SAnchor extends SContainer
 {
     /**
      * @see #getCGClassID
@@ -33,40 +34,56 @@ public class SAnchor
     private static final String cgClassID = "AnchorCG";
 
     /**
-     * TODO: documentation
+     * the URL to link to.
      */
-    protected String reference = null;
-
+    protected String reference;
 
     /**
-     * TODO: documentation
-     *
+     * the target frame/window.
+     */
+    protected String target;
+
+    /**
+     * creates an anchor with emtpy URL and target.
      */
     public SAnchor() {
-        this(null);
+        this(null, null);
     }
 
     /**
-     * TODO: documentation
+     * create an anchor that points to the URL url.
      *
-     * @param reference
+     * @param url the url to point to.
      */
-    public SAnchor(String reference) {
-        setReference(reference);
+    public SAnchor(String url) {
+        this(url, null);
     }
 
     /**
-     * TODO: documentation
+     * creates an anchor that points to the URL and is openend
+     * in the frame or window named target.
      *
-     * @param ref
+     * @param reference the url to link to.
+     * @param target the target window or frame.
+     */
+    public SAnchor(String reference, String target) {
+        setReference(reference);
+        setTarget(target);
+    }
+
+    /**
+     * set the url this anchor points to.
+     *
+     * @param ref the url.
      */
     public void setReference(URL ref) {
-        if (ref != null)
+        if (ref != null) {
             setReference(ref.toString());
+        }
     }
 
     /**
-     * TODO: documentation
+     * set the url this anchor points to.
      *
      * @param r
      */
@@ -76,6 +93,20 @@ public class SAnchor
         if (reference == null && oldReference != null ||
             reference != null && !reference.equals(oldReference))
             reload(ReloadManager.RELOAD_CODE);
+    }
+
+    /**
+     * set the name of the target frame/window.
+     */
+    public void setTarget(String t) {
+        target = t;
+    }
+
+    /**
+     * get the name of the target frame/window.
+     */
+    public String getTarget() {
+        return target;
     }
 
     /**

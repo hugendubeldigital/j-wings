@@ -32,69 +32,6 @@ public final class Utils
     private Utils() {}
 
     /**
-     * Prints an optional attribute. If the String value has a content
-     * (value != null && value.length > 0), the attrib is added otherwise
-     * it is left out
-     */
-    static void printOptAttr(Device d, String attr, String value)
-        throws IOException
-    {
-        if (value != null && value.length() > 0) {
-            d.print(" ");
-            d.print(attr);
-            d.print(" =\"");
-            d.print(value);
-            d.print("\"");
-        }
-    }
-
-    /**
-     * Prints an optional attribute. If the integer value is greater than 0,
-     * the attrib is added otherwise it is left out
-     */
-    static void printOptAttr(Device d, String attr, int value)
-        throws IOException
-    {
-        if (value > 0) {
-            d.print(" ");
-            d.print(attr);
-            d.print(" =\"");
-            d.print(value);
-            d.print("\"");
-        }
-    }
-
-    /**
-     * Prints the given style (if it does exist)
-     */
-    static void printStyle(Device d, Style style)
-        throws IOException
-    {
-        if (style != null)
-            printOptAttr(d, "class", style.getName());
-    }
-
-    /**
-     * Renders a border prefix
-     */
-    static void renderBorderPrefix(Device d, SBorder b)
-        throws IOException
-    {
-        if (b != null)
-            b.writePrefix(d);
-    }
-
-    /**
-     * Renders a border postfix
-     */
-    static void renderBorderPostfix(Device d, SBorder b)
-        throws IOException
-    {
-        if (b != null)
-            b.writePostfix(d);
-    }
-
-    /**
      * Renders a container
      */
     static void renderContainer(Device d, SContainer c)

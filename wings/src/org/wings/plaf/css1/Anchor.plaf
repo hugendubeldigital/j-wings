@@ -1,19 +1,16 @@
 <template name="AnchorCG" for="org.wings.SAnchor">
 
 <write>
-<%
-SBorder border = component.getBorder();
-Utils.renderBorderPrefix(device, border);
-%>
-<a<% 
-Utils.printStyle(device, component.getStyle());
-Utils.printOptAttr(device, "name", component.getName());
-Utils.printOptAttr(device, "href", component.getReference());
+<a<%
+   final String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
+   if (style != null) {
+       %><span class="<%=style%>"><%
+   }
+   %><%|name=component.getName()%><%
+   %><%|target=component.getTarget()%><%
+   %><%|href=component.getReference()%><%
 %>><%
-Utils.renderContainer(device, component);
+   Utils.renderContainer(device, component);
 %></a>
-<%
-Utils.renderBorderPostfix(device, border);
-%>
 </write>
 </template>

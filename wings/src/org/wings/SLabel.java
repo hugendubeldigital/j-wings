@@ -58,8 +58,11 @@ public class SLabel
 
     private boolean escapeSpecialChars = true;
 
-    private final ThreadLocal eventURL = new ThreadLocal();
-
+    /*
+     * state for the ClickableRenderComponent.
+     */
+    private final ThreadLocal eventURL    = new ThreadLocal();
+    private final ThreadLocal eventTarget = new ThreadLocal();
 
     /**
      * Creates a new <code>SLabel</code> instance with the specified text
@@ -340,14 +343,23 @@ public class SLabel
         super.setCG(cg);
     }
 
+    //--- implementation of the ClickableRenderComponent.
+
     public void setEventURL(RequestURL url) {
         eventURL.set(url);
     }
 
     public RequestURL getEventURL() {
-        return (RequestURL)eventURL.get();
+        return (RequestURL) eventURL.get();
     }
 
+    public void setEventTarget(String target) {
+        eventTarget.set(target);
+    }
+
+    public String getEventTarget() {
+        return (String) eventTarget.get();
+    }
 }
 
 /*

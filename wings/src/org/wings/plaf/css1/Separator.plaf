@@ -1,15 +1,17 @@
 <template name="SeparatorCG" for="org.wings.SSeparator">
 <write>
-<hr<% 
-Utils.printStyle(device, component.getStyle());
-Utils.printOptAttr(device, "width", component.getWidth());
-Utils.printOptAttr(device, "size", component.getSize());
-switch (component.getAlignment()) {
-   case SSeparator.RIGHT_ALIGN : %> align="right"<%   break;
-   case SSeparator.CENTER_ALIGN: %> align="center"<%  break;
-   case SSeparator.BLOCK_ALIGN : %> align="justify"<% break;
-};
-if (!component.getShade()) { %> noshade="1"<% } 
-%> />
-</write>
+<hr<%
+   final String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
+   if (style != null) {
+       %><span class="<%=style%>"><%
+   }
+   %><%|width=component.getWidth()%><%
+   %><%|size=component.getSize()%><%
+   switch (component.getAlignment()) {
+     case SSeparator.RIGHT_ALIGN : %> align="right"<%   break;
+     case SSeparator.CENTER_ALIGN: %> align="center"<%  break;
+     case SSeparator.BLOCK_ALIGN : %> align="justify"<% break;
+   };
+   if (!component.getShade()) { %> noshade="1"<% } 
+%> /></write>
 </template>
