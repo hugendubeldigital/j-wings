@@ -24,6 +24,7 @@ import java.util.Stack;
 import java.util.List;
 import java.util.Vector;
 
+import java.lang.reflect.Method;
 import org.wings.SComponent;
 
 /**
@@ -162,9 +163,22 @@ public class TemplateParser {
          */
         try {
             Class c = Class.forName(forClassName);
-            SComponent comp = (SComponent) c.newInstance();
-            out.println(INDENT + "implements org.wings.plaf."
-                        + comp.getCGClassID());
+            Class cgInterface = null;
+            Method methods[] = c.getMethods();
+            
+            for (int i=0; i < methods.length; i++) {
+                   if ("setCG".equals(methods[i].getName()) &&
+                       !(org.wings.plaf.ComponentCG.class
+                         .equals(methods[i].getParameterTypes()[0]))) 
+                   {
+                       cgInterface = methods[i].getParameterTypes()[0];
+                       break;
+                   }
+            }
+            if (cgInterface != null) {
+                out.println(INDENT + "implements "
+                        + cgInterface.getName());
+            }
         }
         catch (Exception e) {
             System.err.println("cannot instantiate " + forClassName
