@@ -18,12 +18,12 @@ doc: dummy
 	${JAVA_HOME}/bin/javadoc -d doc/api -windowtitle 'wingS API' `find . -name "*.java" -exec dirname {} \; | sort | uniq | sed 's/\.\/\(src\/\|demo\/\)\?//g' | sed 's/\//./g'`
 
 jar: dummy
-	rm wings.jar ; cd src ; \
-	${JAVA_HOME}/bin/jar cvf ../wings.jar `find . -name "*.class" -o -name "*.gif" -o -name "*.css"`
+	rm wingx.jar ; cd src ; \
+	${JAVA_HOME}/bin/jar cvf ../wingx.jar `find . -name "*.class" -o -name "*.gif" -o -name "*.css"`
 
 demojar: dummy
-	rm wings-demo.jar ; cd demo ; \
-	${JAVA_HOME}/bin/jar cvf ../wings-demo.jar `find . -name "*.class" -o -name "*.gif" -o -name "*.css"`
+	rm wingx-demo.jar ; cd demo ; \
+	${JAVA_HOME}/bin/jar cvf ../wingx-demo.jar `find . -name "*.class" -o -name "*.gif" -o -name "*.css"`
 
 htdocs: dummy doc dist
 	cd htdocs
@@ -36,8 +36,8 @@ dist: fun doc jar demojar
 	mkdir dist/doc
 	mkdir dist/demo
 	mkdir dist/src
-	cp wings.jar dist/lib
-	cp wings-demo.jar dist/lib
+	cp wingx.jar dist/lib
+	cp wingx-demo.jar dist/lib
 	cp Makefile dist
 	cp Rules.make dist
 	cp Environment.sh dist
