@@ -606,7 +606,7 @@ public abstract class SAbstractButton
      *
      * @return
      */
-    public final String getText() {
+    public String getText() {
         return text;
     }
 
