@@ -44,7 +44,7 @@ public abstract class AbstractExternalizer
     /**
      * TODO: documentation
      */
-    protected static final long EXTERNALIZE_TIMEOUT = 15 * 60 * 1000; // 15 min
+    protected static final long DEFAULT_EXTERNALIZE_TIMEOUT = 15 * 60 * 1000; // 15 min
 
     /**
      * Take care of browsers which have a slow link: they probably don't get
@@ -80,6 +80,16 @@ public abstract class AbstractExternalizer
     protected abstract void doDelete(ExternalizedInfo info);
 
 
+    private long externalizeTimeout = DEFAULT_EXTERNALIZE_TIMEOUT;
+
+    /**
+     * sets the timeout for the externalized stuff
+     */
+    public void setExternalizeTimeout(long timeout) {
+        externalizeTimeout = timeout;
+    }
+
+
     public String externalize(Object obj,
                               ObjectHandler handler,
                               Session session)
@@ -110,7 +120,7 @@ public abstract class AbstractExternalizer
             ExternalizedInfo info = getInfo(key);
 
             if ( !info.stable &&
-                 info.timestamp + EXTERNALIZE_TIMEOUT <
+                 info.timestamp + externalizeTimeout <
                  System.currentTimeMillis() ) {
                 deleteQueue.add(info);
                 en.remove();
@@ -152,7 +162,7 @@ public abstract class AbstractExternalizer
         for ( int i = deleteQueue.size() - 1; i >= 0; i-- ) {
             ExternalizedInfo info = (ExternalizedInfo) deleteQueue.get(i);
 
-            if ( forceDelete || info.timestamp + EXTERNALIZE_TIMEOUT
+            if ( forceDelete || info.timestamp + externalizeTimeout
                  + SLOW_LINK_GRACE_PERIOD < System.currentTimeMillis() ) {
                 debug("remove externalized: " + info.extFileName);
                 doDelete(info);

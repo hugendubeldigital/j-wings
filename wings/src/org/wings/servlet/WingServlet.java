@@ -109,7 +109,20 @@ public abstract class WingServlet extends HttpServlet
      * @param config the serlvet configuration
      */
     protected void initExternalizer(ServletConfig config) {
-        extManager.setExternalizer(new ServletExternalizer(config));
+        ServletExternalizer ext = new ServletExternalizer(config);
+
+        String timeout = config.getInitParameter("externalizer.objecttimeout");
+        if ( timeout != null ) {
+            try {
+                ext.setExternalizeTimeout(Long.parseLong(timeout));
+            }
+            catch ( NumberFormatException e ) {
+                System.err.println("invalid externalizer.objecttimeout: " + timeout);
+                e.printStackTrace();
+            }
+        }
+
+        extManager.setExternalizer(ext);
     }
 
     /**
