@@ -14,21 +14,25 @@
 
 package wingset;
 
+
+
 import java.awt.Color;
+import java.io.File;
+import java.io.FileWriter;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.Enumeration;
 import java.util.Properties;
-
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.servlet.*;
 import javax.servlet.http.*;
-
 import org.wings.*;
+import org.wings.event.SRequestEvent;
+import org.wings.event.SRequestListener;
 import org.wings.plaf.*;
 import org.wings.session.*;
 import org.wings.util.*;
-import org.wings.event.SRequestListener;
-import org.wings.event.SRequestEvent;
-import java.util.Enumeration;
 
 /**
  * TODO: documentation
@@ -38,9 +42,94 @@ import java.util.Enumeration;
  */
 public class WingSet
 {
+    static final boolean SHOW_STATISTICS = false;
+
     static final ClassLoader cl = WingSet.class.getClassLoader();
     private final static SIcon brushedMetal = 
         new ResourceImageIcon(cl, "wingset/icons/brushedMetal.gif");
+
+    private final static SIcon JAVA_CUP_ICON = 
+        new ResourceImageIcon("org/wings/icons/JavaCup.gif");
+
+    private final static SIcon SMALL_COW_ICON = 
+        new ResourceImageIcon("wingset/icons/cowSmall.gif");
+
+
+    static final long birthday = System.currentTimeMillis();
+    
+    static FileWriter infoWriter;
+
+    static final Timer timer = new Timer();
+
+    static long oldRequestCount = 0;
+    static long oldSessionCount = 0;
+
+    static final TimerTask infoTask = new TimerTask() {
+            public void run() {
+                StringBuffer result = new StringBuffer();
+                long totalmem = Runtime.getRuntime().totalMemory();
+                long freemem = Runtime.getRuntime().freeMemory();
+
+                int requestCount = WingServlet.getRequestCount();
+                int sessionCount = Session.getOverallSessions();
+
+                result.append(System.currentTimeMillis()).append(' ')
+                    .append(System.currentTimeMillis()-birthday).append(' ')
+                    .append(sessionCount).append(' ')
+                    .append(sessionCount-oldSessionCount).append(' ')
+                    .append(Session.getActiveSessions()).append(' ')
+                    .append(Session.getAllocatedSessions()).append(' ')
+                    .append(requestCount).append(' ')
+                    .append(requestCount-oldRequestCount).append(' ')
+                    .append(totalmem).append(' ')
+                    .append(freemem).append(' ')
+                    .append(totalmem-freemem).append('\n');
+
+                oldRequestCount = requestCount;
+                oldSessionCount = sessionCount;
+
+                try {
+                    infoWriter.write(result.toString());
+                    infoWriter.flush();
+                } catch ( Exception ex) {
+                    ex.printStackTrace();
+                } // end of try-catch
+                
+            }
+        };
+
+    static {
+        
+        if ( SHOW_STATISTICS ) {
+
+        try {
+            infoWriter = new FileWriter("/tmp/wingsmemory", false);
+
+            StringBuffer result = new StringBuffer();
+            result.append("timestamp").append(' ')
+                .append("uptime").append(' ')
+                .append("overall_sessions").append(' ')
+                .append("new_sessions").append(' ')
+                .append("active_sessions").append(' ')
+                .append("allocated_sessions").append(' ')
+                .append("overall_processed requests").append(' ')
+                .append("processed_requests").append(' ')
+                .append("total_memory").append(' ')
+                .append("free_memory").append(' ')
+                .append("used_memory").append('\n');
+            infoWriter.write(result.toString());
+            infoWriter.flush();
+        } catch ( Exception ex) {
+            ex.printStackTrace();
+        } // end of try-catch
+            
+        timer.scheduleAtFixedRate(infoTask,
+                                  0,
+                                  10*1000);
+        }
+    }
+
+
 
     private SFrame frame;
     /*
@@ -51,13 +140,12 @@ public class WingSet
 
     public WingSet() {
         frame = new SFrame("WingSet");
+        frame.setTitle("WingSet Demo");
 
         System.out.println("new WingSet");
-        stopWatch = new TimeMeasure(new MessageFormat("<b>{0}</b>: {1} (<i>x {2}</i>)<br/>"));
+        stopWatch = new TimeMeasure(new MessageFormat("<html><b>{0}</b>: {1} (<i>x {2}</i>)<br/>"));
 
         timeMeasure = new SLabel();
-        timeMeasure.setEscapeSpecialChars(false);
-        frame.setTitle("WingSet Demo");
 
         SContainer contentPane = frame.getContentPane();
         try {
@@ -82,7 +170,7 @@ public class WingSet
         tab.add(new BorderExample(), "Border");
         tab.add(new TextComponentExample(), "Text Component");
          // a Tab with icon..
-        tab.addTab("Tree", new ResourceImageIcon("org/wings/icons/JavaCup.gif"), 
+        tab.addTab("Tree", JAVA_CUP_ICON, 
                    new TreeExample(), "Tree Tool Tip");
         tab.add(new OptionPaneExample(frame), "OptionPane");
         tab.add(new TableExample(), "Table");
@@ -98,10 +186,11 @@ public class WingSet
         tab.add(new TabbedPaneExample(), "Tabbed Pane");
         //tab.add(new LayoutExample(), "Simple Layout");
         tab.addTab("Template Layout", 
-                   new ResourceImageIcon(cl, "wingset/icons/cowSmall.gif"), 
+                   SMALL_COW_ICON, 
                    new TemplateExample(), "Template Layout Manager");
         tab.add(new InteractiveTemplateExample(), "Interactive Template");
         tab.add(new ProgressBarExample(), "ProgressBar");
+        tab.add(new MemUsageExample(), "Memory Usage");
         //tab.add(new DateChooserExample(), "DateChooser");
         //form.add(tab);
         // contentPane.add(form, "WingSetApp");
@@ -138,33 +227,8 @@ public class WingSet
                 }
             });
         */
-    }
 
-    /*
-    public void beforeEventDispatching(SessionEvent event)
-        throws DispatchVetoException
-    {
-        
     }
-
-    public void afterEventDispatching(SessionEvent event) {
-        
-    }
-
-    public void beforeResourceDelivery(SessionEvent event)
-        throws DeliveryVetoException
-    {
-        
-    }
-
-    public void afterResourceDelivery(SessionEvent event) {
-        
-    }
-
-    public void beforeDestroy(SessionEvent event) {
-        
-    }
-    */
 }
 
 /*

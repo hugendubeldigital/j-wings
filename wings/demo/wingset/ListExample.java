@@ -30,7 +30,8 @@ import org.wings.*;
 public class ListExample
     extends WingSetPane
 {
-    
+    static final ResourceImageIcon javaCup = new ResourceImageIcon("org/wings/icons/JavaCup.gif");
+
     public SComponent createExample() {
         SForm form = new SForm(new SFlowDownLayout());
 
@@ -90,23 +91,14 @@ public class ListExample
     }
 
     public void addListElements(SList list) {
-        SLabel img = new SLabel(new ResourceImageIcon("org/wings/icons/JavaCup.gif"));
-        SLabel color = new SLabel("");
-        color.setForeground(Color.green);
-        color.setText(Color.green.toString());
-
-        Object[] values = {
-            "element1",
-            color,
-            "element3",
-            "element4"
-        };
-
-        list.setListData(values);
+        list.setListData(createElements());
     }
 
     public void addComboBoxElements(SComboBox comboBox) {
-        SLabel img = new SLabel(new ResourceImageIcon("org/wings/icons/JavaCup.gif"));
+        comboBox.setModel(new DefaultComboBoxModel(createElements()));
+    }
+
+    private Object[] createElements() {
         SLabel color = new SLabel("");
         color.setForeground(Color.green);
         color.setText(Color.green.toString());
@@ -118,12 +110,12 @@ public class ListExample
             "element4"
         };
 
-        comboBox.setModel(new DefaultComboBoxModel(values));
+        return values;
     }
 
-    public void addAnchorElements(SList list) {
+    private ListModel createListModel() {
         final SLabel img =
-            new SLabel(new ResourceImageIcon("org/wings/icons/JavaCup.gif"));
+            new SLabel(javaCup);
 
         final SLabel color = new SLabel("");
         color.setForeground(Color.green);
@@ -148,6 +140,19 @@ public class ListExample
             public void removeListDataListener(ListDataListener l) {
             }
         };
+
+        return listModel;
+    }
+
+    private final ListModel listModel = createListModel();
+
+    public void addAnchorElements(SList list) {
+        final SLabel img =
+            new SLabel(javaCup);
+
+        final SLabel color = new SLabel("");
+        color.setForeground(Color.green);
+        color.setText(Color.green.toString());
 
         list.setModel(listModel);
         list.setType(ORDER_TYPE_NORMAL);

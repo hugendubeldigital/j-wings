@@ -38,11 +38,13 @@ public class TreeExample
 
     private static SIcon PLUS = new ResourceImageIcon("org/wings/icons/plus.gif");
     private static SIcon MINUS = new ResourceImageIcon("org/wings/icons/minus.gif");
-    
+
+    public static final TreeNode ROOT_NODE = generateTree();
+
     public SComponent createExample() {
         SPanel p = new SPanel();
         // generating the tree:
-        tree = new STree(new DefaultTreeModel(generateTree())); // thats it.
+        tree = new STree(new DefaultTreeModel(ROOT_NODE)); // thats it.
 
 
         /* test code

@@ -32,14 +32,16 @@ import org.wings.border.*;
 public class BorderExample
     extends WingSetPane
 {
+    private static final SIcon WAIT_ICON = new ResourceImageIcon("org/wings/icons/Wait.gif");
+
+    static final SBorder raised  = new SBevelBorder(SBevelBorder.RAISED);
+    static final SBorder lowered = new SBevelBorder(SBevelBorder.LOWERED);
+    static final SBorder line    = new SLineBorder(3);
+    static final SBorder titled  = new STitledBorder("This is a title ...");
 
     public SComponent createExample() {
         SPanel p = createResourceTemplatePanel("/wingset/templates/BorderExample.thtml");
         
-        final SBorder raised  = new SBevelBorder(SBevelBorder.RAISED);
-        final SBorder lowered = new SBevelBorder(SBevelBorder.LOWERED);
-        final SBorder line    = new SLineBorder(3);
-        final SBorder titled  = new STitledBorder("This is a title ...");
         
         /*
          * border layout allows to set the color
@@ -47,7 +49,7 @@ public class BorderExample
         final SPanel c = new SPanel(new SBorderLayout());
         c.setBackground(new java.awt.Color(180, 180, 255));
         final SLabel borderLabel;
-        borderLabel = new SLabel(new ResourceImageIcon("org/wings/icons/Wait.gif"));
+        borderLabel = new SLabel(WAIT_ICON);
         c.add(borderLabel);
         p.add(c, "BorderExample");
 

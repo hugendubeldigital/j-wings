@@ -29,6 +29,8 @@ public class WingsImage
     extends SPanel
 {
 
+    private static final SIcon WINGS_IMAGE = new ResourceImageIcon("wingset/icons/wingS.jpg");
+
     public WingsImage() {
         add(createExample());
     }
@@ -41,8 +43,7 @@ public class WingsImage
         p.setPreferredSize(new SDimension("100%", null));
         p.setBackground(new java.awt.Color(150, 168, 240));
 
-        SLabel label = new SLabel(new ResourceImageIcon(getClass().getClassLoader(),
-                                                        "wingset/icons/wingS.jpg"));
+        SLabel label = new SLabel(WINGS_IMAGE);
         label.setHorizontalAlignment(CENTER);
         p.add(label, SBorderLayout.CENTER);
 

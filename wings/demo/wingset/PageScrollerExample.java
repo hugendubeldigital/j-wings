@@ -43,7 +43,7 @@ public class PageScrollerExample
         p.add(label, SBorderLayout.NORTH);
         */
 
-        list = new SList(createData());
+        list = new SList(listData);
         list.setVisibleRowCount(8);
 
         scrollbar = new SPageScroller(Adjustable.VERTICAL);
@@ -147,7 +147,7 @@ public class PageScrollerExample
         return controlForm;
     }
 
-    void addChildNodes(TreeNode node, ArrayList list, int indent) {
+    static void addChildNodes(TreeNode node, ArrayList list, int indent) {
         if ( node!=null ) {
             StringBuffer name = new StringBuffer();
             for ( int i=0; i<indent; i++ ) {
@@ -161,8 +161,9 @@ public class PageScrollerExample
         }
     }
 
+    static Object[] listData = createData();
 
-    Object[] createData() {
+    static Object[] createData() {
         TreeNode root = TreeExample.generateTree();
 
         ArrayList data = new ArrayList();

@@ -25,6 +25,8 @@ import org.wings.*;
  */
 public class LabelExample extends WingSetPane
 {
+    private static final SIcon WAIT_ICON = new ResourceImageIcon("org/wings/icons/Wait.gif");
+
     static final String directions[] = 
     { "nw", "n", "ne",
       "w",        "e",
@@ -54,11 +56,10 @@ public class LabelExample extends WingSetPane
         layout.setCellSpacing(10);
         all.setLayout(layout);
 
-        SIcon icon = new ResourceImageIcon("org/wings/icons/Wait.gif");
 
         final SLabel testLabel = new SLabel("LabelText");
         testLabel.setHorizontalAlignment(LEFT);
-        testLabel.setIcon(icon);
+        testLabel.setIcon(WAIT_ICON);
         testLabel.setAttribute("color", "#AA0000");
         testLabel.setAttribute("font-weight", "bold");
 

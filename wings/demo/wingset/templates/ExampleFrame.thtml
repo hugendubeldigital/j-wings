@@ -2,7 +2,8 @@
      $Id$ -->
 <h1 align="center">WingS Example</h1>
 
-This <a href="http://www.wings.to.com/">wingS</a>
+<!--This <a href="http://wings.mercatis.de/">wingS</a>-->
+
 example demonstrates some wingS properties, similar to the 
 Java SwingSet example.
 
@@ -23,4 +24,4 @@ Java SwingSet example.
    <td><object name="ParamLabel"></object></td>
 </tr>
 </table-->
-Generated with <a href="http://wingS.mercatis.de/">wingS</a>
+<!--Generated with <a href="http://wingS.mercatis.de/">wingS</a>-->

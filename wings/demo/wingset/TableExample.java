@@ -30,51 +30,9 @@ import org.wings.table.*;
 public class TableExample
     extends WingSetPane
 {
-    public SComponent createExample() {
-        setLayout(null);
+    static final SIcon image = new ResourceImageIcon("org/wings/icons/JavaCup.gif");
 
-        SPanel p = new SPanel (new SGridLayout(2));
-
-        SPanel left = new SPanel(null);
-        p.add(left);
-
-        SPanel panel = new SPanel();
-        STable table = new STable(new MyTableModel(7, 5));
-        SLabel label;
-        label = new SLabel("<html><h4>STable outside a form with multiple selection</h4>");
-        panel.add(label);
-        table.setShowGrid(true);
-        table.setSelectionMode(MULTIPLE_SELECTION);
-        table.setDefaultRenderer(new MyCellRenderer());
-        panel.add(table);
-        left.add(panel);
-
-        SForm form = new SForm();
-        STable formTable = new STable(new MyTableModel(7, 5));
-        label = new SLabel("<html><h4>STable inside a form with single selection</h4>");
-        form.add(label);
-        formTable.setShowGrid(true);
-        formTable.setSelectionMode(SINGLE_SELECTION);
-        formTable.setDefaultRenderer(new MyCellRenderer());
-        form.add(formTable);
-        form.add(new SButton("SUBMIT"));
-        left.add(form);
-
-        panel = new SPanel();
-        STable simple = new STable(new ROTableModel(7, 10));
-        simple.setAttribute("border", "1px solid black");
-        simple.setAttribute("bgcolor", "white");
-        label = new SLabel("<html><h4>STable without selection and no grid</h4>");
-        panel.add(label);
-        simple.setSelectionMode(SListSelectionModel.NO_SELECTION);
-        simple.setDefaultRenderer(new MyCellRenderer());
-        simple.setHeaderVisible(false);
-        panel.add(simple);
-        p.add(panel);
-
-        return p;
-    }
-
+    public final MyCellRenderer cellRenderer = new MyCellRenderer();
 
     final static Color[] colors = {
         Color.black,
@@ -91,6 +49,42 @@ public class TableExample
         Color.white,
         Color.blue
     };
+
+    public SComponent createExample() {
+        SPanel panel = new SPanel();
+
+        try {
+            java.net.URL templateURL = 
+                getClass().getResource("/wingset/templates/TableExample.thtml");
+            STemplateLayout layout = new STemplateLayout(templateURL);
+            panel.setLayout(layout);
+        } catch ( Exception ex ) {
+            ex.printStackTrace();
+        }
+
+        STable table = new STable(new MyTableModel(7, 5));
+        table.setShowGrid(true);
+        table.setSelectionMode(MULTIPLE_SELECTION);
+        table.setDefaultRenderer(cellRenderer);
+        panel.add(table, "MultiSelectionTable");
+
+        STable formTable = new STable(new MyTableModel(7, 5));
+        formTable.setShowGrid(true);
+        formTable.setSelectionMode(SINGLE_SELECTION);
+        formTable.setDefaultRenderer(cellRenderer);
+        panel.add(formTable, "SingleSelectionTable");
+
+        STable simple = new STable(new ROTableModel(7,10));
+        simple.setAttribute("border", "1px solid black");
+        simple.setAttribute("bgcolor", "white");
+        simple.setSelectionMode(SListSelectionModel.NO_SELECTION);
+        simple.setDefaultRenderer(cellRenderer);
+        simple.setHeaderVisible(false);
+        panel.add(simple, "ReadOnlyTable");
+
+        return panel;
+    }
+
 
     static class MyCellRenderer extends SDefaultTableCellRenderer {
         SLabel colorOut = new SLabel();
@@ -120,10 +114,9 @@ public class TableExample
         }
     }
 
-    class MyTableModel extends AbstractTableModel
+    static class MyTableModel extends AbstractTableModel
     {
         int cols, rows;
-        SIcon image = new ResourceImageIcon("org/wings/icons/JavaCup.gif");
 
         Object[][] data;
         boolean asc[];
@@ -200,7 +193,7 @@ public class TableExample
         }
     }
 
-    class ROTableModel extends MyTableModel
+    static class ROTableModel extends MyTableModel
     {
         public ROTableModel(int cols, int rows) {
             super(cols, rows);

@@ -13,10 +13,10 @@
  */
 package wingset;
 
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.wings.ResourceImageIcon;
@@ -28,6 +28,7 @@ import org.wings.SDimension;
 import org.wings.SFlowDownLayout;
 import org.wings.SFlowLayout;
 import org.wings.SForm;
+import org.wings.SIcon;
 import org.wings.SLabel;
 import org.wings.SPanel;
 import org.wings.SRadioButton;
@@ -40,6 +41,11 @@ import org.wings.STextArea;
  */
 public class TabbedPaneExample extends WingSetPane
 {
+    private final static SIcon JAVA_CUP_ICON = 
+        new ResourceImageIcon("org/wings/icons/JavaCup.gif");
+
+    private final static SIcon SMALL_COW_ICON = 
+        new ResourceImageIcon("wingset/icons/cowSmall.gif");
 
     /**
      * Constructor for TabbedPaneExample.
@@ -90,8 +96,8 @@ public class TabbedPaneExample extends WingSetPane
 		p.add(text);
 		tpane.add("Tab " + i, p);
 	    }
-	tpane.setIconAt(3, new ResourceImageIcon("org/wings/icons/JavaCup.gif"));
-	tpane.setIconAt(8, new ResourceImageIcon("wingset/icons/cowSmall.gif"));
+	tpane.setIconAt(3, JAVA_CUP_ICON);
+	tpane.setIconAt(8, SMALL_COW_ICON);
 	tpane.setEnabledAt(1, false);
         tpane.addChangeListener(new ChangeListener() {
 		public void stateChanged(ChangeEvent ce) {

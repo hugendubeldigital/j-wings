@@ -43,7 +43,6 @@ public class InteractiveTemplateExample
 
         try {
             java.net.URL templateURL = getClass().getResource( TEMPLATE );
-            System.out.println("template URL " + templateURL);
             examplePanel.setLayout( new STemplateLayout( templateURL ) );
         }
         catch ( Exception e ) {
