@@ -55,7 +55,7 @@ public class BorderExample
         SLabel line = new SLabel("line");
         line.setBorder(new SLineBorder(3));
         SLabel empty = new SLabel("empty");
-        empty.setBorder(new SEmptyBorder(new Insets(10,20,10,20)));
+        empty.setBorder(new SEmptyBorder(new Insets(3,3,3,3)));
         
         p.add(raised);
         p.add(lowered);
