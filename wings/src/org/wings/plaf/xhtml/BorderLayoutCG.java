@@ -52,7 +52,7 @@ public class BorderLayoutCG
         if (east != null) cols++;
 
         d.append("\n<table cellpadding=\"0\" cellspacing=\"0\"");
-		CGUtil.writeSize( d, (SAbstractLayoutManager) l );
+		CGUtil.writeSize( d, container );
         if (border > 0)
             d.append(" border=\"").append(border).append("\"");
         if (container != null && container.getBackground() != null)

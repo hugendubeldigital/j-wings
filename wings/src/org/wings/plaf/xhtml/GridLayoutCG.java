@@ -20,6 +20,7 @@ import java.util.*;
 import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
+import org.wings.util.CGUtil;
 
 public class GridLayoutCG
     implements LayoutCG
@@ -57,17 +58,12 @@ public class GridLayoutCG
         if (cellPadding >= 0)
             d.append(" cellpadding=\"").append(cellPadding).append("\"");
 
-        if (width > 0) {
-            if (relative)
-                d.append(" width=\"").append(width).append("%\"");
-            else
-                d.append(" width=\"").append(width).append("\"");
-        }
+		CGUtil.writeSize( d, container );
 
         if (border > 0)
             d.append(" border=\"").append(border).append("\"");
         else
-            d.append(" border=\"0\"");
+            d.append(" border=\"1\"");
 
         if (container != null && container.getBackground() != null)
             d.append(" bgcolor=\"#").

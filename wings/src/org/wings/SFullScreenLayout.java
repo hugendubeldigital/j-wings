@@ -39,11 +39,12 @@ public class SFullScreenLayout
     private static final String _cgClassID = "FullScreenLayoutCG";
 
     private static final boolean DEBUG = true;
+    
+    private final static Dimension fDim = new Dimension( 100, 100 );
 
 	public SFullScreenLayout()
      {
 		super();
-        setPreferredPercentageSize( new Dimension( 100, 100 ) );
      }
 
 	/**
@@ -82,6 +83,7 @@ public class SFullScreenLayout
          }
          
 		super.addComponent( c, constraint );
+        getContainer().setPreferredPercentageSize( fDim );
      }
 
     /**

@@ -55,22 +55,4 @@ public class CGUtil
          }
     }
 
-	public static void writeSize( Device d, SAbstractLayoutManager lm )
-        throws IOException
-     {
-        Dimension dim = lm.getPreferredSize();
-        Dimension dimp = lm.getPreferredPercentageSize();
-
-        if ( dim != null )
-         {
-            if ( dim.width != 0 ) d.append(" width=\"").append(dim.width).append("\"");
-            if ( dim.height != 0 ) d.append(" height=\"").append(dim.height).append("\"");
-		 }
-		else
-        if ( dimp != null )
-         {
-            if ( dimp.width != 0 ) d.append(" width=\"").append(dimp.width).append("%\"");
-            if ( dimp.height != 0 ) d.append(" height=\"").append(dimp.height).append("%\"");
-		 }
-     }
  }
