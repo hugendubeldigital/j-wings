@@ -448,6 +448,8 @@ public abstract class SAbstractIconTextCompound
         // this leads to problems, don't know why...
         //        reload(ReloadManager.RELOAD_CODE |
         //        ReloadManager.RELOAD_STYLE);
+        // Answer: I think this was due to a bug in DefaultReloadManager
+        // once (it used a switch/case instead of '&')
         reload(ReloadManager.RELOAD_CODE);
     }
 

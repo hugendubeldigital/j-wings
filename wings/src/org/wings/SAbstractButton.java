@@ -23,7 +23,6 @@ import javax.swing.Action;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
-import org.wings.style.Style;
 
 /**
  * This is the base class for all components which have a button
