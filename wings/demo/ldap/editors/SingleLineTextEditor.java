@@ -12,14 +12,16 @@ import org.wings.session.*;
 public class SingleLineTextEditor
     implements Editor
 {
-    private final static Logger logger = Logger.getLogger("ldap.editors");
-
-    public SComponent createComponent(Attributes attributes) {
-	STextField c = new STextField();
-	int cols = 80;
+  private final static Logger logger = Logger.getLogger("ldap.editors");
+  
+  private final String DELIM = ",";
+  
+  public SComponent createComponent(Attributes attributes) {
+    STextField c = new STextField();
+    int cols = 80;
 	try {
-	    Attribute syntaxAttribute = attributes.get("SYNTAX");
-	    if (syntaxAttribute != null) {
+          Attribute syntaxAttribute = attributes.get("SYNTAX");
+          if (syntaxAttribute != null) {
 		String syntax = (String)syntaxAttribute.get();
 		System.err.println("SYNTAX: " + syntax);
 		int open = syntax.indexOf("{");
@@ -49,13 +51,28 @@ public class SingleLineTextEditor
 
 	if (attribute.size() == 1)
 	    ((STextField)component).setText("" + attribute.get(0));
+        
+	if (attribute.size() > 1) {
+          StringBuffer sb = new StringBuffer();
+          for (int i = 0;i<attribute.size();i++)
+            sb.append(attribute.get(i) + DELIM);
+          ((STextField)component).setText(sb.toString().trim());
+        }
     }
 
-    public Attribute getValue(SComponent component, String id) {
-	String value = ((STextField)component).getText();
-	Attribute attribute = new BasicAttribute(id);
-	if (value != null && value.length() > 0)
-	    attribute.add(value);
-	return attribute;
+  public Attribute getValue(SComponent component, String id) {
+    String value = ((STextField)component).getText();
+    
+    Attribute attribute = new BasicAttribute(id);
+    
+    if (value!=null && value.length() > 0) {
+      StringTokenizer stk = new StringTokenizer(value,DELIM);
+      while(stk.hasMoreTokens()) {
+        attribute.add(stk.nextToken());
+       }
     }
+    return attribute;
+  }
 }
+
+
