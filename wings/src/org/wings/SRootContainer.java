@@ -49,7 +49,7 @@ public abstract class SRootContainer extends SContainer {
     public SRootContainer() {
         contentPane = new SPanel();
 	super.setLayout(new SStackLayout());
-        super.addComponent(getContentPane(), null, 0);
+        super.addComponent(getContentPane(), null, getComponentCount());
     }
 
     /**
@@ -58,7 +58,7 @@ public abstract class SRootContainer extends SContainer {
      * @param dialog the SDialog that is to be shown on top.
      */
     public void pushDialog(SDialog dialog) {
-        super.addComponent(dialog, null);
+        super.addComponent(dialog, null, getComponentCount());
         int count = getComponentCount();
         logger.info("pushDialog: " + count);
         dialog.setFrame(this);
@@ -101,7 +101,7 @@ public abstract class SRootContainer extends SContainer {
     /**
      * Use getContentPane().addComponent(c) instead.
      */
-    public SComponent addComponent(SComponent c, Object constraint, int indec) {
+    public SComponent addComponent(SComponent c, Object constraint, int index) {
         throw new IllegalArgumentException("use getContentPane().addComponent()");
     }
 
