@@ -72,7 +72,8 @@
 
         %><tr<%|class=style%>><%
 
-        boolean selectionWritten = table.getRowSelectionColumn() < 0;
+        boolean selectionWritten = ((table.getRowSelectionColumn() < 0) ||
+                                   (table.getSelectionModel().getSelectionMode() == SListSelectionModel.NO_SELECTION));
         for (int c = startCol; c < endCol; c++) {
             if (!selectionWritten && 
                 c >= table.getRowSelectionColumn() ) {
