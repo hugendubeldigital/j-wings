@@ -1,0 +1,45 @@
+<template name="MenuBarClientCG" for="org.wings.SMenuBar">
+
+<write>
+<%
+        SButton b = null;
+        SMenuBar mbar = (SMenuBar)component;
+        int mcount = mbar.getMenuCount();
+        
+        %><div class="menubar"><%
+        %><table cellspacing="0" cellpadding="0" vspace="0" hspace="0"<%
+        %><%|class=Utils.style(component)%>><%
+        %><tr align="left"><%
+
+        for (int i = 0; i < mcount; i++) {
+            SMenu menu = (SMenu)mbar.getComponentAtIndex(i);
+            String menuClass = menu.isActive() ? "amenu" : "menu";
+            String id = "pop_" + menu.getComponentId();
+
+            %><td><div class="<%=menuClass%>"<%
+            %> onmousedown="toggle_menu(document.getElementById('<%=id%>'))"><%
+            %>&nbsp;&nbsp;<%=menu.getText()%>&nbsp;&nbsp;</div><%
+            %><div id="<%=id%>" class="pdmenu" style="display:none"><%
+
+            int micount = menu.getMenuComponentCount();
+            for (int mi = 0; mi < micount; mi++) {
+                SComponent menuitem = menu.getMenuComponent(mi);
+                if (menuitem instanceof SSeparator) {
+                    %><br><img src="" class="menuseparator" width="<%
+                    %><%=((SSeparator)menuitem).getWidth()%><%
+                    %>" height="1"><br><%
+                }
+                else {
+                    %><div class="menuitem" onmouseover="enter_item(this)"<%
+                    %> onmouseout="exit_item(this)">&nbsp;&nbsp;<%
+                    menuitem.write(device);
+                    %>&nbsp;&nbsp;</div><%
+                }
+            }
+            %></div></td><%
+        }
+        %></tr></table><%
+        %></div><%
+%>
+</write>
+</template>
