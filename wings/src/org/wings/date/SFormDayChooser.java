@@ -81,8 +81,8 @@ public class SFormDayChooser
 
         addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if ( getSelectionCount()>0 )
-                    day = ((Integer)getSelectedValue()).intValue();
+                if (getSelectedIndex() > 0)
+                    day = ((Integer)getSelectedItem()).intValue();
                 else
                     day = -1;
             } } );

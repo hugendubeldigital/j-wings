@@ -45,7 +45,7 @@ import org.wings.io.Device;
  */
 public class SComboBox
     extends SContainer
-    implements Scrollable, SGetListener
+    implements SGetListener, ListDataListener, ItemSelectable
 {
     /**
      * @see #getCGClassID
@@ -54,11 +54,11 @@ public class SComboBox
 
     protected ComboBoxModel    dataModel;
     protected SListCellRenderer renderer;
-    //protected ComboBoxEditor       editor;
     protected int maximumRowCount = 8;
-    protected boolean isEditable  = false;
     protected Object lastSelectedItem = null;
     protected String actionCommand = "comboBoxChanged";
+    
+    transient protected EventListenerList listenerList = new EventListenerList();
     
     boolean firedActionEventOnContentsChanged = false;
     boolean firingActionEvent = false;
@@ -98,7 +98,7 @@ public class SComboBox
     /**
      * Sets the data model that the SComboBox uses to obtain the list of items.
      *
-     * @param aModel the ComboBoxModel that provides the displayed list of items
+     * @param model the ComboBoxModel that provides the displayed list of items
      * 
      * @beaninfo
      *        bound: true
@@ -120,31 +120,6 @@ public class SComboBox
      */
     public ComboBoxModel getModel() {
         return dataModel;
-    }
-
-    /**
-     * Determines whether the SComboBox text field is editable.
-     *
-     * @param editable true indicates that the field is editable
-     * 
-     * @beaninfo
-     *    preferred: true
-     *  description: If true, the comboBox is editable
-     */
-    public void setEditable(boolean editable) {
-        boolean changed = editable != isEditable;
-        isEditable = editable;
-        if (changed)
-            firePropertyChange("editable", !editable, editable);
-    }
-
-    /**
-     * Returns true if the SComboBox is editable.
-     * 
-     * @return true if the SComboBox is editable, else false
-     */
-    public boolean isEditable() {
-        return isEditable;
     }
 
     /**
@@ -178,8 +153,8 @@ public class SComboBox
      *     expert: true
      *  description: The renderer that generates the item's code
      */
-    public void setRenderer(ListCellRenderer newRenderer) {
-        ListCellRenderer oldRenderer = renderer;
+    public void setRenderer(SListCellRenderer newRenderer) {
+        SListCellRenderer oldRenderer = renderer;
         renderer = newRenderer;
         firePropertyChange("renderer", oldRenderer, renderer);
     }
@@ -188,41 +163,8 @@ public class SComboBox
      * TODO: Documentation 
      * @return  the ListCellRenderer that displays the selected item.
      */
-    public ListCellRenderer getRenderer() {
+    public SListCellRenderer getRenderer() {
         return renderer;
-    }
-
-    /**
-     * Sets the editor used to paint and edit the selected item in the SComboBox
-     * field. The editor is used only if the receiving SComboBox is editable. 
-     * If not editable, the combo box uses the renderer to paint the selected item.
-     *  
-     * @param newEditor  the ComboBoxEditor that displays the selected item
-     * @see #setRenderer
-     * @beaninfo
-     *    expert: true
-     *  description: The editor that combo box uses to edit the current value
-     */
-    public void setEditor(SComboBoxEditor newEditor) {
-        SComboBoxEditor oldEditor = editor;
-        
-        if ( editor != null )
-            editor.removeActionListener(this);
-        editor = newEditor;
-        if ( editor != null ) {
-            editor.addActionListener(this);
-        }
-        firePropertyChange("editor", oldEditor, editor);
-    }
-
-    /**
-     * Returns the editor used to paint and edit the selected item in the SComboBox
-     * field.
-     *  
-     * @return the ComboBoxEditor that displays the selected item
-     */
-    public ComboBoxEditor getEditor() {
-        return editor;
     }
 
     /*
@@ -264,7 +206,7 @@ public class SComboBox
 
         if (index == -1 )
             setSelectedItem( null );
-        else if (index < -1 || index >= size) {
+        else if (index < -1 || index >= size)
             throw new IllegalArgumentException("setSelectedIndex: " + index + " out of bounds");
         else
             setSelectedItem(dataModel.getElementAt(index));
@@ -515,15 +457,6 @@ public class SComboBox
 
     /** This method is public as an implementation side effect. 
      *  do not call or override. 
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object newItem = getEditor().getItem();
-        getModel().setSelectedItem(newItem);
-        fireActionEvent();
-    }
-
-    /** This method is public as an implementation side effect. 
-     *  do not call or override. 
      *
      * @see javax.swing.event.ListDataListener
      */
@@ -533,28 +466,6 @@ public class SComboBox
         if ((lastSelectedItem == null && newSelectedItem != null)
             || (lastSelectedItem != null && !lastSelectedItem.equals(newSelectedItem)))
             selectedItemChanged();
-
-        if (!isEditable() && newSelectedItem != null) {
-            int i, c;
-            boolean resetSelectedItem = true;
-            Object o;
-            Object selectedItem = dataModel.getSelectedItem();
-            
-            for (i=0,c=dataModel.getSize();i<c;i++) {
-                o = dataModel.getElementAt(i);
-                if (o.equals(selectedItem)) {
-                    resetSelectedItem = false;
-                    break;
-                }
-            }
-
-            if (resetSelectedItem) {
-                if (dataModel.getSize() > 0)
-                    setSelectedIndex(0);
-                else
-                    setSelectedItem(null);
-            }
-        }
     }
 
     /**
@@ -599,488 +510,19 @@ public class SComboBox
         return dataModel.getElementAt(index);
     }
 
-    /**
-     * Returns an instance of the default key-selection manager.
-     *
-     * @return the KeySelectionManager currently used by the list
-     * @see #setKeySelectionManager
-     */
-    protected KeySelectionManager createDefaultKeySelectionManager() {
-        return new DefaultKeySelectionManager();
-    }
-
-
-    /**
-     * The interface that defines a KeySelectionManager. To qualify as
-     * a KeySelectionManager, the class needs to implement the method
-     * that identifies the list index given a character and the 
-     * combo box data model.
-     */
-    public interface KeySelectionManager {
-        /** Given <code>aKey</code> and the model, returns the row
-         *  that should become selected. Return -1 if no match was
-         *  found. 
-         *
-         * @param  aKey  a char value, usually indicating a keyboard key that
-         *               was pressed
-         * @param aModel a ComboBoxModel -- the component's data model, containing
-         *               the list of selectable items 
-         * @return an int equal to the selected row, where 0 is the
-         *         first item and -1 is none. 
-         */
-        int selectionForKey(char aKey,ComboBoxModel aModel);
-    }
-
-    class DefaultKeySelectionManager implements KeySelectionManager, Serializable {
-        public int selectionForKey(char aKey,ComboBoxModel aModel) {
-            int i,c;
-            int currentSelection = -1;
-            Object selectedItem = aModel.getSelectedItem();
-            String v;
-            String pattern;
-
-            if ( selectedItem != null ) {
-                selectedItem = selectedItem.toString();
-
-                for ( i=0,c=aModel.getSize();i<c;i++ ) {
-                    if ( selectedItem.equals(aModel.getElementAt(i).toString()) ) {
-                        currentSelection  =  i;
-                        break;
-                    }
-
-                }
-            }
-
-            pattern = ("" + aKey).toLowerCase();
-            aKey = pattern.charAt(0);
-
-            for ( i = ++currentSelection, c = aModel.getSize() ; i < c ; i++ ) {
-                v = aModel.getElementAt(i).toString().toLowerCase();
-                if ( v.length() > 0 && v.charAt(0) == aKey )
-                    return i;
-            }
-
-            for ( i = 0 ; i < currentSelection ; i ++ ) {
-                v = aModel.getElementAt(i).toString().toLowerCase();
-                if ( v.length() > 0 && v.charAt(0) == aKey )
-                    return i;
-            }
-            return -1;
-        }
-    }
-
-
-    /** 
-     * See readObject() and writeObject() in JComponent for more 
-     * information about serialization in Swing.
-     */
-    private void writeObject(ObjectOutputStream s) throws IOException {
-        s.defaultWriteObject();
-        if ((ui != null) && (getUIClassID().equals(uiClassID))) {
-            ui.installUI(this);
-        }
-    }
-
-
-    /**
-     * Returns a string representation of this SComboBox. This method 
-     * is intended to be used only for debugging purposes, and the 
-     * content and format of the returned string may vary between      
-     * implementations. The returned string may be empty but may not 
-     * be <code>null</code>.
-     * 
-     * @return  a string representation of this SComboBox.
-     */
-    protected String paramString() {
-        String lastSelectedItemString = (lastSelectedItem != null ?
-                                             lastSelectedItem.toString() :
-                                             "");
-        String isEditableString = (isEditable ? "true" : "false");
-        String lightWeightPopupEnabledString = (lightWeightPopupEnabled ?
-                                                "true" : "false");
-
-        return super.paramString() +
-        ",isEditable=" + isEditableString +
-        ",lightWeightPopupEnabled=" + lightWeightPopupEnabledString +
-        ",maximumRowCount=" + maximumRowCount +
-        ",lastSelectedItem=" + lastSelectedItemString;
-    }
-
-    private ComboBoxModel dataModel;
-    private SListCellRenderer cellRenderer;
-
-    /**
-     * Need this for determination, which selections have changed.
-     */
-    protected boolean[] selection = null;
-
-    /**
-     * Need this for determination, which selections have changed.
-     */
-    protected boolean[] oldSelection = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected boolean hidden = true;
-
-    protected EventListenerList listenerList = new EventListenerList();
-    private Rectangle viewport = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected String type = SConstants.UNORDERED_LIST;
-
-    /**
-     * TODO: documentation
-     */
-    protected String orderType = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected int start = 0;
-
-    /**
-     * Construct a SComboBox that displays the elements in the specified,
-     * non-null model.  All SComboBox constructors delegate to this one.
-     */
-    public SComboBox(ComboBoxModel dataModel)
-    {
-        if (dataModel == null) {
-            throw new IllegalArgumentException("dataModel must not be null");
-        }
-
-        this.dataModel = dataModel;
-        selectionModel = createSelectionModel();
-    }
-
-
-    /**
-     * Construct a SComboBox that displays the elements in the specified
-     * array.  This constructor just delegates to the ComboBoxModel
-     * constructor.
-     */
-    public SComboBox(final Object[] listData)
-    {
-        this ( new AbstractListModel() {
-            public int getSize() {
-                return listData.length;
-            }
-            public Object getElementAt(int i) {
-                return listData[i];
-            } } );
-    }
-
-
-    /**
-     * Construct a SComboBox that displays the elements in the specified
-     * Vector.  This constructor just delegates to the ComboBoxModel
-     * constructor.
-     */
-    public SComboBox(final Vector listData) {
-        this ( new AbstractListModel() {
-            public int getSize() {
-                return listData.size();
-            }
-            public Object getElementAt(int i) {
-                return listData.elementAt(i);
-            } } );
-    }
-
-
-    /**
-     * Constructs a SComboBox with an empty model.
-     */
-    public SComboBox() {
-        this ( new AbstractListModel() {
-            public int getSize() {
-                return 0;
-            }
-            public Object getElementAt(int i) {
-                return "No Data Model";
-            } } );
-    }
-
-    public void setShowAsFormComponent(boolean showAsFormComponent) {
-        this.showAsFormComponent = showAsFormComponent;
-    }
-
-    public boolean getShowAsFormComponent() {
-        return showAsFormComponent && getResidesInForm();
-    }
-
-    /**
-     * Returns the object that renders the list items.
-     *
-     * @return the ListCellRenderer
-     * @see #setCellRenderer
-     */
-    public SListCellRenderer getCellRenderer() {
-        return cellRenderer;
-    }
-
-    /**
-     * Sets the delegate that's used to paint each cell in the list.  If
-     * prototypeCellValue was set then the fixedCellWidth and fixedCellHeight
-     * properties are set as well.  Only one PropertyChangeEvent is generated
-     * however - for the "cellRenderer" property.
-     * <p>
-     * The default value of this property is provided by the ComboBoxUI
-     * delegate, i.e. by the look and feel implementation.
-     * <p>
-     * This is a JavaBeans bound property.
-     *
-     * @param cellRenderer the ListCellRenderer that paints list cells
-     * @see #getCellRenderer
-     * @beaninfo
-     *       bound: true
-     *   attribute: visualUpdate true
-     * description: The component used to draw the cells.
-     */
-    public void setCellRenderer(SListCellRenderer cellRenderer) {
-        SListCellRenderer oldValue = this.cellRenderer;
-        this.cellRenderer = cellRenderer;
-        //firePropertyChange("cellRenderer", oldValue, cellRenderer);
-    }
-
-
-    /**
-     * Returns the foreground color.
-     *
-     * @return the Color object for the foreground property
-     * @see #setSelectionForeground
-     * @see #setSelectionBackground
-     */
-    public Color getSelectionForeground() {
-        return selectionForeground;
-    }
-
-
-    /**
-     * Set the foreground color for selected cells.  Cell renderers
-     * can use this color to render text and graphics for selected
-     * cells.
-     * <p>
-     * The default value of this property is defined by the look
-     * and feel implementation.
-     * <p>
-     * This is a JavaBeans bound property.
-     *
-     * @param selectionForeground  the Color to use in the foreground
-     *                             for selected list items
-     * @see #getSelectionForeground
-     * @see #setSelectionBackground
-     * @see #setForeground
-     * @see #setBackground
-     * @see #setFont
-     * @beaninfo
-     *       bound: true
-     *   attribute: visualUpdate true
-     * description: The foreground color of selected cells.
-     */
-    public void setSelectionForeground(Color selectionForeground) {
-        Color oldValue = this.selectionForeground;
-        this.selectionForeground = selectionForeground;
-        //firePropertyChange("selectionForeground", oldValue, selectionForeground);
-    }
-
-
-    /**
-     * Returns the background color for selected cells.
-     *
-     * @return the Color used for the background of selected list items
-     * @see #setSelectionBackground
-     * @see #setSelectionForeground
-     */
-    public Color getSelectionBackground() {
-        return selectionBackground;
-    }
-
-
-    /**
-     * Set the background color for selected cells.  Cell renderers
-     * can use this color to the fill selected cells.
-     * <p>
-     * The default value of this property is defined by the look
-     * and feel implementation.
-     * <p>
-     * This is a JavaBeans bound property.
-     *
-     * @param selectionBackground  the Color to use for the background
-     *                             of selected cells
-     * @see #getSelectionBackground
-     * @see #setSelectionForeground
-     * @see #setForeground
-     * @see #setBackground
-     * @see #setFont
-     * @beaninfo
-     *       bound: true
-     *   attribute: visualUpdate true
-     * description: The background color of selected cells.
-     */
-    public void setSelectionBackground(Color selectionBackground) {
-        Color oldValue = this.selectionBackground;
-        this.selectionBackground = selectionBackground;
-        //firePropertyChange("selectionBackground", oldValue, selectionBackground);
-    }
-
-    /**
-     * --- ListModel Support ---
-     */
-
-
-    /**
-     * Returns the data model that holds the list of items displayed
-     * by the SList component.
-     *
-     * @return the ListModel that provides the displayed list of items
-     * @see #setModel
-     */
-    public ListModel getModel() {
-        return dataModel;
-    }
-
-    /**
-     * Sets the model that represents the contents or "value" of the
-     * list and clears the list selection after notifying PropertyChangeListeners.
-     * <p>
-     * This is a JavaBeans bound property.
-     *
-     * @param model  the ListModel that provides the list of items for display
-     * @see #getModel
-     * @beaninfo
-     *       bound: true
-     *   attribute: visualUpdate true
-     * description: The object that contains the data to be drawn by this SList.
-     */
-    public void setModel(ListModel model) {
-        if (model == null) {
-            throw new IllegalArgumentException("model must be non null");
-        }
-        ListModel oldValue = dataModel;
-        dataModel = model;
-        //firePropertyChange("model", oldValue, dataModel);
-        clearSelection();
-    }
-
-
-    /**
-     * A convenience method that constructs a ListModel from an array of Objects
-     * and then applies setModel to it.
-     *
-     * @param listData an array of Objects containing the items to display
-     *                 in the list
-     * @see #setModel
-     */
-    public void setListData(final Object[] listData) {
-        setModel(new AbstractListModel() {
-            public int getSize() {
-                return listData.length;
-            }
-            public Object getElementAt(int i) {
-                return listData[i];
-            } } );
-    }
-
-
-    /**
-     * A convenience method that constructs a ListModel from a Vector
-     * and then applies setModel to it.
-     *
-     * @param listData a Vector containing the items to display in the list
-     * @see #setModel
-     */
-    public void setListData(final Vector listData) {
-        setModel(new AbstractListModel() {
-            public int getSize() {
-                return listData.size();
-            }
-            public Object getElementAt(int i) {
-                return listData.elementAt(i);
-            } } );
-    }
-
-    /**
-     * TODO: documentation
-     *
-     */
-    protected void syncSelection() {
-	if (dataModel == null)
-            return;
-
-        if (selection == null || dataModel.getSize() != selection.length)
-            selection = new boolean[dataModel.getSize()];
-
-        for (int i=0; i < selection.length; i++)
-            selection[i] = false;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     */
-    protected void fireEvents() {
-        for (int i=0; i < selection.length; i++) {
-            if (selection[i] != isSelectedIndex(i)) {
-                if (selection[i])
-                    addSelectionInterval(i, i);
-                else
-                    removeSelectionInterval(i, i);
-            }
-        }
-    }
+    public void setShowAsFormComponent(boolean showAsFormComponent) {}
+    public boolean getShowAsFormComponent() { return true; }
 
     public void getPerformed(String action, String value) {
         try {
             int sel = Integer.parseInt(value);
-
-            if (getShowAsFormComponent()) {
-                if (hidden)
-                    syncSelection();
-                
-                if (sel < 0) {
-                    hidden = true;
-                    fireEvents();
-                }
-                else {
-                    selection[sel] = true;
-                    hidden = false;
-                }
-            }
-            else {
-                if (isSelectedIndex(sel))
-                    removeSelectionInterval(sel, sel);
-                else
-                    addSelectionInterval(sel, sel);
-            }
+            setSelectedIndex(sel);
         }
         catch (Exception e) {
             System.err.println("Cannot parse expected integer");
             e.printStackTrace();
         }
     }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public Dimension getScrollableViewportSize() {
-        return new Dimension(1, dataModel.getSize());
-    }
-
-    public void setViewportSize(Rectangle d) {
-        viewport = d;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public Rectangle getViewportSize() { return viewport; }
 
     /**
      * Returns the name of the CGFactory class that generates the

@@ -71,14 +71,14 @@ public class SAnchorYearMonthChooser
         backward.setToolTipText("&lt;");
         backward.setVerticalTextPosition(backward.TOP);
         backward.setHorizontalTextPosition(backward.RIGHT);
-        backward.setFormComponent(false);
+        backward.setShowAsFormComponent(false);
         backward.addActionListener(this);
 
         forward.setIcon(new ResourceImageIcon("icons/ScrollRight.gif"));
         forward.setToolTipText("&gt;");
         forward.setVerticalTextPosition(forward.TOP);
         forward.setHorizontalTextPosition(forward.RIGHT);
-        forward.setFormComponent(false);
+        forward.setShowAsFormComponent(false);
         forward.addActionListener(this);
 
         add(backward);

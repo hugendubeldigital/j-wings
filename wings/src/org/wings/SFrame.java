@@ -15,6 +15,7 @@
 package org.wings;
 
 import java.awt.Color;
+import java.beans.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ import org.wings.session.SessionManager;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SFrame extends SContainer
+public class SFrame extends SContainer implements PropertyChangeListener
 {
     /**
      * @see #getCGClassID
@@ -153,6 +154,8 @@ public class SFrame extends SContainer
         super.addComponent(getContentPane(), CONTENT_PANEL);
         super.addComponent(optionPaneContainer, OPTION_PANEL);
         card.show(this, CONTENT_PANEL);
+        
+        getSession().addPropertyChangeListener("lookAndFeel", this);
     }
 
     /**
@@ -539,6 +542,24 @@ public class SFrame extends SContainer
             SComponent result = super.addComponent(c, constraint);
             c.addedToFrame();
             return result;
+        }
+    }
+
+    public void propertyChange(PropertyChangeEvent pe) {
+        if ("lookAndFeel".equals(pe.getPropertyName())) {
+            updateComponentTreeCG(getContentPane());
+        }
+    }
+
+    private void updateComponentTreeCG(SComponent c) {
+        if (c instanceof SComponent) {
+            ((SComponent)c).updateCG();
+        }
+        if (c instanceof SContainer) {
+            SComponent[] children = ((SContainer)c).getComponents();
+            for(int i = 0; i < children.length; i++) {
+                updateComponentTreeCG(children[i]);
+            }
         }
     }
 

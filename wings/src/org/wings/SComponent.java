@@ -16,6 +16,7 @@ package org.wings;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.beans.*;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Hashtable;
@@ -171,6 +172,8 @@ public abstract class SComponent
      */
     protected String tooltip = null;
 
+    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+    
     /**
      * TODO: documentation
      *
@@ -847,7 +850,37 @@ public abstract class SComponent
             getClientProperties().remove(key);
         }
 
-        //firePropertyChange(key.toString(), oldValue, value);
+        firePropertyChange(key.toString(), oldValue, value);
+    }
+
+    /**
+     * Add a PropertyChangeListener to the current list of listeners.
+     *
+     * @param l some class implementing the PropertyChangeListener interface
+     */
+    public void addPropertyChangeListener(PropertyChangeListener l) {
+	propertyChangeSupport.addPropertyChangeListener(l);
+    }
+    
+    /**
+     * Remove a PropertyChangeListener from the current list of listeners.
+     *
+     * @param l the listener to be removed
+     */
+    public void removePropertyChangeListener(PropertyChangeListener l) {
+	propertyChangeSupport.removePropertyChangeListener(l);
+    }
+    
+    protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+        propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    protected void firePropertyChange(String propertyName, int oldValue, int newValue) {
+        propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    protected void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
+        propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
     }
 
     /**
@@ -882,7 +915,7 @@ public abstract class SComponent
         if (cg != null) {
             cg.installCG(this);
         }
-        //firePropertyChange("CG", oldCG, newCG);
+        firePropertyChange("CG", oldCG, newCG);
     }
 
     /**

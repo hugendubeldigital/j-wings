@@ -120,6 +120,8 @@ public abstract class SessionServlet
             parent = p;
     }
 
+    public Session getSession() { return session; }
+
     /**
      * TODO: documentation
      */

@@ -3,6 +3,7 @@ package org.wings.plaf;
 import javax.swing.*;
 
 import org.wings.*;
+import org.wings.session.*;
 import org.wings.style.*;
 
 public class CGManager
@@ -223,7 +224,9 @@ public class CGManager
             setLookAndFeelDefaults(null);
         }
 	
-        //changeSupport.firePropertyChange("lookAndFeel", oldLookAndFeel, newLookAndFeel);
+	// have the session fire a propertyChangeEvent regarding the new lookAndFeel
+	if (SessionManager.getSession() != null)
+	    ((PropertyService)SessionManager.getSession()).setProperty("lookAndFeel", newLookAndFeel.getName());
     }
 
     

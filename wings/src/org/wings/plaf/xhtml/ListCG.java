@@ -116,14 +116,15 @@ public class ListCG implements org.wings.plaf.ListCG
 		
 		d.append("<option value=\"").append(i).append("\"");
 		if (selected)
-		    d.append(" selected=\"selected\"");
-		d.append(">");
+		    d.append(" selected=\"selected\">");
+		else
+		    d.append(">");
 		
 		SComponent renderer
 		    = cellRenderer.getListCellRendererComponent(list, o, false, i);
 		rendererPane.writeComponent(d, renderer, list);
 		
-		d.append("\n");
+		d.append("</option>\n");
 	    }
 	}
     }

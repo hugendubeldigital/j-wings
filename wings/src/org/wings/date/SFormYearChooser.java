@@ -56,7 +56,7 @@ public class SFormYearChooser
         addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if ( getSelectedIndex()>=0 )
-                    year = ((Integer)getSelectedValue()).intValue();
+                    year = ((Integer)getSelectedItem()).intValue();
                 else
                     year = -1;
             } } );

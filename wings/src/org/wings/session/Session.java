@@ -30,7 +30,8 @@ import org.wings.externalizer.ExternalizeManager;
  */
 public interface Session
 {
-    String LOCALE_PROPERTY = "LocaleProperty";
+    String LOCALE_PROPERTY = "locale";
+    String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
 
     /**
      * used by servlet session to initialize session

@@ -220,7 +220,7 @@ public class SAnchorDayChooser
 
         for ( int i=0; i<buttons.length; i++ ) {
             buttons[i] = new SToggleButton(""+(i+1));
-            buttons[i].setFormComponent(false);
+            buttons[i].setShowAsFormComponent(false);
             buttons[i].addActionListener(this);
             buttons[i].setHorizontalAlignment(RIGHT);
             group.add(buttons[i]);

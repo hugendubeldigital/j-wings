@@ -126,19 +126,21 @@ public class DefaultSession
 
     /**
      * Determines the current session properties.
-     * The current set of system properties for use by the
+     * The current set of session properties for use by the
      * {@link #getProperty(String)} method is returned as a
      * <code>Properties</code> object.
      * This set of session properties always includes values
      * for the following keys:
      * <table>
      * <tr><th>Key</th>
-     *     <th>Description of Associated Value</th></tr>
-     * <tr><td><code>java.version</code></td>
-     *     <td>Java Runtime Environment version</td></tr>
+     *     <th>Associated Value</th></tr>
+     * <tr><td><code>locale</code></td>
+     *     <td>The current locale</td></tr>
+     * <tr><td><code>lookAndFeel</code></td>
+     *     <td>The current look and feel</td></tr>
      * </table>
      *
-     * @see        java.util.Properties
+     * @see java.util.Properties
      */
     public Properties getProperties() {
         return props;

@@ -94,7 +94,7 @@ H3		{ font-size: 12pt;
 
 .tableselection {
    color: #ffff00;
-   background-color: #99cccc;
+   background-color: #99dddd;
 }
 
 .tablenonselection {
@@ -126,23 +126,23 @@ H3		{ font-size: 12pt;
 .treenodeselection {
    text-decoration: none;
    color: #000000;
-   background-color: #99cccc;
+   background-color: #99dddd;
 }
 
 .treenodenonselection {
    text-decoration: none;
-   color: #000000;
+   color: #000099;
 }
 
 .listselection {
    text-decoration: none;
    color: #000000;
-   background-color: #99cccc;
+   background-color: #99dddd;
 }
 
 .listnonselection {
    text-decoration: none;
-   color: #000000;
+   color: #000099;
 }
 
 .topleft	{ text-align: left;
