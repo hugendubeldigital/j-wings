@@ -29,23 +29,25 @@ public class CGUtil
 	throws IOException
     {
 	SDimension dim = c.getPreferredSize();
-	 
+	
 	if (dim != null) {
 	    if (dim.width != null)
 		d.append(" width=\"").append(dim.width).append("\"");
-        if (dim.height != null)
+	    if (dim.height != null)
 		d.append(" height=\"").append(dim.height).append("\"");
 	}
     }
-
+    
     public static void writeSize(Device d, SAbstractLayoutManager lm)
         throws IOException
     {
         SDimension dim = lm.getPreferredSize();
-
+	
         if (dim != null) {
-	    if (dim.width != null) d.append(" width=\"").append(dim.width).append("\"");
-	    if (dim.height != null) d.append(" height=\"").append(dim.height).append("\"");
+	    if (dim.width != null) 
+		d.append(" width=\"").append(dim.width).append("\"");
+	    if (dim.height != null) 
+		d.append(" height=\"").append(dim.height).append("\"");
 	}
     }
 }

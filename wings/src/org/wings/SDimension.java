@@ -24,25 +24,27 @@ public class SDimension
     public String height = null;
     private int iwidth = -1;
     private int iheight = -1;
-
+    
     public SDimension() {}
-
+    
     public SDimension(String width, String height) {
         setWidth(width);
         setHeight(height);
     }
 
     /**
-      * Construct a new dimension.
-	  * The value is converted to "<value>px".
-      * @param width the width. If value is less than <code>0</code> width is set to <code>null</code>.
-      * @param height the height. If value is less than <code>0</code> height is set to <code>null</code>.
-      * @see #setSize(int,int)
-      */
+     * Construct a new dimension.
+     * The value is converted to "<value>px".
+     * @param width the width. If value is less than <code>0</code> width 
+     *        is set to <code>null</code>.
+     * @param height the height. If value is less than <code>0</code> height 
+     *        is set to <code>null</code>.
+     * @see #setSize(int,int)
+     */
     public SDimension(int width, int height) {
         setSize(width,height);
     }
-
+    
     public void setWidth(String width) {
         if (width != null && !Character.isDigit(width.charAt(0)))
             throw new IllegalArgumentException(width);
@@ -83,10 +85,10 @@ public class SDimension
             this.height=null;
     }
 
-	/**
-	  * Extract number from string.
-	  * @return extracted integer. f.e.: "120px" becomes 120
-	  */
+    /**
+     * Extract number from string.
+     * @return extracted integer. f.e.: "120px" becomes 120
+     */
     protected int getInt(String size) {
         try {
             return new DecimalFormat().parse(size,new ParsePosition(0)).intValue();
@@ -100,11 +102,11 @@ public class SDimension
 
     public String getWidth() { return width; }
     public String getHeight() { return height; }
-        
+    
     /**
-      * Get just the width as number without trailing 
-      * unit.
-      */
+     * Get just the width as number without trailing 
+     * unit.
+     */
     public int getIntWidth() {
         if (iwidth==-1)
             iwidth=getInt(width);
@@ -112,30 +114,31 @@ public class SDimension
     }
         
     /**
-      * Get just the height as number without trailing 
-      * unit.
-      */
+     * Get just the height as number without trailing 
+     * unit.
+     */
     public int getIntHeight() {
         if (iheight==-1)
             iheight=getInt(height);
         return iheight;
     }
-	
+    
     /**
-      * Checks whether two dimension objects have equal values.
-      * @param obj - the reference object with which to compare.
-      * @return true if this object is the same as the obj argument; false otherwise.
-      */
+     * Checks whether two dimension objects have equal values.
+     * @param obj - the reference object with which to compare.
+     * @return true if this object is the same as the obj argument; 
+     *         false otherwise.
+     */
     public boolean equals(Object obj) {
         return width.equals(((SDimension) obj).width) && height.equals(((SDimension) obj).height);
     }
     
     /**
-      * Set the size of this Dimension object to the specified width and height
-      * and append "px" to both values.
-	  * @see #setHeight(int)
-	  * @see #setWidth(int)
-      */
+     * Set the size of this Dimension object to the specified width and height
+     * and append "px" to both values.
+     * @see #setHeight(int)
+     * @see #setWidth(int)
+     */
     public void setSize(int width, int height) {
         setWidth(width);
         setHeight(height);
