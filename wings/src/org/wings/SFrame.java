@@ -25,7 +25,6 @@ import org.wings.*;
 import org.wings.io.Device;
 import org.wings.plaf.*;
 import org.wings.style.StyleSheet;
-import org.wings.style.StyleConstants;
 import org.wings.session.Session;
 import org.wings.session.SessionManager;
 import org.wings.session.PropertyService;
@@ -81,8 +80,6 @@ public class SFrame
     private Color linkColor;
     private Color vLinkColor;
     private Color aLinkColor;
-
-    private SIcon backgroundImage;
 
     /**
      * TODO: documentation
@@ -171,31 +168,6 @@ public class SFrame
     }
 
     /**
-     * Set the background image.
-     *
-     * @param icon the SIcon representing the background image.
-     */
-    public void setBackgroundImage(SIcon img) {
-        backgroundImage = img;
-        if (img == null) {
-            removeAttribute(StyleConstants.BACKGROUND_IMAGE);
-        }
-        else {
-            setAttribute(StyleConstants.BACKGROUND_IMAGE, 
-                         "url(" + img.getURL().toString() + ")");
-        }
-    }
-
-    /**
-     * return the background image for this frame.
-     *
-     * @return the background image as SIcon.
-     */
-    public SIcon getBackgroundImage() {
-        return backgroundImage;
-    }
-
-    /**
      * TODO: documentation
      *
      * @return
@@ -233,7 +205,9 @@ public class SFrame
     }
 
     /**
-     * TODO: documentation
+     * Returns the base URL for a request to the WingsServlet. This URL
+     * is used to assemble an URL that trigger events. In order to be used
+     * for this purpose, you've to add your parameters here.
      */
     public final RequestURL getRequestURL() {
         RequestURL result = null;

@@ -20,6 +20,7 @@ import java.util.*;
 import org.wings.plaf.*;
 import org.wings.io.Device;
 import org.wings.util.*;
+import org.wings.style.StyleConstants;
 import org.wings.event.SContainerListener;
 import org.wings.event.SContainerEvent;
 
@@ -47,6 +48,21 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * The layout for the component.
      */
     protected SLayoutManager layout;
+
+    /**
+     * background image, that is rendered for this container.
+     */
+    private SIcon backgroundImage;
+
+    /**
+     * The components in this container.
+     */
+    private ArrayList componentList;
+
+    /**
+     * The constraints for the components.
+     */
+    private ArrayList constraintList;
 
     /**
      * creates a new container with the given layout
@@ -93,6 +109,31 @@ public class SContainer extends SComponent implements ClickableRenderComponent
 
             layout.setContainer(this);
         }
+    }
+
+    /**
+     * Set the background image.
+     *
+     * @param icon the SIcon representing the background image.
+     */
+    public void setBackgroundImage(SIcon img) {
+        backgroundImage = img;
+        if (img == null) {
+            removeAttribute(StyleConstants.BACKGROUND_IMAGE);
+        }
+        else {
+            setAttribute(StyleConstants.BACKGROUND_IMAGE, 
+                         "url(" + img.getURL().toString() + ")");
+        }
+    }
+
+    /**
+     * return the background image for this frame.
+     *
+     * @return the background image as SIcon.
+     */
+    public SIcon getBackgroundImage() {
+        return backgroundImage;
     }
 
     /**
@@ -163,22 +204,12 @@ public class SContainer extends SComponent implements ClickableRenderComponent
         }
     }
 
-
-    /**
-     * The components in this container.
-     */
-    private ArrayList componentList;
-
     protected final ArrayList getComponentList() {
-        if ( componentList == null )
+        if ( componentList == null ) {
             componentList = new ArrayList(3);
+        }
         return componentList;
     }
-
-    /**
-     * The constraints for the components.
-     */
-    private ArrayList constraintList;
 
     protected final ArrayList getConstraintList() {
         if ( constraintList == null )
@@ -307,8 +338,9 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * Removes all components from the container.
      */
     public final void removeAll() {
-        while ( getComponentCount() > 0 )
+        while ( getComponentCount() > 0 ) {
             removeComponentAt(0);
+        }
     }
 
 
