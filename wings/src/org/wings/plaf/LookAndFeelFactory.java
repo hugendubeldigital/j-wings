@@ -77,9 +77,7 @@ public abstract class LookAndFeelFactory
 
     protected abstract LookAndFeel create() throws IOException;
 
-    static class Default
-	extends LookAndFeelFactory
-    {
+    static class Default extends LookAndFeelFactory {
         private static String DEFAULT_LOOKANDFEEL = "/css1.jar";
         private LookAndFeel laf;
 

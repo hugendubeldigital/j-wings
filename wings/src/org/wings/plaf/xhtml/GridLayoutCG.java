@@ -17,7 +17,8 @@ package org.wings.plaf.xhtml;
 import java.io.IOException;
 import java.util.*;
 
-import org.wings.*; import org.wings.border.*;
+import org.wings.*; 
+import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.util.CGUtil;
@@ -51,12 +52,12 @@ public class GridLayoutCG
         container.setPreferredSize(null);               /* Disable the Dimension, don't needed */
         
         d.print("\n<table ");
-//        if ( Utils.hasSpanAttributes( container ) )
-//         {
-         	d.print("style=\"width:100%");
-        	Utils.writeSpanAttributes( d, (SComponent) container );
+        /*if ( Utils.hasSpanAttributes( container ) ) always because of 100% */
+        {
+            d.print("style=\"width:100%;");
+            Utils.writeSpanAttributes( d, (SComponent) container );
             d.print("\" ");
-//		 }
+        }
 
         if (cellSpacing >= 0)
             d.print(" cellspacing=\"").print(cellSpacing).print("\"");
