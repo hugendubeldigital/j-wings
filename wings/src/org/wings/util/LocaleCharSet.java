@@ -23,7 +23,7 @@ import org.wings.ClasspathResource;
 
 /**
  * Map {@link java.util.Locale} to html/iso character set.
- * @author <a href="mailto:andre@lison.de>Andre' Lison</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  */
 public class LocaleCharSet
 {
