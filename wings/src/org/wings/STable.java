@@ -157,6 +157,10 @@ public class STable
      */
     protected Rectangle viewport = null;
 
+    public STable() {
+        
+    }
+
     /**
      * TODO: documentation
      *
