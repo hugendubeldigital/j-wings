@@ -5,12 +5,6 @@
   <title>wingS Whitepaper</title>
 
   <section>
-    <sectioninfo>
-      <subtitle>Why you should consider wingS</subtitle>
-
-      <date>February 28, 2005</date>
-    </sectioninfo>
-
     <title>Introduction</title>
 
     <para>wingS is a Java servlet based toolkit which presents a high level
@@ -305,6 +299,6 @@
   <section>
     <title>Future Directions</title>
 
-    <para>To be done. </para>
+    <para>To be done.</para>
   </section>
 </article>
