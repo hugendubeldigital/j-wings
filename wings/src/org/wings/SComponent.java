@@ -294,17 +294,19 @@ public abstract class SComponent
      * @see      org.wings.event.SComponentListener
      * @see      org.wings.SComponent#removeComponentListener
      */
-    public final synchronized void addScriptListener(ScriptListener l) {
-        if (l == null)
+    public final synchronized void addScriptListener(ScriptListener listener) {
+        if (listener == null)
             return;
 
-        // lazy create HashMap
-        if ( scriptListeners==null )
+        // lazyly create HashMap
+        if ( scriptListeners==null ) {
             scriptListeners = new HashMap();
+        }
 
-        scriptListeners.put(l.getEvent(), l);
-        if (l.getScript() != null)
+        scriptListeners.put(listener.getEvent(), listener);
+        if (listener.getScript() != null) {
             reload(ReloadManager.RELOAD_SCRIPT);
+        }
     }
 
     /**
@@ -318,14 +320,15 @@ public abstract class SComponent
      * @see      org.wings.event.SComponentListener
      * @see      org.wings.SComponent#addComponentListener
      */
-    public final synchronized void removeScriptListener(ScriptListener l) {
-        if (l == null)
+    public final synchronized void removeScriptListener(ScriptListener listener) {
+        if (listener == null)
             return;
 
-        if ( scriptListeners!=null && 
-             scriptListeners.remove(l.getEvent()) != null && 
-             l.getScript() != null)
+        if ( scriptListeners != null
+             && scriptListeners.remove(listener.getEvent()) != null
+             && listener.getScript() != null ) {
             reload(ReloadManager.RELOAD_SCRIPT);
+        }
     }
 
     public Collection getScriptListeners() { 
@@ -434,11 +437,8 @@ public abstract class SComponent
      * @param value the attribute value
      */
     public void setAttribute(String name, String value) {
-        boolean changed = attributes.isDefined(name);
-        attributes.putAttribute(name, value);
-
-        if (changed)
-            reload(ReloadManager.RELOAD_STYLE);
+        String oldVal = attributes.putAttribute(name, value);
+        reloadIfChange(ReloadManager.RELOAD_STYLE, oldVal, value);
     }
 
     /**
@@ -470,14 +470,12 @@ public abstract class SComponent
      * Set the attributes.
      * @param attributes the attributes
      */
-    public void setAttributes(AttributeSet attributes) {
-        if (attributes == null)
+    public void setAttributes(AttributeSet newAttributes) {
+        if (newAttributes == null) {
             throw new IllegalArgumentException("null not allowed");
-
-        if (!this.attributes.equals(attributes)) {
-            this.attributes = attributes;
-            reload(ReloadManager.RELOAD_STYLE);
         }
+        reloadIfChange(ReloadManager.RELOAD_STYLE, attributes, newAttributes);
+        attributes = newAttributes;
     }
 
     /**
@@ -492,7 +490,8 @@ public abstract class SComponent
      * @param c the new background color
      */
     public void setBackground(Color color) {
-        setAttribute(Style.BACKGROUND_COLOR, CSSStyleSheet.getAttribute(color));
+        setAttribute(Style.BACKGROUND_COLOR, 
+                     CSSStyleSheet.getAttribute(color));
     }
 
     /**
@@ -539,13 +538,14 @@ public abstract class SComponent
      */
     public void setFont(SFont font) {
         boolean changed = attributes.putAttributes(CSSStyleSheet.getAttributes(font));
-        if (changed)
+        if (changed) {
             reload(ReloadManager.RELOAD_STYLE);
+        }
     }
 
     /**
      * Return the font.
-     * @return f the font
+     * @return the font
      */
     public SFont getFont() {
         return CSSStyleSheet.getFont(attributes);
@@ -555,14 +555,15 @@ public abstract class SComponent
      * Set the visibility.
      * @param v wether this component wil show or not
      */
-    public void setVisible(boolean v) {
-        boolean old = visible;
-        visible = v;
-        if (old != visible) {
+    public void setVisible(boolean newVisible) {
+        boolean oldVisible = visible;
+        visible = newVisible;
+        if (oldVisible != newVisible) {
             reload(ReloadManager.RELOAD_CODE);
-            SComponentEvent evt = new SComponentEvent(this, v ?
-                                                      SComponentEvent.COMPONENT_SHOWN :
-                                                      SComponentEvent.COMPONENT_HIDDEN);
+            SComponentEvent evt = 
+                new SComponentEvent(this,(visible
+                                          ? SComponentEvent.COMPONENT_SHOWN
+                                          : SComponentEvent.COMPONENT_HIDDEN));
             fireComponentChangeEvent(evt);
         }
     }
@@ -594,8 +595,9 @@ public abstract class SComponent
     public void setEnabled(boolean e) {
         boolean old = enabled;
         enabled = e;
-        if (old != enabled)
+        if (old != enabled) {
             reload(ReloadManager.RELOAD_CODE);
+        }
     }
 
     /**
@@ -629,22 +631,47 @@ public abstract class SComponent
     /**
      * Mark the component as subject to reload.
      * The component will be registered with the ReloadManager.
+     *
+     * @param aspect the aspect to reload; this is one of the constants
+     *               defined in ReloadManager: 
+     *               <code>ReloadManager.RELOAD_*</code>
      */
     public final void reload(int aspect) {
         getSession().getReloadManager().reload(this, aspect);
     }
 
     /**
-     * Let the delegate write the component's code to the device.
+     * Mark this component as subject to reload for the given
+     * aspect if the property, that is given in its old and new
+     * fashion, changed. Convenience method for {@link #reload(int)}
+     *
+     * @param aspect the aspect to reload; this is one of the constants
+     *               defined in ReloadManager: 
+     *               <code>ReloadManager.RELOAD_*</code>
+     * @param oldVal the old value of some property
+     * @param newVal the new value of some property
+     */
+    protected final void reloadIfChange(int aspect, 
+                                        Object oldVal, Object newVal) {
+        if (!((oldVal == newVal)||(oldVal != null && oldVal.equals(newVal)))) {
+            //System.err.println(getClass().getName() + ": reload. old:" + oldVal + "; new: "+ newVal);
+            reload(aspect);
+        }
+    }
+
+    /**
+     * Let the code generator deletate write the component's code 
+     * to the device. The code generator is the actual 'plaf'.
      *
      * @param s the Device to write into
-     * @throws IOException Thrown when the connection to the client gets broken,
+     * @throws IOException Thrown if the connection to the client gets broken,
      *         for example when the user stops loading
      */
     public void write(Device s) throws IOException {
         try {
-            if (visible)
+            if (visible) {
                 cg.write(s, this);
+            }
         }
         catch (Throwable t) {
             System.err.println(t.getMessage());
@@ -655,6 +682,7 @@ public abstract class SComponent
     }
 
     /**
+     * a string representation of this component. Just
      * renders the component into a string.
      */
     public String toString() {
@@ -669,8 +697,8 @@ public abstract class SComponent
 
 
     /**
-     * Generic implementation for generating a string that represents the components
-     * configuration.
+     * Generic implementation for generating a string that represents 
+     * the components configuration.
      * @return a string containing all properties
      */
     public String paramString() {
@@ -710,7 +738,9 @@ public abstract class SComponent
      */
     public String getNamePrefix() {
         if (getParentFrame() != null)
-            return getParentFrame().getEventEpoch() + SConstants.UID_DIVIDER + getUnifiedId();
+            return (getParentFrame().getEventEpoch() 
+                    + SConstants.UID_DIVIDER 
+                    + getUnifiedId());
         return getUnifiedId();
     }
 
@@ -732,8 +762,9 @@ public abstract class SComponent
         SComponent parent = getParent();
 
         boolean actuallyDoes = false;
-        while (parent != null && !(actuallyDoes = (parent instanceof SForm)))
+        while (parent != null && !(actuallyDoes = (parent instanceof SForm))) {
             parent = parent.getParent();
+        }
 
         return actuallyDoes;
     }
@@ -762,7 +793,8 @@ public abstract class SComponent
     public Object clone() {
         try {
             return super.clone();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -864,10 +896,11 @@ public abstract class SComponent
 
         if (value != null) {
             getClientProperties().put(key, value);
-        } else {
+        } 
+        else {
             getClientProperties().remove(key);
         }
-
+        
         firePropertyChange(key.toString(), oldValue, value);
     }
 
@@ -999,7 +1032,7 @@ public abstract class SComponent
 
     /**
      * Invite a ComponentVisitor.
-     * Invokes visit on the ComponentVisitor.
+     * Invokes visit(SComponent) on the ComponentVisitor.
      * @param visitor the visitor to be invited 
      */
     public void invite(ComponentVisitor visitor)
@@ -1009,8 +1042,8 @@ public abstract class SComponent
     }
 
     /**
-     * use this method for changing a variable. if a new value is different from
-     * the old value set the new one and notify e.g. the reloadmanager...
+     * use this method for changing a variable. if a new value is different
+     * from the old value set the new one and notify e.g. the reloadmanager...
      */
     protected static final boolean isDifferent(Object oldObject, 
                                                Object newObject) {
@@ -1022,7 +1055,6 @@ public abstract class SComponent
 
         return !oldObject.equals(newObject);
     }
-
 }
 
 /*
