@@ -47,7 +47,10 @@ public class SDefaultTableRowSelectionRenderer extends SLabel
         new ResourceImageIcon("org/wings/icons/NotSelectedRadioButton.gif");
 
     /** Style to use for the foreground for non-selected nodes. */
-    protected String nonSelectionStyle = null;
+    protected String nonSelectionStyle;
+
+    /** Style to use for the foreground for non-selected nodes. */
+    protected String selectionStyle;
 
     protected ResourceImageIcon multiSelectionIcon = DEFAULT_MULTI_SELECTION_ICON;
 
@@ -85,7 +88,7 @@ public class SDefaultTableRowSelectionRenderer extends SLabel
 
         // style
         if (selected) {
-            setStyle(table.getSelectionStyle());
+            setStyle(selectionStyle);
         }
         else {
             setStyle(nonSelectionStyle);
@@ -110,6 +113,24 @@ public class SDefaultTableRowSelectionRenderer extends SLabel
      */
     public String getNonSelectionStyle() {
         return nonSelectionStyle;
+    }
+
+    /**
+     * Sets the style the cell is drawn with when the cell isn't selected.
+     *
+     * @param newStyle
+     */
+    public void setSelectionStyle(String newStyle) {
+        selectionStyle = newStyle;
+    }
+
+    /**
+     * Returns the style the cell is drawn with when the cell isn't selected.
+     *
+     * @return
+     */
+    public String getSelectionStyle() {
+        return selectionStyle;
     }
 
 }
