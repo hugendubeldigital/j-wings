@@ -16,8 +16,11 @@
 package org.wings.plaf.compiler;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Vector;
 import org.wings.template.parser.SGMLTag;
 
 public class PlafCompiler {
@@ -123,6 +126,7 @@ public class PlafCompiler {
             return;
         }
 
+        Vector properties = new Vector();
 	for (int i=0; i < files.length; ++i) {
             TemplateParser parser = null;
             String file = files[i];
@@ -136,12 +140,13 @@ public class PlafCompiler {
                     if (name == null || forClass == null) {
                         throw new IOException (file +": 'name' and 'for' as template attributes expected");
                     }
-                    if (verbose)
+                    if (verbose) {
                         System.err.println ("template for " + name);
+                    }
                     parser = new TemplateParser(name, baseDir, new File(file),
                                                 packageName, forClass);
                     parser.parse(input);
-                    parser.generate(destDir);
+                    parser.generate(destDir, properties);
                     tag = new SGMLTag(input);
                 }
             }
@@ -152,6 +157,22 @@ public class PlafCompiler {
                 parser.reportError(pe.getMessage());
             }
 	}
+
+        try {
+            File propertyFile = new File(destDir, "default.properties");
+            PrintWriter writer = new PrintWriter(new FileWriter(propertyFile));
+            writer.println("# default.properties automatically generated.");
+            writer.println();
+            Iterator propIt = properties.iterator();
+            while (propIt.hasNext()) {
+                String p = (String) propIt.next();
+                writer.println(p);
+            }
+            writer.close();
+        }
+        catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
     }
     
     /*
