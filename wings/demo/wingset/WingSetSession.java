@@ -146,7 +146,8 @@ public class WingSetSession
              * This is a dummy call to generate the HTML output, just
              * to measure the time
              */
-            String erg = getFrame().show();
+            Device devNull = new org.wings.io.NullDevice();
+            getFrame().write(devNull);
             measure.stop();
             timeMeasure.setText(measure.print());
             measure.reset();
