@@ -70,6 +70,7 @@
     <copy file="${lib}/css1.jar" todir="${deploy}/wingset" />
   </target>
 
+<!--
   <target name="ide" depends="build">
     <mkdir dir="${deploy}/ide"/>
     <mkdir dir="${deploy}/ide/WEB-INF"/>
@@ -89,6 +90,7 @@
     <copy file="${lib}/wings.jar" todir="${deploy}/ide/WEB-INF/lib" />
     <copy file="${lib}/css1.jar" todir="${deploy}/ide" />
   </target>
+-->
 
   <target name="ldap" depends="build">
     <mkdir dir="${deploy}/ldap"/>
@@ -216,6 +218,7 @@
       </fileset>
     </war>
 
+<!--
     <war warfile="${deploy}/ide.war" webxml="ide/ide.xml">
       <lib dir="${lib}">
         <include name="wings.jar"/>
@@ -234,7 +237,7 @@
         <include name="css1.jar"/>
       </fileset>
     </war>
-
+-->
 <!--
     <war warfile="${deploy}/jndi.war" webxml="jndi/jndi.xml">
       <lib dir="${lib}">
@@ -333,5 +336,5 @@
 
   <target name="all" depends="clean,build,deploy"/>
   <target name="main" depends="build"/>
-  <target name="webapps" depends="wingset,ide,frameset,ldap,explorer,desktop"/>
+  <target name="webapps" depends="wingset,frameset,ldap,explorer,desktop"/>
 </project>
