@@ -147,7 +147,30 @@ H3 {
    color: #000000;
    text-decoration: none;
    font-family: sans-serif;
-   font-weight: normal
+   font-weight: normal;
+}
+
+.anchortabbedpaneselection {
+   display: inline;
+   color: #000000;
+   background-color: #AAAAFF;
+   font-family: sans-serif;
+   font-size: 12px;
+   border-top: black thin solid;
+   padding-top: 7px;
+   padding-bottom: 0px;
+   font-weight: bold;
+}
+
+.anchortabbedpanenonselection {
+   display: inline;
+   color: #000000;
+   font-family: sans-serif;
+   font-size: 12px;
+   border-top: black thin solid;
+   padding-top: 7px;
+   padding-bottom: 0px;
+   font-weight: normal;
 }
 
 .topleft { 
