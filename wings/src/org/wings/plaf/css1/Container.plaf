@@ -2,10 +2,7 @@
 
 <write>
 <%
-SBorder border = component.getBorder();
-Utils.renderBorderPrefix(device, border);
 Utils.renderContainer(device, component);
-Utils.renderBorderPostfix(device, border);
 %>
 </write>
 </template>
