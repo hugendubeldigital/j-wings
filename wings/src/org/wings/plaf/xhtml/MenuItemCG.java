@@ -62,41 +62,41 @@ public class MenuItemCG
         else {
             // Hauptsache, es funktioniert !!!
             if (verticalTextPosition == TOP && horizontalTextPosition == LEFT) {
-                d.append("<table><tr><td valign=\"top\">");
+                d.print("<table><tr><td valign=\"top\">");
                 writeAnchorText(d, button);
-                d.append("</td><td>");
+                d.print("</td><td>");
                 writeAnchorIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == LEFT) {
-                d.append("<table><tr><td>");
+                d.print("<table><tr><td>");
                 writeAnchorText(d, button);
-                d.append("</td><td>");
+                d.print("</td><td>");
                 writeAnchorIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == LEFT) {
-                d.append("<table><tr><td valign=\"bottom\">");
+                d.print("<table><tr><td valign=\"bottom\">");
                 writeAnchorText(d, button);
-                d.append("</td><td>");
+                d.print("</td><td>");
                 writeAnchorIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == CENTER) {
-                d.append("<table><tr><td>");
+                d.print("<table><tr><td>");
                 writeAnchorText(d, button);
-                d.append("</td></tr><tr><td>");
+                d.print("</td></tr><tr><td>");
                 writeAnchorIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == CENTER) {
-                d.append("<table><tr><td>");
+                d.print("<table><tr><td>");
                 writeAnchorText(d, button);
-                d.append("</td><td>");
+                d.print("</td><td>");
                 writeAnchorIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == CENTER) {
-                d.append("<table><tr><td>");
+                d.print("<table><tr><td>");
                 writeAnchorIcon(d, button);
-                d.append("</td></tr><tr><td>");
+                d.print("</td></tr><tr><td>");
                 writeAnchorText(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == RIGHT) {
                 writeAnchorIcon(d, button, "top");
                 writeAnchorText(d, button);
@@ -138,18 +138,18 @@ public class MenuItemCG
 
         if (icon != null) {
             writeAnchorPrefix(d, button);
-            d.append("<img src=\"").append(icon.getURL()).append("\"");
+            d.print("<img src=\"").print(icon.getURL()).print("\"");
             if (align != null)
-                d.append(" align=\"").append(align).append("\"");
+                d.print(" align=\"").print(align).print("\"");
 
             
             if ( icon.getIconWidth() > 0)
-                d.append(" width=\"").append(icon.getIconWidth()).append("\"");
+                d.print(" width=\"").print(icon.getIconWidth()).print("\"");
 
             if ( icon.getIconHeight() > 0)
-                d.append(" height=\"").append(icon.getIconHeight()).append("\"");
+                d.print(" height=\"").print(icon.getIconHeight()).print("\"");
 
-            d.append(" border=\"0\"");
+            d.print(" border=\"0\"");
 
 
             String text = button.getText();
@@ -157,12 +157,12 @@ public class MenuItemCG
 
 
             if (tooltip != null) {
-                d.append(" alt=\"").append(tooltip).append("\"");
+                d.print(" alt=\"").print(tooltip).print("\"");
             } else if (text != null) {
-                d.append(" alt=\"").append(text).append("\"");
+                d.print(" alt=\"").print(text).print("\"");
             }
 
-            d.append(" />");
+            d.print(" />");
 
             writeAnchorPostfix(d, button);
         }
@@ -181,17 +181,17 @@ public class MenuItemCG
         String tooltip = button.getToolTipText();
 
         if (button.isEnabled()) {
-            d.append("<a href=\"");
+            d.print("<a href=\"");
             writeAnchorAddress(d, button);
-            d.append("\"");
+            d.print("\"");
 
             if (button.getRealTarget() != null)
-                d.append(" target=\"").append(button.getRealTarget()).append("\"");
+                d.print(" target=\"").print(button.getRealTarget()).print("\"");
 
             if (tooltip != null)
-                d.append(" title=\"").append(tooltip).append("\"");
+                d.print(" title=\"").print(tooltip).print("\"");
 
-            d.append(">");
+            d.print(">");
         }
     }
 
@@ -203,14 +203,14 @@ public class MenuItemCG
 
         if (text == null)
             text = "";
-        d.append((noBreak) ? StringUtil.replace(text, " ", "&nbsp;") : text);
+        d.print((noBreak) ? StringUtil.replace(text, " ", "&nbsp;") : text);
     }
 
     protected void writeAnchorPostfix(Device d, SButton button)
         throws IOException
     {
         if (button.isEnabled()) {
-            d.append("</a>");
+            d.print("</a>");
         }
     }
 
@@ -229,65 +229,65 @@ public class MenuItemCG
         else {
             // Hauptsache, es funktioniert !!!
             if (verticalTextPosition == TOP && horizontalTextPosition == LEFT) {
-                d.append("<table><tr><td valign=\"top\">");
+                d.print("<table><tr><td valign=\"top\">");
                 writeFormText(d, button);
-                d.append("</td><td>");
+                d.print("</td><td>");
                 writeFormIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == LEFT) {
-                d.append("<table><tr><td>");
+                d.print("<table><tr><td>");
                 writeFormText(d, button);
-                d.append("</td><td>");
+                d.print("</td><td>");
                 writeFormIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == LEFT) {
-                d.append("<table><tr><td valign=\"bottom\">");
+                d.print("<table><tr><td valign=\"bottom\">");
                 writeFormText(d, button);
-                d.append("</td><td>");
+                d.print("</td><td>");
                 writeFormIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == CENTER) {
-                d.append("<table><tr><td>");
+                d.print("<table><tr><td>");
                 writeFormText(d, button);
-                d.append("</td></tr><tr><td>");
+                d.print("</td></tr><tr><td>");
                 writeFormIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == CENTER) {
-                d.append("<table><tr><td>");
+                d.print("<table><tr><td>");
                 writeFormText(d, button);
-                d.append("</td><td>");
+                d.print("</td><td>");
                 writeFormIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == CENTER) {
-                d.append("<table><tr><td>");
+                d.print("<table><tr><td>");
                 writeFormIcon(d, button);
-                d.append("</td></tr><tr><td>");
+                d.print("</td></tr><tr><td>");
                 writeFormText(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == RIGHT) {
-                d.append("<table><tr><td valign=\"top\">");
+                d.print("<table><tr><td valign=\"top\">");
                 writeFormIcon(d, button);
-                d.append("</td><td align=\"right\">");
+                d.print("</td><td align=\"right\">");
                 writeFormText(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == RIGHT) {
-                d.append("<table><tr><td>");
+                d.print("<table><tr><td>");
                 writeFormIcon(d, button);
-                d.append("</td><td align=\"right\">");
+                d.print("</td><td align=\"right\">");
                 writeFormText(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == RIGHT) {
-                d.append("<table><tr><td valign=\"bottom\">");
+                d.print("<table><tr><td valign=\"bottom\">");
                 writeFormIcon(d, button);
-                d.append("</td></tr><tr><td align=\"right\">");
+                d.print("</td></tr><tr><td align=\"right\">");
                 writeFormText(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             } else {
-                d.append("<table><tr><td>");
+                d.print("<table><tr><td>");
                 writeFormIcon(d, button);
-                d.append("</td></tr><tr><td>");
+                d.print("</td></tr><tr><td>");
                 writeFormText(d, button);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             }
         }
     }
@@ -310,38 +310,38 @@ public class MenuItemCG
             button.getDisabledIcon();
 
         if (icon != null) {
-            d.append("<input type=\"image\"");
-            d.append(" src=\"").append(icon.getURL()).append("\"");
+            d.print("<input type=\"image\"");
+            d.print(" src=\"").print(icon.getURL()).print("\"");
             
             if ( icon.getIconWidth() > 0)
-                d.append(" width=\"").append(icon.getIconWidth()).append("\"");
+                d.print(" width=\"").print(icon.getIconWidth()).print("\"");
 
             if ( icon.getIconHeight() > 0)
-                d.append(" height=\"").append(icon.getIconHeight()).append("\"");
+                d.print(" height=\"").print(icon.getIconHeight()).print("\"");
 
-            d.append(" border=\"0\"");
+            d.print(" border=\"0\"");
 
             String text = button.getText();
             String tooltip = button.getToolTipText();
 
-            d.append(" name=\"").append(button.getNamePrefix()).append("\"");
-            d.append(" value=\"").append(text).append("\"");
+            d.print(" name=\"").print(button.getNamePrefix()).print("\"");
+            d.print(" value=\"").print(text).print("\"");
 
             if (tooltip != null) {
-                d.append(" alt=\"").append(tooltip).append("\"");
-                d.append(" title=\"").append(tooltip).append("\"");
+                d.print(" alt=\"").print(tooltip).print("\"");
+                d.print(" title=\"").print(tooltip).print("\"");
             } else if (text != null) {
-                d.append(" alt=\"").append(text).append("\"");
-                d.append(" title=\"").append(text).append("\"");
+                d.print(" alt=\"").print(text).print("\"");
+                d.print(" title=\"").print(text).print("\"");
             }
-            d.append(" />");
+            d.print(" />");
         }
     }
 
     protected void writeFormPrefix(Device d, SButton button)
         throws IOException
     {
-        d.append("<input type=\"submit\"");
+        d.print("<input type=\"submit\"");
     }
 
     protected void writeFormBody(Device d, SButton button)
@@ -350,18 +350,18 @@ public class MenuItemCG
         String text = button.getText();
 
         if (button.isEnabled())
-            d.append(" name=\"").
-                append(button.getNamePrefix()).append("\"");
+            d.print(" name=\"").
+                print(button.getNamePrefix()).print("\"");
         if (text != null)
-            d.append(" value=\"").
-                append(text).
-                append("\"");
+            d.print(" value=\"").
+                print(text).
+                print("\"");
     }
 
     protected void writeFormPostfix(Device d, SButton button)
         throws IOException
     {
-        d.append(" />\n");
+        d.print(" />\n");
     }
 }
 

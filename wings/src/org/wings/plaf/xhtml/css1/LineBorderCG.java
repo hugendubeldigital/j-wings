@@ -37,25 +37,25 @@ public final class LineBorderCG
         Color color   = border.getColor();
         Insets insets = b.getInsets();
         
-        d.append("<div style=\"border: solid ")
-            .append(thickness)
-            .append("px; color: ")
-            .append(Utils.toColorString(color));
+        d.print("<div style=\"border: solid ")
+            .print(thickness)
+            .print("px; color: ")
+            .print(Utils.toColorString(color));
         if (insets != null && !none.equals(insets))
-            d.append("; padding: ")
-                .append(insets.top).append(" ")
-                .append(insets.right).append(" ")
-                .append(insets.bottom).append(" ")
-                .append(insets.left)
-                .append("\">");
+            d.print("; padding: ")
+                .print(insets.top).print(" ")
+                .print(insets.right).print(" ")
+                .print(insets.bottom).print(" ")
+                .print(insets.left)
+                .print("\">");
         else
-            d.append("\">");
+            d.print("\">");
     }
     
     public void writePostfix(Device d, SBorder b)
         throws IOException
     {
-        d.append("</div>");
+        d.print("</div>");
     }
 }
 

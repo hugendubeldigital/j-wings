@@ -99,25 +99,25 @@ public class ScrollBarCG
          }
          
          // bw
-         d.append( "<td bgcolor=").append( BUTTON_BACKGROUND );
-         d.append( bwalign );
-         d.append( el_s );
-         d.append( "1%\">" );
+         d.print( "<td bgcolor=").print( BUTTON_BACKGROUND );
+         d.print( bwalign );
+         d.print( el_s );
+         d.print( "1%\">" );
          sb.getComponentAt(0).write( d );
-         d.append( "</td>" );
-         d.append( el_post );
+         d.print( "</td>" );
+         d.print( el_post );
          
          writeSBBackground( d, sb, transIcon!=null ? transIcon.getURL().toString() : null,
                             el_pre, el_post, el_s + p );
          
          // fw
-         d.append( el_pre );
-         d.append( "<td bgcolor=").append( BUTTON_BACKGROUND );
-         d.append( fwalign );
-         d.append( el_s );
-         d.append( "1%\">" );
+         d.print( el_pre );
+         d.print( "<td bgcolor=").print( BUTTON_BACKGROUND );
+         d.print( fwalign );
+         d.print( el_s );
+         d.print( "1%\">" );
          sb.getComponentAt(1).write( d );
-         d.append( "</td>" );
+         d.print( "</td>" );
      }
     
     
@@ -161,23 +161,23 @@ public class ScrollBarCG
         if ( mark > ( SCROLLBAR_STEPS - 1 ) ) mark = SCROLLBAR_STEPS - 1;
         if ( len < 1) len = 1;
         for ( int i = 0; i < SCROLLBAR_STEPS; ++i ) {
-            d.append( prefix );
+            d.print( prefix );
             if ( i >= mark && len-- > 0 ) {
-                d.append( "<td style=\"border-width: 1px; border-style: outset;\" bgcolor=").append( SCROLLER_COLOR );
+                d.print( "<td style=\"border-width: 1px; border-style: outset;\" bgcolor=").print( SCROLLER_COLOR );
                 bordercorrection = 2;
             }
             else {
-                d.append( "<td bgcolor=").append( SCROLLER_BACKGROUND );
+                d.print( "<td bgcolor=").print( SCROLLER_BACKGROUND );
                 bordercorrection = 0;
             }
-            d.append( size ).append("%");
-            d.append( "\"><img src=\"").append(fillIcon)
-                .append("\" width=\"")
-                .append((int) (scrollerWidth * (i+1)) - (int) (scrollerWidth * i) - bordercorrection)
-                .append("\" height=\"")
-                .append((int) (scrollerHeight * (i+1)) - (int) (scrollerHeight * i) - bordercorrection)
-                .append("\"></td>" );
-            d.append( postfix );
+            d.print( size ).print("%");
+            d.print( "\"><img src=\"").print(fillIcon)
+                .print("\" width=\"")
+                .print((int) (scrollerWidth * (i+1)) - (int) (scrollerWidth * i) - bordercorrection)
+                .print("\" height=\"")
+                .print((int) (scrollerHeight * (i+1)) - (int) (scrollerHeight * i) - bordercorrection)
+                .print("\"></td>" );
+            d.print( postfix );
         }
     }
     

@@ -208,7 +208,7 @@ public final class TableCG
             } else {
                 d.print("<a href=\"").print(editAddr.toString()).
                     print("\">");
-                org.wings.plaf.xhtml.Utils.appendIcon(d, editIcon, null);
+                org.wings.plaf.xhtml.Utils.printIcon(d, editIcon, null);
                 d.print("</a>&nbsp;");
             }
         }

@@ -185,26 +185,26 @@ public class SListLayout
     public void write(Device s)
         throws IOException
     {
-        s.append("<").append( getListType() );
+        s.print("<").print( getListType() );
 
         if ( getOrderType() != null )
-            s.append(" type=").append( getOrderType() );
+            s.print(" type=").print( getOrderType() );
 
         if ( getStart() > 0 )
-            s.append(" start=").append( getStart() );
+            s.print(" start=").print( getStart() );
 
-        s.append(">\n");
+        s.print(">\n");
 
         for ( int i = 0; i < components.size(); i++ ) {
             SComponent comp = (SComponent) components.get( i );
             if ( comp.isVisible() ) {
-                s.append("<LI>");
+                s.print("<LI>");
                 comp.write(s);
-                s.append("</LI>\n");
+                s.print("</LI>\n");
             }
         }
 
-        s.append("</").append( getListType() ).append(">\n");
+        s.print("</").print( getListType() ).print(">\n");
     }
 }
 

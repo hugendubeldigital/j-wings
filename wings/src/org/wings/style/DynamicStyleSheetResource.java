@@ -67,10 +67,10 @@ public class DynamicStyleSheetResource
             AttributeSet attributes = component.getAttributes();
             if (attributes.size() == 0)
                 return;
-            out.append("._" + component.getUnifiedId());
-            out.append(" {");
+            out.print("._" + component.getUnifiedId());
+            out.print(" {");
             attributes.write(out);
-            out.append("}\n");
+            out.print("}\n");
         }
     }
 }

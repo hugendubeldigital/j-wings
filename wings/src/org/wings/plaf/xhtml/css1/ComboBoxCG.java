@@ -32,11 +32,11 @@ public final class ComboBoxCG
     {
         Style style = comboBox.getStyle();
 
-        d.append("<select name=\"");
-        d.append(comboBox.getNamePrefix());
-        d.append("\" size=\"1\"");
+        d.print("<select name=\"");
+        d.print(comboBox.getNamePrefix());
+        d.print("\" size=\"1\"");
         Utils.writeStyleAttribute(d, style);
-        d.append(">\n");
+        d.print(">\n");
     }
 }
 

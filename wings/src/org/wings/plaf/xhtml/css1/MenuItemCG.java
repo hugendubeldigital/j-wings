@@ -30,9 +30,9 @@ public final class MenuItemCG
         String tooltip = button.getToolTipText();
 
         if (button.isEnabled()) {
-            d.append("<a href=\"");
+            d.print("<a href=\"");
             writeAnchorAddress(d, button);
-            d.append("\"");
+            d.print("\"");
 
             if (button.isSelected())
                 Utils.writeStyleAttribute(d, "anchor", button.getStyle(), "selection");
@@ -40,19 +40,19 @@ public final class MenuItemCG
                 Utils.writeStyleAttribute(d, "anchor", button.getStyle(), "nonselection");
 
             if (button.getRealTarget() != null)
-                d.append(" target=\"").append(button.getRealTarget()).append("\"");
+                d.print(" target=\"").print(button.getRealTarget()).print("\"");
 
             if (tooltip != null)
-                d.append(" title=\"").append(tooltip).append("\"");
+                d.print(" title=\"").print(tooltip).print("\"");
 
-            d.append(">");
+            d.print(">");
         }
     }
 
     protected void writeFormPrefix(Device d, SButton button)
         throws IOException
     {
-        d.append("<input type=\"submit\"");
+        d.print("<input type=\"submit\"");
 
         if (button.isSelected())
             Utils.writeStyleAttribute(d, "form", button.getStyle(), "selection");

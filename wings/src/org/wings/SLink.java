@@ -16,6 +16,7 @@ package org.wings;
 
 import java.io.*;
 import org.wings.io.Device;
+import org.wings.plaf.LinkCG;
 
 /**
  * TODO: documentation
@@ -26,13 +27,17 @@ import org.wings.io.Device;
 public class SLink
     extends SComponent
 {
+    private static final String cgClassID = "LinkCG";
+
     protected String rel = null;
     protected String rev = null;
     protected String type = null;
     protected String target = null;
     protected Object href = null;
 
-    public SLink(String rel, String rev, String type, String target, Object href) {
+    public SLink(String rel, String rev, String type, 
+                 String target, Object href) 
+    {
 	this.rel = rel;
 	this.rev = rev;
 	this.type = type;
@@ -65,47 +70,12 @@ public class SLink
     }
     public String getTarget() { return target; }
 
-    /**
-     * Write the a/link tag to the device.
-     *
-     * @param s the Device to write into
-     * @throws IOException thrown when the connection to the client gets broken,
-     *         for example when the user stops loading
-     */
-    public void write(Device d) throws IOException {
-	d.append("<link");
-        if (rel != null)
-            d.append(" rel=\"")
-                .append(rel)
-                .append("\"");
+    public String getCGClassID() {
+        return cgClassID;
+    }
 
-        if (rev != null)
-            d.append(" rev=\"")
-                .append(rev)
-                .append("\"");
-
-        if (type != null)
-            d.append(" type=\"")
-                .append(type)
-                .append("\"");
-
-        if (href != null) {
-            d.append(" href=\"");
-
-            if (href instanceof Resource)
-                d.append(((Resource)href).getURL());
-            else if (href instanceof String)
-                d.append((String)href);
-
-            d.append("\"");
-        }
-
-        if (target != null)
-            d.append(" target=\"")
-                .append(target)
-                .append("\"");
-
-	d.append("/>\n");
+    public void setCG(LinkCG cg) {
+        super.setCG(cg);
     }
 }
 

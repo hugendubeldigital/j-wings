@@ -89,9 +89,9 @@ public final class Utils
         if (style == null)
             return;
 
-        d.append(" class=\"");
-        d.append(style);
-        d.append("\"");
+        d.print(" class=\"");
+        d.print(style);
+        d.print("\"");
     }
 
 	/**
@@ -108,14 +108,14 @@ public final class Utils
         if ( style == null && ! hasAttr )
             return;
 
-        d.append("<span ");
+        d.print("<span ");
         if (hasAttr) {
-            d.append( "style=\"");
+            d.print( "style=\"");
             org.wings.plaf.xhtml.Utils.writeSpanAttributes(d, component);
-            d.append( "\" ");
+            d.print( "\" ");
         }
         writeStyleAttribute(d, style);
-        d.append(">");
+        d.print(">");
     }
 
 
@@ -134,7 +134,7 @@ public final class Utils
            )
             return;
 
-        d.append("</span>");
+        d.print("</span>");
     }
 
     public static void writeSpanWithStyleAttributePrefix(Device d, Style style)
@@ -143,9 +143,9 @@ public final class Utils
         if (style == null)
             return;
 
-        d.append("<span");
+        d.print("<span");
         Utils.writeStyleAttribute(d, style);
-        d.append(">");
+        d.print(">");
     }
 
     public static void writeSpanWithStyleAttributePostfix(Device d, Style style)
@@ -154,7 +154,7 @@ public final class Utils
         if (style == null)
             return;
 
-        d.append("</span>");
+        d.print("</span>");
     }
 
     public static void writeDivWithStyleAttributePrefix(Device d, Style style)
@@ -163,9 +163,9 @@ public final class Utils
         if (style == null)
             return;
  
-        d.append("<div");
+        d.print("<div");
         Utils.writeStyleAttribute(d, style);
-        d.append(">");
+        d.print(">");
     }
  
     public static void writeDivWithStyleAttributePostfix(Device d, Style style)
@@ -174,14 +174,14 @@ public final class Utils
         if (style == null)
             return;
  
-        d.append("</div>");
+        d.print("</div>");
     }                                                                                                             
     static void writeHiddenComponent(Device d, String name, String value)
         throws IOException
     {
-        d.append("<input type=\"hidden\" name=\"").
-	  append(name).append("\" value=\"").
-	  append(value).append("\" />\n");
+        d.print("<input type=\"hidden\" name=\"").
+	  print(name).print("\" value=\"").
+	  print(value).print("\" />\n");
     }
 
     public static String toHexString(int rgb) {
@@ -219,27 +219,27 @@ public final class Utils
             style = font.getStyle();
             size = font.getSize();
         }
-        d.append("<font");
+        d.print("<font");
 
         if (face != null)
-            d.append(" face=\"").append(face).append("\"");
+            d.print(" face=\"").print(face).print("\"");
 
         if (size > Integer.MIN_VALUE) {
-            d.append(" size=");
+            d.print(" size=");
             if (size > 0)
-                d.append("+");
-            d.append(size);
+                d.print("+");
+            d.print(size);
         }
 
         if (color != null)
-            d.append(" color=#").append(toColorString(color));
+            d.print(" color=#").print(toColorString(color));
 
-        d.append(">");
+        d.print(">");
 
         if ((style & ITALIC) != 0)
-            d.append("<i>");
+            d.print("<i>");
         if ((style & BOLD) != 0)
-            d.append("<b>");
+            d.print("<b>");
     }
 
     public static void writeFontPostfix(Device d, SFont font)
@@ -259,10 +259,10 @@ public final class Utils
             style = font.getStyle();
 
         if ((style & BOLD) != 0)
-            d.append("</b>");
+            d.print("</b>");
         if ((style & ITALIC) != 0)
-            d.append("</i>");
-        d.append("</font>");
+            d.print("</i>");
+        d.print("</font>");
     }
 }
 

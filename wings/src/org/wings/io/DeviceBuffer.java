@@ -85,9 +85,7 @@ public final class DeviceBuffer
         return this;
 
         /*
-         Eigentlich muesste hier das Encoding der HTMLSeite bekannt sein!!!
-         Dann koennte man es auch korrekt implementieren !
-
+          correct implementation would be someting like
          byte[] bytes = NULL_STRING;
          if ( s!=null )
          bytes = s.getBytes();
@@ -128,42 +126,6 @@ public final class DeviceBuffer
             return print(o.toString());
         else
             return print("null");
-    }
-
-    /**
-     * Print a String. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (String s) {
-        try {
-            print (s);
-        }
-        catch (IOException ignore) {}
-        return this;
-    }
-
-    /**
-     * Print an Integer. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (int i) {
-        try {
-            print (i);
-        }
-        catch (IOException ignore) {}
-        return this;
-    }
-
-    /**
-     * Print any Object. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (Object o) {
-        try {
-            print (o);
-        }
-        catch (IOException ignore) {}
-        return this;
     }
 
     /**

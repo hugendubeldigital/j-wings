@@ -57,49 +57,49 @@ public class FrameCG
         List metas = frame.metas();
         List headers = frame.headers();
 
-        d.append("<?xml version=\"1.0\" encoding=\"");
-        d.append(frame.getSession().getCharSet());
-        d.append("\"?>\n");
-        d.append("<!DOCTYPE html\n");
-        d.append("   PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n");
-        d.append("   \"DTD/xhtml1-transitional.dtd\">\n");
-        d.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"");
-        d.append(language);
-        d.append("\" lang=\"");
-        d.append(language);
-        d.append("\">\n");
-        d.append("<head>\n");
+        d.print("<?xml version=\"1.0\" encoding=\"");
+        d.print(frame.getSession().getCharSet());
+        d.print("\"?>\n");
+        d.print("<!DOCTYPE html\n");
+        d.print("   PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n");
+        d.print("   \"DTD/xhtml1-transitional.dtd\">\n");
+        d.print("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"");
+        d.print(language);
+        d.print("\" lang=\"");
+        d.print(language);
+        d.print("\">\n");
+        d.print("<head>\n");
         if (title != null) {
-            d.append("<title>").append(title).append("</title>\n");
+            d.print("<title>").print(title).print("</title>\n");
         }
 
         if (frame.getBaseTarget() != null)
-            d.append("<base target=\"")
-                .append(frame.getBaseTarget())
-                .append("\" />");
+            d.print("<base target=\"")
+                .print(frame.getBaseTarget())
+                .print("\" />");
 
-        d.append("<meta http-equiv=\"Content-type\" content='text/html; charset=\"");
-        d.append(frame.getSession().getCharSet());
-        d.append("\"' />\n");
-        d.append("<meta http-equiv=\"expires\" content=\"0\" />\n");
-        d.append("<meta http-equiv=\"pragma\" content=\"no-cache\" />\n");
+        d.print("<meta http-equiv=\"Content-type\" content='text/html; charset=\"");
+        d.print(frame.getSession().getCharSet());
+        d.print("\"' />\n");
+        d.print("<meta http-equiv=\"expires\" content=\"0\" />\n");
+        d.print("<meta http-equiv=\"pragma\" content=\"no-cache\" />\n");
 
         Iterator it = metas.iterator();
         while (it.hasNext()) {
-            d.append("<meta ");
-            d.append(it.next());
-            d.append(" />\n");
+            d.print("<meta ");
+            d.print(it.next());
+            d.print(" />\n");
         }
 
         it = headers.iterator();
         while (it.hasNext()) {
-            d.append(it.next());
-            d.append("\n");
+            d.print(it.next());
+            d.print("\n");
         }
 
         writeAdditionalHeaders(d, frame);
 
-        d.append("</head>\n");
+        d.print("</head>\n");
     }
 
     protected void writeAdditionalHeaders(Device d, SFrame frame)
@@ -108,9 +108,9 @@ public class FrameCG
     protected void writeBody(Device d, SFrame frame)
         throws IOException
     {
-        d.append("<body>");
+        d.print("<body>");
         writeContents(d, frame);
-        d.append("\n</body>\n</html>");
+        d.print("\n</body>\n</html>");
     }
 
     protected void writeContents(Device d, SFrame frame)

@@ -58,51 +58,51 @@ public class HRefCG
             // Hauptsache, es funktioniert !!!
             if (verticalTextPosition == SHRef.TOP &&
                 horizontalTextPosition == SHRef.LEFT) {
-                d.append("<table><tr><td valign=\"top\">");
+                d.print("<table><tr><td valign=\"top\">");
                 writeAnchorText(d, hRef);
-                d.append("</td><td>");
+                d.print("</td><td>");
                 writeAnchorIcon(d, hRef);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             }
             else if (verticalTextPosition == SHRef.CENTER &&
                      horizontalTextPosition == SHRef.LEFT) {
-                d.append("<table><tr><td>");
+                d.print("<table><tr><td>");
                 writeAnchorText(d, hRef);
-                d.append("</td><td>");
+                d.print("</td><td>");
                 writeAnchorIcon(d, hRef);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             }
             else if (verticalTextPosition == SHRef.BOTTOM &&
                      horizontalTextPosition == SHRef.LEFT) {
-                d.append("<table><tr><td valign=\"bottom\">");
+                d.print("<table><tr><td valign=\"bottom\">");
                 writeAnchorText(d, hRef);
-                d.append("</td><td>");
+                d.print("</td><td>");
                 writeAnchorIcon(d, hRef);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             }
             else if (verticalTextPosition == SHRef.TOP &&
                      horizontalTextPosition == SHRef.CENTER) {
-                d.append("<table><tr><td>");
+                d.print("<table><tr><td>");
                 writeAnchorText(d, hRef);
-                d.append("</td></tr><tr><td>");
+                d.print("</td></tr><tr><td>");
                 writeAnchorIcon(d, hRef);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             }
             else if (verticalTextPosition == SHRef.CENTER &&
                      horizontalTextPosition == SHRef.CENTER) {
-                d.append("<table><tr><td>");
+                d.print("<table><tr><td>");
                 writeAnchorText(d, hRef);
-                d.append("</td><td>");
+                d.print("</td><td>");
                 writeAnchorIcon(d, hRef);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             }
             else if (verticalTextPosition == SHRef.BOTTOM &&
                      horizontalTextPosition == SHRef.CENTER) {
-                d.append("<table><tr><td>");
+                d.print("<table><tr><td>");
                 writeAnchorIcon(d, hRef);
-                d.append("</td></tr><tr><td>");
+                d.print("</td></tr><tr><td>");
                 writeAnchorText(d, hRef);
-                d.append("</td></tr></table>\n");
+                d.print("</td></tr></table>\n");
             }
             else if (verticalTextPosition == SHRef.TOP &&
                      horizontalTextPosition == SHRef.RIGHT) {
@@ -150,31 +150,31 @@ public class HRefCG
 
         if ( icon != null ) {
             writeAnchorPrefix(d, hRef);
-            d.append("<img src=\"").
-                append(icon.getURL()).
-                append("\"");
+            d.print("<img src=\"").
+                print(icon.getURL()).
+                print("\"");
             if (align != null)
-                d.append(" align=").append(align);
+                d.print(" align=").print(align);
 
             if ( icon.getIconWidth() > 0)
-                d.append(" width=").append(icon.getIconWidth());
+                d.print(" width=").print(icon.getIconWidth());
 
             if ( icon.getIconHeight() > 0)
-                d.append(" height=").append(icon.getIconHeight());
+                d.print(" height=").print(icon.getIconHeight());
 
-            d.append(" border=0");
+            d.print(" border=0");
 
             String text = hRef.getText();
             String tooltip = hRef.getToolTipText();
 
 
             if (tooltip != null) {
-                d.append(" alt=\"").append(tooltip).append("\"");
+                d.print(" alt=\"").print(tooltip).print("\"");
             } else if (text != null) {
-                d.append(" alt=\"").append(text).append("\"");
+                d.print(" alt=\"").print(text).print("\"");
             }
 
-            d.append(" />");
+            d.print(" />");
 
             writeAnchorPostfix(d, hRef);
         }
@@ -186,27 +186,27 @@ public class HRefCG
         String tooltip = hRef.getToolTipText();
 
         if (hRef.isEnabled()) {
-            d.append("<a");
+            d.print("<a");
 
             Object ref = hRef.getReference();
             if (ref != null) {
-                d.append(" href=\"");
+                d.print(" href=\"");
 
                 if (ref instanceof Resource)
-                    d.append(((Resource)ref).getURL());
+                    d.print(((Resource)ref).getURL());
                 else if (ref instanceof String)
-                    d.append((String)ref);
+                    d.print((String)ref);
 
-                d.append("\"");
+                d.print("\"");
             }
 
             if (hRef.getRealTarget() != null)
-                d.append(" target=\"").append(hRef.getRealTarget()).append("\"");
+                d.print(" target=\"").print(hRef.getRealTarget()).print("\"");
 
             if (tooltip != null)
-                d.append(" title=\"").append(tooltip).append("\"");
+                d.print(" title=\"").print(tooltip).print("\"");
 
-            d.append(">");
+            d.print(">");
         }
     }
 
@@ -217,17 +217,17 @@ public class HRefCG
         boolean noBreak = hRef.isNoBreak();
 
         if (noBreak)
-            d.append("<nobr>");
-        d.append((text != null) ? text : "");
+            d.print("<nobr>");
+        d.print((text != null) ? text : "");
         if (noBreak)
-            d.append("</nobr>");
+            d.print("</nobr>");
     }
     
     protected void writeAnchorPostfix(Device d, SHRef hRef)
         throws IOException
     {
         if (hRef.isEnabled()) {
-            d.append("</a>\n");
+            d.print("</a>\n");
         }
     }
 }

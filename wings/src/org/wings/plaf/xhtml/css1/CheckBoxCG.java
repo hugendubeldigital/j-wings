@@ -30,9 +30,9 @@ public final class CheckBoxCG
         String tooltip = checkBox.getToolTipText();
 
         if (checkBox.isEnabled()) {
-            d.append("<a href=\"");
+            d.print("<a href=\"");
             writeAnchorAddress(d, checkBox);
-            d.append("\"");
+            d.print("\"");
 
             if (checkBox.isSelected())
                 Utils.writeStyleAttribute(d, "anchor", checkBox.getStyle(), "selection");
@@ -40,21 +40,21 @@ public final class CheckBoxCG
                 Utils.writeStyleAttribute(d, "anchor", checkBox.getStyle(), "nonselection");
 
             if (checkBox.getRealTarget() != null)
-                d.append(" target=\"").append(checkBox.getRealTarget()).append("\"");
+                d.print(" target=\"").print(checkBox.getRealTarget()).print("\"");
 
             if (tooltip != null)
-                d.append(" title=\"").append(tooltip).append("\"");
+                d.print(" title=\"").print(tooltip).print("\"");
 
-            d.append(">");
+            d.print(">");
         }
     }
 
     protected void writeFormPrefix(Device d, SCheckBox checkBox)
         throws IOException
     {
-        d.append("<input type=\"");
-        d.append(checkBox.getType());
-        d.append("\"");
+        d.print("<input type=\"");
+        d.print(checkBox.getType());
+        d.print("\"");
 
         if (checkBox.isSelected())
             Utils.writeStyleAttribute(d, "form", checkBox.getStyle(), "selection");

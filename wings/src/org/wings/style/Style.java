@@ -57,10 +57,9 @@ public final class Style
     public void write(Device d)
         throws IOException
     {
-        d.append(selector);
-        d.append(" { ");
+        d.print(selector).print("{");
         super.write(d);
-        d.append("}\n");
+        d.print("}\n");
     }
 
     public String toString() {

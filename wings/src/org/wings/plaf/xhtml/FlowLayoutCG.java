@@ -44,10 +44,10 @@ public class FlowLayoutCG
         if (components.size() > 0) {
             switch (alignment) {
             case SConstants.RIGHT_ALIGN:
-                d.append("\n<div align=\"right\">");
+                d.print("\n<div align=\"right\">");
                 break;
             case SConstants.CENTER_ALIGN:
-                d.append("\n<div align=\"center\">");
+                d.print("\n<div align=\"center\">");
                 break;
             }
 
@@ -57,32 +57,32 @@ public class FlowLayoutCG
                 if (comp.isVisible()) {
 		    if (count == 0)
              {
-                d.append("<table cellpadding=\"0\" cellspacing=\"0\"");
+                d.print("<table cellpadding=\"0\" cellspacing=\"0\"");
                 CGUtil.writeSize( d, container );
                 if ( Utils.hasSpanAttributes( container ) )
                  {
-                    d.append(" style=\"");
+                    d.print(" style=\"");
                     Utils.writeSpanAttributes( d, (SComponent) container );
-                    d.append("\" ");
+                    d.print("\" ");
                  }
 
-                d.append("><tr><td>");
+                d.print("><tr><td>");
 			 }
 		    else if (orientation == SConstants.VERTICAL)
-                        d.append("</td></tr><tr><td>\n");
+                        d.print("</td></tr><tr><td>\n");
 		    else
-                        d.append("</td><td>\n");
+                        d.print("</td><td>\n");
                     ((SComponent)components.get(i)).write(d);
                     count++;
                 }
             }
 	    if (count > 0)
-		d.append("</td></tr></table>\n");
+		d.print("</td></tr></table>\n");
 
             switch (alignment) {
             case SConstants.RIGHT_ALIGN:
             case SConstants.CENTER_ALIGN:
-                d.append("\n</div>");
+                d.print("\n</div>");
                 break;
             }
 

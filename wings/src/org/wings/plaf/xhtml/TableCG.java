@@ -242,7 +242,7 @@ public class TableCG
                                          row, col);
 
         d.print("<td");
-        Utils.appendTableCellAttributes(d, comp);
+        Utils.printTableCellAttributes(d, comp);
         d.print(">");
 
         if ( !isEditingCell && table.isCellEditable(row, col) ) {
@@ -255,7 +255,7 @@ public class TableCG
             } else {
                 d.print("<a href=\"").print(editAddr.toString()).
                     print("\">");
-                Utils.appendIcon(d, editIcon, null);
+                Utils.printIcon(d, editIcon, null);
                 d.print("</a>&nbsp;");
             }
         }
@@ -326,7 +326,7 @@ public class TableCG
                                                                table.isRowSelected(row),
                                                                row, -1);
         d.print("<td");
-        Utils.appendTableCellAttributes(d, comp);
+        Utils.printTableCellAttributes(d, comp);
         d.print(">");
 
 

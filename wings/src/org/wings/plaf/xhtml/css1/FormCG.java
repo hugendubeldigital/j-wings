@@ -31,20 +31,20 @@ public final class FormCG
         SForm form = (SForm) c;
         String encodingType = form.getEncodingType();
 
-        d.append("<form method=\"");
+        d.print("<form method=\"");
         if (form.isPostMethod())
-            d.append("post");
+            d.print("post");
         else
-            d.append("get");
-        d.append("\"");
+            d.print("get");
+        d.print("\"");
 
         Utils.writeStyleAttribute(d, c.getStyle());
 
         if (encodingType != null)
-            d.append(" enctype=\"").append(encodingType).append("\"");
+            d.print(" enctype=\"").print(encodingType).print("\"");
 
-        d.append(" action=\"").append(form.getRequestURL()).
-            append("\">\n");
+        d.print(" action=\"").print(form.getRequestURL()).
+            print("\">\n");
 
         // the event for the form action
         Utils.writeHiddenComponent(d, form.getNamePrefix(),

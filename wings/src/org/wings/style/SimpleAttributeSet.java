@@ -198,10 +198,9 @@ public class SimpleAttributeSet
         Iterator names = map.entrySet().iterator();
         while (names.hasNext()) {
             Map.Entry next = (Map.Entry)names.next();
-            d.append(next.getKey());
-            d.append(":");
-            d.append(next.getValue());
-            d.append("; ");
+            d.print(next.getKey()).print(":")
+                .print(next.getValue())
+                .print("; ");
         }
     }
 

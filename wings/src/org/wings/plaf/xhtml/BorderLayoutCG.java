@@ -51,66 +51,66 @@ public class BorderLayoutCG
         if (center != null) cols++;
         if (east != null) cols++;
         
-        d.append("\n<table cellpadding=\"0\" cellspacing=\"0\"");
+        d.print("\n<table cellpadding=\"0\" cellspacing=\"0\"");
         CGUtil.writeSize( d, container );
         
         if ( Utils.hasSpanAttributes( container ) ) {
-            d.append(" style=\"");
+            d.print(" style=\"");
             Utils.writeSpanAttributes( d, (SComponent) container );
-            d.append("\" ");
+            d.print("\" ");
         }
         
         if (border > 0)
-            d.append(" border=\"").append(border).append("\"");
+            d.print(" border=\"").print(border).print("\"");
         if (container != null && container.getBackground() != null) {
-            d.append(" bgcolor=\"#")
-                .append(Utils.toColorString(container.getBackground())).append("\">");
+            d.print(" bgcolor=\"#")
+                .print(Utils.toColorString(container.getBackground())).print("\">");
         }
         else
-	    d.append(">");
+	    d.print(">");
         
         if (north != null) {
-            d.append("\n<tr><td height=\"1\" colspan=\"").append(cols).append("\"");
-            Utils.appendTableCellAlignment(d, north);
-            d.append(">");
+            d.print("\n<tr><td height=\"1\" colspan=\"").print(cols).print("\"");
+            Utils.printTableCellAlignment(d, north);
+            d.print(">");
             writeComponent(d, north);
-            d.append("</td></tr>");
+            d.print("</td></tr>");
         }
-        d.append("\n<tr>");
+        d.print("\n<tr>");
         
         if (west != null) {
-            d.append("<td width=\"1\"");
-            Utils.appendTableCellAlignment(d, west);
-            d.append(">");
+            d.print("<td width=\"1\"");
+            Utils.printTableCellAlignment(d, west);
+            d.print(">");
             writeComponent(d, west);
-            d.append("</td>");
+            d.print("</td>");
         }
         
         if (center != null) {
-            d.append("<td");
-            Utils.appendTableCellAlignment(d, center);
-            d.append(">");
+            d.print("<td");
+            Utils.printTableCellAlignment(d, center);
+            d.print(">");
             writeComponent(d, center);
-            d.append("</td>");
+            d.print("</td>");
         }
         
         if (east != null) {
-            d.append("<td width=\"1\"");
-            Utils.appendTableCellAlignment(d, east);
-            d.append(">");
+            d.print("<td width=\"1\"");
+            Utils.printTableCellAlignment(d, east);
+            d.print(">");
             writeComponent(d, east);
-            d.append("</td>");
+            d.print("</td>");
         }
-        d.append("</tr>\n");
+        d.print("</tr>\n");
 	
         if (south != null) {
-            d.append("\n<tr><td height=\"1\" colspan=\"").append(cols).append("\"");
-            Utils.appendTableCellAlignment(d, south);
-            d.append(">");
+            d.print("\n<tr><td height=\"1\" colspan=\"").print(cols).print("\"");
+            Utils.printTableCellAlignment(d, south);
+            d.print(">");
             writeComponent(d, south);
-            d.append("</td></tr>");
+            d.print("</td></tr>");
         }
-        d.append("\n</table>");
+        d.print("\n</table>");
     }
     
     protected void writeComponent(Device d, SComponent c)

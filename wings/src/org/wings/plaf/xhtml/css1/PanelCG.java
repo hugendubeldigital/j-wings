@@ -31,7 +31,7 @@ public final class PanelCG
         boolean divWritten = writeDiv(d, true, c);
         org.wings.plaf.xhtml.Utils.writeContainerContents(d, (SContainer)c);
         if (divWritten)
-            d.append("</div>");
+            d.print("</div>");
     }
 
     boolean writeDiv(final Device d, boolean writeDiv, final SComponent component)
@@ -43,24 +43,24 @@ public final class PanelCG
 
         if (attributes.size() > 0) { // script listeners
             if (!divWritten) {
-                d.append("<div");
+                d.print("<div");
                 divWritten = true;
             }
-            d.append(" id=\"s_")
-                .append(component.getUnifiedId())
-                .append("\"");
+            d.print(" id=\"s_")
+                .print(component.getUnifiedId())
+                .print("\"");
         }
 
         if (style != null) {
             if (!divWritten) {
-                d.append("<div");
+                d.print("<div");
                 divWritten = true;
             }
             style.write(d);
         }
 
         if (divWritten && writeDiv)
-            d.append(">");
+            d.print(">");
         return divWritten;
     }
 }

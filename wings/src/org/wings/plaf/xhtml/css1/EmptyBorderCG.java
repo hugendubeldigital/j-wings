@@ -35,18 +35,18 @@ public final class EmptyBorderCG
 	SEmptyBorder border = (SEmptyBorder)b;
 	Insets insets = b.getInsets();
 
-	d.append("<div style=\"padding: ")
-	    .append(insets.top).append(" ")
-	    .append(insets.right).append(" ")
-	    .append(insets.bottom).append(" ")
-	    .append(insets.left)
-	    .append("\">");
+	d.print("<div style=\"padding: ")
+	    .print(insets.top).print(" ")
+	    .print(insets.right).print(" ")
+	    .print(insets.bottom).print(" ")
+	    .print(insets.left)
+	    .print("\">");
     }
 
     public void writePostfix(Device d, SBorder b)
 	throws IOException
     {
-	d.append("</div>");
+	d.print("</div>");
     }
 }
 

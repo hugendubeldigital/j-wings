@@ -108,13 +108,14 @@ public class ReloadManagerFrame
      * Generate a minimal document with a javascript function, that reloads
      * all dirty frames. The list of dirty frames is obtained from the ReloadManager.
      * After the code has been generated, the dirty components list is cleared.
+     *** create a PLAF for this ***
      */
     public void write(Device d) throws IOException {
 	ExternalizeManager externalizer = getSession().getExternalizeManager();
 
-	d.append("<head><title>ReloadManager</title>\n");
-	d.append("<script language=\"javascript\">\n");
-	d.append("function reload() {\n");
+	d.print("<head><title>ReloadManager</title>\n");
+	d.print("<script language=\"javascript\">\n");
+	d.print("function reload() {\n");
 
         boolean all = false;
         DynamicResource toplevel = null;
@@ -132,9 +133,9 @@ public class ReloadManagerFrame
 
         if (all) {
             // reload the _whole_ document
-            d.append("parent.location.href='");
-            d.append(toplevel.getURL());
-            d.append("';\n");
+            d.print("parent.location.href='");
+            d.print(toplevel.getURL());
+            d.print("';\n");
 
             if (logger.isLoggable(Level.FINER))
                 logger.finer("parent.location.href='" + toplevel.getURL() + "';\n");
@@ -152,11 +153,11 @@ public class ReloadManagerFrame
                 DynamicResource resource = (DynamicResource)it.next();
                 resource.invalidate();
 
-                d.append("parent.frame");
-                d.append(resource.getFrame().getUnifiedId());
-                d.append(".location.href='");
-                d.append(resource.getURL());
-                d.append("';\n");
+                d.print("parent.frame");
+                d.print(resource.getFrame().getUnifiedId());
+                d.print(".location.href='");
+                d.print(resource.getURL());
+                d.print("';\n");
 
                 if (logger.isLoggable(Level.FINER))
                     logger.finer("parent.frame" +
@@ -167,10 +168,10 @@ public class ReloadManagerFrame
             }
         }
 
-	d.append("}\n");
-	d.append("</script>\n");
-	d.append("</head>\n");
-	d.append("<body onload=\"reload()\"></body>");
+	d.print("}\n");
+	d.print("</script>\n");
+	d.print("</head>\n");
+	d.print("<body onload=\"reload()\"></body>");
     }
 }
 

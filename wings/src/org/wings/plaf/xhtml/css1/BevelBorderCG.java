@@ -39,24 +39,24 @@ public final class BevelBorderCG
 
 	String borderStyle = (bevelType == SBevelBorder.RAISED) ? "outset" : "inset";
 
-	d.append("<div style=\"border: ")
-	    .append(borderStyle)
-	    .append(" 1px");
+	d.print("<div style=\"border: ")
+	    .print(borderStyle)
+	    .print(" 1px");
 	if (insets != null && !none.equals(insets))
-	    d.append("; padding: ")
-		.append(insets.top).append(" ")
-		.append(insets.right).append(" ")
-		.append(insets.bottom).append(" ")
-		.append(insets.left)
-		.append("\">");
+	    d.print("; padding: ")
+		.print(insets.top).print(" ")
+		.print(insets.right).print(" ")
+		.print(insets.bottom).print(" ")
+		.print(insets.left)
+		.print("\">");
 	else
-	    d.append("\">");
+	    d.print("\">");
     }
 
     public void writePostfix(Device d, SBorder b)
 	throws IOException
     {
-	d.append("</div>");
+	d.print("</div>");
     }
 }
 

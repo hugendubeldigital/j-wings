@@ -33,19 +33,19 @@ public final class ListCG
         int visibleRows = list.getVisibleRowCount();
         int selectionMode = list.getSelectionMode();
 
-        d.append("<select name=\"");
-        d.append(list.getNamePrefix());
-        d.append("\"");
+        d.print("<select name=\"");
+        d.print(list.getNamePrefix());
+        d.print("\"");
 
-        d.append(" size=\"").append(visibleRows);
-        d.append("\"");
+        d.print(" size=\"").print(visibleRows);
+        d.print("\"");
 
         if (selectionMode == SConstants.MULTIPLE_SELECTION)
-            d.append(" multiple=\"multiple\"");
+            d.print(" multiple=\"multiple\"");
 
         Utils.writeStyleAttribute(d, list.getStyle());
 
-        d.append(">\n");
+        d.print(">\n");
     }
 }
 

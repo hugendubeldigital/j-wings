@@ -41,17 +41,17 @@ public class CardLayoutCG implements LayoutCG
 		
         if ( Utils.hasSpanAttributes( component ) )
          {
-         	d.append("<span style=\"");
+         	d.print("<span style=\"");
         	Utils.writeSpanAttributes( d, component );
-            d.append("\">");
+            d.print("\">");
 		 }
 
         c.write(d);
 
         if ( Utils.hasSpanAttributes( component ) )
          {
-         	d.append("</span>");
-		 }
+         	d.print("</span>");
+         }
 
         
     }

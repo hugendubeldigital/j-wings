@@ -108,24 +108,24 @@ public class ScrollPaneCG
             ? ((ScrollBarCG) verticalScroller.getCG()).SCROLLBAR_STEPS + 2 
             : 1;
         
-        d.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"");
+        d.print("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"");
         if ( border != null ) {
-            d.append("style=\"");
+            d.print("style=\"");
             border.writeSpanAttributes( d );
-            d.append("\"");
+            d.print("\"");
         }
-        d.append("><tr><td ");
+        d.print("><tr><td ");
         if ( cspan > 1 ) {
-            d.append( "colspan=\"" );
-            d.append( cspan );
-            d.append( "\"" );
+            d.print( "colspan=\"" );
+            d.print( cspan );
+            d.print( "\"" );
         }
         if ( rspan > 1 ) {
-            d.append( " rowspan=\"" );
-            d.append( rspan );
-            d.append( "\"" );
+            d.print( " rowspan=\"" );
+            d.print( rspan );
+            d.print( "\"" );
         }
-        d.append(">");
+        d.print(">");
     }
     
     protected void writePostfix(Device d, SScrollPane scrollPane)
@@ -134,11 +134,11 @@ public class ScrollPaneCG
         SScrollBar horizontalScroller = scrollPane.getHorizontalScrollBar();
         SScrollBar verticalScroller = scrollPane.getVerticalScrollBar();
 
-        d.append( "</td>" );
+        d.print( "</td>" );
         verticalScroller.write( d );
-        d.append( "</tr>" );
+        d.print( "</tr>" );
         horizontalScroller.write( d );
-        d.append("</tr></table>");
+        d.print("</tr></table>");
     }
 }
 

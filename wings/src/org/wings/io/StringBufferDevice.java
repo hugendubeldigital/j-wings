@@ -126,30 +126,6 @@ public final class StringBufferDevice
     }
 
     /**
-     * Print a String. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (String s) {
-        return print (s);
-    }
-
-    /**
-     * Print an Integer. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (int i) {
-        return print (i);
-    }
-
-    /**
-     * Print an Object. For compatibility.
-     * @Xdeprecated use print() instead
-     */
-    public Device append (Object o) {
-        return print (o);
-    }
-
-    /**
      * Writes the specified byte to this data output stream.
      */
     public Device write (int c) throws IOException {

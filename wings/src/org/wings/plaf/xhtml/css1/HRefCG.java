@@ -30,29 +30,29 @@ public final class HRefCG
         String tooltip = hRef.getToolTipText();
 
         if (hRef.isEnabled()) {
-            d.append("<a");
+            d.print("<a");
 
             Object ref = hRef.getReference();
             if (ref != null) {
-                d.append(" href=\"");
+                d.print(" href=\"");
 
                 if (ref instanceof Resource)
-                    d.append(((Resource)ref).getURL());
+                    d.print(((Resource)ref).getURL());
                 else if (ref instanceof String)
-                    d.append((String)ref);
+                    d.print((String)ref);
 
-                d.append("\"");
+                d.print("\"");
             }
 
             Utils.writeStyleAttribute(d, hRef.getStyle());
 
             if (hRef.getRealTarget() != null)
-                d.append(" target=\"").append(hRef.getRealTarget()).append("\"");
+                d.print(" target=\"").print(hRef.getRealTarget()).print("\"");
 
             if (tooltip != null)
-                d.append(" title=\"").append(tooltip).append("\"");
+                d.print(" title=\"").print(tooltip).print("\"");
 
-            d.append(">");
+            d.print(">");
         }
     }
 }

@@ -76,42 +76,6 @@ public final class ServletDevice
     }
 
     /**
-     * Print a String. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (String s) {
-        try {
-            print (s);
-        }
-        catch (IOException ignore) {}
-        return this;
-    }
-
-    /**
-     * Print an Integer. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (int i) {
-        try {
-            print (i);
-        }
-        catch (IOException ignore) {}
-        return this;
-    }
-
-    /**
-     * Print any Object. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (Object o) {
-        try {
-            print (o);
-        }
-        catch (IOException ignore) {}
-        return this;
-    }
-
-    /**
      * Print a character.
      */
     public Device print (char c) throws IOException {

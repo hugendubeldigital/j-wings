@@ -49,34 +49,34 @@ public class GridLayoutCG
         int cols = layout.getColumns();
         int rows = layout.getRows();
 
-        d.append("\n<table ");
+        d.print("\n<table ");
         if ( Utils.hasSpanAttributes( container ) )
          {
-         	d.append("style=\"");
+         	d.print("style=\"");
         	Utils.writeSpanAttributes( d, (SComponent) container );
-            d.append("\" ");
+            d.print("\" ");
 		 }
 
         if (cellSpacing >= 0)
-            d.append(" cellspacing=\"").append(cellSpacing).append("\"");
+            d.print(" cellspacing=\"").print(cellSpacing).print("\"");
         else
-            d.append(" cellspacing=\"0\"");
+            d.print(" cellspacing=\"0\"");
 
         if (cellPadding >= 0)
-            d.append(" cellpadding=\"").append(cellPadding).append("\"");
+            d.print(" cellpadding=\"").print(cellPadding).print("\"");
 
 		CGUtil.writeSize( d, container );
 
         if (border > 0)
-            d.append(" border=\"").append(border).append("\"");
+            d.print(" border=\"").print(border).print("\"");
         else
-            d.append(" border=\"0\"");
+            d.print(" border=\"0\"");
 
         if (container != null && container.getBackground() != null)
-            d.append(" bgcolor=\"#").
-                append(Utils.toColorString(container.getBackground())).append("\"");
+            d.print(" bgcolor=\"#").
+                print(Utils.toColorString(container.getBackground())).print("\"");
 
-        d.append(">\n");
+        d.print(">\n");
 
         if (cols <= 0)
             cols = components.size() / rows;
@@ -86,37 +86,37 @@ public class GridLayoutCG
         int col = 0;
         for (Iterator iter = components.iterator(); iter.hasNext();) {
             if (col == 0)
-                d.append("<tr>");
+                d.print("<tr>");
             else if (col%cols == 0 && iter.hasNext()) {
-                d.append("</tr>\n<tr>");
+                d.print("</tr>\n<tr>");
                 firstRow = false;
             }
 
             SComponent c = (SComponent)iter.next();
 
             if (firstRow && header) {
-                d.append("<th>");
+                d.print("<th>");
             }
             else {
-                d.append("<td");
-                Utils.appendTableCellAlignment(d, c);
-                d.append(">\n");
+                d.print("<td");
+                Utils.printTableCellAlignment(d, c);
+                d.print(">\n");
             }
 
             c.write(d);
 
             if (firstRow && header)
-                d.append("</th>");
+                d.print("</th>");
             else
-                d.append("</td>");
+                d.print("</td>");
 
             col++;
 
             if (!iter.hasNext())
-                d.append("</tr>\n");
+                d.print("</tr>\n");
         }
 
-        d.append("</table>");
+        d.print("</table>");
     }
 }
 

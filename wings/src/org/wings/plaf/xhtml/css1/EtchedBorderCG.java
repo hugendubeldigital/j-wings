@@ -42,24 +42,24 @@ public final class EtchedBorderCG
 	int etchedType = border.getEtchedType();
 	Insets insets = b.getInsets();
 
-	d.append("<div style=\"border: ");
+	d.print("<div style=\"border: ");
 	writeBorderStyle( d, b );
-	d.append(" 1px");
+	d.print(" 1px");
 	if (insets != null && !none.equals(insets))
-	    d.append("; padding: ")
-		.append(insets.top).append(" ")
-		.append(insets.right).append(" ")
-		.append(insets.bottom).append(" ")
-		.append(insets.left)
-		.append("\">");
+	    d.print("; padding: ")
+		.print(insets.top).print(" ")
+		.print(insets.right).print(" ")
+		.print(insets.bottom).print(" ")
+		.print(insets.left)
+		.print("\">");
 	else
-	    d.append("\">");
+	    d.print("\">");
     }
 
     public void writePostfix(Device d, SBorder b)
 	throws IOException
     {
-	d.append("</div>");
+	d.print("</div>");
     }
 
 	/**
@@ -68,7 +68,7 @@ public final class EtchedBorderCG
 	protected void writeBorderStyle( Device d, SBorder b )
     	throws IOException
      {
-		d.append( ( ((SEtchedBorder) b).getEtchedType() == SEtchedBorder.RAISED) ? "ridge" : "groove" );
+		d.print( ( ((SEtchedBorder) b).getEtchedType() == SEtchedBorder.RAISED) ? "ridge" : "groove" );
      }
 }
 

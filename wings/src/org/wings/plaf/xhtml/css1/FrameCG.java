@@ -64,20 +64,20 @@ public final class FrameCG
     protected void writeBody(Device d, SFrame frame)
         throws IOException
     {
-        d.append("<body");
+        d.print("<body");
         //System.err.println("blubber");
         Iterator it = frame.getScriptListeners().iterator();
         while (it.hasNext()) {
             ScriptListener script = (ScriptListener)it.next();
-            d.append(" ");
-            d.append(script.getEvent());
-            d.append("=\"");
-            d.append(script.getCode());
-            d.append("\"");
+            d.print(" ");
+            d.print(script.getEvent());
+            d.print("=\"");
+            d.print(script.getCode());
+            d.print("\"");
         }
-        d.append(">");
+        d.print(">");
         writeContents(d, frame);
-        d.append("\n</body>\n</html>");
+        d.print("\n</body>\n</html>");
     }
 }
 

@@ -16,6 +16,7 @@ package org.wings;
 
 import java.awt.Color;
 
+import java.io.IOException;
 import org.wings.plaf.*;
 import org.wings.io.Device;
 
@@ -71,21 +72,22 @@ public final class SUtil
      * TODO: documentation
      * @deprecated Use Utils in plaf
      */
-    public static void appendTableCellAlignment(Device s, SComponent c) {
+    public static void appendTableCellAlignment(Device s, SComponent c) 
+        throws IOException {
         switch ( c.getHorizontalAlignment() ) {
         case NO_ALIGN:
             break;
         case CENTER:
-            s.append(" align=\"center\"");
+            s.print(" align=\"center\"");
             break;
         case LEFT:
-            s.append(" align=\"left\"");
+            s.print(" align=\"left\"");
             break;
         case RIGHT:
-            s.append(" align=\"right\"");
+            s.print(" align=\"right\"");
             break;
         case JUSTIFY:
-            s.append(" align=\"justify\"");
+            s.print(" align=\"justify\"");
             break;
         }
 
@@ -94,13 +96,13 @@ public final class SUtil
         case CENTER:
             break;
         case TOP:
-            s.append(" valign=\"top\"");
+            s.print(" valign=\"top\"");
             break;
         case BOTTOM:
-            s.append(" valign=\"bottom\"");
+            s.print(" valign=\"bottom\"");
             break;
         case BASELINE:
-            s.append(" valign=\"baseline\"");
+            s.print(" valign=\"baseline\"");
             break;
         }
     }
@@ -109,13 +111,14 @@ public final class SUtil
      * TODO: documentation
      * @deprecated Use Utils in plaf
      */
-    public static void appendTableCellColors(Device s, SComponent c) {
+    public static void appendTableCellColors(Device s, SComponent c) 
+        throws IOException {
         /*    if ( c.getForeground()!=null )
          s.append(" COLOR=#").
          append(toColorString(c.getForeground()));*/
         if ( c.getBackground()!=null )
-            s.append(" BGCOLOR=#").
-                append(toColorString(c.getBackground()));
+            s.print(" BGCOLOR=#")
+                .print(toColorString(c.getBackground()));
     }
 
     /**
@@ -130,7 +133,8 @@ public final class SUtil
      * TODO: documentation
      * @deprecated Use Utils in plaf
      */
-    public static void appendTableCellAttributes(Device s, SComponent c) {
+    public static void appendTableCellAttributes(Device s, SComponent c) 
+        throws IOException {
         appendTableCellColors(s, c);
         appendTableCellAlignment(s,c);
         appendTableCellSpan(s,c);
@@ -141,7 +145,8 @@ public final class SUtil
      * TODO: documentation
      * @deprecated Use Utils in plaf
      */
-    public static void writeFontPrefix(Device d, SFont font) {
+    public static void writeFontPrefix(Device d, SFont font) 
+        throws IOException {
         writeFontPrefix(d, font, null);
     }
 
@@ -150,7 +155,8 @@ public final class SUtil
      * TODO: documentation
      * @deprecated Use Utils in plaf
      */
-    public static void writeFontPrefix(Device d, SFont font, Color color) {
+    public static void writeFontPrefix(Device d, SFont font, Color color) 
+        throws IOException {
         String face = null;
         int style = PLAIN;
         int size = Integer.MIN_VALUE;
@@ -159,43 +165,44 @@ public final class SUtil
             font.getStyle();
             font.getSize();
         }
-        d.append("<font");
+        d.print("<font");
 
         if (face != null)
-            d.append(" face=\"").append(face).append("\"");
+            d.print(" face=\"").print(face).print("\"");
 
         if (size > Integer.MIN_VALUE) {
-            d.append(" size=");
+            d.print(" size=");
             if (size > 0)
-                d.append("+");
-            d.append(size);
+                d.print("+");
+            d.print(size);
         }
 
         if (color != null)
-            d.append(" color=#").append(toColorString(color));
+            d.print(" color=#").print(toColorString(color));
 
-        d.append(">");
+        d.print(">");
 
         if ((style & ITALIC) != 0)
-            d.append("<i>");
+            d.print("<i>");
         if ((style & BOLD) != 0)
-            d.append("<b>");
+            d.print("<b>");
     }
 
     /**
      * TODO: documentation
      * @deprecated Use Utils in plaf
      */
-    public static void writeFontPostfix(Device d, SFont font) {
+    public static void writeFontPostfix(Device d, SFont font) 
+        throws IOException {
         int style = PLAIN;
         if (font != null)
             font.getStyle();
 
         if ((style & BOLD) != 0)
-            d.append("</b>");
+            d.print("</b>");
         if ((style & ITALIC) != 0)
-            d.append("</i>");
-        d.append("</font>");
+            d.print("</i>");
+        d.print("</font>");
     }
 }
 

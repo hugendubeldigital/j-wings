@@ -1,0 +1,18 @@
+<template name="LinkCG" for="org.wings.SLink">
+<write>
+<link<%
+  %><%|rel=component.getRel()%><%
+  %><%|rev=component.getRev()%><%
+  Object href = component.getHref();
+  if (href != null) {
+    if (href instanceof Resource) {
+       %><%|href=((Resource)href).getURL()%><%
+    }
+    else {
+       %><%|href=href.toString()%><%
+    }
+  }
+  %><%|target=component.getTarget()%><%
+  %>><%
+%></write>
+</template>

@@ -49,24 +49,24 @@ public class DialogCG
     {
         String encodingType = dialog.getEncodingType();
 
-        d.append("<form method=\"");
+        d.print("<form method=\"");
         if (dialog.isPostMethod())
-            d.append("post");
+            d.print("post");
         else
-            d.append("get");
-        d.append("\"");
+            d.print("get");
+        d.print("\"");
 
         if (encodingType != null)
-            d.append(" enctype=\"").append(encodingType).append("\"");
+            d.print(" enctype=\"").print(encodingType).print("\"");
 
-        d.append(" action=\"").append(dialog.getRequestURL()).
-            append("\">\n");
+        d.print(" action=\"").print(dialog.getRequestURL()).
+            print("\">\n");
     }
 
     protected void writePostfix(Device d, SDialog dialog)
         throws IOException
     {
-        d.append("</form>");
+        d.print("</form>");
     }
 }
 

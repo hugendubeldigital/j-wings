@@ -42,27 +42,27 @@ public class DialogCG
 
         RequestURL addr;
 
-        d.append("<table border=\"0\" width=\"100%\"><tr>\n");
-        d.append("<td align=\"center\" valign=\"middle\">\n");
-        d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"");
+        d.print("<table border=\"0\" width=\"100%\"><tr>\n");
+        d.print("<td align=\"center\" valign=\"middle\">\n");
+        d.print("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"");
         CGUtil.writeSize(d, dialog);
-        d.append("><tr>\n");
+        d.print("><tr>\n");
 
-        d.append("<td color=\"#ffffff\" bgcolor=\"#5555aa\" class=\"frametitle\">&nbsp;<b>")
-            .append(text)
-            .append("</b></td>");
+        d.print("<td color=\"#ffffff\" bgcolor=\"#5555aa\" class=\"frametitle\">&nbsp;<b>")
+            .print(text)
+            .print("</b></td>");
         cols ++;
 
-        d.append("</tr>\n");
+        d.print("</tr>\n");
 
-        d.append("<tr><td colspan=\"" + cols)
-            .append("\" class=\"frameborder\">\n");
+        d.print("<tr><td colspan=\"" + cols)
+            .print("\" class=\"frameborder\">\n");
 
         writePrefix(d, dialog);
         org.wings.plaf.xhtml.Utils.writeContainerContents(d, dialog);
         writePostfix(d, dialog);
-        d.append("</td></tr>\n</table>\n");
-        d.append("</td></tr>\n</table>\n");
+        d.print("</td></tr>\n</table>\n");
+        d.print("</td></tr>\n</table>\n");
     }
 
     protected void writePrefix(Device d, SDialog dialog)
@@ -70,20 +70,20 @@ public class DialogCG
     {
         String encodingType = dialog.getEncodingType();
 
-        d.append("<form method=\"");
+        d.print("<form method=\"");
         if (dialog.isPostMethod())
-            d.append("post");
+            d.print("post");
         else
-            d.append("get");
-        d.append("\"");
+            d.print("get");
+        d.print("\"");
 
         Utils.writeStyleAttribute(d, dialog.getStyle());
 
         if (encodingType != null)
-            d.append(" enctype=\"").append(encodingType).append("\"");
+            d.print(" enctype=\"").print(encodingType).print("\"");
 
-        d.append(" action=\"").append(dialog.getRequestURL()).
-            append("\">\n");
+        d.print(" action=\"").print(dialog.getRequestURL()).
+            print("\">\n");
     }
 }
 

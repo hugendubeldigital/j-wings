@@ -56,19 +56,19 @@ public class InternalFrameCG
         RequestURL addr;
 
         // left icon..
-        d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\"><tr>");
+        d.print("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\"><tr>");
 
         if (frame.getIcon() != null) {
-            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><img src=\"")
-                .append(frame.getIcon().getURL())
-                .append("\" width=\"16\" height=\"16\" border=\"0\" /></td>");
+            d.print("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><img src=\"")
+                .print(frame.getIcon().getURL())
+                .print("\" width=\"16\" height=\"16\" border=\"0\" /></td>");
             cols ++;
         }
         
         // main window bar .. (width=480: hack necessary for opera, netscape 4)
-        d.append("<td width=\"480\" color=\"#ffffff\" bgcolor=\"#5555aa\" class=\"frametitle\">&nbsp;<b>")
-            .append(text)
-            .append("</b></td>");
+        d.print("<td width=\"480\" color=\"#ffffff\" bgcolor=\"#5555aa\" class=\"frametitle\">&nbsp;<b>")
+            .print(text)
+            .print("</b></td>");
         cols ++;
 
         // optional icons.
@@ -76,11 +76,11 @@ public class InternalFrameCG
             addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_ICONIFIED);
 
-            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
-                .append(addr)
-                .append("\"><img src=\"")
-                .append(iconify.getURL())
-                .append("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
+            d.print("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
+                .print(addr)
+                .print("\"><img src=\"")
+                .print(iconify.getURL())
+                .print("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
             cols ++;
         }
 
@@ -88,11 +88,11 @@ public class InternalFrameCG
             addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_DEICONIFIED);
 
-            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
-                .append(addr)
-                .append("\"><img src=\"")
-                .append(deiconify.getURL())
-                .append("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
+            d.print("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
+                .print(addr)
+                .print("\"><img src=\"")
+                .print(deiconify.getURL())
+                .print("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
             cols ++;
         }
 
@@ -103,11 +103,11 @@ public class InternalFrameCG
             addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_MAXIMIZED);
 
-            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
-                .append(addr)
-                .append("\"><img src=\"")
-                .append(maximize.getURL())
-                .append("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
+            d.print("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
+                .print(addr)
+                .print("\"><img src=\"")
+                .print(maximize.getURL())
+                .print("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
             cols ++;
         }
 
@@ -115,11 +115,11 @@ public class InternalFrameCG
             addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_UNMAXIMIZED);
 
-            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
-                .append(addr)
-                .append("\"><img src=\"")
-                .append(unmaximize.getURL())
-                .append("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
+            d.print("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
+                .print(addr)
+                .print("\"><img src=\"")
+                .print(unmaximize.getURL())
+                .print("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
             cols ++;
         }
 
@@ -127,25 +127,25 @@ public class InternalFrameCG
             addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_CLOSED);
 
-            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
-                .append(addr)
-                .append("\"><img src=\"")
-                .append(close.getURL())
-                .append("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
+            d.print("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
+                .print(addr)
+                .print("\"><img src=\"")
+                .print(close.getURL())
+                .print("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
             cols ++;
         }
 
-        d.append("</tr>\n");
+        d.print("</tr>\n");
 
         // write the actual content.
         if (!frame.isIconified()) {
-            d.append("<tr><td colspan=\"" + cols)
-                .append("\" class=\"frameborder\">\n");
+            d.print("<tr><td colspan=\"" + cols)
+                .print("\" class=\"frameborder\">\n");
             org.wings.plaf.xhtml.Utils.writeContainerContents(d, frame);
-            d.append("</td></tr>\n");
+            d.print("</td></tr>\n");
         }
 
-        d.append("</table>\n");
+        d.print("</table>\n");
     }
 }
 

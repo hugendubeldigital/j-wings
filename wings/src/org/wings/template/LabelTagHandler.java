@@ -129,12 +129,12 @@ public class LabelTagHandler
         // warn, if the closing tag was not found ..
         if (close_is_missing) {
             Device sink = tcontext.getDevice();
-            sink.append ("<table bgcolor='#FFAA55'><tr><td>");
-            sink.append ("&nbsp;<blink><b>");
-            sink.append ("closing tag missing");
-            sink.append (" for '<em>" + name + "</em>'");
-            sink.append ("</b></blink>&nbsp;");
-            sink.append ("</td></tr></table>");
+            sink.print ("<table bgcolor='#FFAA55'><tr><td>");
+            sink.print ("&nbsp;<blink><b>");
+            sink.print ("closing tag missing");
+            sink.print (" for '<em>" + name + "</em>'");
+            sink.print ("</b></blink>&nbsp;");
+            sink.print ("</td></tr></table>");
         }
     }
 

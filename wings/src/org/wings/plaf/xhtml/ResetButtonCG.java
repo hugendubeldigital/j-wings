@@ -52,7 +52,7 @@ public class ResetButtonCG
     protected void writeFormPrefix(Device d, SResetButton resetButton)
         throws IOException
     {
-        d.append("<input type=\"reset\"");
+        d.print("<input type=\"reset\"");
     }
 
     protected void writeFormBody(Device d, SResetButton resetButton)
@@ -60,15 +60,15 @@ public class ResetButtonCG
     {
         String text = resetButton.getText();
 
-        //d.append(" name=\"").append(resetButton.getNamePrefix()).append("\"");
+        //d.print(" name=\"").print(resetButton.getNamePrefix()).print("\"");
         if (text != null)
-            d.append(" value=\"").append(text).append("\"");
+            d.print(" value=\"").print(text).print("\"");
     }
 
     protected void writeFormPostfix(Device d, SResetButton resetButton)
         throws IOException
     {
-        d.append(" />\n");
+        d.print(" />\n");
     }
 }
 

@@ -33,17 +33,17 @@ public final class AnchorCG
         String name = anchor.getName();
         String reference = anchor.getReference();
 
-        d.append("<a");
+        d.print("<a");
 
         Utils.writeStyleAttribute(d, anchor.getStyle());
 
         if (name != null)
-            d.append(" name=\"").append(name).append("\"");
+            d.print(" name=\"").print(name).print("\"");
 
         if (reference != null)
-            d.append(" href=\"").append(reference).append("\"");
+            d.print(" href=\"").print(reference).print("\"");
 
-        d.append(">");
+        d.print(">");
     }
 }
 

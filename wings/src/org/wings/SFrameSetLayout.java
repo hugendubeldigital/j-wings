@@ -109,38 +109,38 @@ public class SFrameSetLayout
 	    String language = "en"; // TODO: ???
 	    String title = frameSet.getTitle();
 
-	    d.append("<?xml version=\"1.0\" encoding=\"");
-	    d.append(frameSet.getSession().getCharSet());
-	    d.append("\"?>\n");
-	    d.append("<!DOCTYPE html\n");
-	    d.append("   PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"\n");
-	    d.append("   \"DTD/xhtml1-frameset.dtd\">\n");
-	    d.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"");
-	    d.append(language);
-	    d.append("\" lang=\"");
-	    d.append(language);
-	    d.append("\">\n");
-	    d.append("<head>\n<title>");
-	    d.append(title);
-	    d.append("</title>\n");
-	    d.append("</head>\n");
+	    d.print("<?xml version=\"1.0\" encoding=\"");
+	    d.print(frameSet.getSession().getCharSet());
+	    d.print("\"?>\n");
+	    d.print("<!DOCTYPE html\n");
+	    d.print("   PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"\n");
+	    d.print("   \"DTD/xhtml1-frameset.dtd\">\n");
+	    d.print("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"");
+	    d.print(language);
+	    d.print("\" lang=\"");
+	    d.print(language);
+	    d.print("\">\n");
+	    d.print("<head>\n<title>");
+	    d.print(title);
+	    d.print("</title>\n");
+	    d.print("</head>\n");
 	}
 
-	d.append("<frameset");
+	d.print("<frameset");
 
 	if (columns != null && columns.length() > 0) {
-	    d.append(" cols=\"");
-	    d.append(columns);
-	    d.append("\"");
+	    d.print(" cols=\"");
+	    d.print(columns);
+	    d.print("\"");
 	}
 
 	if (rows != null && rows.length() > 0) {
-	    d.append(" rows=\"");
-	    d.append(rows);
-	    d.append("\"");
+	    d.print(" rows=\"");
+	    d.print(rows);
+	    d.print("\"");
 	}
 
-	d.append(">\n");
+	d.print(">\n");
 
 	Iterator iterator = components.iterator();
 	int i=0;
@@ -155,31 +155,31 @@ public class SFrameSetLayout
 	    i++;
 	}
 
-	d.append("</frameset>\n");
+	d.print("</frameset>\n");
     }
 
     protected void writeFrame(Device d, SFrame frame, Properties properties)
 	throws IOException
     {
-	d.append("<frame src=\"");
-        d.append(frame.getDynamicResource(DynamicCodeResource.class).getURL());
-        d.append("\"");
-	d.append(" name=\"frame")
-	    .append(frame.getUnifiedId())
-	    .append("\"");
+	d.print("<frame src=\"");
+        d.print(frame.getDynamicResource(DynamicCodeResource.class).getURL());
+        d.print("\"");
+	d.print(" name=\"frame")
+	    .print(frame.getUnifiedId())
+	    .print("\"");
 
 	if (properties != null) {
 	    Iterator iterator = properties.entrySet().iterator();
 	    while (iterator.hasNext()) {
 		Map.Entry entry = (Map.Entry)iterator.next();
-		d.append(' ');
-		d.append((String)entry.getKey());
-		d.append("=\"");
-		d.append((String)entry.getValue());
-		d.append('"');
+		d.print(' ');
+		d.print((String)entry.getKey());
+		d.print("=\"");
+		d.print((String)entry.getValue());
+		d.print('"');
 	    }
 	}
-	d.append("/>\n");
+	d.print("/>\n");
     }
 
     private transient Session session = null;

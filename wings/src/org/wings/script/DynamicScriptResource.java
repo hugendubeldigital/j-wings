@@ -75,12 +75,12 @@ public class DynamicScriptResource
             while (iterator.hasNext()) {
                 ScriptListener listener = (ScriptListener)iterator.next();
                 if (listener.getScript() != null) {
-                    out.append("// ");
-                    out.append(component.getUnifiedId());
-                    out.append(".");
-                    out.append(listener.getEvent());
-                    out.append("\n");
-                    out.append(listener.getScript());
+                    out.print("// ");
+                    out.print(component.getUnifiedId());
+                    out.print(".");
+                    out.print(listener.getEvent());
+                    out.print("\n");
+                    out.print(listener.getScript());
                 }
             }
         }

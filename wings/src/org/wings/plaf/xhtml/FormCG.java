@@ -49,19 +49,19 @@ public class FormCG
     {
         String encodingType = form.getEncodingType();
 
-        d.append("<form method=\"");
+        d.print("<form method=\"");
         if (form.isPostMethod())
-            d.append("post");
+            d.print("post");
         else
-            d.append("get");
-        d.append("\"");
+            d.print("get");
+        d.print("\"");
 
         if (encodingType != null)
-            d.append(" enctype=\"").append(encodingType).append("\"");
+            d.print(" enctype=\"").print(encodingType).print("\"");
 
-        d.append(" action=\"");
+        d.print(" action=\"");
         form.getRequestURL().write(d);
-        d.append("\">\n");
+        d.print("\">\n");
 
         // the event for the form action
         Utils.writeHiddenComponent(d, form.getNamePrefix(),
@@ -72,7 +72,7 @@ public class FormCG
     protected void writePostfix(Device d, SForm form)
         throws IOException
     {
-        d.append("</form>");
+        d.print("</form>");
     }
 }
 

@@ -72,34 +72,6 @@ public interface Device
      */
     Device print (Object o) throws IOException;
 
-    /*------------*
-     ** Compatibility methods which allow an easy transition between
-     ** StringBuffer and Device.
-     ** They notably do _not_ throw Exceptions
-     ** !! These methods are supposed to be removed after full
-     **    transition; this is just for convenience reasons !
-     ** THIS WILL NOT BE THERE IN 1.0
-     **------------*/
-
-    /**
-     * Print a String. For compatibility.
-     * @deprecated use print() instead
-     */
-    Device append (String s);
-
-    /**
-     * Print an Integer. For compatibility.
-     * @deprecated use print() instead
-     */
-    Device append (int i);
-
-    /**
-     * Print an Object. For compatibility.
-     * @deprecated use print() instead
-     */
-    Device append (Object o);
-
-
     /*-------------*
      ** Methods which write raw bytes to the Device. Much like an OutputStream.
      **-------------*/

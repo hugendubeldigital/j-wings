@@ -108,13 +108,13 @@ public class SDefaultListCellRenderer
         throws IOException
     {
         if (addr != null) {
-            d.append("<a href=\"");
+            d.print("<a href=\"");
             addr.write(d);
-            d.append("\">");
+            d.print("\">");
         }
         super.write(d);
         if (addr != null)
-            d.append("</a> ");
+            d.print("</a> ");
     }
 
     /**

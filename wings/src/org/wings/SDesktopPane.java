@@ -182,7 +182,7 @@ public class SDesktopPane
         public void write(Device d)
             throws IOException
         {
-            d.append("<table cellpadding=\"0\" cellspacing=\"7\" border=\"0\" width=\"100%\">\n");
+            d.print("<table cellpadding=\"0\" cellspacing=\"7\" border=\"0\" width=\"100%\">\n");
 
             int componentCount = getComponentCount();
             // hack ? einfach nur das erste maximized ausgeben, oder was ?
@@ -192,9 +192,9 @@ public class SDesktopPane
             for (int i=0; i<componentCount; i++) {
                 SInternalFrame frame = (SInternalFrame)getComponent(i);
                 if (!frame.isClosed() && frame.isMaximized()) {
-                    d.append("<tr><td>\n");
+                    d.print("<tr><td>\n");
                     frame.write(d);
-                    d.append("</td></tr></table>\n");
+                    d.print("</td></tr></table>\n");
                     return;
                 }
             }
@@ -202,12 +202,12 @@ public class SDesktopPane
             for (int i=0; i<componentCount; i++) {
                 SInternalFrame frame = (SInternalFrame)getComponent(i);
                 if (!frame.isClosed()) {
-                    d.append("<tr><td>\n");
+                    d.print("<tr><td>\n");
                     frame.write(d);
-                    d.append("</td></tr>\n");
+                    d.print("</td></tr>\n");
                 }
             }
-            d.append("</table>\n");
+            d.print("</table>\n");
         }
     }
 

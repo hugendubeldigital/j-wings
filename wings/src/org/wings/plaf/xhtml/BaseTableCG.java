@@ -77,7 +77,7 @@ public class BaseTableCG
         SDimension intercellPadding = table.getIntercellPadding();
         SDimension intercellSpacing = table.getIntercellSpacing();
 
-        d.append("<table");
+        d.print("<table");
         CGUtil.writeSize( d, table );
 
         int thickness = 0;
@@ -93,9 +93,9 @@ public class BaseTableCG
                 if (border == null)
                     border = "box";
 
-                d.append(" frame=\"")
-                    .append(border)
-                    .append("\"");
+                d.print(" frame=\"")
+                    .print(border)
+                    .print("\"");
 
                 if (borderLines.top > 0)
                     thickness = borderLines.top;
@@ -112,36 +112,36 @@ public class BaseTableCG
             thickness = 1;
 
         if (showHorizontalLines && showVerticalLines)
-            d.append(" rules=\"all\"");
+            d.print(" rules=\"all\"");
         else if (showVerticalLines) 
-            d.append(" rules=\"cols\"");
+            d.print(" rules=\"cols\"");
         else if (showHorizontalLines)
-            d.append(" rules=\"rows\"");
+            d.print(" rules=\"rows\"");
         else
-            d.append(" rules=\"none\"");
+            d.print(" rules=\"none\"");
 
         if (thickness > 0)
-            d.append(" border=\"")
-                .append(thickness)
-                .append("\"");
+            d.print(" border=\"")
+                .print(thickness)
+                .print("\"");
 
         if (intercellSpacing != null && intercellSpacing.width != null)
-            d.append(" cellspacing=\"")
-                .append(intercellSpacing.width)
-                .append("\""); 
+            d.print(" cellspacing=\"")
+                .print(intercellSpacing.width)
+                .print("\""); 
 
         if (intercellPadding != null && intercellPadding.width != null)
-            d.append(" cellpadding=\"")
-                .append(intercellPadding.width)
-                .append("\""); 
+            d.print(" cellpadding=\"")
+                .print(intercellPadding.width)
+                .print("\""); 
 
-        d.append(">\n");
+        d.print(">\n");
     }
 
     public void writePostfix(Device d, SBaseTable baseTable)
         throws IOException
     {
-        d.append("</table>\n");
+        d.print("</table>\n");
     }
 
     public void writeBody(Device d, SBaseTable baseTable)
@@ -162,18 +162,18 @@ public class BaseTableCG
 
         SCellRendererPane rendererPane = baseTable.getCellRendererPane();
         if (baseTable.isHeaderVisible()) {
-            d.append("<tr>\n");
+            d.print("<tr>\n");
             for (int c = originCol; c < colCount; c++) {
                 writeHeaderCell(d, baseTable, rendererPane, c);
             }
-            d.append("</tr>\n");
+            d.print("</tr>\n");
         }
         for (int r = originRow; r < rowCount; r++) {
-            d.append("<tr>\n");
+            d.print("<tr>\n");
             for (int c = originCol; c < colCount; c++) {
                 writeCell(d, baseTable, rendererPane, r, c);
             }
-            d.append("</tr>\n");
+            d.print("</tr>\n");
         }
     }
 
@@ -183,9 +183,9 @@ public class BaseTableCG
     {
         SComponent comp = baseTable.prepareRenderer(baseTable.getCellRenderer(row, col), row, col);
 
-        d.append("<td>");
+        d.print("<td>");
         rendererPane.writeComponent(d, comp, baseTable);
-        d.append("</td>");
+        d.print("</td>");
     }
 
     protected void writeHeaderCell(Device d, SBaseTable baseTable,
@@ -194,9 +194,9 @@ public class BaseTableCG
     {
         SComponent comp = baseTable.prepareHeaderRenderer(c);
 
-        d.append("<th>");
+        d.print("<th>");
         rendererPane.writeComponent(d, comp, baseTable);
-        d.append("</th>");
+        d.print("</th>");
     }
 }
 

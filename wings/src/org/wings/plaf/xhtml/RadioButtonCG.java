@@ -43,17 +43,17 @@ public class RadioButtonCG
         String tooltip = checkBox.getToolTipText();
 
         if (checkBox.isEnabled() && !checkBox.isSelected()) {
-            d.append("<a href=\"");
+            d.print("<a href=\"");
             writeAnchorAddress(d, checkBox);
-            d.append("\"");
+            d.print("\"");
 
             if (checkBox.getRealTarget() != null)
-                d.append(" target=\"").append(checkBox.getRealTarget()).append("\"");
+                d.print(" target=\"").print(checkBox.getRealTarget()).print("\"");
 
             if (tooltip != null)
-                d.append(" title=\"").append(tooltip).append("\"");
+                d.print(" title=\"").print(tooltip).print("\"");
 
-            d.append(">");
+            d.print(">");
         }
     }
 
@@ -61,7 +61,7 @@ public class RadioButtonCG
         throws IOException
     {
         if (checkBox.isEnabled() && !checkBox.isSelected())
-            d.append("</a>");
+            d.print("</a>");
     }
 }
 
