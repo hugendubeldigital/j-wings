@@ -1,4 +1,4 @@
-/* $Id $ */
+/* $Id$ */
 package org.wings.event;
 
 import java.awt.*;

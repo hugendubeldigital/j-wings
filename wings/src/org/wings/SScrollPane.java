@@ -465,7 +465,7 @@ public class SScrollPane
          return verticalExtent;
      }
 
-     /**
+    /**
      * Sets the viewportComponent
      * if there already exists one, it will be removed first
      *

@@ -18,7 +18,7 @@ import java.util.EventListener;
 
 /**
  * This listener is called on modifications on a Container. It can
- * be registered on an SContainer.
+ * be registered on an {@link org.wings.SContainer}.
  *
  * @see   org.wings.SContainer#addContainerListener(SContainerListener)
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>

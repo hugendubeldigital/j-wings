@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import java.util.Date;
 import org.wings.io.Device;
 import org.wings.util.LocaleCharSet;
 
@@ -38,7 +39,7 @@ public class DynamicCodeResource
     private static final ArrayList DEFAULT_CODE_HEADER = new ArrayList();
 
     static {
-        DEFAULT_CODE_HEADER.add(new HeaderEntry("Expires", new java.util.Date(1000)));
+        DEFAULT_CODE_HEADER.add(new HeaderEntry("Expires", new Date(1000)));
         DEFAULT_CODE_HEADER.add(new HeaderEntry("Cache-Control", "no-store, no-cache, must-revalidate"));
         DEFAULT_CODE_HEADER.add(new HeaderEntry("Cache-Control", "post-check=0, pre-check=0"));
         DEFAULT_CODE_HEADER.add(new HeaderEntry("Pragma", "no-cache"));
@@ -77,7 +78,6 @@ public class DynamicCodeResource
     public Collection getHeaders() {
         return DEFAULT_CODE_HEADER;
     }
-
 }
 
 /*

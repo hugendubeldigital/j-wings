@@ -90,19 +90,19 @@ public class STabbedPane
 
     private Logger fLogger = Logger.getLogger("org.wings.STabbedPane");
 
-	private DynamicResource fStyleSheet = null;
-	
-	/**
-	 * Number of selected tab.
-	 */
-	protected int selectedIndex = 0;
-	
-	/**
-	 * the newly selected index during a 
-	 * lowlevelevent
-	 */
-	private int lleChangedIndex = -1;
-
+    private DynamicResource fStyleSheet = null;
+    
+    /**
+     * Number of selected tab.
+     */
+    protected int selectedIndex = 0;
+    
+    /**
+     * the newly selected index during a 
+     * lowlevelevent
+     */
+    private int lleChangedIndex = -1;
+    
     /**
      * Creates a new empty Tabbed Pane with the tabs at the top.
      * @see #addTab
@@ -793,13 +793,13 @@ public class STabbedPane
         ((Page) pages.get(index)).toolTip = toolTip;
     }
 
-	/**
-	 * Get the tooltip text from tab at <i>index</i>
-	 * @return the text or <i>null</i> if not set.
-	 */
-	public String getToolTipTextAt(int index) {
-	    return ((Page) pages.get(index)).toolTip;
-	}
+    /**
+     * Get the tooltip text from tab at <i>index</i>
+     * @return the text or <i>null</i> if not set.
+     */
+    public String getToolTipTextAt(int index) {
+        return ((Page) pages.get(index)).toolTip;
+    }
 	
     /**
      * Sets the component at <i>index</i> to <i>component</i>.
@@ -912,13 +912,12 @@ public class STabbedPane
     public void setParentFrame(SFrame f)
     {
         super.setParentFrame(f);
-		contents.setParentFrame(f);
-		ComponentCG cg = this.getCG();
-		if (f != null && cg instanceof org.wings.plaf.TabbedPaneCG)
-		{
-		    fLogger.log(Level.FINEST, "STabbedPane.setParentFrame, Installing stylesheet ...");
-		    fStyleSheet = ((org.wings.plaf.TabbedPaneCG) cg).installStyleSheet(this);
-		}
+        contents.setParentFrame(f);
+        ComponentCG cg = this.getCG();
+        if (f != null && cg instanceof org.wings.plaf.TabbedPaneCG) {
+            fLogger.log(Level.FINEST, "STabbedPane.setParentFrame, Installing stylesheet ...");
+            fStyleSheet = ((org.wings.plaf.TabbedPaneCG) cg).installStyleSheet(this);
+        }
     }
 
     public String getCGClassID() {
