@@ -32,7 +32,9 @@ public class ScrollPaneExample
     public SComponent createExample() {
         SPanel p = new SPanel();
 
-        p.add(new SLabel("<h4>Table in a ScrollPane</h4>"));
+        SLabel label = new SLabel("<h4>Table in a ScrollPane</h4>");
+        label.setEscapeSpecialChars(false);
+        p.add(label);
 
         // table.setShowGrid(true);
         SBaseTable table = new SBaseTable(new MyTableModel());

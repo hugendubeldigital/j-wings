@@ -36,7 +36,10 @@ public class TableExample
         SPanel p = new SPanel (new SGridLayout(1));
         
         STable table = new STable(new MyTableModel());
-        p.add(new SLabel("<h4>Table outside a form with multiple selection</h4>"));
+        SLabel label;
+        label = new SLabel("<h4>Table outside a form with multiple selection</h4>");
+        label.setEscapeSpecialChars(false);
+        p.add(label);
         table.setShowGrid(true);
         table.setBorderLines(new Insets(1,1,1,1));
         table.setSelectionMode(MULTIPLE_SELECTION);
@@ -46,7 +49,9 @@ public class TableExample
 
         SForm form = new SForm();
         STable formTable = new STable(new MyTableModel());
-        form.add(new SLabel("<h4>Table inside a form with single selection</h4>"));
+        label = new SLabel("<h4>Table inside a form with single selection</h4>");
+        label.setEscapeSpecialChars(false);
+        form.add(label);
         formTable.setShowGrid(true);
         formTable.setBorderLines(new Insets(1,1,1,1));
         formTable.setSelectionMode(SINGLE_SELECTION);
