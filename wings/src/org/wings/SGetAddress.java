@@ -14,15 +14,11 @@
 
 package org.wings;
 
+import java.io.IOException;
 import org.wings.io.Device;
 
-/*
- * SGetAddress.java
- *
- * Diese Klasse verwaltet get Parameter.
- */
 /**
- * TODO: documentation
+ * This class handles a HTTP GET Address with optional parameters.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -30,8 +26,18 @@ import org.wings.io.Device;
 public class SGetAddress
     implements Cloneable
 {
-    private String relativeAddress = "";
+    private static final byte[] _ampStr    = "&amp;".getBytes();
+    private static final byte[] _questMark = "?".getBytes();
+
     private String absoluteAddress = "";
+
+    /*
+     * these values are derived from the absolute address
+     * and are cached for performance.
+     */
+    private String relativeAddress = null;
+    private byte[] relativeAddressByte = null;
+    private boolean hasQuestMark;
 
     private StringBuffer parameters = null;
 
@@ -58,6 +64,7 @@ public class SGetAddress
     public void setAbsoluteAddress(String addr) {
         absoluteAddress = addr;
         relativeAddress = null;
+        relativeAddressByte = null;
     }
 
     /**
@@ -78,6 +85,8 @@ public class SGetAddress
         if (relativeAddress == null) {
             int pos = absoluteAddress.indexOf('/', "http://".length() + 1);
             relativeAddress = absoluteAddress.substring(pos);
+            relativeAddressByte = relativeAddress.getBytes();
+            hasQuestMark = (relativeAddress.indexOf ('?') >= 0);
         }
         return relativeAddress;
     }
@@ -100,7 +109,7 @@ public class SGetAddress
      */
     public SGetAddress addParameter(String parameter) {
         if (parameter!=null) {
-            if (parameters == null)
+            if (parameters == null) 
                 parameters = new StringBuffer();
             else
                 parameters.append("&amp;");
@@ -110,12 +119,31 @@ public class SGetAddress
     }
 
     /**
-     * TODO: documentation
-     *
+     * removes all parameters.
      */
     public void clear() {
-        if (parameters != null)
+        if (parameters != null) {
             parameters.setLength(0);
+        }
+    }
+
+    /**
+     * writes the relative Address to the output Device. Tries to avoid
+     * charset conversion as much as possible by precalculating the
+     * byteArray representation of the non-parameter part.
+     *
+     * @param d the Device to write to 
+     */
+    public void write(Device d) throws IOException {
+        if (relativeAddressByte == null) {
+            getRelativeAddress();
+        }
+        d.write(relativeAddressByte);
+
+        if (parameters != null && parameters.length() > 0) {
+            d.write (hasQuestMark ? _ampStr : _questMark);
+            d.print(parameters.toString());
+        }
     }
 
     /**
@@ -126,17 +154,15 @@ public class SGetAddress
     public String toString() {
         StringBuffer erg = new StringBuffer(getRelativeAddress());
 
-        boolean qmark = (relativeAddress.indexOf ('?') >= 0);
-
         if (parameters != null && parameters.length() > 0) {
-            erg.append(qmark ? "&amp;" : "?");
-            erg.append(parameters);
+            erg.append(hasQuestMark ? "&amp;" : "?");
+            erg.append(parameters.toString());
         }
-
         return erg.toString();
     }
 
     /**
+     * Deep copy.
      * @return object with cloned contents
      */
     public Object clone()
@@ -145,6 +171,11 @@ public class SGetAddress
 
         if (parameters != null)
             erg.parameters = new StringBuffer(parameters.toString());
+        
+        // pass computed cache
+        erg.relativeAddress     = relativeAddress;
+        erg.relativeAddressByte = relativeAddressByte;
+        erg.hasQuestMark        = hasQuestMark;
 
         return erg;
     }
@@ -152,10 +183,10 @@ public class SGetAddress
     /**
      * TODO: documentation
      */
-    public static void main(String args[]) {
-        SGetAddress adr1 = new SGetAddress("test1");
+    public static void main(String args[]) throws Exception {
+        SGetAddress adr1 = new SGetAddress("/servlet/WingSet?JServSessionIdroot=8eapsqkqj1");
         SGetAddress adr2 = (SGetAddress)adr1.clone();
-        adr2.add("cloned");
+        adr2.add("cloned=1");
         System.out.println("adr1 " + adr1);
         System.out.println("adr2 " + adr2);
     }
