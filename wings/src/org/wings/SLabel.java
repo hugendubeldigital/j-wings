@@ -56,8 +56,6 @@ public class SLabel
     private boolean noBreak = false;
     private boolean imageAbsBottom = false;
 
-    private boolean escapeSpecialChars = true;
-
     /**
      * Creates a new <code>SLabel</code> instance with the specified text
      * (left alligned) and no icon.
@@ -153,7 +151,6 @@ public class SLabel
 
     /**
      *
-     * @param t
      */
     public boolean isImageAbsBottom() {
         return imageAbsBottom;
@@ -302,39 +299,6 @@ public class SLabel
     public void setText(String t) {
         reloadIfChange(ReloadManager.RELOAD_CODE, text, t);
         text = t;
-    }
-
-    /**
-     * returns the setting of the escape character property
-     *
-     * @see #setEscapeSpecialChars(boolean)
-     * @return 'true', if characters are quoted, 'false' if they
-     *         are passed raw to the backend Device.
-     * @deprecated please use the html tag instead
-     */
-    public boolean isEscapeSpecialChars() {
-	return escapeSpecialChars;
-    }
-
-    /**
-     * By default, all special characters are quoted in the
-     * output. This means for *ML like languages, that special 
-     * characters like &lt; &gt; or &amp; are replaced by their
-     * appropriate entities. Note, that the decision, what is
-     * quoted is done by the CG. If you set this to 'false', then
-     * they are not quoted - you might use this, if you want to
-     * sneak in HTML (XML, WML..PDF) formatting information in the
-     * raw String. Note, that in that case, your application might
-     * not be portable accross different backend CG's (think of
-     * WML).
-     *
-     * @param escape boolean 'true', if characters are to be escaped
-     *               (the default), or 'false' if any character you
-     *               write here is passed 'raw' to the Device.
-     * @deprecated  please use the <html> tag instead
-     */
-    public void setEscapeSpecialChars(boolean escape) {
-	escapeSpecialChars = escape;
     }
 
     public String getCGClassID() {
