@@ -14,49 +14,26 @@
 
 package org.wings.plaf.xhtml.css1;
 
-import java.awt.Insets;
 import java.io.IOException;
 
-import org.wings.*; import org.wings.border.*;
-import org.wings.io.*;
-import org.wings.plaf.*;
-import org.wings.plaf.xhtml.*;
-import org.wings.style.Style;
+import org.wings.border.SBorder;
+import org.wings.border.SBevelBorder;
+import org.wings.io.Device;
 
 public final class BevelBorderCG
-    extends org.wings.plaf.xhtml.BevelBorderCG
+    extends DefaultBorderCG
 {
-    private final static boolean BLACK = false;
-    private final static boolean WHITE = true;
-    private final static Insets none = new Insets(0,0,0,0);
 
-    public void writePrefix(Device d, SBorder b)
-	throws IOException
+    public void writeSpanAttributes(Device d, SBorder b )
+        throws IOException
     {
 	SBevelBorder border = (SBevelBorder)b;
-	int bevelType = border.getBevelType();
-	Insets insets = b.getInsets();
 
-	String borderStyle = (bevelType == SBevelBorder.RAISED) ? "outset" : "inset";
+        writeBorderStyle(d, b, border.getBevelType()==SBevelBorder.RAISED ? 
+                         "outset" : "inset");
 
-	d.print("<div style=\"border: ")
-	    .print(borderStyle)
-	    .print(" 1px");
-	if (insets != null && !none.equals(insets))
-	    d.print("; padding: ")
-		.print(insets.top).print(" ")
-		.print(insets.right).print(" ")
-		.print(insets.bottom).print(" ")
-		.print(insets.left)
-		.print("\">");
-	else
-	    d.print("\">");
-    }
-
-    public void writePostfix(Device d, SBorder b)
-	throws IOException
-    {
-	d.print("</div>");
+        // write insets/padding
+        super.writeSpanAttributes(d, b);
     }
 }
 

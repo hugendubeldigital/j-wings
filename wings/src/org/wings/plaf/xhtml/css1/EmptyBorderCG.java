@@ -14,46 +14,9 @@
 
 package org.wings.plaf.xhtml.css1;
 
-import java.awt.Insets;
-import java.io.IOException;
-
-import org.wings.*; import org.wings.border.*;
-import org.wings.io.*;
-import org.wings.plaf.*;
-import org.wings.plaf.xhtml.*;
-import org.wings.style.Style;
-
 public final class EmptyBorderCG
-    extends org.wings.plaf.xhtml.EmptyBorderCG
+    extends DefaultBorderCG
 {
-
-    public void writePrefix(Device d, SBorder b)
-	throws IOException
-    {
-	d.print("<div style=\"");
-
-        writeSpanAttributes(d, b);
-        
-        d.print("\">");
-    }
-
-    public void writePostfix(Device d, SBorder b)
-	throws IOException
-    {
-	d.print("</div>");
-    }
-
-    public void writeSpanAttributes(Device d, SBorder b )
-        throws IOException
-    {
-	Insets insets = b.getInsets();
-
-        d.print("padding:")
-            .print(insets.top).print("px ")
-            .print(insets.right).print("px ")
-            .print(insets.bottom).print("px ")
-            .print(insets.left).print("px;");
-    }
 
 }
 

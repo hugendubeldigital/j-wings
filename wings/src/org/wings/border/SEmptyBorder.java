@@ -14,7 +14,6 @@
 
 package org.wings.border;
 
-import java.awt.Color;
 import java.awt.Insets;
 
 import org.wings.plaf.*;
@@ -40,8 +39,8 @@ public class SEmptyBorder
      * @param insets
      */
     public SEmptyBorder(Insets insets) {
-        setInsets(insets);
-    }
+        super(insets);
+   }
 
     /**
      * TODO: documentation

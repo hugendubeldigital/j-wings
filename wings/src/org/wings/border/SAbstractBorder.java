@@ -15,6 +15,7 @@
 package org.wings.border;
 
 import java.awt.Insets;
+import java.awt.Color;
 import java.io.IOException;
 
 import org.wings.io.Device;
@@ -45,22 +46,32 @@ public abstract class SAbstractBorder
     /**
      * the insets
      */
-    protected Insets insets = new Insets(0, 0, 0, 0);
+    private Insets insets;
 
     /**
      * border color
      */
-    private java.awt.Color fColor = java.awt.Color.black;
+    private Color color;
 
     /**
      * border thickness
      */
-    private int fThickness = 1;
+    private int thickness;
 
     /**
      * constructor
      */
     public SAbstractBorder() {
+        this(Color.black, 1, new Insets(0, 0, 0, 0));
+    }
+
+    /**
+     * constructor
+     */
+    public SAbstractBorder(Color c, int thickness, Insets insets) {
+        setInsets(insets);
+        setColor(c);
+        setThickness(thickness);
 	updateCG();
     }
 
@@ -68,8 +79,21 @@ public abstract class SAbstractBorder
      * constructor
      */
     public SAbstractBorder(Insets insets) {
-	this();
-        setInsets(insets);
+	this(Color.black, 1, insets);
+    }
+
+    /**
+     * constructor
+     */
+    public SAbstractBorder(Color c) {
+	this(c, 1, new Insets(0, 0, 0, 0));
+    }
+
+    /**
+     * constructor
+     */
+    public SAbstractBorder(int thickness) {
+	this(Color.black, thickness, new Insets(0, 0, 0, 0));
     }
 
     public String getCGClassID() {
@@ -98,11 +122,17 @@ public abstract class SAbstractBorder
         setCG((BorderCG)SessionManager.getSession().getCGManager().getCG(this));
     }
 
+    /**
+     * set the insets of the border
+     */
     public void setInsets(Insets insets) {
         this.insets = insets;
     }
 
-    public Insets getInsets() { return insets; }
+    /**
+     * @return the insets of the border
+     */
+    public final Insets getInsets() { return insets; }
 
     public void writePrefix(Device d) throws IOException {
 	cg.writePrefix(d, this);
@@ -116,21 +146,37 @@ public abstract class SAbstractBorder
         cg.writeSpanAttributes( d, this );
     }
 
-    public java.awt.Color getColor() {
-        return fColor;
+    /**
+     * sets the foreground color of the border
+     * @param color
+     */
+    public final Color getColor() {
+        return color;
     }
 
-    public void setColor(java.awt.Color color) {
-        fColor = color;
+    /**
+     * sets the foreground color of the border
+     * @param color
+     */
+    public void setColor(Color color) {
+        this.color = color;
     }
 
-    public int getThickness() {
-        return fThickness;
-    }
-
+    /**
+     * set the thickness of the border 
+     * thickness must be > 0
+     *
+     * @param thickness
+     */
     public void setThickness(int thickness) {
-        fThickness = thickness;
+        this.thickness = thickness;
     }
+
+    /**
+     * @return thickness in pixels
+     */
+    public final int getThickness() { return thickness; }
+
 }
 
 /*

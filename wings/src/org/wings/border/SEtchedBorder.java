@@ -64,8 +64,8 @@ public class SEtchedBorder
      * @param insets
      */
     public SEtchedBorder(int etchedType, Insets insets) {
+        super(insets);
         setEtchedType(etchedType);
-        setInsets(insets);
     }
 
     /**

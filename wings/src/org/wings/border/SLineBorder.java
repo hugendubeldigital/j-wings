@@ -31,12 +31,17 @@ import org.wings.io.Device;
 public class SLineBorder
     extends SAbstractBorder
 {
+
+    public static final String DOTTED = "dotted";
+    public static final String DASHED = "dashed";
+    public static final String SOLID = "solid";
+
     /**
      * @see #getCGClassID
      */
     private static final String cgClassID = "LineBorderCG";
     
-    int thickness = 1;
+    private String borderStyle = SOLID;
 
     /**
      * TODO: documentation
@@ -47,10 +52,27 @@ public class SLineBorder
     /**
      * TODO: documentation
      *
-     * @param thickness
      */
     public SLineBorder(int thickness) {
-        setThickness(thickness);
+        super(thickness);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     */
+    public SLineBorder(Color c) {
+        super(c);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     */
+    public SLineBorder(Color c, String borderStyle) {
+        super(c);
+
+        setBorderStyle(borderStyle);
     }
 
     /**
@@ -60,20 +82,24 @@ public class SLineBorder
      * @param insets
      */
     public SLineBorder(int thickness, Insets insets) {
-        setThickness(thickness);
-        setInsets(insets);
+        super(Color.black, thickness, insets);
     }
 
     /**
      * TODO: documentation
      *
-     * @param thickness
+     * @param style
      */
-    public void setThickness(int thickness) {
-        this.thickness = thickness;
+    public void setBorderStyle(String style) {
+        this.borderStyle = style;
     }
-    
-    public int getThickness() { return thickness; }
+
+    /**
+     * TODO: documentation
+     *
+     * @return thickness in pixels
+     */
+    public final String getBorderStyle() { return borderStyle; }
 
     public String getCGClassID() {
         return cgClassID;

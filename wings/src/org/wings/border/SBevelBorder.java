@@ -65,8 +65,8 @@ public class SBevelBorder
      * @param padding (space between border and component) around
      */
     public SBevelBorder(int bevelType, Insets insets) {
+        super(insets);
         setBevelType(bevelType);
-        setInsets(insets);
     }
 
     /**
@@ -79,9 +79,8 @@ public class SBevelBorder
      * @param thickness the thickness of drawn line
      */
     public SBevelBorder(int bevelType, Insets insets, int thickness ) {
+        super(Color.black, thickness, insets);
         setBevelType(bevelType);
-        setInsets(insets);
-        setThickness( thickness );
     }
 
     /**
