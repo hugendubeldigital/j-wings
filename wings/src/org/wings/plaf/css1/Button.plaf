@@ -257,64 +257,49 @@ protected boolean renderLayoutWithoutIcon() {
          // fixme: this handles only one source of attributes
          writeIcon(device, component, style);
     } else {
+
+        // text is "1", icon is "2"
+        byte x1,y1,x2,y2;
+        switch (verticalTextPosition) {
+            case TOP:    y1=0; y2=1; break;
+            case BOTTOM: y1=1; y2=0; break;
+            default:     y1=0; y2=0; break;
+        }
+        switch (horizontalTextPosition) {
+            case LEFT:   x1=0; x2=1; break;
+            case RIGHT:  x1=1; x2=0; break;
+            default:     x1=0; x2=0; break;
+        }
+        
+        // now we got a 2x2 matrix, not a 3x3!
+        if (x1+x2+y1+y2 == 0)
+            throw new IllegalStateException(
+                "Come? Vertical and horizontal text-position is CENTER, "
+                + "don't know how to arrange this!");
+        
+        // draw it
+        final byte ri_max = y1==y2?(byte)1:(byte)2;
+        final byte ci_max = x1==x2?(byte)1:(byte)2;
         %><table cellspacing="0"><%
-        // if we are on the top, create a top row
-        if (verticalTextPosition == TOP) {
- 	       %><tr><td><% 
- 	       if (horizontalTextPosition == LEFT) { 
- 		  writeText(device, component, style);
- 	       }
- 	       %></td><td><%
- 	       if (horizontalTextPosition == CENTER) { 
- 		    writeText(device, component, style);
-	       }
-	       %></td><td><%
-	       if (horizontalTextPosition == RIGHT) {
-		  writeText(device, component, style);
-	       }
-	       %></td></tr><%
-       }
-
-       // we always have a center row, since we have to write the icon
-       if (verticalTextPosition == CENTER) {
-	   %><tr><td><%
-	   if (horizontalTextPosition == LEFT) { 
-	       writeText(device, component, style);
-	   }
-	   %></td><td><% 
-	   if (horizontalTextPosition == CENTER) { 
-	      writeText(device, component, style);
-	   }
-	   // the rendered icon in the center
-	   writeIcon(device, component, style); 
-	   %></td><td><% 
-	   if (horizontalTextPosition == RIGHT) { 
-	      writeText(device, component, style);
-	   }
-	   %></td></tr><%
-       } else {
-	   %><tr><td></td><td><%
-	   writeIcon(device, component, style);
-	   %></td><td></td></tr><%
-       }
-
-       // ..
-       if (verticalTextPosition == BOTTOM) {
-	   %><tr><td><% 
-	   if (horizontalTextPosition == LEFT) {
-	     writeText(device, component, style);
-	   }
-	   %></td><td><% 
-	   if (horizontalTextPosition == CENTER) {
-	     writeText(device, component, style);
-	   }
-	   %></td><td><%
-	   if (horizontalTextPosition == RIGHT) {
-	      writeText(device, component, style);
-	   }
-	   %></td></tr><%
-       } 
-       %></table><%
+        for (byte ri=0; ri<ri_max; ++ri) {
+            %><tr><%
+            for (byte ci=0; ci<ci_max; ++ci) {
+                if (horizontalTextPosition == CENTER) {
+                    %><td align="center"><%
+                } else {
+                    %><td><%
+                }
+                if (x1==ci && y1==ri) {
+                    writeText(device, component, style);
+                }
+                else if (x2==ci && y2==ri) {
+                    writeIcon(device, component, style);
+                }
+                %></td><%
+            }
+            %></tr><%
+        }
+        %></table><%
     }
 %>
 </write>
