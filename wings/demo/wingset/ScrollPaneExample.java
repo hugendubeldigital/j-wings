@@ -60,7 +60,7 @@ public class ScrollPaneExample
     };
 
 
-    class MyTableModel extends AbstractTableModel implements TableSorter
+    class MyTableModel extends AbstractTableModel // implements TableSorter
     {
         final int COLS = 15;
         final int ROWS = 15;

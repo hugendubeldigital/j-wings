@@ -95,7 +95,7 @@ public class TableExample
         }
     }
 
-    class MyTableModel extends AbstractTableModel implements TableSorter
+    class MyTableModel extends AbstractTableModel // implements TableSorter
     {
         final int COLS = 7;
         final int ROWS = 5;

@@ -10,7 +10,7 @@ import java.util.StringTokenizer;
 
 public class SelectableTableCellRenderer
     extends SDefaultTableCellRenderer
-    implements SGetListener
+    implements RequestListener
 {
     private final static String DELIMITER = ":";
     private SHRef link = new SHRef();
@@ -35,7 +35,7 @@ public class SelectableTableCellRenderer
         if (isSelectableColumn(col))
         {
             SGetAddress addr = baseTable.getServerAddress();
-            addr.add(getNamePrefix() + "=" + col + DELIMITER + row);
+            addr.addParameter(getNamePrefix() + "=" + col + DELIMITER + row);
             link.setText(value.toString());
             link.setReference(addr.toString());
             return(this);

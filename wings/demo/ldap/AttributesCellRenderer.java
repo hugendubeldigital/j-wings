@@ -10,7 +10,7 @@ import org.wings.externalizer.ExternalizeManager;
 
 public class AttributesCellRenderer
     extends SelectableTableCellRenderer
-    implements SGetListener
+    implements RequestListener
 {
     public SComponent getTableCellRendererComponent(SBaseTable baseTable,
 						    Object value,
