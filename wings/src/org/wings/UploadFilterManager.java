@@ -15,8 +15,8 @@
 package org.wings;
 
 import java.io.*;
+import java.util.HashMap;
 import java.lang.reflect.*;
-import java.util.Hashtable;
 import java.util.logging.*;
 
 /**
@@ -29,7 +29,7 @@ public class UploadFilterManager
 {
     private final static Logger logger = Logger.getLogger("org.wings.servlet");
 
-    private static Hashtable filterMappings = new Hashtable();
+    private static HashMap filterMappings = new HashMap();
 
     /**
      * TODO: documentation
