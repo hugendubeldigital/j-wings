@@ -57,9 +57,9 @@ public class WingSTutorial {
     log ( "Template file is '"+mainimagefile+"'");
     try {
 	frame.setBackgroundImage ( new org.wings.FileImageIcon( mainimagefile ) );
-    } catch ( java.io.IOException  ioex ) {
+    } catch ( Exception  ex ) {
 	log ( "seems we don't have a background image (Error: '"+
-	      ioex.getMessage()+"')");
+	      ex.getMessage()+"')");
     }
 
     // String templatefile = sctx.getInitParameter ( "slides.template" );
