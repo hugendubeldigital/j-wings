@@ -100,7 +100,7 @@ public class SButton extends SAbstractButton {
     }   
 
     public void fireFinalEvents() {
-        fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, getActionCommand()));
+        fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, actionCommandToFire));
         if ( getGroup()!=null ) {
             getGroup().fireDelayedFinalEvents();
         }
@@ -108,7 +108,7 @@ public class SButton extends SAbstractButton {
      
 
     public String getSelectionParameter() {
-        return getActionCommand()!=null ? actionCommandToFire : "1";
+        return getActionCommand()!=null ? getActionCommand() : "1";
     }
 }
 
