@@ -61,6 +61,8 @@ public class ResourceImageIcon
         extension = resourceFileName.substring(resourceFileName.lastIndexOf('.') + 1);
         if (extension == null || extension.length() == 0)
             extension = "png";
+        if (extension.equals("jpg"))
+            extension = "jpeg";
     }
 
     /**
