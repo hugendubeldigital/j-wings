@@ -107,15 +107,15 @@ public class SelectableTableCellRenderer
     public void write(Device d) throws IOException
     {
         if (reference != null) {
-            d.append("<a href=\"");
-            d.append(reference);
-            d.append("\">");
+            d.print("<a href=\"");
+            d.print(reference);
+            d.print("\">");
         }
 
         super.write(d);
 
         if (reference != null)
-            d.append("</a>");
+            d.print("</a>");
     }
 }
 

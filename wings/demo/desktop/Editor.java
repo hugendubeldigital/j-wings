@@ -328,7 +328,7 @@ public class Editor
         public void write(Device out)
             throws IOException
         {
-            out.append(textArea.getText());
+            out.print(textArea.getText());
         }
 
         public String getId() {
