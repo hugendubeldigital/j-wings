@@ -14,13 +14,11 @@
 
 package org.wings;
 
-import java.io.IOException;
-import java.lang.reflect.*;
-import java.util.logging.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import org.wings.io.Device;
-import org.wings.util.StringUtil;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.logging.*;
 
 /**
  * Traverses the component hierarchy of a frame and lets the CGs compose
@@ -48,7 +46,18 @@ public class DynamicCodeResource
      * Create a code resource for the specified frame.
      */
     public DynamicCodeResource(SFrame f) {
-        super(f, null, "text/html");
+        super(f, null, provideMimeType(f));
+    }
+
+    private static String provideMimeType(SFrame frame) {
+        try {
+            String encoding = org.wings.util.LocaleCharSet.getInstance()
+                .getCharSet(frame.getSession().getLocale());
+            return "text/html; charset=" + encoding;
+        }
+        catch (IOException e) {
+            return "text/html";
+        }
     }
 
     /**
