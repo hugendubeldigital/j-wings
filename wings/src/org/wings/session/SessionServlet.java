@@ -39,7 +39,7 @@ import org.wings.SForm;
 import org.wings.SFrame;
 import org.wings.SLabel;
 import org.wings.STemplateLayout;
-import org.wings.event.SRequestEvent;
+import org.wings.event.*;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.externalizer.ExternalizedResource;
 import org.wings.io.Device;
