@@ -154,4 +154,8 @@ public class SByteArrayIcon extends Resource implements SIcon {
     public void finalize() {
         removeExternalizedResource();
     }
+
+    public ImageInfo getImageInfo() {
+        return imageInfo;
+    }
 }
