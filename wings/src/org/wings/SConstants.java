@@ -17,7 +17,7 @@ package org.wings;
 import javax.swing.ListSelectionModel;
 
 /**
- * TODO: documentation
+ * This interface contains several constants we use at several places.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$

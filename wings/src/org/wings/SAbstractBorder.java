@@ -22,12 +22,13 @@ import org.wings.plaf.*;
 import org.wings.session.*;
 
 /**
- * TODO: documentation
+ * This is a an abstract implementation of the <code>SBorder</code>
+ * interface.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class SAbstractBorder
+public abstract class SAbstractBorder
     implements SBorder
 {
     /**
@@ -41,29 +42,30 @@ public class SAbstractBorder
      */
     protected transient BorderCG cg;
 
+    /**
+     * the insets
+     */
     protected Insets insets = new Insets(0, 0, 0, 0);
 
     /**
-      * border color
-      */
+     * border color
+     */
     private java.awt.Color fColor = java.awt.Color.black;
 
-	/**
-      * border thickness
-      */
+    /**
+     * border thickness
+     */
     private int fThickness = 1;
 
     /**
-     * TODO: documentation
-     *
+     * constructor
      */
     public SAbstractBorder() {
 	updateCG();
     }
 
     /**
-     * TODO: documentation
-     *
+     * constructor
      */
     public SAbstractBorder(Insets insets) {
 	this();
@@ -106,18 +108,19 @@ public class SAbstractBorder
     }
 
     /**
-     * TODO: documentation
+     * sets the Insets
      *
-     * @param insets
+     * @param insets the Insets
+     * @see java.awt.Insets
      */
     public void setInsets(Insets insets) {
         this.insets = insets;
     }
 
     /**
-     * TODO: documentation
+     * returns the Insets
      *
-     * @return
+     * @return the insets
      */
     public Insets getInsets() { return insets; }
 
@@ -126,9 +129,7 @@ public class SAbstractBorder
      *
      * @param d
      */
-    public void writePrefix(Device d)
-        throws IOException
-    {
+    public void writePrefix(Device d) throws IOException {
 	cg.writePrefix(d, this);
     }
 
@@ -137,56 +138,48 @@ public class SAbstractBorder
      *
      * @param d
      */
-    public void writePostfix(Device d)
-        throws IOException
-    {
+    public void writePostfix(Device d) throws IOException {
 	cg.writePostfix(d, this);
     }
-    
-    /**
-      * Write border attributes for span element.
-      */
-    public void writeSpanAttributes( Device d )
-    	throws IOException
-     {
-		cg.writeSpanAttributes( d, this );
-     }
-     
-    /**
-      * Get the color of the border.
-      */
-    public java.awt.Color getColor()
-     {
-		return fColor;
-     }
 
     /**
-      * Get the color of this border.
-      */
-    public void setColor( java.awt.Color color )
-     {
-		fColor = color;
-     }
+     * Write border attributes for span element.
+     */
+    public void writeSpanAttributes(Device d) throws IOException {
+        cg.writeSpanAttributes( d, this );
+    }
 
     /**
-      * Get the thickness in pixel for this border.
-      * @return thickness
-      * @see #setThickness(int)
-      */
-	public int getThickness()
-     {
-		return fThickness;
-     }
+     * Get the color of the border.
+     */
+    public java.awt.Color getColor() {
+        return fColor;
+    }
 
     /**
-      * Set the thickness in pixel for this border.
-      * @param thickness
-      * @see #getThickness()
-      */
-	public void setThickness( int thickness )
-     {
-		fThickness = thickness;
-     }
+     * Get the color of this border.
+     */
+    public void setColor(java.awt.Color color) {
+        fColor = color;
+    }
+
+    /**
+     * Get the thickness in pixel for this border.
+     * @return thickness
+     * @see #setThickness(int)
+     */
+    public int getThickness() {
+        return fThickness;
+    }
+
+    /**
+     * Set the thickness in pixel for this border.
+     * @param thickness
+     * @see #getThickness()
+     */
+    public void setThickness(int thickness) {
+        fThickness = thickness;
+    }
 }
 
 /*
