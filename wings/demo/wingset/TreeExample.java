@@ -43,15 +43,16 @@ public class TreeExample
         SPanel p = new SPanel();
         // generating the tree:
         tree = new STree(new DefaultTreeModel(generateTree())); // thats it.
+
+
+        /* test code
+        p.add(createEventView(tree));
+        p.add(new SSeparator());
+        */
         
         p.add(createControlForm(tree));
         p.add(new SSeparator());
         p.add(tree);
-
-        //        /* test code
-        p.add(new SSeparator());
-        p.add(createEventView(tree));
-        //        */
         return p;
     }
 
@@ -60,6 +61,7 @@ public class TreeExample
         SPanel panel = new SPanel();
         final SForm form = new SForm();
         final STextArea messages = new STextArea("");
+        
         messages.setEditable(false);
         messages.setColumns(80);
         
@@ -104,6 +106,8 @@ public class TreeExample
             });
 
         form.add(messages);
+
+
         form.add(new SButton("Clear"));
         form.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -182,6 +186,32 @@ public class TreeExample
             controlForm.add(arrowButton);
             plusButton.setSelected(true);
         }
+
+
+        final SCheckBox blockExpansion = new SCheckBox("Block Expansion");
+        // just for testing
+        //        controlForm.add(blockExpansion);
+        final SCheckBox blockCollapse = new SCheckBox("Block Collapse");
+        // just for testing
+        //        controlForm.add(blockCollapse);
+
+        tree.addTreeWillExpandListener(new TreeWillExpandListener() {
+                public void treeWillExpand(TreeExpansionEvent e) 
+                    throws ExpandVetoException {
+                    if ( blockExpansion.isSelected() ) {
+                        throw new ExpandVetoException(e);
+                    }
+                }
+
+                public void treeWillCollapse(TreeExpansionEvent e)
+                    throws ExpandVetoException {
+                    if ( blockCollapse.isSelected() ) {
+                        throw new ExpandVetoException(e);
+                    }
+                }
+                                       
+            });
+
         
         SButton submit = new SButton("OK");
         controlForm.add(submit);
