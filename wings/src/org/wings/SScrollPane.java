@@ -479,7 +479,73 @@ public class SScrollPane
         viewComponent = view;;
     }
 
+    public void scrollRectToVisible(Rectangle aRect) {
+        
+        Rectangle viewport = scrollable.getScrollableViewportSize();
+        
+        // should never happen. If it happen we got a serious problem, because
+        // we cannot determine what to scroll...
+        if ( viewport==null ) return;
+        
+        System.out.println("scrollRectToVisible called with "+aRect);
+        Adjustable hbar = getHorizontalScrollBar();
+        if ( hbar!=null &&
+             getHorizontalScrollBarPolicy()!=HORIZONTAL_SCROLLBAR_NEVER ) {
+            int nval = scrollValue(hbar.getValue(), getHorizontalExtent(),
+                                   aRect.x, aRect.width,
+                                   hbar.getUnitIncrement());
+            if (nval != hbar.getValue()) {
+                System.out.println("scrolling hbar from "+hbar.getValue()+" to "+nval);
+                hbar.setValue(nval);
+            }
+        } 
 
+        Adjustable vbar = getVerticalScrollBar();
+        if (vbar != null &&
+            getVerticalScrollBarPolicy()!=VERTICAL_SCROLLBAR_NEVER ) {
+            int nval = scrollValue(vbar.getValue(), getVerticalExtent(),
+                                   aRect.y, aRect.height,
+                                   vbar.getUnitIncrement());
+            if (nval != vbar.getValue()) {
+                System.out.println("scrolling vbar from "+vbar.getValue()+" to "+nval+
+                                   " (inc="+vbar.getUnitIncrement()+")");
+                vbar.setValue(nval);
+            }
+        }
+    }
+
+    /**
+     * Calculate the best new position to show the given range.
+     * @param pos the current position
+     * @param size the current visible amount
+     * @param rpos the start-position of the range to expose
+     * @param rsize the size of the range to expose
+     * @param inc the unit-increment to advance pos
+     * @return pos the new position
+     */
+    protected int scrollValue(int pos, int size, int rpos, int rsize, int inc) {
+        if (pos <= rpos &&
+            (pos+size) >= (rpos+rsize)) {
+            // nothing to do
+            return pos;
+        }
+            
+        if (pos > rpos) {
+            // scroll backward - ignore rsize, either it fits or it doesn't,
+            // just make sure the difference between pos and rpos is as
+            // small as possible.
+            while (pos > rpos) {
+                pos -= inc;
+            }
+        } else {
+            // scroll forward
+            while ((pos+size) < (rpos+rsize) &&
+                   (pos+inc) <= rpos) {
+                pos += inc;
+            }
+        }
+        return pos;
+    }
 }
 
 /*

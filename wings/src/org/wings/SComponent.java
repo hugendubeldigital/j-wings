@@ -17,6 +17,7 @@ package org.wings;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.beans.*;
 import java.io.*;
 import java.lang.reflect.*;
@@ -1615,6 +1616,18 @@ public abstract class SComponent
         } // end of if ()
     }
 
+    /**
+     * Forwards the scrollRectToVisible() message to the SComponent's
+     * parent. Components that can service the request, such as
+     * SScrollPane, override this method and perform the scrolling.
+     * @param aRect the visible Rectangle
+     * @see SScrollPane
+     */
+    public void scrollRectToVisible(Rectangle aRect) {
+        if (parent != null) {
+            parent.scrollRectToVisible(aRect);
+        }
+    }
 }
 
 /*
