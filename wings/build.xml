@@ -84,6 +84,7 @@
   <target name="wings.jar" depends="compile">
     <jar jarfile="${distlib}/wings.jar" basedir="${classes}">
       <exclude name="org/wings/plaf/xhtml/**" />
+      <exclude name="org/wings/plaf/css1/**" />
     </jar>
 
     <copy todir="${distlib}">
