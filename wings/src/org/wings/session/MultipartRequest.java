@@ -346,8 +346,18 @@ class MultipartRequest
                         String name = (String)headers.get("name");
                         
                         String contentType = (String)headers.get("content-type");
-                        
-                        uploadFile=File.createTempFile("wings_uploaded","tmp");
+                        try {
+                            uploadFile=File.createTempFile("wings_uploaded",
+                                                           "tmp");
+                        }
+                        catch (IOException e) {
+                            logger.log(Level.SEVERE,
+                                       "couldn't create temp file in '"
+                                       + System.getProperty("java.io.tmpdir") 
+                                       + "' (CATALINA_TMPDIR set correctly?)",
+                                       e);
+                            throw e;
+                        }
                         
                         UploadedFile upload = new UploadedFile(filename,
                                                                contentType, 
