@@ -3,7 +3,10 @@ wingS demo installation with JServ and Apache under Linux
 
 0) make sure JServ or tomcat is working
 
-1) compile wingS
+1) compile wingS. Make sure, that you have the java servlet classes
+   in your classpath or in the lib/ directory as jar file.
+   You need JSDK 2.2.
+   To compile the wings.jar, just type ant:
      $ ant
    compile the demo
      $ cd demo
