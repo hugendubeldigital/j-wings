@@ -33,9 +33,7 @@ import javax.servlet.http.HttpSessionBindingEvent;
 
 import org.wings.*;
 
-import org.wings.util.TimeMeasure;
-import org.wings.util.ASUtil;
-import org.wings.util.DebugUtil;
+import org.wings.util.*;
 import org.wings.io.ServletDevice;
 import org.wings.session.*;
 import org.wings.externalizer.ExternalizeManager;
@@ -616,19 +614,30 @@ public abstract class SessionServlet
      *
      */
     public void destroy() {
-        SFrame f = getFrame();
-        if ( f != null ) {
-            f.getContentPane().removeAll();
-            f.getOptionPaneContainer().removeAll();
-        }
+        debug("destroy called");
 
-        System.gc();
+        try {
+            SFrame f = getFrame();
+            if ( f != null ) {
+                f.getContentPane().removeAll();
+                f.getOptionPaneContainer().removeAll();
+            }
+        }
+        catch ( Exception e ) {
+            e.printStackTrace();
+        }
+        finally {
+            Runtime rt = Runtime.getRuntime();
+            if ( DEBUG ) debug("free mem before gc: " + rt.freeMemory());
+            rt.gc();
+            if ( DEBUG ) debug("free mem after gc: " + rt.freeMemory());
+        }
     }
 
 
-    private static final void debug(String mesg) {
+    private static final void debug(String msg) {
         if ( DEBUG ) {
-            System.out.println("[" + SessionServlet.class.getName() + "] " + mesg);
+            DebugUtil.printDebugMessage(SessionServlet.class, msg);
         }
     }
 }
