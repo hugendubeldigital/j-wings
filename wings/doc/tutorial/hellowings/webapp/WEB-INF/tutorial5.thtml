@@ -1,0 +1,45 @@
+<h1>Running the servlet</h1>
+<p>After compiling the classes you have to tell your tomcat, what to do with it.</p>
+<h2>Creating a simple web.xml</h2>
+<p>Most web application needs further information about the served
+objects, if it won't only serves "<code>.html</code>" files.</p><p>For
+our servlet we need to let the servlet container know, which class it
+has to load and to execute to get the servlet running. Things like the
+classname, the servlet's name and several initial parameters, will be
+passed to Tomcat using "<code>web.xml</code>".</p><p>The
+"<code>web.xml</code>" is located in the webapplications
+"<code>WEB-INF</code>" directory and must be valid xml. You can
+download a sample <a
+href="../source/web.xml">"<code>web.xml</code>"</a>.</p>
+<table bgcolor="#D0D0D0">
+  <tr><td>
+<code>
+<font color="red">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</font><br/>
+<br/>
+<font color="red">&lt;!DOCTYPE web-app PUBLIC</font>&nbsp;<font color="green">"-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"</font>&nbsp;&nbsp;<font color="green">"http://java.sun.com/j2ee/dtds/web-app_2_2.dtd"</font>
+<font color="red">&gt;</font><br/>
+<br/>
+<font color="blue">&lt;web-app&gt;</font>
+<br/>
+&nbsp;&nbsp;<font color="red">&lt;!-- loading the HelloWingSServlet --&gt;</font><br/>
+&nbsp;&nbsp;<font color="blue"><font color="blue">&lt;servlet&gt;</font><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue">&lt;servlet-name&gt;</font><font color="green">HelloWingS</font><font color="blue">&lt;/servlet-name&gt;</font><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue">&lt;servlet-class&gt;</font><font color="green">HelloWingSServlet</font><font color="blue">&lt;/servlet-class&gt;</font><br/>
+&nbsp;&nbsp;<font color="blue">&lt;/servlet&gt;</font><br/>
+<br/>
+&nbsp;&nbsp;<font color="red">&lt;!-- the servlet container shall map the HelloWingS --&gt;</font><br/>
+&nbsp;&nbsp;<font color="blue">&lt;servlet-mapping&gt;</font><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue">&lt;servlet-name&gt;</font><font color="green">HelloWingS</font><font color="blue">&lt;/servlet-name&gt;</font><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue">&lt;url-pattern&gt;</font><font color="green">/HelloWingS/*</font><font color="blue">&lt;/url-pattern&gt;</font><br/>
+&nbsp;&nbsp;<font color="blue">&lt;/servlet-mapping&gt;</font><br/>
+<br/>
+&nbsp;&nbsp;<font color="red">&lt;!-- The Welcome File List --&gt;</font><br/>
+&nbsp;&nbsp;<font color="blue">&lt;welcome-file-list&gt;</font><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue">&lt;welcome-file&gt;</font><font color="green">index.html</font><font color="blue">&lt;/welcome-file&gt;</font><br/>
+&nbsp;&nbsp;<font color="blue">&lt;/welcome-file-list&gt;</font><br/>
+<br/>
+<font color="blue">&lt;/web-app&gt;</font><br/>
+</code>
+  </td></td>
+</table>
+<p>After installing the "<code>web.xml</code>" in the "<code>TOMCAT_DIR/webapps/helloWingS/WEB-INF</code>" directory, you can restart the servlet container and go on with <object name="nextstep">next page</object>.</p>

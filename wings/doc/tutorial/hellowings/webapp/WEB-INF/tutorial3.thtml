@@ -1,0 +1,29 @@
+<h1>Creating a webapplication with a WingS-servlet</h1>
+<p>Since you are reading this tutorial, it's sure, that you are
+not that much interested in serving static HTML.</p>
+<p>You'd like to know how to set up and run a WingS-servlet.</p>
+<h2>The WingS-servlet</h2>
+<p>The most simple WingS-servlet is, who would have expected, a "Hello
+WingS!" servlet.<br />It only writes on the browser's window "Hello
+WingS!".</p>
+<p>To implement this servlet, you need two classes:</p>
+<ul>
+<li>"<a href="../source/HelloWingSServlet.java"><code>HelloWingSServlet.java</code></a>"</li>
+<li>"<a href="../source/HelloWingSSession.java"><code>HelloWingSSession.java</code></a>"</li>
+</ul>
+<p>Download these two files and place them into the "<code>TOMCAT_DIR/webapps/helloWingS/WEB-INF/classes</code>" directory.</p>
+<h2>Why two different classes</h2>
+<p>There are two classes necessary, since in WingS an  
+extended session handling is implemented, which will work over servlet
+boundries.</br>The <em>Servlet</em>-class handles the creation of
+sessions, while the <em>Session</em>-class is created by the
+<em>Servlet</em>-class and handles the rest of the application.</p>
+<p>Follow me to the <object name="nextstep">next page</object> to see the code of the servlet.</p>
+
+
+
+
+
+
+
+
