@@ -174,20 +174,24 @@ public class SNumberFormatter extends SAbstractFormatter{
     private static final JavaScriptListener SCRIPT_SAVEOLD           = new JavaScriptListener("onfocus", functStr);
 
     private static String loadScript() {
+        InputStream in = null;
+        BufferedReader reader = null;
         try {    
-            InputStream in = SNumberFormatter.class.getClassLoader().getResourceAsStream("org/wings/text/SNumberFormatter.js");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            in = SNumberFormatter.class.getClassLoader().getResourceAsStream("org/wings/text/SNumberFormatter.js");
+            reader = new BufferedReader(new InputStreamReader(in));
             StringBuffer buffer = new StringBuffer();
             String line;
             while ((line = reader.readLine()) != null)
                 buffer.append(line).append("\n");
-            in.close();
 
             return buffer.toString();
         }
         catch (Exception e) {
             e.printStackTrace();
             return "";
+        } finally {
+          try { in.close(); } catch (Exception ign) {}
+          try { reader.close(); } catch (Exception ign) {}
         }
     }
 }
