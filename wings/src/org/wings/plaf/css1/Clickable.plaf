@@ -126,6 +126,7 @@ void writeIcon(final Device device, SAbstractClickable clickable, String attr)
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
     Utils.writeEvents(device, clickable);
+    %><%|title=tooltip%><%
     %><%|alt=tooltip%> /><%
 
     if ( writeAnchor ) {
