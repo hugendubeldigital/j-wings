@@ -143,7 +143,8 @@ public final class Session
             synchronized(Session.class) {
                 SESSION_COUNTER++;
                 ACTIVE_SESSION_COUNTER++;
-                ALLOCATED_SESSION_COUNTER++;            }
+                ALLOCATED_SESSION_COUNTER++;            
+            }
         } // end of if ()
     }
 
@@ -507,6 +508,13 @@ public final class Session
      *
      */
     protected void destroy() {
+        if ( collectStatistics ) {
+            synchronized(Session.class) {
+                ACTIVE_SESSION_COUNTER--;
+            }
+        } // end of if ()
+
+
         Iterator it = frames.iterator();
         while (it.hasNext()) {
             SContainer container = ((SFrame)it.next()).getContentPane();
@@ -529,12 +537,6 @@ public final class Session
             listenerList.remove((Class)listeners[i], (EventListener)listeners[i+1]);
         } // end of for (int i=0; i<; i++)
 
-
-        if ( collectStatistics ) {
-            synchronized(Session.class) {
-                ACTIVE_SESSION_COUNTER--;
-            }
-        } // end of if ()
     }
 
     /**
