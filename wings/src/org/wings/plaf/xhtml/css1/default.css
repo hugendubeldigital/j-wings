@@ -1,4 +1,4 @@
-BODY { 
+BODY {
    background: #dedede;
    padding: 0;
    margin: 10px;
@@ -193,6 +193,17 @@ FORM {
 	white-space: nowrap;
 }
 
+.disabledmenu {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	color: darkgray;
+	background-color: #CCCCCC;
+	border-width: 0px;
+	margin: 0px;
+	padding: 0px;
+	white-space: nowrap;
+}
+
 .amenu {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 14px;
@@ -230,6 +241,17 @@ FORM {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 14px;
 	color: #000066;
+	background-color: #CCCCCC;
+	white-space: nowrap;
+	border-width: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+
+.disabledmenuitem {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	color: darkgray;
 	background-color: #CCCCCC;
 	white-space: nowrap;
 	border-width: 0px;

@@ -199,8 +199,11 @@ Menu.prototype.setMouseMotion = function(element) {
 }
 
 Menu.prototype.setMouseMotionStyles = function(element) {
-    element.onmouseover = function(event) { Menu.prototype.setMouseOverStyle(element); };
-    element.onmouseout = function(event) { Menu.prototype.setMouseOutStyle(element); };
+    if ( element.className!="disabledmenu" &&
+         element.className!="disabledmenuitem" ) {
+        element.onmouseover = function(event) { Menu.prototype.setMouseOverStyle(element); };
+        element.onmouseout = function(event) { Menu.prototype.setMouseOutStyle(element); };
+    }
 }
 
 Menu.prototype.setMouseOutStyle = function(element) {

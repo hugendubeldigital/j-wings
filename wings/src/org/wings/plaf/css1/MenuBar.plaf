@@ -28,9 +28,9 @@
                      %> onMouseOver="Menu.prototype.setMouseOverStyle(this)"<%
                      %> onMouseOut="Menu.prototype.setMouseOutStyle(this)"<%
                  }
-                 %>>&nbsp;<%
+                 %>><%
                  mbar.getComponent(i).write(device);
-                 %>&nbsp;</td><%
+                 %></nobr></td><%
              }
          }
          if ( !rightAligned ) {

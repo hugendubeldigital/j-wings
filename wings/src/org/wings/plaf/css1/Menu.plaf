@@ -61,15 +61,20 @@ protected void writePopup(final Device device, SMenu menu)
                     String itemPopupId = itemComponentId + "_pop";
 
                     %> onMouseDown="Menu.prototype.toggle('<%=itemParentId%>','<%=itemHookId%>','<%=itemPopupId%>')"<%
+                    %> class="menu"<%
+                } else {
+                    %> class="disabledmenu"<%
                 }
-                %> class="menu"<%
+
             } else {
                 if (menuItem.isEnabled()) {
                     if ( menuItem instanceof SMenuItem ) {
                         %> onClick="window.location.href='<%writeAnchorAddress(device, (SMenuItem)menuItem);%>'"<%
                     }
+                    %> class="menuitem"<%
+                } else {
+                    %> class="disabledmenuitem"<%
                 }
-                %> class="menuitem"<%
             }
             %>><td><%
             menu.getMenuComponent(i).write(device);
