@@ -51,7 +51,7 @@ public class OptionPaneExample
 
         question.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SOptionPane.showQuestionDialog(frame, "Continue this this example?",
+                SOptionPane.showQuestionDialog(frame, "Continue this example?",
                                                "A Question", comment);
             }});
         add(question);
