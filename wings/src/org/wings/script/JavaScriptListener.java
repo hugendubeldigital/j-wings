@@ -99,14 +99,33 @@ public class JavaScriptListener
 
     private String substituteIds(String code, SComponent[] components) {
 	StringBuffer buffer = new StringBuffer();
+        
+        int startPos = 0;
+        int endPos = 0;
+        char lastChar = code.charAt(0);
+        for (int i=1; i < code.length(); ++i) {
+            char c = code.charAt(i);
+            endPos = i;
+            if (lastChar == '{' && Character.isDigit(c)) {
+                int varIndex = (int) (c - '0');
+                while (Character.isDigit(code.charAt(++i))) {
+                    varIndex *= 10;
+                    varIndex += (int) (code.charAt(i) - '0');
+                }
+                c = code.charAt(i);
+                if (c == '}') {
+                    buffer.append(code.substring(startPos, endPos-1));
+                    startPos = i+1;
+                    buffer.append(components[varIndex].getComponentId());
+                }
+                else {
+                    throw new IllegalArgumentException("Expected closing '}' after '{" + varIndex + "'");
+                }
+            }
+            lastChar = c;
+        }
+        buffer.append(code.substring(startPos));
 
-	StringTokenizer tokens = new StringTokenizer(code, "{}");
-	while (tokens.hasMoreTokens()) {
-	    buffer.append(tokens.nextToken());
-
-	    int i = new Integer(tokens.nextToken()).intValue();
-	    buffer.append(components[i].getComponentId());
-	}
 	return buffer.toString();
     }
 }
