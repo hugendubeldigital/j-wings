@@ -26,7 +26,7 @@ public class EditObjectPanel
     SButton removeButton;
     SResetButton cancelButton;
 
-     String dn;
+    String dn;
 
     public EditObjectPanel()
         throws NamingException

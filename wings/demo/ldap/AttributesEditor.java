@@ -18,11 +18,6 @@ public class AttributesEditor
   
     private Comparator comparator = new RowComparator();
   
-  private Attribute objectClass;
-  
-  private String OBJECTCLASS = "objectclass";
-  
-
     Map mayAttributeDefinitions;
     Map mustAttributeDefinitions;
 
@@ -40,20 +35,9 @@ public class AttributesEditor
     }
 
 
-  public void setObjectClass(Attribute oc) {
-    this.objectClass = oc;
-  }
-  
-  public Attribute getObjectClass() {
-    return objectClass;
-  }
-  
-  
-  public void clearClassDefinitions() {
-    rows.clear();
-  }
-  
-  
+    public void clearClassDefinitions() {
+	rows.clear();
+    }
 
     public void addClassDefinition(Attributes classDefinition)
 	throws NamingException
@@ -171,13 +155,8 @@ public class AttributesEditor
 	    this.component = editor.createComponent(attributes);
 	    this.maymust = maymust;
             
-            /*if (this.id.toLowerCase().equals(OBJECTCLASS)) {
-              editor.setValue(component,getObjectClass());
-              }*/
-            
 	    if (maymust == LDAP.MUST) {
-              label.setAttribute("font-weight", "bold");
-              label.setForeground(Color.red);
+		label.setAttribute("font-weight", "bold");
             }
             
 	    this.message.setAttribute("color", "red");
@@ -187,7 +166,8 @@ public class AttributesEditor
     private DirContext schema = null;
 
     protected DirContext getSchema()
-        throws NamingException    {
+        throws NamingException
+    {
         if (schema == null) {
             Session session = getSession();
 	    DirContext context = new InitialDirContext(new Hashtable(getSession().getProperties()));

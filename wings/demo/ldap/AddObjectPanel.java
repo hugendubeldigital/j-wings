@@ -14,14 +14,10 @@ public class AddObjectPanel
 {
     private final static Logger logger = Logger.getLogger("ldap");
 
-    private static String OBJECTCLASS = "objectClass";
-    
-    ResourceBundle objectClassBundle;
-    ResourceBundle attributeBundle;
-
     Attributes emptyAttributes = new BasicAttributes();
 
     STextField dnTextField;
+    SLabel objectClassLabel;
     SList objectClassList;
     AttributesEditor editor;
     SButton addButton;
@@ -35,8 +31,6 @@ public class AddObjectPanel
     {
         super(new SFlowDownLayout());
         setEncodingType("multipart/form-data");
-        //objectClassBundle = ResourceBundle.getBundle("ldap.objectclass.names", getSession().getLocale());
-        //attributeBundle = ResourceBundle.getBundle("ldap.attribute.names", getSession().getLocale());
 
         dnTextField = new STextField();
         dnTextField.setAttribute("width", "100%");
@@ -46,8 +40,10 @@ public class AddObjectPanel
         objectClassList.setAttribute("width", "100%");
         objectClassList.setListData(LDAP.getObjectClasses(getSchema()));
         objectClassList.setSelectionMode(SINGLE_SELECTION);
-        //objectClassList.setCellRenderer(new I18NCellRenderer());
         add(objectClassList);
+
+        objectClassLabel = new SLabel();
+        add(objectClassLabel);
 
         editor = new AttributesEditor();
         add(editor);
@@ -81,6 +77,7 @@ public class AddObjectPanel
 
         add(buttons);
 
+        objectClassLabel.setVisible(false);
         editor.setVisible(false);
         okButton.setVisible(false);
         cancelButton.setVisible(false);
@@ -96,9 +93,6 @@ public class AddObjectPanel
         try {
             List definitions = LDAP.getClassDefinitions(getSchema(), objectClass);
             editor.clearClassDefinitions();
-            BasicAttribute ocAttr = new BasicAttribute(OBJECTCLASS);
-            ocAttr.add(objectClass);
-            editor.setObjectClass(ocAttr);
             
             Iterator it = definitions.iterator();
             while (it.hasNext()) {
@@ -108,9 +102,12 @@ public class AddObjectPanel
             }
             addButton.setVisible(false);
             objectClassList.setVisible(false);
+            objectClassLabel.setVisible(true);
             editor.setVisible(true);
             okButton.setVisible(true);
             cancelButton.setVisible(true);
+
+            objectClassLabel.setText(" [" + objectClass + "]");
         }
 	catch (NamingException e) {
             logger.log(Level.SEVERE, "objectClass: " + objectClass, e);
@@ -135,6 +132,7 @@ public class AddObjectPanel
 	    getContext().createSubcontext(dn, specifiedAttributes);
 
             editor.setData(emptyAttributes);
+            objectClassLabel.setVisible(false);
             editor.setVisible(false);
             okButton.setVisible(false);
             cancelButton.setVisible(false);
@@ -160,6 +158,7 @@ public class AddObjectPanel
     }
 
     protected void cancel() {
+        objectClassLabel.setVisible(false);
         editor.setVisible(false);
         okButton.setVisible(false);
         cancelButton.setVisible(false);

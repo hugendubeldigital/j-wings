@@ -48,8 +48,7 @@ public class EditorFactory
 	if (syntaxes == null) {
 	    syntaxes = new Properties();
 	    try {
-              //InputStream in = EditorFactory.class.getClassLoader().getResourceAsStream("ldap/editors/syntax.properties");
-		InputStream in = EditorFactory.class.getClassLoader().getResourceAsStream("syntax.properties");
+		InputStream in = EditorFactory.class.getClassLoader().getResourceAsStream("ldap/editors/syntax.properties");
 		syntaxes.load(in);
 	    }
 	    catch (Exception e) {
@@ -82,8 +81,7 @@ public class EditorFactory
 	if (names == null) {
 	    names = new Properties();
 	    try {
-              //InputStream in = EditorFactory.class.getClassLoader().getResourceAsStream("ldap/editors/name.properties");
-		InputStream in = EditorFactory.class.getClassLoader().getResourceAsStream("name.properties");
+		InputStream in = EditorFactory.class.getClassLoader().getResourceAsStream("ldap/editors/name.properties");
 		names.load(in);
 	    }
 	    catch (Exception e) {
