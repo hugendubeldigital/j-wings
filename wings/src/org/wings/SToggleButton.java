@@ -53,6 +53,16 @@ public class SToggleButton
     public void setCG(ToggleButtonCG cg) {
         super.setCG(cg);
     }
+
+    /**
+     * in form components the parameter value of an button is the button
+     * text. So just toggle selection, in process request, if it is a request
+     * for me.
+     */
+    protected boolean parseSelectionToggle(String toggleParameter) {
+        return true;
+    }
+
 }
 
 /*
