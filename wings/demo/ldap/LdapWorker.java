@@ -36,7 +36,7 @@ public class LdapWorker
 	env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
 	env.put(Context.PROVIDER_URL, "ldap://" + server);
 	//env.put(Context.PROVIDER_URL, "ldap://192.168.10.21:389");
-	env.put(Context.SECURITY_PRINCIPAL,"cn=admin,dc=tiscon,dc=de");
+	env.put(Context.SECURITY_PRINCIPAL,"cn=admin,engels,dc=de");
 	env.put(Context.SECURITY_PRINCIPAL,bindDN);
 	//env.put(Context.SECURITY_PRINCIPAL,"cn=admin,dc=engels,dc=de");
 	env.put(Context.SECURITY_CREDENTIALS,password);
@@ -301,12 +301,12 @@ public class LdapWorker
 	    matchAttrs.put(new BasicAttribute(attrName));
 	    //matchAttrs.put(new BasicAttribute("cn", o));
 	    //Search for objects that have those matching attributes
-	    System.out.println(o + "," + "dc=tiscon,dc=de");
+	    System.out.println(o + "," + "dc=engels,dc=de");
 	    System.out.println(attrName);
 	    SearchControls c = new SearchControls();
 	    c.setSearchScope(0);
 	    c.setReturningAttributes(new String[] {attrName});
-	    NamingEnumeration enum = ctx.search(o + "," + "dc=tiscon,dc=de", "(objectclass=*)",c);
+	    NamingEnumeration enum = ctx.search(o + "," + "dc=engels,dc=de", "(objectclass=*)",c);
 	    
 	    
 	    while (enum.hasMore()) {
@@ -336,7 +336,7 @@ public class LdapWorker
          
          // Search for objects that have those matching attributes
 	//NamingEnumeration enum = ctx.search("", matchAttrs);
-	NamingEnumeration enum = ctx.search("dc=tiscon,dc=de", matchAttrs);
+	NamingEnumeration enum = ctx.search("dc=engels,dc=de", matchAttrs);
 
      
          while (enum.hasMore()) {
@@ -354,13 +354,53 @@ public class LdapWorker
 	return peopleDNMap;
     }
 
+    /*public ArrayList getFilteredAttributes(String dn, String filter, String attr) {
+	String [] attribs = {attr};
+	ArrayList l = new ArrayList();
+	try {
+	    NamingEnumeration en = search("dc=engels,dc=de",filter,attribs,2);
+	    while (en!=null && en.hasMoreElements()) {
+		SearchResult sr = (SearchResult)en.next();
+		System.out.println(">>>" + sr.getName());
+		BasicAttributes as = (BasicAttributes)sr.getAttributes();
+		BasicAttribute a  = (BasicAttribute)ba.get(attr);
+		if (a!=null) {
+		    l.add(a.get());
+		}
+		else l.add("");	   
+	    }
+	}
+	catch(NamingException ex) {
+	}
+	return l;
+	
+	}*/
+    
+    public ArrayList getFilteredDN(String baseDN,String filter) {
+	String [] attribs = {};
+	ArrayList l = new ArrayList();
+	try {
+	    NamingEnumeration en = search("dc=engels,dc=de",filter,attribs,2);
+	    while (en!=null && en.hasMoreElements()) {
+		SearchResult sr = (SearchResult)en.next();
+		System.out.println(">>>" + sr.getName());
+		//BasicAttributes as = (BasicAttributes)sr.getAttributes();
+		//BasicAttribute a  = (BasicAttribute)ba.get(attr);
+		l.add(sr.getName());
+	    }
+	}
+	catch(NamingException ex) {
+	}
+	return l;	
+    }
+
     
     private NamingEnumeration search(String dn, String filter, String []attribs,
 				     int type) 
 	throws NamingException {
 	System.out.println(dn);
 	System.out.println(filter);
-	System.out.println(attribs[0]);
+	//System.out.println(attribs[0]);
 	System.out.println(type);
 	
 	/* specify search constraints to search subtree */

@@ -45,7 +45,7 @@ public class LdapBrowserSession
     //private SForm tableForm;
     private SForm tableForm;
     private String server;
-    final private String baseDN = "dc=tiscon,dc=de";
+    final private String baseDN = "dc=engels,dc=de";
     private String bindDN = "";
     private String password = "";
     private String peopleName = "cn";
@@ -57,6 +57,11 @@ public class LdapBrowserSession
     HashMap peopleDN;
     SButton view;
     SPanel viewPanel;
+    SForm searchForm;
+    STextField searchField;
+    SComboBox searchBox;
+    SButton searchButton;
+    final String filter = "(cn=*)";
 
     public LdapBrowserSession(Session session) {
 	
@@ -72,6 +77,7 @@ public class LdapBrowserSession
 	//bindDN = ((PropertyService)getSession()).getProperty("ldap.server.binddn");
 	//pasword = ((PropertyService)getSession()).getProperty("ldap.server.password");
 	peopleName = ((PropertyService)getSession()).getProperty("ldap.server.peoplename");
+       
 	
 	System.out.println(server);
 	System.out.println(baseDN);
@@ -82,9 +88,9 @@ public class LdapBrowserSession
 				baseDN,
 				bindDN,
 				password);*/
-	worker = new LdapWorker("192.168.230.131:389",
-				"dc=tiscon,dc=de",
-				"cn=admin,dc=tiscon,dc=de",
+	worker = new LdapWorker("localhost:389",
+				"dc=engels,dc=de",
+				"cn=admin,dc=engels,dc=de",
 				"secret");
 	boolean success = worker.getSuccess();
 	if (!success) {
@@ -125,12 +131,26 @@ public class LdapBrowserSession
 	personList.addListSelectionListener(this);
 	personList.setVisibleRowCount(12);
 	addListElements(personList);
+
+	searchBox = new SComboBox();
+	searchBox.addItem("name");
+	searchBox.addItem("abteilung");
+	
+	searchField = new STextField("*");
+
+	SButton searchButton = new SButton("search");
+	searchButton.addActionListener(this);
 	
 	tableForm.add(peopleTable);
 	tableForm.add(view);
-	listForm.add(personList);
-	listForm.add(submit);
-	getFrame().getContentPane().add(listForm);
+	searchForm.add(searchBox);
+	searchForm.add(searchField);
+	searchForm.add(searchButton);
+	
+	//listForm.add(personList);
+	//listForm.add(submit);
+	//getFrame().getContentPane().add(listForm);
+	getFrame().getContentPane().add(searchForm);
 	getFrame().getContentPane().add(tableForm);	
 	getFrame().getContentPane().add(viewPanel);
     }
@@ -207,7 +227,20 @@ public class LdapBrowserSession
 		    System.out.println(exc);
 		}
 	    }
+	if ((SButton)evt.getSource() == searchButton) {
+	    //filter = search.getSelectedItem();
+	    System.out.println("filter is... " + filter);
+	    //LdapWorker worker = getLdapWorker();
+	    //peopleTable.setModel(new LdapTableModel());
+	    peopleTable = new STable(new LdapTableModel());
+	    peopleTable.setBorderLines(new Insets(2,2,2,2));
+	    peopleTable.setSelectionMode(SINGLE_SELECTION);
+	    
+	    tableForm.add(peopleTable);
+	    tableForm.add(view);
+	}
     }
+    
     
 
     private void addListElements(SList list) {
@@ -235,11 +268,14 @@ public class LdapBrowserSession
 	
 	final String[] columnNames = {"cn","sn"};
 	final int COLS = columnNames.length;
-	final int ROWS = getSelectedPeopleCount();
+	int ROWS ;
 	Object[][] data = new Object[ROWS][COLS];
 	
 	LdapTableModel() {
 	    ArrayList l = getSelList();
+	    ArrayList dnList = getLdapWorker().getFilteredDN(filter,baseDN);
+	    ROWS = dnList.size();
+
 	    int i = 0 ;
 	    while (i < l.size()){
 		System.out.println(i + "   " + l.get(i));
@@ -248,7 +284,10 @@ public class LdapBrowserSession
 	    if (ROWS > 0) {
 	    for (int c=0; c < COLS; c++) {
 		for (int r=0; r < ROWS; r++) {
-		    data[r][c] = worker.getOAttributeValues((String)peopleDN.get((String)getSelList().get(r)),columnNames[c]);
+		    //filter  = "(" + filter + " = " + searchField.getText() + ")"; 
+		    //data[r][c] = worker.getOAttributeValues((String)peopleDN.get((String)getSelList().get(r)),columnNames[c]);
+		       
+		    data[r][c] = getLdapWorker().getOAttributeValues((String)dnList.get(r) + "," + baseDN , columnNames[c]);
 		    System.out.println("row " + r + "col " + c + "value "+ data[r][c]);
 		}
 		
