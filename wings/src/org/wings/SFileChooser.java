@@ -11,7 +11,6 @@
  *
  * Please see COPYING for the complete licence.
  */
-
 package org.wings;
 
 import java.io.File;
@@ -63,7 +62,7 @@ public class SFileChooser
     protected int columns = 16;
 
     /**
-     * maximum allowed number of columns. Default: none.
+     * maximum allowed number of columns. Default: not limited.
      */
     protected int maxColumns = -1;
 
@@ -219,7 +218,7 @@ public class SFileChooser
      * to query the actual filename given by the user, since this file
      * wraps a system generated file that has not the filename given by
      * the user. Use {@link #getFilename()} instead. The file returned is
-     * not removed from the filesystem until you loose the reference to
+     * not removed from the filesystem unless you loose the reference to
      * it. If you rename the file, it is not removed from the filesystem.
      *
      * @return a File to access the content of the uploaded file.
@@ -297,7 +296,8 @@ public class SFileChooser
 
     /**
      * A temporary file. This file removes its representation in the
-     * filesysten, when there are no references to it.
+     * filesysten, when there are no references to it (i.e. it is garbage
+     * collected)
      */
     private static class TempFile extends File {
         private boolean isTemp;
