@@ -99,13 +99,21 @@ public class GridLayoutCG
             if (firstRow && header) {
                 d.print("<th");
                 Utils.printTableCellAlignment(d, c);
-                Utils.printTableCellColors(d, c);
+                // Some containers (like SPanel) do not support background colors
+                // hence we support the background of them using the sourrounding gridlayout cell
+                if (c instanceof SContainer) {
+                   Utils.printTableCellColors(d, c);
+                }
                 d.print(">");                
             }
             else {
                 d.print("<td");
                 Utils.printTableCellAlignment(d, c);
-                Utils.printTableCellColors(d, c);
+                // Some containers (like SPanel) do not support background colors
+                // hence we support the background of them using the sourrounding gridlayout cell
+                if (c instanceof SContainer) {
+                   Utils.printTableCellColors(d, c);
+                }
                 d.print(">");
             }
 
