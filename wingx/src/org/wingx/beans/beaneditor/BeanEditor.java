@@ -133,17 +133,12 @@ public class BeanEditor
 
 
     public void setBean(Object bean) {
-        setBeanClass(bean.getClass());
-        reset();
         this.bean = bean;
+        setBeanClass(bean.getClass());
         if (bean != null)
             readBean();
     }
     public Object getBean() { return bean; }
-
-    public void reset() {
-        bean = null;
-    }
 
 
     private void initComponents() {
