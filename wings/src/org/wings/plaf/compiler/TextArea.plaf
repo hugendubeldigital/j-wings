@@ -1,5 +1,5 @@
 <template name="TextArea" for="org.wings.STextArea">
-<%@ include file="Common.plaf"%>
+<%@ include file="common.plaf"%>
 
 <write>
 <textarea cols="<%?columns%>" rows="<%?rows%>"<%

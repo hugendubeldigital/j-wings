@@ -1,5 +1,5 @@
 <template name="Separator" for="org.wings.SSeparator">
-<%@ include file="Common.plaf"%>
+<%@ include file="common.plaf"%>
 
 <write>
 <hr<% 

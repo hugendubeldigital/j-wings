@@ -49,8 +49,7 @@ class PlafCompiler {
 		String html = consumeTextUntil(input, '<', '%').toString();
 		if (!input.getFilePosition().equals(lastFilePos)) {
 		    lastFilePos = input.getFilePosition();
-		    output.append ("\n\n// ---------- " + lastFilePos +
-				   " ----\n");
+		    //output.append ("\n\n// ---------- " + lastFilePos +" \n");
 		}
 		if (html.length() > 0) {
 		    if (!stringToName.containsKey(html)) {
@@ -101,7 +100,7 @@ class PlafCompiler {
 		    break;
 
 		case EXPRESSION:
-		    output.append("\tdevice.print(")
+		    output.append("\torg.wings.plaf.compiler.Utils.write( device, ")
 			.append(codeOut)
 			.append(");\n");
 		    break;
