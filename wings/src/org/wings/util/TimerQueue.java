@@ -71,7 +71,7 @@ public final class TimerQueue
 
     private synchronized void stop() {
         running = false;
-        notify();
+        notifyAll();
     }
 
     public synchronized void addTimer(Timer timer, long expirationTime) {
@@ -105,7 +105,7 @@ public final class TimerQueue
         timer.expirationTime = expirationTime;
         timer.nextTimer = nextTimer;
         timer.running = true;
-        notify();
+        notifyAll();
     }
 
     public synchronized void removeTimer(Timer timer) {
