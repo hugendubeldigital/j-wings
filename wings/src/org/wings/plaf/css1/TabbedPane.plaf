@@ -290,11 +290,13 @@ protected void writeTabs(Device device, STabbedPane component) throws IOExceptio
 {
     final boolean vert = component.getTabPlacement() == SConstants.LEFT
                    || component.getTabPlacement() == SConstants.RIGHT;
-    final boolean isMSIE = SessionManager
+    final String browserName = SessionManager
         .getSession()
         .getUserAgent()
-        .getBrowserName()
-        .equals("MSIE");
+        .getBrowserName();
+    final boolean isMSIE  = "MSIE".equals(browserName);
+    final boolean isOpera = "Opera".equals(browserName);
+
     %><td valign="top"<%
     %><%|class="tp_"+component.getComponentId()+"_btnpanel"%><%
     %><%|align=(component.getTabPlacement()==SConstants.LEFT?"right":"left")%><%
@@ -413,6 +415,12 @@ protected void writeTabs(Device device, STabbedPane component) throws IOExceptio
               else          { %><%|src=lastIconNormal.getURL()%><% }
               %> /><br /><%
               newLine = true;
+          }
+	  else if (isOpera) {
+	     /*
+              * oper needs an extra space to break the tabs correctly.
+	      */
+             %> <%
           }
           selectedBefore = selected;
           if (vert)
