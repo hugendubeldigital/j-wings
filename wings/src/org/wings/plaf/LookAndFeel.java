@@ -155,9 +155,11 @@ public class LookAndFeel
      */
     public static Color makeColor(String colorString) {
         if ( colorString!=null ) {
-            colorString = colorString.trim();
-            if ( colorString.charAt(0)=='#' && colorString.length()==7 ) {
-                return new Color(Integer.parseInt(colorString.substring(1),16));
+            try {
+            return Color.decode(colorString.trim());
+            } catch ( Exception ex ) {
+                ex.printStackTrace();
+                return null;
             }
         }
         return null;
