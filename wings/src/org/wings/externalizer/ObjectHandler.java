@@ -33,7 +33,7 @@ public interface ObjectHandler
     String getMimeType( Object obj );
 
     /**
-     * returns true if the object is stable
+     * returns true if the object is stable, false if transient.
      */
     boolean isStable( Object obj );
 

@@ -28,11 +28,19 @@ import javax.servlet.http.HttpServletResponse;
  * with the ServletExternalizer.
  *
  * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
+ * @author <a href="mailto:hzeller@to.com">Henner Zeller</a>
  * @version $Revision$
  */
 public class ExternalizerServlet
     extends HttpServlet
 {
+    /**
+     * if this is not a transient element, set the expiration header to
+     * this timeout, so that the browser is able to cache the item without
+     * further request.
+     */
+    final static int STABLE_EXPIRE = 3600 * 60 * 1000; // one hour
+
     /**
      * TODO: documentation
      *
@@ -41,11 +49,32 @@ public class ExternalizerServlet
         super();
     }
 
+    /**
+     * Only reload transient elements if they've changed.
+     */
+    protected long getLastModified(HttpServletRequest request) {
+        ExternalizedInfo info;
+
+        info = ServletExternalizer.getExternalizedInfo(request);
+        return info.lastModified();
+    }
+
+    /**
+     * send the to-be-externalized element as stream. Set the 
+     * <code>Expires</code> header if possible to allow caching in the client.
+     */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, java.io.IOException
     {
-        ExternalizedInfo info = ServletExternalizer.getExternalizedInfo(request);
+        ExternalizedInfo info;
+
+        info = ServletExternalizer.getExternalizedInfo(request);
         response.setContentType(info.handler.getMimeType(info.extObject));
+        // non-transient items can be cached by the browser
+        if (!info.isTransient()) {
+            response.setDateHeader("Expires", 
+                                   info.lastModified() + STABLE_EXPIRE);
+        }
         OutputStream out = response.getOutputStream();
         info.handler.write(info.extObject, out);
         out.flush();

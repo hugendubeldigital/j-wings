@@ -39,16 +39,24 @@ class ExternalizedInfo
         session     = ses;
         stable      = handler.isStable(extObject);
         extFileName = generateFileName() + "." + handler.getExtension(extObject);
-        touch();
+        timestamp = System.currentTimeMillis();
     }
 
     /**
      * TODO: documentation
      *
      */
-    public void touch() {
+    final public void touch() {
         if ( !stable )
             timestamp = System.currentTimeMillis();
+    }
+
+    final public long lastModified() {
+        return timestamp;
+    }
+
+    final public boolean isTransient() {
+        return !stable;
     }
 
     /**
@@ -63,7 +71,12 @@ class ExternalizedInfo
 
 
     /**
-     * TODO: documentation
+     * generate a file name for the externalized item. Goals: 
+     * <ul>
+     *   <li> as short as possible to make generated pages with many icons 
+     *        not too big. 
+     *   <li> Make the filename uniq within the typical cache timeframe
+     * </ul>
      */
     protected static final String generateFileName() {
         // FIXME: we probably should have a random prefix per Usersession
@@ -73,10 +86,10 @@ class ExternalizedInfo
         // one month:
         long maxUniqLifespan = 30 * 24 * 3600; // 1 Month
         long uniqPrefix = (System.currentTimeMillis() / 1000) % maxUniqLifespan;
-        // ASSUME that less than 100 externalized objects are generated per
+        // ASSUME that less than 1000 externalized objects are generated per
         // second:
         return Long.toString (uniqPrefix, Character.MAX_RADIX)+
-            "_" + (counter++ % 100);
+            "_" + (counter++ % 1000);
     }
 }
 
