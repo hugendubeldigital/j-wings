@@ -21,9 +21,12 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * Draw a etched border around a component.
+ * <span style="border-style: ridge; border-width: 3px;">RAISED</span>
+ * <span style="border-style: groove; border-width: 3px;">LOWERED</span>
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
  * @version $Revision$
  */
 public class SEtchedBorder

@@ -23,8 +23,13 @@ import org.wings.plaf.*;
 import org.wings.plaf.xhtml.*;
 import org.wings.style.Style;
 
+/**
+  * Write a etched border
+  * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+  * @see #writeBorderStyle(Device,SBorder)
+  */
 public final class EtchedBorderCG
-    extends org.wings.plaf.xhtml.EtchedBorderCG
+	extends org.wings.plaf.xhtml.BevelBorderCG
 {
     private final static boolean BLACK = false;
     private final static boolean WHITE = true;
@@ -37,11 +42,9 @@ public final class EtchedBorderCG
 	int etchedType = border.getEtchedType();
 	Insets insets = b.getInsets();
 
-	String borderStyle = (etchedType == SEtchedBorder.RAISED) ? "ridge" : "groove";
-
-	d.append("<div style=\"border: ")
-	    .append(borderStyle)
-	    .append(" 1px");
+	d.append("<div style=\"border: ");
+	writeBorderStyle( d, b );
+	d.append(" 1px");
 	if (insets != null && !none.equals(insets))
 	    d.append("; padding: ")
 		.append(insets.top).append(" ")
@@ -58,6 +61,15 @@ public final class EtchedBorderCG
     {
 	d.append("</div>");
     }
+
+	/**
+      * "ridge" or "groove"
+      */
+	protected void writeBorderStyle( Device d, SBorder b )
+    	throws IOException
+     {
+		d.append( ( ((SEtchedBorder) b).getEtchedType() == SEtchedBorder.RAISED) ? "ridge" : "groove" );
+     }
 }
 
 /*

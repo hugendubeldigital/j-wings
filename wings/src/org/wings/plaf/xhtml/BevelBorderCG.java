@@ -23,7 +23,11 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 
 /**
+  * This handles border style for BevelBorderCG and EtchedBorderCG
+  * because html-syntax is the same except the border-style
   * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+  * @see org.wings.plaf.xhtml.css1.EtchedBorderCG
+  * @see #writeBorderStyle(Device,SBorder)
   */
 public class BevelBorderCG
     extends DefaultBorderCG
@@ -31,8 +35,7 @@ public class BevelBorderCG
 	public void writeSpanAttributes( Device d, SBorder border )
     	throws IOException
      {
-     	SBevelBorder b = ( SBevelBorder ) border;
-		String borderStyle = ( b.getBevelType() == SBevelBorder.RAISED) ? "outset" : "inset";
+     	SAbstractBorder b = ( SAbstractBorder ) border;
      	java.awt.Insets insets = b.getInsets();
         java.awt.Color color = b.getColor();
         
@@ -40,7 +43,7 @@ public class BevelBorderCG
 		d.append( "border: ");
         d.append( b.getThickness() );
         d.append("px " );
-        d.append( borderStyle );
+        writeBorderStyle( d, b );
         d.append( ";" );
         
         /* color */
@@ -62,6 +65,15 @@ public class BevelBorderCG
         d.append( "px; padding-bottom: " );
         d.append( insets.bottom );
         d.append( "px;" );
+     }
+
+	/**
+      * "outset" or "inset"
+      */
+	protected void writeBorderStyle( Device d, SBorder b )
+    	throws IOException
+     {
+		d.append( ( ((SBevelBorder) b).getBevelType() == SBevelBorder.RAISED) ? "outset" : "inset" );
      }
 }
 

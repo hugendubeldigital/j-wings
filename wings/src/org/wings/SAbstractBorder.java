@@ -48,6 +48,11 @@ public class SAbstractBorder
       */
     private java.awt.Color fColor = java.awt.Color.black;
 
+	/**
+      * border thickness
+      */
+    private int fThickness = 1;
+
     /**
      * TODO: documentation
      *
@@ -161,6 +166,26 @@ public class SAbstractBorder
     public void setColor( java.awt.Color color )
      {
 		fColor = color;
+     }
+
+    /**
+      * Get the thickness in pixel for this border.
+      * @return thickness
+      * @see #setThickness(int)
+      */
+	public int getThickness()
+     {
+		return fThickness;
+     }
+
+    /**
+      * Set the thickness in pixel for this border.
+      * @param thickness
+      * @see #getThickness()
+      */
+	public void setThickness( int thickness )
+     {
+		fThickness = thickness;
      }
 }
 

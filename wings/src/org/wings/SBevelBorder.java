@@ -21,7 +21,9 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * Draw a beveled border around a component.
+ * <span style="border-style: outset; border-width: 3px;">RAISED</span>
+ * <span style="border-style: inset; border-width: 3px;">LOWERED</span>
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
@@ -40,8 +42,6 @@ public class SBevelBorder
 
     private int bevelType = RAISED;
     
-    private int fThickness = 1;
-
     /**
      * TODO: documentation
      *
@@ -104,25 +104,6 @@ public class SBevelBorder
         return cgClassID;
     }
     
-    /**
-      * Get the thickness in pixel for this border.
-      * @return thickness
-      * @see #setThickness(int)
-      */
-	public int getThickness()
-     {
-		return fThickness;
-     }
-
-    /**
-      * Set the thickness in pixel for this border.
-      * @param thickness
-      * @see #getThickness()
-      */
-	public void setThickness( int thickness )
-     {
-		fThickness = thickness;
-     }
 }
 
 /*

@@ -21,9 +21,11 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * Draw a line border around a component.
+ * <span style="border-style: solid; border-width: 3px;">LABEL</span>
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
  * @version $Revision$
  */
 public class SLineBorder
