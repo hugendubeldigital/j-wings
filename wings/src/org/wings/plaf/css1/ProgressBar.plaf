@@ -3,6 +3,13 @@
 
 private static final SIcon BLIND_ICON = new ResourceImageIcon("org/wings/icons/blind.gif");
 
+<comp-property type="java.awt.Color" name="filledColor">Color.red</comp-property>
+<comp-property type="java.awt.Color" name="unfilledColor">Color.gray</comp-property>
+<comp-property type="java.awt.Color" name="foreground">Color.red</comp-property>
+<comp-property type="java.awt.Color" name="borderColor">Color.black</comp-property>
+<comp-property type="SDimension" name="preferredSize">new SDimension(200,5)</comp-property>
+
+
 <write>
 <%
 
@@ -10,7 +17,7 @@ private static final SIcon BLIND_ICON = new ResourceImageIcon("org/wings/icons/b
 
     SDimension size = component.getPreferredSize();
     int width = size!=null ? size.getIntWidth() : 200;
-    int height = size!=null ? size.getIntHeight() : 200;
+    int height = size!=null ? size.getIntHeight() : 5;
 
     if ( component.isStringPainted() ) {
         %><table border="0" cellpadding="0" cellspacing="0"><tr><td><%
@@ -24,10 +31,10 @@ private static final SIcon BLIND_ICON = new ResourceImageIcon("org/wings/icons/b
     %><tr><%
         %><td<%|bgcolor=component.getFilledColor()%>><%
             %><img<%|src=BLIND_ICON.getURL()%> width="<%=(int)(width*component.getPercentComplete())%>"<%
-                %> height="<%=size.getIntHeight()%>"></td><%
+                %> height="<%=height%>"></td><%
         %><td<%|bgcolor=component.getUnfilledColor()%>><%
             %><img<%|src=BLIND_ICON.getURL()%> width="<%=(int)(width*(1-component.getPercentComplete()))%>"<%
-                %> height="<%=size.getIntHeight()%>"><%
+                %> height="<%=height%>"><%
         %></td><%
     %></tr><%
     %></table><%
