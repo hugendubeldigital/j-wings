@@ -72,7 +72,8 @@ public class ExplorerPanel
     protected SComponent createTable() {
         dirTable.setSelectionMode(STable.MULTIPLE_SELECTION);
 
-	// Zeitstempel und Dateigröße werden mit speziellen Renderern dargestellt
+        // timestamp and filesize are displayed with special renderers
+
 	dirTable.setDefaultRenderer(Date.class, new DateTableCellRenderer());
 	dirTable.setDefaultRenderer(Long.class, new SizeTableCellRenderer());
 
@@ -80,7 +81,7 @@ public class ExplorerPanel
     }
 
     protected SComponent createDeleteButton() {
-        SButton delete = new SButton("delete");
+        SButton delete = new SButton("delete selected");
         delete.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 deleteFiles();
