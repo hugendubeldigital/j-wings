@@ -173,7 +173,7 @@ void writeFormIcon(final Device device, SRadioButton radioButton, String attr)
 
     if (icon == null && !component.getShowAsFormComponent()) {
         writeText(device, component, attr);
-    } else if (text == null) {
+    } else if (text == null || text.length() == 0) {
         writeIcon(device, component, attr);
     } else {
         %><table><%
@@ -234,15 +234,14 @@ void writeFormIcon(final Device device, SRadioButton radioButton, String attr)
             %></td></tr><%
         }
         %></table><%
-
-        if (component.isEnabled() && component.getShowAsFormComponent()) {
-            // could be a util method
-            %><input type="hidden"<%
-            %><%|name=component.getNamePrefix()%><%
-            %><%|value=radioButton.getDeselectParameter()%><%
-            %>/><%
-        }
     }
-%>
-</write>
+
+   if (component.isEnabled() && component.getShowAsFormComponent()) {
+       // could be a util method
+       %><input type="hidden"<%
+       %><%|name=component.getNamePrefix()%><%
+       %><%|value=radioButton.getDeselectParameter()%><%
+       %>/><%
+   }
+%></write>
 </template>
