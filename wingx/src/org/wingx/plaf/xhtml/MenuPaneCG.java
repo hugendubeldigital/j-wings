@@ -160,6 +160,7 @@ public class MenuPaneCG implements ComponentCG
 			    	if (icn != null) {
 			    	    menuWidth = Math.max(icn.getIconWidth(), menuWidth);
 			    	}
+			    	if (item.getText() == null) continue;
 		    	    menuWidth = Math.max(
 		    	    	metrics.stringWidth(item.getText()),menuWidth);
 		    	}
@@ -271,7 +272,7 @@ public class MenuPaneCG implements ComponentCG
 		    d.print("\" cellspacing=\"0\" cellpadding=\"3\"");
 	        // small trick for konqueror(set and delete border to enable 
 	        // cell-border drawing on table with no border)
-	        d.print("\" border=1 style=\"border: none;\">\n");
+	        d.print(" border=\"1\" style=\"border: none;\">\n");
 	        for (;m<pane.getMenuCount(); m++) {
 	            menu = pane.getMenu(m);
 	            menu.setCG(menuButtonCG);
