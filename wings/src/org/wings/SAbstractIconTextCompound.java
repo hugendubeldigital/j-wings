@@ -141,6 +141,11 @@ public abstract class SAbstractIconTextCompound
     private boolean imageAbsBottom = false;
 
     /**
+     *
+     */
+    private boolean delayEvents = false;
+
+    /**
      * Create a button with given text.
      * @param text the button text
      */
@@ -155,29 +160,29 @@ public abstract class SAbstractIconTextCompound
         this("");
     }
 
-	/**
-	 * Adds a ItemListener to the button.
-	 * @see #removeItemListener(ItemListener)
-	 */
-	public void addItemListener(ItemListener il) {
-            addEventListener(ItemListener.class, il);
-	}
+    /**
+     * Adds a ItemListener to the button.
+     * @see #removeItemListener(ItemListener)
+     */
+    public void addItemListener(ItemListener il) {
+        addEventListener(ItemListener.class, il);
+    }
 
-	/**
-	 * Returns the selected items or null if no items are selected.
-	 */
-	public Object[] getSelectedObjects() {
-	    return selected?new Object[] {this}:null;
-	}
+    /**
+     * Returns the selected items or null if no items are selected.
+     */
+    public Object[] getSelectedObjects() {
+        return selected?new Object[] {this}:null;
+    }
 
-	/**
-	 * Remove the given itemListener from list of
-	 * item listeners.
-	 * @see #addItemListener(ItemListener)
-	 */
-	public void removeItemListener(ItemListener il) {
-            removeEventListener(ItemListener.class, il);
-	}
+    /**
+     * Remove the given itemListener from list of
+     * item listeners.
+     * @see #addItemListener(ItemListener)
+     */
+    public void removeItemListener(ItemListener il) {
+        removeEventListener(ItemListener.class, il);
+    }
 
     /**
      * TODO: documentation
@@ -545,6 +550,17 @@ public abstract class SAbstractIconTextCompound
         setSelectedIcon(icons[SELECTED_ICON]);
     }
     
+
+    private ItemEvent delayedItemEvent;
+
+    protected final void delayEvents(boolean b) {
+        delayEvents = b;
+    }
+
+    protected final boolean shouldDelayEvents() {
+        return delayEvents;
+    }
+
     /**
      * Reports a selection change.
      * @param ie report this event to all listeners
@@ -556,6 +572,11 @@ public abstract class SAbstractIconTextCompound
         if ( ie==null )
             return;
 
+        if ( delayEvents ) {
+            delayedItemEvent = ie;
+            return;
+        } // end of if ()
+        
         // Guaranteed to return a non-null array
         Object[] listeners = getListenerList();
         // Process the listeners last to first, notifying
@@ -567,7 +588,18 @@ public abstract class SAbstractIconTextCompound
         }
     }
 
-
+    public void fireIntermediateEvents() {
+        if ( delayEvents && delayedItemEvent!=null ) {
+            delayEvents = false;
+            fireItemStateChanged(delayedItemEvent);
+            delayEvents = true;
+        } // end of if ()
+        
+    }
+  
+    public void fireFinalEvents() {
+        delayEvents = false;
+    }
 
 }
 

@@ -108,17 +108,19 @@ public class SCheckBox extends SAbstractButton
     }
 
     public void processLowLevelEvent(String action, String[] values) {
-        boolean origSelected = isSelected();
-
+        boolean requestSelection;
+    
         if ( isRenderedAsFormInput() ) {
             // one hidden and one checked event from the form says select
             // it, else deselect it (typically only the hidden event)
-            setSelected(values.length==2);
+            requestSelection = values.length==2;
         } else {
-            setSelected(parseSelectionToggle(values[0]));
+            requestSelection = parseSelectionToggle(values[0]);
         }        
  
-        if ( isSelected()!=origSelected ) {
+        if ( requestSelection!=isSelected() ) {
+            delayEvents(true);
+            setSelected(requestSelection);
             // got an event, that is a select...
             SForm.addArmedComponent(this);
         } // end of if ()

@@ -280,7 +280,7 @@ protected boolean renderLayoutWithoutIcon() {
         // draw it
         final byte ri_max = y1==y2?(byte)1:(byte)2;
         final byte ci_max = x1==x2?(byte)1:(byte)2;
-        %><table cellspacing="0"><%
+        %><table cellspacing="0" cellpadding="0" border="0"><%
         for (byte ri=0; ri<ri_max; ++ri) {
             %><tr><%
             for (byte ci=0; ci<ci_max; ++ci) {

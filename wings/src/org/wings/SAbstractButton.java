@@ -400,6 +400,7 @@ implements LowLevelEventListener {
         }
     
         if ( isSelected()!=requestSelection ) {
+            delayEvents(true);
             if ( buttonGroup!=null ) {
                 buttonGroup.setDelayEvents(true);
                 setSelected(requestSelection);
@@ -413,12 +414,14 @@ implements LowLevelEventListener {
     }
   
     public void fireIntermediateEvents() {
+        super.fireIntermediateEvents();
         if ( buttonGroup!=null ) {
             buttonGroup.fireDelayedIntermediateEvents();
         }
     }
   
     public void fireFinalEvents() {
+        super.fireFinalEvents();
         fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, getActionCommand()));
         if ( buttonGroup!=null ) {
             buttonGroup.fireDelayedFinalEvents();

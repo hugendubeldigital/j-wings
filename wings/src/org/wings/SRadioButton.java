@@ -94,13 +94,13 @@ public class SRadioButton
     }
 
     public void processLowLevelEvent(String action, String[] values) {
-        boolean origSelected = isSelected();
-
+        boolean requestSelection;
+    
         if ( isRenderedAsFormInput() ) {
             if ( getGroup()==null ) {
                 // one hidden and one checked event from the form says select
                 // it, else deselect it (typically only the hidden event)
-                setSelected(values.length==2);
+                requestSelection = values.length==2;
             } else {
                 int eventCount = 0;
                 for ( int i=0; i<values.length; i++) {
@@ -113,19 +113,26 @@ public class SRadioButton
                 } // end of for (int i=0; i<; i++)
                 // one hidden and one checked event from the form says select
                 // it, else deselect it (typically only the hidden event)
-                setSelected(eventCount==2);
+                requestSelection = eventCount==2;
             } // end of if ()
         } else {
-            if ( getGroup()!=null ) {
-                getGroup().setDelayEvents(true);
-                setSelected(parseSelectionToggle(values[0]));
-                getGroup().setDelayEvents(false);
+            if ( action.equals(getComponentId()) ) {
+                requestSelection = parseSelectionToggle(values[0]);
             } else {
-                setSelected(parseSelectionToggle(values[0]));
-            } // end of else
+                requestSelection = isSelected();
+            }
         }        
  
-        if ( isSelected()!=origSelected ) {
+        if ( requestSelection != isSelected() ) {
+            delayEvents(true);
+            if ( getGroup()!=null ) {
+                getGroup().setDelayEvents(true);
+                setSelected(requestSelection);
+                getGroup().setDelayEvents(false);
+            } else {
+                setSelected(requestSelection);
+            } // end of else
+
             // got an event, that is a select...
             SForm.addArmedComponent(this);
         } // end of if ()
