@@ -35,7 +35,7 @@ extends STextComponent {
   protected int columns = 12;
   
   /** maximum columns allowed */
-  protected int maxColumns = 50;
+  protected int maxColumns = -1;
   
   /**
    * default action command to fire

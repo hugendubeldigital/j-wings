@@ -9,7 +9,9 @@
     // writeEvents();
     %><input type="text"<%
     %><%|size=component.getColumns()%><%
-    %><%|maxlength=component.getMaxColumns()%><%
+    if (component.getMaxColumns() >= 0) {
+      %><%|maxlength=component.getMaxColumns()%><%
+    }
     %><%|class=Utils.style(component)%><%
     %><%|style=component.getPreferredSize()%><%
     if (!component.isEditable() || !component.isEnabled() ) { %> readonly="1"<% }
@@ -18,11 +20,13 @@
         %> id="<%=Utils.event(component)%>"<%
     } else { %> disabled="1"<% } 
     %><%|tabindex=component.getFocusTraversalIndex()%><%
+    
     component.removeScriptListener(submitListener);
         if (component.getActionListeners().length>0) {
             component.addScriptListener(submitListener);
         }
-
     Utils.writeEvents(device, component);
+
+      
     %><%|value=component.getText()%>/></write>
 </template>
