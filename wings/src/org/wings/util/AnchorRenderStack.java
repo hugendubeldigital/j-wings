@@ -73,6 +73,18 @@ public class AnchorRenderStack {
         FastStack s = (FastStack) eventURLStack.get();
         return s.isEmpty() ? null : (AnchorProperties) s.peek();
     }
+
+    public static Object clear() {
+        Object oldValue = eventURLStack.get();
+        eventURLStack.set(new FastStack(INITIAL_STACK_DEPTH));
+        return oldValue;
+    }
+
+    public static void set(Object stack) {
+        eventURLStack.set(stack);
+    }
+
+
 }
 
 /*
