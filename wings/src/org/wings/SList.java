@@ -28,6 +28,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import org.wings.plaf.*;
+import org.wings.util.*;
 import org.wings.io.Device;
 
 /**
@@ -48,6 +49,8 @@ public class SList
     extends SComponent
     implements Scrollable, SGetListener
 {
+    public static final boolean DEBUG = true;
+
     /**
      * @see #getCGClassID
      */
@@ -1005,6 +1008,13 @@ public class SList
 
     public void setCG(ListCG cg) {
         super.setCG(cg);
+    }
+
+
+    private static final void debug(String msg) {
+        if ( DEBUG ) {
+            DebugUtil.printDebugMessage(SList.class, msg);
+        }
     }
 }
 
