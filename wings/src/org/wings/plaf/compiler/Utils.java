@@ -100,6 +100,7 @@ public final class Utils implements SConstants {
      * returned.
      */
     public static void write(Device d, String s) throws IOException {
+        if (s == null) return;
         if ((s.length() > 5) && (s.startsWith("<html>"))) {
             writeRaw(d, s.substring(6));
         }
