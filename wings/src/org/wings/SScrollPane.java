@@ -242,7 +242,7 @@ public class SScrollPane
      */
     public SComponent addComponent(SComponent c, Object constraint, int index) {
         if (c instanceof Scrollable) {
-            removeComponent((SComponent)scrollable);
+            remove((SComponent)scrollable);
             SComponent ret = super.addComponent(c, SBorderLayout.CENTER, index);
             setScrollable(ret);
             return ret;
@@ -285,7 +285,7 @@ public class SScrollPane
         if (horizontalScrollBar!=null) {
             horizontalScrollBar.removeAdjustmentListener(getAdjustmentListener());
             if ( horizontalScrollBar instanceof SComponent )
-                removeComponent((SComponent)horizontalScrollBar);
+                remove((SComponent)horizontalScrollBar);
         }
         horizontalScrollBar = sb;
 
@@ -339,7 +339,7 @@ public class SScrollPane
         if (verticalScrollBar!=null) {
             verticalScrollBar.removeAdjustmentListener(getAdjustmentListener());
             if ( verticalScrollBar instanceof SComponent )
-                removeComponent((SComponent)verticalScrollBar);
+                remove((SComponent)verticalScrollBar);
         }
 
         verticalScrollBar = sb;

@@ -26,6 +26,12 @@ import org.wings.plaf.BorderCG;
 import org.wings.session.SessionManager;
 import org.wings.style.StyleSheet;
 
+/**
+ * Write a titled border.
+ * @author <a href="andre.lison@general-bytes.com">Andre Lison</a>
+ * @version $Revision$
+ * @see org.wings.border.STitledBorder
+ */
 public class TitledBorderCG implements BorderCG
 {
     protected class AttrContainer extends SComponent {
@@ -71,7 +77,7 @@ public class TitledBorderCG implements BorderCG
     }
 
     /**
-     * 
+     * close fieldset
      * @see BorderCG#writePostfix(Device, SBorder)
      */
     public void writePostfix(Device d, SBorder c) throws IOException

@@ -232,9 +232,10 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @param i position
      * @return component at given pos
+     * @deprecated use {@link #getComponent(int)} instead (awt conformity)
      */
-    public final SComponent getComponentAt(int i) {
-        return (SComponent)getComponentList().get(i);
+    public SComponent getComponentAt(int i) {
+        return getComponent(i);
     }
 
     /**
@@ -242,10 +243,9 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @param i position
      * @return component at given pos
-     * @deprecated use {@link #getComponentAt}
      */
     public final SComponent getComponent(int i) {
-        return getComponentAt(i);
+        return (SComponent)getComponentList().get(i);
     }
 
     public final SComponent[] getComponents() {
@@ -273,6 +273,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @param c the component to remove
      * @return true if the component was found and removed; false otherwise.
+     * @deprecated use {@link #remove(SComponent)} instead for swing conformity
      */
     public boolean removeComponent(SComponent c) {
         if ( c==null )
@@ -299,37 +300,38 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @param i the position of the component to remove
      * @return the removed component
-     * @see #removeComponent(org.wings.SComponent)
+     * @deprecated use {@link #remove(int)} instead for swing conformity
      */
     public final SComponent removeComponentAt(int i) {
         SComponent c = getComponentAt(i);
-        removeComponent(c);
+        remove(c);
         return c;
     }
 
     /**
-     * Removes the component at the given position from the container.
+     * Removes the given component from the container.
      *
-     * @param c
+     * @param c the component to remove
      * @see #removeComponent(org.wings.SComponent)
      */
-    public final void remove(SComponent c) {
+    public void remove(SComponent c) {
         removeComponent(c);
     }
 
     /**
      * Removes the component at the given position from the container.
      *
-     * @param i
-     * @see #removeComponentAt
-     * @deprecated use {@link #removeComponentAt(int)}
+     * @param index remove the component at position <i>index</i>
+     * 	from this container
      */
-    public final void remove(int i) {
-        removeComponentAt(i);
+    public final void remove(int index) {
+        removeComponentAt(index);
     }
 
     /**
      * Removes all components from the container.
+     * 
+     * @deprecated use {@link #removeAll()} instead for swing conformity
      */
     public final void removeAllComponents() {
         removeAll();

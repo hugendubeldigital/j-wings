@@ -123,8 +123,13 @@ public final class LowLevelEventDispatcher
      * in the HTTP request.
      */
     public boolean dispatch(String name, String[] values) {
+        /*
+        System.out.println("Dispatcher LLE: " + name);
+        for (int i = 0; i < values.length; ++i) {
+            System.out.println("\t"+i+"="+values[i]);
+        }
+        */
         boolean erg = false;
-
         int dividerIndex = name.indexOf(SConstants.UID_DIVIDER);
         String epoch = null;
 
@@ -146,9 +151,25 @@ public final class LowLevelEventDispatcher
 
         // make ImageButtons work in Forms .. browsers return
         // the click position as .x and .y suffix of the name
-        if (name.endsWith(".x") || name.endsWith(".X"))
+        if (name.endsWith(".x") || name.endsWith(".X")) {
             name = name.substring(0, name.length()-2);
+		}
+		else
+		if (name.endsWith(".y") || name.endsWith(".Y")) {
+		    return false;
+		}
 
+		// is value encoded in name ?
+		int p = name.indexOf(SConstants.UID_DIVIDER);
+		if (p > -1) {
+		    String v = name.substring(p+1);
+		    name = name.substring(0, p);
+		    String[] va = new String[values.length+1];
+		    System.arraycopy(values, 0, va, 0, values.length);
+		    va[values.length] = v;
+		    values = va;
+		}
+		
         ArrayList l = (ArrayList)listener.get(name);
         if (l != null && l.size()>0 ) {
             logger.fine("process event '" + epoch + "_" + name + "'");

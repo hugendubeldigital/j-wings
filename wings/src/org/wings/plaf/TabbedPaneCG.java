@@ -14,7 +14,11 @@
 
 package org.wings.plaf;
 
+import org.wings.DynamicResource;
+import org.wings.STabbedPane;
+
 public interface TabbedPaneCG extends ComponentCG {
+    public DynamicResource installStyleSheet(STabbedPane comp);
 }
 
 /*

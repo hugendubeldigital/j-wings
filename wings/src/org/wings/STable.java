@@ -157,6 +157,19 @@ public class STable
      */
     protected Rectangle viewport = null;
 
+	/**
+	 * icon for selected row.
+	 * Default: none.
+	 */
+	protected SIcon fSelectedIcon;
+	
+	/**
+	 * icon for deselected row.
+	 * Default: none.
+	 */
+	protected SIcon fDeselectedIcon;
+	
+
     public STable() {
         
     }
@@ -274,8 +287,8 @@ public class STable
 
     public void processLowLevelEvent(String action, String[] values) {
         // is it for me ?
-        if ( !action.startsWith(getLowLevelEventId()) ) { 
-            return; 
+        if ( !action.startsWith(getLowLevelEventId()) ) {
+            return;
         }
 
         // delay events...
@@ -284,7 +297,6 @@ public class STable
 
         for ( int i=0; i<values.length; i++ ) {
             String value = values[i];
-            
             if ( value.length()>1 ) {
                 
                 char modus = value.charAt(0);
@@ -292,12 +304,12 @@ public class STable
                 
                 int colonIndex = value.indexOf(':');
                 if ( colonIndex<0 )
-                    return;
-                
+					continue; // maybe next value fits ...
+
                 try {
+                
                     int row = Integer.parseInt(value.substring(0, colonIndex));
                     int col = Integer.parseInt(value.substring(colonIndex + 1));
-                    
                     // editor event
                     switch ( modus ) {
                     case 'e':
@@ -1295,6 +1307,42 @@ public class STable
                     reload(ReloadManager.RELOAD_CODE);
                 }
             };
+    /**
+     * Gets the deselected Icon.
+     * @return Returns a SIcon
+     */
+    public SIcon getDeselectedIcon()
+    {
+        return fDeselectedIcon;
+    }
+
+    /**
+     * Sets the deselected Icon.
+     * @param deselectedIcon The deselectedIcon to set
+     */
+    public void setDeselectedIcon(SIcon deselectedIcon)
+    {
+        fDeselectedIcon = deselectedIcon;
+    }
+
+    /**
+     * Gets the selected Icon.
+     * @return Returns a SIcon
+     */
+    public SIcon getSelectedIcon()
+    {
+        return fSelectedIcon;
+    }
+
+    /**
+     * Sets the selected Icon.
+     * @param selectedIcon The selectedIcon to set
+     */
+    public void setSelectedIcon(SIcon selectedIcon)
+    {
+        fSelectedIcon = selectedIcon;
+    }
+
 }
 
 /*

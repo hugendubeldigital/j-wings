@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.lang.reflect.*;
 
 import org.wings.*;
+import org.wings.border.SBorder;
+import org.wings.border.STitledBorder;
 import org.wings.io.Device;
 import org.wings.util.ComponentVisitor;
 
@@ -46,6 +48,7 @@ public class DynamicStyleSheetResource
             throw e;
         }
         catch (Exception e) {
+            e.printStackTrace();
             throw new IOException(e.getMessage()); // UndeclaredThrowable
         }
     }
@@ -84,7 +87,7 @@ public class DynamicStyleSheetResource
             out.print("}\n");
         }
 
-        public void visit(SComponent component) throws IOException {
+        public void visit(SComponent component) throws Exception {
             writeAttributesFrom(component);
         }
 

@@ -148,6 +148,7 @@ void writeFormText(final Device device, SAbstractButton abstractButton, String a
     %> name="<%=abstractButton.getEncodedLowLevelEventId()%>"<%
     %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
     %><%|class=attr%><%
+	%><%|style=abstractButton.getPreferredSize()%><%
     Utils.writeEvents(device, abstractButton);
     if (abstractButton instanceof SButton) {
        String text = abstractButton.getText();
@@ -191,7 +192,6 @@ protected void writeFormIcon(final Device device, SAbstractButton abstractButton
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
     %><%|name=abstractButton.getEncodedLowLevelEventId()%><%
-    %><%|value=tooltip%><%
     %><%|alt=tooltip%><%
     // writeEvents();
     %><%|text=tooltip%>/><%

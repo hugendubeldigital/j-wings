@@ -20,6 +20,11 @@ import java.awt.event.ActionEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.SingleSelectionModel;
 import javax.swing.DefaultSingleSelectionModel;
 import javax.swing.GrayFilter;
@@ -28,6 +33,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.wings.plaf.*;
+import org.wings.session.SessionManager;
 import org.wings.style.*;
 
 // fixme: refactorize.
@@ -35,12 +41,13 @@ import org.wings.style.*;
  * A tabbed pane shows one tab (usually a panel) at a moment.
  * The user can switch between the panels.
  *
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>,
+ * 	<a href="mailto:andre.lison@general-bytes.com">Andre Lison</a>
  * @version $Revision$
  */
 public class STabbedPane 
     extends SContainer
-    implements SConstants, SSelectionComponent
+    implements SSelectionComponent, LowLevelEventListener, ChangeListener
 {
     /**
      * @see #getCGClassID
@@ -54,33 +61,25 @@ public class STabbedPane
     protected int tabPlacement = TOP;
 
     /** The default selection model */
-    protected SingleSelectionModel model = new DefaultSingleSelectionModel();
+    protected SingleSelectionModel model;
 
     ArrayList pages = new ArrayList(2);
 
     /**
      * layout used to render the tabs. Only one tab is on top at a time.
      */
-    final SCardLayout card = new SCardLayout();
+    final private SCardLayout card = new SCardLayout();
 
     /**
      * container for all tabs. The card layout shows always one on
      * top.
      */
-    final SContainer contents = new SPanel(card);
-
-    /**
-     * All tabs are buttons, that are handled in this button
-     * group.
-     */
-    protected SButtonGroup group;
-
+    final private SContainer contents = new SContainer(card);
 
     /** the maximum tabs per line */
     protected int maxTabsPerLine = -1;
 
-    SContainer buttons = new SPanel();
-    ArrayList changeListener = new ArrayList(2);
+    List changeListener = new ArrayList(2);
 
     /** The style of selected tabs */
     protected String selectionStyle;
@@ -88,6 +87,23 @@ public class STabbedPane
     /** The dynamic attributes of selected tabs */
     protected AttributeSet selectionAttributes = new SimpleAttributeSet();
 
+	/** used form tabs or links */
+	protected boolean showAsFormComponent = false;
+
+    private Logger fLogger = Logger.getLogger("org.wings.STabbedPane");
+
+	private DynamicResource fStyleSheet = null;
+	
+	/**
+	 * Number of selected tab.
+	 */
+	protected int selectedIndex = 0;
+	
+	/**
+	 * the newly selected index during a 
+	 * lowlevelevent
+	 */
+	private int lleChangedIndex = -1;
 
     /**
      * Creates a new empty Tabbed Pane with the tabs at the top.
@@ -106,28 +122,13 @@ public class STabbedPane
     public STabbedPane(int tabPlacement) {
         super();
 
-        SBorderLayout layout = new SBorderLayout();
-        layout.setBorder(1);
-        setLayout(layout);
-
         setTabPlacement(tabPlacement);
+        setBackground(new Color(204,204,204));
+        setSelectionBackground(new Color(170,170,255));
+        setFont(new SFont("Verdana,Arial,Helvetica,sans serif", SConstants.PLAIN, 10));
 
-        super.addComponent(contents, SBorderLayout.CENTER, 0);
-
-        group = new SButtonGroup();
-        group.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    SAbstractButton button = group.getSelection();
-                    for (int i=0; i < getTabCount(); i++) {
-                        Page page = getPageAt(i);
-                        if (button == page.button) {
-                            setSelectedIndex(i);
-                            fireStateChanged();
-                            return;
-                        }
-                    }
-                }
-            });
+        super.addComponent(contents, null, 0);
+		setModel(new DefaultSingleSelectionModel());
     }
 
     /**
@@ -202,7 +203,8 @@ public class STabbedPane
     }
 
     /**
-     * Set the background color.
+     * Set the background color of the selected
+     * tab. This is ignored, if <i>showAsFormComponent</i> is on.
      * @param c the new background color
      */
     public void setSelectionBackground(Color color) {
@@ -259,8 +261,9 @@ public class STabbedPane
      */
     protected void fireStateChanged() {
         ChangeEvent ce = new ChangeEvent(this);
-        for ( int i=0; i<changeListener.size(); i++ )
+        for ( int i=0; i<changeListener.size(); i++ ) {
             ((ChangeListener)changeListener.get(i)).stateChanged(ce);
+        }
     }
 
     /**
@@ -291,25 +294,7 @@ public class STabbedPane
         }
 
         this.tabPlacement = tabPlacement;
-        super.removeComponent(buttons);
-
-        switch ( tabPlacement ) {
-        case TOP:
-            super.addComponent(buttons, SBorderLayout.NORTH, 0);
-            break;
-
-        case BOTTOM:
-            super.addComponent(buttons, SBorderLayout.SOUTH, 0);
-            break;
-
-        case LEFT:
-            super.addComponent(buttons, SBorderLayout.WEST, 0);
-            break;
-
-        case RIGHT:
-            super.addComponent(buttons, SBorderLayout.EAST, 0);
-            break;
-        }
+		if (fStyleSheet != null) fStyleSheet.invalidate();
     }
 
     /**
@@ -329,6 +314,7 @@ public class STabbedPane
      */
     public void setModel(SingleSelectionModel model) {
         this.model = model;
+        model.addChangeListener(this);
     }
 
     /**
@@ -353,12 +339,6 @@ public class STabbedPane
      */
     public void setSelectedIndex(int index) {
         model.setSelectedIndex(index);
-
-        Page p = getPageAt(index);
-        if (p != null) {
-            p.button.setSelected(true);
-            card.show(p.component);
-        }
     }
 
     /**
@@ -403,7 +383,7 @@ public class STabbedPane
      */
     public int indexOfComponent(SComponent component) {
         for ( int i = 0; i < getTabCount(); ++i ) {
-            if ( contents.getComponentAt(i).equals(component) ) {
+            if ( ((Page) pages.get(i)).component.equals(component) ) {
                 return i;
             }
         }
@@ -445,7 +425,7 @@ public class STabbedPane
 
         String t = (title != null) ? title : "";
 
-        Page p = new Page(this, t, icon, disabledIcon, component, tip);
+        Page p = new Page(t, icon, disabledIcon, component, tip);
         pages.add(index, p);
 
         contents.addComponent(p.component, p.component.getComponentId());
@@ -453,8 +433,6 @@ public class STabbedPane
         if ( pages.size() == 1 ) {
             setSelectedIndex(0);
         }
-
-        updateButtons();
     }
 
     /**
@@ -575,7 +553,6 @@ public class STabbedPane
         }
 
         removePageAt(index);
-        updateButtons();
     }
 
     /**
@@ -585,14 +562,11 @@ public class STabbedPane
      * @see #addTab
      * @see #removeTabAt
      */
-    public boolean removeComponent(SComponent component) {
+    public void remove(SComponent component) {
         int index = indexOfComponent(component);
         if ( index != -1 ) {
             removeTabAt(index);
-            return true;
         }
-
-        return false;
     }
 
     /**
@@ -615,7 +589,7 @@ public class STabbedPane
      * @see #setTitleAt
      */
     public String getTitleAt(int index) {
-        return getPageAt(index).title;
+        return ((Page)pages.get(index)).title;
     }
 
     /**
@@ -624,7 +598,7 @@ public class STabbedPane
      * @see #setIconAt
      */
     public SIcon getIconAt(int index) {
-        return getPageAt(index).icon;
+        return ((Page)pages.get(index)).icon;
     }
 
     /**
@@ -633,7 +607,7 @@ public class STabbedPane
      * @see #setDisabledIconAt
      */
     public SIcon getDisabledIconAt(int index) {
-        return getPageAt(index).disabledIcon;
+        return ((Page)pages.get(index)).disabledIcon;
     }
 
     /**
@@ -642,7 +616,7 @@ public class STabbedPane
      * @see #setBackgroundAt
      */
     public Color getBackgroundAt(int index) {
-        return getPageAt(index).getBackground();
+        return ((Page)pages.get(index)).background;
     }
 
     /**
@@ -651,7 +625,7 @@ public class STabbedPane
      * @see #setForegroundAt
      */
     public Color getForegroundAt(int index) {
-        return getPageAt(index).getForeground();
+        return ((Page)pages.get(index)).foreground;
     }
 
     /**
@@ -660,7 +634,7 @@ public class STabbedPane
      * @see #setStyleAt
      */
     public String getStyleAt(int index) {
-        return getPageAt(index).getStyle();
+        return ((Page)pages.get(index)).style;
     }
 
     /**
@@ -670,7 +644,17 @@ public class STabbedPane
      * @see #setEnabledAt
      */
     public boolean isEnabledAt(int index) {
-        return getPageAt(index).isEnabled();
+        return ((Page)pages.get(index)).enabled;
+    }
+
+    /**
+     * Returns the component at <i>index</i>.
+     *
+     * @see #setComponentAt
+     * @deprecated use {@link #getComponentAt} instead (swing conformity)
+     */
+    public SComponent getTabAt(int index) {
+        return ((Page)pages.get(index)).component;
     }
 
     /**
@@ -678,8 +662,8 @@ public class STabbedPane
      *
      * @see #setComponentAt
      */
-    public SComponent getTabAt(int index) {
-        return getPageAt(index).component;
+    public SComponent getComponentAt(int index) {
+        return ((Page)pages.get(index)).component;
     }
 
     /**
@@ -691,7 +675,7 @@ public class STabbedPane
      * @see #getTitleAt
      */
     public void setTitleAt(int index, String title) {
-        getPageAt(index).title = title;
+        ((Page)pages.get(index)).title = title;
     }
 
     /**
@@ -703,7 +687,7 @@ public class STabbedPane
      * @see #getIconAt
      */
     public void setIconAt(int index, SIcon icon) {
-        getPageAt(index).icon = icon;
+        ((Page)pages.get(index)).icon = icon;
     }
 
     /**
@@ -715,7 +699,7 @@ public class STabbedPane
      * @see #getDisabledIconAt
      */
     public void setDisabledIconAt(int index, SIcon disabledIcon) {
-        getPageAt(index).disabledIcon = disabledIcon;
+        ((Page)pages.get(index)).disabledIcon = disabledIcon;
     }
 
     /**
@@ -729,7 +713,28 @@ public class STabbedPane
      * @see #getBackgroundAt
      */
     public void setBackgroundAt(int index, Color background) {
-        getPageAt(index).setBackground(background);
+        ((Page)pages.get(index)).background = background;
+    }
+
+
+    /**
+     * Sets the foreground color.
+     * @param foreground the color to be displayed as the tab's foreground
+     * @see #getForeground
+     */
+    public void setForeground(Color foreground) {
+        super.setForeground(foreground);
+        if (fStyleSheet != null) fStyleSheet.invalidate();
+    }
+
+    /**
+     * Sets the background color.
+     * @param background the color to use as background.
+     * @see #getForeground
+     */
+    public void setBackground(Color background) {
+        super.setBackground(background);
+        if (fStyleSheet != null) fStyleSheet.invalidate();
     }
 
     /**
@@ -743,7 +748,7 @@ public class STabbedPane
      * @see #getForegroundAt
      */
     public void setForegroundAt(int index, Color foreground) {
-        getPageAt(index).setForeground(foreground);
+        ((Page)pages.get(index)).foreground = foreground;
     }
 
     /**
@@ -757,7 +762,7 @@ public class STabbedPane
      * @see #getStyleAt
      */
     public void setStyleAt(int index, String style) {
-        getPageAt(index).setStyle(style);
+        ((Page)pages.get(index)).style = style;
     }
 
     /**
@@ -769,9 +774,25 @@ public class STabbedPane
      * @see #isEnabledAt
      */
     public void setEnabledAt(int index, boolean enabled) {
-        getPageAt(index).setEnabled(enabled);
+        ((Page)pages.get(index)).enabled = enabled;
+    }
+    
+    /**
+     * Set the tooltip text for tab at <i>index</i>
+     * @param index set the tooltip for this tab
+     */
+    public void setToolTipTextAt(int index, String toolTip) {
+        ((Page) pages.get(index)).toolTip = toolTip;
     }
 
+	/**
+	 * Get the tooltip text from tab at <i>index</i>
+	 * @return the text or <i>null</i> if not set.
+	 */
+	public String getToolTipTextAt(int index) {
+	    return ((Page) pages.get(index)).toolTip;
+	}
+	
     /**
      * Sets the component at <i>index</i> to <i>component</i>.
      * An internal exception is raised if there is no tab at that index.
@@ -781,10 +802,10 @@ public class STabbedPane
      * @see #getComponentAt
      */
     public void setComponentAt(int index, SComponent component) {
-        Page page = getPageAt(index);
+        Page page = (Page)pages.get(index);
         if ( component != page.component ) {
             if ( page.component != null ) {
-                contents.removeComponent(page.component);
+                contents.remove(page.component);
             }
             page.component = component;
             contents.addComponent(page.component, page.component.getComponentId());
@@ -820,159 +841,74 @@ public class STabbedPane
     }
 
     private void removePageAt(int i) {
-        Page p = getPageAt(i);
-        group.remove(p.button);
         pages.remove(i);
-        contents.removeComponent(p.component);
+        contents.remove(((Page)pages.get(i)).component);
+    }
+
+	/**
+	 * Lightweight container for tab properties.
+	 */
+    private class Page implements Serializable
+    {
+        public String		title;
+        public String		toolTip;
+        public Color		foreground;
+        public Color		background;
+        public SIcon		icon;
+        public SIcon		disabledIcon;
+        public boolean		enabled = true;
+        public String		style;
+        public SComponent	component;
+
+        public Page(String title, SIcon icon,
+                    SIcon disabledIcon, SComponent component, String tip) {
+			this.title = title;
+			this.toolTip = tip;
+			this.icon = icon;
+			this.disabledIcon = disabledIcon;
+			this.component = component;
+        }
     }
 
     /**
-     * TODO: documentation
-     *
+     * Set display mode (href or form-component).
+     * An AbstractButton can appear as HTML-Form-Button or as 
+     * HTML-HREF. If button is inside a {@link org.wings.SForm} the default
+     * is displaying it as html form button.
+     * Setting <i>showAsFormComponent</i> to <i>false</i> will
+     * force displaying as href even if button is inside 
+     * a form.
+     * @param showAsFormComponent if true, display as link, if false as html form component.
      */
-    protected void updateButtons() {
-        buttons.removeAll();
-        group.removeAll();
-
-        for (int i=0; i < getTabCount(); i++) {
-            Page p = getPageAt(i);
-            buttons.add(p.button);
-            group.add(p.button);
-        }
+    public void setShowAsFormComponent(boolean showAsFormComponent) {
+        if (this.showAsFormComponent == showAsFormComponent) return;
+        this.showAsFormComponent = showAsFormComponent;
+		if (fStyleSheet != null) fStyleSheet.invalidate();
     }
 
-    private Page getPageAt(int i) {
-        if ( i >= 0 && i < pages.size() ) {
-            return (Page)pages.get(i);
-        }
-        else {
-            return null;
-        }
+	/**
+      * Test, what display method is set.
+      * @see #setShowAsFormComponent(boolean)
+      * @return true, if displayed as link, false when displayed as html form component.
+      */
+    public boolean getShowAsFormComponent() {
+        return showAsFormComponent && getResidesInForm();
     }
 
-    private static class Page implements Serializable
+    /**
+     * Set the parent frame of this tabbed pane
+     * @param f the parent frame.
+     */
+    public void setParentFrame(SFrame f)
     {
-        String title;
-        Color background;
-        Color foreground;
-        String style;
-        SIcon icon;
-        SIcon disabledIcon;
-        STabbedPane parent;
-        SComponent component;
-        SAbstractButton button;
-        String tip;
-        boolean enabled = true;
-
-        public Page(STabbedPane parent, String title, SIcon icon,
-                    SIcon disabledIcon, SComponent component, String tip) {
-            this.title = title;
-            this.icon = icon;
-            this.disabledIcon = disabledIcon;
-            this.parent = parent;
-            this.component = component;
-            this.tip = tip;
-
-            // FIXME: this shouldn't be buttons.
-            button = new SToggleButton(title);
-            button.setShowAsFormComponent(false);
-            button.setSelectedIcon(icon);
-            button.setDisabledSelectedIcon(disabledIcon);
-            button.setIcon(icon);
-            button.setDisabledIcon(disabledIcon);
-            button.setToolTipText(tip);
-            button.setNoBreak(true);
-        }
-
-        /**
-         * TODO: documentation
-         *
-         * @return
-         */
-        public Color getBackground() {
-            return ((background != null) ? background : parent.getBackground());
-        }
-
-        /**
-         * TODO: documentation
-         *
-         * @param c
-         */
-        public void setBackground(Color c) {
-            background = c;
-        }
-        /**
-         * TODO: documentation
-         *
-         * @return
-         */
-        public Color getForeground() {
-            return ((foreground != null) ? foreground : parent.getForeground());
-        }
-
-        /**
-         * TODO: documentation
-         *
-         * @param c
-         */
-        public void setForeground(Color c) {
-            foreground = c;
-        }
-
-        /**
-         * TODO: documentation
-         *
-         * @return
-         */
-        public String getStyle() {
-            return ((style != null) ? style : parent.getStyle());
-        }
-
-        /**
-         * TODO: documentation
-         *
-         * @param c
-         */
-        public void setStyle(String s) {
-            style = s;
-        }
-
-        /**
-         * TODO: documentation
-         *
-         * @return
-         */
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        /**
-         * TODO: documentation
-         *
-         * @param b
-         */
-        public void setEnabled(boolean b) {
-            enabled = b;
-            button.setEnabled(b);
-        }
-
-        /**
-         * TODO: documentation
-         *
-         * @return
-         */
-        public boolean isVisible() {
-            return parent.isVisible();
-        }
-
-        /**
-         * TODO: documentation
-         *
-         * @param b
-         */
-        public void setVisible(boolean b) {
-            parent.setVisible(b);
-        }
+        super.setParentFrame(f);
+		contents.setParentFrame(f);
+		ComponentCG cg = this.getCG();
+		if (f != null && cg instanceof org.wings.plaf.TabbedPaneCG)
+		{
+		    fLogger.log(Level.FINEST, "STabbedPane.setParentFrame, Installing stylesheet ...");
+		    fStyleSheet = ((org.wings.plaf.TabbedPaneCG) cg).installStyleSheet(this);
+		}
     }
 
     public String getCGClassID() {
@@ -982,6 +918,65 @@ public class STabbedPane
     public void setCG(TabbedPaneCG cg) {
         super.setCG(cg);
     }
+
+    /**
+     * Tab was clicked.
+     * @see LowLevelEventListener#processLowLevelEvent(String, String[])
+     */
+    public void processLowLevelEvent(String name, String[] values)
+    {
+        if ( !name.startsWith(getLowLevelEventId()) ) {
+            return;
+        }
+		for (int i=0;i<values.length;++i) {
+		    try {
+		        int index = new Integer(values[i]).intValue();
+		        if (index < 0 || index >= pages.size())
+		        	continue;
+
+		        /* prevent clever users from showing
+		         * disabled tabs
+		         */
+				if (((Page) pages.get(index)).enabled) {
+				    lleChangedIndex = index;
+				    SForm.addArmedComponent(this);
+				    return;
+				}
+		    }
+		    catch (NumberFormatException nfe) {
+		        continue;
+		    }
+		}
+    }
+
+	/**
+	 * Does nothin'.
+	 */
+    public void fireIntermediateEvents() {
+    }
+
+	/**
+	 * Sets selection and fire changeevents, if user changed 
+	 * tab selection.
+	 */
+    public void fireFinalEvents() {
+        if (lleChangedIndex > -1)
+        	setSelectedIndex(lleChangedIndex);
+        lleChangedIndex = -1;
+    }
+
+    /**
+     * When tab selection changed.
+     * @see ChangeListener#stateChanged(ChangeEvent)
+     */
+    public void stateChanged(ChangeEvent ce)
+    {
+        final int index = model.getSelectedIndex();
+        if (index >= pages.size()) return;
+		card.show(((Page) pages.get(index)).component);
+		fireStateChanged();
+    }
+
 }
 
 /*

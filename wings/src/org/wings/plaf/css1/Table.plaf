@@ -131,8 +131,10 @@
             comp = table.getEditorComponent();
         else
             comp = table.prepareRenderer(table.getCellRenderer(row, col), row, col);
-
-        %><td><%
+		
+        %><td<%
+        /*  %><%|class=(comp!=null)?comp.getStyle():null%><% */
+        %>><%
 
         boolean pushedURL = false;
         if (!isEditingCell && table.isCellEditable(row, col)) {
@@ -150,8 +152,8 @@
                 %></a>&nbsp;<%
             }
         }
-
-        rendererPane.writeComponent(device, comp, table);
+		
+		rendererPane.writeComponent(device, comp, table);
 
         if (pushedURL) {
             AnchorRenderStack.pop();
@@ -165,16 +167,29 @@
                                                 int row)
         throws IOException
     {
-
-        %><td><input type="hidden"<%
-        %> name="<%=table.encodeLowLevelEventId(table.getLowLevelEventId())%>"<%
-        %> value="<%=table.getDeselectionParameter(row,-1)%>"/><%
-
-        %><input<%
-        %> type="<%=(table.getSelectionMode() == ListSelectionModel.SINGLE_SELECTION ? "radio" : "checkbox")%>"<%
-        %> name="<%=table.encodeLowLevelEventId(table.getLowLevelEventId())%>"<%
-        %> value="<%=table.getToggleSelectionParameter(row,-1)%>"<%
-        %><%|checked=(table.isRowSelected(row) ? "checked" : null)%><%
+		boolean selected = table.isRowSelected(row);
+		SIcon icn = selected ? table.getSelectedIcon() : table.getDeselectedIcon();
+		
+		%><td><%
+        if (icn != null) {
+        	%><input <%
+        	%>type="image"<%
+        	%><%|src=icn.getURL()%><%
+        	%> name="<%=table.encodeLowLevelEventId(table.getLowLevelEventId())%><%
+        	%>_<%
+        	%><%=table.getToggleSelectionParameter(row,-1)%>"<%
+        }
+        else {
+	        %><input type="hidden"<%
+	        %> name="<%=table.encodeLowLevelEventId(table.getLowLevelEventId())%>"<%
+	        %> value="<%=table.getDeselectionParameter(row,-1)%>"/><%
+	
+        	%><input <%
+        	%><%|checked=(selected ? "checked" : null)%><%
+        	%> type="<%=(table.getSelectionMode() == ListSelectionModel.SINGLE_SELECTION ? "radio" : "checkbox")%>"<%
+        	%> value="<%=table.getToggleSelectionParameter(row,-1)%>"<%
+        	%> name="<%=table.encodeLowLevelEventId(table.getLowLevelEventId())%>"<%
+        }
         %>></td><%
     }
 
