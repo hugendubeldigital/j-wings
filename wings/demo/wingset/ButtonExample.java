@@ -95,6 +95,7 @@ public class ButtonExample
         buttons[8] = new SButton("testBR");
 
         for ( int i=0; i<buttons.length; i++ ) {
+            buttons[i].setActionCommand(buttons[i].getText());
             if ( i!=4 ) {
                 buttons[i].setIcon(icon);
                 buttons[i].setDisabledIcon(disabledIcon);
