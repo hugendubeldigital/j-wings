@@ -50,6 +50,7 @@ public final class Utils implements SConstants {
     /**
      * writes an {X|HT}ML quoted string according to RFC 1866.
      * '"', '<', '>', '&'  become '&quot;', '&lt;', '&gt;', '&amp;'
+     * Spaces become a protected space &nbsp;
      */
     // not optimized yet
     private static void quote(Device d, String s) throws IOException {
@@ -98,6 +99,8 @@ public final class Utils implements SConstants {
      * writes the given String to the device. The string is quoted, i.e.
      * for all special characters in *ML, their appropriate entity is
      * returned.
+     * If the String starts with '<html>', the content is regarded being
+     * HTML-code and is written as is (without the <html> tag).
      */
     public static void write(Device d, String s) throws IOException {
         if (s == null) return;
