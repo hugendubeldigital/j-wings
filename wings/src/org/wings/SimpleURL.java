@@ -44,6 +44,13 @@ public class SimpleURL implements Cloneable, Serializable, Renderable
         return ( baseURL == other.baseURL
                  || (baseURL != null && baseURL.equals(other.baseURL)));
     }
+    
+    /** 
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return baseURL != null ? baseURL.hashCode() : 0;
+    }    
 
     public String toString() {
         return baseURL;

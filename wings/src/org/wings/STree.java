@@ -263,7 +263,7 @@ public class STree
     }
 
 
-    private class DelayedExpansionEvent {
+    private static class DelayedExpansionEvent {
         TreeExpansionEvent expansionEvent;
         boolean expansion;
 
@@ -1091,14 +1091,6 @@ public class STree
             reload(ReloadManager.RELOAD_CODE);
         }
     }
-
-    /**
-     * TODO: documentation
-     */
-    protected class NodeState {
-        boolean expanded;
-    }
-
 
     public void setParent(SContainer p) {
         super.setParent(p);

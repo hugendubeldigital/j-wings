@@ -118,7 +118,7 @@ final class SessionServlet
 
         for (int i=0; i<args.length; i++) {
             try {
-                getSession().setLocaleFromHeader(new Boolean(args[i]).booleanValue());
+                getSession().setLocaleFromHeader(Boolean.valueOf(args[i]).booleanValue());
             } catch (Exception e) {
                 logger.throwing(SessionServlet.class.getName(), "setLocaleFromHeader", e);
             }

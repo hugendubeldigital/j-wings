@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  * @version $Revision$
  */
 public abstract class AbstractExternalizeManager {
-    protected static Logger logger = Logger.getLogger("org.wings.externalizer");
+    protected final static Logger logger = Logger.getLogger("org.wings.externalizer");
 
     /**
      * The identifier generated, if the {@link ExternalizeManager} did not find

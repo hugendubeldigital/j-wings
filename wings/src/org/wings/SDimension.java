@@ -135,6 +135,13 @@ public class SDimension
         return width.equals(((SDimension) obj).width) && height.equals(((SDimension) obj).height);
     }
     
+    /** 
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return width != null ? width.hashCode() : 0;
+    }    
+    
     /**
      * Set the size of this Dimension object to the specified width and height
      * and append "px" to both values.

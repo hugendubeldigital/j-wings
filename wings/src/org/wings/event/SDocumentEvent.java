@@ -11,9 +11,9 @@ import org.wings.text.SDocument;
  */
 public class SDocumentEvent extends AWTEvent
 {
-    public static int CHANGE = 1;
-    public static int INSERT = 2;
-    public static int REMOVE = 3;
+    public final static int CHANGE = 1;
+    public final static int INSERT = 2;
+    public final static int REMOVE = 3;
 
     private int offset;
     private int length;

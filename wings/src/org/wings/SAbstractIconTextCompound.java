@@ -128,16 +128,6 @@ public abstract class SAbstractIconTextCompound
     private int iconTextGap = 0;
 
     /**
-     * TODO: documentation
-     */
-    private boolean alignText = false;
-
-    /**
-     * TODO: documentation
-     */
-    private boolean escapeSpecialChars = true;
-
-    /**
      * If the text of the button should not be wrapped, set this to true. This
      * inserts a &lt;NOBREAK&gt; Tag around the label
      */

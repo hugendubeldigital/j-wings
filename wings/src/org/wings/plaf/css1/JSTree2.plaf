@@ -185,13 +185,13 @@ TREE_NODES["<%=result.nodeId%>"].expand();
       return getMaxDepth(tree.getModel(), tree.getModel().getRoot()) - (tree.isRootVisible() ? 1 : 0);
   }
 
-  protected class MyTreePath extends TreePath {
+  protected static class MyTreePath extends TreePath {
       public MyTreePath(Object[] path, int length) {
           super(path, length);
       }
   }
 
-  protected class ScriptResult {
+  protected static class ScriptResult {
       String nodeId;
       int row = 0;
   }

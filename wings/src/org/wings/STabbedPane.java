@@ -858,7 +858,7 @@ public class STabbedPane
 	/**
 	 * Lightweight container for tab properties.
 	 */
-    private class Page implements Serializable
+    private static class Page implements Serializable
     {
         public String		title;
         public String		toolTip;

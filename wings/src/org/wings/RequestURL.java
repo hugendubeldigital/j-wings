@@ -262,6 +262,13 @@ public class RequestURL extends SimpleURL
                 && eq(parameters, other.parameters));
     }
 
+    /** 
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return baseURL != null ? baseURL.hashCode() : 0;
+    }
+    
     /**
      * Deep copy.
      * @return object with cloned contents

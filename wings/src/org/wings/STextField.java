@@ -42,8 +42,6 @@ extends STextComponent {
    */
   protected String actionCommand = "";
   
-  private boolean delayEvent = false;
-
   // Flag to ensure that infinite loops do not occur with ActionEvents.
   private boolean firingActionEvent = false;
   

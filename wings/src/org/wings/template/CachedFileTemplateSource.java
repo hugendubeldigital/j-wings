@@ -33,7 +33,7 @@ import java.util.Hashtable;
 public class CachedFileTemplateSource
     extends FileTemplateSource
 {
-    private final class CacheEntry {
+    private final static class CacheEntry {
         private byte[] filebuffer = null;
         private long lastModified;
         private File file;

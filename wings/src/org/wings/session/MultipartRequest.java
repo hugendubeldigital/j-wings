@@ -428,7 +428,7 @@ class MultipartRequest
         }
     }
 
-    private class AccessibleByteArrayOutputStream extends ByteArrayOutputStream
+    private static class AccessibleByteArrayOutputStream extends ByteArrayOutputStream
     {
         /**
          * TODO: documentation
@@ -534,7 +534,7 @@ class MultipartRequest
     {
         String target = "";
         //Blank space from both sides
-        source.trim();
+        source = source.trim();
 
         // Make sure a substring is enclosed between specified characters
         if (source.indexOf(trimChar) != -1 && (source.lastIndexOf(trimChar) >= (source.indexOf(trimChar) + 1) ) )
@@ -544,7 +544,7 @@ class MultipartRequest
         return target;
     }
 
-    private class MultipartInputStream extends InputStream
+    private static class MultipartInputStream extends InputStream
     {
         ServletInputStream istream = null;
         int len, pos, num, maxLength;

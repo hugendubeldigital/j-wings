@@ -18,9 +18,6 @@ import java.util.Iterator;
  * @author  theresia
  */
 public class SDefaultFormatter extends SAbstractFormatter{
-  //  private SFormattedTextField textField = null;
-   // private JavaScriptListener javaScriptListener = null;
-    
     /** Creates a new instance of SDefaultFormatter */
     public SDefaultFormatter(){
     }
@@ -30,7 +27,7 @@ public class SDefaultFormatter extends SAbstractFormatter{
     }
     
     public String valueToString ( Object value ) {
-        return new String();
+        return "";
     }
     
     /*

@@ -18,7 +18,7 @@ public DynamicResource installStyleSheet(STabbedPane comp) {
         return new TabbedPaneStyleSheet(comp);
 }
 
-public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
+public static class TabbedPaneStyleSheet extends org.wings.DynamicResource {
     private StyleSheet fStyleSheet = new CSSStyleSheet();
     private STabbedPane comp;
 

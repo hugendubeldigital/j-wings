@@ -35,7 +35,7 @@ import org.wings.style.*;
 public abstract class AbstractComponentCG
     implements ComponentCG, SConstants, Serializable
 {
-    protected static Logger logger = Logger.getLogger("org.wings.plaf");
+    protected final static Logger logger = Logger.getLogger("org.wings.plaf");
 
     protected static final Map cache = new HashMap();
 

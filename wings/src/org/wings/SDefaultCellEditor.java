@@ -168,7 +168,7 @@ public class SDefaultCellEditor
         this.cancel = new SButton();
         this.listenerList = new EventListenerList();
         this.editorComponent = editorComponent;
-        this.delegate = delegate;
+        //this.delegate = delegate; useless & unitialized!
         fireStoppedEvent = false;
         fireCanceledEvent = false;
 
@@ -225,7 +225,7 @@ public class SDefaultCellEditor
                         bool = ((Boolean)v).booleanValue();
                     }
                     else if (v instanceof String) {
-                        Boolean b = new Boolean((String)v);
+                        Boolean b = Boolean.valueOf((String)v);
                         bool = b.booleanValue();
                     }
                     else {
@@ -242,7 +242,7 @@ public class SDefaultCellEditor
                 }
 
                 public Object getCellEditorValue() {
-                    return new Boolean(((SCheckBox)editorComponent).isSelected());
+                    return Boolean.valueOf(((SCheckBox)editorComponent).isSelected());
                 }
 
                 public boolean stopCellEditing() {

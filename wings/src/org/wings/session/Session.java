@@ -65,19 +65,19 @@ import org.wings.util.WeakPropertyChangeSupport;
 public final class Session
     implements PropertyService, Serializable {
 
-    private static Logger logger = Logger.getLogger("org.wings.session");
+    private final static Logger logger = Logger.getLogger("org.wings.session");
 
     /**
      * The property name of the locale
      *
      */
-    public static String LOCALE_PROPERTY = "locale";
+    public final static String LOCALE_PROPERTY = "locale";
 
     /**
      * The property name of the look&feel
      *
      */
-    public static String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
+    public final static String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
 
     private final SessionStatistics statistics = new SessionStatistics();
 

@@ -192,7 +192,7 @@ public class WeakPropertyChangeSupport
         if (oldValue == newValue) {
             return;
         }
-        firePropertyChange(propertyName, new Boolean(oldValue), new Boolean(newValue));
+        firePropertyChange(propertyName, Boolean.valueOf(oldValue), Boolean.valueOf(newValue));
     }
 
     /**

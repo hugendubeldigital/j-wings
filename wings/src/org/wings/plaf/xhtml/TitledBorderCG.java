@@ -34,7 +34,7 @@ import org.wings.style.StyleSheet;
  */
 public class TitledBorderCG implements BorderCG
 {
-    protected class AttrContainer extends SComponent {
+    protected static class AttrContainer extends SComponent {
         public AttrContainer() {}
     }
     

@@ -69,7 +69,7 @@ public final class WingServlet
         */
     }
 
-    protected static Logger logger = Logger.getLogger("org.wings.session");
+    protected final static Logger logger = Logger.getLogger("org.wings.session");
 
     /**
      * used to init session servlets
