@@ -149,7 +149,8 @@ public class FileChooserExample
                 textArea.setText(getText(chooser.getFile()));
                 contentSwitcher.show(textForm);
             } else if ( chooser.getFileType().startsWith("image/") ) {
-                iconLabel.setIcon(new FileImageIcon(chooser.getFile()));
+                iconLabel.setIcon(new FileImageIcon(chooser.getFile(), null,
+                                                    chooser.getFileType()));
                 contentSwitcher.show(iconLabel);
             } else {
                 contentSwitcher.show(unknownLabel);

@@ -37,7 +37,7 @@ public class ScrollPaneExample
         p.add(label);
 
         // table.setShowGrid(true);
-        SBaseTable table = new SBaseTable(new MyTableModel());
+        STable table = new STable(new MyTableModel());
         table.setDefaultRenderer(new TableExample.MyCellRenderer());
         SScrollPane scroller = new SScrollPane(table);
         scroller.getHorizontalScrollBar().setBlockIncrement(3);

@@ -34,13 +34,14 @@ public class LabelExample extends WingSetPane
     static final SIcon offIcons[];
     
     static {
+        ClassLoader cl = WingSetSession.class.getClassLoader();
         onIcons  = new SIcon [ directions.length ];
         offIcons = new SIcon [ directions.length ];
         for (int i=0; i < directions.length; ++i) {
             String d = directions[i];
-            onIcons[i] = new ResourceImageIcon("wingset/icons/Label"
+            onIcons[i] = new ResourceImageIcon(cl, "wingset/icons/Label"
                                                + d + "On.gif");
-            offIcons[i] = new ResourceImageIcon("wingset/icons/Label"
+            offIcons[i] = new ResourceImageIcon(cl, "wingset/icons/Label"
                                                 + d + "Off.gif");
         }
     }
@@ -58,7 +59,8 @@ public class LabelExample extends WingSetPane
         final SLabel testLabel = new SLabel("LabelText");
         testLabel.setHorizontalAlignment(LEFT);
         testLabel.setIcon(icon);
-        testLabel.setAttribute("color", "#ee0000");
+        testLabel.setAttribute("color", "#AA0000");
+        testLabel.setAttribute("font-weight", "bold");
 
         all.add(new SLabel("Control the LabelText's position"));
         all.add(new SLabel("Result"));

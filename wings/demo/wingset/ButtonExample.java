@@ -28,14 +28,15 @@ import org.wings.*;
 public class ButtonExample
     extends WingSetPane
 {
+    static final ClassLoader cl = WingSetSession.class.getClassLoader();
     static final SIcon icon = 
-        new ResourceImageIcon("wingset/icons/ButtonIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/ButtonIcon.gif");
     static final SIcon disabledIcon = 
-        new ResourceImageIcon("wingset/icons/ButtonDisabledIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/ButtonDisabledIcon.gif");
     static final SIcon pressedIcon = 
-        new ResourceImageIcon("wingset/icons/ButtonPressedIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/ButtonPressedIcon.gif");
     static final SIcon rolloverIcon = 
-        new ResourceImageIcon("wingset/icons/ButtonRolloverIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/ButtonRolloverIcon.gif");
     
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));

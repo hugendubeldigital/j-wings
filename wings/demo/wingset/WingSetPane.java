@@ -48,7 +48,7 @@ abstract public class WingSetPane
      * Override this.
      */
     protected abstract SComponent createExample();
-
+    
     protected static SLayoutManager createResourceTemplate(String templName) {
         try {
             java.net.URL templateURL = WingSet.class.getResource(templName);

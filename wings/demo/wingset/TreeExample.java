@@ -57,7 +57,8 @@ public class TreeExample
 
 
     private SComponent createEventView(final STree tree) {
-        SForm form = new SForm();
+        SPanel panel = new SPanel();
+        final SForm form = new SForm();
         final STextArea messages = new STextArea("");
         messages.setEditable(false);
         messages.setColumns(80);
@@ -110,7 +111,17 @@ public class TreeExample
                 }
             });
 
-        return form;
+        final SCheckBox showDetails=new SCheckBox("show event details");
+        showDetails.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    form.setVisible(showDetails.isSelected());
+                }
+            });
+        showDetails.setSelected(false);
+        form.setVisible(false);
+        panel.add(showDetails);
+        panel.add(form);
+        return panel;
     }
 
     private SForm createControlForm(final STree tree) {

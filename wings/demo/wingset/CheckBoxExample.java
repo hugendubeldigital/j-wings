@@ -25,18 +25,19 @@ import org.wings.*;
 public class CheckBoxExample
     extends WingSetPane
 {
+    static final ClassLoader cl = WingSetSession.class.getClassLoader();
     static final SIcon sel = 
-        new ResourceImageIcon("wingset/icons/ComboBoxSelectedIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/ComboBoxSelectedIcon.gif");
     static final SIcon nsel = 
-        new ResourceImageIcon("wingset/icons/ComboBoxIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/ComboBoxIcon.gif");
     static final SIcon dissel = 
-        new ResourceImageIcon("wingset/icons/ComboBoxDisabledSelectedIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/ComboBoxDisabledSelectedIcon.gif");
     static final SIcon disnsel = 
-        new ResourceImageIcon("wingset/icons/ComboBoxDisabledIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/ComboBoxDisabledIcon.gif");
     static final SIcon rollsel = 
-        new ResourceImageIcon("wingset/icons/ComboBoxRolloverSelectedIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/ComboBoxRolloverSelectedIcon.gif");
     static final SIcon rollnsel = 
-        new ResourceImageIcon("wingset/icons/ComboBoxRolloverIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/ComboBoxRolloverIcon.gif");
 
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));

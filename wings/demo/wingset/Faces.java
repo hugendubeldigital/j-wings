@@ -28,20 +28,20 @@ import org.wings.border.*;
 public class Faces
     extends WingSetPane
 {
-
+    static final ClassLoader cl = WingSetSession.class.getClassLoader();
     static final SIcon sel = 
-        new ResourceImageIcon("wingset/icons/RadioButtonSelectedIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/RadioButtonSelectedIcon.gif");
     static final SIcon nsel = 
-        new ResourceImageIcon("wingset/icons/RadioButtonIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/RadioButtonIcon.gif");
     static final SIcon pressed = 
-        new ResourceImageIcon("wingset/icons/RadioButtonPressedIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/RadioButtonPressedIcon.gif");
     static final SIcon rollsel = 
-        new ResourceImageIcon("wingset/icons/RadioButtonRolloverSelectedIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/RadioButtonRolloverSelectedIcon.gif");
     static final SIcon rollnsel = 
-        new ResourceImageIcon("wingset/icons/RadioButtonRolloverIcon.gif");
+        new ResourceImageIcon(cl, "wingset/icons/RadioButtonRolloverIcon.gif");
 
     static final SIcon xeyes = 
-        new ResourceImageIcon("wingset/icons/xeyes.gif");
+        new ResourceImageIcon(cl, "wingset/icons/xeyes.gif");
 
     static final Face henner = new Face("Henner");
     static final Face armin = new Face("Armin");
@@ -70,16 +70,15 @@ public class Faces
 
         SPanel toolbar = new SPanel();
 
-        SButton shuffle = new SButton(xeyes);
-        shuffle.setToolTipText("shuffle");
-        shuffle.setVerticalTextPosition(SButton.BOTTOM);
-        shuffle.setHorizontalTextPosition(SButton.CENTER);
-        shuffle.addActionListener(new ActionListener() {
+        SForm shuffleForm = new SForm();
+        SButton shuffleButton = new SButton("Shuffle");
+        shuffleButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    shuffle();
+		    shuffle();
                 }
             });
-        toolbar.add(shuffle);
+        shuffleForm.add(shuffleButton);
+        toolbar.add(shuffleForm);
 
         panel.add(toolbar, SBorderLayout.SOUTH);
         
@@ -227,9 +226,9 @@ public class Faces
         }
 
         Face(String name) {
-            hair = new ResourceImageIcon("wingset/icons/" + name + "_hair.jpeg");
-            eyes = new ResourceImageIcon("wingset/icons/" + name + "_eyes.jpeg");
-            mouth = new ResourceImageIcon("wingset/icons/" + name + "_mouth.jpeg");
+            hair = new ResourceImageIcon(cl, "wingset/icons/" + name + "_hair.jpeg");
+            eyes = new ResourceImageIcon(cl, "wingset/icons/" + name + "_eyes.jpeg");
+            mouth = new ResourceImageIcon(cl, "wingset/icons/" + name + "_mouth.jpeg");
 
             this.name = name;
         }

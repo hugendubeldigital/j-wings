@@ -26,9 +26,8 @@ import javax.servlet.http.*;
 import javax.swing.*;
 
 import org.wings.*;
-import org.wings.io.Device;
-import org.wings.io.ServletDevice;
-import org.wings.io.NullDevice;
+import org.wings.externalizer.ExternalizedInfo;
+import org.wings.io.*;
 import org.wings.servlet.*;
 import org.wings.session.*;
 import org.wings.util.*;
@@ -43,6 +42,10 @@ public class WingSetSession
     extends SessionServlet
     implements SConstants
 {
+    static final ClassLoader cl = WingSetSession.class.getClassLoader();
+    private final static SIcon brushedMetal = 
+        new ResourceImageIcon(cl, "wingset/icons/brushedMetal.gif");
+
     /*
      * some hack.
      */
@@ -79,7 +82,7 @@ public class WingSetSession
         
         STabbedPane tab = new STabbedPane();
         tab.setMaxTabsPerLine(8);
-        tab.setBackground(new java.awt.Color(206, 206, 206));
+        tab.setBackgroundImage(brushedMetal);
 
         tab.add(new WingsImage(), "wingS!");
         tab.add(new LabelExample(), "Label");
@@ -100,8 +103,7 @@ public class WingSetSession
         tab.add(new PageScrollerExample(), "PageScroller");
         //tab.add(new LayoutExample(), "Simple Layout");
         tab.addTab("Template Layout", 
-                   new ResourceImageIcon(WingSetSession.class.getClassLoader(),
-                                         "wingset/icons/cowSmall.gif"), 
+                   new ResourceImageIcon(cl, "wingset/icons/cowSmall.gif"), 
                    new TemplateExample(), "Template Layout Manager");
         //tab.add(new DateChooserExample(), "DateChooser");
 
@@ -148,23 +150,54 @@ public class WingSetSession
     public void processRequest(HttpServletRequest req,
                                HttpServletResponse res)
         throws ServletException, IOException
-        {
-            stopWatch.stop();
-            /*
-             * This is a dummy call to generate the HTML output, just
-             * to measure the time. With the result, we modify the
-             * timeMeasure label, which may modify the actual code size
-             * within a range of some bytes ..
-             */
-            stopWatch.start("time to generate HTML Code ");
-            NullDevice devNull = new NullDevice();
-            getFrame().write(devNull);
-            stopWatch.stop();
-            timeMeasure.setText(stopWatch.toString()
-                                + "<b>HTML code size: </b>" 
-                                + devNull.getSize() + " Bytes");
-            stopWatch.reset();
+    {
+        stopWatch.stop();
+        /*
+         * This is a dummy call to generate the HTML output, just
+         * to measure the time. With the result, we modify the
+         * timeMeasure label, which may modify the actual code size
+         * within a range of some bytes ..
+         */
+        stopWatch.start("time to generate HTML Code ");
+        NullDevice devNull = new NullDevice();
+        getFrame().write(devNull);
+        stopWatch.stop();
+        timeMeasure.setText(stopWatch.toString()
+                            + "<b>HTML code size: </b>" 
+                            + devNull.getSize() + " Bytes");
+        stopWatch.reset();
+    }
+    
+    /**
+     * TODO: check, whether this works with InternetExplorer. IE is
+     * known to have bugs that prevent it rendering compressed stuff correctly.
+     *   -> verified: works with IE 5.0
+     */
+    protected Device createOutputDevice(HttpServletRequest req,
+                                        HttpServletResponse response,
+                                        ExternalizedInfo extInfo) 
+        throws IOException {
+        String mimeType = extInfo.getMimeType();
+        // some browsers can handle a gziped stream only for text-files.
+        if (mimeType != null && mimeType.startsWith("text/")) {
+            String acceptEncoding = req.getHeader("Accept-Encoding");
+            int gzipPos;
+            if (acceptEncoding != null 
+                && (gzipPos = acceptEncoding.indexOf("gzip")) >= 0) {
+                // some browsers send 'x-gzip', others just 'gzip'. Our
+                // response should be the same.
+                boolean isXGZip = (gzipPos >= 2 
+                                   && acceptEncoding.charAt(gzipPos-1) == '-'
+                                   && acceptEncoding.charAt(gzipPos-2) == 'x');
+                response.addHeader("Content-Encoding", 
+                                   (isXGZip ? "x-gzip" : "gzip"));
+                //System.err.println("GZIPed output for " + mimeType
+                // + "accept: " + acceptEncoding);
+                return new GZIPCompressingDevice(response.getOutputStream());
+            }
         }
+        return new ServletDevice(response.getOutputStream());
+    }
 
     /**
      * Servletinfo
