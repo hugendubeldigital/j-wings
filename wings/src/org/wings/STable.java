@@ -1005,7 +1005,11 @@ public class STable
     public String getSelectionStyle() { return selectionStyle; }
 
     /**
-     * @return the style of selected cells.
+     * Override this method, if you want to give rows different
+     * attributes. E.g. for displaying an alternating background color
+     * for rows.
+     *
+     * @return the style of a specific row. 
      */
     public String getRowStyle(int row) { return null; }
 
