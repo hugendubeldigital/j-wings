@@ -14,11 +14,16 @@
 
 package org.wings.session;
 
-import java.io.*;
-import java.util.*;
-import java.security.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.security.Principal;
+import java.util.Enumeration;
+import java.util.Locale;
 
 /**
  * Delegates all method calls to another HttpServletRequest.

@@ -49,7 +49,7 @@ import org.wings.util.LocaleCharSet;
  * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-class MultipartRequest
+public class MultipartRequest
     extends DelegatingHttpServletRequest
     implements HttpServletRequest
 {
@@ -62,6 +62,7 @@ class MultipartRequest
 
     private final HashMap parameters = new HashMap();  // name - value
     private final HashMap files = new HashMap();       // name - UploadedFile
+    private HashMap map;
 
     /**
      * @param request the servlet request
@@ -160,6 +161,21 @@ class MultipartRequest
         if (v == null) return null;
         String result[] = new String [ v.size() ];
         return (String[]) v.toArray(result);
+    }
+
+    public Map getParameterMap () {
+        if (urlencodedRequest)
+            return super.getParameterMap();
+        if (map == null) {
+            map = new HashMap();
+            for (Iterator iterator = parameters.entrySet().iterator(); iterator.hasNext();) {
+                Map.Entry entry = (Map.Entry)iterator.next();
+                List list = (List)entry.getValue();
+                String[] values = (String[])list.toArray(new String[list.size()]);
+                map.put(entry.getKey(), values);
+            }
+        }
+        return map;
     }
 
     /**
@@ -263,6 +279,10 @@ class MultipartRequest
         }
         urlencodedRequest = false;
 
+        for (Iterator iterator = req.getParameterMap().entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry entry = (Map.Entry)iterator.next();
+            parameters.put(entry.getKey(), new ArrayList(Arrays.asList((String[])entry.getValue())));
+        }
 
         String boundaryToken = extractBoundaryToken(type);
         if (boundaryToken == null) {
