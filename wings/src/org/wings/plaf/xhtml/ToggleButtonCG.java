@@ -31,14 +31,6 @@ public class ToggleButtonCG
     protected String getPropertyPrefix() {
         return propertyPrefix;
     }
-
-    public void installCG(SComponent component) {
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-    }
-
-    public void uninstallCG(SComponent c) {
-    }
 }
 
 /*

@@ -22,18 +22,13 @@ import org.wings.io.*;
 import org.wings.*;
 
 public class TabbedPaneCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.TabbedPaneCG
 {
     private final static String propertyPrefix = "TabbedPane";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
-    }
-
-    public void installCG(SComponent component) {
-    }
-
-    public void uninstallCG(SComponent c) {
     }
 
     public void write(Device d, SComponent c)

@@ -29,12 +29,6 @@ import org.wings.externalizer.ExternalizeManager;
 public final class FrameCG
     extends org.wings.plaf.xhtml.FrameCG
 {
-    public void installCG(SComponent component) {
-        CGManager cgm = component.getSession().getCGManager();
-        component.setStyle(cgm.getStyle(getPropertyPrefix() + ".style"));
-        ((SFrame)component).setStyleSheet((StyleSheet)cgm.get(getPropertyPrefix() + ".stylesheet"));
-    }
-
     protected void writeAdditionalHeaders(Device d, SFrame frame)
         throws IOException
     {

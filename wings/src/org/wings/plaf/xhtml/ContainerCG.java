@@ -22,20 +22,13 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 
 public class ContainerCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.ContainerCG
 {
     private final static String propertyPrefix = "Container";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
-    }
-
-    public void installCG(SComponent component) {
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-    }
-
-    public void uninstallCG(SComponent c) {
     }
 
     public void write(Device d, SComponent c)

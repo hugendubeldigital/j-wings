@@ -22,6 +22,7 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 
 public class ScrollPaneCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.ScrollPaneCG
 {
     public void installCG(SComponent component) {

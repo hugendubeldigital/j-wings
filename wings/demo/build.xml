@@ -46,6 +46,7 @@
         <include name="**/*.thtml" />
         <include name="**/*.html" />
 	<exclude name="**/index.html" />
+	<exclude name="build/**" />
       </fileset>
     </copy>
   </target>
@@ -139,6 +140,27 @@
     </copy>
   </target>
 
+  <target name="desktop" depends="build">
+    <mkdir dir="${deploy}/desktop"/>
+    <mkdir dir="${deploy}/desktop/WEB-INF"/>
+    <mkdir dir="${deploy}/desktop/WEB-INF/lib"/>
+    <mkdir dir="${deploy}/desktop/WEB-INF/classes"/>
+
+    <copy file="desktop/desktop.xml" tofile="${deploy}/desktop/WEB-INF/web.xml"/>
+    <copy file="desktop/index.html" tofile="${deploy}/desktop/index.html"/>
+
+    <copy todir="${deploy}/desktop/WEB-INF/classes">
+      <fileset dir="${classes}">
+        <include name="desktop/**/*" />
+      </fileset>
+    </copy>
+
+    <copy todir="${deploy}/desktop/WEB-INF/lib">
+      <fileset dir="${lib}">
+        <exclude name="j2ee.jar"/>
+      </fileset>
+    </copy>
+  </target>
 
   <!-- ==================== Make wars ==================== -->
   <target name="deploy" depends="build">
@@ -189,6 +211,18 @@
         <include name="index.html"/>
       </fileset>
     </war>
+
+    <war warfile="${deploy}/desktop.war" webxml="desktop/desktop.xml">
+      <lib dir="${lib}">
+        <exclude name="j2ee.jar"/>
+      </lib>
+      <classes dir="build/classes">
+        <include name="desktop/**/*" />
+      </classes>
+      <fileset dir="desktop">
+        <include name="index.html"/>
+      </fileset>
+    </war>
   </target>
 
 
@@ -210,5 +244,5 @@
 
   <target name="all" depends="clean,build,deploy"/>
   <target name="main" depends="build"/>
-  <target name="webapps" depends="wingset,ldap,explorer,frameset"/>
+  <target name="webapps" depends="wingset,ldap,explorer,frameset,desktop"/>
 </project>

@@ -553,18 +553,7 @@ public class SBaseTable
     }
 
 
-    // do not initalize with null!
-    private SCellRendererPane cellRendererPane;
-
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
-    public void setCellRendererPane(SCellRendererPane c) {
-        cellRendererPane=c;
-        cellRendererPane.setParent(getParent());
-    }
+    private SCellRendererPane cellRendererPane = new SCellRendererPane();
 
     /**
      * TODO: documentation
@@ -574,17 +563,6 @@ public class SBaseTable
     public SCellRendererPane getCellRendererPane() {
         return cellRendererPane;
     }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public void removeCellRendererPane() {
-        cellRendererPane.setParent(null);
-        cellRendererPane = null;
-    }
-
 
     /**
      * Returns the name of the CGFactory class that generates the

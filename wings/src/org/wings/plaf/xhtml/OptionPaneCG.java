@@ -22,6 +22,7 @@ import org.wings.io.*;
 import org.wings.*;
 
 public class OptionPaneCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.OptionPaneCG
 {
     private final static String propertyPrefix = "OptionPane";
@@ -29,13 +30,6 @@ public class OptionPaneCG
     protected String getPropertyPrefix() {
         return propertyPrefix;
     }
-
-    public void installCG(SComponent component) {
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-    }
-
-    public void uninstallCG(SComponent c) {}
 
     public void write(Device d, SComponent c)
         throws IOException

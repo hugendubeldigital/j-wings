@@ -519,6 +519,15 @@ public class SFrame
      * @deprecated don't use
      * @return
      */
+    public String getStatusLine() {
+        return statusLine;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
     public String show() {
         StringBufferDevice erg = new StringBufferDevice();
         try {

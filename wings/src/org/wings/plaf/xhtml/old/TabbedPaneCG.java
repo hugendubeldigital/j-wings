@@ -30,14 +30,11 @@ public final class TabbedPaneCG
     //Icon transIcon;
 
     public void installCG(SComponent component) {
-        STabbedPane pane = (STabbedPane)component;
-
-        firstIcon = component.getSession().getCGManager().getIcon("TabbedPane.firstIcon");
+        super.installCG(component);
+        firstIcon = component.getSession().getCGManager().getIcon("TabbedPaneCG.firstIcon");
         //transIcon = LookAndFeel.makeIcon(TabbedPaneCG.class, "/org/wings/icons/transdot.gif");
     }
 
-    public void uninstallCG(SComponent c) {
-    }
 
     // ignore tab placement for now .. always TOP
     public void write(Device d, SComponent c)

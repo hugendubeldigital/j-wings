@@ -31,18 +31,11 @@ public final class TabbedPaneCG
     //Icon transIcon;
 
     public void installCG(SComponent component) {
-        STabbedPane pane = (STabbedPane)component;
-        pane.setStyle(component.getSession().getCGManager().
-                      getStyle(getPropertyPrefix() + "NonSelection.style"));
-        pane.setSelectionStyle(component.getSession().getCGManager().
-                               getStyle(getPropertyPrefix() + "Selection.style"));
-
-
-        firstIcon = component.getSession().getCGManager().getIcon("TabbedPane.firstIcon");
+        super.installCG(component);
+        firstIcon = component.getSession().getCGManager().getIcon("TabbedPaneCG.firstIcon");
         //transIcon = LookAndFeel.makeIcon(TabbedPaneCG.class, "/org/wings/icons/transdot.gif");
     }
 
-    public void uninstallCG(SComponent c) {}
 
     // ignore tab placement for now .. always TOP
     public void write(Device d, SComponent c)
@@ -55,7 +48,7 @@ public final class TabbedPaneCG
         //String transAdr = null;
 
         ExternalizeManager ext = c.getExternalizeManager();
-        if (ext != null) {
+        if (ext != null && firstIcon != null) {
             try {
                 firstAdr = ext.externalize(firstIcon);
                 //transAdr = ext.externalize(transIcon);

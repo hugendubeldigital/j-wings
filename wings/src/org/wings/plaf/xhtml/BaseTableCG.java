@@ -24,7 +24,9 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.externalizer.ExternalizeManager;
 
-public class BaseTableCG implements org.wings.plaf.BaseTableCG, SConstants
+public class BaseTableCG
+    extends org.wings.plaf.AbstractCG
+    implements org.wings.plaf.BaseTableCG, SConstants
 {
     protected static final byte LEFT   = 1;
     protected static final byte RIGHT  = 2;
@@ -49,62 +51,9 @@ public class BaseTableCG implements org.wings.plaf.BaseTableCG, SConstants
     }
 
     private final static String propertyPrefix = "BaseTable";
-    private final static String headerPropertyPrefix = "BaseTableHeader";
-    private final static String cellPropertyPrefix = "BaseTableCell";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
-    }
-
-    public void installCG(SComponent c) {
-        SBaseTable baseTable = (SBaseTable)c;
-        c.setStyle(c.getSession().getCGManager().
-                   getStyle(getPropertyPrefix() + ".style"));
-        baseTable.setCellRendererPane(new SCellRendererPane());
-        installCellRenderer(baseTable);
-    }
-
-    public void uninstallCG(SComponent c) {
-        SBaseTable baseTable = (SBaseTable)c;
-        baseTable.removeCellRendererPane();
-        uninstallCellRenderer(baseTable);
-    }
-
-    protected void installCellRenderer(SBaseTable baseTable) {
-        STableCellRenderer defaultRenderer = baseTable.getDefaultRenderer();
-        if (defaultRenderer == null
-            || defaultRenderer instanceof SDefaultTableCellRenderer) {
-            defaultRenderer = new SDefaultTableCellRenderer();
-            configureDefaultRenderer(baseTable, (SDefaultTableCellRenderer)defaultRenderer);
-            baseTable.setDefaultRenderer(defaultRenderer);
-        }
-        STableCellRenderer headerRenderer = baseTable.getHeaderRenderer();
-        if (headerRenderer == null
-            || headerRenderer instanceof SDefaultTableCellRenderer) {
-            headerRenderer = new SDefaultTableCellRenderer();
-            configureHeaderRenderer(baseTable, (SDefaultTableCellRenderer)headerRenderer);
-            baseTable.setHeaderRenderer(headerRenderer);
-        }
-    }
-    protected void uninstallCellRenderer(SBaseTable baseTable) {
-        STableCellRenderer defaultRenderer = baseTable.getDefaultRenderer();
-        if (defaultRenderer != null
-            && defaultRenderer instanceof SDefaultTableCellRenderer)
-            baseTable.setDefaultRenderer(null);
-        STableCellRenderer headerRenderer = baseTable.getHeaderRenderer();
-        if (headerRenderer != null
-            && headerRenderer instanceof SDefaultTableCellRenderer)
-            baseTable.setHeaderRenderer(null);
-    }
-
-    protected void configureDefaultRenderer(SBaseTable baseTable, SDefaultTableCellRenderer cellRenderer) {
-        CGManager cgManager = baseTable.getSession().getCGManager();
-        cellRenderer.setCellNonSelectionStyle(cgManager.getStyle(cellPropertyPrefix + ".style"));
-    }
-
-    protected void configureHeaderRenderer(SBaseTable baseTable, SDefaultTableCellRenderer cellRenderer) {
-        CGManager cgManager = baseTable.getSession().getCGManager();
-        cellRenderer.setCellNonSelectionStyle(cgManager.getStyle(headerPropertyPrefix + ".style"));
     }
 
     public void write(Device d, SComponent c)

@@ -24,18 +24,13 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 
 public class FrameCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.FrameCG
 {
     private final static String propertyPrefix = "Frame";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
-    }
-
-    public void installCG(SComponent component) {
-    }
-
-    public void uninstallCG(SComponent c) {
     }
 
     public void write(Device d, SComponent c)

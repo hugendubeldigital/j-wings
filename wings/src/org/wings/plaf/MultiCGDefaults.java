@@ -61,10 +61,11 @@ class MultiCGDefaults extends CGDefaults
         return size() == 0;
     }
 
+    /*
     public Enumeration keys()
     {
         Enumeration[] enums = new Enumeration[1 + tables.length];
-        enums[0] = super.keys();
+        enums[0] = super.key();
         for(int i = 0; i < tables.length; i++) {
             CGDefaults table = tables[i];
             if (table != null) {
@@ -116,6 +117,7 @@ class MultiCGDefaults extends CGDefaults
             return null;
         }
     }
+    */
 
     public Object remove(Object key)
     {

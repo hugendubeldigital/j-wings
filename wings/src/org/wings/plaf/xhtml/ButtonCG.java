@@ -25,6 +25,7 @@ import org.wings.util.*;
 import org.wings.externalizer.ExternalizeManager;
 
 public class ButtonCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.ButtonCG, SConstants
 {
     private final static String propertyPrefix = "Button";
@@ -32,12 +33,6 @@ public class ButtonCG
     protected String getPropertyPrefix() {
         return propertyPrefix;
     }
-
-    public void installCG(SComponent component) {
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-    }
-    public void uninstallCG(SComponent c) {}
 
     public void write(Device d, SComponent c)
         throws IOException

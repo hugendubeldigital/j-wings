@@ -16,6 +16,7 @@ package wingset;
 
 import java.awt.event.*;
 import java.io.*;
+import java.util.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -39,11 +40,22 @@ public class WingSetSession
     implements SConstants
 {
     SLabel timeMeasure = new SLabel();
+    Properties css1Properties, oldProperties;
 
 
     public WingSetSession(Session session) {
         super(session);
-        System.out.println("I`m starting now");
+        System.out.println("new WingSetSession");
+
+        try {
+            css1Properties = new Properties();
+            css1Properties.load(getClass().getResourceAsStream("/org/wings/plaf/xhtml/css1/default.properties"));
+            oldProperties = new Properties();
+            oldProperties.load(getClass().getResourceAsStream("/org/wings/plaf/xhtml/old/default.properties"));
+        }
+        catch (Exception e) {
+            // assert false, e.getMessage();
+        }
     }
 
 
@@ -104,10 +116,10 @@ public class WingSetSession
                 public void actionPerformed(ActionEvent e) {
                     if (css1.isSelected())
                         getSession().getCGManager()
-                            .setLookAndFeel(new org.wings.plaf.xhtml.css1.CSS1LookAndFeel());
+                            .setLookAndFeel(new org.wings.plaf.LookAndFeel(css1Properties));
                     else
                         getSession().getCGManager()
-                            .setLookAndFeel(new org.wings.plaf.xhtml.old.OldLookAndFeel());
+                            .setLookAndFeel(new org.wings.plaf.LookAndFeel(oldProperties));
                 }
             });
         group.add(old);

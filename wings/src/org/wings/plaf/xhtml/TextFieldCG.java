@@ -22,6 +22,7 @@ import org.wings.io.*;
 import org.wings.*;
 
 public class TextFieldCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.TextFieldCG
 {
     private final static String propertyPrefix = "TextField";
@@ -30,13 +31,7 @@ public class TextFieldCG
         return propertyPrefix;
     }
 
-    public void installCG(SComponent component) {
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-    }
-
-    public void uninstallCG(SComponent c) {
-    }
+    private StringBuffer buffer = new StringBuffer();
 
     public void write(Device d, SComponent c)
         throws IOException

@@ -12,9 +12,8 @@
  * Please see COPYING for the complete licence.
  */
 
-package wingset;
+package desktop;
 
-import java.util.Properties;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -26,10 +25,10 @@ import org.wings.session.*;
 /**
  * TODO: documentation
  *
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:haaf@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class WingSet
+public class Desktop
     extends WingServlet
 {
     protected void initExternalizer(ServletConfig config) {
@@ -42,12 +41,10 @@ public class WingSet
     {
         // create new default session and set plaf
         DefaultSession session = new DefaultSession();
-        Properties properties = new Properties();
-        properties.load(getClass().getResourceAsStream("/org/wings/plaf/xhtml/css1/default.properties"));
-        session.getCGManager().setLookAndFeel(new org.wings.plaf.LookAndFeel(properties));
+        session.getCGManager().setLookAndFeel(new org.wings.plaf.xhtml.css1.CSS1LookAndFeel());
 
-        // return a new wingset session
-        return new WingSetSession(session);
+        // return a new desktop session
+        return new DesktopSession(session);
     }
 }
 

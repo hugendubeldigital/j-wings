@@ -16,7 +16,11 @@ package org.wings;
 
 import java.io.*;
 
+import javax.swing.*;
+import javax.swing.event.*;
+
 import org.wings.*;
+import org.wings.event.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 
@@ -28,11 +32,35 @@ import org.wings.plaf.*;
  */
 public class SInternalFrame
     extends SContainer
+    implements SGetListener
 {
     /**
      * @see #getCGClassID
      */
     private static final String cgClassID = "InternalFrameCG";
+
+    private boolean iconifyable = true;
+    private boolean maximizable = true;
+    private boolean closable = true;
+
+    private boolean iconified = false;
+    private boolean maximized = false;
+    private boolean closed = false;
+
+    /**
+     * TODO: documentation
+     */
+    protected Icon icon = null;
+
+    /**
+     * TODO: documentation
+     */
+    protected String title = null;
+
+    /**
+     * TODO: documentation
+     */
+    protected EventListenerList listenerList = new EventListenerList();
 
     /**
      * TODO: documentation
@@ -48,6 +76,80 @@ public class SInternalFrame
         super.addComponent(getContentPane(), null);
     }
 
+
+    public void setIconifyable(boolean iconifyable) {
+        this.iconifyable = iconifyable;
+    }
+    public boolean isIconifyable() { return iconifyable; }
+
+    public void setMaximizable(boolean maximizable) {
+        this.maximizable = maximizable;
+    }
+    public boolean isMaximizable() { return maximizable; }
+
+    public void setClosable(boolean closable) {
+        this.closable = closable;
+    }
+    public boolean isClosable() { return closable; }
+
+    public void setIconified(boolean iconified) {
+        this.iconified = iconified;
+    }
+    public boolean isIconified() { return iconified; }
+
+    public void setMaximized(boolean maximized) {
+        this.maximized = maximized;
+    }
+    public boolean isMaximized() { return maximized; }
+
+    public void setClosed(boolean closed) {
+        this.closed = closed;
+    }
+    public boolean isClosed() { return closed; }
+
+    /**
+     * TODO: documentation
+     *
+     * @param i
+     */
+    public void setIcon(Icon i) {
+        Icon oldIcon = icon;
+        icon = i;
+        if ((icon == null && oldIcon != null) ||
+            (icon != null && !icon.equals(oldIcon)))
+            reload();
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public Icon getIcon() {
+        return icon;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param t
+     */
+    public void setTitle(String t) {
+        String oldTitle = title;
+        title = t;
+        if ((title == null && oldTitle != null) ||
+            (title != null && !title.equals(oldTitle)))
+            reload();
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public String getTitle() {
+        return title;
+    }
 
     /**
      * Use getContentPane().addComponent(c) instead.
@@ -130,10 +232,8 @@ public class SInternalFrame
      */
     public void show() {
         super.setVisible(true);
-        SDesktopPane desktop = (SDesktopPane)getParent();
-        if (desktop == null)
-            throw new IllegalStateException("no parent; SInternalFrame requires a SDesktop as parent.");
-        desktop.moveToFront(this);
+        if (isIconified())
+            setIconified(false);
     }
 
     /**
@@ -142,6 +242,91 @@ public class SInternalFrame
      */
     public void hide() {
         super.setVisible(false);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param listener
+     */
+    public void addInternalFrameListener(InternalFrameListener listener) {
+        listenerList.add(InternalFrameListener.class, listener);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param listener
+     */
+    public void removeInternalFrameListener(InternalFrameListener listener) {
+        listenerList.remove(InternalFrameListener.class, listener);
+    }
+
+    private SInternalFrameEvent event;
+
+    public void getPerformed(String name, String value) {
+        switch (new Integer(value).intValue()) {
+        case SInternalFrameEvent.INTERNAL_FRAME_CLOSED:
+            setClosed(true);
+            break;
+
+        case SInternalFrameEvent.INTERNAL_FRAME_ICONIFIED:
+            setIconified(true);
+            break;
+
+        case SInternalFrameEvent.INTERNAL_FRAME_DEICONIFIED:
+            setIconified(false);
+            break;
+
+        case SInternalFrameEvent.INTERNAL_FRAME_MAXIMIZED:
+            setMaximized(true);
+            break;
+
+        case SInternalFrameEvent.INTERNAL_FRAME_UNMAXIMIZED:
+            setMaximized(false);
+            break;
+
+        default:
+            throw new RuntimeException("unknown id: " + value);
+        }
+
+        event = new SInternalFrameEvent(this, new Integer(value).intValue());
+    }
+
+    public void fireIntermediateEvents() {}
+
+    public void fireFinalEvents() {
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i] == InternalFrameListener.class) {
+                switch (event.getID()) {
+                case SInternalFrameEvent.INTERNAL_FRAME_CLOSED:
+                    ((SInternalFrameListener)listeners[i+1]).internalFrameClosed(event);
+                    break;
+                    
+                case SInternalFrameEvent.INTERNAL_FRAME_ICONIFIED:
+                    ((SInternalFrameListener)listeners[i+1]).internalFrameIconified(event);
+                    break;
+                    
+                case SInternalFrameEvent.INTERNAL_FRAME_DEICONIFIED:
+                    ((SInternalFrameListener)listeners[i+1]).internalFrameDeiconified(event);
+                    break;
+                    
+                case SInternalFrameEvent.INTERNAL_FRAME_MAXIMIZED:
+                    ((SInternalFrameListener)listeners[i+1]).internalFrameMaximized(event);
+                    break;
+                    
+                case SInternalFrameEvent.INTERNAL_FRAME_UNMAXIMIZED:
+                    ((SInternalFrameListener)listeners[i+1]).internalFrameUnmaximized(event);
+                    break;
+                }
+            }
+        }
+
+        event = null;
     }
 
     /**

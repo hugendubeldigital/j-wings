@@ -46,10 +46,10 @@ public class SDefaultTableCellRenderer
     protected Color backgroundNonSelectionColor = null;
 
     /** Style to use for the foreground for selected nodes. */
-    protected Style cellSelectionStyle = null;
+    protected Style selectionStyle = null;
 
     /** Style to use for the foreground for non-selected nodes. */
-    protected Style cellNonSelectionStyle = null;
+    protected Style nonSelectionStyle = null;
 
     /** Icon used to render the edit button. */
     transient protected Icon editIcon = null;
@@ -88,7 +88,7 @@ public class SDefaultTableCellRenderer
         CGManager cgManager = getSession().getCGManager();
         if (cgManager == null)
             return;
-        setEditIcon(cgManager.getIcon("Table.editIcon"));
+        setEditIcon(cgManager.getIcon("STable.editIcon"));
     }
 
     public SComponent getTableCellRendererComponent(SBaseTable baseTable,
@@ -132,16 +132,16 @@ public class SDefaultTableCellRenderer
                     setForeground(table.getSelectionForeground());
                     contents.setForeground(table.getSelectionForeground());
                 }
-                setStyle(cellSelectionStyle);
-                contents.setStyle(cellSelectionStyle);
+                setStyle(selectionStyle);
+                contents.setStyle(selectionStyle);
             }
             else {
                 setBackground(backgroundNonSelectionColor);
                 setForeground(foregroundNonSelectionColor);
                 contents.setBackground(backgroundNonSelectionColor);
                 contents.setForeground(foregroundNonSelectionColor);
-                setStyle(cellNonSelectionStyle);
-                contents.setStyle(cellNonSelectionStyle);
+                setStyle(nonSelectionStyle);
+                contents.setStyle(nonSelectionStyle);
             }
             if (table.isCellEditable(row, col))
                 return this;
@@ -270,8 +270,8 @@ public class SDefaultTableCellRenderer
      *
      * @param newStyle
      */
-    public void setCellSelectionStyle(Style newStyle) {
-        cellSelectionStyle = newStyle;
+    public void setSelectionStyle(Style newStyle) {
+        selectionStyle = newStyle;
     }
 
     /**
@@ -279,8 +279,8 @@ public class SDefaultTableCellRenderer
      *
      * @return
      */
-    public Style getCellSelectionStyle() {
-        return cellSelectionStyle;
+    public Style getSelectionStyle() {
+        return selectionStyle;
     }
 
     /**
@@ -288,8 +288,8 @@ public class SDefaultTableCellRenderer
      *
      * @param newStyle
      */
-    public void setCellNonSelectionStyle(Style newStyle) {
-        cellNonSelectionStyle = newStyle;
+    public void setNonSelectionStyle(Style newStyle) {
+        nonSelectionStyle = newStyle;
     }
 
     /**
@@ -297,8 +297,8 @@ public class SDefaultTableCellRenderer
      *
      * @return
      */
-    public Style getCellNonSelectionStyle() {
-        return cellNonSelectionStyle;
+    public Style getNonSelectionStyle() {
+        return nonSelectionStyle;
     }
 
     /**

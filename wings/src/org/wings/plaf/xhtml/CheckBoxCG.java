@@ -25,20 +25,13 @@ import org.wings.util.*;
 import org.wings.externalizer.ExternalizeManager;
 
 public class CheckBoxCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.CheckBoxCG, SConstants
 {
     private final static String propertyPrefix = "CheckBox";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
-    }
-
-    public void installCG(SComponent component) {
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-    }
-
-    public void uninstallCG(SComponent c) {
     }
 
     public void write(Device d, SComponent c)

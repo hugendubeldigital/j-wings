@@ -24,20 +24,13 @@ import org.wings.plaf.*;
 import org.wings.externalizer.ExternalizeManager;
 
 public class LabelCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.LabelCG, SConstants
 {
     private final static String propertyPrefix = "Label";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
-    }
-
-    public void installCG(SComponent component) {
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-    }
-
-    public void uninstallCG(SComponent c) {
     }
 
     public void write(Device d, SComponent component)

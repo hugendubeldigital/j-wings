@@ -14,6 +14,7 @@
 
 package org.wings.plaf;
 
+import java.awt.*;
 import javax.swing.*;
 
 import org.wings.*;
@@ -53,12 +54,28 @@ public class CGManager
         return getDefaults().get(key);
     }
 
+    public SFont getFont(Object key) {
+        return getDefaults().getFont(key);
+    }
+
+    public Color getColor(Object key) {
+        return getDefaults().getColor(key);
+    }
+
     public Style getStyle(Object key) {
         return getDefaults().getStyle(key);
     }
 
+    public StyleSheet getStyleSheet(Object key) {
+        return getDefaults().getStyleSheet(key);
+    }
+
     public Icon getIcon(Object key) {
         return getDefaults().getIcon(key);
+    }
+
+    public Object getObject(Object key, Class clazz) {
+        return getDefaults().getObject(key, clazz);
     }
 
     private CGDefaults[] tables = new CGDefaults[2];

@@ -25,68 +25,13 @@ import org.wings.plaf.*;
 import org.wings.externalizer.ExternalizeManager;
 
 public class SortTableCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.SortTableCG, SConstants
 {
     private final static String propertyPrefix = "SortTable";
-    private final static String selectionPropertyPrefix = "TableSelection";
-    private final static String nonSelectionPropertyPrefix = "TableNonSelection";
-    private final static String headerPropertyPrefix = "SortTableHeader";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
-    }
-
-    public void installCG(SComponent c) {
-        SSortTable sortTable = (SSortTable)c;
-        c.setStyle(c.getSession().getCGManager().
-                   getStyle(getPropertyPrefix() + ".style"));
-        sortTable.setCellRendererPane(new SCellRendererPane());
-        installCellRenderer(sortTable);
-    }
-
-    public void uninstallCG(SComponent c) {
-        SSortTable sortTable = (SSortTable)c;
-        sortTable.removeCellRendererPane();
-        uninstallCellRenderer(sortTable);
-    }
-
-    protected void installCellRenderer(SSortTable sortTable) {
-        STableCellRenderer defaultRenderer = sortTable.getDefaultRenderer();
-        if (defaultRenderer == null
-            || defaultRenderer instanceof SDefaultTableCellRenderer) {
-            defaultRenderer = new SDefaultTableCellRenderer();
-            configureDefaultRenderer(sortTable, (SDefaultTableCellRenderer)defaultRenderer);
-            sortTable.setDefaultRenderer(defaultRenderer);
-        }
-        STableCellRenderer headerRenderer = sortTable.getHeaderRenderer();
-        if (headerRenderer == null
-            || headerRenderer instanceof SDefaultTableCellRenderer) {
-            headerRenderer = new SDefaultTableCellRenderer();
-            configureHeaderRenderer(sortTable, (SDefaultTableCellRenderer)headerRenderer);
-            sortTable.setHeaderRenderer(headerRenderer);
-        }
-    }
-
-    protected void uninstallCellRenderer(SSortTable sortTable) {
-        STableCellRenderer defaultRenderer = sortTable.getDefaultRenderer();
-        if (defaultRenderer != null
-            && defaultRenderer instanceof SDefaultTableCellRenderer)
-            sortTable.setDefaultRenderer(null);
-        STableCellRenderer headerRenderer = sortTable.getHeaderRenderer();
-        if (headerRenderer != null
-            && headerRenderer instanceof SDefaultTableCellRenderer)
-            sortTable.setHeaderRenderer(null);
-    }
-
-    protected void configureDefaultRenderer(SSortTable sortTable, SDefaultTableCellRenderer cellRenderer) {
-        CGManager cgManager = sortTable.getSession().getCGManager();
-        cellRenderer.setCellSelectionStyle(cgManager.getStyle(selectionPropertyPrefix + ".style"));
-        cellRenderer.setCellNonSelectionStyle(cgManager.getStyle(nonSelectionPropertyPrefix + ".style"));
-    }
-
-    protected void configureHeaderRenderer(SSortTable sortTable, SDefaultTableCellRenderer cellRenderer) {
-        CGManager cgManager = sortTable.getSession().getCGManager();
-        cellRenderer.setCellNonSelectionStyle(cgManager.getStyle(headerPropertyPrefix + ".style"));
     }
 
     public void write(Device d, SComponent c)

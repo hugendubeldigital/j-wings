@@ -970,29 +970,19 @@ public class STree
 
     public void setParent(SContainer p) {
         super.setParent(p);
-        if ( getCellRendererPane() != null )
+        if (getCellRendererPane() != null)
             getCellRendererPane().setParent(p);
     }
 
     protected void setParentFrame(SFrame f) {
         super.setParentFrame(f);
-        if ( getCellRendererPane() != null )
+        if (getCellRendererPane() != null)
             getCellRendererPane().setParentFrame(f);
     }
 
 
     // do not initalize with null!
-    private SCellRendererPane cellRendererPane;
-
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
-    public void setCellRendererPane(SCellRendererPane c) {
-        cellRendererPane=c;
-        cellRendererPane.setParent(getParent());
-    }
+    private SCellRendererPane cellRendererPane = new SCellRendererPane();
 
     /**
      * TODO: documentation
@@ -1002,17 +992,6 @@ public class STree
     public SCellRendererPane getCellRendererPane() {
         return cellRendererPane;
     }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public void removeCellRendererPane() {
-        cellRendererPane.setParent(null);
-        cellRendererPane = null;
-    }
-
 
     /**
      * Returns the name of the CGFactory class that generates the

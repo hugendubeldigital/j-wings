@@ -525,29 +525,20 @@ public class SComboBox
 
     public void setParent(SContainer p) {
         super.setParent(p);
-        if ( getCellRendererPane() != null )
+        if (getCellRendererPane() != null)
             getCellRendererPane().setParent(p);
     }
 
     protected void setParentFrame(SFrame f) {
         super.setParentFrame(f);
-        if ( getCellRendererPane() != null )
+        if (getCellRendererPane() != null)
             getCellRendererPane().setParentFrame(f);
     }
 
 
     // do not initalize with null!
-    private SCellRendererPane cellRendererPane;
+    private SCellRendererPane cellRendererPane = new SCellRendererPane();
 
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
-    public void setCellRendererPane(SCellRendererPane c) {
-        cellRendererPane=c;
-        cellRendererPane.setParent(getParent());
-    }
 
     /**
      * TODO: documentation
@@ -556,16 +547,6 @@ public class SComboBox
      */
     public SCellRendererPane getCellRendererPane() {
         return cellRendererPane;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public void removeCellRendererPane() {
-        cellRendererPane.setParent(null);
-        cellRendererPane = null;
     }
 
 

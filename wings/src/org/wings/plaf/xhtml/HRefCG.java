@@ -25,6 +25,7 @@ import org.wings.externalizer.ExternalizeManager;
 
 
 public class HRefCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.HRefCG
 {
     private final static String propertyPrefix = "HRef";
@@ -32,12 +33,6 @@ public class HRefCG
     protected String getPropertyPrefix() {
         return propertyPrefix;
     }
-
-    public void installCG(SComponent component) {
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-    }
-    public void uninstallCG(SComponent c) {}
 
     public void write(Device d, SComponent c)
         throws IOException

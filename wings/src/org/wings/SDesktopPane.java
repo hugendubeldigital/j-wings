@@ -41,7 +41,7 @@ public class SDesktopPane
      */
     private static final String cgClassID = "DesktopPaneCG";
 
-    SStackLayout stack = new SStackLayout();
+    SDesktopLayout layout = new SDesktopLayout();
 
     /**
      * TODO: documentation
@@ -49,7 +49,7 @@ public class SDesktopPane
      */
     public SDesktopPane() {
         super();
-        super.setLayout(stack);
+        super.setLayout(layout);
     }
 
     /**
@@ -61,7 +61,7 @@ public class SDesktopPane
 
     /**
      * Returns the currently selected component for this desktopPane.
-     * Returns null if there is no component on the stack.
+     * Returns null if there is no component on the layout.
      *
      * @return the top most component
      */
@@ -81,48 +81,36 @@ public class SDesktopPane
     }
 
     /**
-     * Adds a <i>component</i> to the tabbed pane.  If constraints
-     * is a String or an Icon, it will be used for the tab title,
-     * otherwise the component's name will be used as the tab title.
-     * Cover method for insertTab().
-     * @param component The component to be displayed when this tab is clicked.
-     * @constraints the object to be displayed in the tab
+     * @param component The internal frame to be added.
+     * @param constraints nothing
      */
     public void add(SComponent component, Object constraints) {
         super.addComponent(component, constraints);
     }
 
     /**
-     * Removes the tab at <i>index</i>.
-     * After the component associated with <i>index</i> is removed,
-     * its visibility is reset to true to ensure it will be visible
-     * if added to other containers.
-     * @param index the index of the tab to be removed
+     * Removes the frame at <i>index</i>.
      *
-     * @see #addTab
-     * @see #insertTab
+     * @param index the index of the tab to be removed
      */
     public void remove(int index) {
         super.remove(index);
     }
 
     /**
-     * Removes the tab which corresponds to the specified component.
+     * Removes the frame which corresponds to the specified component.
      *
-     * @param component the component to remove from the tabbedpane
+     * @param component the frame to be removed from the desktop
      */
     public void remove(SComponent component) {
         super.remove(component);
     }
 
     /**
-     * Removes all the tabs from the tabbedpane.
-     *
-     * @see #addTab
-     * @see #removeTabAt
+     * Removes all frames from the desktop.
      */
     public void removeAll() {
-        removeAll();
+        super.removeAll();
     }
 
     /**
@@ -156,27 +144,6 @@ public class SDesktopPane
         }
         return -1;
     }
-    /**
-     * Moves the component to the top of the components in it's current layer
-     * (position 0).
-     *
-     * @param c the Component to move
-     * @see #setPosition(Component, int)
-     */
-    public void moveToFront(SComponent c) {
-        setPosition(c, 0);
-    }
-
-    /**
-     * Moves the component to the bottom of the components in it's current layer
-     * (position -1).
-     *
-     * @param c the Component to move
-     * @see #setPosition(Component, int)
-     */
-    public void moveToBack(SComponent c) {
-        setPosition(c, getComponentCount());
-    }
 
     /**
      * Get the position of the component.
@@ -192,11 +159,11 @@ public class SDesktopPane
         return getIndexOf(c);
     }
 
-    private class SStackLayout extends SAbstractLayoutManager
+    private class SDesktopLayout extends SAbstractLayoutManager
     {
         private SContainer container = null;
 
-        public SStackLayout() {}
+        public SDesktopLayout() {}
 
         public void updateCG() {}
         public void addComponent(SComponent c, Object constraint) {}
@@ -210,17 +177,31 @@ public class SDesktopPane
             container = c;
         }
 
-        public void write(Device s)
+        public void write(Device d)
             throws IOException
         {
+            d.append("<table cellpadding=\"0\" cellspacing=\"7\" border=\"0\" width=\"100%\">\n");
+
             int componentCount = getComponentCount();
             for (int i=0; i<componentCount; i++) {
-                SComponent comp = (SComponent)getComponent(i);
-                if (comp.isVisible()) {
-                    comp.write(s);
+                SInternalFrame frame = (SInternalFrame)getComponent(i);
+                if (!frame.isClosed() && frame.isMaximized()) {
+                    d.append("<tr><td>\n");
+                    frame.write(d);
+                    d.append("</td></tr></table>\n");
                     return;
                 }
             }
+
+            for (int i=0; i<componentCount; i++) {
+                SInternalFrame frame = (SInternalFrame)getComponent(i);
+                if (!frame.isClosed()) {
+                    d.append("<tr><td>\n");
+                    frame.write(d);
+                    d.append("</td></tr>\n");
+                }
+            }
+            d.append("</td></tr></table>\n");
         }
     }
 

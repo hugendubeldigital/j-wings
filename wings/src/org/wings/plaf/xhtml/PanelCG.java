@@ -22,20 +22,13 @@ import org.wings.io.*;
 import org.wings.*;
 
 public class PanelCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.PanelCG
 {
     private final static String propertyPrefix = "Panel";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
-    }
-
-    public void installCG(SComponent component) {
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-    }
-
-    public void uninstallCG(SComponent c) {
     }
 
     public void write(Device d, SComponent c)

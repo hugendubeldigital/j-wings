@@ -33,14 +33,6 @@ public class RadioButtonCG
         return propertyPrefix;
     }
 
-    public void installCG(SComponent component) {
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-    }
-
-    public void uninstallCG(SComponent c) {
-    }
-
     protected void writeAnchorPrefix(Device d, SCheckBox checkBox)
         throws IOException
     {

@@ -961,29 +961,19 @@ public class SList
 
     public void setParent(SContainer p) {
         super.setParent(p);
-        if ( getCellRendererPane() != null )
+        if (getCellRendererPane() != null)
             getCellRendererPane().setParent(p);
     }
 
     protected void setParentFrame(SFrame f) {
         super.setParentFrame(f);
-        if ( getCellRendererPane() != null )
+        if (getCellRendererPane() != null)
             getCellRendererPane().setParentFrame(f);
     }
 
 
     // do not initalize with null!
-    private SCellRendererPane cellRendererPane;
-
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
-    public void setCellRendererPane(SCellRendererPane c) {
-        cellRendererPane = c;
-        cellRendererPane.setParent(getParent());
-    }
+    private SCellRendererPane cellRendererPane = new SCellRendererPane();
 
     /**
      * TODO: documentation

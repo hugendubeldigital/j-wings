@@ -22,20 +22,13 @@ import org.wings.io.*;
 import org.wings.*;
 
 public class PasswordFieldCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.PasswordFieldCG
 {
     private final static String propertyPrefix = "PasswordField";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
-    }
-
-    public void installCG(SComponent component) {
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-    }
-
-    public void uninstallCG(SComponent c) {
     }
 
     private StringBuffer buffer = new StringBuffer();

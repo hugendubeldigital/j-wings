@@ -21,20 +21,13 @@ import org.wings.io.*;
 import org.wings.*;
 
 public class LineBreakCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.LineBreakCG
 {
     private final static String propertyPrefix = "LineBreak";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
-    }
-
-    public void installCG(SComponent component) {
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-    }
-
-    public void uninstallCG(SComponent c) {
     }
 
     public void write(Device d, SComponent c)

@@ -324,7 +324,7 @@ public class STable
             // prepare editor
             editorComp = prepareEditor(editor, row, column);
 
-            if (editor.isCellEditable(e)) {
+            if (editor.isCellEditable(e) && editor.shouldSelectCell(e)) {
                 editorComp.setParent(getParent());
                 //this.add(editorComp);
                 setCellEditor(editor);
@@ -334,6 +334,7 @@ public class STable
 
                 return true;
             }
+            setValueAt(editor.getCellEditorValue(), row, column);
         }
         return false;
     }
@@ -412,7 +413,7 @@ public class STable
      * @param anEditor  the STableCellEditor that does the editing
      * @see #cellEditor
      */
-    public void setCellEditor(STableCellEditor anEditor) {
+    protected void setCellEditor(STableCellEditor anEditor) {
         STableCellEditor oldEditor = cellEditor;
         cellEditor = anEditor;
     }

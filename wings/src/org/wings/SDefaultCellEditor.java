@@ -59,26 +59,26 @@ public class SDefaultCellEditor
         editorForm.add(editorPanel);
         editorPanel.add(editorComponent);
         this.delegate = new EditorDelegate() {
-            public void setValue(Object v) {
-                super.setValue(v);
+                public void setValue(Object v) {
+                    super.setValue(v);
 
-                if (v != null)
-                    ((STextField)editorComponent).setText(v.toString());
-                else
-                    ((STextField)editorComponent).setText("");
-            }
+                    if (v != null)
+                        ((STextField)editorComponent).setText(v.toString());
+                    else
+                        ((STextField)editorComponent).setText("");
+                }
 
-            public Object getCellEditorValue() {
-                return ((STextField)editorComponent).getText();
-            }
+                public Object getCellEditorValue() {
+                    return ((STextField)editorComponent).getText();
+                }
 
-            public boolean startCellEditing(EventObject anEvent) {
-                return true;
-            }
+                public boolean stopCellEditing() {
+                    return true;
+                }
 
-            public boolean stopCellEditing() {
-                return true;
-            }
+                public boolean shouldSelectCell(EventObject anEvent) {
+                    return true;
+                }
         };
 
         SButton button = new SButton("ok");
@@ -99,57 +99,37 @@ public class SDefaultCellEditor
         this.editorForm = null;
         this.editorPanel = null;
         this.delegate = new EditorDelegate() {
-            /**
-             * TODO: documentation
-             *
-             * @param v
-             */
-            public void setValue(Object v) {
-                super.setValue(v);
+                public void setValue(Object v) {
+                    super.setValue(v);
 
-                // Try my best to do the right thing with v
-                boolean bool;
-                if (v instanceof Boolean) {
-                    bool = ((Boolean)v).booleanValue();
+                    // Try my best to do the right thing with v
+                    boolean bool;
+                    if (v instanceof Boolean) {
+                        bool = ((Boolean)v).booleanValue();
+                    }
+                    else if (v instanceof String) {
+                        Boolean b = new Boolean((String)v);
+                        bool = b.booleanValue();
+                    }
+                    else {
+                        bool = false;
+                    }
+                    System.err.println("setValue(" + bool + ")");
+                    ((SCheckBox)editorComponent).setSelected(bool);
+                    ((SCheckBox)editorComponent).setSelected(!bool);
                 }
-                else if (v instanceof String) {
-                    Boolean b = new Boolean((String)v);
-                    bool = b.booleanValue();
+
+                public Object getCellEditorValue() {
+                    return new Boolean(((SCheckBox)editorComponent).isSelected());
                 }
-                else {
-                    bool = false;
+
+                public boolean stopCellEditing() {
+                    return true;
                 }
-                ((SCheckBox)editorComponent).setSelected(bool);
-                ((SCheckBox)editorComponent).setSelected(!bool);
-            }
 
-            /**
-             * TODO: documentation
-             *
-             * @return
-             */
-            public Object getCellEditorValue() {
-                return new Boolean(((SCheckBox)editorComponent).isSelected());
-            }
-
-            /**
-             * TODO: documentation
-             *
-             * @param anEvent
-             * @return
-             */
-            public boolean startCellEditing(EventObject anEvent) {
-                return false;
-            }
-
-            /**
-             * TODO: documentation
-             *
-             * @return
-             */
-            public boolean stopCellEditing() {
-                return true;
-            }
+                public boolean shouldSelectCell(EventObject anEvent) {
+                    return false;
+                }
         };
 
         ((SCheckBox)editorComponent).addActionListener(delegate);
@@ -225,7 +205,7 @@ public class SDefaultCellEditor
     public boolean shouldSelectCell(EventObject anEvent) {
         // By default we want the cell to be selected so
         // we return true
-        return true;
+        return delegate.shouldSelectCell(anEvent);
     }
 
     // implements javax.swing.CellEditor
@@ -422,16 +402,6 @@ public class SDefaultCellEditor
         /**
          * TODO: documentation
          *
-         * @param anEvent
-         * @return
-         */
-        public boolean startCellEditing(EventObject anEvent) {
-            return true;
-        }
-
-        /**
-         * TODO: documentation
-         *
          * @return
          */
         public boolean stopCellEditing() {
@@ -443,6 +413,10 @@ public class SDefaultCellEditor
          *
          */
         public void cancelCellEditing() {
+        }
+
+        public boolean shouldSelectCell(EventObject anEvent) {
+            return true;
         }
 
         // Implementing ActionListener interface

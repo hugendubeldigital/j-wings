@@ -22,46 +22,14 @@ import org.wings.plaf.*;
 import org.wings.io.*;
 import org.wings.*;
 
-public class ListCG implements org.wings.plaf.ListCG
+public class ListCG
+    extends org.wings.plaf.AbstractCG
+    implements org.wings.plaf.ListCG
 {
     private final static String propertyPrefix = "List";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
-    }
-
-    public void installCG(SComponent component) {
-        SList list = (SList)component;
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-        list.setCellRendererPane(new SCellRendererPane());
-        installCellRenderer(list);
-    }
-    public void uninstallCG(SComponent component) {
-        SList list = (SList)component;
-        list.removeCellRendererPane();
-        uninstallCellRenderer(list);
-    }
-
-    protected void installCellRenderer(SList list) {
-        SListCellRenderer cellRenderer = list.getCellRenderer();
-        if (cellRenderer == null || cellRenderer instanceof SDefaultListCellRenderer) {
-            cellRenderer = new SDefaultListCellRenderer();
-            configureCellRenderer(list, (SDefaultListCellRenderer)cellRenderer);
-            list.setCellRenderer(cellRenderer);
-        }
-    }
-
-    protected void uninstallCellRenderer(SList list) {
-        SListCellRenderer cellRenderer = list.getCellRenderer();
-        if (cellRenderer != null && cellRenderer instanceof SDefaultListCellRenderer)
-            list.setCellRenderer(null);
-    }
-
-    protected void configureCellRenderer(SList list, SDefaultListCellRenderer cellRenderer) {
-        CGManager cgManager = list.getSession().getCGManager();
-        cellRenderer.setTextSelectionStyle(cgManager.getStyle(propertyPrefix + "Selection.style"));
-        cellRenderer.setTextNonSelectionStyle(cgManager.getStyle(propertyPrefix + "NonSelection.style"));
     }
 
     public void write(Device d, SComponent c)

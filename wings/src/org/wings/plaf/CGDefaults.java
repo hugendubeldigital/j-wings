@@ -14,20 +14,23 @@
 
 package org.wings.plaf;
 
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
-import java.util.Hashtable;
+import java.util.*;
 import javax.swing.Icon;
 
 import org.wings.*;
 import org.wings.style.*;
 
 public class CGDefaults
-    extends Hashtable
+    extends HashMap
 {
     private PropertyChangeSupport changeSupport;
+
+    private Map cache = new HashMap();
 
     /**
      * Create an empty defaults table.
@@ -36,18 +39,6 @@ public class CGDefaults
         super();
     }
 
-    /**
-     * Create a defaults table initialized with the specified
-     * key/value pairs.  For example:
-     * <pre>
-     Object[] uiDefaults = {
-     "Font", new Font("Dialog", Font.BOLD, 12),
-     "Color", Color.red,
-     "five", new Integer(5)
-     }
-     UIDefaults myDefaults = new UIDefaults(uiDefaults);
-     * </pre>
-     */
     public CGDefaults(Object[] keyValueList) {
         super(keyValueList.length / 2);
         for(int i = 0; i < keyValueList.length; i += 2) {
@@ -185,22 +176,113 @@ public class CGDefaults
     }
 
     /**
-     * Return the Style for the
-     * specified key.
-     */
-    public Style getStyle(Object key) {
-        Object value = get(key);
-        return (value instanceof Style) ? (Style)value : null;
-    }
-
-    /**
      * Return the Icon for the
      * specified key.
      */
     public Icon getIcon(Object key) {
-        Object value = get(key);
-        return (value instanceof Icon) ? (Icon)value : null;
+        Object value = cache.get(key);
+        if (value != null)
+            return (Icon)value;
+
+        value = get(key);
+        if (value == null)
+            return null;
+
+        Icon icon = LookAndFeel.makeIcon((String)value);
+        cache.put(key, icon);
+        return icon;
     }
+
+    /**
+     * Return the Font for the
+     * specified key.
+     */
+    public SFont getFont(Object key) {
+        Object value = cache.get(key);
+        if (value != null)
+            return (SFont)value;
+
+        value = get(key);
+        if (value == null)
+            return null;
+
+        SFont font = LookAndFeel.makeFont((String)value);
+        cache.put(key, font);
+        return font;
+    }
+
+    /**
+     * Return the Color for the
+     * specified key.
+     */
+    public Color getColor(Object key) {
+        Object value = cache.get(key);
+        if (value != null)
+            return (Color)value;
+
+        value = get(key);
+        if (value == null)
+            return null;
+
+        Color color = LookAndFeel.makeColor((String)value);
+        cache.put(key, color);
+        return color;
+    }
+
+    /**
+     * Return the Style for the
+     * specified key.
+     */
+    public Style getStyle(Object key) {
+        Object value = cache.get(key);
+        if (value != null)
+            return (Style)value;
+
+        value = get(key);
+        if (value == null)
+            return null;
+
+        Style style = LookAndFeel.makeStyle((String)value);
+        cache.put(key, style);
+        return style;
+    }
+
+    /**
+     * Return the StyleSheet for the
+     * specified key.
+     */
+    public StyleSheet getStyleSheet(Object key) {
+        Object value = cache.get(key);
+        if (value != null)
+            return (StyleSheet)value;
+
+        value = get(key);
+        if (value == null)
+            return null;
+
+        StyleSheet styleSheet = LookAndFeel.makeStyleSheet((String)value);
+        cache.put(key, styleSheet);
+        return styleSheet;
+    }
+
+    /**
+     * Return the Object for the
+     * specified key.
+     */
+    public Object getObject(Object key, Class clazz) {
+        Object value = cache.get(key);
+        if (value != null)
+            return value;
+
+        value = get(key);
+        if (value == null)
+            return null;
+
+        Object object = LookAndFeel.makeObject((String)value, clazz);
+        cache.put(key, object);
+        return object;
+    }
+
 
     /**
      * Add a PropertyChangeListener to the listener list.

@@ -25,6 +25,7 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 
 public class TreeCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.TreeCG
 {
     private final static String propertyPrefix = "Tree";
@@ -32,41 +33,6 @@ public class TreeCG
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
-    }
-
-    public void installCG(SComponent component) {
-        STree tree = (STree)component;
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-        tree.setCellRendererPane(new SCellRendererPane());
-        installCellRenderer(tree);
-    }
-
-    public void uninstallCG(SComponent component) {
-        STree tree = (STree)component;
-        tree.removeCellRendererPane();
-        uninstallCellRenderer(tree);
-    }
-
-    protected void installCellRenderer(STree tree) {
-        STreeCellRenderer cellRenderer = tree.getCellRenderer();
-        if (cellRenderer == null || cellRenderer.getClass().equals(SDefaultTreeCellRenderer.class)) {
-            cellRenderer = new SDefaultTreeCellRenderer();
-            configureCellRenderer(tree, (SDefaultTreeCellRenderer)cellRenderer);
-            tree.setCellRenderer(cellRenderer);
-        }
-    }
-
-    protected void uninstallCellRenderer(STree tree) {
-        STreeCellRenderer cellRenderer = tree.getCellRenderer();
-        if (cellRenderer != null && cellRenderer.getClass().equals(SDefaultTreeCellRenderer.class))
-            tree.setCellRenderer(null);
-    }
-
-    protected void configureCellRenderer(STree tree, SDefaultTreeCellRenderer cellRenderer) {
-        CGManager cgManager = tree.getSession().getCGManager();
-        cellRenderer.setTextSelectionStyle(cgManager.getStyle(nodePropertyPrefix + "Selection.style"));
-        cellRenderer.setTextNonSelectionStyle(cgManager.getStyle(nodePropertyPrefix + "NonSelection.style"));
     }
 
     public void write(Device d, SComponent component)

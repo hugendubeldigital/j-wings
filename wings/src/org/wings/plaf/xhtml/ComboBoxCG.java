@@ -23,50 +23,13 @@ import org.wings.io.*;
 import org.wings.*;
 
 public class ComboBoxCG
+    extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.ComboBoxCG
 {
     private final static String propertyPrefix = "ComboBox";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
-    }
-
-    public void installCG(SComponent component) {
-        SComboBox comboBox = (SComboBox)component;
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
-        comboBox.setCellRendererPane(new SCellRendererPane());
-        installCellRenderer(comboBox);
-    }
-
-    public void uninstallCG(SComponent component) {
-        SComboBox comboBox = (SComboBox)component;
-        comboBox.removeCellRendererPane();
-        uninstallCellRenderer(comboBox);
-    }
-
-    protected void installCellRenderer(SComboBox comboBox) {
-        SListCellRenderer cellRenderer = comboBox.getRenderer();
-        if (cellRenderer == null || cellRenderer instanceof SDefaultListCellRenderer) {
-            cellRenderer = new SDefaultListCellRenderer();
-            configureCellRenderer(comboBox, (SDefaultListCellRenderer)cellRenderer);
-            comboBox.setRenderer(cellRenderer);
-        }
-    }
-
-    protected void uninstallCellRenderer(SComboBox comboBox) {
-        SListCellRenderer cellRenderer = comboBox.getRenderer();
-        if (cellRenderer != null && cellRenderer instanceof SDefaultListCellRenderer)
-            comboBox.setRenderer(null);
-    }
-
-    protected void configureCellRenderer(SComboBox comboBox,
-                                         SDefaultListCellRenderer cellRenderer) {
-        CGManager cgManager = comboBox.getSession().getCGManager();
-        cellRenderer.setTextSelectionStyle(null);
-        //cgManager.getStyle(propertyPrefix + "Selection.style"));
-        cellRenderer.setTextNonSelectionStyle(null);
-        //cgManager.getStyle(propertyPrefix + "NonSelection.style"));
     }
 
     public void write(Device d, SComponent c)
@@ -108,11 +71,41 @@ public class ComboBoxCG
 
                 SComponent renderer
                     = cellRenderer.getListCellRendererComponent(comboBox, o, false, i);
-                rendererPane.writeComponent(d, renderer, comboBox);
+                //rendererPane.writeComponent(d, renderer, comboBox);
+
+                /*
+                 * Hack: remove all tags, because in form selections, this
+                 * does look ugly.
+                 */
+                StringBufferDevice device = getStringBufferDevice();
+                renderer.write(device);
+                char[] chars = device.toString().toCharArray();
+                int pos = 0;
+                for (int c=0; c < chars.length; c++) {
+                    switch (chars[c]) {
+                    case '<':
+                        if (c > pos)
+                            d.print(chars, pos, c - 1);
+                        break;
+                    case '>':
+                        pos = c+1;
+                    }
+                }
+                if (chars.length > pos)
+                    d.print(chars, pos, chars.length - 1);
+
 
                 d.append("</option>\n");
             }
         }
+    }
+
+    private StringBufferDevice stringBufferDevice = null;
+    protected StringBufferDevice getStringBufferDevice() {
+        if (stringBufferDevice == null)
+            stringBufferDevice = new StringBufferDevice();
+        stringBufferDevice.reset();
+        return stringBufferDevice;
     }
 
     protected void writeFormPostfix(Device d, SComboBox comboBox)
