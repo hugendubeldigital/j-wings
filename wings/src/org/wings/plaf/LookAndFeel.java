@@ -122,18 +122,21 @@ public class LookAndFeel
      * @return a new CG instance
      */
     public Object makeCG(String className) {
+        return makeCG(classLoader, className);
+    }
+
+    /**
+     * Create a CG instance.
+     * @param className the full qualified class name of the CG
+     * @return a new CG instance
+     */
+    public static Object makeCG(ClassLoader classLoader, String className) {
         try {
             Class cgClass = Class.forName(className, true, classLoader);
             return cgClass.newInstance();
         }
-        catch (ClassNotFoundException e) {
-            logger.log(Level.SEVERE, null, e);
-        }
-        catch (InstantiationException e) {
-            logger.log(Level.SEVERE, null, e);
-        }
-        catch (IllegalAccessException e) {
-            logger.log(Level.SEVERE, null, e);
+        catch ( Exception ex ) {
+            logger.log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -199,7 +202,7 @@ public class LookAndFeel
      * @param attributes attributes string
      * @return a newly allocated AttributeSet
      */
-    public AttributeSet makeAttributeSet(String string) {
+    public static AttributeSet makeAttributeSet(String string) {
         AttributeSet attributes = new SimpleAttributeSet();
         StringTokenizer tokens = new StringTokenizer(string, ";");
         while (tokens.hasMoreTokens()) {
@@ -237,6 +240,15 @@ public class LookAndFeel
      * @return the styleSheet
      */
     public StyleSheet makeStyleSheet(String resourceName) {
+        return makeStyleSheet(classLoader, resourceName);
+    }
+
+    /**
+     * Utility method that creates a stylesheet object from a resource
+     * @param resourceName
+     * @return the styleSheet
+     */
+    public static StyleSheet makeStyleSheet(ClassLoader classLoader, String resourceName) {
         try {
             CSSStyleSheet styleSheet = new CSSStyleSheet();
             InputStream in = classLoader.getResourceAsStream(resourceName);
