@@ -13,7 +13,14 @@ wingS demo installation with JServ and Apache under Linux
      $ ant deploy
    will unpack them in your $TOMCAT_HOME/webapps
 
-2) run it.
+2) run it - just start you tomcat. Please note the following:
+ 2.1) if you have an JDK older than 1.4, you need to add the logging
+      api to your bootclasspath. So you need to modify your tomcat.sh
+      to include the logging.jar on the commandline
+      (you find in the lib/ directory):
+         -Xbootclasspath/p:/usr/src/wings/lib/logging.jar
+
+  2.2)
    To determine the size of images, wingS needs access to an Xserver under
    Unix/Linux (However, it will work without it, but then image tags won't
    contain width="xx" and height="xx" attributes).
