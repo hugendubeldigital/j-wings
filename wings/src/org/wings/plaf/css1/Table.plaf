@@ -118,7 +118,7 @@
 
         %><tr<%|class=currentRowStyle%><%
 
-        if ( table.getSelectClickCount()>0 ) {
+        if ( table.getSelectClickCount() > 0 ) {
             RequestURL rowSelectionAddr = table.getRequestURL();
             rowSelectionAddr.addParameter(table,
                                           table.getToggleSelectionParameter(r,-1));
@@ -211,6 +211,10 @@
             boolean pushedURL = false;
             if (!isEditingCell && table.isCellEditable(row, col)) {
                 if (comp instanceof ClickableRenderComponent) {
+                    /* 
+                     * If the component direclty supports clicking on it,
+		     * show a link around it ..
+		     */
                     if ( table.getShowAsFormComponent() ) {
                         AnchorRenderStack.push(Utils.event(table), table.getEditParameter(row, col));
                     } else {
@@ -220,7 +224,11 @@
                         AnchorRenderStack.push(editAddr, null);
                     }
                     pushedURL = true;
-                } else {
+                } 
+		else {
+                    /* 
+		     * .. otherwise show a little edit-icon.
+		     */
                     RequestURL editAddr = table.getRequestURL();
                     editAddr.addParameter(table,
                                           table.getEditParameter(row, col));
