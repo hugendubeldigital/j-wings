@@ -36,11 +36,13 @@ public final class TabbedPaneCG
 
     public void installCG(SComponent component) {
         super.installCG(component);
-        firstIcon = component.getSession().getCGManager().getIcon("TabbedPaneCG.firstIcon");
-        normalIcon = component.getSession().getCGManager().getIcon("TabbedPaneCG.normalIcon");
-        selectedIcon = component.getSession().getCGManager().getIcon("TabbedPaneCG.selectedIcon");
-        lastIcon = component.getSession().getCGManager().getIcon("TabbedPaneCG.lastIcon");
-        transIcon = LookAndFeel.makeIcon(TabbedPaneCG.class, "/org/wings/icons/transdot.gif");
+        CGManager cg = component.getSession().getCGManager();
+        firstIcon    = cg.getIcon("TabbedPaneCG.firstIcon");
+        normalIcon   = cg.getIcon("TabbedPaneCG.normalIcon");
+        selectedIcon = cg.getIcon("TabbedPaneCG.selectedIcon");
+        lastIcon     = cg.getIcon("TabbedPaneCG.lastIcon");
+        transIcon = LookAndFeel.makeIcon(TabbedPaneCG.class, 
+                                         "/org/wings/icons/transdot.gif");
     }
 
 
@@ -67,7 +69,7 @@ public final class TabbedPaneCG
                 lastAdr   = ext.externalize(lastIcon);
                 transAdr   = ext.externalize(transIcon);
             }
-            catch (java.io.IOException e) {
+            catch (Exception e) {
                 System.err.println(e.getMessage());
                 e.printStackTrace(System.err);
             }
