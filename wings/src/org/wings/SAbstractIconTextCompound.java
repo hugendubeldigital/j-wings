@@ -74,7 +74,7 @@ public abstract class SAbstractIconTextCompound
     private String selectionStyle;
 
     /** The dynamic attributes of selected cells */
-    protected AttributeSet selectionAttributes = new SimpleAttributeSet();
+    protected AttributeSet selectionAttributes;
 
     /**
      * The icon to be displayed
@@ -466,7 +466,7 @@ public abstract class SAbstractIconTextCompound
         if (selectionAttributes == null)
             throw new IllegalArgumentException("null not allowed");
 
-        if (!this.selectionAttributes.equals(selectionAttributes)) {
+        if (selectionAttributes==null || !this.selectionAttributes.equals(selectionAttributes)) {
             this.selectionAttributes = selectionAttributes;
             reload(ReloadManager.RELOAD_STYLE);
         }
@@ -476,7 +476,7 @@ public abstract class SAbstractIconTextCompound
      * @return the current selectionAttributes
      */
     public AttributeSet getSelectionAttributes() {
-        return selectionAttributes;
+        return selectionAttributes==null ? AttributeSet.EMPTY_ATTRIBUTESET : selectionAttributes;
     }
 
     /**
@@ -484,6 +484,10 @@ public abstract class SAbstractIconTextCompound
      * @param color the new background color
      */
     public void setSelectionBackground(Color color) {
+        if ( selectionAttributes==null ) {
+            selectionAttributes = new SimpleAttributeSet();
+        }
+
         boolean changed = selectionAttributes.putAll(CSSStyleSheet.getAttributes(color, Style.BACKGROUND_COLOR));
         if (changed)
             reload(ReloadManager.RELOAD_STYLE);
@@ -494,7 +498,7 @@ public abstract class SAbstractIconTextCompound
      * @return the background color
      */
     public Color getSelectionBackground() {
-        return CSSStyleSheet.getBackground(selectionAttributes);
+        return selectionAttributes==null ? null : CSSStyleSheet.getBackground(selectionAttributes);
     }
 
     /**
@@ -502,6 +506,9 @@ public abstract class SAbstractIconTextCompound
      * @param color the foreground color of selected cells
      */
     public void setSelectionForeground(Color color) {
+        if ( selectionAttributes==null ) {
+            selectionAttributes = new SimpleAttributeSet();
+        }
         boolean changed = selectionAttributes.putAll(CSSStyleSheet.getAttributes(color, Style.COLOR));
         if (changed)
             reload(ReloadManager.RELOAD_STYLE);
@@ -512,7 +519,7 @@ public abstract class SAbstractIconTextCompound
      * @return the foreground color
      */
     public Color getSelectionForeground() {
-        return CSSStyleSheet.getForeground(selectionAttributes);
+        return selectionAttributes==null ? null : CSSStyleSheet.getForeground(selectionAttributes);
     }
 
     /**
