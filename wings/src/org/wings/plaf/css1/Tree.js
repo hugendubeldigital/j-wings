@@ -1,22 +1,35 @@
 
-var TREES = new Array();
 var TREE_NODES = new Array();
 
 
-function Tree(expandIcon, collapseIcon, treeId) {
+function Tree(treeId, eventId, expandIcon, collapseIcon, baseAddress, rootNodeId) {
+    this.eventId = eventId;
     this.expandIcon = expandIcon;
     this.collapseIcon = collapseIcon;
     this.treeElement = document.getElementById(treeId);
-
-    TREES[treeId] = this;
+    this.rootNodeId = rootNodeId;
+    this.rootNode = null;
+    this.baseAddress = baseAddress;
 }
 
-function TreeNode(tree, nodeId, expanded) {
+Tree.prototype.getRootNode = function() {
+    if ( this.rootNode==null ) {
+        this.rootNode = TREE_NODES[this.rootNodeId];
+    } // end of if ()
+    
+    return this.rootNode;
+}
+
+
+function TreeNode(tree, nodeId, expanded, toggleSelectionEvent, toggleExpansionEvent) {
     this.tree = tree;
     this.nodeElement = document.getElementById(nodeId);
     this.icon = document.getElementById(nodeId + "_icon");
+    this.originalExpanded = expanded;
     this.expanded = expanded;
     this.children = null;
+    this.toggleSelectionEvent = toggleSelectionEvent;
+    this.toggleExpansionEvent = toggleExpansionEvent;
 
     TREE_NODES[nodeId] = this;
 }
@@ -68,6 +81,39 @@ TreeNode.prototype.toggleExpansion2 = function() {
     }
 }
 
+TreeNode.prototype.getRootNode = function() {
+    return this.tree.rootNode;
+}
+
+TreeNode.prototype.appendToggleExpansionEvents = function(address) {
+    if ( this.children!=null ) {
+        if ( this.expanded!=this.originalExpanded ) {
+            address += "&" + this.tree.eventId + "=" + this.toggleExpansionEvent;
+        } // end of if ()
+    
+        for ( var i=0; i<this.children.length; i++ ) {
+            address = this.children[i].appendToggleExpansionEvents(address);
+        }
+    }
+
+    return address;
+}
+
+TreeNode.prototype.toggleSelection2 = function() {
+    var address = this.tree.baseAddress;
+
+    address += "?" + this.tree.eventId + "=" + this.toggleSelectionEvent;
+
+    address = this.tree.getRootNode().appendToggleExpansionEvents(address);
+
+    document.location.href = address;
+}
+
+TreeNode.prototype.toggleSelection = function(nodeId) {
+    var node = TreeNode.prototype.getNode(nodeId);
+
+    node.toggleSelection2()
+}
 
 TreeNode.prototype.toggleExpansion = function(nodeId) {
     var node = TreeNode.prototype.getNode(nodeId);

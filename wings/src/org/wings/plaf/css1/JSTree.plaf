@@ -122,9 +122,9 @@ private void writeTreeNode(STree tree, Device device, Object[] path, int depth,
     SCellRendererPane rendererPane = tree.getCellRendererPane();
     if ( isSelectable ) {
         // ask the tree for the URL it has for expansion events
-        RequestURL selectionAddr = tree.getRequestURL();
-        selectionAddr.addParameter(tree.getNamePrefix(),
-                                   tree.getSelectionParameter(row, true));
+        RequestURL selectionAddr = new RequestURL();
+        selectionAddr.setResource("javascript:TreeNode.prototype.toggleSelection('" + 
+                                  nodeId + "')");
             
         if ( cellComp instanceof ClickableRenderComponent ) {
             AnchorRenderStack.push(selectionAddr, null);
@@ -154,8 +154,9 @@ private void writeTreeNode(STree tree, Device device, Object[] path, int depth,
 <%
 }
 
-private String writeScriptNode(STree tree, Device device,
-                               Object[] path, String nodeId, int depth) throws IOException {
+private void writeScriptNode(STree tree, Device device,
+                               Object[] path, String nodeId, 
+                               int depth, ScriptResult result) throws IOException {
 
     final TreeModel model = tree.getModel();
     final Object node = path[depth];
@@ -165,28 +166,20 @@ private String writeScriptNode(STree tree, Device device,
     final String treeVar = "tree_" + tree.getComponentId();
     final String nodeVar = "treenode_" + nodeId;
 
-    %>var <%=nodeVar%> = new TreeNode(<%=treeVar%>, '<%=nodeId%>', <%=isExpanded%>);
+%>var <%=nodeVar%> = new TreeNode(<%=treeVar%>, '<%=nodeId%>', <%=isExpanded%>,'<%=tree.getSelectionParameter(result.row, true)%>','<%=tree.getExpansionParameter(result.row, true)%>');
 <%
+
+    result.row++;
 
     // model tree rekursiv...
     for ( int i=0; i<model.getChildCount(node); i++ ) {
         path[depth+1] = model.getChild(node, i);
-        String childVar = writeScriptNode(tree, device, path, nodeId + "_" + i, depth+1);
-        %><%=nodeVar%>.addChild(<%=childVar%>);
+        writeScriptNode(tree, device, path, nodeId + "_" + i, depth+1, result);
+        %><%=nodeVar%>.addChild(<%=result.nodeVar%>);
 <%
     }
 
-    if ( depth==0 ) {        
-        %>
-if ( <%=nodeVar%>.expanded ) {
-    <%=nodeVar%>.expand(); 
-} else {
-    <%=nodeVar%>.collapse(); 
-} // end of else
-<%
-    }
-
-    return nodeVar;
+    result.nodeVar = nodeVar;
 }
 
 
@@ -243,10 +236,20 @@ private int writeSubTree(STree tree, Device device, Object[] path, int depth,
 
   %>
   <script language="JavaScript" type="text/javascript">
-     var tree_<%=component.getComponentId()%> = new Tree('<%=expandControlIcon.getURL()%>','<%=collapseControlIcon.getURL()%>', '<%=component.getComponentId()%>');
+     var tree_<%=component.getComponentId()%> = new Tree('<%=component.getComponentId()%>','<%=component.getEncodedLowLevelEventId()%>','<%=expandControlIcon.getURL()%>','<%=collapseControlIcon.getURL()%>', '<%=component.getRequestURL()%>', '<%=component.getComponentId() + "_0"%>');
   <%
       path[0] = component.getModel().getRoot();
-      writeScriptNode(component, device, path,component.getComponentId() + "_0", 0);
+      ScriptResult result = new ScriptResult();
+      writeScriptNode(component, device, path,component.getComponentId() + "_0", 0, result);
+
+        %>
+if ( <%=result.nodeVar%>.expanded ) {
+    <%=result.nodeVar%>.expand(); 
+} else {
+    <%=result.nodeVar%>.collapse(); 
+} // end of else
+<%
+
   %>
   </script>
   <%
@@ -308,6 +311,11 @@ private int writeSubTree(STree tree, Device device, Object[] path, int depth,
       public MyTreePath(Object[] path, int length) {
           super(path, length);
       }
+  }
+
+  protected class ScriptResult {
+      String nodeVar;
+      int row = 0;
   }
 
 </template>

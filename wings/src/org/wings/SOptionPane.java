@@ -267,10 +267,6 @@ public class SOptionPane
         this("");
     }
 
-    protected void setCG(ComponentCG newCG) {
-        super.setCG(newCG);
-    }
-  
     /*
      * Creates a instance of <code>SOptionPane</code> with a message
      *

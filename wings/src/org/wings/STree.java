@@ -439,30 +439,31 @@ public class STree
         return treeState.getPathForRow(row);
     }
 
-    protected int fillPathForAbsoluteRow(int row, Object node, ArrayList path) {
-        path.add(node);
 
+    protected int fillPathForAbsoluteRow(int row, Object node, ArrayList path) {
+        // and check if it is the 
         if ( row==0 ) {
             return 0; 
         } // end of if ()
 
-        row--;
-
         for ( int i=0; i<model.getChildCount(node); i++ ) {
-            row = fillPathForAbsoluteRow(row, model.getChild(node, i), path);
+            path.add(model.getChild(node, i));
+            row = fillPathForAbsoluteRow(row-1, model.getChild(node, i), path);
             if ( row==0 ) {
                 return 0; 
             } // end of if ()
+            path.remove(path.size()-1);
         }
-            
-        path.remove(path.size()-1);
-
         return row;
     }
 
     public TreePath getPathForAbsoluteRow(int row) {
+        // fill path in this array
         ArrayList path = new ArrayList(10);
+
+        path.add(model.getRoot());
         fillPathForAbsoluteRow(row, model.getRoot(), path);
+
         return new TreePath(path.toArray());
     }
 
