@@ -19,7 +19,6 @@ public class SelectableTableCellRenderer
     protected EventListenerList listenerList = new EventListenerList();
 
     public SelectableTableCellRenderer() {
-        setEscapeSpecialChars(false);
     }
 
     /** @link dependency 

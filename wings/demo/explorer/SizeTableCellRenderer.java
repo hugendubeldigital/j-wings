@@ -36,7 +36,6 @@ public class SizeTableCellRenderer extends SLabel
      */
     public SizeTableCellRenderer() {
         setHorizontalAlignment(RIGHT);
-        setEscapeSpecialChars(false);
     }
   
     public SComponent getTableCellRendererComponent(STable table,

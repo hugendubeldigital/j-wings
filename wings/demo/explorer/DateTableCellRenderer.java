@@ -41,7 +41,6 @@ public class DateTableCellRenderer extends SLabel
      *
      */
     public DateTableCellRenderer() {
-        setEscapeSpecialChars(false);
     }
   
     public SComponent getTableCellRendererComponent(STable table,
