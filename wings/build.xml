@@ -1,3 +1,7 @@
+<?xml version="1.0"?>
+<!-- ant build file for wingS -->
+<!-- $Id$ -->
+
 <project name="wingS" default="main" basedir=".">
   <path id="build.classpath">
     <pathelement path="${java.class.path}/" />
@@ -6,28 +10,34 @@
     </fileset>
   </path>
 
+  <!-- ==================== Properties ==================== -->
   <target name="init">
-    <property name="home"    value="."/>
-    <property name="src"     value="src"/>
-    <property name="build"   value="build"/>
-    <property name="classes" value="build/classes"/>
-    <property name="dist"    value="build/dist"/>
-    <property name="doc"     value="doc"/>
-    <property name="lib"     value="lib"/>
+    <tstamp/>
+    <property name="version" value="0.9.2"/>
+    
+    <!-- directories -->
+    <property name="home"    value="." />
+    <property name="src"     value="src" />
+    <property name="build"   value="build" />
+    <property name="classes" value="${build}/classes" />
+    <property name="dist"    value="${build}/dist" />
+    <property name="doc"     value="${build}/doc" />
+    <property name="distlib" value="${dist}/lib" />
+    <property name="lib"     value="lib" />        <!-- external libraries -->
 
+    <!-- some additional properties for ant -->
     <property file="build.properties" />
   </target>
 
   <!-- ==================== Preparations ==================== -->
-
   <target name="prepare" depends="init">
-    <tstamp/>
-    <mkdir dir="${build}"/>
-    <mkdir dir="${build}/classes"/>
-    <mkdir dir="${build}/doc"/>
-    <mkdir dir="${build}/doc/api"/>
-    <mkdir dir="${build}/dist"/>
-    <mkdir dir="${build}/dist/lib"/>
+    <mkdir dir="${build}" />
+    <mkdir dir="${classes}" />
+    <mkdir dir="${dist}" />
+    <mkdir dir="${distlib}" />
+    <mkdir dir="${doc}" />
+    <mkdir dir="${doc}/api" />
+    <mkdir dir="${lib}" />     <!-- avoid errors in case it does not exist -->
   </target>
 
 
@@ -44,37 +54,42 @@
       </fileset>
     </copy>
 
-    <jar jarfile="${dist}/lib/wings.jar" basedir="${classes}" />
+    <jar jarfile="${distlib}/wings.jar" basedir="${classes}" />
 
-    <copy todir="${dist}/lib">
+    <copy todir="${distlib}">
       <fileset dir="${lib}">
-        <exclude name="jsdk2.0.jar"/>
+        <!-- usual names for jsdk ..-->
+        <exclude name="jsdk2.0.jar" />
+        <exclude name="servlet.jar" />
       </fileset>
     </copy>
   </target>
 
   <!-- ==================== Generate API Docs ==================== -->
   <target name="doc" depends="prepare">
-    <javadoc packagenames="*"
+    <javadoc packagenames="org.wings.*"
              maxmemory="128m"
              sourcepath="${src}"
-             destdir="${build}/doc/api"
+             destdir="${doc}/api"
 	     classpathref="build.classpath"
              version="true"
              use="true"
-             windowtitle="wingS"
-             doctitle="wingS"
+             windowtitle="wingS ${version}"
+             doctitle="wingS ${version}"
              bottom="wingS swings ;-)"
     />
   </target>
+  <target name="javadoc" depends="doc" description="create api-doc"/>
 
   <!-- ==================== Admin ==================== -->
-  <target name="clean" depends="init">
-    <deltree dir="${build}"/>
-    <deltree dir="${deploy}"/>
+  <target name="clean" depends="init"
+          description="cleanup build results">
+    <delete dir="${build}"/>
+    <delete dir="${deploy}"/>
   </target>
 
-  <target name="cleansource" depends="init">
+  <target name="cleansource" depends="init" 
+          description="cleanup sources (tmp/backup-files, classes)">
     <delete>
       <fileset dir="${src}">
         <include name="**/*.class" />
@@ -84,6 +99,35 @@
     </delete>
   </target>
 
-  <target name="all" depends="clean,build"/>
-  <target name="main" depends="build"/>
+  <target name="all" depends="clean,build" description="re-build everything"/>
+  <target name="main" depends="build" description="build changed files"/>
+
+  <target name="dist" depends="init" description="create distribution tar.gz">
+      <property name="distname" value="${ant.project.name}-${version}"/>
+      <delete dir="${distname}"/>
+      <mkdir dir="${distname}"/>
+
+      <!-- copy all relevant files for the distribution -->
+      <filter token="VERSION" value="${version}" />
+      <copy todir="${distname}" file="VERSION" filtering="true" />
+      <copy todir="${distname}">
+         <fileset dir="${home}">
+	    <include name="COPYING" />
+	    <include name="CREDITS" />
+	    <include name="INSTALL" />
+	    <include name="TODO" />
+	    <include name="build.*" />
+	    <include name="src/" />
+	    <include name="demo/" />
+	    <exclude name="demo/build" />
+	    <exclude name="**/CVS" />
+	    <!-- transition to a Makefile free world .. -->
+	    <exclude name="**/Makefile" />
+         </fileset>
+      </copy>
+      <tar tarfile="${distname}.tar" basedir="." includes="${distname}/" />
+      <gzip src="${distname}.tar" zipfile="${distname}.tar.gz" />
+      <delete file="${distname}.tar" />
+      <delete dir="${distname}" />
+  </target>
 </project>

@@ -1,4 +1,8 @@
-<project name="wingS Demo" default="main" basedir=".">
+<?xml version="1.0"?>
+<!-- ant build file for wingS Demos-->
+<!-- $Id$ -->
+
+<project name="wingS-Demo" default="main" basedir=".">
   <path id="build.classpath">
     <pathelement path="${java.class.path}/" />
     <fileset dir="../build/dist/lib">
@@ -10,8 +14,8 @@
     <property name="home"    value="."/>
     <property name="src"     value="."/>
     <property name="build"   value="build"/>
-    <property name="classes" value="build/classes"/>
-    <property name="deploy"  value="build/deploy"/>
+    <property name="classes" value="${build}/classes"/>
+    <property name="deploy"  value="${build}/deploy"/>
     <property name="lib"     value="../build/dist/lib"/>
 
     <property file="build.properties" />
@@ -21,13 +25,13 @@
 
   <target name="prepare" depends="init">
     <tstamp/>
-    <mkdir dir="${build}"/>
-    <mkdir dir="${build}/classes"/>
-    <mkdir dir="${build}/deploy"/>
+    <mkdir dir="${build}" />
+    <mkdir dir="${classes}" />
+    <mkdir dir="${deploy}" />
   </target>
 
 
-  <!-- ==================== Build wingS ==================== -->
+  <!-- ==================== Build wingS Demos ================ -->
   <target name="build" depends="prepare">
     <javac srcdir="${src}" destdir="${classes}" debug="off">
       <classpath refid="build.classpath" />
@@ -43,20 +47,20 @@
   </target>
 
   <target name="wingset" depends="build">
-    <mkdir dir="${build}/deploy/wingset"/>
-    <mkdir dir="${build}/deploy/wingset/WEB-INF"/>
-    <mkdir dir="${build}/deploy/wingset/WEB-INF/lib"/>
-    <mkdir dir="${build}/deploy/wingset/WEB-INF/classes"/>
+    <mkdir dir="${deploy}/wingset"/>
+    <mkdir dir="${deploy}/wingset/WEB-INF"/>
+    <mkdir dir="${deploy}/wingset/WEB-INF/lib"/>
+    <mkdir dir="${deploy}/wingset/WEB-INF/classes"/>
 
-    <copy file="wingset.xml" tofile="${build}/deploy/wingset/WEB-INF/web.xml"/>
+    <copy file="wingset.xml" tofile="${deploy}/wingset/WEB-INF/web.xml"/>
 
-    <copy todir="${build}/deploy/wingset/WEB-INF/classes">
+    <copy todir="${deploy}/wingset/WEB-INF/classes">
       <fileset dir="${classes}">
         <include name="wingset/**/*" />
       </fileset>
     </copy>
 
-    <copy todir="${build}/deploy/wingset/WEB-INF/lib">
+    <copy todir="${deploy}/wingset/WEB-INF/lib">
       <fileset dir="${lib}">
         <exclude name="j2ee.jar"/>
       </fileset>
@@ -64,20 +68,20 @@
   </target>
 
   <target name="ldap" depends="build">
-    <mkdir dir="${build}/deploy/ldap"/>
-    <mkdir dir="${build}/deploy/ldap/WEB-INF"/>
-    <mkdir dir="${build}/deploy/ldap/WEB-INF/lib"/>
-    <mkdir dir="${build}/deploy/ldap/WEB-INF/classes"/>
+    <mkdir dir="${deploy}/ldap"/>
+    <mkdir dir="${deploy}/ldap/WEB-INF"/>
+    <mkdir dir="${deploy}/ldap/WEB-INF/lib"/>
+    <mkdir dir="${deploy}/ldap/WEB-INF/classes"/>
 
-    <copy file="ldap.xml" tofile="${build}/deploy/ldap/WEB-INF/web.xml"/>
+    <copy file="ldap.xml" tofile="${deploy}/ldap/WEB-INF/web.xml"/>
 
-    <copy todir="${build}/deploy/ldap/WEB-INF/classes">
+    <copy todir="${deploy}/ldap/WEB-INF/classes">
       <fileset dir="${classes}">
         <include name="ldap/**/*" />
       </fileset>
     </copy>
 
-    <copy todir="${build}/deploy/ldap/WEB-INF/lib">
+    <copy todir="${deploy}/ldap/WEB-INF/lib">
       <fileset dir="${lib}">
         <exclude name="j2ee.jar"/>
       </fileset>
@@ -85,20 +89,20 @@
   </target>
 
   <target name="explorer" depends="build">
-    <mkdir dir="${build}/deploy/explorer"/>
-    <mkdir dir="${build}/deploy/explorer/WEB-INF"/>
-    <mkdir dir="${build}/deploy/explorer/WEB-INF/lib"/>
-    <mkdir dir="${build}/deploy/explorer/WEB-INF/classes"/>
+    <mkdir dir="${deploy}/explorer"/>
+    <mkdir dir="${deploy}/explorer/WEB-INF"/>
+    <mkdir dir="${deploy}/explorer/WEB-INF/lib"/>
+    <mkdir dir="${deploy}/explorer/WEB-INF/classes"/>
 
-    <copy file="explorer.xml" tofile="${build}/deploy/explorer/WEB-INF/web.xml"/>
+    <copy file="explorer.xml" tofile="${deploy}/explorer/WEB-INF/web.xml"/>
 
-    <copy todir="${build}/deploy/explorer/WEB-INF/classes">
+    <copy todir="${deploy}/explorer/WEB-INF/classes">
       <fileset dir="${classes}">
         <include name="explorer/**/*" />
       </fileset>
     </copy>
 
-    <copy todir="${build}/deploy/explorer/WEB-INF/lib">
+    <copy todir="${deploy}/explorer/WEB-INF/lib">
       <fileset dir="${lib}">
         <exclude name="j2ee.jar"/>
       </fileset>
