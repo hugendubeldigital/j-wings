@@ -204,15 +204,31 @@ public class TreeExample
                                        
             });
 
+        SButtonGroup jsGroup = new SButtonGroup();
 
-        final SCheckBox jsTree=new SCheckBox("client side tree");
-        jsTree.addActionListener(new ActionListener() {
+        final SRadioButton serverTree=new SRadioButton("server side tree");
+        final SRadioButton jsTree=new SRadioButton("client side tree");
+        final SRadioButton jsTree2=new SRadioButton("client side tree2");
+        jsGroup.add(serverTree);
+        jsGroup.add(jsTree);
+        jsGroup.add(jsTree2);
+        controlForm.add(serverTree);
+        controlForm.add(jsTree);
+        controlForm.add(jsTree2);
+
+        jsGroup.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    tree.setCG(getSession().getCGManager().getCG(jsTree.isSelected() ? "JSTreeCG" : "TreeCG"));
+                    if ( jsTree.isSelected() ) {
+                        tree.setCG(getSession().getCGManager().getCG("JSTreeCG"));
+                    } else if ( jsTree2.isSelected() ) {
+                        tree.setCG(getSession().getCGManager().getCG("JSTree2CG"));
+                    } else {
+                        tree.setCG(getSession().getCGManager().getCG("TreeCG"));
+                    }
+                        
                 }
             });
-        jsTree.setSelected(false);
-        controlForm.add(jsTree);
+        serverTree.setSelected(false);
         
         SButton submit = new SButton("OK");
         controlForm.add(submit);
@@ -283,7 +299,7 @@ public class TreeExample
         style.add(new DefaultMutableTreeNode("No. 2 - D Minor"));
         style.add(new DefaultMutableTreeNode("No. 3 - F Major"));
         style.add(new DefaultMutableTreeNode("No. 4 - E Minor"));
-
+        /*
         // Mozart
         catagory.add(composer = new DefaultMutableTreeNode("Mozart"));
         composer.add(style = new DefaultMutableTreeNode("Concertos"));
@@ -830,7 +846,7 @@ public class TreeExample
         album.add(new DefaultMutableTreeNode("Come On In My Kitchen"));
         album.add(new DefaultMutableTreeNode("Evil"));
         album.add(new DefaultMutableTreeNode("Something To Believe In"));
-
+        */
         return top;
     }
 }
