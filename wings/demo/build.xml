@@ -70,9 +70,10 @@
       <lib refid="wings.jar"/>
       <lib refid="regexp.jar"/>
       <lib refid="jlfgr.jar"/>
-      <lib refid="bsh.jar"/>
+      <lib refid="bsh.jar"/>     
       <classes dir="${build.class}">
         <include name="wingset/**"/>
+        <include name="../dist/lib/css1.jar" />
       </classes>
       <classes dir=".">
         <include name="wingset/icons/*.gif"/>
@@ -85,9 +86,6 @@
       </fileset>
       <fileset dir="wingset">
         <include name="*.java"/>
-      </fileset>
-      <fileset dir="../dist/lib">
-        <include name="css1.jar"/>
       </fileset>
     </war>
   </target>
