@@ -37,9 +37,9 @@ import org.wings.externalizer.ExternalizeManager;
  */
 
 /**
- * An SIcon of this type is externalized globally. It is not bound 
+ * An SIcon of this type is externalized globally. It is not bound
  * to a session. This SIcon gets the content of the image from an image
- * found in the classpath, i.e. an image that is deployed in the 
+ * found in the classpath, i.e. an image that is deployed in the
  * classes/jar/war file.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
@@ -47,8 +47,7 @@ import org.wings.externalizer.ExternalizeManager;
  */
 public class ResourceImageIcon
     extends ClasspathResource
-    implements SIcon
-{
+    implements SIcon {
     private final static Logger logger = Logger.getLogger("org.wings");
 
     /**
@@ -61,6 +60,8 @@ public class ResourceImageIcon
      */
     private int height = -1;
 
+    private boolean dimensionCalculated = false;
+
     /**
      * TODO: documentation
      *
@@ -70,22 +71,21 @@ public class ResourceImageIcon
         this(ResourceImageIcon.class.getClassLoader(), resourceFileName);
     }
 
-    public ResourceImageIcon(ClassLoader classLoader, String resourceFileName){
+    public ResourceImageIcon(ClassLoader classLoader, String resourceFileName) {
         super(classLoader, resourceFileName);
 
         if (extension == null || extension.length() == 0) {
             extension = "";
             mimeType = "image/png";
-        }
-        else if (extension.toUpperCase().equals("JPG"))
+        } else if (extension.toUpperCase().equals("JPG"))
             mimeType = "image/jpeg";
         else
             mimeType = "image/" + extension;
 
         try {
             bufferResource();
-        } catch ( Throwable e ) {
-            logger.log(Level.SEVERE, "Can not buffer resource "+resourceFileName);
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, "Can not buffer resource " + resourceFileName);
         }
     }
 
@@ -93,18 +93,21 @@ public class ResourceImageIcon
      *
      */
     protected void calcDimensions() {
-        try {
-            if (buffer!=null && buffer.isValid()) {
-                BufferedImage image = 
-                    ImageIO.read(new ByteArrayInputStream(buffer.getBytes()));
-                width = image.getWidth();
-                height = image.getHeight();
+        if (!dimensionCalculated) {
+            dimensionCalculated = true;
+            try {
+                if (buffer != null && buffer.isValid()) {
+                    BufferedImage image =
+                        ImageIO.read(new ByteArrayInputStream(buffer.getBytes()));
+                    width = image.getWidth();
+                    height = image.getHeight();
+                }
+            } catch (Throwable ex) {
+                // is not possible to calc Dimensions
+                // maybe it is not possible to buffer resource,
+                // or resource is not a
+                // supported image type
             }
-        } catch ( Throwable e ) {
-            // is not possible to calc Dimensions
-            // maybe it is not possible to buffer resource, 
-            // or resource is not a
-            // supported image type
         }
     }
 
