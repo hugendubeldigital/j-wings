@@ -28,6 +28,7 @@ import org.wings.style.*;
  * It delegates to a session related CGDefaults table, that is backed by the laf's defaults.
  */
 public class CGManager
+    implements Serializable
 {
     private static Logger logger = Logger.getLogger("org.wings.plaf");
 

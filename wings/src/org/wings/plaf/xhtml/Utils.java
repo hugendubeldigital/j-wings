@@ -69,10 +69,9 @@ public final class Utils implements SConstants
     public static void writeHiddenComponent(Device d, String name, String value)
         throws IOException
     {
-        // shouldn't this be without '\n'?  (hen)
         d.append("<input type=\"hidden\" name=\"")
             .append(name).append("\" value=\"")
-            .append(value).append("\" />\n"); 
+            .append(value).append("\" />"); 
     }
 
 

@@ -18,7 +18,7 @@ import java.beans.*;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.logging.*;
-import java.io.IOException;
+import java.io.*;
 import javax.swing.*;
 
 import org.wings.*;
@@ -32,7 +32,8 @@ import org.wings.style.*;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public abstract class AbstractComponentCG implements ComponentCG, SConstants
+public abstract class AbstractComponentCG
+    implements ComponentCG, SConstants, Serializable
 {
     protected static Logger logger = Logger.getLogger("org.wings.plaf");
 

@@ -159,6 +159,7 @@ Static resources keep their URL as long as they exist. Dynamic resources have an
 epoch counter, that is incremented on every change (->invalidation) and thus
 alter their URL. This prevents proxies and browsers from caching them. An
 externalized resource has one of the following scopes / flags:
+</p>
 <dl>
   <dt>REQUEST</dt>
   <dd>the resource is removed from the externalize manager after one
@@ -174,5 +175,15 @@ externalized resource has one of the following scopes / flags:
   <dd>the resource is available to all requests. It is never garbage collected
       and available over the lifecycle of the servlet container</dd>
 </dl>
+
+<h2>Model View Controller</h2>
+<p>
+Like Swing does, wingS realises the MVC paradigm. wingS uses the AWT/Swing
+events / event listeners and the Swing models. Furthermore it features a
+pluggable look-and-feel concept, that imitates that of Swing. In fact, a
+developer, that is intimate with Swing will soon gain orientation with wingS.
+</p>
+<p>
+However
 </p>
 </body> </html>

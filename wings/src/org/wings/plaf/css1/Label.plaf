@@ -33,6 +33,9 @@ void writeText(Device device, String text, boolean noBreak)
    final int horizontalTextPosition = component.getHorizontalTextPosition();
    final int verticalTextPosition   = component.getVerticalTextPosition();
    final boolean noBreak = component.isNoBreak();
+   final String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
+   final String attr = (component.getAttributes().size() > 0) ? ("_" + component.getUnifiedId()) : null;
+
 
    if (icon == null) {
        icon = defaultIcon;
@@ -42,24 +45,54 @@ void writeText(Device device, String text, boolean noBreak)
    }
    
    if (icon == null) {
+      int spans = 0;
+      if (style != null) {
+          %><span class="<%=style%>"><%
+          spans++;
+      }
+      if (attr != null) {
+          %><span class="<%=attr%>"><%
+          spans++;
+      }
       writeText(device, text, noBreak);
+      if (spans == 1) { %></span><% }
+      if (spans == 2) { %></span></span><% }
    }
    else if (text == null) {
+      int spans = 0;
+      if (style != null) {
+          %><span class="<%=style%>"><%
+          spans++;
+      }
+      if (attr != null) {
+          %><span class="<%=attr%>"><%
+          spans++;
+      }
       writeIcon(device, icon);
+      if (spans == 1) { %></span><% }
+      if (spans == 2) { %></span></span><% }
    }
    else {
-       %><table><%
+       %><table<%
+       %><%|class=style%><%
+       %>><%
        // if we are on the top, create a top row
        if (verticalTextPosition == TOP) {
-	       %><tr><td><% 
+	       %><tr><td<%
+               %><%|class=attr%><%
+               %>><% 
 	       if (horizontalTextPosition == LEFT) { 
 		  writeText(device, text, noBreak); 
 	       }
-	       %></td><td><%
+	       %></td><td<%
+               %><%|class=attr%><%
+               %>><%
 	       if (horizontalTextPosition == CENTER) { 
 	          writeText(device, text, noBreak); 
 	       }
-	       %></td><td><% 
+	       %></td><td<%
+               %><%|class=attr%><%
+               %>><% 
 	       if (horizontalTextPosition == RIGHT) {
 		  writeText(device, text, noBreak); 
 	       }
@@ -68,39 +101,53 @@ void writeText(Device device, String text, boolean noBreak)
 
        // we always have a center row, since we have to write the icon
        if (verticalTextPosition == CENTER) {
-	       %><tr><td><%
+	       %><tr><td<%
+               %><%|class=attr%><%
+               %>><%
 	       if (horizontalTextPosition == LEFT) { 
 	           writeText(device, text, noBreak); 
 	       }
-	       %></td><td align="center"><%
+	       %></td><td align="center"<%
+               %><%|class=attr%><%
+               %>><%
 	       if (horizontalTextPosition == CENTER) { 
 	          writeText(device, text, noBreak); 
                   %><br/><%
 	       }
 	       // the rendered icon in the center
 	       writeIcon(device, icon);
-	       %></td><td><% 
+	       %></td><td<%
+               %><%|class=attr%><%
+               %>><% 
 	       if (horizontalTextPosition == RIGHT) { 
 	          writeText(device, text, noBreak); 
 	       }
 	       %></td></tr><%
        } else {
-	       %><tr><td></td><td align="center"><%
+	       %><tr><td></td><td align="center"<%
+               %><%|class=attr%><%
+               %>><%
 	       writeIcon(device, icon); 
 	       %></td><td></td></tr><%
        }
 
        // bottom row only, if text is there ..
        if (verticalTextPosition == BOTTOM) {
-               %><tr><td><% 
+               %><tr><td<%
+               %><%|class=attr%><%
+               %>><% 
 	       if (horizontalTextPosition == LEFT) {
 		     writeText(device, text, noBreak);
 	       }
-	       %></td><td><%
+	       %></td><td<%
+               %><%|class=attr%><%
+               %>><%
 	       if (horizontalTextPosition == CENTER) { 
 	          writeText(device, text, noBreak); 
 	       }
-	       %></td><td><% 
+	       %></td><td<%
+               %><%|class=attr%><%
+               %>><% 
 	       if (horizontalTextPosition == RIGHT) {
 	            writeText(device, text, noBreak);
 	       }

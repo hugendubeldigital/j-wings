@@ -81,7 +81,7 @@ public class SBaseTable
     protected boolean headerVisible = true;
 
     /** The style of header cells */
-    protected Style headerStyle = null;
+    protected Style headerStyle;
 
     /** The dynamic attributes of header cells */
     protected AttributeSet headerAttributes = new SimpleAttributeSet();
@@ -99,7 +99,7 @@ public class SBaseTable
     /**
      * TODO: documentation
      */
-    protected SDimension intercellSpacing = null;
+    protected SDimension intercellSpacing;
 
     /**
      * TODO: documentation

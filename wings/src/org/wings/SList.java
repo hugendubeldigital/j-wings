@@ -59,8 +59,6 @@ public class SList
 
     private boolean showAsFormComponent = true;
     private int visibleRowCount = 8;
-    private Color selectionForeground;
-    private Color selectionBackground;
 
     private ListSelectionModel selectionModel;
     private ListModel dataModel;

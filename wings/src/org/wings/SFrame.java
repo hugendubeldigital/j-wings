@@ -76,12 +76,13 @@ public class SFrame
      */
     protected ArrayList links;
 
-    private Color textColor = null;
-    private Color linkColor = null;
-    private Color vLinkColor = null;
-    private Color aLinkColor = null;
+    // do not initialize with null
+    private Color textColor;
+    private Color linkColor;
+    private Color vLinkColor;
+    private Color aLinkColor;
 
-    private SIcon backgroundImage = null;
+    private SIcon backgroundImage;
 
     /**
      * TODO: documentation
@@ -90,18 +91,21 @@ public class SFrame
 
     /** the style sheet used in certain look and feels. */
     protected StyleSheet styleSheet;  // IMPORTANT: initialization with null causes errors; what errors ?
+    // These: all properties, that are installed by the plaf, are installed during the initialization of
+    // SComponent. The null initializations happen afterwards and overwrite the plaf installed values.
+    // However: null is the default initialization value, so this is not a problem!
+    // The same applies to all descendants of SComponent!
 
     /**
      * TODO: documentation
      */
-    protected String statusLine = null;
+    protected String statusLine;
 
     /**
      * TODO: documentation
      */
     private transient SRequestDispatcher dispatcher = null;
 
-    private Session session;
     private RequestURL requestURL = new RequestURL();
     private String targetResource;
 
@@ -194,23 +198,12 @@ public class SFrame
     }
 
     /**
-     * TODO: documentation
+     * Return <code>this</code>.
      *
-     * @return
+     * @return this.
      */
     public SFrame getParentFrame() {
         return this;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public Session getSession() {
-        if (session == null)
-            session = SessionManager.getSession();
-        return session;
     }
 
     /**

@@ -14,12 +14,13 @@
 
 package org.wings.plaf;
 
-import java.io.IOException;
+import java.io.*;
 
 import org.wings.*;
 import org.wings.io.*;
 
 public interface LayoutCG
+    extends Serializable
 {
     void write(Device d, SLayoutManager c) throws IOException;
 }

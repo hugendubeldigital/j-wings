@@ -182,7 +182,7 @@ public class SFrameSetLayout
 	d.append("/>\n");
     }
 
-    private Session session = null;
+    private transient Session session = null;
 
     protected Session getSession() {
 	if (session == null)

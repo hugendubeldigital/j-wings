@@ -15,6 +15,7 @@
 package org.wings.session;
 
 import java.beans.PropertyChangeListener;
+import java.io.Serializable;
 import java.util.Locale;
 
 import javax.servlet.*;
@@ -33,6 +34,7 @@ import org.wings.externalizer.ExternalizeManager;
  * @version $Revision$
  */
 public interface Session
+    extends Serializable
 {
     String LOCALE_PROPERTY = "locale";
     String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";

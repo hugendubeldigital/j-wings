@@ -26,12 +26,6 @@ public class ListCG
     extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.ListCG
 {
-    private final static String propertyPrefix = "List";
-
-    protected String getPropertyPrefix() {
-        return propertyPrefix;
-    }
-
     public void write(Device d, SComponent c)
         throws IOException
     {

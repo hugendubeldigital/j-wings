@@ -39,7 +39,7 @@ import org.wings.style.*;
  */
 public class STabbedPane
     extends SContainer
-    implements SConstants, ActionListener
+    implements SConstants
 {
     /**
      * @see #getCGClassID
@@ -114,7 +114,19 @@ public class STabbedPane
         super.add(contents, SBorderLayout.CENTER);
 
         group = new SButtonGroup();
-        group.addActionListener(this);
+        group.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    SCheckBox checkbox = group.getSelection();
+                    for (int i=0; i < getTabCount(); i++) {
+                        Page page = getPageAt(i);
+                        if (checkbox == page.button) {
+                            setSelectedIndex(i);
+                            fireStateChanged();
+                            return;
+                        }
+                    }
+                }
+            });
     }
 
     /**
@@ -221,9 +233,10 @@ public class STabbedPane
     }
 
     /**
-     * TODO: documentation
+     * Add a listener to the list of change listeners.
+     * ChangeListeners are notified, when the tab selection changes.
      *
-     * @param cl
+     * @param cl add to listener list
      */
     public void addChangeListener(ChangeListener cl) {
         if ( !changeListener.contains(cl) )
@@ -231,17 +244,17 @@ public class STabbedPane
     }
 
     /**
-     * TODO: documentation
+     * Remove listener from the list of change listeners.
+     * ChangeListeners are notified, when the tab selection changes.
      *
-     * @param cl
+     * @param cl remove from listener list
      */
     public void removeChangeListener(ChangeListener cl) {
         changeListener.remove(cl);
     }
 
     /**
-     * TODO: documentation
-     *
+     * Fire ChangeEvents at all registered change listeners.
      */
     protected void fireStateChanged() {
         ChangeEvent ce = new ChangeEvent(this);
@@ -265,7 +278,7 @@ public class STabbedPane
      * <li>SConstants.LEFT
      * <li>SConstants.RIGHT
      * </ul>
-     * The default value, if not set, is TOP.
+     * The default value is TOP.
      *
      * @param tabPlacement the placement for the tabs relative to the content
      *
@@ -876,41 +889,6 @@ public class STabbedPane
         else {
             return null;
         }
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param e
-     */
-    public void actionPerformed(ActionEvent e) {
-        System.err.println("actionPerformed");
-        SCheckBox checkbox = group.getSelection();
-        for (int i=0; i < getTabCount(); i++) {
-            Page page = getPageAt(i);
-            if (checkbox == page.button) {
-                setSelectedIndex(i);
-                fireStateChanged();
-                return;
-            }
-        }
-        /*
-        int oldIndex = getSelectedIndex();
-        // System.out.println("EVENT " +  e);
-        for ( int i=0; i<getTabCount(); i++ ) {
-            Page p = getPageAt(i);
-            if ( p.button==e.getSource() && p.isEnabled() &&
-                 p.isVisible() ) {
-                if ( i != oldIndex ) {
-                    setSelectedIndex(i);
-                    fireStateChanged();
-                }
-
-                // System.out.println("Select " +  i);
-                return;
-            }
-        }
-        */
     }
 
     private static class Page

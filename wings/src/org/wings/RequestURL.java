@@ -14,7 +14,7 @@
 
 package org.wings;
 
-import java.io.IOException;
+import java.io.*;
 import org.wings.io.Device;
 
 /**
@@ -25,7 +25,7 @@ import org.wings.io.Device;
  * @version $Revision$
  */
 public class RequestURL
-    implements Cloneable
+    implements Cloneable, Serializable
 {
     private static final byte[] _delimiter = "_".getBytes();
     private static final byte[] _ampStr    = "&amp;".getBytes();

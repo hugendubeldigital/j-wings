@@ -1,0 +1,167 @@
+<template name="ListCG" for="org.wings.SList">
+
+    protected void writeFormList(Device device, SList list)
+        throws IOException
+    {
+        String style = (list.getStyle() != null) ? list.getStyle().getName() : null;
+        final String attr = (list.getAttributes().size() > 0) ? ("_" + list.getUnifiedId()) : null;
+
+        if (style != null && attr != null) {
+            %><span class="<%=style%>"><%
+            %><select class="<%=attr%>"<%
+        }
+        else {
+	    if (style == null)
+                style = attr;
+            %><select<%
+            %><%|class=style%><%
+        }
+
+
+        %><%|name=list.getNamePrefix()%><%
+        %><%|size=list.getVisibleRowCount()%><%
+
+        if (list.getSelectionMode() == SConstants.MULTIPLE_SELECTION) {
+            %> multiple="multiple"<%
+        }
+	// writeEvents();
+        %>><%
+
+        javax.swing.ListModel model = list.getModel();
+        int size = model.getSize();
+
+        if (model != null) {
+            SListCellRenderer cellRenderer = list.getCellRenderer();
+
+            for (int i=0; i < size; i++) {
+                %><option<%
+                %><%|value=i%><%
+
+                if (list.isSelectedIndex(i)) {
+                    %> selected="selected"><%
+                }
+                else {
+                    %>><%
+                }
+
+                SComponent renderer = cellRenderer.getListCellRendererComponent(list,
+                                                                                model.getElementAt(i),
+                                                                                false, i);
+                /*
+                 * Hack: remove all tags, because in form selections, this
+                 * does look ugly.
+                 */
+                org.wings.io.StringBufferDevice string = getStringBufferDevice();
+                renderer.write(string);
+                char[] chars = string.toString().toCharArray();
+                int pos = 0;
+                for (int c=0; c < chars.length; c++) {
+                    switch (chars[c]) {
+                    case '<':
+                        device.print(chars, pos, c - pos);
+                        break;
+                    case '>':
+                        pos = c+1;
+                    }
+                }
+                device.print(chars, pos, chars.length - pos);
+
+                %></option><%
+            }
+        }
+
+        %></select><%
+
+        if (style != null && attr != null) {
+            %></span><%
+        }
+
+        //Utils.writeHiddenComponent(d, list.getNamePrefix(), "-1");
+        %><input type="hidden"<%
+        %><%|name=list.getNamePrefix()%><%
+        %><%|value=-1%><%
+        %>/><%
+    }
+
+    private org.wings.io.StringBufferDevice stringBufferDevice = null;
+    protected org.wings.io.StringBufferDevice getStringBufferDevice() {
+        if (stringBufferDevice == null)
+            stringBufferDevice = new org.wings.io.StringBufferDevice();
+        stringBufferDevice.reset();
+        return stringBufferDevice;
+    }
+
+    public void writeAnchorList(Device device, SList list)
+        throws IOException
+    {
+        String style = (list.getStyle() != null) ? list.getStyle().getName() : null;
+        final String attr = (list.getAttributes().size() > 0) ? ("_" + list.getUnifiedId()) : null;
+        String selectionStyle = (list.getSelectionStyle() != null) ? list.getSelectionStyle().getName() : null;
+        final String selectionAttr = (list.getSelectionAttributes().size() > 0) ? ("_" + list.getUnifiedId()) : null;
+
+        String orderType = list.getOrderType();
+        int start = list.getStart();
+
+        if (style != null && attr != null) {
+            %><span class="<%=style%>"><%
+            %><<%=list.getType()%> class="<%=attr%>"<%
+        }
+        else {
+	    if (style == null)
+                style = attr;
+            %><<%=list.getType()%><%
+            %><%|class=style%><%
+        }
+
+        %><%|type=list.getOrderType()%><%
+        %><%|start=list.getStart()%><%
+        %>><%
+
+        javax.swing.ListModel model = list.getModel();
+        int size = model.getSize();
+        SListCellRenderer cellRenderer = list.getCellRenderer();
+
+        if (model != null) {
+            SCellRendererPane rendererPane = list.getCellRendererPane();
+
+            for (int i=0; i < size; i++) {
+                Object o = model.getElementAt(i);
+                boolean selected = list.isSelectedIndex(i);
+
+                if (selected) {
+                    if (selectionStyle != null && selectionAttr != null) {
+                        %><li class="<%=selectionStyle%>"><%
+                        %><span class="<%=selectionAttr%>"<%
+                    }
+                    else {
+                        String s = selectionStyle;
+                        if (s == null)
+                            s = selectionAttr;
+
+                        %><li<%|class=s%>><%
+                    }
+                }
+                else {
+                    %><li><%
+                }
+                SComponent renderer = cellRenderer.getListCellRendererComponent(list,
+                                                                                model.getElementAt(i),
+                                                                                selected, i);
+                rendererPane.writeComponent(device, renderer, list);
+                %></li><%
+            }
+        }
+
+        %></<%=list.getType()%>><%
+    }
+
+<write>
+<%
+    SList list = (SList)component;
+    if (list.getShowAsFormComponent())
+        writeFormList(device, list);
+    else
+        writeAnchorList(device, list);
+%>
+</write>
+</template>
