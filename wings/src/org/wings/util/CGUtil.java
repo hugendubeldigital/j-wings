@@ -14,11 +14,12 @@
 
 package org.wings.util;
 
-import java.awt.Dimension;
-import java.io.IOException;
+import org.wings.SAbstractLayoutManager;
+import org.wings.SComponent;
+import org.wings.SDimension;
+import org.wings.io.Device;
 
-import org.wings.*;
-import org.wings.io.*;
+import java.io.IOException;
 
 public class CGUtil
 {

@@ -266,6 +266,17 @@ public final class Utils implements SConstants
             if (dim.height != null) d.print("height:").print(dim.height).print(";");
         }
      }
+
+    static String[] alignment = new String[] { " aleft", " aright", " acenter", " ablock", " atop", " abottom", " amiddle" };
+
+    public static void writeAlignment(Device d, SContainer container) throws IOException {
+        int verticalAlignment = container.getVerticalAlignment();
+        int horizontalAlignment = container.getHorizontalAlignment();
+        if (verticalAlignment != -1)
+            d.print(alignment[verticalAlignment]);
+        if (horizontalAlignment != -1)
+            d.print(alignment[horizontalAlignment]);
+    }
 }
 
 /*
