@@ -175,8 +175,8 @@ public class SDefaultTableCellRenderer
      *
      * @return
      */
-    public boolean getEscapeSpecialChars() {
-        return contents.getEscapeSpecialChars();
+    public boolean isEscapeSpecialChars() {
+        return contents.isEscapeSpecialChars();
     }
 
     /**

@@ -30,12 +30,17 @@ public final class LabelCG
         String text = label.getText();
         if (text != null && text.trim().length() > 0) {
             boolean noBreak = label.isNoBreak();
+            boolean escape = label.isEscapeSpecialChars();
 
             Utils.writeSpanWithStyleAttributePrefix(d, label.getStyle());
 
             if (noBreak)
                 d.append("<nobr>");
+
+            if (escape)
+                text = org.wings.plaf.xhtml.Utils.escapeSpecialChars(text);
             d.append(text);
+
             if (noBreak)
                 d.append("</nobr>");
 

@@ -302,7 +302,7 @@ public class SLabel
      *
      * @return
      */
-    public boolean getEscapeSpecialChars() {
+    public boolean isEscapeSpecialChars() {
 	return escapeSpecialChars;
     }
 

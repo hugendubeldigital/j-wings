@@ -120,10 +120,15 @@ public class LabelCG
         String text = label.getText();
         if (text != null && text.trim().length() > 0) {
             boolean noBreak = label.isNoBreak();
+            boolean escape = label.isEscapeSpecialChars();
 
             if (noBreak)
                 d.append("<nobr>");
+
+            if (escape)
+                text = Utils.escapeSpecialChars(text);
             d.append(text);
+
             if (noBreak)
                 d.append("</nobr>");
         }

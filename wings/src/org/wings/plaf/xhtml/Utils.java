@@ -26,23 +26,23 @@ import org.wings.io.Device;
  * @author Holger Engels
  * @version $Revision$
  */
-final class Utils implements SConstants
+public final class Utils implements SConstants
 {
-    static void writeBorderPrefix(Device d, SBorder border)
+    public static void writeBorderPrefix(Device d, SBorder border)
         throws IOException
     {
         if (border != null)
             border.writePrefix(d);
     }
 
-    static void writeBorderPostfix(Device d, SBorder border)
+    public static void writeBorderPostfix(Device d, SBorder border)
         throws IOException
     {
         if (border != null)
             border.writePostfix(d);
     }
 
-    static void writeContainerContents(Device d, SContainer c)
+    public static void writeContainerContents(Device d, SContainer c)
         throws IOException
     {
         SLayoutManager layout = c.getLayout();
@@ -56,12 +56,32 @@ final class Utils implements SConstants
         }
     }
 
-    static void writeHiddenComponent(Device d, String name, String value)
+    public static void writeHiddenComponent(Device d, String name, String value)
         throws IOException
     {
         d.append("<input type=\"hidden\" name=\"").
 	  append(name).append("\" value=\"").
 	  append(value).append("\" />\n");
+    }
+
+
+    public static String escapeSpecialChars(String text) {
+        StringBuffer escaped = new StringBuffer(text.length());
+        for ( int i = 0; i < text.length(); i++ ) {
+            char c = text.charAt(i);
+            if ( c == '<' )
+                escaped.append("&lt;");
+            else if ( c == '>' )
+                escaped.append("&gt;");
+            else if ( c == '\"' )
+                escaped.append("&quot;");
+            else if ( c == '\n' )
+                escaped.append("<br>");
+            else
+                escaped.append(c);
+        }
+
+        return escaped.toString();
     }
 }
 

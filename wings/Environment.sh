@@ -25,8 +25,8 @@ fi
 
 CLASSPATH=$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$DEVEL_HOME/src:$DEVEL_HOME/demo
 
-for f in $JAVALIB/*.jar ; do
-    CLASSPATH=$CLASSPATH:$f
-done
+#for f in $JAVALIB/*.jar ; do
+#    CLASSPATH=$CLASSPATH:$f
+#done
 
 export DEVEL_HOME JAVA_HOME CLASSPATH
