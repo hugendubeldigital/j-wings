@@ -32,10 +32,93 @@ public class SDefaultTreeCellRenderer
     extends SLabel
     implements STreeCellRenderer
 {
+    // Icons
+    /** Icon used to show non-leaf nodes that aren't expanded. */
+    transient protected SIcon closedIcon;
+
+    /** Icon used to show leaf nodes. */
+    transient protected SIcon leafIcon;
+
+    /** Icon used to show non-leaf nodes that are expanded. */
+    transient protected SIcon openIcon;
+
     /**
      * Create a SDefaultTreeCellRenderer with default properties.
      */
     public SDefaultTreeCellRenderer() {
+	setHorizontalAlignment(SLabel.LEFT);
+	setNoBreak(true);
+
+	setLeafIcon(getDefaultLeafIcon());
+	setClosedIcon(getDefaultClosedIcon());
+	setOpenIcon(getDefaultOpenIcon());
+    }
+
+    /**
+      * Returns the default icon, for the current laf, that is used to
+      * represent non-leaf nodes that are expanded.
+      */
+    public SIcon getDefaultOpenIcon() {
+        return getSession().getCGManager().getIcon("TreeCG.openIcon");
+    }
+
+    /**
+      * Returns the default icon, for the current laf, that is used to
+      * represent non-leaf nodes that are not expanded.
+      */
+    public SIcon getDefaultClosedIcon() {
+        return getSession().getCGManager().getIcon("TreeCG.closedIcon");
+    }
+
+    /**
+      * Returns the default icon, for the current laf, that is used to
+      * represent leaf nodes.
+      */
+    public SIcon getDefaultLeafIcon() {
+        return getSession().getCGManager().getIcon("TreeCG.leafIcon");
+    }
+
+    /**
+      * Sets the icon used to represent non-leaf nodes that are expanded.
+      */
+    public void setOpenIcon(SIcon newIcon) {
+	openIcon = newIcon;
+    }
+
+    /**
+      * Returns the icon used to represent non-leaf nodes that are expanded.
+      */
+    public SIcon getOpenIcon() {
+	return openIcon;
+    }
+
+    /**
+      * Sets the icon used to represent non-leaf nodes that are not expanded.
+      */
+    public void setClosedIcon(SIcon newIcon) {
+	closedIcon = newIcon;
+    }
+
+    /**
+      * Returns the icon used to represent non-leaf nodes that are not
+      * expanded.
+      */
+    public SIcon getClosedIcon() {
+	return closedIcon;
+    }
+
+    /**
+      * Sets the icon used to represent leaf nodes.
+      */
+    public void setLeafIcon(SIcon newIcon) {
+	leafIcon = newIcon;
+    }
+
+    /**
+      * Returns the icon used to represent leaf nodes.
+      */
+    public SIcon getLeafIcon() {
+	return leafIcon;
     }
 
 
@@ -48,13 +131,35 @@ public class SDefaultTreeCellRenderer
                                                    boolean hasFocus)
     {
 
-        if (value == null || value.toString() == null || value.toString().length() == 0) {
+        if ( value == null || value.toString() == null || 
+             value.toString().length() == 0 ) {
+
             setText("&nbsp;");
-            return this;
+        } else {
+            setText(value.toString());
+            setToolTipText(value.toString());
         }
 
-        setText(value.toString());
-        setToolTipText(value.toString());
+	if (!tree.isEnabled()) {
+	    setEnabled(false);
+	    if (leaf) {
+		setDisabledIcon(getLeafIcon());
+	    } else if (expanded) {
+		setDisabledIcon(getOpenIcon());
+	    } else {
+		setDisabledIcon(getClosedIcon());
+	    }
+	}
+	else {
+	    setEnabled(true);
+	    if (leaf) {
+		setIcon(getLeafIcon());
+	    } else if (expanded) {
+		setIcon(getOpenIcon());
+	    } else {
+		setIcon(getClosedIcon());
+	    }
+	}
 
         return this;
     }

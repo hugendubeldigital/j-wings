@@ -31,7 +31,7 @@ import org.wings.externalizer.ExternalizeManager;
  */
 public class SLabel
     extends SComponent
-    implements SConstants
+    implements SConstants, ClickableRenderComponent
 {
     private static final String cgClassID = "LabelCG";
 
@@ -61,6 +61,8 @@ public class SLabel
     // _always_ escape the characters, otherwise the user feels tempted to
     // output formatting information in Labels .. (s)he shouldn't!
     private boolean escapeSpecialChars = false;
+
+    protected String eventParam;
 
 
     /**
@@ -331,6 +333,15 @@ public class SLabel
     public void setCG(LabelCG cg) {
         super.setCG(cg);
     }
+
+    public void setEventParam(String s) {
+        eventParam = s;
+    }
+
+    public String getEventParam() {
+        return eventParam;
+    }
+
 }
 
 /*

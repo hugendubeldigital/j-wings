@@ -181,6 +181,9 @@ public final class Utils implements SConstants
     }
 
     public static void appendIcon(Device d, SIcon icon, String align) {
+        if ( icon==null )
+            return;
+
         d.append("<img src=\"").
             append(icon.getURL()).
             append("\"");

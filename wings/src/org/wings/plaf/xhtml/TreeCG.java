@@ -30,14 +30,6 @@ public class TreeCG
     extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.TreeCG
 {
-    // wie kann statisch auf die Defaults zugreifen??
-    private final static SIcon OPEN_ICON = 
-        new ResourceImageIcon("org/wings/icons/TreeOpen.gif");
-    private final static SIcon CLOSED_ICON = 
-        new ResourceImageIcon("org/wings/icons/TreeClosed.gif");
-    private final static SIcon LEAF_ICON = 
-        new ResourceImageIcon("org/wings/icons/TreeLeaf.gif");
-
     private final static SIcon BLIND_ICON = 
         new ResourceImageIcon("org/wings/icons/blind.gif");
 
@@ -45,10 +37,20 @@ public class TreeCG
 
     private final static String nodePropertyPrefix = "TreeNode";
 
-    private SIcon openIcon = OPEN_ICON;
-    private SIcon closedIcon = CLOSED_ICON;
-    private SIcon leafIcon = LEAF_ICON;
+    private SIcon openIcon;
+    private SIcon closedIcon;
+    private SIcon leafIcon;
+    private SIcon hashMark;
 
+
+    public void installCG(SComponent component) {
+        super.installCG(component);
+        CGManager cg = component.getSession().getCGManager();
+        openIcon = cg.getIcon("TreeCG.collapseControlIcon");
+        closedIcon = cg.getIcon("TreeCG.expandControlIcon");
+        leafIcon = cg.getIcon("TreeCG.leafControlIcon");
+        hashMark = cg.getIcon("TreeCG.hash");
+    }
 
     /**
      * Sets the icon used to represent non-leaf nodes that are expanded.
@@ -118,7 +120,7 @@ public class TreeCG
 
         int start = 0;
         int count = tree.getRowCount();
-        java.awt.Color bgcolor = tree.getBackground();
+
         Rectangle viewport = tree.getViewportSize();
         if (viewport != null) {
             start = viewport.y;
@@ -126,36 +128,41 @@ public class TreeCG
         }
 
         int depth = tree.getMaximumExpandedDepth(); // - ( ( tree.isRootVisible() )?0:1 );
-        d.append("<table border=\"0\" cellpadding=\"0\"");
+
+        d.print("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"");
         CGUtil.writeSize( d, tree );
         if ( Utils.hasSpanAttributes( tree ) ) {
-            d.append( " style=\"" );
+            d.print( " style=\"" );
             Utils.writeSpanAttributes( d, tree );
-            d.append( "\"" );
+            d.print( "\"" );
         }
-        d.append(">");
+        d.print(">");
         
         for (int i=start; i < count; i++)
-            writeTreeNode(tree, d, tree.getPathForRow(i), depth);
+            writeTreeNode(tree, d, tree.getPathForRow(i), depth, i);
 		
         // expandable last row to fit preferred table size on IE
-        d.append("<tr><td colspan=\"");
-        d.append(depth);
-        d.append("\"></td></tr>");
-        d.append("</table>");
+        d.print("<tr><td colspan=\"");
+        d.print(depth);
+        d.print("\"></td></tr>");
+        d.print("</table>");
     }
 
-    public void writeTreeNode(STree tree, Device d, TreePath path, int depth)
+    protected final boolean isLastChild(Object pathComponent) {
+        TreeNode node = (TreeNode)pathComponent;
+
+        TreeNode parent = node.getParent();
+        if ( parent==null )
+            return true;
+
+        return parent.getChildAt(parent.getChildCount()-1)==node;
+    }
+
+    public void writeTreeNode(STree tree, Device d, TreePath path, int depth,
+                              int row)
         throws IOException
     {
         int nodeIndentDepth = tree.getNodeIndentDepth();
-        d.append("<tr height=\"1\">");
-        for (int i=((tree.isRootVisible())?0:1); i<path.getPathCount()-1; i++) {
-            d.append("<td width=\"" + nodeIndentDepth + "\">");
-            Utils.appendBlindIcon(d, BLIND_ICON, 1, tree.getNodeIndentDepth());
-            d.append("</td>");
-        }
-        d.append("\n<td nowrap colspan=\"" + (depth - (path.getPathCount()-1)) + "\">");
 
         Object node = path.getLastPathComponent();
         STreeCellRenderer cellRenderer = tree.getCellRenderer();
@@ -167,48 +174,89 @@ public class TreeCG
         SComponent renderer = cellRenderer.getTreeCellRendererComponent(tree, node,
                                                                         isSelected,
                                                                         isExpanded,
-                                                                        isLeaf, 0,
+                                                                        isLeaf, row,
                                                                         false);
 
         RequestURL selectionAddr = tree.getRequestURL();
         selectionAddr.addParameter(tree.getSelectionParameter(node));
+
+
+        d.print("<tr height=\"1\">");
+        for (int i=((tree.isRootVisible())?0:1); i<path.getPathCount()-1; i++) {
+            d.print("<td width=\"").print(nodeIndentDepth).print("\"");
+            if ( hashMark!=null && !isLastChild(path.getPathComponent(i)) ) {
+                d.print(" style=\"background-image:url(").print(hashMark.getURL()).
+                    print(")\"");
+            }
+            d.print(">");
+            Utils.appendBlindIcon(d, BLIND_ICON, 1, tree.getNodeIndentDepth());
+            d.print("</td>");
+        }
+
+        d.print("\n<td nowrap colspan=\"" + (depth - (path.getPathCount()-1)) + "\">");
+
+        // render control icons
+        if ( !(isLeaf && leafIcon==null) ) {
+            // in most applications, the is no need to render a control icon for
+            // a leaf. 
+            d.print("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"");
+            if ( Utils.hasSpanAttributes( tree ) ) {
+                d.print( " style=\"" );
+                Utils.writeSpanAttributes( d, tree );
+                d.print( "\"" );
+            }
+            d.print("><tr><td nowrap>");
+        }
 
         if (isLeaf) {
             Utils.appendIcon(d, leafIcon, null);
         } else {
             RequestURL expansionAddr = tree.getRequestURL();
             expansionAddr.addParameter(tree.getExpansionParameter(node));
-            d.append("<a href=\"").append(expansionAddr.toString()).append("\">");
+            d.print("<a href=\"").print(expansionAddr.toString()).print("\">");
+
             if (isExpanded) {
                 if (openIcon == null)
-                    d.append("-");
+                    d.print("-");
                 else
                     Utils.appendIcon(d, openIcon, null);
             } else {
                 if (closedIcon == null)
-                    d.append("+");
+                    d.print("+");
                 else
                     Utils.appendIcon(d, closedIcon, null);
             }
-            d.append("</a>");
+            d.print("</a>");
         } 
-        d.append("&nbsp;");
-        
-        d.append("<a href=\"").append(selectionAddr.toString()).append("\"");
 
-        Style cellStyle = isSelected ? 
-            tree.getSelectionStyle() : tree.getStyle();
-
-        if (cellStyle != null)
-            cellStyle.write(d);
-
-        d.append(">");
+        if ( !(isLeaf && leafIcon==null) ) {
+            d.print("&nbsp;</td><td nowrap>");
+        }
 
         SCellRendererPane rendererPane = tree.getCellRendererPane();
-        rendererPane.writeComponent(d, renderer, tree);
-        d.append("</a>");
+        if ( renderer instanceof ClickableComponent ) {
+            ((ClickableComponent)renderer).setEventParam(selectionAddr.toString());
+            rendererPane.writeComponent(d, renderer, tree);
+        } else {
+            d.print("<a href=\"").print(selectionAddr.toString()).print("\"");
 
-        d.append("\n</td><td width=\"100%\"></td></tr>\n");
+            Style cellStyle = isSelected ? 
+                tree.getSelectionStyle() : tree.getStyle();
+            
+            if (cellStyle != null)
+                cellStyle.write(d);
+            
+            d.print(">");
+            
+            rendererPane.writeComponent(d, renderer, tree);
+            d.print("</a>");
+        }
+
+        if ( !(isLeaf && leafIcon==null) ) {
+            d.print("</td></tr></table>");
+        }
+
+        d.print("\n</td><td width=\"100%\"></td></tr>\n");
     }
 }
 

@@ -5,25 +5,46 @@
 <property type="SIcon" name="defaultIcon"></property>
 <property type="String" name="fallbackText">Ein Fallback text</property>
 
-void writeIcon(Device device, SIcon icon) throws IOException {
+void writeIcon(Device device, SLabel label) throws IOException {
+     SIcon icon = label.getIcon();
      if (icon != null) {
+        boolean hasEventLink = label.getEventParam()!=null;
+        if (hasEventLink) {
+           %><a href="<%=label.getEventParam()%>"><%
+        }     
+
         %><img<%
         /*
 	 * write optional attributes ..
 	 */
+        if (hasEventLink) { %> border=0<% }
         %><%|src=icon.getURL()%><%
         %><%|width=icon.getIconWidth()%><%
         %><%|height=icon.getIconHeight()%><%
         %>><%
+
+        if (hasEventLink ) {
+            %></a><%
+        }     
      }
 }
 
-void writeText(Device device, String text, boolean noBreak) 
+void writeText(Device device, SLabel label) 
       throws IOException {
-   if (text != null) {
-      if (noBreak) { %><nobr><% }
-      %><%=text%><%
-      if (noBreak) { %></nobr><% }
+   if (label.getText() != null) {
+      if (label.isNoBreak()) { %><nobr><% }
+
+      if (label.getEventParam()!=null ) {
+          %><a href="<%=label.getEventParam()%>"><%
+      }     
+
+      %><%=label.getText()%><%
+
+      if (label.getEventParam()!=null ) {
+          %></a><%
+      }     
+
+      if (label.isNoBreak()) { %></nobr><% }
    } 
 }
 
@@ -55,7 +76,7 @@ void writeText(Device device, String text, boolean noBreak)
           %><span class="<%=attr%>"><%
           spans++;
       }
-      writeText(device, text, noBreak);
+      writeText(device, component);
       if (spans == 1) { %></span><% }
       if (spans == 2) { %></span></span><% }
    }
@@ -69,12 +90,12 @@ void writeText(Device device, String text, boolean noBreak)
           %><span class="<%=attr%>"><%
           spans++;
       }
-      writeIcon(device, icon);
+      writeIcon(device, component);
       if (spans == 1) { %></span><% }
       if (spans == 2) { %></span></span><% }
    }
    else {
-       %><table<%
+       %><table cellpadding="0" cellspacing="0" border="0"<%
        %><%|class=style%><%
        %>><%
        // if we are on the top, create a top row
@@ -83,19 +104,19 @@ void writeText(Device device, String text, boolean noBreak)
                %><%|class=attr%><%
                %>><% 
 	       if (horizontalTextPosition == LEFT) { 
-		  writeText(device, text, noBreak); 
+                  writeText(device, component);
 	       }
 	       %></td><td<%
                %><%|class=attr%><%
                %>><%
 	       if (horizontalTextPosition == CENTER) { 
-	          writeText(device, text, noBreak); 
+                  writeText(device, component);
 	       }
 	       %></td><td<%
                %><%|class=attr%><%
                %>><% 
 	       if (horizontalTextPosition == RIGHT) {
-		  writeText(device, text, noBreak); 
+                  writeText(device, component);
 	       }
 	       %></td></tr><%
        }
@@ -106,29 +127,29 @@ void writeText(Device device, String text, boolean noBreak)
                %><%|class=attr%><%
                %>><%
 	       if (horizontalTextPosition == LEFT) { 
-	           writeText(device, text, noBreak); 
+                  writeText(device, component);
 	       }
 	       %></td><td align="center"<%
                %><%|class=attr%><%
                %>><%
 	       if (horizontalTextPosition == CENTER) { 
-	          writeText(device, text, noBreak); 
+                  writeText(device, component);
                   %><br/><%
 	       }
 	       // the rendered icon in the center
-	       writeIcon(device, icon);
+	       writeIcon(device, component);
 	       %></td><td<%
                %><%|class=attr%><%
                %>><% 
 	       if (horizontalTextPosition == RIGHT) { 
-	          writeText(device, text, noBreak); 
+                  writeText(device, component);
 	       }
 	       %></td></tr><%
        } else {
 	       %><tr><td></td><td align="center"<%
                %><%|class=attr%><%
                %>><%
-	       writeIcon(device, icon); 
+	       writeIcon(device, component); 
 	       %></td><td></td></tr><%
        }
 
@@ -138,19 +159,19 @@ void writeText(Device device, String text, boolean noBreak)
                %><%|class=attr%><%
                %>><% 
 	       if (horizontalTextPosition == LEFT) {
-		     writeText(device, text, noBreak);
+                  writeText(device, component);
 	       }
 	       %></td><td<%
                %><%|class=attr%><%
                %>><%
 	       if (horizontalTextPosition == CENTER) { 
-	          writeText(device, text, noBreak); 
+                  writeText(device, component);
 	       }
 	       %></td><td<%
                %><%|class=attr%><%
                %>><% 
 	       if (horizontalTextPosition == RIGHT) {
-	            writeText(device, text, noBreak);
+                  writeText(device, component);
 	       }
 	       %></td></tr><%
        } 
