@@ -22,10 +22,11 @@ import java.awt.event.AdjustmentEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import javax.swing.BoundedRangeModel;
 import javax.swing.Icon;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+
+import org.wings.border.SEmptyBorder;
 
 /**
  * TODO: documentation
@@ -38,15 +39,14 @@ public class SPageScroller
 {
     /**
      * Default maximum amount of page buttons.
-     * @see setPageButtonCount()
      */
-    private static final int DEFAULT_DIRECT_PAGES = 5;
+    private static final int DEFAULT_DIRECT_PAGES = 10;
 
     /**
-     * Access to the default Icons for button status.
+     *
      */
-    private static final int DISABLED = 0;
-    private static final int ENABLED = 1;
+    private static final SEmptyBorder DEFAULT_DIRECT_BUTTON_BORDER = 
+        new SEmptyBorder(5,5,5,5);
 
     /**
      * Access to the default Icons for buttons
@@ -55,10 +55,10 @@ public class SPageScroller
     private static final int BACKWARD = 1;
 
     /**
-     * Icons for both orientations, both directions and enabled resp. disabled
+     * Icons for both layout modes, both directions and enabled resp. disabled
      **/
-    private final static ResourceImageIcon[][][] DEFAULT_ICONS =
-        new ResourceImageIcon[2][2][2];
+    private final static SIcon[][][] DEFAULT_ICONS =
+        new SIcon[2][2][SAbstractButton.ICON_COUNT];
 
     // Initialisiert (laedt) die Default Images
     static {
@@ -74,11 +74,20 @@ public class SPageScroller
             }
 
             for ( int direction=0; direction<postfixes.length; direction++ ) {
-                DEFAULT_ICONS[orientation][direction][ENABLED] =
-                    new ResourceImageIcon("org/wings/icons/BlockScroll" +
+                DEFAULT_ICONS[orientation][direction][SAbstractButton.ENABLED_ICON] =
+                    new ResourceImageIcon("org/wings/icons/Scroll" +
                                           postfixes[direction] + ".gif");
-                DEFAULT_ICONS[orientation][direction][DISABLED] =
-                    new ResourceImageIcon("org/wings/icons/DisabledBlockScroll"
+                DEFAULT_ICONS[orientation][direction][SAbstractButton.DISABLED_ICON] =
+                    new ResourceImageIcon("org/wings/icons/DisabledScroll"
+                                          + postfixes[direction] + ".gif");
+                DEFAULT_ICONS[orientation][direction][SAbstractButton.PRESSED_ICON] =
+                    new ResourceImageIcon("org/wings/icons/PressedScroll"
+                                          + postfixes[direction] + ".gif");
+                DEFAULT_ICONS[orientation][direction][SAbstractButton.ROLLOVER_ICON] =
+                    new ResourceImageIcon("org/wings/icons/RolloverScroll"
+                                          + postfixes[direction] + ".gif");
+                DEFAULT_ICONS[orientation][direction][SAbstractButton.ROLLOVER_SELECTED_ICON] =
+                    new ResourceImageIcon("org/wings/icons/RolloverSelectedScroll"
                                           + postfixes[direction] + ".gif");
             }
         }
@@ -93,26 +102,51 @@ public class SPageScroller
     protected int directPages = DEFAULT_DIRECT_PAGES;
 
     /*
-     * @see #setOrientation
+     * how to layout the scroller, vertical or horizontal
+     * @see #setLayoutMode
      */
-    protected int orientation;
+    protected int layoutMode;
+    
+    /** */
+    private final SButton forwardPage = new SButton();
 
-    private final SButton forwardPage = new SButton("");
-    private final SButton backwardPage = new SButton("");
+    /** */
+    private final SButton backwardPage = new SButton();
 
-    // immer so viele directPageButtons, wie extent angegeben
-    protected SButton[] directPageButtons = null;
+    /** */
+    protected final SButtonGroup buttonGroup = new SButtonGroup();
+
+    /** contains the direct page buttons. Size of this array is extend */
+    protected SAbstractButton[] directPageButtons = null;
+
+    /**
+     * Icons for backward direction, the icon set of a button consists of 7 icons:
+     * enabled, disabled, selected, disabled_selected, rollover,
+     * rollover_selected, pressed. we
+     * don't need selected here, but we support it
+     **/
+    private final SIcon[] backwardIcons = new SIcon[SAbstractButton.ICON_COUNT];
+
+    /**
+     * Icons for forward direction, the icon set of a button consists of 7 icons:
+     * enabled, disabled, selected, disabled_selected, rollover,
+     * rollover_selected, pressed. we 
+     * don't need selected here, but we support it
+     **/
+    private final SIcon[] forwardIcons = new SIcon[SAbstractButton.ICON_COUNT];
+
+    /**
+     * Icons for both directions, the icon set of a button consists of 7 icons:
+     * enabled, disabled, selected, disabled_selected, rollover,
+     * rollover_selected, pressed.  
+     **/
+    private final SIcon[] directIcons = new SIcon[SAbstractButton.ICON_COUNT];
 
     /**
      * Creates a scrollbar with the specified orientation,
      * value, extent, mimimum, and maximum.
      * The "extent" is the size of the viewable area. It is also known
      * as the "visible amount".
-     * <p>
-     * Note: Use <code>setBlockIncrement</code> to set the block
-     * increment to a size slightly smaller than the view's extent.
-     * That way, when the user jumps the knob to an adjacent position,
-     * one or two lines of the original contents remain in view.
      *
      * @exception IllegalArgumentException if orientation is not one of VERTICAL, HORIZONTAL
      *
@@ -129,8 +163,11 @@ public class SPageScroller
 
         setLayout(new SBorderLayout());
 
-        forwardPage.addActionListener(scrollerAction);
-        backwardPage.addActionListener(scrollerAction);
+        forwardPage.addActionListener(scrollAction);
+
+        backwardPage.addActionListener(scrollAction);
+
+        buttonGroup.addActionListener(scrollAction);
 
         initScrollers();
     }
@@ -163,56 +200,18 @@ public class SPageScroller
     }
 
     /**
-     *<P>Sets the visible amount to new value.</P>
-     * @param amount : New value of visible amount.
-     */
-    public void setExtent(int amount) {
-        getModel().setExtent(amount);
-    }
-
-    /**
-     * Returns the component's orientation (horizontal or vertical).
-     *
-     * @return VERTICAL or HORIZONTAL
-     * @see #setOrientation
-     * @see java.awt.Adjustable#getOrientation
-     */
-    public int getOrientation() {
-        return orientation;
-    }
-
-
-    /**
-     * Set the scrollbar's orientation to either VERTICAL or
-     * HORIZONTAL.
-     *
-     * @exception IllegalArgumentException if orientation is not one of VERTICAL, HORIZONTAL
-     * @see #getOrientation
-     * @beaninfo
-     *    preferred: true
-     *        bound: true
-     *    attribute: visualUpdate true
-     *  description: The scrollbar's orientation.
-     *         enum: VERTICAL JScrollBar.VERTICAL
-     *               HORIZONTAL JScrollBar.HORIZONTAL
-     */
-    public void setOrientation(int orientation) {
-        this.orientation = orientation;
-        checkOrientation();
-    }
-
-    /**
-     * Checks if given orientation is valid.
-     * @param orientation : Given orientation.
+     * set how to layout components
+     * {@link VERTICAL} or {@link HORIZONTAL}
      **/
-    private void checkOrientation() {
+    public void setLayoutMode(int orientation) {
         switch (orientation) {
         case SConstants.VERTICAL:
         case SConstants.HORIZONTAL:
+            layoutMode = orientation;
             resetIcons();
             break;
         default:
-            throw new IllegalArgumentException("orientation must be one of: VERTICAL, HORIZONTAL");
+            throw new IllegalArgumentException("layout mode must be one of: VERTICAL, HORIZONTAL");
         }
     }
 
@@ -220,48 +219,51 @@ public class SPageScroller
      * Sets the proper icons for buttonstatus enabled resp. disabled.
      */
     public void resetIcons() {
-        forwardPage.setIcon(DEFAULT_ICONS[orientation][FORWARD][ENABLED]);
-        forwardPage.setDisabledIcon(DEFAULT_ICONS[orientation][FORWARD][DISABLED]);
+        for ( int i=0; i<forwardIcons.length; i++ ) {
+            forwardIcons[i] = DEFAULT_ICONS[layoutMode][FORWARD][i];
+        } 
+        forwardPage.setIcons(forwardIcons);
 
-        backwardPage.setIcon(DEFAULT_ICONS[orientation][BACKWARD][ENABLED]);
-        backwardPage.setDisabledIcon(DEFAULT_ICONS[orientation][BACKWARD][DISABLED]);
+        for ( int i=0; i<backwardIcons.length; i++ ) {
+            backwardIcons[i] = DEFAULT_ICONS[layoutMode][BACKWARD][i];
+        } 
+        backwardPage.setIcons(backwardIcons);
+
+        for ( int i=0; i<directIcons.length; i++ ) {
+            directIcons[i] = null;
+        }
+
+        if ( directPageButtons!=null) {
+            for ( int i=0; i<directPageButtons.length; i++ ) {
+                directPageButtons[i].setIcons(directIcons);
+            }
+        }
     }
 
     /**
      * TODO: documentation
      */
-    protected final ActionListener scrollerAction = new ActionListener() {
+    protected final ActionListener scrollAction = new ActionListener() {
         /**
          * TODO: documentation
          *
          * @param e
          */
         public void actionPerformed(ActionEvent e) {
-            BoundedRangeModel model = getModel();
-
             if ( e.getSource()==forwardPage ) {
-                model.setValue(model.getValue()+model.getExtent());
+                setValue(getValue()+getExtent());
             }
             else if ( e.getSource()==backwardPage ) {
-                model.setValue(model.getValue()-model.getExtent());
+                setValue(getValue()-getExtent());
             }
             else { // check all Page Buttons
-                for (int i=0; i<directPageButtons.length; i++) {
-                    if ( e.getSource()==directPageButtons[i] ) {
+                String command = e.getActionCommand();
 
-                        // die Anzahl der maximalen Seiten anpassen auf Model Werte
-                        int directPages = Math.min(SPageScroller.this.directPages,
-                                                   model.getMaximum()/model.getExtent());
-
-                        int directStart = model.getValue() - (directPages/2)*model.getExtent();
-                        directStart = Math.max(directStart, model.getMinimum());
-                        directStart = Math.min(directStart, model.getMaximum()-
-                                               (directPages*model.getExtent()));
-
-                        model.setValue(i*model.getExtent()+directStart);
-
-                        break;
-                    }
+                try {
+                    int page = Integer.parseInt(command);
+                    setValue(page*getExtent());
+                } catch ( NumberFormatException ex ) {
+                    // ignore action...
                 }
             }
         }
@@ -269,11 +271,30 @@ public class SPageScroller
 
     /**
      * Sets the amount of page buttons to <code>count</code>.
+     */
+    public final int getDirectPages() {
+        return directPages;
+    }
+
+    /**
+     * Sets the amount of page buttons to <code>count</code>.
      * @param count : New amount of page buttons.
      */
     public void setDirectPages(int count) {
-        directPages = count;
-        initScrollers();
+        if ( directPages!=count ) {
+            directPages = count;
+            initScrollers();
+        }
+    }
+
+    /**
+     * TODO: documentation
+     *
+     */
+    protected SAbstractButton createDirectPageButton() {
+        SButton result = new SButton();
+        result.setBorder(DEFAULT_DIRECT_BUTTON_BORDER);
+        return result;
     }
 
     /**
@@ -281,18 +302,14 @@ public class SPageScroller
      *
      */
     protected void initScrollers() {
-        // Alte Buttons entfernen
-        if ( directPageButtons!=null )
-            for (int i = 0; i<directPageButtons.length; i++)
-                // alte Knoepfe entfernen, so vorhanden
-                if (directPageButtons[i] != null) {
-                    directPageButtons[i].removeActionListener(scrollerAction);
-                }
+        // remove old:
+        
+        buttonGroup.removeAll();
 
-        directPageButtons = new SButton[directPages];
+        directPageButtons = new SAbstractButton[directPages];
         for (int i = 0; i<directPageButtons.length; i++) {
-            directPageButtons[i] = new SButton();
-            directPageButtons[i].addActionListener(scrollerAction);
+            directPageButtons[i] = createDirectPageButton();
+            buttonGroup.add(directPageButtons[i]);
         }
 
         initLayout();
@@ -305,25 +322,31 @@ public class SPageScroller
     protected void initLayout() {
         removeAllComponents();
 
-        if ( orientation==SConstants.VERTICAL) {
+        SPanel middlePanel = null;
+        if ( layoutMode==SConstants.VERTICAL) {
             add(backwardPage, SBorderLayout.NORTH);
             add(forwardPage, SBorderLayout.SOUTH);
+            middlePanel = new SPanel(new SFlowDownLayout());
         }
         else {
             add(backwardPage, SBorderLayout.WEST);
             add(forwardPage, SBorderLayout.EAST);
+            middlePanel = new SPanel(new SFlowLayout());
         }
 
-        SPanel middlePanel = new SPanel(new SFlowLayout());
         add(middlePanel, SBorderLayout.CENTER);
-
 
         // Buttons fuer die Seiten einfuegen
         for (int i = 0; i<directPageButtons.length; i++) {
             middlePanel.add(directPageButtons[i]);
         }
 
+
         refreshComponents();
+    }
+
+    protected String formatDirectPageLabel(int page) {
+        return Integer.toString(page+1);
     }
 
     /**
@@ -331,51 +354,46 @@ public class SPageScroller
      *
      */
     protected void refreshComponents() {
-        BoundedRangeModel model = getModel();
-
-        // linker Rand
-        if (model.getValue() <= model.getMinimum()) {
-            backwardPage.setEnabled(false);
-        }
-        else {
-            backwardPage.setEnabled(true);
-        }
+        // lower bound
+        backwardPage.setEnabled(getValue() > getMinimum());
 
         // upper bound: maximum - extent
-        if (model.getValue() >= (model.getMaximum() - model.getExtent())) {
-            forwardPage.setEnabled(false);
-        }
-        else {
-            forwardPage.setEnabled(true);
-        }
+        forwardPage.setEnabled(getValue() < getMaximum()-getExtent());
 
-        // die Anzahl der maximalen Seiten anpassen auf Model Werte
-        int directPages = Math.min(this.directPages, model.getMaximum()/model.getExtent());
 
-        int directStart = model.getValue() - (directPages/2)*model.getExtent();
-        directStart = Math.max(directStart, model.getMinimum());
-        directStart = Math.min(directStart, model.getMaximum()-(directPages*model.getExtent()));
+        // overall pages 
+        int pages = (getMaximum()+(getExtent()-1)-getMinimum())/getExtent();
 
-        System.out.println(model);
-        System.out.println(directStart);
+        int actualPage = (getValue()-getMinimum()+getExtent()-1)/getExtent();
 
+        // prefer forward
+        int firstDirectPage = actualPage - (directPages-1)/2;
+        firstDirectPage = Math.min(firstDirectPage, pages-directPages);
+        firstDirectPage = Math.max(firstDirectPage, 0);
+
+        // reset alle page buttons
         for ( int i=0; i<directPageButtons.length; i++ ) {
-            directPageButtons[i].setText(""+(directStart/model.getExtent()+i+1));
+            directPageButtons[i].setVisible(false);
+        }
 
-            if ( directStart+((i+1)*model.getExtent())>model.getMaximum() ) {
-                directPageButtons[i].setVisible(false);
-            }
-            else {
-                directPageButtons[i].setVisible(true);
-            }
+        for ( int i=0; 
+              i<Math.min(directPageButtons.length, pages-firstDirectPage);
+              i++ ) {
 
-            if ( model.getValue()>=directStart+(i*model.getExtent()) &&
-                 model.getValue()<directStart+((i+1)*model.getExtent()) ) {
+            int page = firstDirectPage+i;
+
+            directPageButtons[i].setText(formatDirectPageLabel(page));
+            directPageButtons[i].setActionCommand(Integer.toString(page));
+            directPageButtons[i].setVisible(true);
+
+            if ( page==actualPage ) {
                 directPageButtons[i].setEnabled(false);
-            }
-            else {
+                directPageButtons[i].setSelected(true);
+            } else {
                 directPageButtons[i].setEnabled(true);
+                directPageButtons[i].setSelected(false);
             }
+            
         }
     }
 }
@@ -387,3 +405,6 @@ public class SPageScroller
  * compile-command: "ant -emacs -find build.xml"
  * End:
  */
+
+
+

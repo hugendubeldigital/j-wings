@@ -78,6 +78,11 @@ public abstract class AbstractAdjustable
     protected int blockIncrement;
 
     /**
+     * @see #setBlockIncrement
+     */
+    protected int orientation;
+
+    /**
      * TODO: documentation
      */
     protected final EventListenerList listenerList = new EventListenerList();
@@ -280,6 +285,15 @@ public abstract class AbstractAdjustable
         getModel().setValue(value);
     }
 
+    public final int getExtent() {
+        return getModel().getExtent();
+    }
+
+
+    public void setExtent(int value) {
+        getModel().setExtent(value);
+    }
+
 
     /**
      * Returns the scrollbar's extent, aka its "visibleAmount".  In many
@@ -358,6 +372,36 @@ public abstract class AbstractAdjustable
     public void setMaximum(int maximum) {
         getModel().setMaximum(maximum);
     }
+
+    /**
+     * Returns the adjustable's orientation (horizontal or vertical).
+     *
+     * @return VERTICAL or HORIZONTAL
+     * @see #setOrientation
+     * @see java.awt.Adjustable#getOrientation
+     */
+    public final int getOrientation() {
+        return orientation;
+    }
+
+    /**
+     * Set the scrollbar's orientation to either VERTICAL or
+     * HORIZONTAL.
+     *
+     * @exception IllegalArgumentException if orientation is not one of VERTICAL, HORIZONTAL
+     * @see #getOrientation
+     */
+    public void setOrientation(int orientation) {
+        switch (orientation) {
+        case SConstants.VERTICAL:
+        case SConstants.HORIZONTAL:
+            this.orientation = orientation;
+            break;
+        default:
+            throw new IllegalArgumentException("orientation must be one of: VERTICAL, HORIZONTAL");
+        }
+    }
+
 
 
     /**

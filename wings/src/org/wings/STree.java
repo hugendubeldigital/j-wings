@@ -1024,8 +1024,8 @@ public class STree
      *
      * @return maximum size
      */
-    public Dimension getScrollableViewportSize() {
-        return new Dimension(1, getRowCount());
+    public Rectangle getScrollableViewportSize() {
+        return new Rectangle(0,0, 1, getRowCount());
     }
 
     /*
@@ -1051,6 +1051,10 @@ public class STree
      */
     public Rectangle getViewportSize() {
         return viewport;
+    }
+
+    public Dimension getPreferredExtent() {
+        return null;
     }
 
     /**

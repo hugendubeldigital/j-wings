@@ -76,6 +76,10 @@ public class SList
     protected boolean[] oldSelection = null;
 
     protected EventListenerList listenerList = new EventListenerList();
+
+    /**
+     *
+     */
     private Rectangle viewport = null;
 
     /**
@@ -984,8 +988,8 @@ public class SList
      *
      * @return the scrollable viewport dimension
      */
-    public Dimension getScrollableViewportSize() {
-        return new Dimension(1, dataModel.getSize());
+    public Rectangle getScrollableViewportSize() {
+        return new Rectangle(0, 0, 1, dataModel.getSize());
     }
 
     /**
@@ -993,11 +997,10 @@ public class SList
      * @param d the visible viewport size
      */
     public void setViewportSize(Rectangle d) {
-        Rectangle oldViewport = viewport; 
-        viewport = d;
-        if ((viewport == null && oldViewport != null) ||
-            (viewport != null && !viewport.equals(oldViewport)))
+        if ( isDifferent(viewport, d) ) {
+            viewport = d;
             reload(ReloadManager.RELOAD_CODE);
+        }
     }
 
     /**
@@ -1005,7 +1008,11 @@ public class SList
      *
      * @return the visible viewport size
      */
-    public Rectangle getViewportSize() { return viewport; }
+    public final Rectangle getViewportSize() { return viewport; }
+
+    public Dimension getPreferredExtent() {
+        return new Dimension(1, Math.min(getVisibleRowCount(), getModel().getSize()));
+    }
 
 
     public void setParent(SContainer p) {

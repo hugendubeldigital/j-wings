@@ -26,9 +26,42 @@ import javax.swing.event.ChangeListener;
  * @version $Revision$
  */
 public interface Scrollable {
-    Dimension getScrollableViewportSize();
+
+    /**
+     * is the size of the component in respect to scrollable units. e.g. a 
+     * {@link STable}
+     * has the scrollable viewport size:
+     * <pre>
+     * new Dimension(table.getColumnCount(), table.getRowCount())
+     * </pre>
+     * a {@link SList}:
+     * <pre>
+     * new Dimension(1, list.getModel().getSize())
+     * </pre>
+     */
+    Rectangle getScrollableViewportSize();
+
+    /**
+     * set the visible part of a scrollable.
+     */
     void setViewportSize(Rectangle d);
+
+    /**
+     * get the actual visible part of a scrollable. This may be valid only at
+     * rendering time. In fact, inside a {@link SScrollPane} 
+     * synchronization with the adjustables is done
+     * short before component it rendered...
+     * You should never rely this values. This method is mainly needed to backup
+     * viewports...
+     */
     Rectangle getViewportSize();
+
+    /**
+     * if scrolling is activated, the component can suggest it's extent. 
+     * @return null if no preference
+     */
+    Dimension getPreferredExtent();
+
 }
 
 /*

@@ -50,6 +50,12 @@ public class SBaseTable
     private static final String cgClassID = "BaseTableCG";
 
     /**
+     * The default model which is used if someone sets the model to null.
+     */
+    protected final static TableModel defaultModel = new DefaultTableModel();
+
+
+    /**
      * The default renderer is used if no other renderer is set for the
      * content of a cell.
      */
@@ -57,11 +63,6 @@ public class SBaseTable
 
     /** The header renderer is used for the header line */
     protected STableCellRenderer headerRenderer;
-
-    /**
-     * The default model which is used if someone sets the model to null.
-     */
-    protected final static TableModel defaultModel = new DefaultTableModel();
 
     /**
      * The table model.
@@ -580,8 +581,8 @@ public class SBaseTable
      *
      * @return maximum size
      */
-    public Dimension getScrollableViewportSize() {
-        return new Dimension(getColumnCount(), getRowCount());
+    public Rectangle getScrollableViewportSize() {
+        return new Rectangle(0, 0, getColumnCount(), getRowCount());
     }
 
     /*
@@ -593,11 +594,10 @@ public class SBaseTable
      * @param d
      */
     public void setViewportSize(Rectangle d) {
-        Rectangle oldViewport = viewport;
-        viewport = d;
-        if ((viewport == null && oldViewport != null) ||
-            viewport != null && !viewport.equals(oldViewport))
+        if ( isDifferent(viewport, d) ) {
+            viewport = d;
             reload(ReloadManager.RELOAD_CODE);
+        }
     }
 
     /**
@@ -607,6 +607,10 @@ public class SBaseTable
      */
     public Rectangle getViewportSize() {
         return viewport;
+    }
+
+    public Dimension getPreferredExtent() {
+        return null;
     }
 
 

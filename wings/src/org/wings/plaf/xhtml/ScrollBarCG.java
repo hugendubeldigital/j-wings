@@ -55,8 +55,10 @@ public class ScrollBarCG
         
         SScrollBar sb = (SScrollBar)c;
 
+        d.print("<table cellspacing=\"2\" cellpadding=\"0\" border=\"0\"><tr>");
         writePrefix(d, sb);
         writePostfix(d, sb);
+        d.print("</tr></table>");
     }
 
     protected void writePrefix(Device d, SContainer container)

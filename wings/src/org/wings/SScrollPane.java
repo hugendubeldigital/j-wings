@@ -38,24 +38,50 @@ public class SScrollPane
     private static final String cgClassID = "ScrollPaneCG";
 
     /**
+     * store the scrollables viewport. Scrollable is reset to this value, if it
+     * is removed from the this scrollpane
+     */
+    protected Rectangle backupViewport;
+
+    /**
      * The element which should be scrolled.
      */
     protected Scrollable scrollable;
 
-    protected int horizontalExtent = 10;
-    protected int verticalExtent = 10;
+    /**
+     *
+     */
+    protected int horizontalScrollBarPolicy = HORIZONTAL_SCROLLBAR_AS_NEEDED;
+
+    /**
+     *
+     */
+    protected int verticalScrollBarPolicy = VERTICAL_SCROLLBAR_AS_NEEDED;
     
-    protected static int horizontalScrollBarPolicy = HORIZONTAL_SCROLLBAR_AS_NEEDED;
-    protected static int verticalScrollBarPolicy = VERTICAL_SCROLLBAR_AS_NEEDED;
-    
-    protected SScrollBar verticalScrollBar = null;
-    protected SScrollBar horizontalScrollBar = null;
+    /**
+     *
+     */
+    protected Adjustable verticalScrollBar = null;
+
+    /**
+     *
+     */
+    protected Adjustable horizontalScrollBar = null;
 
     /**
      * Sets the new viewport of the scrollable
      */
-    AdjustmentListener adjustmentListener;
+    protected AdjustmentListener adjustmentListener;
 
+    /**
+     *
+     */
+    protected int horizontalExtent = 10;
+
+    /**
+     *
+     */
+    protected int verticalExtent = 10;
 
     /**
      * TODO: documentation
@@ -63,14 +89,10 @@ public class SScrollPane
      * @param c
      */
     public SScrollPane() {
+        super(new SBorderLayout());
 
         setHorizontalScrollBar(new SScrollBar(SConstants.HORIZONTAL));
         setVerticalScrollBar(new SScrollBar(SConstants.VERTICAL));
-
-        verticalScrollBar.addAdjustmentListener(getAdjustmentListener());
-        horizontalScrollBar.addAdjustmentListener(getAdjustmentListener());
-
-        // updateCG();
     }
 
     /**
@@ -80,14 +102,8 @@ public class SScrollPane
      */
     public SScrollPane(SComponent c) {
         this();
-        add(c);
-        /*
-        horizontalScrollBar = new SScrollBar(SConstants.HORIZONTAL);
-        this.addComponent( horizontalScrollBar );
 
-        SScrollBar verticalScrollBar = new SScrollBar(SConstants.VERTICAL);
-        this.addComponent( verticalScrollBar );
-        */
+        add(c);
     }
 
     public AdjustmentListener getAdjustmentListener() {
@@ -95,22 +111,7 @@ public class SScrollPane
             adjustmentListener = new AdjustmentListener() {
                     public void adjustmentValueChanged(AdjustmentEvent e) {
                         if (scrollable != null) {
-                            Adjustable adjustable = e.getAdjustable();
-                            Rectangle viewport = scrollable.getViewportSize();
-
-                            if (adjustable.getOrientation() == Adjustable.HORIZONTAL) {
-                                viewport.x     = adjustable.getValue();
-                                viewport.width = Math.min(adjustable.getMaximum(),
-                                                          adjustable.getValue() +
-                                                          adjustable.getVisibleAmount());
-                            }
-                            else {
-                                viewport.y      = adjustable.getValue();
-                                viewport.height = Math.min(adjustable.getMaximum(),
-                                                           adjustable.getValue() +
-                                                           adjustable.getVisibleAmount());
-                            }
-                            scrollable.setViewportSize(viewport);
+                            synchronizeViewport();
                         }
                     }
                 };
@@ -119,83 +120,135 @@ public class SScrollPane
     }
 
     /**
+     * synchronize viewport of scrollable with settings of adjustables
+     */
+    public void synchronizeAdjustables() {
+        if ( scrollable==null ) return;
+
+        Rectangle viewport = scrollable.getViewportSize();
+        Rectangle maxViewport = scrollable.getScrollableViewportSize();
+
+        if ( viewport==null ) viewport = maxViewport;
+
+        if ( getHorizontalScrollBar()!=null &&
+             getHorizontalScrollBarPolicy()!=HORIZONTAL_SCROLLBAR_NEVER ) {
+            adjustAdjustable(getHorizontalScrollBar(), viewport, 
+                             maxViewport);
+        }        
+
+        if ( getVerticalScrollBar()!=null &&
+             getVerticalScrollBarPolicy()!=VERTICAL_SCROLLBAR_NEVER ) {
+            adjustAdjustable(getVerticalScrollBar(), viewport, 
+                             maxViewport);
+        }
+
+    }
+
+    protected void adjustAdjustable(Adjustable adjustable, Rectangle viewport, 
+                                    Rectangle maxViewport) {
+        if (adjustable.getOrientation() == Adjustable.HORIZONTAL) {
+            adjustable.setValue(viewport.x);
+            adjustable.setMaximum(maxViewport.x+maxViewport.width);
+            adjustable.setMinimum(maxViewport.x);
+            adjustable.setVisibleAmount(getHorizontalExtent());
+        } else if (adjustable.getOrientation() == Adjustable.VERTICAL) {
+            adjustable.setValue(viewport.y);
+            adjustable.setMaximum(maxViewport.y+maxViewport.height);
+            adjustable.setMinimum(maxViewport.y);
+            adjustable.setVisibleAmount(getVerticalExtent());
+        }
+    }
+
+    /**
+     * synchronize viewport of scrollable with settings of adjustables
+     */
+    public void synchronizeViewport() {
+        Rectangle viewport = scrollable.getScrollableViewportSize();
+        
+        // should never happen. If it happen we got a serious problem, because
+        // we cannot determine what to scroll...
+        if ( viewport==null ) viewport = new Rectangle();
+
+        if ( getHorizontalScrollBar()!=null &&
+             getHorizontalScrollBarPolicy()!=HORIZONTAL_SCROLLBAR_NEVER ) {
+            adjustViewport(viewport, getHorizontalScrollBar());
+        } 
+
+        if ( getVerticalScrollBar()!=null &&
+             getVerticalScrollBarPolicy()!=VERTICAL_SCROLLBAR_NEVER ) {
+            adjustViewport(viewport, getVerticalScrollBar());
+        }
+
+        scrollable.setViewportSize(viewport);
+    }
+
+    protected void adjustViewport(Rectangle viewport, Adjustable adjustable) {
+        if (adjustable.getOrientation() == Adjustable.HORIZONTAL) {
+            int extent     = getHorizontalExtent();
+
+            viewport.x     = Math.min(adjustable.getMaximum(),
+                                      adjustable.getValue());
+            viewport.x     = Math.max(adjustable.getMinimum(), 
+                                      viewport.x);
+            viewport.width = Math.min(adjustable.getMaximum()-viewport.x,
+                                      extent);
+            viewport.width = Math.max(0, viewport.width);
+        }
+        else {
+            int extent     = getVerticalExtent();
+
+            viewport.y     = Math.min(adjustable.getMaximum(),
+                                      adjustable.getValue());
+            viewport.y     = Math.max(adjustable.getMinimum(), 
+                                      viewport.y);
+            viewport.height = Math.min(adjustable.getMaximum()-viewport.y,
+                                       extent);
+            viewport.height = Math.max(0, viewport.height);
+        }    
+
+    }
+
+    /**
      * TODO: documentation
      *
      * @param c
      */
     protected void setScrollable(SComponent c) {
+        if ( scrollable!=null ) {
+            // reset to original value
+            scrollable.setViewportSize(backupViewport);
+        }
+
         if (c instanceof Scrollable && c != null) {
             scrollable = (Scrollable)c;
-            Rectangle viewport = new Rectangle(0, 0, horizontalExtent, verticalExtent);
-            scrollable.setViewportSize(viewport);
-        }
-        else {
+
+            // keep original value
+            backupViewport = scrollable.getViewportSize();
+
+            synchronizeViewport();
+        } else {
             scrollable = null;
         }
+
+        reload(ReloadManager.RELOAD_CODE);
     }
 
-    public Scrollable getScrollable() { return scrollable; }
+    public final Scrollable getScrollable() { 
+        return scrollable; 
+    }
 
+    /**
+     * only {@link Scrollable scrollables} are allowed here!
+     */
     public SComponent addComponent(SComponent c, Object constraint, int index) {
-        SComponent ret;
         if (c instanceof Scrollable) {
             removeComponent((SComponent)scrollable);
-            ret = super.addComponent(c, constraint, index);
+            SComponent ret = super.addComponent(c, SBorderLayout.CENTER, index);
             setScrollable(ret);
+            return ret;
+        } else {
+            throw new IllegalArgumentException("Only Scrollables are allowed");
         }
-        else {
-            ret = super.addComponent(c, constraint, index);
-        }
-        return ret;
-    }
-
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void write(Device d)
-        throws IOException
-    {
-        if (visible)
-            cg.write(d, this);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param horizontalExtent
-     */
-    public void setHorizontalExtent(int horizontalExtent) {
-        this.horizontalExtent = horizontalExtent;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public int getHorizontalExtent() {
-        return horizontalExtent;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param verticalExtent
-     */
-    public void setVerticalExtent(int verticalExtent) {
-        this.verticalExtent = verticalExtent;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public int getVerticalExtent() {
-        return verticalExtent;
     }
 
     public String getCGClassID() {
@@ -210,7 +263,7 @@ public class SScrollPane
      * Returns the horizontal scroll bar.
      * @returns the scrollbar that controls the viewports horizontal view position
      */
-    public SScrollBar getHorizontalScrollBar() {
+    public Adjustable getHorizontalScrollBar() {
         return horizontalScrollBar;
     }
 
@@ -218,22 +271,34 @@ public class SScrollPane
      * Set the horizontal scroll bar.
      * @param sb the scrollbar that controls the viewports horizontal view position
      */
-    public void setHorizontalScrollBar(SScrollBar sb) {
+    public void setHorizontalScrollBar(Adjustable sb) {
         if (horizontalScrollBar!=null) {
-            horizontalScrollBar.removeAdjustmentListener(this.getAdjustmentListener());
-            removeComponent(horizontalScrollBar);
+            horizontalScrollBar.removeAdjustmentListener(getAdjustmentListener());
+            if ( horizontalScrollBar instanceof SComponent )
+                removeComponent((SComponent)horizontalScrollBar);
         }
         horizontalScrollBar = sb;
-        addComponent(horizontalScrollBar);
-        horizontalScrollBar.addAdjustmentListener(this.getAdjustmentListener());
+
+        if ( horizontalScrollBar!=null ) {
+            if ( horizontalScrollBar instanceof SComponent ) {
+                super.addComponent((SComponent)horizontalScrollBar,
+                                   SBorderLayout.SOUTH, 
+                                   getComponentCount());
+            }
+
+            synchronizeAdjustables();
+            horizontalScrollBar.addAdjustmentListener(getAdjustmentListener());
+        }
+
+        reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
      * Returns the horizontal scroll bar policy value.
-     * @returns the horizontal scrollbar policy.
+     * @returns the horizontal scrollbar policy. 
      * @see #setHorizontalScrollBarPolicy(int)
      */
-    public int getHorizontalScrollBarPolicy() {
+    public final int getHorizontalScrollBarPolicy() {
         return horizontalScrollBarPolicy;
     }
 
@@ -241,7 +306,7 @@ public class SScrollPane
      * Returns the vertical scroll bar.
      * @returns the scrollbar that controls the viewports vertical view position
      */
-    public SScrollBar getVerticalScrollBar() {
+    public final Adjustable getVerticalScrollBar() {
         return verticalScrollBar;
     }
 
@@ -249,14 +314,27 @@ public class SScrollPane
      * Set the vertical scroll bar.
      * @param sb the scrollbar that controls the viewports vertical view position
      */
-    public void setVerticalScrollBar(SScrollBar sb) {
+    public void setVerticalScrollBar(Adjustable sb) {
         if (verticalScrollBar!=null) {
-            verticalScrollBar.removeAdjustmentListener(this.getAdjustmentListener());
-            removeComponent(verticalScrollBar);
+            verticalScrollBar.removeAdjustmentListener(getAdjustmentListener());
+            if ( verticalScrollBar instanceof SComponent )
+                removeComponent((SComponent)verticalScrollBar);
         }
+
         verticalScrollBar = sb;
-        addComponent(verticalScrollBar);
-        verticalScrollBar.addAdjustmentListener(this.getAdjustmentListener());
+
+        if ( verticalScrollBar!=null ) {
+            if ( verticalScrollBar instanceof SComponent ) {
+                super.addComponent((SComponent)verticalScrollBar,
+                                   SBorderLayout.EAST,
+                                   getComponentCount());
+            }
+
+            synchronizeAdjustables();
+            verticalScrollBar.addAdjustmentListener(getAdjustmentListener());
+        }
+
+        reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -264,7 +342,7 @@ public class SScrollPane
      * @returns the vertical scrollbar policy.
      * @see #setVerticalScrollBarPolicy(int)
      */
-    public int getVerticalScrollBarPolicy() {
+    public final int getVerticalScrollBarPolicy() {
         return verticalScrollBarPolicy;
     }
 
@@ -276,7 +354,10 @@ public class SScrollPane
      * <li><code>SScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS</code></li>
      */
     public void setHorizontalScrollBarPolicy( int policy) {
-        horizontalScrollBarPolicy = policy;
+        if ( policy!=horizontalScrollBarPolicy ) {
+            horizontalScrollBarPolicy = policy;
+            reload(ReloadManager.RELOAD_CODE);
+        }
     }
 
     /**
@@ -287,7 +368,10 @@ public class SScrollPane
      * <li><code>SScrollPane.VERTICAL_SCROLLBAR_ALWAYS</code></li>
      */
     public void setVerticalScrollBarPolicy(int policy) {
-        verticalScrollBarPolicy = policy;
+        if ( policy!=verticalScrollBarPolicy) {
+            verticalScrollBarPolicy = policy;
+            reload(ReloadManager.RELOAD_CODE);
+        }
     }
 
     /**
@@ -296,9 +380,65 @@ public class SScrollPane
      */
     public void setPreferredSize(SDimension dim) {
         super.setPreferredSize(dim);
-        horizontalScrollBar.setPreferredSize(dim);
-        verticalScrollBar.setPreferredSize(dim);
+        if ( horizontalScrollBar instanceof SComponent ) {
+            ((SComponent)horizontalScrollBar).setPreferredSize(dim);
+        }
+        if ( verticalScrollBar instanceof SComponent ) {
+            ((SComponent)verticalScrollBar).setPreferredSize(dim);
+        }
     }
+
+     /**
+      * TODO: documentation
+      *
+      * @param horizontalExtent
+      */
+     public void setHorizontalExtent(int horizontalExtent) {
+         this.horizontalExtent = horizontalExtent;
+     }
+ 
+     /**
+      * TODO: documentation
+      *
+      * @return
+      */
+     public final int getHorizontalExtent() {
+         if ( scrollable!=null ) {
+             Dimension preferredExtent = scrollable.getPreferredExtent();
+             if ( preferredExtent!=null && preferredExtent.width>0 &&
+                  preferredExtent.width<horizontalExtent ) {
+                 return preferredExtent.width;
+             }
+         }
+         return horizontalExtent;
+     }
+ 
+     /**
+      * TODO: documentation
+      *
+      * @param verticalExtent
+      */
+     public void setVerticalExtent(int verticalExtent) {
+         this.verticalExtent = verticalExtent;
+     }
+ 
+     /**
+      * TODO: documentation
+      *
+      * @return
+      */
+     public final int getVerticalExtent() {
+         if ( scrollable!=null ) {
+             Dimension preferredExtent = scrollable.getPreferredExtent();
+             if ( preferredExtent!=null && preferredExtent.height>0 &&
+                  preferredExtent.height<verticalExtent ) {
+                 return preferredExtent.height;
+             }
+         }
+
+         return verticalExtent;
+     }
+
 }
 
 /*
