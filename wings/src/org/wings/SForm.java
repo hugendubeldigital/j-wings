@@ -151,9 +151,9 @@ public class SForm
      * <ul>
      * <li> Java Script submit() event</li>
      * <li> If a form contains a single text input, then many browsers
-     *      submit the form, if the user presses RETURN in this field. In that
-     *      case, you won't get any event at the submit button, but you will
-     *      get a form event.
+     *      submit the form, if the user presses RETURN in that field. In that
+     *      case, the submit button will <em>not</em> receive any event but
+     *      only the form.
      * <li> The {@link SFileChooser} will trigger a form event, if the file 
      *      size exceeded the allowed size. In that case, even if the submit
      *      button has been pressed, no submit-button event will be triggered.

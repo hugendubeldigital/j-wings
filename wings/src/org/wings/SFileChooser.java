@@ -173,10 +173,10 @@ public class SFileChooser
      * <p>In any case, you hould check the result, since you cannot assume,
      * that the browser
      * actually does filter. Worse, browsers may not guess the
-     * correct type so users cannot upload a file even if has the correct
+     * correct type so users cannot upload a file even if it has the correct
      * type. So, bottomline, it is generally a good idea to let the file 
-     * name filter untouched, unless you know browser at the other end
-     * of the wire...
+     * name filter untouched, unless you know bugs of the browser at the 
+     * other end of the wire...
      *
      * @param mimeFilter the mime type to be filtered.
      */
@@ -196,7 +196,7 @@ public class SFileChooser
     }
 
     /**
-     * @deprecated use getFileName()
+     * @deprecated use {@link #getFileName()}
      */
     public String getFilename() throws IOException {
         return getFileName();
@@ -207,6 +207,9 @@ public class SFileChooser
      * upload text-field.
      *
      * @return the filename, given by the user.
+     * @exception IOException if something went wrong with the upload (most
+     *            likely, the maximum allowed filesize is exceeded, see
+     *            {@link org.wings.session.Session#setMaxContentLength(int)})
      */
     public String getFileName() throws IOException {
         if ( exception!=null )
@@ -216,7 +219,7 @@ public class SFileChooser
     }
 
     /**
-     * @deprecated use getFileDir()
+     * @deprecated use {@link #getFileDir()}
      */
     public String getFiledir() throws IOException {
         return getFileDir();
@@ -229,6 +232,9 @@ public class SFileChooser
      * since the SFileChooser does its own garbage collecting of unused files.
      *
      * @return the pathname of the system directory, the file is stored in.
+     * @exception IOException if something went wrong with the upload (most
+     *            likely, the maximum allowed filesize is exceeded, see
+     *            {@link org.wings.session.Session#setMaxContentLength(int)})
      */
     public String getFileDir() throws IOException {
         if ( exception!=null )
@@ -238,7 +244,7 @@ public class SFileChooser
     }
 
     /**
-     * @deprecated use getFileId()
+     * @deprecated use {@link #getFileId()}
      */
     public String getFileid() throws IOException {
         return getFileId();
@@ -252,6 +258,10 @@ public class SFileChooser
      * does its own garbage collecting of unused files.
      *
      * @return the internal, unique file id given to the uploaded file.
+     * @exception IOException if something went wrong with the upload (most
+     *            likely, the maximum allowed filesize is exceeded, see
+     *            {@link org.wings.session.Session#setMaxContentLength(int)})
+
      */
     public String getFileId() throws IOException {
         if ( exception!=null )
@@ -261,7 +271,7 @@ public class SFileChooser
     }
 
     /**
-     * @deprecated use getFileType()
+     * @deprecated use {@link #getFileType()}
      */
     public String getFiletype() throws IOException {
         return getFileType();
@@ -271,6 +281,9 @@ public class SFileChooser
      * Returns the mime type of this file, if known.
      *
      * @return the mime type of this file.
+     * @exception IOException if something went wrong with the upload (most
+     *            likely, the maximum allowed filesize is exceeded, see
+     *            {@link org.wings.session.Session#setMaxContentLength(int)})
      */
     public String getFileType() throws IOException {
         if ( exception!=null )
@@ -280,9 +293,12 @@ public class SFileChooser
     }
 
     /**
-     * TODO: documentation
+     * pseudonym for {@link #getFile()} (see there).
      *
-     * @return
+     * @return a File to access the content of the uploaded file.
+     * @exception IOException if something went wrong with the upload (most
+     *            likely, the maximum allowed filesize is exceeded, see
+     *            {@link org.wings.session.Session#setMaxContentLength(int)})
      */
     public File getSelectedFile() throws IOException {
         return getFile();
@@ -311,7 +327,7 @@ public class SFileChooser
      * read from the file uploaded by the user. Don't use this method
      * to query the actual filename given by the user, since this file
      * wraps a system generated file with a different (unique) name.
-     * Use {@link #getFilename()} instead.
+     * Use {@link #getFileName()} instead.
      *
      * <p>The file returned here
      * will delete itself if you loose the reference to it and it is
@@ -323,6 +339,9 @@ public class SFileChooser
      * be removed from the filesystem.
      *
      * @return a File to access the content of the uploaded file.
+     * @exception IOException if something went wrong with the upload (most
+     *            likely, the maximum allowed filesize is exceeded, see
+     *            {@link org.wings.session.Session#setMaxContentLength(int)})
      */
     public File getFile() throws IOException {
         if ( exception!=null )
