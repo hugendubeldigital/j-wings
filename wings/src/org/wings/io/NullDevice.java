@@ -23,43 +23,74 @@ import java.io.IOException;
  */
 public class NullDevice implements Device
 {
+    private long byteCount;
+
+    public NullDevice() {
+        byteCount = 0;
+    }
+
     /**
      * Flush this Device.
      */
     public void flush () { }
+    
+    /**
+     * returns the number of bytes written to this data sink.
+     */
+    public long getSize() { return byteCount; }
+
+    /**
+     * reset the number of bytes to zero.
+     */
+    public void resetSize() { byteCount = 0; }
 
     /**
      * Print a character.
      */
-    public Device print (char c) { return this; }
+    public Device print (char c) { ++byteCount; return this; }
 
     /**
      * Print a character array.
      */
-    public Device print (char[] c) { return this; }
+    public Device print (char[] c) { 
+        if (c != null) byteCount += c.length;
+        return this; 
+    }
 
     /**
      * Print len characters from the specified char array starting at offset
      * off to this Device.
      */
-    public Device print (char[] c, int start, int len) { return this; }
+    public Device print (char[] c, int start, int len) { 
+        byteCount += len;
+        return this; 
+    }
 
     //-- print basic objects --
 
     /**
      * Print a String.
      */
-    public Device print (String s) { return this; }
+    public Device print (String s) { 
+        if (s != null) byteCount += s.length();
+        return this; 
+    }
 
     /**
      * Print an integer.
      */
-    public Device print (int i) { return this; }
+    public Device print (int i) { 
+        byteCount += String.valueOf(i).length();
+        return this; 
+    }
 
     /**
      * Print any Object
      */
-    public Device print (Object o) { return this; }
+    public Device print (Object o) { 
+        if (o != null) byteCount += o.toString().length();
+        return this; 
+    }
 
     /*-------------*
      ** Methods which write raw bytes to the Device. Much like an OutputStream.
@@ -68,19 +99,28 @@ public class NullDevice implements Device
     /**
      * Writes the specified byte to this data output stream.
      */
-    public Device write (int c) { return this; }
+    public Device write (int c) { 
+        ++byteCount;
+        return this; 
+    }
 
     /**
      * Writes b.length bytes from the specified byte array to this
      * output stream.
      */
-    public Device write(byte b[]) { return this; }
+    public Device write(byte b[]) { 
+        if (b != null) byteCount += b.length;
+        return this; 
+    }
 
     /**
      * Writes len bytes from the specified byte array starting at offset
      * off to this Device.
      */
-    public Device write(byte b[], int off, int len) { return this; }
+    public Device write(byte b[], int off, int len) {
+        if (b != null) byteCount += len;
+        return this; 
+    }
 }
 
 /*
