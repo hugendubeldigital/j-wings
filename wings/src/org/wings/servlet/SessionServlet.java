@@ -559,10 +559,24 @@ public abstract class SessionServlet
                 if (events)
                     SForm.fireEvents();
 
+                if (DEBUG) {
+                    measure.stop();
+                    measure.start("time to process request");
+                }
+
+                if (events)
+                    processRequest(asreq, response);
+
                 // if the user chose to exit the session as an reaction on an
                 // event, we got an URL to redirect after the session.
                 /*
-// where is the right place?
+                 * where is the right place?
+                 * The right place is _after_ we processed the events 
+                 * (e.g. the 'Pressed Exit-Button'-event or gave
+                 * the user the chance to exit this session in the custom
+                 * processRequest(), but _before_ the rendering of the page,
+                 * because otherwise an redirect won't work.
+                 */
                 if (afterSessionURL != null) {
                     req.getSession().invalidate(); // calls destroy implicitly
                     if (afterSessionURL.length() > 0)
@@ -572,15 +586,6 @@ public abstract class SessionServlet
                                               .toString());
                     return;
                 }
-                */
-
-                if (DEBUG) {
-                    measure.stop();
-                    measure.start("time to process request");
-                }
-
-                if (events)
-                    processRequest(asreq, response);
 
                 // invalidate frames and resources
                 if (events)
