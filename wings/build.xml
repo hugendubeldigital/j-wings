@@ -60,6 +60,16 @@
             <classpath refid="build.classpath"/>
         </javac>
     </target>
+	
+	<target depends="prepare,claf-compile" name="src.jar" 
+		description="Packs a wings-src.jar with all needed source for debugging">
+        <jar jarfile="${dist.src}/wings-src.jar">
+            <fileset dir="src">
+                <exclude name="**/CVS/**"/>
+            </fileset>
+            <fileset dir="${build.src}" />       	
+        </jar>		
+	</target>
 
     <target depends="wings.jar" name="jar"/>
 
@@ -246,13 +256,14 @@
         </delete>
     </target>
 
-    <target depends="clean,build" description="re-build everything" name="all"/>
+    <target depends="clean,build,src.jar" description="re-build everything" name="all"/>
     <target depends="build" description="build changed files" name="main"/>
 
     <!-- target name="demo" depends="build" description="build demo">
       <ant dir="demo"/>
     </target -->
-</project><!--
+</project>
+<!--
  Local variables:
  compile-command: "ant -emacs -find build.xml"
  End:
