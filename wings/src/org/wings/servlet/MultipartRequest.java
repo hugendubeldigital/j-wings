@@ -52,7 +52,6 @@ public class MultipartRequest
 {
     private static final int DEFAULT_MAX_POST_SIZE = 1024 * 1024;  // 1 Meg
 
-    private File dir;
     private int maxSize;
     private boolean urlencodedRequest;
 
@@ -65,9 +64,8 @@ public class MultipartRequest
      * @exception IOException if the uploaded content is larger than 1 Megabyte
      * or there's a problem reading or parsing the request
      */
-    public MultipartRequest(HttpServletRequest request,
-                            String filedir) throws IOException {
-        this(request, filedir, DEFAULT_MAX_POST_SIZE);
+    public MultipartRequest(HttpServletRequest request) throws IOException {
+        this(request, DEFAULT_MAX_POST_SIZE);
     }
 
     /**
@@ -78,25 +76,15 @@ public class MultipartRequest
      * <tt>maxPostSize</tt> or there's a problem reading or parsing the request
      */
     public MultipartRequest(HttpServletRequest request,
-                            String filedir,
                             int maxPostSize) throws IOException {
         super (request);
 
         if (request == null)
             throw new IllegalArgumentException("request cannot be null");
-        if (filedir == null)
-            throw new IllegalArgumentException("filedir cannot be null");
         if (maxPostSize <= 0)
             throw new IllegalArgumentException("maxPostSize must be positive");
 
-        dir = new File(filedir);
         maxSize = maxPostSize;
-
-        // check if dir is a directory and is writeable
-        if (!dir.isDirectory())
-            throw new IllegalArgumentException("Not a directory: " + filedir);
-        if (!dir.canWrite())
-            throw new IllegalArgumentException("Not writable: " + filedir);
 
         processRequest(request);
     }
@@ -321,11 +309,13 @@ public class MultipartRequest
                     }
                     String name = (String)headers.get("name");
                     String contentType = (String)headers.get("content-type");
-                    UploadedFile upload = new UploadedFile(dir.toString(), filename, contentType);
-                    String id = upload.getId();
 
-                    File file = new File(dir.toString(), id);
+                    File file = File.createTempFile("wings_uploaded","tmp");
+
+                    UploadedFile upload = new UploadedFile(filename,
+                                                           contentType, file);
                     OutputStream fileStream = new FileOutputStream(file);
+
                     fileStream = UploadFilterManager.createFilterInstance(name, fileStream);
 
                     AccessibleByteArrayOutputStream byteArray = new AccessibleByteArrayOutputStream();
@@ -617,16 +607,14 @@ public class MultipartRequest
     //
     class UploadedFile
     {
-        private String dir;
         private String filename;
         private String type;
-        private String id;
+        private File uploadedFile;
 
-        UploadedFile(String dir, String filename, String type) {
-            this.dir = dir;
+        UploadedFile(String filename, String type, File f) {
+            this.uploadedFile = f;
             this.filename = filename;
             this.type = type;
-            this.id = MultipartRequest.uniqueId();
         }
 
         /**
@@ -635,7 +623,10 @@ public class MultipartRequest
          * @return
          */
         public String getDir() {
-            return dir;
+            if ( uploadedFile!=null )
+                return uploadedFile.getPath();
+            else
+                return null;
         }
 
         /**
@@ -660,23 +651,21 @@ public class MultipartRequest
          *
          * @return
          */
-        public String getId() {
-            return id;
+        public File getFile() {
+            return uploadedFile;
         }
 
         /**
-         * TODO: documentation
          *
          * @return
          */
-        public File getFile() {
-            if (dir == null || filename == null) {
+        public String getId() {
+            if ( uploadedFile!=null )
+                return uploadedFile.getName();
+            else
                 return null;
-            }
-            else {
-                return new File(dir, id);
-            }
         }
+
 
         /**
          * TODO: documentation
@@ -686,7 +675,7 @@ public class MultipartRequest
         public String toString() {
             StringBuffer buffer = new StringBuffer();
             buffer.append("dir=");
-            buffer.append(URLEncoder.encode(dir));
+            buffer.append(URLEncoder.encode(getDir()));
             if (filename != null) {
                 buffer.append("&name=");
                 buffer.append(URLEncoder.encode(filename));
@@ -696,7 +685,7 @@ public class MultipartRequest
                 buffer.append(URLEncoder.encode(type));
             }
             buffer.append("&id=");
-            buffer.append(URLEncoder.encode(id));
+            buffer.append(URLEncoder.encode(getId()));
 
             return buffer.toString();
         }
@@ -709,3 +698,4 @@ public class MultipartRequest
  * indent-tabs-mode: nil
  * End:
  */
+
