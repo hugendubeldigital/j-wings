@@ -217,7 +217,7 @@ public abstract class SComponent
      * Get the preferred size of this component.
      * @see SComponent#setPreferredSize
      */
-    public final SDimension getPreferredSize() {
+    public SDimension getPreferredSize() {
         return preferredSize;
     }
 
@@ -432,7 +432,7 @@ public abstract class SComponent
     /**
      * @return the current style
      */
-    public final String getStyle() { return style; }
+    public String getStyle() { return style; }
 
     /**
      * Set the class of the laf-provided style.
@@ -446,7 +446,7 @@ public abstract class SComponent
     /**
      * @return the current style
      */
-    public final String getDisabledStyle() { return disabledStyle; }
+    public String getDisabledStyle() { return disabledStyle; }
 
     /**
      * Set a attribute.
@@ -462,7 +462,7 @@ public abstract class SComponent
      * return the value of an attribute.
      * @param name the attribute name
      */
-    public final String getAttribute(String name) {
+    public String getAttribute(String name) {
         return attributes.get(name);
     }
 
@@ -598,7 +598,7 @@ public abstract class SComponent
      * @return wether the component will show
      * @deprecated use isVisible instead
      */
-    public final boolean getVisible() {
+    public boolean getVisible() {
         return visible;
     }
 
@@ -607,7 +607,7 @@ public abstract class SComponent
      *
      * @return wether the component will show
      */
-    public final boolean isVisible() {
+    public boolean isVisible() {
         return visible;
     }
 
@@ -634,7 +634,7 @@ public abstract class SComponent
      *
      * @return true if component is enabled
      */
-    public final boolean isEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
@@ -643,7 +643,7 @@ public abstract class SComponent
      *
      * @return the name of this component
      */
-    public final String getName() {
+    public String getName() {
         return name;
     }
 
@@ -982,7 +982,7 @@ public abstract class SComponent
      *
      * @param t the new tooltip text
      */
-    public final void setToolTipText(String t) {
+    public void setToolTipText(String t) {
         tooltip = t;
     }
 
@@ -991,7 +991,7 @@ public abstract class SComponent
      *
      * @return the tooltip text
      */
-    public final String getToolTipText() { return tooltip; }
+    public String getToolTipText() { return tooltip; }
 
     /**
      * The index in which the focus is traversed using Tab. This is
@@ -1005,7 +1005,7 @@ public abstract class SComponent
      * @param index the focus traversal index. Pressing the focus traversal
      *              key (usually TAB) in the browser jumps to the next index.
      */
-    public final void setFocusTraversalIndex(int index) {
+    public void setFocusTraversalIndex(int index) {
         focusTraversalIndex = index;
     }
 
@@ -1013,7 +1013,7 @@ public abstract class SComponent
      * returns the focus traversal index.
      * @see #setFocusTraversalIndex(int)
      */
-    public final int getFocusTraversalIndex() {
+    public int getFocusTraversalIndex() {
         return focusTraversalIndex;
     }
 
@@ -1037,7 +1037,7 @@ public abstract class SComponent
      * @return the horizontal alignment
      * @see SConstants
      */
-    public final int getHorizontalAlignment() {
+    public int getHorizontalAlignment() {
         return horizontalAlignment;
     }
 
@@ -1046,7 +1046,7 @@ public abstract class SComponent
      * @param the new value for the horizontal alignment
      * @see SConstants
      */
-    public final void setHorizontalAlignment(int alignment) {
+    public void setHorizontalAlignment(int alignment) {
         horizontalAlignment = alignment;
     }
 
@@ -1055,7 +1055,7 @@ public abstract class SComponent
      * @param the new value for the vertical alignment
      * @see SConstants
      */
-    public final void setVerticalAlignment(int alignment) {
+    public void setVerticalAlignment(int alignment) {
         verticalAlignment = alignment;
     }
 
@@ -1064,7 +1064,7 @@ public abstract class SComponent
      * @return the vertical alignment
      * @see SConstants
      */
-    public final int getVerticalAlignment() {
+    public int getVerticalAlignment() {
         return verticalAlignment;
     }
 

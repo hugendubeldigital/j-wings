@@ -193,7 +193,7 @@ public abstract class SAbstractIconTextCompound
      *
      * @return
      */
-    public final int getHorizontalTextPosition() {
+    public int getHorizontalTextPosition() {
         return horizontalTextPosition;
     }
 
@@ -211,7 +211,7 @@ public abstract class SAbstractIconTextCompound
      *
      * @return
      */
-    public final int getVerticalTextPosition() {
+    public int getVerticalTextPosition() {
         return verticalTextPosition;
     }
 
@@ -229,7 +229,7 @@ public abstract class SAbstractIconTextCompound
      *
      * @return
      */
-    public final int getIconTextGap() {
+    public int getIconTextGap() {
         return iconTextGap;
     }
 
@@ -248,7 +248,7 @@ public abstract class SAbstractIconTextCompound
      *
      * @return
      */
-    public final SIcon getIcon() {
+    public SIcon getIcon() {
         return icon;
     }
 
@@ -267,7 +267,7 @@ public abstract class SAbstractIconTextCompound
      *
      * @return
      */
-    public final SIcon getPressedIcon() {
+    public SIcon getPressedIcon() {
         return pressedIcon;
     }
 
@@ -286,7 +286,7 @@ public abstract class SAbstractIconTextCompound
      *
      * @return
      */
-    public final SIcon getRolloverIcon() {
+    public SIcon getRolloverIcon() {
         return rolloverIcon;
     }
 
@@ -305,7 +305,7 @@ public abstract class SAbstractIconTextCompound
      *
      * @return
      */
-    public final SIcon getRolloverSelectedIcon() {
+    public SIcon getRolloverSelectedIcon() {
         return rolloverSelectedIcon;
     }
 
@@ -324,7 +324,7 @@ public abstract class SAbstractIconTextCompound
      *
      * @return
      */
-    public final SIcon getSelectedIcon() {
+    public SIcon getSelectedIcon() {
         return selectedIcon;
     }
 
@@ -343,7 +343,7 @@ public abstract class SAbstractIconTextCompound
      *
      * @return
      */
-    public final SIcon getDisabledSelectedIcon() {
+    public SIcon getDisabledSelectedIcon() {
         return disabledSelectedIcon;
     }
 
@@ -388,7 +388,7 @@ public abstract class SAbstractIconTextCompound
      * @see #setNoBreak(boolean)
      * @return true, if nobreak is set, false otherwise.
      */
-    public final boolean isNoBreak() {
+    public boolean isNoBreak() {
         return noBreak;
     }
 
@@ -402,7 +402,7 @@ public abstract class SAbstractIconTextCompound
     /**
      * @return
      */
-    public final String getSelectionStyle() { 
+    public String getSelectionStyle() { 
         return selectionStyle; 
     }
 
