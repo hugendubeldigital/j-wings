@@ -18,17 +18,12 @@ import java.net.URL;
 import java.net.MalformedURLException;
 
 /**
- * SURLIcon.java
- *
- *
- * Created: Sun Nov 11 02:02:47 2001
+ * SURLIcon - Some icon whose only thing we know is its URL.
  *
  * @author <a href="mailto:armin@hyperion.intranet.mercatis.de">Armin Haaf</a>
  * @version $Revision
  */
-
-public class SURLIcon
-    implements SIcon
+public class SURLIcon implements SIcon
 {
 
     SimpleURL url;

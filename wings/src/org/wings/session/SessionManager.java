@@ -17,7 +17,8 @@ package org.wings.session;
 import java.util.*;
 
 /**
- * A global way to access the current session.
+ * A global way to access the current session. FIXME: should this be
+ * called SessionManager, then ?
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
