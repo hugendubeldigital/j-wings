@@ -10,12 +10,29 @@ Q: Why should I use wingS?
 
 
 Q: What are the requirements for wingS?
-A: JSDK2.0 or something similar and the GifEncoder from Acme labs
+A: Several things:
+
+   - a computer :)
+
+   - Java 2
+     (We are using wingS with sun's JDK 1.2.2 and sun's JDK 1.3 beta.)
+
+   - a web server capable handling serlvets
+     (We are currently using Apache with JServ only; other implementations
+     which also use newer JSDKs such as Tomcat might not work yet?)
+
+   - sun's JSDK2.0 or the LGPL'ed implementation by Paul Siegmann and Mark
+     Wielaard which is also included in Apache JServ 1.1.2.
+
 
 Q: How do I install it?
 
 
 Q: How can I contribute?
+A: Please send your patches / fixes / extensions to
+   wings-developers@wings.to.com. If you like subscribe to our mailing lists. 
+   You can also get write access to our cvs repository. Please visit 
+   http://www.wings.to.com/ for more information!
 
 
 Q: How do I create a new servlet using wingS?
@@ -42,17 +59,20 @@ Q: What is this org.wings.session stuff?
 
 
 Q: What is a plaf?
-A: wingS supports some kind of pluggable look and feel. Each SComponent delegates it's
-   codegeneration to a special ComponentCG. There are different CGs for each SComponent
-   and each plaf. For now, there exist two plafs xhtml/css1 and xhtml/old. Feel free to
-   implement additional plafs like wap or xml/xsl ;-)
+A: wingS supports some kind of pluggable look and feel. Each SComponent
+   delegates it's codegeneration to a special ComponentCG. There are different
+   CGs for each SComponent and each plaf. For now, there exist two plafs
+   xhtml/css1 and xhtml/old. Feel free to implement additional plafs like wap 
+   or xml/xsl ;-)
+
 
 Q: How can I use another plaf?
 
 
 Q: How can I write a new plaf?
-A: I suggest, your first copy the most applicable from the existing plafs to a new package
-   and then successively implement the CGs for each component
+A: I suggest, your first copy the most applicable from the existing plafs to a
+   new package and then successively implement the CGs for each component
+
 
 Q: What is an Externalizer?
 
