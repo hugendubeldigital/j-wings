@@ -3,7 +3,7 @@
 protected void writeText(final Device device, SAbstractButton abstractButton, String attr)
     throws IOException
 {
-    if (abstractButton.getShowAsFormComponent() )
+    if (abstractButton.getShowAsFormComponent() && abstractButton.isEnabled() )
         writeFormText(device, abstractButton, attr);
     else
         writeAnchorText(device, abstractButton, attr);
@@ -12,7 +12,7 @@ protected void writeText(final Device device, SAbstractButton abstractButton, St
 protected void writeIcon(final Device device, SAbstractButton abstractButton, String attr)
     throws IOException
 {
-    if (abstractButton.getShowAsFormComponent() )
+    if (abstractButton.getShowAsFormComponent() && abstractButton.isEnabled() )
         writeFormIcon(device, abstractButton, attr);
     else
         writeAnchorIcon(device, abstractButton, attr);
@@ -129,6 +129,7 @@ protected void writeAnchorIcon(final Device device, SAbstractButton abstractButt
         %><a href="<%
         writeAnchorAddress(device, abstractButton);
         %>"<%|title=abstractButton.getToolTipText()%><%
+        %><%|accesskey=abstractButton.getMnemonic()%><%
 
     }
     else {
@@ -187,6 +188,7 @@ protected void writeFormText(final Device device, SAbstractButton abstractButton
     %><input type="<%=abstractButton.getType()%>"<%
     %> name="<%=abstractButton.getEncodedLowLevelEventId()%>"<%
     %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
+    %><%|accesskey=abstractButton.getMnemonic()%><%
     %><%|class=attr%><%
     Utils.writeEvents(device, abstractButton);
     %> value="<%
@@ -218,6 +220,7 @@ protected void writeFormIcon(final Device device, SAbstractButton abstractButton
     %><%|height=icon.getIconHeight()%><%
     %><%|name=abstractButton.getEncodedLowLevelEventId()%><%
     %><%|id=abstractButton.getComponentId()%><%
+    %><%|accesskey=abstractButton.getMnemonic()%><%
     writeDynamicIcons(device, abstractButton, icon, abstractButton.getComponentId(),
 		      false);
     %><%|alt=abstractButton.getToolTipText()%><%
@@ -301,6 +304,5 @@ protected boolean renderLayoutWithoutIcon() {
         }
         %></table><%
     }
-%>
-</write>
+%></write>
 </template>
