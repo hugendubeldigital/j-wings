@@ -1,26 +1,6 @@
 <template name="AnchorCG" for="org.wings.SAnchor">
   <comp-property type="Style" name="style">anchor</comp-property>
 
-void writeStartAnchor(Device device, SAnchor anchor, String style) 
-   throws IOException {
-   %><a<%
-   if (style != null) {
-       %><span class="<%=style%>"><%
-   }
-   %><%|name=anchor.getName()%><%
-   %><%|target=anchor.getTarget()%><%
-   %><%|href=anchor.getReference()%><%
-   %>><%
-}
-
-void writeEndAnchor(Device device, Style style)
-   throws IOException {
-   if (style != null) {
-       %></span><%
-   }
-   %></a><%
-}
-
 <write>
 <%
    final String style = ((component.getStyle() != null) 
