@@ -27,9 +27,11 @@ import javax.swing.ImageIcon;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 
+// TODO: remove elements from map after session expires (register
+// HttpSessionBindingListener ?)
 /**
  * This is an externalizer which uses a servlet (ExternalizerServlet) to
- * externalize objects.
+ * externalize objects (cool description :-)
  *
  * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
  * @version $Revision$
@@ -74,7 +76,9 @@ public class ServletExternalizer
      * @return
      */
     protected String getExternalizedURL(ExternalizedInfo info) {
-        return httpAddress + "?NAME=" + info.extFileName;
+        StringBuffer result = new StringBuffer(httpAddress);
+        result.append("/").append(info.extFileName);
+        return result.toString();
     }
 
 
@@ -87,9 +91,13 @@ public class ServletExternalizer
     }
 
 
-    /** for externalizer servlet */
+    /** 
+     * for externalizer servlet
+     */
     public static ExternalizedInfo getExternalizedInfo(HttpServletRequest request) {
-        String fname = request.getParameter( "NAME" );
+        String fname = request.getPathInfo();
+        if (fname.startsWith("/"))
+            fname = fname.substring(1);
         return (ExternalizedInfo)externalizedNameMap.get(fname);
     }
 }
