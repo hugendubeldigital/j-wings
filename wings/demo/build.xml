@@ -91,6 +91,7 @@
     <copy file="${lib}/old.jar" todir="${deploy}/ldap" />
   </target>
 
+<!--
   <target name="jndi" depends="build">
     <mkdir dir="${deploy}/jndi"/>
     <mkdir dir="${deploy}/jndi/WEB-INF"/>
@@ -110,6 +111,7 @@
     <copy file="${lib}/css1.jar" todir="${deploy}/jndi" />
     <copy file="${lib}/old.jar" todir="${deploy}/jndi" />
   </target>
+-->
 
   <target name="explorer" depends="build">
     <mkdir dir="${deploy}/explorer"/>
@@ -191,6 +193,7 @@
       </fileset>
     </war>
 
+<!--
     <war warfile="${deploy}/jndi.war" webxml="jndi/jndi.xml">
       <lib dir="${lib}">
         <include name="wings.jar"/>
@@ -206,7 +209,7 @@
         <include name="old.jar"/>
       </fileset>
     </war>
-
+-->
     <war warfile="${deploy}/ldap.war" webxml="ldap/ldap.xml">
       <lib dir="${lib}">
         <include name="wings.jar"/>
