@@ -120,7 +120,7 @@ public class DebugUtil
         //    System.out.println("[" + c.getName() + ":" + getCodeLine(2) + "] " +
         //                       mesg);
 
-        System.out.println("[" + c.getName() + "] " + mesg);
+        System.err.println("[" + c.getName() + "] " + mesg);
     }
 }
 
