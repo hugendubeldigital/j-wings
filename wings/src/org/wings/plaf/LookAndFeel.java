@@ -52,6 +52,8 @@ public class LookAndFeel
     protected final ClassLoader classLoader;
     protected Properties properties;
 
+    private final Map finalResources = Collections.synchronizedMap(new HashMap());
+
     /**
      * Instantiate a laf using the war's classLoader.
      * @param properties the configuration of the laf
@@ -77,6 +79,8 @@ public class LookAndFeel
             throw new IOException("'default.properties' not found in toplevel package of classpath");
         }
         this.properties.load(in);
+
+        System.out.println("create LookAndFeel");
     }
 
     /**
@@ -122,7 +126,18 @@ public class LookAndFeel
      * @return a new CG instance
      */
     public Object makeCG(String className) {
-        return makeCG(classLoader, className);
+        Object result = finalResources.get(className);
+        if ( result==null ) {
+            result = makeCG(classLoader, className);
+            synchronized ( finalResources ) {
+                if ( !finalResources.containsKey(className)) {
+                    finalResources.put(className, result);
+                } else {
+                    result = finalResources.get(className);
+                } // end of if ()
+            }
+        } // end of if ()
+        return result;
     }
 
     /**
@@ -193,7 +208,18 @@ public class LookAndFeel
      * @return a newly allocated Icon
      */
     public SIcon makeIcon(String fileName) {
-        return makeIcon(classLoader, fileName);
+        SIcon result = (SIcon)finalResources.get(fileName);
+        if ( result==null ) {
+            result = makeIcon(classLoader, fileName);
+            synchronized ( finalResources ) {
+                if ( !finalResources.containsKey(fileName)) {
+                    finalResources.put(fileName, result);
+                } else {
+                    result = (SIcon)finalResources.get(fileName);
+                } // end of if ()
+            }
+        } // end of if ()
+        return result;
     }
 
     /**
@@ -231,7 +257,18 @@ public class LookAndFeel
      * @return the styleSheet
      */
     public Resource makeResource(String resourceName) {
-        return makeResource(classLoader, resourceName);
+        Resource result = (Resource)finalResources.get(resourceName);
+        if ( result==null ) {
+            result = makeResource(classLoader, resourceName);
+            synchronized ( finalResources ) {
+                if ( !finalResources.containsKey(resourceName)) {
+                finalResources.put(resourceName, result);
+                } else {
+                    result = (Resource)finalResources.get(resourceName);
+                } // end of if ()
+            }
+        } // end of if ()
+        return result;
     }
 
     /**
@@ -319,7 +356,9 @@ public class LookAndFeel
         return "[" + getDescription() + " - " + getClass().getName() + "]";
     }
 
+
     class ResourceFactory extends CGDefaults {
+
         public ResourceFactory() { super(null); }
         
         public Object get(String id, Class type) {
@@ -341,9 +380,9 @@ public class LookAndFeel
                 // type.isAssignableFrom(value.getClass());
                 value = makeCG(property);
             }
-            else if (type.isAssignableFrom(SIcon.class))
+            else if (type.isAssignableFrom(SIcon.class)) {
                 value = makeIcon(property);
-            else if (type.isAssignableFrom(Resource.class))
+            } else if (type.isAssignableFrom(Resource.class))
                 value = makeResource(property);
             else if (type.isAssignableFrom(AttributeSet.class))
                 value = makeAttributeSet(property);
