@@ -35,8 +35,8 @@ public class JpegPhotoEditor
       this.oldAttribute = null;
       this.oldAttribute = (BasicAttribute)attribute;
 
-      SPanel panel = (SPanel)
-      SLabel photo = (SLabel)panel.getComponent(
+      SPanel panel = (SPanel)component;
+      SLabel photo = (SLabel)panel.getComponent(1);
       if (attribute == null) {
         photo.setText("kein Photo vorhanden");
         return;
@@ -54,7 +54,7 @@ public class JpegPhotoEditor
       catch(java.io.FileNotFoundException e) {
         e.printStackTrace();
       }
-      catch(java.io.IOException ){
+      catch(java.io.IOException e){
         e.printStackTrace();
       }
       photo.setText("photo kann nicht angezeigt werden");
