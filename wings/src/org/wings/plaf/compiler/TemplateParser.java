@@ -96,7 +96,7 @@ public class TemplateParser {
     private final String forClassName;
     private final JavaBuffer writeJavaCode;
     private final JavaBuffer commonJavaCode;
-    private final List    properties;
+    private final Vector    properties;
     private final File sourcefile;
     private final File cwd;
     private final StringPool stringPool;
@@ -132,7 +132,7 @@ public class TemplateParser {
      * generates the Java-class that implements this CG. This method can
      * only be called after calling {@link #parse(PlafReader)}
      */
-    public void generate(File directory) throws IOException {
+    public void generate(File directory, List outProps) throws IOException {
         if (anyError)
             return;
         if (! directory.exists()) {
@@ -155,7 +155,15 @@ public class TemplateParser {
         //out.println ("import java.io.*;");
         out.println ("import java.io.IOException;\n");
         out.println ("import org.wings.*;");
-        out.println ("import org.wings.io.Device;\n");
+        out.println ("import org.wings.style.*;");
+        out.println ("import org.wings.io.Device;");
+
+        if (properties.size() > 0) {
+            out.println ("import org.wings.plaf.CGManager;");
+            out.println ("import org.wings.session.SessionManager;");
+        }
+
+        out.println();
         out.println ("public final class " + templateName 
                      + " extends org.wings.plaf.AbstractComponentCG");
         /*
@@ -202,15 +210,51 @@ public class TemplateParser {
             out.println (".getBytes();");
         }
         
-        out.println("\n//--- properties of this plaf.");
-        Iterator props = properties.iterator();
-        while (props.hasNext()) {
-            Property p = (Property) props.next();
-            out.print(INDENT + "private " + p.getType());
-            out.print(" " + p.getName());
-            out.print(";\n");
-        }
+        if (properties.size() > 0) {
+            out.println("\n//--- properties of this plaf.");
+            Iterator props = properties.iterator();
+            while (props.hasNext()) {
+                Property p = (Property) props.next();
+                out.print(INDENT + "private " + p.getType());
+                out.print(" " + p.getName());
+                out.print(";\n");
+            }
+            out.println();
+            
+            out.println(INDENT + "/**");
+            out.println(INDENT + " * Initialize properties from config");
+            out.println(INDENT + " */");
 
+            outProps.add("### " + templateName);
+            // get settings of this CG from properties file in constructor.
+            out.println(INDENT + "public " + templateName + "() {");
+            out.println(INDENT + INDENT 
+                        + "final CGManager manager = SessionManager.getSession().getCGManager();\n");
+            props = properties.iterator();
+            while (props.hasNext()) {
+                Property p = (Property) props.next();
+                String globalPropName = templateName + "." + p.getName();
+
+                out.print(INDENT + INDENT);
+                out.print("set" + capitalize(p.getName()));
+                out.print("((" + p.getType() + ") ");
+                out.print("manager.getObject(\"" + globalPropName);
+                out.print("\", ");
+                out.println(p.getType() + ".class));");
+
+                // properties come from a file with this value.
+                String pValue = p.getValue();
+                if (pValue == null || pValue.trim().length() == 0) {
+                    outProps.add("#" + globalPropName + "=");
+                }
+                else {
+                    outProps.add(globalPropName + "=" + pValue);
+                }
+            }
+            out.println(INDENT + "}\n"); // end constructor.
+            outProps.add(""); // separator.
+        }
+        
         // common stuff.
         if (commonJavaCode.length() > 0) {
             out.println ("\n//--- code from common area in template.");
@@ -233,18 +277,20 @@ public class TemplateParser {
         out.println ("\n//--- end code from write-template.");
         out.println ("\n" + INDENT + "}");
 
-        out.println("\n//--- setters and getters for the properties.");
-        props = properties.iterator();
-        while (props.hasNext()) {
-            Property p = (Property) props.next();
-            out.print(INDENT + "public " + p.getType() 
-                      + " get" + capitalize(p.getName()));
-            out.print("() { return " + p.getName() + "; }\n");
-            out.print(INDENT + "public void set" + capitalize(p.getName()));
-            out.print("(" + p.getType() + " " + p.getName() + ") { ");
-            out.print("this." + p.getName() + " = " + p.getName() + "; }\n\n");
+        if (properties.size() > 0) {
+            out.println("\n//--- setters and getters for the properties.");
+            Iterator props = properties.iterator();
+            while (props.hasNext()) {
+                Property p = (Property) props.next();
+                out.print(INDENT + "public " + p.getType() 
+                          + " get" + capitalize(p.getName()));
+                out.print("() { return " + p.getName() + "; }\n");
+                out.print(INDENT 
+                          + "public void set" + capitalize(p.getName()));
+                out.print("(" + p.getType() + " " + p.getName() + ") { ");
+                out.print("this." + p.getName() + " = " + p.getName() + "; }\n\n");
+            }
         }
-       
 
         out.println ("}");
         out.close();
