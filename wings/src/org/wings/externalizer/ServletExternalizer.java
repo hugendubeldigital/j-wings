@@ -49,10 +49,10 @@ public class ServletExternalizer
      *
      */
     public ServletExternalizer(ServletConfig config) {
-        httpAddress = config.getInitParameter("ServletExtURL");
+        httpAddress = config.getInitParameter("externalizer.servlet.url");
 
         if ( httpAddress == null ) {
-            throw new IllegalStateException("ServletExtURL required in initArgs");
+            throw new IllegalStateException("externalizer.servlet.url required in initArgs");
         }
     }
 

@@ -39,7 +39,7 @@ public class DefaultSession
     private final Map services = new HashMap();
     private final CGManager cgManager = new CGManager();
     private ExternalizeManager extManager = null;
-    private Properties props = null;
+    private Properties props = new Properties();
 
     /**
      * TODO: documentation
@@ -66,7 +66,6 @@ public class DefaultSession
      * @param config
      */
     protected void initProps(ServletConfig config) {
-        props = new Properties();
         Enumeration params = config.getInitParameterNames();
         while(params.hasMoreElements()) {
             String name = (String)params.nextElement();
@@ -120,7 +119,7 @@ public class DefaultSession
      * TODO: documentation
      *
      */
-    public void setExternalizeManager( ExternalizeManager em ) {
+    public void setExternalizeManager(ExternalizeManager em) {
         extManager = em;
     }
 

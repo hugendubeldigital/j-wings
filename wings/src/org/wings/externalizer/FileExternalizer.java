@@ -58,8 +58,8 @@ public class FileExternalizer
      *
      */
     public FileExternalizer( ServletConfig config ) {
-        this( config.getInitParameter("FileExtDir"),
-              config.getInitParameter("FileExtURL") );
+        this( config.getInitParameter("externalizer.file.path"),
+              config.getInitParameter("externalizer.file.url") );
     }
 
     public FileExternalizer( String dir, String addr ) {

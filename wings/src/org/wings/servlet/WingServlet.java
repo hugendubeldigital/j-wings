@@ -50,7 +50,7 @@ public abstract class WingServlet
     /**
      * TODO: documentation
      */
-    protected int maxContentLength = 50; // in kByte
+    protected int maxContentLength = 64; // in kByte
     protected String uploaddir;
 
     private ServletConfig servletConfig = null;
@@ -109,7 +109,7 @@ public abstract class WingServlet
      * @param config
      */
     protected void initMaxContentLength(ServletConfig config) {
-        String maxCL = config.getInitParameter("MaximumContentLength");
+        String maxCL = config.getInitParameter("content.maxlength");
         if ( maxCL!=null ) {
             try {
                 maxContentLength = Integer.parseInt(maxCL);
@@ -122,26 +122,21 @@ public abstract class WingServlet
     }
 
     /*
-     * Hier wird ein ExternalizeManager instantiert, wenn folgende
-     * InitParameter definiert sind:
+     * The following init parameters are known by wings.
      *
-     * Achtung: diese Parameter stimmen z.T. nicht mehr. Zumindest die
-     * fuer den Externalizer haben sich geaendert; sie haengen nun vom
-     * jeweiligen Externalizer ab.
-     *
-     * <DL compact>
-     * <DT>ExternalizerPath</DT><DD>DateisystemPfad, in dem der Externalizer files
-     * ablegen soll</DD>
-     * <DT>ExternalizerAccessURL</DT><DD>WWW(HTTP) Pfad, unter dem die files des
-     * Externalizers zugreifbar sind</DD>
-     * <DT>SessionTimeout</DT><DD>Zeit in ms nach der bei Inaktivitaet eine Session
-     * zerstoert wird. Default 15min</DD>
-     * <DT>MaximumContentLength</DT><DD>Maximale Groesse in kB, die ein Browser an
-     * den Server schicken darf. Default 50kB</DD>
-     * </DL>
-     */
-    /**
-     * TODO: documentation
+     * <dl compact>
+     * <dt>externalizer.file.path</dt><dd><b>FileExternalizer</b> - path, where the
+     *     externalizer stores the files (below documentroot)</dd>
+     * <dt>externalizer.file.url</dt><dd><b>FileExternalizer</b> - url, where the client
+     *     can access those files</dd>
+     * <dt>externalizer.servlet.url</dt><dd><b>ServletExternalizer</b>url, where the client
+     *     can access the externalizer servlet</dd>
+     * <dt>session.timeout</dt><dd><b>The time, a session is kept alive during inactivity</dd>
+     * <dt>content.maxlength</dt><dd>Maximum content lengt for form posts. Remember to increase
+     *     this, if you make use of the SFileChooser component</dd>
+     * <dt>filechooser.uploaddir</dt><dd><b>The directory, where uploaded files ar stored
+     *     temporarily</dd>
+     * </dl>
      *
      * @param config
      * @throws ServletException
@@ -151,7 +146,7 @@ public abstract class WingServlet
         super.init(config);
         lookupName = "SessionServlet:" + getClass().getName();
 
-        if ( DEBUG ) {
+        if (DEBUG) {
             debug("Init Parameter");
             for ( Enumeration en=config.getInitParameterNames(); en.hasMoreElements(); ) {
                 String param = (String)en.nextElement();
@@ -163,7 +158,7 @@ public abstract class WingServlet
         initExtObjectHandler(config);
         initMaxContentLength(config);
 
-        uploaddir = config.getInitParameter("uploaddir");
+        uploaddir = config.getInitParameter("filechooser.uploaddir");
         if (uploaddir == null || uploaddir.length() == 0)
             uploaddir = "/tmp";
 

@@ -87,7 +87,7 @@ public abstract class SessionServlet
     /**
      * The default frame. Mostly the one and only frame.
      */
-    private final SFrame frame;
+    private SFrame frame = null;
 
     /**
      * This should be a resource ..
@@ -107,7 +107,6 @@ public abstract class SessionServlet
     protected SessionServlet(Session session) {
         this.session = session;
         SessionManager.setSession(session);
-        frame = new SFrame();
     }
 
     /**
@@ -367,6 +366,9 @@ public abstract class SessionServlet
      * @return the frame for this session
      */
     public final SFrame getFrame() {
+        if (frame == null)
+            frame = new SFrame();
+
         return frame;
     }
 
