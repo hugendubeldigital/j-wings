@@ -17,91 +17,68 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
-
-import org.wings.ClasspathResource;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Map {@link java.util.Locale} to html/iso character set.
+ * Map {@link java.util.Locale} to html/iso character set via <code>org/wings/util/charset.properties</code>.
+ *
  * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  */
-public class LocaleCharSet
-{
-    /** The wings default character encoding. */
+public class LocaleCharSet {
+    /** The default character encoding "ISO-8859-1". */
     public final static String DEFAULT_ENCODING = "ISO-8859-1";
-    
     private static LocaleCharSet fInstance = null;
+    private static Logger logger = Logger.getLogger("org.wings.util");
     private Properties fCharSet;
-    
-	protected LocaleCharSet()
-		throws IOException
-	{
-	    fCharSet = new Properties();
-        InputStream in = this.getClass().
-                getClassLoader().
-                getResourceAsStream("org/wings/util/charset.properties");
-        fCharSet.load(in);
-        in.close();
-	}
-	
-	/**
-	 * Get a instance of LocaleCharSet.
-	 * @throws IOException error while loading charset.properties
-	 * 	from classpath
-	 */
-	public static LocaleCharSet getInstance()
-		throws IOException
-	{
-	    if (fInstance == null)
-	    {
-	        fInstance = new LocaleCharSet();
-	    }
-	    return fInstance;
-	}
-	
-	/**
-	 * Try to find a matching character set for this locale.
-	 * @return if found the charset, "iso-8859-1" otherwise
-	 */
-	public String getCharSet(Locale aLocale)
-	{
-	    String cs = null;
-	    
-	    cs = fCharSet.getProperty(
-	    	aLocale.getCountry()+"_"+aLocale.getLanguage());
-	    if (cs == null)
-	    {
-	        cs = fCharSet.getProperty(
-	    		aLocale.getCountry());
-	    }
-	    if (cs == null)
-	    {
-	        cs = fCharSet.getProperty(
-	    		aLocale.getLanguage());
-	    }
-	    
-	    if (cs != null)
-	    	return cs;
 
-	    return "iso-8859-1";
-	}
-	
-	/**
-	 * Just for testing
-	 */
-	public static void main(String[] args)
-	{
-	    try
-	    {
-	    	System.out.println(Locale.GERMAN+", charset="+LocaleCharSet.getInstance().getCharSet(Locale.GERMAN));
-	    	System.out.println(Locale.JAPANESE+", charset="+LocaleCharSet.getInstance().getCharSet(Locale.JAPANESE));
-	    	System.out.println(Locale.TAIWAN+", charset="+LocaleCharSet.getInstance().getCharSet(Locale.TAIWAN));
-	    	System.out.println(new Locale("PL", "pl")+", charset="+LocaleCharSet.getInstance().getCharSet(new Locale("PL", "pl")));
-	    }
-	    catch (Exception ex)
-	    {
-	        ex.printStackTrace();
-	    }
-	}
+    protected LocaleCharSet() {
+        fCharSet = new Properties();
+        try {
+            InputStream in = this.getClass().getClassLoader().getResourceAsStream("org/wings/util/charset.properties");
+            fCharSet.load(in);
+            in.close();
+        }
+        catch (IOException e) {
+            logger.log(Level.WARNING, "Unexpected error on loading org/wings/util/charset.properties via CP.", e);
+        } 
+    }
+
+    /**
+     * Get a instance of LocaleCharSet.
+     *
+     * @return Instance of LocaleCharset
+     */
+    public static LocaleCharSet getInstance() {
+        if (fInstance == null) {
+            fInstance = new LocaleCharSet();
+        }
+        return fInstance;
+    }
+
+    /**
+     * Try to find a matching character set for this locale.
+     *
+     * @param aLocale The Locale to retrieve the default charset for.
+     *
+     * @return if found the charset, DEFAULT_ENCODING otherwise
+     */
+    public String getCharSet(Locale aLocale) {
+        String cs = null;
+        if (aLocale == null) {
+            return DEFAULT_ENCODING;
+        }
+
+        cs = fCharSet.getProperty(aLocale.getCountry() + "_" + aLocale.getLanguage());
+
+        if (cs == null) {
+            cs = fCharSet.getProperty(aLocale.getCountry());
+        }
+
+        if (cs == null) {
+            cs = fCharSet.getProperty(aLocale.getLanguage());
+        }
+
+        return cs != null ? cs : DEFAULT_ENCODING;
+    }
 }
-

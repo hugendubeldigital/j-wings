@@ -14,11 +14,14 @@
 
 package org.wings;
 
-import org.wings.io.Device;
-
 import java.io.IOException;
-import java.util.*;
-import java.util.logging.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.wings.io.Device;
+import org.wings.util.LocaleCharSet;
 
 /**
  * Traverses the component hierarchy of a frame and lets the CGs compose
@@ -50,14 +53,7 @@ public class DynamicCodeResource
     }
 
     private static String provideMimeType(SFrame frame) {
-        try {
-            String encoding = org.wings.util.LocaleCharSet.getInstance()
-                .getCharSet(frame.getSession().getLocale());
-            return "text/html; charset=" + encoding;
-        }
-        catch (IOException e) {
-            return "text/html";
-        }
+        return "text/html; charset=" + frame.getSession().getCharacterEncoding();
     }
 
     /**
