@@ -101,7 +101,7 @@ public class GridLayoutCG
                 Utils.printTableCellAlignment(d, c);
                 // Some containers (like SPanel) do not support background colors
                 // hence we support the background of them using the sourrounding gridlayout cell
-                if (c instanceof SContainer) {
+                if (c instanceof SContainer && c.isVisible()) {
                    Utils.printTableCellColors(d, c);
                 }
                 d.print(">");                
@@ -111,7 +111,7 @@ public class GridLayoutCG
                 Utils.printTableCellAlignment(d, c);
                 // Some containers (like SPanel) do not support background colors
                 // hence we support the background of them using the sourrounding gridlayout cell
-                if (c instanceof SContainer) {
+                if (c instanceof SContainer && c.isVisible()) {
                    Utils.printTableCellColors(d, c);
                 }
                 d.print(">");
