@@ -51,7 +51,7 @@ public class ReloadManagerFrame
     /**
      * This frame stays invisible
      */
-    public SComponent addComponent(SComponent c, Object constraint) {
+    public SComponent addComponent(SComponent c, Object constraint, int index) {
 	throw new IllegalArgumentException("Adding Components is not allowed");
     }
 
