@@ -1,3 +1,4 @@
+// $Revision$
 - documentation
 - faq
 - undo-redo (back-forward support for browser)
@@ -9,3 +10,52 @@
 - tutorial article for iX, c't magazin
 - wings logo
 
+(esp. for the pre-1.0-cleanup)
+* Documentation
+
+* make jsp like plaf description. For each component, write the HTML code
+  with embedded Java code (as opposed to the current approach: HTML in
+  Java). Check, whether the JSP syntax is ok or too awkward.
+
+* docs
+
+* Clean up Externalizer: 
+  - differentiate between externalized objects independent
+    of the session (like static icons etc.) and session specific object.
+    Session specific objects should be cleaned up on session invalidation.
+  - support externalized objects, that generate the content dynamically
+    (JavaScript, Frame-content, CSS)
+* document all classes
+
+* clean up plaf loading envirionment.
+
+* write java-doc
+
+* Write scripthandler that creates an externalizeable JavaScript file containng
+  scriptlets, that are attached to SComponents. The scriptlets are registered
+  for component supported events (like 'onClick' or 'onMouseOver'). The
+  scriptlets support parameters that refer to other components.
+  ------ concept example ---
+    t1 = new STextField();
+    t2 = new STextField();
+    b = new SButton("copy");
+    b.addScriptListener("onClick", "%1.setText(%2.getText());", 
+                        new SComponent[] {t1, t2});
+  --------------------------
+  The text %1 internally is replaced by the actual means to access the
+  textfield t in the HTML-page; the scriptlet as such is embedded in a
+  automatically generated function. This function is provided in the
+  externalized javaScript-code - the component with the registered listener
+  generates a function call to this generated function. Advantage is, that
+  this keeps the page small.
+
+  ----- extternalized js-file ---
+  function _asdfoer98l() {
+      document._121_1.setText(document._121_2.getText());
+  }
+  ------------------------------
+  
+  the gnerated button would be in this case
+  <input type=button name="_121_3" onClick="_asdfoer98l()">
+
+* write a tutorial
