@@ -45,7 +45,7 @@
 	    %><%|rules=rules[rr]%><%
 	    %><%|border=thickness%><%
 	} else {
-		// Tweaking: CG configured to have a fixed border="xy" width
+		/* Tweaking: CG configured to have a fixed border="xy" width */
 	    %><%|border=fixedTableBorderWidth%><%	
 	}    
     %><%|cellspacing=((intercellSpacing != null) ? intercellSpacing.width : null)%><%
