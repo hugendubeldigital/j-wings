@@ -56,6 +56,7 @@ public class CSSStyleSheet
 	    writer.write(" }");
 	    writer.newLine();
 	}
+        writer.flush();
     }
 
     public void read(InputStream is)
@@ -89,7 +90,9 @@ public class CSSStyleSheet
      * Fetches the font to use for the given set of attributes.
      */
     public static SFont getFont(AttributeSet a) {
+        boolean anyFontAttribute = false;
 	int size = getFontSize(a);
+        anyFontAttribute |= (size > 0);
 
 	/*
 	 * If the vertical alignment is set to either superscirpt or
@@ -105,8 +108,7 @@ public class CSSStyleSheet
 	}
 
 	String family = (String)a.getAttribute(Style.FONT_FAMILY);
-	if (family == null)
-	    family = "sans-serif";
+        anyFontAttribute |= (family != null);
 
 	int style = Font.PLAIN;
 	String weight = (String)a.getAttribute(Style.FONT_WEIGHT);
@@ -124,20 +126,25 @@ public class CSSStyleSheet
 		    style |= Font.BOLD;
 	    } catch (NumberFormatException nfe) {}
 	}
+        anyFontAttribute |= (weight != null);
 
 	String styleValue = (String)a.getAttribute(Style.FONT_STYLE);
 	if ((styleValue != null) && (styleValue.indexOf(Style.ITALIC) >= 0))
 	    style |= Font.ITALIC;
-
-	return new SFont(family, style, size);
+        anyFontAttribute |= (styleValue != null);
+	return anyFontAttribute ? new SFont(family, style, size) : null;
     }
 
     static int sizeMap[] = { 8, 10, 12, 14, 18, 24, 36 };
 
-    public static int getFontSize(AttributeSet attr) {
+    /**
+     * parses the font size attribute. return -1, if no font size
+     * is specified.
+     */
+    private static int getFontSize(AttributeSet attr) {
 	String value = (String)attr.getAttribute(Style.FONT_SIZE);
 	if (value == null)
-	    return 12;
+            return -1;
 	try {
 	    if (value.equals("xx-small")) {
 		return 8;
@@ -157,8 +164,7 @@ public class CSSStyleSheet
 		return new Float(getLength(value)).intValue();
 	    }
 	} catch (NumberFormatException nfe) {
-	    // the default
-	    return 12;
+            return -1;
 	}
     }
 
