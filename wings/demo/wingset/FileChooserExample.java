@@ -31,29 +31,59 @@ import org.wings.border.*;
 public class FileChooserExample
     extends WingSetPane
 {
+    final static String TEMPLATE = "/wingset/templates/FileChooserExample.thtml";
+    final static Color WARN_COLOR = new Color(255, 255, 127);
 
-    SCardLayout contentSwitcher;
-
-    SLabel iconLabel;
-
-    SForm textForm;
-
-    STextArea textArea;
-
-    SLabel unknownLabel;
-
+    /**
+     * the file chooser that gets the files.
+     */
     SFileChooser chooser;
 
+    /**
+     * three cards for different content to be previewd: images, text and
+     * unknown.
+     */
+    SCardLayout contentSwitcher;
+
+    /**
+     * label that shows image content.
+     */
+    SLabel iconLabel;
+
+    /**
+     * text area to show text content.
+     */
+    STextArea textArea;
+
+    /**
+     * form, that contains the text-area
+     */
+    SForm textForm;
+
+    /**
+     * label for unknown content.
+     */
+    SLabel unknownLabel;
+    
+    /**
+     * remember the previous file to remove it.
+     */
+    File previousFile;
+
     public SComponent createExample() {
-        SPanel p = new SPanel(new SBorderLayout());
+        SPanel p = new SPanel();
 
-        p.add(createControlForm(),
-              SBorderLayout.NORTH);
+        try {
+            java.net.URL templateURL = getClass().getResource( TEMPLATE );
+            p.setLayout( new STemplateLayout( templateURL ) );
+        }
+        catch ( Exception e ) {
+            // template not found ?
+        }
 
-
-        p.add(createUpload(), SBorderLayout.WEST);
-
-        p.add(createPreview(), SBorderLayout.CENTER);
+        p.add(createControlForm(), "controlForm");
+        p.add(createUpload(),      "uploadForm");
+        p.add(createPreview(),     "previewArea");
 
         return p;
     }
@@ -110,6 +140,10 @@ public class FileChooserExample
     }
 
     protected void adaptPreview() {
+        if (previousFile != null) {
+            previousFile.delete();
+            previousFile = null;
+        }
         try {
             if ( chooser.getFileType().startsWith("text/") ) {
                 textArea.setText(getText(chooser.getFile()));
@@ -120,6 +154,7 @@ public class FileChooserExample
             } else {
                 contentSwitcher.show(unknownLabel);
             }
+            previousFile = chooser.getFile();
         } catch ( Exception ex ) {
             contentSwitcher.show(unknownLabel);
         }
@@ -148,7 +183,7 @@ public class FileChooserExample
         textArea.setEditable(false);
 
         unknownLabel = new SLabel("Unknown Content");
-
+        unknownLabel.setBackground( WARN_COLOR );
 
         contentPane.add(iconLabel, "ICON");
 
@@ -204,9 +239,9 @@ public class FileChooserExample
         form.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-
                     if ( chooser.getFile()!=null ) {
                         message.setText("OK");
+                        message.setBackground(null);
                         filename.setText(chooser.getFileName());
                         fileid.setText(chooser.getFileId());
                         filetype.setText(chooser.getFileType());
@@ -214,10 +249,13 @@ public class FileChooserExample
                         adaptPreview();
                     } else {
                         message.setText("No file chosen");
+                        message.setBackground( WARN_COLOR );
                     }
                     chooser.reset();
-                } catch ( IOException ex ) {
+                } 
+                catch ( IOException ex ) {
                     message.setText(ex.getMessage());
+                    message.setBackground( WARN_COLOR );
                     filename.setText("");
                     fileid.setText("");
                     filetype.setText("");
