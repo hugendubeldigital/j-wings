@@ -3,6 +3,25 @@
 <!-- $Id$ -->
 
 <project name="wingS" default="main" basedir=".">
+  <!-- read properties from file -->
+  <property file="build.properties" />
+
+  <!-- directories -->
+  <property name="home"        value="." />
+  <property name="src"         value="src" />
+  <property name="patches"     value="patches" />
+  <property name="build"       value="build" />
+  <property name="build.class" value="${build}/class" />
+  <property name="build.doc"   value="${build}/doc" />
+  <property name="build.src"   value="${build}/src" />
+  <property name="dist"        value="dist" />
+  <property name="dist.doc"    value="${dist}/doc" />
+  <property name="dist.src"    value="${dist}/src" />
+  <property name="dist.lib"    value="${dist}/lib" />
+  <property name="dist.demo"   value="${dist}/demo" />
+  <property name="test.class"  value="${build}/testclass" />
+  <property name="test.report" value="${build}/testreport" />
+
   <path id="build.classpath">
     <pathelement path="${java.class.path}/" />
     <fileset dir="lib">
@@ -11,8 +30,8 @@
   </path>
 
   <path id="testcompile.classpath">
-    <path location="build/testclasses"/>
-    <fileset dir="build/dist/lib">
+    <path location="build/testclass"/>
+    <fileset dir="dist/lib">
       <include name="*.jar" />
     </fileset>
     <fileset dir="testlib">
@@ -22,94 +41,80 @@
 
   <path id="test.classpath">
     <path refid="build.classpath" />
-    <path location="build/testclasses"/>
-    <fileset dir="build/dist/lib">
+    <path location="build/testclass"/>
+    <fileset dir="dist/lib">
       <include name="*.jar" />
     </fileset>
   </path>
 
-  <!-- ==================== Properties ==================== -->
-  <target name="init">
-    <tstamp/>
-    <!-- directories -->
-    <property name="home"    value="." />
-    <property name="src"     value="src" />
-    <property name="patches"     value="patches" />
-    <property name="build"   value="build" />
-    <property name="classes" value="${build}/classes" />
-    <property name="dist"    value="${build}/dist" />
-    <property name="doc"     value="${build}/doc" />
-    <property name="distlib" value="${dist}/lib" />
-    <property name="lib"     value="lib" />        <!-- external libraries -->
-    <property name="testsrc"     value="testsrc" />
-    <property name="testlib"     value="testlib" />
-    <property name="testclasses"     value="${build}/testclasses" />
-    <property name="testreport"     value="${build}/testreport" />
-
-    <!-- read additional properties from file -->
-    <property file="build.properties" />
-  </target>
-
   <!-- ==================== Preparations ==================== -->
-  <target name="prepare" depends="init">
+  <target name="prepare">
+    <tstamp/>
     <mkdir dir="${build}" />
-    <mkdir dir="${classes}" />
+    <mkdir dir="${build.class}" />
+    <mkdir dir="${build.doc}" />
+    <mkdir dir="${build.src}" />
     <mkdir dir="${dist}" />
-    <mkdir dir="${distlib}" />
-    <mkdir dir="${doc}" />
-    <mkdir dir="${doc}/api" />
-    <mkdir dir="${lib}" />     <!-- avoid errors in case it does not exist -->
-    <mkdir dir="${testclasses}" />
-    <mkdir dir="${testreport}" />
+    <mkdir dir="${dist.doc}" />
+    <mkdir dir="${dist.src}" />
+    <mkdir dir="${dist.lib}" />
+    <mkdir dir="${dist.demo}" />
+    <mkdir dir="${test.class}" />
+    <mkdir dir="${test.report}" />
   </target>
 
 
   <!-- ==================== Build wingS ==================== -->
-  <target name="build" depends="wings.jar,plaf" />
-
-  <target name="compile" depends="prepare">
-    <javac srcdir="${src}" destdir="${classes}" debug="on" deprecation="off">
-      <classpath refid="build.classpath" />
-    </javac>
-    <copy todir="${classes}">
-      <fileset dir="${src}">
-        <include name="**/*.properties" />
-        <include name="**/*.gif" />
-        <include name="**/*.png" />
-        <include name="**/*.css" />
+  <target name="build" depends="wings.jar,plaf">
+    <copy todir="${dist.lib}">
+      <fileset dir="lib">
+        <!-- usual names for jsdk ..>
+        <exclude name="jsdk2.0.jar" />
+        <exclude name="j2ee.jar" />
+        <exclude name="servlet.jar" /-->
+        <exclude name="dummy" />
       </fileset>
     </copy>
   </target>
 
-  <target name="jar" depends="wings.jar" />
-  <target name="wings.jar" depends="compile">
-    <jar jarfile="${distlib}/wings.jar" basedir="${classes}">
-      <exclude name="org/wings/plaf/xhtml/**" />
-      <exclude name="org/wings/plaf/css1/**" />
-    </jar>
+  <target name="compile" depends="prepare">
+    <javac srcdir="src" destdir="${build.class}" debug="on" deprecation="off">
+      <classpath refid="build.classpath" />
+    </javac>
+  </target>
 
-    <copy todir="${distlib}">
-      <fileset dir="${lib}">
-        <!-- usual names for jsdk ..>
-        <exclude name="jsdk2.0.jar" />
-        <exclude name="servlet.jar" /-->
+  <target name="jar" depends="wings.jar" />
+
+  <target name="wings.jar" depends="compile">
+    <jar jarfile="${dist.lib}/wings.jar" basedir="${build.class}">
+      <fileset dir="${build.class}">
+        <exclude name="org/wings/plaf/xhtml/**" />
+        <exclude name="org/wings/plaf/css1/**" />
+        <exclude name="org/wings/plaf/compiler/**" />
       </fileset>
-    </copy>
+      <fileset dir="src">
+        <include name="**/*.properties" />
+        <include name="**/*.gif" />
+        <include name="**/*.png" />
+        <include name="**/*.css" />
+        <exclude name="**/.*" />
+        <exclude name="**/.*/**" />
+      </fileset>
+    </jar>
   </target>
 
 
   <!-- ==================== LookAndFeel Jars ==================== -->
   <target name="plaf" depends="css1.jar" />
 
-  <target name="css1.jar" depends="compile,claf-compile">
-    <jar jarfile="${distlib}/css1.jar">
-      <fileset dir="${classes}">
+  <target name="css1.jar" depends="claf-compile">
+    <jar jarfile="${dist.lib}/css1.jar">
+      <fileset dir="${build.class}">
         <include name="org/wings/plaf/xhtml/*.class" />
         <include name="org/wings/plaf/xhtml/css1/*" />
-        <include name="org/wings/plaf/css1/*" />  <!-- TEST: claf-compiled -->
-        <exclude name="org/wings/plaf/xhtml/css1/default.properties" />
+        <include name="org/wings/plaf/css1/*" />
       </fileset>
-      <fileset dir="${classes}/org/wings/plaf/xhtml/css1">
+      <fileset dir="src/org/wings/plaf/xhtml/css1">
         <include name="default.properties" />
       </fileset>
     </jar>
@@ -117,7 +122,7 @@
 
   <target name="claf" depends="compile">
     <taskdef name="claf"
-	     classpath="${classes}"
+	     classpath="${build.class}"
 	     classname="org.wings.plaf.compiler.ClafTask"/>
     <claf destdir="build/src"
 	  package="org.wings.plaf.css1">
@@ -129,7 +134,7 @@
 
   <target name="claf-compile" depends="claf">
     <javac srcdir="build/src" 
-           destdir="${classes}"
+           destdir="${build.class}"
            debug="on" 
            deprecation="off">
       <classpath refid="build.classpath" />
@@ -137,28 +142,28 @@
   </target>
 
   <target name="testcompile" depends="wings.jar,css1.jar">
-    <javac srcdir="${testsrc}" destdir="${testclasses}"
+    <javac srcdir="${test.src}" destdir="${test.class}"
 	   debug="true"
 	   deprecation="${build.deprecation}"
 	   encoding="ISO8859-1">
       <classpath refid="testcompile.classpath"/>
     </javac>
-    <copy file="${distlib}/css1.jar" todir="${testsrc}/org/wings/plaf"/>
-    <copy todir="${testclasses}">
-      <fileset dir="testres"/>
+    <copy file="${dist.lib}/css1.jar" todir="${test.src}/org/wings/plaf"/>
+    <copy todir="${test.class}">
+      <fileset dir="test.res"/>
     </copy>
   </target>
 
   <target name="test" depends="testcompile">
     <taskdef name="junit"
-	     classpath="${testlib}/junit.jar"
+	     classpath="${test.lib}/junit.jar"
 	     classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
 
-    <junit>
-      <formatter type="plain"/>
+    <junit printsummary="withOutAndErr" haltonfailure="yes" fork="yes">
       <classpath refid="test.classpath"/>
-      <batchtest fork="yes" todir="${testreport}">
-        <fileset dir="${testclasses}">
+      <formatter type="plain" usefile="no"/>
+      <batchtest todir="${build.test.report}" fork="yes">
+        <fileset dir="${test.class}">
           <include name="**/Test*.class"/>
           <exclude name="**/*$$*"/>
         </fileset>
@@ -167,21 +172,22 @@
   </target>
 
   <!-- ==================== patches for other jdk versions ==================== -->
-  <target name="PatchForJDK1.3" depends="init">
-     <patch patchfile="${patches}/FileImageIcon_jdk1.3.patch"
-            originalFile="${src}/org/wings/FileImageIcon.java" 
+  <target name="PatchForJDK1.3">
+     <patch patchfile="patches/FileImageIcon_jdk1.3.patch"
+            originalFile="src/org/wings/FileImageIcon.java" 
             backups="yes" />
-     <patch patchfile="${patches}/ResourceImageIcon_jdk1.3.patch" 
-            originalFile="${src}/org/wings/ResourceImageIcon.java" 
+     <patch patchfile="patches/ResourceImageIcon_jdk1.3.patch" 
+            originalFile="src/org/wings/ResourceImageIcon.java" 
             backups="yes" />
   </target>
 
   <!-- ==================== Generate API Docs ==================== -->
   <target name="doc" depends="prepare">
+    <mkdir dir="${build.doc}/api" />
     <javadoc packagenames="org.wings.*"
              maxmemory="128m"
-             sourcepath="${src}"
-             destdir="${doc}/api"
+             sourcepath="src"
+             destdir="${build.doc}/api"
 	     classpathref="build.classpath"
              version="true"
              use="true"
@@ -190,19 +196,116 @@
              bottom="wingS swings ;-)"
     />
   </target>
+
+  <target name="dist" depends="cleansource,all,javadoc">
+    <!-- manual -->
+    <mkdir dir="${dist.doc}/manual" />
+    <copy todir="${dist.doc}/manual">
+      <fileset dir="doc">
+        <include name="FAQ.html"/>
+        <include name="FAQ.css"/>
+        <include name="Architecture.html"/>
+        <include name="DynamicResources.html"/>
+      </fileset>
+    </copy>
+
+    <!-- tutorial -->
+    <mkdir dir="${dist.doc}/tutorial"/>
+    <copy todir="${dist.doc}/tutorial">
+      <fileset dir="doc/tutorial/hellowings">
+        <exclude name="build/**" />
+        <exclude name="**/CVS" />
+        <exclude name="**/.*" />
+        <exclude name="**/.*/**" />
+        <exclude name="**/*.class" />
+        <exclude name="**/*.u" />
+        <exclude name="**/*~" />
+      </fileset>
+    </copy>
+
+    <!-- api -->
+    <mkdir dir="${dist.doc}/api"/>
+    <copy todir="${dist.doc}/api">
+      <fileset dir="${build.doc}/api"/>
+    </copy>
+
+    <!-- src -->
+    <copy todir="${dist.src}">
+      <fileset dir="src">
+        <exclude name="**/CVS" />
+        <exclude name="**/.*" />
+        <exclude name="**/.*/**" />
+        <exclude name="**/*.class" />
+        <exclude name="**/*.u" />
+        <exclude name="**/*~" />
+      </fileset>
+    </copy>
+
+    <!-- demo -->
+    <mkdir dir="${dist}/demo"/>
+    <copy todir="${dist}/demo">
+      <fileset dir="demo">
+        <exclude name="build/**"/>
+        <exclude name="**/CVS" />
+        <exclude name="**/.*" />
+        <exclude name="**/.*/**" />
+        <exclude name="**/*.class" />
+        <exclude name="**/*.u" />
+        <exclude name="**/*~" />
+      </fileset>
+    </copy>
+
+    <!-- main -->
+    <property name="distname" value="${ant.project.name}-${wings.version}"/>
+    <filter token="VERSION" value="${wings.version}"/>
+    <copy todir="${dist}" file="VERSION" filtering="true"/>
+    <copy todir="${dist}">
+      <fileset dir="${home}">
+        <include name="COPYING" />
+        <include name="CREDITS" />
+        <include name="INSTALL" />
+        <include name="README" />
+        <include name="build.*" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="tarball" depends="dist" description="create distribution tar.gz">
+    <property name="distname" value="${ant.project.name}-${wings.version}"/>
+    <delete dir="${distname}"/>
+    <mkdir dir="${distname}"/>
+    <copy todir="${distname}">
+      <fileset dir="${dist}"/>
+    </copy>
+
+    <!-- dist -->
+    <mkdir dir="${distname}/dist/lib"/>
+    <move todir="${distname}/dist/lib">
+      <fileset dir="${distname}/lib">
+        <include name="wings.jar"/>
+        <include name="css1.jar" />
+      </fileset>
+    </move>
+
+    <tar tarfile="${distname}.tar" basedir="." includes="${distname}/" />
+    <gzip src="${distname}.tar" zipfile="${distname}.tar.gz" />
+    <delete file="${distname}.tar" />
+    <delete dir="${distname}" />
+  </target>
+
   <target name="javadoc" depends="doc" description="create api-doc"/>
 
   <!-- ==================== Admin ==================== -->
-  <target name="clean" depends="init"
+  <target name="clean"
           description="cleanup build results">
     <delete dir="${build}"/>
-    <delete dir="${deploy}"/>
+    <delete dir="${dist}"/>
   </target>
 
-  <target name="cleansource" depends="init" 
+  <target name="cleansource"
           description="cleanup sources (tmp/backup-files, classes)">
     <delete>
-      <fileset dir="${src}">
+      <fileset dir="src">
         <include name="**/*.class" />
         <include name="**/*.u" />
         <include name="**/*~" />
@@ -213,38 +316,9 @@
   <target name="all" depends="clean,build" description="re-build everything"/>
   <target name="main" depends="build" description="build changed files"/>
 
-
   <!-- target name="demo" depends="build" description="build demo">
     <ant dir="demo"/>
   </target -->
-
-  <target name="dist" depends="init" description="create distribution tar.gz">
-      <property name="distname" value="${ant.project.name}-${wings.version}"/>
-      <delete dir="${distname}"/>
-      <mkdir dir="${distname}"/>
-
-      <!-- copy all relevant files for the distribution -->
-      <filter token="VERSION" value="${wings.version}" />
-      <copy todir="${distname}" file="VERSION" filtering="true" />
-      <copy todir="${distname}">
-         <fileset dir="${home}">
-	    <include name="COPYING" />
-	    <include name="CREDITS" />
-	    <include name="INSTALL" />
-	    <include name="README" />
-	    <include name="build.*" />
-	    <include name="src/" />
-	    <include name="demo/" />
-	    <include name="doc/" />
-	    <exclude name="demo/build" />
-	    <exclude name="**/CVS" />
-         </fileset>
-      </copy>
-      <tar tarfile="${distname}.tar" basedir="." includes="${distname}/" />
-      <gzip src="${distname}.tar" zipfile="${distname}.tar.gz" />
-      <delete file="${distname}.tar" />
-      <delete dir="${distname}" />
-  </target>
 </project>
 <!--
  Local variables:

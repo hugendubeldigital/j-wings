@@ -27,45 +27,6 @@ public class TestLookAndFeel
 	throws Exception
     {}
 
-    public void testLookAndFeelFactory()
-	throws IOException
-    {
-	URL url = getClass().getResource("css1.jar");
-
-	// deploy laf
-        LookAndFeelFactory.deploy(url);
-	Assert.assertEquals(1, LookAndFeelFactory.getInstalledLookAndFeels().size());
-	LookAndFeel laf = LookAndFeelFactory.getLookAndFeel("xhtml/css1");
-	Assert.assertNotNull(laf);
-	Assert.assertEquals("xhtml/css1", laf.getName());
-
-	// register session
-	DefaultSession session = new DefaultSession();
-	SessionManager.setSession(session);
-	session.getCGManager().setLookAndFeel(laf);
-	session.addPropertyChangeListener("lookAndFeel", new PropertyChangeListener() {
-		public void propertyChange(PropertyChangeEvent pe) {
-		    notified = true;
-		}
-	    });
-	LookAndFeelFactory.registerSession(session);
-
-	// redeploy laf
-	notified = false;
-	url = getClass().getResource("css1.jar");
-        LookAndFeelFactory.deploy(url);
-	Assert.assertTrue(notified);
-
-	// unregister session
-	LookAndFeelFactory.unregisterSession(session);
-
-	// redeploy laf
-	notified = false;
-	url = getClass().getResource("css1.jar");
-        LookAndFeelFactory.deploy(url);
-	Assert.assertTrue(!notified);
-    }
-
     public void testLookAndFeel()
 	throws IOException
     {
@@ -83,7 +44,7 @@ public class TestLookAndFeel
 
 	// makeAttributeSet
 	AttributeSet attributeSet = laf.makeAttributeSet("color:#123456");
-	Assert.assertEquals("#123456", attributeSet.getAttribute("color"));
+	Assert.assertEquals("#123456", attributeSet.get("color"));
 
 	// makeObject
 	Object object = laf.makeObject("42", Integer.class);

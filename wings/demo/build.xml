@@ -15,7 +15,10 @@
 
   <path id="build.classpath">
     <pathelement path="${java.class.path}/" />
-    <fileset dir="../build/dist/lib">
+    <fileset dir="../dist/lib">
+      <include name="*.jar" />
+    </fileset>
+    <fileset dir="../lib">
       <include name="*.jar" />
     </fileset>
   </path>
@@ -45,7 +48,7 @@
   <target name="wingset" depends="compile">
     <war warfile="${dist.deploy}/wingset.war"
 	 webxml="wingset/wingset.xml">
-      <lib dir="../build/dist/lib">
+      <lib dir="../dist/lib">
         <include name="wings.jar"/>
       </lib>
       <classes dir="${build.class}">
@@ -63,7 +66,7 @@
       <fileset dir="wingset">
         <include name="*.java"/>
       </fileset>
-      <fileset dir="../build/dist/lib">
+      <fileset dir="../dist/lib">
         <include name="css1.jar"/>
       </fileset>
     </war>
@@ -72,7 +75,7 @@
   <target name="ldap" depends="compile">
     <war warfile="${dist.deploy}/ldap.war"
 	 webxml="ldap/ldap.xml">
-      <lib dir="../build/dist/lib">
+      <lib dir="../dist/lib">
         <include name="wings.jar"/>
       </lib>
       <classes dir="${build.class}">
@@ -92,7 +95,7 @@
       <fileset dir="ldap">
         <include name="*.java"/>
       </fileset>
-      <fileset dir="../build/dist/lib">
+      <fileset dir="../dist/lib">
         <include name="css1.jar"/>
       </fileset>
     </war>
@@ -102,7 +105,7 @@
   <target name="explorer" depends="compile">
     <war warfile="${dist.deploy}/explorer.war"
 	 webxml="explorer/explorer.xml">
-      <lib dir="../build/dist/lib">
+      <lib dir="../dist/lib">
         <include name="wings.jar"/>
       </lib>
       <classes dir="${build.class}">
@@ -118,7 +121,7 @@
       <fileset dir="explorer">
         <include name="*.java"/>
       </fileset>
-      <fileset dir="../build/dist/lib">
+      <fileset dir="../dist/lib">
         <include name="css1.jar"/>
       </fileset>
     </war>
@@ -128,7 +131,7 @@
   <target name="frameset" depends="compile">
     <war warfile="${dist.deploy}/frameset.war"
 	 webxml="frameset/frameset.xml">
-      <lib dir="../build/dist/lib">
+      <lib dir="../dist/lib">
         <include name="wings.jar"/>
       </lib>
       <classes dir="${build.class}">
@@ -140,7 +143,7 @@
       <fileset dir="frameset">
         <include name="*.java"/>
       </fileset>
-      <fileset dir="../build/dist/lib">
+      <fileset dir="../dist/lib">
         <include name="css1.jar"/>
       </fileset>
     </war>
@@ -150,7 +153,7 @@
   <target name="desktop" depends="compile">
     <war warfile="${dist.deploy}/desktop.war"
 	 webxml="desktop/desktop.xml">
-      <lib dir="../build/dist/lib">
+      <lib dir="../dist/lib">
         <include name="wings.jar"/>
       </lib>
       <classes dir="${build.class}">
@@ -166,7 +169,7 @@
       <fileset dir="desktop">
         <include name="*.java"/>
       </fileset>
-      <fileset dir="../build/dist/lib">
+      <fileset dir="../dist/lib">
         <include name="css1.jar"/>
       </fileset>
     </war>
