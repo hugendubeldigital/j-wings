@@ -1016,13 +1016,15 @@ public abstract class SComponent
      * @see SComponent#updateCG
      */
     public void updateCG() {
-        if (getSession() == null)
+        if (getSession() == null) {
             logger.warning("no session yet.");
-        if (getSession().getCGManager() == null)
+        }
+        else if (getSession().getCGManager() == null) {
             logger.warning("no CGManager");
-
-        setCG((ComponentCG)getSession().getCGManager().getCG(this));
-
+        }
+        else {
+            setCG((ComponentCG)getSession().getCGManager().getCG(this));
+        }
         if (border != null)
             border.updateCG();
     }
