@@ -39,8 +39,7 @@ public class PageScrollerExample
     public SComponent createExample() {
         SPanel p = new SPanel(new SBorderLayout());
 
-        /*        SLabel label = new SLabel("<h4>List in a PageScroller</h4>");
-        label.setEscapeSpecialChars(false);
+        /*        SLabel label = new SLabel("<html><h4>List in a PageScroller</h4>");
         p.add(label, SBorderLayout.NORTH);
         */
 

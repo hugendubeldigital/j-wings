@@ -41,8 +41,7 @@ public class TableExample
         SPanel panel = new SPanel();
         STable table = new STable(new MyTableModel(7, 5));
         SLabel label;
-        label = new SLabel("<h4>STable outside a form with multiple selection</h4>");
-        label.setEscapeSpecialChars(false);
+        label = new SLabel("<html><h4>STable outside a form with multiple selection</h4>");
         panel.add(label);
         table.setShowGrid(true);
         table.setSelectionMode(MULTIPLE_SELECTION);
@@ -52,8 +51,7 @@ public class TableExample
 
         SForm form = new SForm();
         STable formTable = new STable(new MyTableModel(7, 5));
-        label = new SLabel("<h4>STable inside a form with single selection</h4>");
-        label.setEscapeSpecialChars(false);
+        label = new SLabel("<html><h4>STable inside a form with single selection</h4>");
         form.add(label);
         formTable.setShowGrid(true);
         formTable.setSelectionMode(SINGLE_SELECTION);
@@ -66,8 +64,7 @@ public class TableExample
         STable simple = new STable(new ROTableModel(7, 10));
         simple.setAttribute("border", "1px solid black");
         simple.setAttribute("bgcolor", "white");
-        label = new SLabel("<h4>STable without selection and no grid</h4>");
-        label.setEscapeSpecialChars(false);
+        label = new SLabel("<html><h4>STable without selection and no grid</h4>");
         panel.add(label);
         simple.setSelectionMode(SListSelectionModel.NO_SELECTION);
         simple.setDefaultRenderer(new MyCellRenderer());
@@ -111,9 +108,7 @@ public class TableExample
                 // colorOut.setText("[" + c.getRed() + "," 
                 //                  + c.getGreen() + "," + c.getBlue() + "]");
                 // colorOut.setForeground(c);
-
-                colorOut.setEscapeSpecialChars(false);
-                colorOut.setText("<span style=\"color:" + colorToHex(c) +
+                colorOut.setText("<html><span style=\"color:" + colorToHex(c) +
                                  "\">" +
                                  colorToHex(c) +
                                  "</span>");

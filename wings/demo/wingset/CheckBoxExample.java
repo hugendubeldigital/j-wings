@@ -41,23 +41,23 @@ public class CheckBoxExample
 
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));
-        p.add(htmlLabel("<h4>CheckBoxes outside forms</h4>"));
-        p.add(htmlLabel("<h4>Image CheckBoxes outside forms</h4>"));
+        p.add(new SLabel("<html><h4>CheckBoxes outside forms</h4>"));
+        p.add(new SLabel("<html><h4>Image CheckBoxes outside forms</h4>"));
 
         p.add(createCheckBoxExample());
         p.add(createImageCheckBoxExample());
 
         SForm form = new SForm();
-        form.add(htmlLabel("<h4>CheckBoxes in a form</h4>"));
+        form.add(new SLabel("<html><h4>CheckBoxes in a form</h4>"));
         form.add(createCheckBoxExample());
-        form.add(htmlLabel("<br />"));
+        form.add(new SLabel("<html><br />"));
         form.add(new SButton("submit"));
         p.add(form);
 
         form = new SForm();
-        form.add(htmlLabel("<h4>Image CheckBoxes in a form</h4>"));
+        form.add(new SLabel("<html><h4>Image CheckBoxes in a form</h4>"));
         form.add(createImageCheckBoxExample());
-        form.add(htmlLabel("<br />"));
+        form.add(new SLabel("<html><br />"));
         form.add(new SButton("submit"));
         p.add(form);
         return p;
@@ -74,15 +74,6 @@ public class CheckBoxExample
         }
 
         return text;
-    }
-
-    /**
-     * creates a label, that contains HTML formatting information.
-     */
-    private SLabel htmlLabel(String text) {
-        SLabel label = new SLabel(text);
-        label.setEscapeSpecialChars(false);
-        return label;
     }
 
     SContainer createImageCheckBoxExample() {

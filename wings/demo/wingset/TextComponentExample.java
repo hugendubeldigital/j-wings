@@ -44,9 +44,7 @@ public class TextComponentExample
         SLabel desc = new SLabel("Enter some text: ");
         SLabel resultDesc = new SLabel("Entered text:");
         final SLabel result = new SLabel("");
-        result.setEscapeSpecialChars(true);
         final SLabel buttonDesc = new SLabel("");
-        buttonDesc.setEscapeSpecialChars(true);
 
         textComp.addTextListener(new TextListener() {
             public void textValueChanged(TextEvent evt) {

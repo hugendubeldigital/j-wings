@@ -46,22 +46,22 @@ public class RadioButtonExample
 
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));
-        p.add(htmlLabel("<h4>RadioButtons outside forms</h4>"));
-        p.add(htmlLabel("<h4>Image RadioButtons outside forms</h4>"));
+        p.add(new SLabel("<html><h4>RadioButtons outside forms</h4>"));
+        p.add(new SLabel("<html><h4>Image RadioButtons outside forms</h4>"));
         p.add(createRadioButtonExample());
         p.add(createImageRadioButtonExample());
 
         SForm form = new SForm();
-        form.add(htmlLabel("<h4>RadioButtons in a form</h4>"));
+        form.add(new SLabel("<html><h4>RadioButtons in a form</h4>"));
         form.add(createRadioButtonExample());
-        form.add(htmlLabel("<br />"));
+        form.add(new SLabel("<html><br />"));
         form.add(new SButton("submit"));
         p.add(form);
 
         form = new SForm();
-        form.add(htmlLabel("<h4>Image RadioButtons in a form</h4>"));
+        form.add(new SLabel("<html><h4>Image RadioButtons in a form</h4>"));
         form.add(createImageRadioButtonExample());
-        form.add(htmlLabel("<br />"));
+        form.add(new SLabel("<html><br />"));
         form.add(new SButton("submit"));
         p.add(form);
         return p;
@@ -79,15 +79,6 @@ public class RadioButtonExample
         }
 
         return text;
-    }
-
-    /**
-     * creates a label, that contains HTML formatting information.
-     */
-    private SLabel htmlLabel(String text) {
-        SLabel label = new SLabel(text);
-        label.setEscapeSpecialChars(false);
-        return label;
     }
 
     SContainer createImageRadioButtonExample() {

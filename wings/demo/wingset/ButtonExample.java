@@ -41,31 +41,21 @@ public class ButtonExample
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));
         
-        p.add(htmlLabel("<h4>Buttons outside forms</h4>"));
-        p.add(htmlLabel("<h4>Image buttons outside forms</h4>"));
+        p.add(new SLabel("<html><h4>Buttons outside forms</h4>"));
+        p.add(new SLabel("<html><h4>Image buttons outside forms</h4>"));
         p.add(createButtonExample());
         p.add(createImageButtonExample());
         
         SForm form = new SForm();
-        form.add(htmlLabel("<h4>Buttons in a form</h4>"));
+        form.add(new SLabel("<html><h4>Buttons in a form</h4>"));
         form.add(createButtonExample());
         p.add(form);
             
         form = new SForm();
-        form.add(htmlLabel("<h4>Image buttons in a form</h4>"));
+        form.add(new SLabel("<html><h4>Image buttons in a form</h4>"));
         form.add(createImageButtonExample());
         p.add(form);
         return p;
-    }
-
-
-    /**
-     * creates a label, that contains HTML formatting information.
-     */
-    private SLabel htmlLabel(String text) {
-        SLabel label = new SLabel(text);
-        label.setEscapeSpecialChars(false);
-        return label;
     }
 
     SContainer createButtonExample() {
@@ -85,7 +75,7 @@ public class ButtonExample
             b.addActionListener(action);
             text.add(b);
         }
-        text.add(htmlLabel("<br />"));
+        text.add(new SLabel("<html><br />"));
         text.add(pressed);
 
         return text;
@@ -168,7 +158,7 @@ public class ButtonExample
             b.add(buttons[i]);
 
         erg.add(b);
-        erg.add(htmlLabel("<br />"));
+        erg.add(new SLabel("<html><br />"));
         erg.add(pressed);
 
         return erg;
