@@ -84,7 +84,7 @@ public class Editor
 
         saveResource = new EditorDynamicResource();
 
-        SIcon icon = new ResourceImageIcon(getClass(), "/desktop/penguin.png");
+        SIcon icon = new ResourceImageIcon("/desktop/penguin.png");
         setIcon(icon);
         addInternalFrameListener(this);
     }

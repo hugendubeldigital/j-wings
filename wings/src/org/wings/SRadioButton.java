@@ -34,16 +34,16 @@ public class SRadioButton
     private static final String cgClassID = "RadioButtonCG";
 
     private static ResourceImageIcon DEFAULT_SELECTED_ICON =
-        new ResourceImageIcon(SRadioButton.class, "icons/SelectedRadioButton.gif");
+        new ResourceImageIcon("org/wings/icons/SelectedRadioButton.gif");
 
     private static ResourceImageIcon DEFAULT_NOT_SELECTED_ICON =
-        new ResourceImageIcon(SRadioButton.class, "icons/NotSelectedRadioButton.gif");
+        new ResourceImageIcon("org/wings/icons/NotSelectedRadioButton.gif");
 
     private static ResourceImageIcon DEFAULT_DISABLED_SELECTED_ICON =
-        new ResourceImageIcon(SRadioButton.class, "icons/DisabledSelectedRadioButton.gif");
+        new ResourceImageIcon("org/wings/icons/DisabledSelectedRadioButton.gif");
 
     private static ResourceImageIcon DEFAULT_DISABLED_NOT_SELECTED_ICON =
-        new ResourceImageIcon(SRadioButton.class, "icons/DisabledNotSelectedRadioButton.gif");
+        new ResourceImageIcon("org/wings/icons/DisabledNotSelectedRadioButton.gif");
 
     /**
      * TODO: documentation

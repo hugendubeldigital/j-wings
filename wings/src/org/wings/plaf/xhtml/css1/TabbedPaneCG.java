@@ -39,7 +39,7 @@ public final class TabbedPaneCG
         normalIcon   = cg.getIcon("TabbedPaneCG.normalIcon");
         selectedIcon = cg.getIcon("TabbedPaneCG.selectedIcon");
         lastIcon     = cg.getIcon("TabbedPaneCG.lastIcon");
-        transIcon = LookAndFeel.makeIcon(TabbedPaneCG.class, 
+        transIcon = LookAndFeel.makeIcon(getClass().getClassLoader(),
                                          "/org/wings/icons/transdot.gif");
     }
 

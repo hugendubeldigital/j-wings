@@ -33,10 +33,12 @@ public class DirTableModel
     extends AbstractTableModel
 {
     final static SIcon DIR_ICON =
-        new ResourceImageIcon(DirTableModel.class, "/explorer/Directory.gif");
+        new ResourceImageIcon(DirTableModel.class.getClassLoader(),
+                              "explorer/Directory.gif");
 
     final static SIcon FILE_ICON =
-        new ResourceImageIcon(DirTableModel.class, "/explorer/File.gif");
+        new ResourceImageIcon(DirTableModel.class.getClassLoader(),
+                              "explorer/File.gif");
 
     private static FilenameFilter DEFAULT_FILENAMEFILTER =
         new FilenameFilter() {

@@ -28,9 +28,10 @@ import org.wings.*;
 public class ButtonExample
     extends WingSetPane
 {
-    final SIcon icon = new ResourceImageIcon(SButton.class, "icons/Warn.gif");
-    final SIcon disabledIcon = new ResourceImageIcon(SButton.class,
-                                                    "icons/WarnDis.gif");
+    static final SIcon icon = new ResourceImageIcon(SButton.class.getClassLoader(),
+                                                    "org/wings/icons/Warn.gif");
+    static final SIcon disabledIcon = new ResourceImageIcon(SButton.class.getClassLoader(),
+                                                    "org/wings/icons/WarnDis.gif");
     
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));
@@ -90,7 +91,7 @@ public class ButtonExample
         buttons[8] = new SButton("testBR");
 
         System.err.println("###########################");
-        System.err.println("icon.getURL()" + icon.getURL());
+        System.err.println("icon.getURL()" + icon);
         for ( int i=0; i<buttons.length; i++ ) {
             buttons[i].setIcon(icon);
             buttons[i].setDisabledIcon(disabledIcon);

@@ -197,30 +197,6 @@ public final class SUtil
             d.append("</i>");
         d.append("</font>");
     }
-
-
-    /**
-     * TODO: documentation
-     * @deprecated Use ResourceImageIcon
-     */
-    public static SIcon makeIcon(Object o, String fileName) {
-        if ( o==null )
-            return null;
-
-        return makeIcon(o.getClass(), fileName);
-    }
-
-    /**
-     * Utility method tht creates an ImageIcon relative from a file
-     * located realtive to the given base class.
-     * @param baseClass
-     * @param fileName of gif file
-     * @return image icon
-     * @deprecated Use ResourceImageIcon
-     */
-    public static SIcon makeIcon(Class baseClass, String fileName) {
-        return new ResourceImageIcon(baseClass, fileName);
-    }
 }
 
 /*

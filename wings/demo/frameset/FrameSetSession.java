@@ -58,7 +58,7 @@ public class FrameSetSession
     public void postInit(ServletConfig config)
         throws ServletException
     {
-        vertical = new SFrameSet(new SFrameSetLayout(null, "30,*"));
+        vertical = new SFrameSet(new SFrameSetLayout(null, "60,*"));
         toolbarFrame = new SFrame("toolbar");
         vertical.add(toolbarFrame);
 
@@ -102,19 +102,21 @@ public class FrameSetSession
                 }
             };
 
-        SButton menuModifier = new SButton("reload menu frame&nbsp;&nbsp;&nbsp;&nbsp;");
+        SButton menuModifier = new SButton("reload menu frame");
         menuModifier.addActionListener(menuIncrement);
 
-        SButton mainModifier = new SButton("reload main frame&nbsp;&nbsp;&nbsp;&nbsp;");
+        SButton mainModifier = new SButton("reload main frame");
         mainModifier.addActionListener(mainIncrement);
 
-        SButton bothModifier = new SButton("reload both frames&nbsp;&nbsp;&nbsp;&nbsp;");
+        SButton bothModifier = new SButton("reload both frames");
         bothModifier.addActionListener(menuIncrement);
         bothModifier.addActionListener(mainIncrement);
 
-        toolbar.getContentPane().add(menuModifier);
-        toolbar.getContentPane().add(mainModifier);
-        toolbar.getContentPane().add(bothModifier);
+        SForm form = new SForm();
+        form.add(menuModifier);
+        form.add(mainModifier);
+        form.add(bothModifier);
+        toolbar.getContentPane().add(form);
 
         menu.getContentPane().setLayout(null);
         menu.getContentPane().add(menuButton);

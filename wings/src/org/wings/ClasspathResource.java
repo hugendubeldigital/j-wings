@@ -50,17 +50,16 @@ public class ClasspathResource
      * @param resourceFileName
      */
     public ClasspathResource(String resourceFileName) {
-        this(Resource.class.getClassLoader(), resourceFileName);
+        this(Resource.class.getClassLoader(), resourceFileName, "unkonwn");
     }
 
     /**
-     * A static resource located relative to the given baseClass
+     * A static resource that is obtained from the default classpath.
      *
-     * @param baseClass the baseClass
-     * @param resourceFileName the resource relative to the baseClass
+     * @param resourceFileName
      */
-    public ClasspathResource(Class baseClass, String resourceFileName) {
-        this(baseClass.getClassLoader(), resolveName(baseClass, resourceFileName));
+    public ClasspathResource(String resourceFileName, String mimeType) {
+        this(Resource.class.getClassLoader(), resourceFileName, mimeType);
     }
 
     /**
@@ -70,7 +69,17 @@ public class ClasspathResource
      * @param resourceFileName the resource relative to the baseClass
      */
     public ClasspathResource(ClassLoader classLoader, String resourceFileName) {
-        super(null, "unknown");
+        this(classLoader, resourceFileName, "unknown");
+    }
+
+    /**
+     * A static resource that is obtained from the specified class loader
+     *
+     * @param classLoader the classLoader from which the resource is obtained
+     * @param resourceFileName the resource relative to the baseClass
+     */
+    public ClasspathResource(ClassLoader classLoader, String resourceFileName, String mimeType) {
+        super(null, mimeType);
         this.classLoader = classLoader;
         this.resourceFileName = resourceFileName;
         int dotIndex = resourceFileName.lastIndexOf('.');
@@ -82,26 +91,6 @@ public class ClasspathResource
 
     public String toString() {
         return getId() + " " + resourceFileName;
-    }
-
-    protected static String resolveName(Class baseClass, String fileName) {
-        if (fileName == null) {
-            return fileName;
-        }
-        if (!fileName.startsWith("/")) {
-            while (baseClass.isArray()) {
-                baseClass = baseClass.getComponentType();
-            }
-            String baseName = baseClass.getName();
-            int index = baseName.lastIndexOf('.');
-            if (index != -1) {
-                fileName = baseName.substring(0, index).replace('.', '/')
-                    + "/" + fileName;
-            }
-        } else {
-            fileName = fileName.substring(1);
-        }
-        return fileName;
     }
 
     protected final InputStream getResourceStream() {

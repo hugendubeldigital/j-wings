@@ -34,7 +34,7 @@ public class LabelExample
         layout.setCellSpacing(10);
         all.setLayout(layout);
 
-        SIcon icon = new ResourceImageIcon(SConstants.class, "icons/Wait.gif");
+        SIcon icon = new ResourceImageIcon("org/wings/icons/Wait.gif");
 
         final SLabel testLabel = new SLabel("LabelText");
         testLabel.setHorizontalAlignment(LEFT);

@@ -65,10 +65,10 @@ public class CheckBoxExample
     }
 
     SContainer createImageCheckBoxExample() {
-        SIcon sel = new ResourceImageIcon(SCheckBox.class, "icons/bulb2.gif");
-        SIcon nsel = new ResourceImageIcon(SCheckBox.class, "icons/bulb1.gif");
-        SIcon dissel = new ResourceImageIcon(SCheckBox.class, "icons/bulb3.gif");
-        SIcon disnsel = new ResourceImageIcon(SCheckBox.class, "icons/bulb3.gif");
+        SIcon sel = new ResourceImageIcon("org/wings/icons/bulb2.gif");
+        SIcon nsel = new ResourceImageIcon("org/wings/icons/bulb1.gif");
+        SIcon dissel = new ResourceImageIcon("org/wings/icons/bulb3.gif");
+        SIcon disnsel = new ResourceImageIcon("org/wings/icons/bulb3.gif");
 
         SCheckBox[] boxes = new SCheckBox[9];
         boxes[0] = new SCheckBox("testTL");

@@ -161,7 +161,7 @@ public class LdapClientSession
 	
         //mainPanel.setEncodingType("multipart/form-data");
 	
-        mainPanel.add(new SLabel( new ResourceImageIcon(LdapClient.class, 
+        mainPanel.add(new SLabel( new ResourceImageIcon(getClass().getClassLoader(), 
                                                         "images/LDAPworm.gif")), "BOTTOMIMAGE");
 	
         tabbedPane.add(mainPanel, "Browser");

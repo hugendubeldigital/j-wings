@@ -218,7 +218,7 @@ public class SImage
 
         if ( image!=null ) {
             try {
-                imagePath = getExternalizeManager().externalize(image);
+                imagePath = getSession().getExternalizeManager().externalize(image);
             } catch ( Exception e) {}
         }
 

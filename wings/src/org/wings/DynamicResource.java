@@ -93,7 +93,7 @@ public abstract class DynamicResource
      */
     public final void invalidate() {
         epochCache = StringUtil.toShortestAlphaNumericString(++epoch);
-        if (org.wings.servlet.SessionServlet.DEBUG) {
+        if (logger.isLoggable(Level.FINE)) {
             String name = getClass().getName();
             name = name.substring(name.lastIndexOf(".") + 1);
             logger.fine("[" + name + "] " +

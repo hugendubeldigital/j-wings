@@ -55,16 +55,6 @@ public abstract class SessionServlet
 {
     protected static Logger logger = Logger.getLogger("org.wings.servlet");
 
-    /**
-     * Assembly of some messages is expensive. Thus it should not be done, if
-     * the message is discarded anyway.
-     */
-    public static final boolean DEBUG = logger.isLoggable(Level.FINE);
-
-    /**
-     * format to write out profiling information. Is only used, if
-     * DEBUG is true.
-     */
     protected final TimeMeasure measure =
         new TimeMeasure(new MessageFormat("<b>{0}</b>: {1} <i>{2}</i><br />"));
 
@@ -453,7 +443,7 @@ public abstract class SessionServlet
         if (query == null)
             return false;
         // hier noch get Parameter der Form parsen und dispatchen!!
-        debug("Dispatch Form Get");
+        logger.fine("Dispatch form GET parameter");
         String paramName = query.substring(0, query.indexOf("="));
         String value = query.substring(query.indexOf("=")+1);
         String[] values = {value};
@@ -508,7 +498,7 @@ public abstract class SessionServlet
             ((PropertyService)session).setProperty("request.url", requestURL);
 
             try {
-                if (DEBUG) {
+                if (logger.isLoggable(Level.FINER)) {
                     logger.finer("\nHEADER:");
                     for (Enumeration en = req.getHeaderNames(); en.hasMoreElements();) {
                         String header = (String)en.nextElement();
@@ -529,7 +519,7 @@ public abstract class SessionServlet
             try {
                 ServletRequest asreq = new ServletRequest(req);
 
-                if (DEBUG)
+                if (logger.isLoggable(Level.FINER))
                     measure.start("time to dispatch");
 
                 // it's the dispatcher's resposibility to check the event's actuality
@@ -551,7 +541,7 @@ public abstract class SessionServlet
                     events = events || dispatchPostQuery(req.getQueryString());
                 }
 
-                if (DEBUG) {
+                if (logger.isLoggable(Level.FINER)) {
                     measure.stop();
                     measure.start("time to fire form events");
                 }
@@ -559,7 +549,7 @@ public abstract class SessionServlet
                 if (events)
                     SForm.fireEvents();
 
-                if (DEBUG) {
+                if (logger.isLoggable(Level.FINER)) {
                     measure.stop();
                     measure.start("time to process request");
                 }
@@ -599,7 +589,7 @@ public abstract class SessionServlet
 
                 // no pathInfo .. getFrame()
                 if (pathInfo == null || pathInfo.length() == 0 || firstRequest) {
-                    debug("delivering default frame");
+                    logger.fine("delivering default frame");
                     firstRequest = false;
 
                     DynamicResource resource
@@ -609,14 +599,14 @@ public abstract class SessionServlet
                 else
                     extManager.deliver(pathInfo, response);
 
-                if (DEBUG) {
+                if (logger.isLoggable(Level.FINER)) {
                     measure.stop();
-                    debug(measure.print());
+                    logger.finer(measure.print());
                     measure.reset();
                 }
             }
             catch (Throwable e) {
-                logger.log(Level.SEVERE, "doGet", e);
+                logger.log(Level.SEVERE, "exception: ", e);
                 e.printStackTrace(System.err);
                 handleException(req, response, e);
                 throw new ServletException(e);
@@ -742,7 +732,7 @@ public abstract class SessionServlet
      *
      */
     public void destroy() {
-        debug("destroy called");
+        logger.info("destroy called");
 
         LookAndFeelFactory.unregisterSession(session);
 
@@ -758,17 +748,17 @@ public abstract class SessionServlet
         }
         finally {
             Runtime rt = Runtime.getRuntime();
-            if (DEBUG) debug("free mem before gc: " + rt.freeMemory());
+            if (logger.isLoggable(Level.FINE))
+                logger.fine("free mem before gc: " + rt.freeMemory());
             rt.gc();
-            if (DEBUG) debug("free mem after gc: " + rt.freeMemory());
+            if (logger.isLoggable(Level.FINE))
+                logger.fine("free mem after gc: " + rt.freeMemory());
         }
     }
 
 
     public static final void debug(String msg) {
-        if (DEBUG) {
-            DebugUtil.printDebugMessage(SessionServlet.class, msg);
-        }
+        logger.fine(msg);
     }
 }
 

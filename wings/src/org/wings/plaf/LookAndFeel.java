@@ -164,18 +164,6 @@ public class LookAndFeel
     /**
      * Utility method that creates an Icon from a resource
      * located realtive to the given base class.
-     * @param baseClass the ClassLoader of the baseClass will be used
-     * @param fileName of the image file
-     * @return a newly allocated Icon
-     * @deprecated give the <code>classLoader</code> instead the <code>baseClass</code>
-     */
-    public static SIcon makeIcon(Class baseClass, String fileName) {
-        return new ResourceImageIcon(baseClass, fileName);
-    }
-
-    /**
-     * Utility method that creates an Icon from a resource
-     * located realtive to the given base class.
      * @param classLoader the ClassLoader that should load the icon
      * @param fileName of the image file
      * @return a newly allocated Icon

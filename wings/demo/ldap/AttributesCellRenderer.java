@@ -28,7 +28,7 @@ public class AttributesCellRenderer
 			String src = null;
 			ImageIcon icon = new ImageIcon((byte[])attribute.get());
 
-			ExternalizeManager ext = baseTable.getExternalizeManager();
+			ExternalizeManager ext = baseTable.getSession().getExternalizeManager();
 			if (ext != null) {
                           src = ext.externalize(icon);
 			}

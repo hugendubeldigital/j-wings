@@ -760,8 +760,7 @@ public class STable
      *
      */
     protected void createDefaultIcons() {
-        setEditIcon(new ResourceImageIcon(STable.class, 
-                                          "/org/wings/icons/Pencil.gif"));
+        setEditIcon(new ResourceImageIcon("org/wings/icons/Pencil.gif"));
     }
 
     public String getCGClassID() {

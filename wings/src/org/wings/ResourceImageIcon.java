@@ -61,10 +61,6 @@ public class ResourceImageIcon
         this(ResourceImageIcon.class.getClassLoader(), resourceFileName);
     }
 
-    public ResourceImageIcon(Class baseClass, String resourceFileName) {
-        this(baseClass.getClassLoader(), resolveName(baseClass, resourceFileName));
-    }
-
     public ResourceImageIcon(ClassLoader classLoader, String resourceFileName) {
         super(classLoader, resourceFileName);
 

@@ -86,8 +86,7 @@ public class WingSetSession
         tab.add(new FileChooserExample(), "FileChooser");
         tab.add(new ScrollPaneExample(), "ScrollPane");
         //tab.add(new LayoutExample(), "Simple Layout");
-        tab.addTab("Template Layout", new ResourceImageIcon(WingSet.class, 
-                                                            "cowSmall.gif"), 
+        tab.addTab("Template Layout", new ResourceImageIcon("wingset/cowSmall.gif"), 
                    new TemplateExample(), "Template Layout Manager");
         //tab.add(new DateChooserExample(), "DateChooser");
 

@@ -765,7 +765,7 @@ public abstract class SComponent
      *
      * @return true, if this component resides in a form, false otherwise
      */
-    public boolean getResidesInForm() {
+    public final boolean getResidesInForm() {
         SComponent parent = getParent();
 
         boolean actuallyDoes = false;
@@ -773,15 +773,6 @@ public abstract class SComponent
             parent = parent.getParent();
 
         return actuallyDoes;
-    }
-
-    /**
-     * Convenience method that return the externalize manager.
-     *
-     * @return the externalize manager
-     */
-    public ExternalizeManager getExternalizeManager() {
-        return getSession().getExternalizeManager();
     }
 
     /**

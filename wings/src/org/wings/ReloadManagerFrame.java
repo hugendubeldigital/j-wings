@@ -19,6 +19,7 @@ import java.beans.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.logging.*;
 
 import javax.swing.Icon;
 
@@ -130,9 +131,12 @@ public class ReloadManagerFrame
 
         if (all) {
             // reload the _whole_ document
-            d.append("parent.location='");
+            d.append("parent.location.href='");
             d.append(toplevel.getURL());
             d.append("';\n");
+
+            if (logger.isLoggable(Level.FINER))
+                logger.finer("parent.location.href='" + toplevel.getURL() + "';\n");
 
             // invalidate resources
             Iterator it = dirtyResources.iterator();
@@ -149,9 +153,16 @@ public class ReloadManagerFrame
 
                 d.append("parent.frame");
                 d.append(resource.getFrame().getUnifiedId());
-                d.append(".location='");
+                d.append(".location.href='");
                 d.append(resource.getURL());
                 d.append("';\n");
+
+                if (logger.isLoggable(Level.FINER))
+                    logger.finer("parent.frame" +
+                                 resource.getFrame().getUnifiedId() +
+                                 ".location.href='" +
+                                 resource.getURL() +
+                                 "';\n");
             }
         }
 

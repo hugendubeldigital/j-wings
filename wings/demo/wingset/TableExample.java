@@ -100,8 +100,7 @@ public class TableExample
         final int COLS = 7;
         final int ROWS = 5;
 
-        SIcon image = new ResourceImageIcon(SLabel.class,
-                                            "icons/JavaCup.gif");
+        SIcon image = new ResourceImageIcon("org/wings/icons/JavaCup.gif");
 
         Object[][] data = new Object[ROWS][COLS];
 

@@ -41,8 +41,8 @@ public class ScrollBarCG
 
     public void installCG(SComponent component) {
         super.installCG(component);
-        transIcon = LookAndFeel.makeIcon(ScrollBarCG.class, 
-                                         "/org/wings/icons/transdot.gif");
+        transIcon = LookAndFeel.makeIcon(ScrollBarCG.class.getClassLoader(),
+                                         "org/wings/icons/transdot.gif");
     }
 
     public void uninstallCG(SComponent component)

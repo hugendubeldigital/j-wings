@@ -117,6 +117,10 @@ public abstract class StaticResource
         return id;
     }
 
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
     /**
      * Reads the resource into an LimitedBuffer and returns it. If the
      * size of the resource is larger than 
