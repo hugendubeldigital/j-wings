@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Vector;
 import java.util.StringTokenizer;
+import java.util.HashMap;
 
 public class LdapWorker
 {
@@ -293,17 +294,23 @@ public class LdapWorker
 
     public Object getOAttributeValues (String o,String attr) {
 	Object val = null;
+	System.out.println(o);
 	try {
 	    Attributes matchAttrs = new BasicAttributes(true); // ignore attribute name case
 	    matchAttrs.put(new BasicAttribute(attr));
-	    matchAttrs.put(new BasicAttribute("cn", o));
+	    //matchAttrs.put(new BasicAttribute("cn", o));
 	    //Search for objects that have those matching attributes
-	    NamingEnumeration enum = ctx.search("dc=tiscon,dc=de", matchAttrs);
+	    System.out.println(o + "," + "dc=tiscon,dc=de");
+	    System.out.println(attr);
+	    SearchControls c = new SearchControls();
+	    c.setSearchScope(0);
+	    c.setReturningAttributes(new String[] {attr});
+	    NamingEnumeration enum = ctx.search(o + "," + "dc=tiscon,dc=de", "(objectclass=*)",c);
 	    
 	    
 	    while (enum.hasMore()) {
 		SearchResult sr = (SearchResult)enum.next();
-		System.out.println(">>>" + sr.getName());
+		System.out.println("hallo>>>" + sr.getName());
 	     BasicAttributes bas = (BasicAttributes)sr.getAttributes();
 	     BasicAttribute ba = (BasicAttribute)bas.get(attr);
 	     val = ba.get();
@@ -316,9 +323,10 @@ public class LdapWorker
     }
     
 
-    public ArrayList  getAttributeValues(String attribute) {
+    public HashMap  getAttributeValues(String attribute) {
 	
 	ArrayList attrList = new ArrayList();
+	HashMap peopleDNMap = new HashMap(); 
 
 	try {
 
@@ -326,20 +334,23 @@ public class LdapWorker
 	matchAttrs.put(new BasicAttribute("cn"));
          
          // Search for objects that have those matching attributes
+	//NamingEnumeration enum = ctx.search("dc=tiscon,dc=de", matchAttrs);
 	NamingEnumeration enum = ctx.search("dc=tiscon,dc=de", matchAttrs);
 
      
          while (enum.hasMore()) {
              SearchResult sr = (SearchResult)enum.next();
-             System.out.println(">>>" + sr.getName());
 	     BasicAttributes ba = (BasicAttributes)sr.getAttributes();
 	     BasicAttribute cn = (BasicAttribute)ba.get("cn");
 	     attrList.add(cn.get());
+	     peopleDNMap.put(cn.get(),sr.getName());
+	     System.out.println("dn ist "+ sr.toString());
+	     
 	 }
 	}
 	catch(NamingException u) {
 	}
-	return attrList;
+	return peopleDNMap;
     }
 
     

@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
+import java.util.HashMap;
+
 
 import javax.naming.*;
 import javax.naming.directory.*;
@@ -50,6 +52,7 @@ public class LdapBrowserSession
     SList personList;
     SButton submit;
     STable peopleTable;
+    HashMap peopleDN;
 
     public LdapBrowserSession(Session session) {
         super(session);
@@ -124,8 +127,10 @@ public class LdapBrowserSession
 
     private void addListElements(SList list) {
 	worker = getLdapWorker();
-	ArrayList people = worker.getAttributeValues(peopleName);
-	list.setListData(people.toArray());
+	peopleDN = worker.getAttributeValues(peopleName);
+	//ArrayList people = worker.getAttributeValues(peopleName);
+	Set keys = peopleDN.keySet(); 
+	list.setListData(keys.toArray());
     }
 
     private void setLdapWorker(LdapWorker worker) {
@@ -152,7 +157,8 @@ public class LdapBrowserSession
 	    if (ROWS > 0) {
 	    for (int c=0; c < COLS; c++) {
 		for (int r=0; r < ROWS; r++)
-                     data[r][c] = worker.getOAttributeValues((String)getSelList().get(r),columnNames[c]);
+		    //data[r][c] = worker.getOAttributeValues((String)getSelList().get(r),columnNames[c]);
+		    data[r][c] = worker.getOAttributeValues((String)peopleDN.get((String)getSelList().get(r)),columnNames[c]);
 	    }
 	    }
 	} 
