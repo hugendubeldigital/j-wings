@@ -17,14 +17,14 @@ package org.wings.servlet;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.*;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -39,8 +39,7 @@ import org.wings.externalizer.*;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public abstract class WingServlet
-    extends HttpServlet
+public abstract class WingServlet extends HttpServlet
 {
     /**
      * TODO: documentation
@@ -48,7 +47,17 @@ public abstract class WingServlet
     public static final boolean DEBUG = true;
 
     /**
-     * TODO: documentation
+     * if this is not a transient element, set the expiration header to
+     * this timeout, so that the browser is able to cache the item without
+     * further request.
+     */
+    protected static final int STABLE_EXPIRE = 3600 * 60 * 1000; // one hour
+
+    /**
+     * The maximal length of data that is accepted in one POST request.
+     * Data can be this big, if your application provides a capability
+     * to upload a file (SFileChoose). This constant limits the maximum
+     * size that is accepted to avoid denial of service attacks.
      */
     protected int maxContentLength = 64; // in kByte
 
@@ -100,7 +109,7 @@ public abstract class WingServlet
      * @param config the serlvet configuration
      */
     protected void initExternalizer(ServletConfig config) {
-        extManager.setExternalizer(new FileExternalizer(config));
+        extManager.setExternalizer(new ServletExternalizer(config));
     }
 
     /**
@@ -116,7 +125,6 @@ public abstract class WingServlet
         extManager.addObjectHandler(new ResourceImageIconObjectHandler());
         extManager.addObjectHandler(new StyleSheetObjectHandler());
     }
-
 
     /**
      * TODO: documentation
@@ -140,18 +148,15 @@ public abstract class WingServlet
      * The following init parameters are known by wings.
      *
      * <dl compact>
-     * <dt>externalizer.file.path</dt><dd><b>FileExternalizer</b> - path, where the
-     *     externalizer stores the files (below documentroot)</dd>
-     * <dt>externalizer.file.url</dt><dd><b>FileExternalizer</b> - url, where the client
-     *     can access those files</dd>
-     * <dt>externalizer.servlet.url</dt><dd><b>ServletExternalizer</b>url, where the client
-     *     can access the externalizer servlet</dd>
-     * <dt>externalizer.timeout</dt><dd>The time, externalized objects are kept, before they
-     *     are removed</dd>
-     * <dt>content.maxlength</dt><dd>Maximum content lengt for form posts. Remember to increase
-     *     this, if you make use of the SFileChooser component</dd>
-     * <dt>filechooser.uploaddir</dt><dd>The directory, where uploaded files ar stored
-     *     temporarily</dd>
+     * <dt>externalizer.timeout</dt><dd> - The time, externalized objects 
+     *          are kept, before they are removed</dd>
+     *
+     * <dt>content.maxlength</dt><dd> - Maximum content lengt for form posts. 
+     *          Remember to increase this, if you make use of the SFileChooser
+     *          component</dd>
+     *
+     * <dt>filechooser.uploaddir</dt><dd> - The directory, where uploaded
+     *          files ar stored temporarily</dd>
      * </dl>
      *
      * @param config
@@ -269,11 +274,6 @@ public abstract class WingServlet
         doGet(req, res);
     }
 
-    /**
-     * TODO: documentation
-     */
-    protected TimeMeasure measure = new TimeMeasure();
-
     private final SessionServlet newSession(HttpServletRequest req)
         throws ServletException
     {
@@ -307,13 +307,75 @@ public abstract class WingServlet
 
         if ( session != null )
             sessionServlet = (SessionServlet)session.getValue(lookupName);
-
+        
         if ( sessionServlet == null )
             sessionServlet = newSession(req);
 
         return sessionServlet;
     }
 
+    /** -- externalization -- **/
+
+    /**
+     * returns, whether this request is to serve an externalize request.
+     */
+    protected boolean isExternalizeRequest(HttpServletRequest request) {
+        String pathInfo = request.getPathInfo();
+        return (pathInfo != null && pathInfo.length() >=2);
+    }
+    
+    /**
+     * returns the last modification of an externalized resource to allow the
+     * browser to cache it. The 'normal' output of this servlet cannot be
+     * cached, so this method returns '-1' if this is not an externalize
+     * request.
+     */
+    protected long getLastModified(HttpServletRequest request) {
+        if (isExternalizeRequest(request)) {
+            ExternalizedInfo info;
+
+            info = ServletExternalizer.getExternalizedInfo(request
+                                                           .getPathInfo());
+            if (info == null) {
+                debug ("info is null!");
+                return -1;
+            }
+            return info.lastModified();
+        }
+        return -1;
+    }
+    
+    /**
+     * externalizes a resource.
+     */
+    protected void externalize(String path,
+                               HttpServletResponse response) 
+        throws ServletException, IOException {
+        ExternalizedInfo info;
+        info = ServletExternalizer.getExternalizedInfo(path);
+        if (info == null)
+            return;
+        Set headers = info.handler.getHeaders(info.extObject);
+        if ( headers != null ) {
+            for ( Iterator it = headers.iterator(); it.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) it.next();
+                response.addHeader( (String) entry.getKey(), 
+                                    (String) entry.getValue());
+            }
+        }
+        response.setContentType(info.handler.getMimeType(info.extObject));
+        
+        // non-transient items can be cached by the browser
+        if (!info.isTransient()) {
+            response.setDateHeader("Expires", 
+                                   info.lastModified() + STABLE_EXPIRE);
+        }
+        OutputStream out = response.getOutputStream();
+        info.handler.write(info.extObject, out);
+        out.flush();
+        out.close();
+    }
+    
     /**
      * TODO: documentation
      */
@@ -321,8 +383,43 @@ public abstract class WingServlet
                             HttpServletResponse response)
         throws ServletException, IOException
     {
-        SessionServlet sessionServlet = null;
+        /* 
+         * make sure, that our context ends with '/'. Otherwise redirect
+         * to the same location with appended slash. 
+         *
+         * We need a '/' at the
+         * end of the servlet, so that relative requests work. Relative
+         * requests are either externalization requests, providing the
+         * wanted resource name in the path info (like 'abc_121.gif')
+         * or 'normal' requests which are just an empty URL with the 
+         * request parameter (like '?12_22=121').
+         * The browser assembles the request URL from the current context
+         * (the 'directory' it assumes it is in) plus the relative URL.
+         * Thus emitted URLs are as short as possible and thus the generated
+         * page size.
+         */
+        String pathInfo = req.getPathInfo();
+        if (pathInfo == null || pathInfo.length() == 0) {
+            StringBuffer pathUrl = HttpUtils.getRequestURL(req);
+            pathUrl.append('/');
+            if (req.getQueryString() != null) {
+                pathUrl.append('?').append(req.getQueryString());
+            }
+            response.sendRedirect(pathUrl.toString());
+            return;
+        }
+        
+        /*
+         * we either have a request for externalization
+         * (if there is something in the path info) or just a normal
+         * request to this servlet.
+         */
+        if (isExternalizeRequest(req)) {
+            externalize(pathInfo, response);
+            return;
+        }
 
+        SessionServlet sessionServlet = null;
         synchronized (initializer) {
             sessionServlet = getSessionServlet(req);
         }

@@ -39,11 +39,8 @@ import javax.servlet.http.HttpServletRequest;
 public class ServletExternalizer
     extends AbstractExternalizer
 {
-    /**
-     * TODO: documentation
-     */
-    protected String httpAddress = null;
-    private final static HashMap externalizedNameMap = new HashMap();
+    // we should differentiate between read and write lock!
+    private final static Map externalizedNameMap = new HashMap();
 
 
     /**
@@ -51,26 +48,7 @@ public class ServletExternalizer
      *
      */
     public ServletExternalizer(ServletConfig config) {
-        httpAddress = config.getInitParameter("externalizer.servlet.url");
-
-        if ( httpAddress == null ) {
-            httpAddress = "ExternalizerServlet";
-            //            throw new IllegalStateException("externalizer.servlet.url required in initArgs");
-        }
     }
-
-    /**
-     * TODO: documentation
-     *
-     */
-    public ServletExternalizer(String externalizerURL) {
-        httpAddress = externalizerURL;
-
-        if ( httpAddress == null ) {
-            throw new IllegalStateException("externalizer.servlet.url required in initArgs");
-        }
-    }
-
 
     /**
      * TODO: documentation
@@ -89,10 +67,7 @@ public class ServletExternalizer
      * @return
      */
     protected String getExternalizedURL(ExternalizedInfo info) {
-        StringBuffer result = new StringBuffer(httpAddress);
-        result.append("/").append(info.extFileName);
-        
-        return result.toString();
+        return info.extFileName;
     }
 
 
@@ -108,11 +83,10 @@ public class ServletExternalizer
     /** 
      * for externalizer servlet
      */
-    public static ExternalizedInfo getExternalizedInfo(HttpServletRequest request) {
-        String fname = request.getPathInfo();
+    public static ExternalizedInfo getExternalizedInfo(String fname) {
         if (fname.startsWith("/"))
             fname = fname.substring(1);
-        return (ExternalizedInfo)externalizedNameMap.get(fname);
+        return (ExternalizedInfo) externalizedNameMap.get(fname);
     }
 }
 

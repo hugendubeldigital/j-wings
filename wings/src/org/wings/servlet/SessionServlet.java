@@ -532,7 +532,8 @@ public abstract class SessionServlet
                 }
 
                 handleLocale(req);
-                getFrame().setServer(response.encodeUrl(HttpUtils.getRequestURL(req).toString()));
+                //getFrame().setServer(response.encodeUrl(HttpUtils.getRequestURL(req).toString()));
+                getFrame().setServer(response.encodeUrl(""));
             }
             finally {
                 prepareRequest(req, response);

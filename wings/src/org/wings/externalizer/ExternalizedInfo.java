@@ -22,16 +22,16 @@ import org.wings.session.Session;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-class ExternalizedInfo
+public class ExternalizedInfo
 {
     private static long counter = 0;
-
-    long          timestamp;
-    boolean       stable;
-    String        extFileName;
-    Object        extObject;
-    ObjectHandler handler;
-    Session       session;
+    
+    public long          timestamp;
+    public boolean       stable;
+    public String        extFileName;
+    public Object        extObject;
+    public ObjectHandler handler;
+    public Session       session;
 
     public ExternalizedInfo(Object obj, ObjectHandler hdl, Session ses) {
         extObject   = obj;
