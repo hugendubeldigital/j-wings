@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- ant build file for wingS Demos-->
+<!-- ant build file for wingX Menupane demo-->
 <!-- $Id$ -->
 
 <project name="wingX-Demo" default="main" basedir=".">
@@ -50,6 +50,9 @@
       <classes dir="${build.class}">
         <include name="menupane/**"/>
       </classes>
+      <fileset dir="menupane">
+        <include name="index.html"/>
+      </fileset>
     </war>
   </target>
 

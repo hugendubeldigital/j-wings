@@ -93,7 +93,7 @@ import org.wings.style.SimpleAttributeSet;
  *    mpane.addMenuItem(m, new SMenuItem("SMenuItem 1.3"), new SLabel("MenuItem Content 1.3"));
  * </pre></blockquote>
  * @see STabbedPane
- * @author <a href="mailto:andre@lison.de">Andre Lison</a>
+ * @author <a href="mailto:andre.lison@general-bytes.com">Andre Lison</a>, <a href="http://www.general-bytes.com">GENERAL BYTES</a>
  * @version $Revision$
  */
 public class SMenuPane extends SContainer implements ActionListener, PropertyChangeListener
@@ -203,7 +203,7 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
     /**
      * Set given menu active and switch content
      * panel. Fires ChangeEvent, if new selection differes
-     * to old one.
+     * from old one.
      */
     public void setSelectedMenu(SComponent comp)
     {
@@ -224,7 +224,7 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
         else
         {
             fSelectedMenu = null;
-            // search for menuitem in all menues
+            // search for menuitems in all menues
             for (int m = 0; m < getMenuCount(); m++)
             {
                 SMenu menu = getMenu(m);
@@ -303,9 +303,10 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
         SAbstractButton button = (SAbstractButton) ae.getSource();
         if (button instanceof SMenu)
         {
-            for (int i = 0; i < fMenus.size(); i++)
+            for (int i = 0; i < fMenus.size(); i++) {
                 if (((SMenu) fMenus.get(i)).isActive())
                      ((SMenu) fMenus.get(i)).setActive(false);
+            }
             ((SMenu) ae.getSource()).setActive(true);
         }
 
@@ -319,7 +320,6 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
     public void setParentFrame(SFrame f)
     {
         fLogger.entering("SMenuPane.setParentFrame", f==null?"null":f.getTitle());
-        System.out.println("SMenuPane.setParentFrame="+( f==null?"null":f.getTitle()));
         super.setParentFrame(f);
         for (int i = 0; i < fMenus.size(); i++)
              ((SMenu) fMenus.get(i)).setParentFrame(f);
@@ -327,7 +327,7 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
 		fLogger.log(Level.FINER, "cg is " + cg);
 		if (f != null && cg instanceof org.wingx.plaf.xhtml.MenuPaneCG)
 		{
-		    fLogger.log(Level.FINEST, "SMemupane.setParentFrame, Installing stylesheet ...");
+		    fLogger.log(Level.FINEST, "SMenupane.setParentFrame, Installing stylesheet ...");
 		    ((org.wingx.plaf.xhtml.MenuPaneCG) cg).installStyleSheet(this);
 		}
     }
@@ -413,6 +413,9 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
     {
         if (fSelectedMenu != null)
         {
+            if (fSelectedMenu instanceof SMenu)
+                return fMenus.indexOf(fSelectedMenu);
+            else
             if (fSelectedMenu instanceof SMenuItem)
             {
                 for (int m = 0; m < getMenuCount(); m++)
@@ -426,7 +429,6 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
                 }
                 return -1;
             }
-            return fMenus.indexOf(fSelectedMenu);
         }
         return -1;
     }

@@ -124,7 +124,7 @@ public class MenuPaneCG implements ComponentCG
                 maxSubMenuCount,
                 menuCount-i+menu.getMenuComponentCount());
         }
-		System.out.println("maxSubMenuCount="+maxSubMenuCount);
+		// System.out.println("maxSubMenuCount="+maxSubMenuCount);
 		
 		// now getting or trying to guess the menu width
 		int menuWidth = pane.getMenuWidth();
@@ -133,7 +133,7 @@ public class MenuPaneCG implements ComponentCG
 		    if (fMenuFont == null) {
 			    fMenuFont = new Font("SansSerif", Font.PLAIN, 12);
 			    // fMenuFont = fMenuFont.deriveFont();
-		    	System.out.println("Font:"+fMenuFont);
+		    	// System.out.println("Font:"+fMenuFont);
 		    }
 		    if (fGraphics == null) {
 		    	GraphicsEnvironment ge = 
@@ -454,7 +454,7 @@ public class MenuPaneCG implements ComponentCG
 	        /* menuitem */
 	        fMenuItemStyle.put(StyleConstants.COLOR, "#"+Utils.toColorString(
 				SMenuPane.getContrastColor(fMenuPane.getMenuBackground())));
-	        System.out.println("MenuItemStyle is = " + fMenuItemStyle);
+	        // System.out.println("MenuItemStyle is = " + fMenuItemStyle);
 
 			/* menues */
 	        fMenuLinkStyle.put(StyleConstants.COLOR, "#"+Utils.toColorString(
@@ -480,7 +480,7 @@ public class MenuPaneCG implements ComponentCG
 			/* outer border */
 			fOuterBorderStyle.put(StyleConstants.BACKGROUND_COLOR, "#"+Utils.toColorString(fMenuPane.getBackground()));
 
-	        System.out.println("OuterBorderStyle is = " + fOuterBorderStyle);
+	        // System.out.println("OuterBorderStyle is = " + fOuterBorderStyle);
 
             fStyleSheet.write(d);
         }
