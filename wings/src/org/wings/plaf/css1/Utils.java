@@ -52,31 +52,33 @@ public final class Utils
     static void writeEvents(Device d, SComponent c)
         throws IOException
     {
-        Map eventScripts = new HashMap();
         ScriptListener[] listeners = c.getScriptListeners();
-        for ( int i=0; i<listeners.length; i++ ) {
-            ScriptListener script = listeners[i];
-            String eventScriptCode = script.getCode();
-            String event = script.getEvent();
-            if (eventScripts.containsKey(event)) {
-                String savedEventScriptCode = (String) eventScripts.get(event);
-                eventScriptCode = savedEventScriptCode
-                    + (savedEventScriptCode.trim().endsWith(";") ? "" : ";")
-                    + eventScriptCode;
-            }
-            eventScripts.put(event,  eventScriptCode);
-        } // end of for ()
+        if (  listeners.length>0 ) {
+            Map eventScripts = new HashMap();
+            for ( int i=0; i<listeners.length; i++ ) {
+                ScriptListener script = listeners[i];
+                String eventScriptCode = script.getCode();
+                String event = script.getEvent();
+                if (eventScripts.containsKey(event)) {
+                    String savedEventScriptCode = (String) eventScripts.get(event);
+                    eventScriptCode = savedEventScriptCode
+                        + (savedEventScriptCode.trim().endsWith(";") ? "" : ";")
+                        + eventScriptCode;
+                }
+                eventScripts.put(event,  eventScriptCode);
+            } // end of for ()
         
-        Iterator it = eventScripts.keySet().iterator();
-        while (it.hasNext()) {
-            String event = (String) it.next();
-            String code = (String) eventScripts.get(event);
-            d.print(" ");
-            d.print(event);
-            d.print("=\"");
-            d.print(code);
-            d.print("\"");
-        }
+            Iterator it = eventScripts.keySet().iterator();
+            while (it.hasNext()) {
+                String event = (String) it.next();
+                String code = (String) eventScripts.get(event);
+                d.print(" ");
+                d.print(event);
+                d.print("=\"");
+                d.print(code);
+                d.print("\"");
+            }
+        } // end of if ()
     }
 
     static String style(SComponent component) {
