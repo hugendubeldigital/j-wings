@@ -517,6 +517,7 @@ public abstract class SessionServlet
                     measure.start("time to dispatch");
 
                 // it's the dispatcher's resposibility to check the event's actuality
+                // should this be hasCurrentValidEvents or something ?
                 boolean events = false;
                 Enumeration en = req.getParameterNames();
                 while (en.hasMoreElements()) {
@@ -540,16 +541,18 @@ public abstract class SessionServlet
                     measure.start("time to fire form events");
                 }
 
-                if (events)
+                if (events) {
                     SForm.fireEvents();
+                }
 
                 if (_wingsLogger.isLoggable(Level.FINER)) {
                     measure.stop();
                     measure.start("time to process request");
                 }
 
-                if (events)
+                if (events) {
                     processRequest(asreq, response);
+                }
 
                 // if the user chose to exit the session as a reaction on an
                 // event, we got an URL to redirect after the session.
@@ -572,8 +575,9 @@ public abstract class SessionServlet
                 }
 
                 // invalidate frames and resources
-                if (events)
+                if (events) {
                     getSession().getReloadManager().invalidateResources();
+                }
 
                 // deliver resource
                 // the externalizer is able to handle static and dynamic resources
@@ -582,10 +586,13 @@ public abstract class SessionServlet
                 _wingsLogger.fine("pathInfo: " + pathInfo);
 
                 // no pathInfo .. getFrame()
-                if (pathInfo == null || pathInfo.length() == 0 || "_".equals(pathInfo) || firstRequest) {
+                if (pathInfo == null 
+                    || pathInfo.length() == 0 
+                    || "_".equals(pathInfo) 
+                    || firstRequest)  {
                     _wingsLogger.fine("delivering default frame");
                     firstRequest = false;
-
+                    
                     DynamicResource resource
                         = (DynamicResource)getFrame().getDynamicResource(DynamicCodeResource.class);
                     extManager.deliver(resource.getId(), response);
