@@ -39,6 +39,39 @@ public class STree
     private static final String cgClassID = "TreeCG";
 
     /**
+     * Creates and returns a sample TreeModel. Used primarily for beanbuilders.
+     * to show something interesting.
+     *
+     * @return the default TreeModel
+     */
+    protected static TreeModel getDefaultTreeModel() {
+        DefaultMutableTreeNode      root = new DefaultMutableTreeNode("STree");
+	DefaultMutableTreeNode      parent;
+
+	parent = new DefaultMutableTreeNode("colors");
+	root.add(parent);
+	parent.add(new DefaultMutableTreeNode("blue"));
+	parent.add(new DefaultMutableTreeNode("violet"));
+	parent.add(new DefaultMutableTreeNode("red"));
+	parent.add(new DefaultMutableTreeNode("yellow"));
+
+	parent = new DefaultMutableTreeNode("sports");
+	root.add(parent);
+	parent.add(new DefaultMutableTreeNode("basketball"));
+	parent.add(new DefaultMutableTreeNode("soccer"));
+	parent.add(new DefaultMutableTreeNode("football"));
+	parent.add(new DefaultMutableTreeNode("hockey"));
+
+	parent = new DefaultMutableTreeNode("food");
+	root.add(parent);
+	parent.add(new DefaultMutableTreeNode("hot dogs"));
+	parent.add(new DefaultMutableTreeNode("pizza"));
+	parent.add(new DefaultMutableTreeNode("ravioli"));
+	parent.add(new DefaultMutableTreeNode("bananas"));
+        return new DefaultTreeModel(root);
+    }
+
+    /**
      * TODO: documentation
      */
     protected TreeModel model = null;
@@ -88,6 +121,14 @@ public class STree
         setSelectionModel(new DefaultTreeSelectionModel());
     }
 
+    /**
+     * TODO: documentation
+     *
+     * @param model
+     */
+    public STree() {
+        this(getDefaultTreeModel());
+    }
 
     /**
      * TODO: documentation
