@@ -97,7 +97,7 @@ public final class Session
     
     private final HashSet frames = new HashSet();
 
-    private int uniqueIdCounter = 1;
+    private long uniqueIdCounter = 1;
 
     /**
      * Maximum upload content length. This is used by the {@link SessionServlet}
@@ -612,17 +612,18 @@ public final class Session
         }
     }    
 
-    private final int getUniqueId() {
+    private final long getUniqueId() {
         return uniqueIdCounter++;
     }
 
     /**
-     * Describe <code>createUniqueId</code> method here.
+     * Creates a session context unique ID, that can be used as an identifier,
+     * i.e. it is guaranteed to start with a letter
      *
      * @return a <code>String</code> value
      */
     public final String createUniqueId() {
-        return StringUtil.toShortestAlphaNumericString(getUniqueId());
+        return StringUtil.toIdentifierString(getUniqueId());
     }
 
     /**

@@ -100,10 +100,22 @@ public class StringUtil
         return erg;
     }
 
+    private final static char[] ALPHAS = {
+                                'a' , 'b' ,
+        'c' , 'd' , 'e' , 'f' , 'g' , 'h' ,
+        'i' , 'j' , 'k' , 'l' , 'm' , 'n' ,
+        'o' , 'p' , 'q' , 'r' , 's' , 't' ,
+        'u' , 'v' , 'w' , 'x' , 'y' , 'z' ,
+    };
+
     /**
-     * All possible chars for representing a number as a String
+     * All possible digits for representing a number as a String
+     * This is conservative and does not include 'special'
+     * characters since some browsers don't handle them right.
+     * The IE for instance seems to be case insensitive in class
+     * names for CSSs. Grrr.
      */
-    final static char[] digits = {
+    private final static char[] DIGITS = {
         '0' , '1' , '2' , '3' , '4' , '5' ,
         '6' , '7' , '8' , '9' , 'a' , 'b' ,
         'c' , 'd' , 'e' , 'f' , 'g' , 'h' ,
@@ -120,10 +132,12 @@ public class StringUtil
          */
     };
 
-    public static final int MAX_RADIX = digits.length;
+    public static final int MAX_RADIX = DIGITS.length;
 
     /**
      * Codes number up to radix 62.
+     * Note, this method is only public for backward compatiblity. don't
+     * use it.
      * @param minDigits returns a string with a least minDigits digits
      */
     public static String toString(long i, int radix, int minDigits) {
@@ -141,21 +155,47 @@ public class StringUtil
         }
         
         while (i >= radix) {
-            buf[charPos--] = digits[(int)(i % radix)];
+            buf[charPos--] = DIGITS[(int)(i % radix)];
             i /= radix;
         }
-        buf[charPos] = digits[(int)i];
+        buf[charPos] = DIGITS[(int)i];
 
         // if minimum length of the result string is set, pad it with the
         // zero-representation (that is: '0')
         while ( charPos>buf.length-minDigits )
-            buf[--charPos] = digits[0];
+            buf[--charPos] = DIGITS[0];
         
         if (negative) {
             buf[--charPos] = '-';
         }
         
         return new String(buf, charPos, buf.length-charPos);
+    }
+
+    /**
+     * creates a shortest possible string representation of the given
+     * long number that qualifies as an identifier in common programming
+     * languages (and HTML-id's :-) 
+     * That is, it must start with a letter.
+     *
+     * @param val the long value to be encoded
+     * @return a string represantation of the given value that qualifies
+     *         as an identifier.
+     */
+    public static String toIdentifierString(long val) {
+        char buf[] = new char[14];
+        int i = 0;
+        if (val < 0) {
+            buf[i++] = '_';
+            val = -(val+1);
+        }
+        buf[i++] = ALPHAS[(int) (val % ALPHAS.length)];
+        val /= ALPHAS.length;
+        while (val != 0 && i < buf.length) {
+            buf[i++] = DIGITS[(int) (val % DIGITS.length)];
+            val /= DIGITS.length;
+        }
+        return new String(buf, 0, i);
     }
 
     /**
@@ -191,6 +231,7 @@ public class StringUtil
         }
         return buffer.toString();
     }
+
     /*
     public static void main(String args[]) {
         System.out.println(StringUtil.toString(9124, 10, 0));
@@ -208,6 +249,11 @@ public class StringUtil
 
         System.out.println("\"" + StringUtil.toShortestAlphaNumericString(3843,
                                                                           2));
+        for (int i=-10; i < 300; ++i) {
+            System.out.println(toIdentifierString(i));
+        }
+        System.out.println(toIdentifierString(Long.MIN_VALUE));
+        System.out.println(toIdentifierString(Long.MAX_VALUE));
     }
     */
 }
