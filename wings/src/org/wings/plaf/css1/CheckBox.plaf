@@ -4,6 +4,24 @@
 
 private static final SIcon EMPTY_ICON = new SURLIcon("");
 
+protected void writeText(final Device device, SAbstractButton abstractButton, String attr)
+    throws IOException
+{
+    if (abstractButton.getShowAsFormComponent() )
+        writeFormText(device, abstractButton, attr);
+    else
+        writeAnchorText(device, abstractButton, attr);
+}
+
+protected void writeIcon(final Device device, SAbstractButton abstractButton, String attr)
+    throws IOException
+{
+    if (abstractButton.getShowAsFormComponent() )
+        writeFormIcon(device, abstractButton, attr);
+    else
+        writeAnchorIcon(device, abstractButton, attr);
+}
+
 protected SIcon getIcon(SAbstractButton abstractButton) {
     SIcon icon = super.getIcon(abstractButton);
 
