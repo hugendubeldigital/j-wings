@@ -3,6 +3,7 @@
 
 <import>java.text.*</import>
 <import>java.io.*</import>
+<import>java.util.*</import>
 <import>org.wings.script.*</import>
 <import>org.wings.externalizer.*</import>
 
@@ -47,7 +48,10 @@ static final ResourceImageIcon ICON = new ResourceImageIcon("org/wings/icons/Arr
     %><%|tabindex=component.getFocusTraversalIndex()%><%
     Utils.writeEvents(device, component);
     try {
-        %><%|value=dateFormatter.format(component.getDate())%>/><%
+        Date date = component.getDate();
+        if ( date!=null) {
+        %><%|value=dateFormatter.format(date)%>/><%
+        }
     } catch ( SDateChooser.DateParseException ex ) {
         %><%|value=ex.getDateString()%>/><%
     }

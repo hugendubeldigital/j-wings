@@ -45,6 +45,8 @@ public class SDateChooser extends SComponent implements LowLevelEventListener {
 
     private DateParseException parseException;
 
+    private boolean isNull = true;
+
     /**
      *
      */
@@ -61,7 +63,11 @@ public class SDateChooser extends SComponent implements LowLevelEventListener {
 
     public Calendar getCalendar() throws DateParseException {
         checkException();
-        return calendar;
+        if (isNull) {
+            return null;
+        } else {
+            return calendar;
+        }
     }
 
     public void setTimeInMillis(long millis) {
@@ -71,7 +77,7 @@ public class SDateChooser extends SComponent implements LowLevelEventListener {
     }
 
     protected final void checkException() throws DateParseException {
-        if ( parseException!=null ) {
+        if (parseException != null) {
             parseException.fillInStackTrace();
             throw parseException;
         }
@@ -83,22 +89,42 @@ public class SDateChooser extends SComponent implements LowLevelEventListener {
 
     public long getTimeInMillis() throws DateParseException {
         checkException();
-        return calendar.getTimeInMillis();
+        if (isNull) {
+            return Long.MIN_VALUE;
+        } else {
+            return calendar.getTimeInMillis();
+        }
     }
 
     public void setDate(Date d) {
-        setTimeInMillis(d.getTime());
+        if (d == null) {
+            isNull = true;
+        } else {
+            isNull = false;
+            calendar.setTimeInMillis(d.getTime());
+        }
+        resetException();
+        fireActionPerformed("date changed");
     }
 
     public void setDate(Calendar pCalendar) {
-        calendar = pCalendar;
+        if (pCalendar == null) {
+            isNull = true;
+        } else {
+            isNull = false;
+            calendar = pCalendar;
+        }
         resetException();
         fireActionPerformed("calendar changed");
     }
 
     public Date getDate() throws DateParseException {
         checkException();
-        return calendar.getTime();
+        if (isNull) {
+            return null;
+        } else {
+            return calendar.getTime();
+        }
     }
 
 
@@ -137,13 +163,20 @@ public class SDateChooser extends SComponent implements LowLevelEventListener {
     }
 
     public void processLowLevelEvent(String name, String[] values) {
+        String tDateString = values[0];
         try {
-            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, getLocale());
-            calendar.setTime(dateFormat.parse(values[0]));
+            if (tDateString == null || tDateString.trim().length() == 0) {
+                isNull = true;
+            } else {
+                isNull = false;
+                DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, getLocale());
+                calendar.setTime(dateFormat.parse(tDateString));
+            }
             resetException();
             SForm.addArmedComponent(this);
+
         } catch (ParseException ex) {
-            parseException = new DateParseException(values[0],ex);
+            parseException = new DateParseException(tDateString, ex);
         }
     }
 
@@ -179,6 +212,9 @@ public class SDateChooser extends SComponent implements LowLevelEventListener {
 
 /*
    $Log$
+   Revision 1.3  2003/12/22 08:59:56  arminhaaf
+   o add support for null date
+
    Revision 1.2  2003/12/19 11:07:15  arminhaaf
    o make it workable and usable
 

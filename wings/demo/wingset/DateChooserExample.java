@@ -24,6 +24,7 @@ import wingset.WingSetPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.text.DateFormat;
+import java.util.Date;
 
 
 /**
@@ -60,7 +61,12 @@ public class DateChooserExample extends WingSetPane {
         form.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    dateLabel.setText(DateFormat.getDateInstance(DateFormat.MEDIUM, dateChooser.getLocale()).format(dateChooser.getDate()));
+                    Date tDate = dateChooser.getDate();
+                    if (tDate == null) {
+                        dateLabel.setText("null");
+                    } else {
+                        dateLabel.setText(DateFormat.getDateInstance(DateFormat.MEDIUM, dateChooser.getLocale()).format(dateChooser.getDate()));
+                    }
                 } catch (SDateChooser.DateParseException ex) {
                     dateLabel.setText(ex.getCauseParseException().getMessage());
                 }
@@ -75,6 +81,9 @@ public class DateChooserExample extends WingSetPane {
 
 /*
    $Log$
+   Revision 1.7  2003/12/22 08:59:56  arminhaaf
+   o add support for null date
+
    Revision 1.6  2003/12/19 11:07:15  arminhaaf
    o make it workable and usable
 
