@@ -219,22 +219,25 @@ public class SImage
         if ( text!=null && text.length()>0 )
             s.append(" alt=\"" + text + "\"");
 
-        s.append(" width=\"");
-        if ( width>0 )
-            s.append(width);
-        else
-        if ( image != null )
-            s.append(image.getIconWidth());
+		if ( width > 0 || image != null )
+         {
+        	s.append(" width=\"");
+        	if ( width>0 )
+            	s.append(width);
+        	else
+	            s.append(image.getIconWidth());
+        	s.append("\"");
+		 }
 
-        s.append("\"");
-        s.append(" height=\"");
-        if ( height>0 )
-            s.append(height);
-        else
-        if ( image != null )
-            s.append(image.getIconHeight());
-
-        s.append("\"");
+        if ( height > 0 || image != null )
+         {
+        	s.append(" height=\"");
+        	if ( height>0 )
+            	s.append(height);
+        	else
+	            s.append(image.getIconHeight());
+        	s.append("\"");
+		 }
 
         if ( alignment==SConstants.RIGHT_ALIGN )
             s.append(" align=\"right\"");
