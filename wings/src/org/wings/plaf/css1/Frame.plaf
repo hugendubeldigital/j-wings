@@ -3,14 +3,14 @@
 <import>org.wings.header.*</import>
 <import>org.wings.script.*</import>
 
-        private DynamicCodeResource dynamicCodeRessource;
-        private DynamicResource styleSheetResource;
-        private DynamicResource scriptResource;
-        private Link stylesheetLink;
-        private Script scriptLink;
-        private Link staticCgSytles;
-
 <install>
+        DynamicCodeResource dynamicCodeRessource;
+        DynamicStyleSheetResource styleSheetResource;
+        DynamicScriptResource scriptResource;
+        Link stylesheetLink;
+        Script scriptLink;
+        Link staticCgSytles;
+
         // dynamic code resource.
         dynamicCodeRessource = new DynamicCodeResource(component);
         component.addDynamicResource(dynamicCodeRessource);
@@ -44,12 +44,10 @@
 </install>
 
 <uninstall>
-	component.removeDynamicResource(dynamicCodeRessource);
-	component.removeDynamicResource(styleSheetResource);
-	component.removeHeader(stylesheetLink);
-	component.removeDynamicResource(scriptResource);
-	component.removeHeader(scriptLink);
-	component.removeHeader(staticCgSytles);
+	component.removeDynamicResource(DynamicCodeResource.class);
+	component.removeDynamicResource(DynamicStyleSheetResource.class);
+	component.removeDynamicResource(DynamicScriptResource.class);
+	component.clearHeaders();
 </uninstall>
 
 <write>

@@ -117,11 +117,11 @@ public class SFrame
     }
     
     /**
-     * Removes the given dynamic ressource. 
+     * Removes the instance of the dynamic ressource of the given class. 
      */
-    public void removeDynamicResource(DynamicResource d) {
-        if (dynamicResources != null && d != null) {
-            dynamicResources.remove(d.getClass());
+    public void removeDynamicResource(Class dynamicResourceClass) {
+        if (dynamicResources != null) {
+            dynamicResources.remove(dynamicResourceClass);
         }        
     }    
 
