@@ -28,6 +28,8 @@ import org.wings.servlet.*;
 import org.wings.session.*;
 import org.wings.util.*;
 
+import org.wings.event.SContainerListener;
+import org.wings.event.SContainerEvent;
 /**
  * TODO: documentation
  *
@@ -39,6 +41,8 @@ public class DesktopSession
     implements SConstants
 {
     SDesktopPane desktop;
+    SMenu        windowMenu;
+    int editorNumber;
 
     public DesktopSession(Session session) {
         super(session);
@@ -51,16 +55,27 @@ public class DesktopSession
 
     void initGUI() {
         SContainer contentPane = getFrame().getContentPane();
-
+        editorNumber = 0;
         SMenuBar menuBar = createMenu();
         contentPane.add(menuBar);
 
         desktop = new SDesktopPane();
+        // add the frames to the window-menu ..
+        desktop.addContainerListener(new SContainerListener() {
+                public void componentAdded(SContainerEvent e) {
+                    SInternalFrame frame = (SInternalFrame) e.getChild();
+                    SMenuItem windowItem = new WindowMenuItem(desktop, frame);
+                    windowMenu.add(windowItem);
+                }
+                public void componentRemoved(SContainerEvent e) {
+                    SInternalFrame frame = (SInternalFrame) e.getChild();
+                    SMenuItem windowItem = new WindowMenuItem(frame);
+                    windowMenu.remove(windowItem);
+                }
+            });
         contentPane.add(desktop);
-
-        Editor editor = new Editor();
-        editor.setText(getStory());
-        desktop.add(editor);
+        
+        newEditor().setText(getStory());
     }
 
     protected String getStory() {
@@ -88,8 +103,11 @@ public class DesktopSession
         fileMenu.add(newItem);
         fileMenu.add(openItem);
 
+        windowMenu = new SMenu("Window");
+
         SMenuBar menuBar = new SMenuBar();
         menuBar.add(fileMenu);
+        menuBar.add(windowMenu);
 
         return menuBar;
     }
@@ -100,15 +118,37 @@ public class DesktopSession
     public String getServletInfo() {
         return "Desktop ($Revision$)";
     }
-
-    public void newEditor() {
-        Editor editor = new Editor();
-        desktop.add(editor);
+    
+    /**
+     * add a new frame. If there is a frame, that is maximized, then
+     * move the maximization to the new frame.
+     */
+    public void addNewFrame(final SInternalFrame frame) {
+        desktop.add(frame);
+        desktop.invite(new ComponentVisitor() {
+                public void visit(SComponent c) {
+                    if (! (c instanceof SInternalFrame))
+                        return;
+                    SInternalFrame ff = (SInternalFrame) c;
+                    if (ff != frame && ff.isMaximized()) {
+                        ff.setMaximized(false);
+                        // set _our_ frame maximized, then.
+                        frame.setMaximized(true);
+                    }
+                }
+            });
     }
 
-    public void openEditor() {
+    public Editor newEditor() {
+        Editor editor = new Editor();
+        editor.setTitle("Editor <" + (++editorNumber) + ">");
+        addNewFrame(editor);
+        return editor;
+    }
+
+    public Editor openEditor() {
         final Editor editor = new Editor();
-        desktop.add(editor);
+        addNewFrame(editor);
 
         final SDialog dialog = new SDialog(new SFlowDownLayout());
         dialog.setEncodingType("multipart/form-data");
@@ -132,17 +172,83 @@ public class DesktopSession
                     int b;
                     while ((b = reader.read()) > -1)
                         writer.write(b);
-
+                    
                     editor.setText(writer.toString());
+                    editor.setTitle(chooser.getFilename());
                     dialog.hide();
                 }
                 catch (Exception e) {
-                    SOptionPane.showMessageDialog(editor, "An error occured", e.getMessage());
+                    SOptionPane.showMessageDialog(editor, "An error occured", 
+                                                  e.getMessage());
                 }
             }});
         dialog.add(submit);
 
         dialog.show(editor);
+        return editor;
+    }
+
+    /**
+     * A menu item, that handles the position of an internal frame within
+     * the desktop - whenever it is clicked, the frame is put on top.
+     */
+    private static class WindowMenuItem extends SMenuItem {
+        private final SInternalFrame frame;
+        
+        public WindowMenuItem(SInternalFrame f) {
+            frame = f;
+        }
+
+        public WindowMenuItem(final SDesktopPane d, final SInternalFrame f) {
+            frame = f;
+            /*
+             * when clicked, put that frame on top. If some other frame was
+             * maximized at that point, then maximize _our_ frame instead.
+             */
+            addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        d.setPosition(f, 0);
+                        if (f.isIconified()) {
+                            f.setIconified(false);
+                        }
+                        /*
+                         * if some other frame is maximized, then we want
+                         * to toggle this maximization..
+                         */
+                        d.invite(new ComponentVisitor() {
+                                public void visit(SComponent c) {
+                                    if (! (c instanceof SInternalFrame))
+                                        return;
+                                    SInternalFrame ff = (SInternalFrame) c;
+                                    if (ff != frame && ff.isMaximized()) {
+                                        ff.setMaximized(false);
+                                        // set _our_ frame maximized, then.
+                                        frame.setMaximized(true);
+                                    }
+                                }
+                            });
+                    }
+                });
+        }
+
+        /**
+         * returns the title of the frame.
+         */
+        public String getText() {
+            String title = frame.getTitle();
+            return (title == null || title.length()==0) ? "[noname]" : title;
+        }
+        
+        /**
+         * remove menu item by frame ..
+         */
+        public boolean equals(Object o) {
+            if (o instanceof WindowMenuItem) {
+                WindowMenuItem wme = (WindowMenuItem) o;
+                return (frame != null && wme.frame == frame);
+            }
+            return false;
+        }
     }
 }
 

@@ -55,6 +55,7 @@ public class Editor
 
         SIcon icon = new ResourceImageIcon(getClass(), "/desktop/penguin.png");
         setIcon(icon);
+        addInternalFrameListener(this);
     }
 
     protected SMenuBar createMenu() {
@@ -146,6 +147,7 @@ public class Editor
 	textArea.setText(textArea.getText() + clip);
     }
 
+    //--- SInternalFrameListener interface ..
     /**
      * Invoked when an internal frame has been opened.
      */
