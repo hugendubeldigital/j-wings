@@ -28,7 +28,7 @@
 
         javax.swing.ComboBoxModel model = comboBox.getModel();
         int size = model.getSize();
-
+        int selected = comboBox.getSelectedIndex();
         if (model != null) {
             SListCellRenderer cellRenderer = comboBox.getRenderer();
 
@@ -40,7 +40,7 @@
                %><option<%
                 %><%|value=comboBox.getSelectionParameter(i)%><%
 
-                if (comboBox.getSelectedIndex() == i) {
+                if (selected == i) {
                     %> selected="selected"<%
                 }
                 if (renderer!=null) {
