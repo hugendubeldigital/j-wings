@@ -81,8 +81,8 @@
         <include name="ldap/images/*.gif"/>
         <include name="ldap/*.jpg"/>
       </classes>
-      <classes dir="ldap">
-        <include name="ldapclientlayout.html"/>
+      <classes dir=".">
+        <include name="ldap/ldapclientlayout.html"/>
       </classes>
       <fileset dir="ldap">
         <include name="index.html"/>
