@@ -111,7 +111,8 @@ public class SForm
      * TODO: documentation
      *
      */
-    public SForm() {}
+    public SForm() {
+    }
 
     /**
      * TODO: documentation
@@ -313,39 +314,6 @@ public class SForm
 
         return addr;
     }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     *
-    public void appendPrefix(Device s) {
-        super.appendPrefix(s);
-        s.append("<FORM METHOD=\"");
-
-        if (postMethod)
-            s.append("POST");
-        else
-            s.append("GET");
-        s.append("\"");
-
-        if ( encType!=null )
-            s.append(" ENCTYPE=\"").append(encType).append("\"");
-
-        s.append(" ACTION=\"").append(getServerAddress()).
-            append("\">\n");
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     *
-    public void appendPostfix(Device s) {
-        s.append("</FORM>");
-        super.appendPostfix(s);
-    }
-    */
 
     public void getPerformed(String name, String value) {
         fireActionPerformed();
