@@ -23,6 +23,10 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.util.*;
 
+/**
+ * RadionButton CG is more or less the CheckBoxCG. The only difference is,
+ * that it is not possible to click on an already checked radio button.
+ */
 public class RadioButtonCG
     extends CheckBoxCG
     implements org.wings.plaf.RadioButtonCG
@@ -51,17 +55,6 @@ public class RadioButtonCG
 
             d.append(">");
         }
-    }
-
-    protected void writeAnchorBody(Device d, SCheckBox checkBox)
-        throws IOException
-    {
-        String text = checkBox.getText();
-        boolean noBreak = checkBox.isNoBreak();
-
-        if (text == null)
-            text = "";
-        d.append((noBreak) ? StringUtil.replace(text, " ", "&nbsp;") : text);
     }
 
     protected void writeAnchorPostfix(Device d, SCheckBox checkBox)

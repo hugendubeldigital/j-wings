@@ -50,25 +50,25 @@ public class BorderLayoutCG
         if (west != null) cols++;
         if (center != null) cols++;
         if (east != null) cols++;
-
+        
         d.append("\n<table cellpadding=\"0\" cellspacing=\"0\"");
-		CGUtil.writeSize( d, container );
-
-        if ( Utils.hasSpanAttributes( container ) )
-         {
-         	d.append("style=\"");
-        	Utils.writeSpanAttributes( d, (SComponent) container );
+        CGUtil.writeSize( d, container );
+        
+        if ( Utils.hasSpanAttributes( container ) ) {
+            d.append(" style=\"");
+            Utils.writeSpanAttributes( d, (SComponent) container );
             d.append("\" ");
-		 }
-
+        }
+        
         if (border > 0)
             d.append(" border=\"").append(border).append("\"");
-        if (container != null && container.getBackground() != null)
-            d.append(" bgcolor=\"#").
-                append(Utils.toColorString(container.getBackground())).append("\">");
-		else
+        if (container != null && container.getBackground() != null) {
+            d.append(" bgcolor=\"#")
+                .append(Utils.toColorString(container.getBackground())).append("\">");
+        }
+        else
 	    d.append(">");
-
+        
         if (north != null) {
             d.append("\n<tr><td height=\"1\" colspan=\"").append(cols).append("\"");
             Utils.appendTableCellAlignment(d, north);
@@ -77,7 +77,7 @@ public class BorderLayoutCG
             d.append("</td></tr>");
         }
         d.append("\n<tr>");
-
+        
         if (west != null) {
             d.append("<td width=\"1\"");
             Utils.appendTableCellAlignment(d, west);
@@ -85,7 +85,7 @@ public class BorderLayoutCG
             writeComponent(d, west);
             d.append("</td>");
         }
-
+        
         if (center != null) {
             d.append("<td");
             Utils.appendTableCellAlignment(d, center);
@@ -93,7 +93,7 @@ public class BorderLayoutCG
             writeComponent(d, center);
             d.append("</td>");
         }
-
+        
         if (east != null) {
             d.append("<td width=\"1\"");
             Utils.appendTableCellAlignment(d, east);
@@ -112,7 +112,7 @@ public class BorderLayoutCG
         }
         d.append("\n</table>");
     }
-
+    
     protected void writeComponent(Device d, SComponent c)
 	throws IOException
     {

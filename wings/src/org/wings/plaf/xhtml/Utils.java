@@ -204,7 +204,8 @@ public final class Utils implements SConstants
     
     /**
      * Write all span-attributes except the <i>class</i>.
-     * @return null, if not attribute was set, otherwise the attributes in css syntax otherwise.
+     * @return null, if not attribute was set, otherwise the attributes 
+     *         in css syntax otherwise.
      */
     public static void writeSpanAttributes(Device d, SComponent component)
     	throws IOException
