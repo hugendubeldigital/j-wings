@@ -1539,7 +1539,7 @@ public abstract class SComponent
      * @param propertyName the programmatic name of the property
      *		that was changed
      * @param oldValue the old value of the property (as a boolean)
-     * @param oldValue the old value of the property (as a boolean)
+     * @param newValue the new value of the property (as a boolean)
      * @see #firePropertyChange(java.lang.String, java.lang.Object,
         *		java.lang.Object)
      */
