@@ -16,7 +16,7 @@ package org.wings.externalizer;
 
 import java.io.InputStream;
 
-import org.wings.style.ResourceStyleSheet;
+import org.wings.style.StyleSheet;
 
 /**
  * TODO: documentation
@@ -24,7 +24,7 @@ import org.wings.style.ResourceStyleSheet;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class ResourceStyleSheetObjectHandler
+public class StyleSheetObjectHandler
     implements ObjectHandler
 {
     public String getExtension(Object obj) {
@@ -36,13 +36,13 @@ public class ResourceStyleSheetObjectHandler
     }
 
     public boolean isStable(Object obj) {
-        return true;
+        return ((StyleSheet)obj).isStable();
     }
 
     public void write(Object obj, java.io.OutputStream out)
         throws java.io.IOException
     {
-        InputStream in = ((ResourceStyleSheet)obj).getInputStream();
+        InputStream in = ((StyleSheet)obj).getInputStream();
         byte[] buffer = new byte[2000];
         while ( in.available() > 0 ) {
             int count = in.read(buffer);
@@ -53,7 +53,7 @@ public class ResourceStyleSheetObjectHandler
     }
 
     public Class getSupportedClass() {
-        return ResourceStyleSheet.class;
+        return StyleSheet.class;
     }
 }
 

@@ -24,11 +24,11 @@ import java.util.Set;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class ResourceStyleSheet
+public class FileStyleSheet
     implements StyleSheet
 {
-    Class baseClass = null;
-    String fileName = null;
+    File file = null;
+    String name;
 
     /**
      * TODO: documentation
@@ -36,9 +36,13 @@ public class ResourceStyleSheet
      * @param file
      * @throws IOException
      */
-    public ResourceStyleSheet(Class baseClass, String fileName) {
-        this.fileName = fileName;
-        this.baseClass = baseClass;
+    public FileStyleSheet(File file) throws IOException {
+        this.file = file;
+        if ( file != null ) {
+            if ( !file.exists() || !file.canRead() )
+                throw new IOException(file.getName() + " is not readable");
+            name = file.getName();
+        }
     }
 
     /**
@@ -48,13 +52,13 @@ public class ResourceStyleSheet
      * @throws IOException
      */
     public InputStream getInputStream() throws IOException {
-        InputStream resource = null;
-        resource = baseClass.getResourceAsStream(fileName);
-        return resource;
+        if ( file != null )
+            return new FileInputStream(file);
+        return null;
     }
 
     public boolean isStable() {
-        return true;
+        return false;
     }
 
     /**
@@ -72,7 +76,7 @@ public class ResourceStyleSheet
      * @return
      */
     public String toString() {
-        return fileName;
+        return name;
     }
 }
 

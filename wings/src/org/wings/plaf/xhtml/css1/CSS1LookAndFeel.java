@@ -167,7 +167,7 @@ public final class CSS1LookAndFeel
         table.putDefaults(styleDefaults);
 
         Object[] sheetDefaults = {
-            "Frame.stylesheet", new ResourceStyleSheet(getClass().getResource("default.css")),
+            "Frame.stylesheet", new ResourceStyleSheet(getClass(), "default.css"),
         };
         table.putDefaults(sheetDefaults);
     }

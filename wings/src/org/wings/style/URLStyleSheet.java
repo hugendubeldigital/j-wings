@@ -24,21 +24,21 @@ import java.util.Set;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class ResourceStyleSheet
+public class URLStyleSheet
     implements StyleSheet
 {
-    Class baseClass = null;
-    String fileName = null;
+    URL url = null;
+    String name;
 
     /**
      * TODO: documentation
      *
-     * @param file
-     * @throws IOException
+     * @param url
      */
-    public ResourceStyleSheet(Class baseClass, String fileName) {
-        this.fileName = fileName;
-        this.baseClass = baseClass;
+    public URLStyleSheet(URL url) {
+        this.url = url;
+        if ( url != null )
+            name = url.toString();
     }
 
     /**
@@ -48,13 +48,13 @@ public class ResourceStyleSheet
      * @throws IOException
      */
     public InputStream getInputStream() throws IOException {
-        InputStream resource = null;
-        resource = baseClass.getResourceAsStream(fileName);
-        return resource;
+        if ( url != null )
+            return url.openStream();
+        return null;
     }
 
     public boolean isStable() {
-        return true;
+        return false;
     }
 
     /**
@@ -72,7 +72,7 @@ public class ResourceStyleSheet
      * @return
      */
     public String toString() {
-        return fileName;
+        return name;
     }
 }
 

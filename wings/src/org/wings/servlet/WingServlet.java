@@ -117,7 +117,7 @@ public abstract class WingServlet
         extManager.addObjectHandler(new ImageObjectHandler());
         extManager.addObjectHandler(new ImageIconObjectHandler());
         extManager.addObjectHandler(new ResourceImageIconObjectHandler());
-        extManager.addObjectHandler(new ResourceStyleSheetObjectHandler());
+        extManager.addObjectHandler(new StyleSheetObjectHandler());
     }
 
 

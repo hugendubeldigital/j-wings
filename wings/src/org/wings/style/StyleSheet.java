@@ -28,11 +28,9 @@ public interface StyleSheet
 {
     Set styleSet();
 
-    // ein InputStream ist das, womit ein Externalizer am besten umgehen kann
     InputStream getInputStream() throws IOException;
 
-    // brauchen wir noch ein lastModified() oder so, damit der Externalizer entscheiden
-    // kann, ober das File ueberhaupt schreiben muss?
+    boolean isStable();
 
     // we'll also need some getters for getting the Style associated
     // with a key
