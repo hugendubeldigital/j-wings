@@ -20,14 +20,47 @@ import org.wings.SComponent;
  * A container event, that is issued, whenever a 
  * component is added or removed from an container.
  *
+ * @see   {@link org.wings.SContainer#addContainerListener(SContainerListener)}
  * @autor <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  */
 public class SContainerEvent extends SComponentEvent {
-    public static final int COMPONENT_ADDED   = 42;
-    public static final int COMPONENT_REMOVED = 43;
-    
+    /**
+     * The first number of used IDs for container events.
+     */
+    public static final int CONTAINER_FIRST   = 11000;
+
+    /**
+     * An event with this ID indicates, that a component was added to
+     * the container.
+     */
+    public static final int COMPONENT_ADDED   = CONTAINER_FIRST;
+
+    /**
+     * An event with this ID indicates, that a component was removed from
+     * the container.
+     */
+    public static final int COMPONENT_REMOVED = CONTAINER_FIRST + 1;
+
+    /**
+     * The last number of used IDs for container events.
+     */
+    public static final int CONTAINER_LAST    = COMPONENT_REMOVED;
+
+    /**
+     * the child component that has been added or removed.
+     */
     private final SComponent child;
 
+    /**
+     * create a new container event issued by 'source' and affecting
+     * 'child'.
+     * @param source the Container issuing this event
+     * @param id     the integer ID describing the action; one of
+     *               <code>COMPONENT_ADDED</code> 
+     *               or <code>COMPONENT_REMOVED</code>.
+     * @param chilld the component that is affected by this event, i.e. that
+     *               is added or removed.
+     */
     public SContainerEvent(SContainer source, int id, SComponent child) {
 	super(source, id);
 	this.child = child;
@@ -57,6 +90,11 @@ public class SContainerEvent extends SComponentEvent {
 	default:
 	    return super.paramString();
 	}
+    }
+    
+    public String toString() {
+        return "ContainerEvent[container=" + source + "; " + paramString() + 
+            "child=" + child + "]";
     }
 }
 

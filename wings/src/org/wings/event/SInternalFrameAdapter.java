@@ -11,7 +11,6 @@
  *
  * Please see COPYING for the complete licence.
  */
-
 package org.wings.event;
 
 /**
