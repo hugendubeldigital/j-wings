@@ -126,6 +126,8 @@ public abstract class SComponent
      */
     private boolean firePropertyChangeEvents = false;
 
+    private boolean fireComponentChangeEvents = false;
+
     private EventListenerList listeners;
 
     /**
@@ -228,6 +230,7 @@ public abstract class SComponent
      */
     public final void addComponentListener(SComponentListener l) {
         addEventListener(SComponentListener.class, l);
+        fireComponentChangeEvents = true;
     }
 
     /**
@@ -550,9 +553,10 @@ public abstract class SComponent
 
     /**
      * Set the visibility.
-     * @param v wether this component wil show or not
+     * @param visible wether this component will show or not
      */
     public void setVisible(boolean visible) {
+        final boolean old = SComponent.this.visible;
         if ( firePropertyChangeEvents ) {
             if ( this.visible!=visible ) {
                 this.visible = visible;
@@ -562,6 +566,12 @@ public abstract class SComponent
             }
         } else {
             this.visible = visible;
+        }
+        if (fireComponentChangeEvents && (visible != old)) {
+            fireComponentChangeEvent(
+                new SComponentEvent(this, visible
+                    ? SComponentEvent.COMPONENT_SHOWN
+                    : SComponentEvent.COMPONENT_HIDDEN));
         }
     }
 
