@@ -245,6 +245,17 @@ implements LowLevelEventListener {
   public void removeActionListener(ActionListener listener) {
     removeEventListener(ActionListener.class, listener);
   }
+
+    /**
+     * Returns an array of all the <code>ActionListener</code>s added
+     * to this AbstractButton with addActionListener().
+     *
+     * @return all of the <code>ActionListener</code>s added or an empty
+     *         array if no listeners have been added
+     */
+    public ActionListener[] getActionListeners() {
+        return (ActionListener[])(getListeners(ActionListener.class));
+    }
   
   /**
    * Fire an ActionEvent at each registered listener.
