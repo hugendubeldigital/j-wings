@@ -44,6 +44,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
         new ImageIconExternalizer(ImageExternalizer.FORMAT_GIF),
         new ResourceExternalizer(),
         new TextExternalizer(),
+        new TextExternalizer("text/html", "html"),
         new StyleSheetExternalizer(),
     };
 
@@ -302,8 +303,11 @@ public class ExternalizeManager extends AbstractExternalizeManager
         Externalizer externalizer = null;
         if (mimeType != null && mimeType.length() > 0) {
             externalizer = (Externalizer)externalizerByMimeType.get(mimeType);
-            if (externalizer == null)
-                externalizer = getExternalizer(mimeType.substring(0, mimeType.indexOf('/')));
+            if (externalizer == null) {
+                if ( mimeType.indexOf('/') >=0 )
+                    externalizer = 
+                        getExternalizer(mimeType.substring(0, mimeType.indexOf('/')));
+            }
         }
         return externalizer;
     }
