@@ -43,7 +43,7 @@ public final class Utils {
      * Renders a container
      */
     public static void renderContainer(Device d, SContainer c)
-            throws IOException {
+        throws IOException {
         SLayoutManager layout = c.getLayout();
 
         if (layout != null) {
@@ -55,19 +55,27 @@ public final class Utils {
     }
 
     public static void writeEvents(Device d, SComponent c)
-            throws IOException {
+        throws IOException {
         ScriptListener[] listeners = c.getScriptListeners();
         if (listeners.length > 0) {
             Map eventScripts = new HashMap();
             for (int i = 0; i < listeners.length; i++) {
-                ScriptListener script = listeners[i];
+                final ScriptListener script = listeners[i];
+                final String event = script.getEvent();
                 String eventScriptCode = script.getCode();
-                String event = script.getEvent();
+
+                if (event == null 
+                    || event.length() == 0
+                    || eventScriptCode == null
+                    || eventScriptCode.length() == 0) {
+                    continue;
+                }
+
                 if (eventScripts.containsKey(event)) {
                     String savedEventScriptCode = (String) eventScripts.get(event);
                     eventScriptCode = savedEventScriptCode
-                                      + (savedEventScriptCode.trim().endsWith(";") ? "" : ";")
-                                      + eventScriptCode;
+                        + (savedEventScriptCode.trim().endsWith(";") ? "" : ";")
+                        + eventScriptCode;
                 }
                 eventScripts.put(event, eventScriptCode);
             } // end of for ()
@@ -105,15 +113,15 @@ public final class Utils {
     }
 
     /*
-    static String event(SComponent component, String lowLevelEventId) {
-        if (component.getSession().getEventInvalidation() && component.getParentFrame() != null) {
-            if (!(component instanceof LowLevelEventListener) || ((LowLevelEventListener)component).checkEpoch())
-                return (component.getParentFrame().getEventEpoch()
-                    + SConstants.UID_DIVIDER
-                    + lowLevelEventId);
-        }
-        return lowLevelEventId;
-    }
+      static String event(SComponent component, String lowLevelEventId) {
+      if (component.getSession().getEventInvalidation() && component.getParentFrame() != null) {
+      if (!(component instanceof LowLevelEventListener) || ((LowLevelEventListener)component).checkEpoch())
+      return (component.getParentFrame().getEventEpoch()
+      + SConstants.UID_DIVIDER
+      + lowLevelEventId);
+      }
+      return lowLevelEventId;
+      }
     */
 
     /**
@@ -136,35 +144,35 @@ public final class Utils {
     final static byte[] VALIGN_BASELINE = " valign=\"baseline\"".getBytes();
 
     public static void printTableCellAlignment(Device d, SComponent c)
-            throws IOException {
+        throws IOException {
         switch (c.getHorizontalAlignment()) {
-            case SConstants.NO_ALIGN:
-            case SConstants.LEFT:
-                break;
-            case SConstants.CENTER:
-                d.write(ALIGN_CENTER);
-                break;
-            case SConstants.RIGHT:
-                d.write(ALIGN_RIGHT);
-                break;
-            case SConstants.JUSTIFY:
-                d.write(ALIGN_JUSTIFY);
-                break;
+        case SConstants.NO_ALIGN:
+        case SConstants.LEFT:
+            break;
+        case SConstants.CENTER:
+            d.write(ALIGN_CENTER);
+            break;
+        case SConstants.RIGHT:
+            d.write(ALIGN_RIGHT);
+            break;
+        case SConstants.JUSTIFY:
+            d.write(ALIGN_JUSTIFY);
+            break;
         }
 
         switch (c.getVerticalAlignment()) {
-            case SConstants.NO_ALIGN:
-            case SConstants.CENTER:
-                break;
-            case SConstants.TOP:
-                d.write(VALIGN_TOP);
-                break;
-            case SConstants.BOTTOM:
-                d.write(VALIGN_BOTTOM);
-                break;
-            case SConstants.BASELINE:
-                d.write(VALIGN_BASELINE);
-                break;
+        case SConstants.NO_ALIGN:
+        case SConstants.CENTER:
+            break;
+        case SConstants.TOP:
+            d.write(VALIGN_TOP);
+            break;
+        case SConstants.BOTTOM:
+            d.write(VALIGN_BOTTOM);
+            break;
+        case SConstants.BASELINE:
+            d.write(VALIGN_BASELINE);
+            break;
         }
     }
 
@@ -184,7 +192,7 @@ public final class Utils {
     }
 
     public static void writeAttributes(Device d, SComponent component)
-            throws IOException {
+        throws IOException {
 
         java.awt.Color fgColor = component.getForeground();
         SFont font = component.getFont();
