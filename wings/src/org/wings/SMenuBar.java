@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $id: SMenuBar.java,v 1.2.2.2 2001/11/26 08:52:58 hzeller Exp $
  * (c) Copyright 2000 wingS development team.
  *
  * This file is part of wingS (http://wings.mercatis.de).
@@ -18,7 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Insets;
 import java.beans.*;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.net.URL;
 import javax.swing.*;
 
@@ -54,10 +54,11 @@ public class SMenuBar extends SContainer
     private boolean paintBorder           = true;
     private Insets     margin             = null;
 
-	/**
-      * SMenu's
-      */
-	Vector fComponents = new Vector();
+    /**
+     * SMenu's
+     */
+    protected final ArrayList fComponents = new ArrayList();
+
     /**
      * Creates a new menu bar.
      */
@@ -98,8 +99,8 @@ public class SMenuBar extends SContainer
      * @param c the SMenu component to add
      */
     public SMenu add(SMenu c) {
-		super.add( c );
-		c.addActionListener( new MenuAction( this ) );
+        super.add( c );
+        c.addActionListener( new MenuAction( this ) );
         c.setShowAsFormComponent( false );
     	fComponents.add(c);
         return c;
@@ -113,7 +114,7 @@ public class SMenuBar extends SContainer
      * @return the SMenu at that position
      */
     public SMenu getMenu(int index) {
-        SComponent c = (SComponent) fComponents.elementAt(index);
+        SComponent c = (SComponent) fComponents.get(index);
         if (c instanceof SMenu) 
             return (SMenu) c;
         return null;
@@ -194,9 +195,9 @@ public class SMenuBar extends SContainer
         paintBorder = b;
         firePropertyChange("borderPainted", oldValue, paintBorder);
         if (b != oldValue) {
-        	/*
-            revalidate();
-            repaint();
+            /*
+              revalidate();
+              repaint();
             */
         }
     }
@@ -233,9 +234,9 @@ public class SMenuBar extends SContainer
         this.margin = m;
         firePropertyChange("margin", old, m);
         if (old == null || !m.equals(old)) {
-        	/*
-            revalidate();
-            repaint();
+            /*
+              revalidate();
+              repaint();
             */
         }
     }
@@ -280,8 +281,8 @@ public class SMenuBar extends SContainer
 			       margin.toString() : "");
 
 	return super.paramString() +
-	",margin=" + marginString +
-	",paintBorder=" + paintBorderString;
+            ",margin=" + marginString +
+            ",paintBorder=" + paintBorderString;
     }
 
     public String getCGClassID() {
@@ -298,7 +299,7 @@ public class SMenuBar extends SContainer
     public void closeAllMenus()
     {
         for ( int i = 0; i < fComponents.size(); i++ )
-            ((SMenu) fComponents.elementAt(i)).setActive( false );
+            ((SMenu) fComponents.get(i)).setActive( false );
     }
 
     /**

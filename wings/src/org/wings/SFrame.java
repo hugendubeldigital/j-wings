@@ -481,7 +481,7 @@ public class SFrame
         public void removeComponent(SComponent c) {}
 
         public SComponent getComponentAt(int i) {
-            return (SComponent)container.getComponent(i);
+            return (SComponent)SFrame.this.getComponentAt(i);
         }
 
         public void setContainer(SContainer c) {
@@ -498,7 +498,7 @@ public class SFrame
             throws IOException
         {
             int topmost = container.getComponentCount() - 1;
-            SComponent comp = (SComponent)container.getComponent(topmost);
+            SComponent comp = (SComponent)SFrame.this.getComponentAt(topmost);
             comp.write(s);
         }
     }

@@ -49,7 +49,7 @@ public class SFrameSet
     /**
      * Only SFrameSets or SFrames are allowed.
      */
-    public SComponent addComponent(SComponent c, Object constraint) {
+    public SComponent addComponent(SComponent c, Object constraint, int index) {
 	if (c == null)
 	    return null;
 
@@ -57,10 +57,10 @@ public class SFrameSet
 	    throw new IllegalArgumentException("Only SFrameSets or SFrames are allowed.");
 
 	if (layout != null)
-	    layout.addComponent(c, constraint, getComponentList().size());
+	    layout.addComponent(c, constraint, index);
 
-	getComponentList().add(c);
-	getConstraintList().add(constraint);
+	getComponentList().add(index, c);
+	getConstraintList().add(index, constraint);
 	c.setParent(this);
 
         return c;

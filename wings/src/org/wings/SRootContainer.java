@@ -49,7 +49,7 @@ public abstract class SRootContainer extends SContainer {
     public SRootContainer() {
         contentPane = new SPanel();
 	super.setLayout(new SStackLayout());
-        super.addComponent(getContentPane(), null);
+        super.addComponent(getContentPane(), null, 0);
     }
 
     /**
@@ -75,7 +75,7 @@ public abstract class SRootContainer extends SContainer {
         if (count <= 1)
             throw new IllegalStateException("there's no dialog left!");
 
-        SDialog dialog = (SDialog)getComponent(count - 1);
+        SDialog dialog = (SDialog)getComponentAt(count - 1);
         super.removeComponent(dialog);
         dialog.setFrame((SFrame)null);
         logger.info("popDialog: " + count);
@@ -101,7 +101,7 @@ public abstract class SRootContainer extends SContainer {
     /**
      * Use getContentPane().addComponent(c) instead.
      */
-    public SComponent addComponent(SComponent c, Object constraint) {
+    public SComponent addComponent(SComponent c, Object constraint, int indec) {
         throw new IllegalArgumentException("use getContentPane().addComponent()");
     }
 
@@ -125,7 +125,7 @@ public abstract class SRootContainer extends SContainer {
         public void removeComponent(SComponent c) {}
 	
         public SComponent getComponentAt(int i) {
-            return (SComponent)getComponent(i);
+            return (SComponent)SRootContainer.this.getComponentAt(i);
         }
 	
         public void setContainer(SContainer c) {
@@ -142,7 +142,7 @@ public abstract class SRootContainer extends SContainer {
             throws IOException
         {
             int topmost = getComponentCount() - 1;
-            SComponent comp = (SComponent)getComponent(topmost);
+            SComponent comp = (SComponent)SRootContainer.this.getComponentAt(topmost);
             comp.write(s);
         }
     }

@@ -67,51 +67,19 @@ public class SDesktopPane
      * @return the top most component
      */
     public SInternalFrame getVisibleFrame() {
-        return (SInternalFrame)getComponent(getComponentCount()-1);
+        return (SInternalFrame)getComponentAt(getComponentCount()-1);
     }
 
-    /**
-     * Adds a <i>component</i> with a tab title defaulting to
-     * the name of the component.
-     * Cover method for insertTab().
-     * @param component The component to be displayed when this tab is clicked.
-     */
-    public SComponent add(SComponent component) {
-        super.addComponent(component, component.getNamePrefix());
-        return component;
-    }
 
     /**
      * @param component The internal frame to be added.
      * @param constraints nothing
      */
-    public void add(SComponent component, Object constraints) {
-        super.addComponent(component, constraints);
-    }
-
-    /**
-     * Removes the frame at <i>index</i>.
-     *
-     * @param index the index of the tab to be removed
-     */
-    public void remove(int index) {
-        super.remove(index);
-    }
-
-    /**
-     * Removes the frame which corresponds to the specified component.
-     *
-     * @param component the frame to be removed from the desktop
-     */
-    public void remove(SComponent component) {
-        super.remove(component);
-    }
-
-    /**
-     * Removes all frames from the desktop.
-     */
-    public void removeAll() {
-        super.removeAll();
+    public SComponent addComponent(SComponent component, 
+                                   Object constraints, int index) {
+        if ( constraints==null )
+            constraints = component.getNamePrefix();
+        return super.addComponent(component, constraints, index);
     }
 
     /**
@@ -140,7 +108,7 @@ public class SDesktopPane
 
         count = getComponentCount();
         for(i = 0; i < count; i++) {
-            if(c == getComponent(i))
+            if(c == getComponentAt(i))
                 return i;
         }
         return -1;
@@ -171,7 +139,7 @@ public class SDesktopPane
         public void removeComponent(SComponent c) {}
 
         public SComponent getComponentAt(int i) {
-            return (SComponent)getComponent(i);
+            return (SComponent)container.getComponentAt(i);
         }
 
         public void setContainer(SContainer c) {
@@ -190,7 +158,7 @@ public class SDesktopPane
             // zwei maximieren kann. Vielleicht sollte das ueber eine
             // button-group oder so gemacht werden ..
             for (int i=0; i<componentCount; i++) {
-                SInternalFrame frame = (SInternalFrame)getComponent(i);
+                SInternalFrame frame = (SInternalFrame)container.getComponentAt(i);
                 if (!frame.isClosed() && frame.isMaximized()) {
                     d.print("<tr><td>\n");
                     frame.write(d);
@@ -200,7 +168,7 @@ public class SDesktopPane
             }
 
             for (int i=0; i<componentCount; i++) {
-                SInternalFrame frame = (SInternalFrame)getComponent(i);
+                SInternalFrame frame = (SInternalFrame)container.getComponentAt(i);
                 if (!frame.isClosed()) {
                     d.print("<tr><td>\n");
                     frame.write(d);

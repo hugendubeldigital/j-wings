@@ -136,15 +136,15 @@ public class SScrollPane
 
     public Scrollable getScrollable() { return scrollable; }
 
-    public SComponent addComponent(SComponent c, Object constraint) {
+    public SComponent addComponent(SComponent c, Object constraint, int index) {
         SComponent ret;
         if (c instanceof Scrollable) {
             removeComponent((SComponent)scrollable);
-            ret = super.addComponent(c, constraint, 0);
+            ret = super.addComponent(c, constraint, index);
             setScrollable(ret);
         }
         else {
-            ret = super.addComponent(c, constraint);
+            ret = super.addComponent(c, constraint, index);
         }
         return ret;
     }

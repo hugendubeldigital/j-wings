@@ -111,7 +111,7 @@ public class STabbedPane
 
         setTabPlacement(tabPlacement);
 
-        super.add(contents, SBorderLayout.CENTER);
+        super.addComponent(contents, SBorderLayout.CENTER, 0);
 
         group = new SButtonGroup();
         group.addActionListener(new ActionListener() {
@@ -290,23 +290,23 @@ public class STabbedPane
         }
 
         this.tabPlacement = tabPlacement;
-        super.remove(buttons);
+        super.removeComponent(buttons);
 
         switch ( tabPlacement ) {
         case TOP:
-            super.add(buttons, SBorderLayout.NORTH);
+            super.addComponent(buttons, SBorderLayout.NORTH, 0);
             break;
 
         case BOTTOM:
-            super.add(buttons, SBorderLayout.SOUTH);
+            super.addComponent(buttons, SBorderLayout.SOUTH, 0);
             break;
 
         case LEFT:
-            super.add(buttons, SBorderLayout.WEST);
+            super.addComponent(buttons, SBorderLayout.WEST, 0);
             break;
 
         case RIGHT:
-            super.add(buttons, SBorderLayout.EAST);
+            super.addComponent(buttons, SBorderLayout.EAST, 0);
             break;
         }
     }
@@ -500,19 +500,6 @@ public class STabbedPane
         insertTab(title, null, component, null, pages.size());
     }
 
-    /**
-     * Adds a <i>component</i> with a tab title defaulting to
-     * the name of the component.
-     * Cover method for insertTab().
-     * @param component The component to be displayed when this tab is clicked.
-     *
-     * @see #insertTab
-     * @see #removeTabAt
-     */
-    public SComponent add(SComponent component) {
-        addTab(component.getName(), component);
-        return component;
-    }
 
     /**
      * Adds a <i>component</i> with the specified tab title.
@@ -529,44 +516,6 @@ public class STabbedPane
     }
 
     /**
-     * Adds a <i>component</i> at the specified tab index with a tab
-     * title defaulting to the name of the component.
-     * Cover method for insertTab().
-     * @param component The component to be displayed when this tab is clicked.
-     * @param index the position to insert this new tab
-     *
-     * @see #insertTab
-     * @see #removeTabAt
-     */
-    public SComponent add(SComponent component, int index) {
-        insertTab(component.getName(), null, component, null, index);
-        return component;
-    }
-
-    /**
-     * Adds a <i>component</i> to the tabbed pane.  If constraints
-     * is a String or an Icon, it will be used for the tab title,
-     * otherwise the component's name will be used as the tab title.
-     * Cover method for insertTab().
-     * @param component The component to be displayed when this tab is clicked.
-     * @constraints the object to be displayed in the tab
-     *
-     * @see #insertTab
-     * @see #removeTabAt
-     */
-    public void add(SComponent component, Object constraints) {
-        if (constraints instanceof String) {
-            addTab((String)constraints, component);
-        }
-        else if (constraints instanceof SIcon) {
-            addTab(null, (SIcon)constraints, component);
-        }
-        else {
-            add(component);
-        }
-    }
-
-    /**
      * Adds a <i>component</i> at the specified tab index.  If constraints
      * is a String or an Icon, it will be used for the tab title,
      * otherwise the component's name will be used as the tab title.
@@ -578,10 +527,13 @@ public class STabbedPane
      * @see #insertTab
      * @see #removeTabAt
      */
-    public void add(SComponent component, Object constraints, int index) {
+    public SComponent addComponent(SComponent component, 
+                                   Object constraints, int index) {
         SIcon icon = constraints instanceof SIcon ? (SIcon)constraints : null;
         String title = constraints instanceof String ? (String)constraints : null;
-        insertTab(title, icon, component, null, index);
+        insertTab(title, icon, component, null, Math.min(index, pages.size()));
+
+        return component;
     }
 
     /**
@@ -615,26 +567,15 @@ public class STabbedPane
      * @see #addTab
      * @see #removeTabAt
      */
-    public void remove(SComponent component) {
+    public boolean removeComponent(SComponent component) {
         int index = indexOfComponent(component);
         if ( index != -1 ) {
             removeTabAt(index);
+            return true;
         }
-    }
 
-    /**
-     * Removes all the tabs from the tabbedpane.
-     *
-     * @see #addTab
-     * @see #removeTabAt
-     */
-    public void removeAll() {
-        setSelectedIndex(-1);
-        buttons.removeAll();
-        contents.removeAll();
-        pages.clear();
+        return false;
     }
-
 
     /**
      * Sets the maximum tabs per line. tabs <= 0: No maximum.

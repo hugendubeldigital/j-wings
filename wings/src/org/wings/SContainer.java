@@ -81,6 +81,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
             for ( int i=0; i<getComponentCount(); i++ ) {
                 layout.removeComponent(getComponentAt(i));
             }
+            layout.setContainer(null);
         }
 
         layout = l;
@@ -99,7 +100,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @return current layout
      */
-    public SLayoutManager getLayout() {
+    public final SLayoutManager getLayout() {
         return layout;
     }
 
@@ -110,7 +111,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @param    l the container listener
      */
-    public void addContainerListener(SContainerListener l) {
+    public final void addContainerListener(SContainerListener l) {
         if (l == null) {
             return;
         }
@@ -128,8 +129,8 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @param 	l the container listener
      */
-    public void removeContainerListener(SContainerListener l) {
-        if (l == null) {
+    public final void removeContainerListener(SContainerListener l) {
+        if (l == null || containerListener==null ) {
             return;
         }
         containerListener.remove(l);
@@ -169,7 +170,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      */
     private ArrayList componentList;
 
-    protected ArrayList getComponentList() {
+    protected final ArrayList getComponentList() {
         if ( componentList == null )
             componentList = new ArrayList(3);
         return componentList;
@@ -180,7 +181,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      */
     private ArrayList constraintList;
 
-    protected ArrayList getConstraintList() {
+    protected final ArrayList getConstraintList() {
         if ( constraintList == null )
             constraintList = new ArrayList(3);
         return constraintList;
@@ -192,7 +193,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @return number of components
      */
-    public int getComponentCount() {
+    public final int getComponentCount() {
         return getComponentList().size();
     }
 
@@ -202,7 +203,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param i position
      * @return component at given pos
      */
-    public SComponent getComponentAt(int i) {
+    public final SComponent getComponentAt(int i) {
         return (SComponent)getComponentList().get(i);
     }
 
@@ -211,12 +212,13 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @param i position
      * @return component at given pos
+     * @deprecated use {@link getComponentAt}
      */
-    public SComponent getComponent(int i) {
+    public final SComponent getComponent(int i) {
         return getComponentAt(i);
     }
 
-    public SComponent[] getComponents() {
+    public final SComponent[] getComponents() {
         // vorsichtig mit Threads ( eigentlich TreeLock!!!)
         return (SComponent[])getComponentList().toArray(new SComponent[getComponentCount()]);
     }
@@ -228,7 +230,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param i position
      * @return constraint for component at given position
      */
-    public Object getConstraintAt(int i) {
+    public final Object getConstraintAt(int i) {
         return getConstraintList().get(i);
     }
 
@@ -268,7 +270,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @return the removed component
      * @see #removeComponent(org.wings.SComponent)
      */
-    public SComponent removeComponentAt(int i) {
+    public final SComponent removeComponentAt(int i) {
         SComponent c = getComponentAt(i);
         removeComponent(c);
         return c;
@@ -280,7 +282,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param c
      * @see #removeComponent(org.wings.SComponent)
      */
-    public void remove(SComponent c) {
+    public final void remove(SComponent c) {
         removeComponent(c);
     }
 
@@ -289,22 +291,23 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @param i
      * @see #removeComponent(int)
+     * @deprecated use {@link removeComponentAt()}
      */
-    public void remove(int i) {
+    public final void remove(int i) {
         removeComponentAt(i);
     }
 
     /**
      * Removes all components from the container.
      */
-    public void removeAllComponents() {
+    public final void removeAllComponents() {
         removeAll();
     }
 
     /**
      * Removes all components from the container.
      */
-    public void removeAll() {
+    public final void removeAll() {
         while ( getComponentCount() > 0 )
             removeComponentAt(0);
     }
@@ -317,7 +320,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param c the component to add
      * @return the added component
      */
-    public SComponent add(SComponent c) {
+    public final SComponent add(SComponent c) {
         return addComponent(c, null);
     }
 
@@ -329,7 +332,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param constraint the constraint for this component
      * @return the added component
      */
-    public void add(SComponent c, Object constraint) {
+    public final void add(SComponent c, Object constraint) {
         addComponent(c, constraint);
     }
 
@@ -341,7 +344,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param index the index of the component
      * @return the added component
      */
-    public SComponent add(SComponent c, int index) {
+    public final SComponent add(SComponent c, int index) {
         return addComponent(c, null, index);
     }
 
@@ -353,7 +356,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param index the index of the component
      * @return the added component
      */
-    public void add(SComponent c, Object constraint, int index) {
+    public final void add(SComponent c, Object constraint, int index) {
         addComponent(c, constraint, index);
     }
 
@@ -364,7 +367,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param c the component to add
      * @return the added component
      */
-    public SComponent addComponent(SComponent c) {
+    public final SComponent addComponent(SComponent c) {
         return addComponent(c, null);
     }
 
@@ -376,7 +379,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param constraint the constraint for this component
      * @return the added component
      */
-    public SComponent addComponent(SComponent c, Object constraint) {
+    public final SComponent addComponent(SComponent c, Object constraint) {
         return addComponent(c, constraint, getComponentList().size());
     }
 
@@ -388,7 +391,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param index the index of the component
      * @return the added component
      */
-    public SComponent addComponent(SComponent c, int index) {
+    public final SComponent addComponent(SComponent c, int index) {
         return addComponent(c, null, index);
     }
 
@@ -430,13 +433,19 @@ public class SContainer extends SComponent implements ClickableRenderComponent
         }
     }
 
+    /**
+     * CAVEAT this did not work yet... We need to clone the layout manager as
+     * well, so SLayoutManager must be Cloneable
+     */
     public Object clone() {
         try {
             SContainer erg = (SContainer)super.clone();
+            // uiuiui, layout manager must be cloned as well,...
+            
             // componentList and constraintList contain references to the
             // original components / constraints
-            erg.componentList.clear();
-            erg.constraintList.clear();
+            erg.getComponentList().clear();
+            erg.getConstraintList().clear();
             for ( int i=0; i<getComponentCount(); i++ ) {
                 erg.addComponent((SComponent)getComponentAt(i).clone());
             }
@@ -463,7 +472,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param visitor an implementation of the {@link ComponentVisitor}
      *                interface.
      */
-    public void inviteEachComponent(ComponentVisitor visitor) 
+    public final void inviteEachComponent(ComponentVisitor visitor) 
         throws Exception {
 	Iterator iterator = getComponentList().iterator();
 	while (iterator.hasNext()) {
@@ -471,17 +480,6 @@ public class SContainer extends SComponent implements ClickableRenderComponent
         }
     }
 
-    /**
-     * Invite a ComponentVisitor.
-     *
-     * @param visitor an implementation of the {@link ComponentVisitor}
-     *                interface.
-     */
-    public void invite(ComponentVisitor visitor)
-        throws Exception
-    {
-        visitor.visit(this);
-    }
 }
 
 /*
@@ -491,3 +489,12 @@ public class SContainer extends SComponent implements ClickableRenderComponent
  * compile-command: "ant -emacs -find build.xml"
  * End:
  */
+
+
+
+
+
+
+
+
+

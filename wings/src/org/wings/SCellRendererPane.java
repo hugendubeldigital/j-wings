@@ -50,12 +50,12 @@ public class SCellRendererPane
      * bother doing anything - stacking order doesn't matter for cell
      * renderer components (CellRendererPane doesn't paint anyway).
      */
-    public SComponent addComponent(SComponent c, Object constraints) {
+    public SComponent addComponent(SComponent c, Object constraints, int index) {
         if ( c.getParent() == this ) {
             return null;
         }
         else {
-            return super.addComponent(c, constraints);
+            return super.addComponent(c, constraints, index);
         }
     }
 
