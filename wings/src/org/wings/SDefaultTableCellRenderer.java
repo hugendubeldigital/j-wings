@@ -68,9 +68,10 @@ public class SDefaultTableCellRenderer
             }
             
             return result;
-        } else 
+        } 
+        else {
             setText(value.toString());
-
+        }
 
         if ( selected && selectionStyle!=null ) {
             setStyle(selectionStyle);
