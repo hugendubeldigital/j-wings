@@ -66,7 +66,7 @@ public class SFrame
     /**
      * The container for the contentPane.
      */
-    protected SContainer contentPane = new SContainer();
+    protected final SContainer contentPane = new SContainer();
 
     /**
      * The container for the optionPane, if present.
@@ -197,12 +197,15 @@ public class SFrame
     public void setBackgroundURL(String url) {
         backgroundURL = url;
     }
+
     /**
      * TODO: documentation
      *
      * @return
      */
-    public String getBackgroundURL() { return backgroundURL; }
+    public String getBackgroundURL() {
+        return backgroundURL;
+    }
 
     /**
      * Set the background image.
@@ -216,7 +219,9 @@ public class SFrame
      *
      * @return
      */
-    public Icon getBackgroundImage() { return backgroundImage; }
+    public Icon getBackgroundImage() {
+        return backgroundImage;
+    }
 
     /**
      * TODO: documentation
