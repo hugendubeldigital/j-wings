@@ -38,7 +38,7 @@ public class ListExample
         p.add(createListSingleSelExample());
         p.add(createListMultSelExample());
         p.add(createComboBoxExample());
-        p.add(createEnumExample());
+        p.add(createAnchorListExample());
 
         form.add(p);
         form.add(new SButton("SUBMIT"));
@@ -54,7 +54,7 @@ public class ListExample
 
     public SContainer createListSingleSelExample() {
         SContainer cont = new SContainer(new SFlowDownLayout());
-        cont.add(new SLabel("list with single Selection"));
+        cont.add(new SLabel("List with single selection"));
         SList list = new SList();
         list.setSelectionMode(SINGLE_SELECTION);
         addListElements(list);
@@ -65,7 +65,7 @@ public class ListExample
 
     public SContainer createListMultSelExample() {
         SContainer cont = new SContainer(new SFlowDownLayout());
-        cont.add(new SLabel("list with multiple Selection"));
+        cont.add(new SLabel("List with multiple selection"));
         SList list = new SList();
         list.setSelectionMode(MULTIPLE_SELECTION);
         addListElements(list);
@@ -77,22 +77,20 @@ public class ListExample
     public SContainer createComboBoxExample() {
         SContainer cont = new SContainer(new SFlowDownLayout());
         cont.add(new SLabel("ComboBox"));
-        SList list = new SList();
-        list.setVisibleRowCount(1);
-        list.setSelectionMode(SConstants.SINGLE_SELECTION);
-        System.err.println("Well, hello? " + list.getVisibleRowCount());
-        addListElements(list);
-        cont.add(list);
-
+        SComboBox comboBox = new SComboBox();
+        addComboBoxElements(comboBox);
+        cont.add(comboBox);
+        
         return cont;
     }
 
-    public SContainer createEnumExample() {
+    public SContainer createAnchorListExample() {
         SContainer cont = new SContainer(new SFlowDownLayout());
-        cont.add(new SLabel("Enumeration"));
+        cont.add(new SLabel("List with showAsFormComponent = false"));
         SList list = new SList();
         list.setShowAsFormComponent(false);
-        addEnumElements(list);
+        list.setSelectionMode(SConstants.SINGLE_SELECTION);
+        addAnchorElements(list);
         cont.add(list);
 
         return cont;
@@ -114,7 +112,23 @@ public class ListExample
         list.setListData(values);
     }
 
-    public void addEnumElements(SList list) {
+    public void addComboBoxElements(SComboBox comboBox) {
+        SImage img = new SImage(SUtil.makeIcon(SLabel.class, "icons/JavaCup.gif"));
+        SLabel color = new SLabel("");
+        color.setForeground(Color.green);
+        color.setText(Color.green.toString());
+
+        Object[] values = {
+            "element1",
+            color,
+            "element3",
+            "element4"
+        };
+
+        comboBox.setModel(new DefaultComboBoxModel(values));
+    }
+
+    public void addAnchorElements(SList list) {
         final SImage img = new SImage(SUtil.makeIcon(SLabel.class, "icons/JavaCup.gif"));
 
         final SLabel color = new SLabel("");

@@ -14,18 +14,19 @@
 
 package wingset;
 
+import java.awt.event.*;
 import java.io.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
+import javax.swing.*;
 
-import org.wings.util.*;
 import org.wings.*;
-import org.wings.servlet.*;
-import org.wings.session.*;
-
 import org.wings.io.Device;
 import org.wings.io.ServletDevice;
+import org.wings.servlet.*;
+import org.wings.session.*;
+import org.wings.util.*;
 
 /**
  * TODO: documentation
@@ -57,7 +58,6 @@ public class WingSetSession
 
     void initGUI() {
         frame.getContentPane().setLayout(new SFlowDownLayout());
-        //frame.setBackgroundURL("");
 
         STabbedPane tab = new STabbedPane();
 
@@ -72,12 +72,42 @@ public class WingSetSession
         tab.add(new FileChooserExample(), "FileChooser Example");
         tab.add(new ScrollPaneExample(), "ScrollPane Example");
         tab.add(new TemplateExample(), "Template Example");
-        tab.add(new DateChooserExample(), "DateChooser Example");
+        tab.add(new SLabel("temporarily disabled"), "DateChooser Example");
+        //tab.add(new DateChooserExample(), "DateChooser Example");
 
         frame.getContentPane().add(tab);
-
         frame.getContentPane().add(new SSeparator());
-        frame.getContentPane().add(timeMeasure);
+
+        SPanel south = new SPanel();
+        south.add(timeMeasure);
+
+        final SRadioButton old = new SRadioButton("xhtml/old");
+        old.setSelected(false);
+        final SRadioButton css1 = new SRadioButton("xhtml/css1");
+        css1.setSelected(true);
+
+        SButtonGroup group = new SButtonGroup();
+        group.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        if (css1.isSelected())
+                            getSession().getCGManager()
+                                .setLookAndFeel(new org.wings.plaf.xhtml.css1.CSS1LookAndFeel());
+                        else
+                            getSession().getCGManager()
+                                .setLookAndFeel(new org.wings.plaf.xhtml.old.OldLookAndFeel());
+                    }
+                    catch (UnsupportedLookAndFeelException ulafe) {}
+                }
+            });
+        group.add(old);
+        group.add(css1);
+        
+        south.add(old);
+        south.add(new SSpacer(1));
+        south.add(css1);
+
+        frame.getContentPane().add(south);
     }
 
     /**
