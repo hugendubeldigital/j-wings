@@ -22,7 +22,7 @@ public class OldLookAndFeel
     extends LookAndFeel
 {
     public OldLookAndFeel() {
-	super(null);
+	super((Properties)null);
 	try {
 	    properties = new Properties();
 	    properties.load(getClass().getResourceAsStream("/org/wings/plaf/xhtml/old/default.properties"));

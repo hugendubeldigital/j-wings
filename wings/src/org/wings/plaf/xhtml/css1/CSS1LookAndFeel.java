@@ -22,7 +22,7 @@ public class CSS1LookAndFeel
     extends LookAndFeel
 {
     public CSS1LookAndFeel() {
-	super(null);
+	super((Properties)null);
 	try {
 	    properties = new Properties();
 	    properties.load(getClass().getResourceAsStream("/org/wings/plaf/xhtml/css1/default.properties"));

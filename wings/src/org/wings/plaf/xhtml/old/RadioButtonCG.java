@@ -35,13 +35,13 @@ public final class RadioButtonCG
         SFont font = checkBox.getFont();
         Color foreground = checkBox.getForeground();
 
-        Utils.writeFontPrefix(d, font, foreground);
+        org.wings.plaf.xhtml.Utils.writeFontPrefix(d, font, foreground);
         if (noBreak)
             d.append("<nobr>");
         d.append((text != null) ? text : "");
         if (noBreak)
             d.append("</nobr>");
-        Utils.writeFontPostfix(d, font, foreground);
+        org.wings.plaf.xhtml.Utils.writeFontPostfix(d, font, foreground);
     }
 
     protected void writeFormText(Device d, SCheckBox checkBox)
@@ -50,9 +50,9 @@ public final class RadioButtonCG
         SFont font = checkBox.getFont();
         Color foreground = checkBox.getForeground();
 
-        Utils.writeFontPrefix(d, font, foreground);
+        org.wings.plaf.xhtml.Utils.writeFontPrefix(d, font, foreground);
         d.append(checkBox.getText());
-        Utils.writeFontPostfix(d, font, foreground);
+        org.wings.plaf.xhtml.Utils.writeFontPostfix(d, font, foreground);
     }
 
     /*
@@ -61,11 +61,11 @@ public final class RadioButtonCG
     {
         SFont font = checkBox.getFont();
 
-        //Utils.writeFontPrefix(d, font);
+        //org.wings.plaf.xhtml.Utils.writeFontPrefix(d, font);
         writeFormPrefix(d, checkBox);
         writeFormBody(d, checkBox);
         writeFormPostfix(d, checkBox);
-        //Utils.writeFontPostfix(d, font);
+        //org.wings.plaf.xhtml.Utils.writeFontPostfix(d, font);
     }
     */
 }

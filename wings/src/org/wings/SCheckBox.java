@@ -121,16 +121,16 @@ public class SCheckBox extends SButton
 
 
     private static ResourceImageIcon DEFAULT_SELECTED_ICON =
-        new ResourceImageIcon("icons/SelectedCheckBox.gif");
+        new ResourceImageIcon("org/wings/icons/SelectedCheckBox.gif");
 
     private static ResourceImageIcon DEFAULT_NOT_SELECTED_ICON =
-        new ResourceImageIcon("icons/NotSelectedCheckBox.gif");
+        new ResourceImageIcon("org/wings/icons/NotSelectedCheckBox.gif");
 
     private static ResourceImageIcon DEFAULT_DISABLED_SELECTED_ICON =
-        new ResourceImageIcon("icons/DisabledSelectedCheckBox.gif");
+        new ResourceImageIcon("org/wings/icons/DisabledSelectedCheckBox.gif");
 
     private static ResourceImageIcon DEFAULT_DISABLED_NOT_SELECTED_ICON =
-        new ResourceImageIcon("icons/DisabledNotSelectedCheckBox.gif");
+        new ResourceImageIcon("org/wings/icons/DisabledNotSelectedCheckBox.gif");
 
 
     /**

@@ -29,8 +29,8 @@ public class CGDefaults
     extends HashMap
 {
     private PropertyChangeSupport changeSupport;
-
     private Map cache = new HashMap();
+    private LookAndFeel lookAndFeel;
 
     /**
      * Create an empty defaults table.
@@ -46,6 +46,9 @@ public class CGDefaults
         }
     }
 
+    public void setLookAndFeel(LookAndFeel lookAndFeel) {
+        this.lookAndFeel = lookAndFeel;
+    }
 
     /**
      * Set the value of <code>key</code> to <code>value</code>.
@@ -101,7 +104,7 @@ public class CGDefaults
             String className = (String)get(cgClassID);
             Object instance = get(className);
             if (instance == null) {
-                Class cgClass = Class.forName(className);
+                Class cgClass = Class.forName(className, true, lookAndFeel.getClassLoader());
                 if (cgClass != null) {
                     instance = cgClass.newInstance();
                     // Save shared instance for future use
@@ -188,7 +191,7 @@ public class CGDefaults
         if (value == null)
             return null;
 
-        Icon icon = LookAndFeel.makeIcon((String)value);
+        Icon icon = lookAndFeel.makeIcon((String)value);
         cache.put(key, icon);
         return icon;
     }
@@ -206,7 +209,7 @@ public class CGDefaults
         if (value == null)
             return null;
 
-        SFont font = LookAndFeel.makeFont((String)value);
+        SFont font = lookAndFeel.makeFont((String)value);
         cache.put(key, font);
         return font;
     }
@@ -224,7 +227,7 @@ public class CGDefaults
         if (value == null)
             return null;
 
-        Color color = LookAndFeel.makeColor((String)value);
+        Color color = lookAndFeel.makeColor((String)value);
         cache.put(key, color);
         return color;
     }
@@ -242,7 +245,7 @@ public class CGDefaults
         if (value == null)
             return null;
 
-        Style style = LookAndFeel.makeStyle((String)value);
+        Style style = lookAndFeel.makeStyle((String)value);
         cache.put(key, style);
         return style;
     }
@@ -260,7 +263,7 @@ public class CGDefaults
         if (value == null)
             return null;
 
-        StyleSheet styleSheet = LookAndFeel.makeStyleSheet((String)value);
+        StyleSheet styleSheet = lookAndFeel.makeStyleSheet((String)value);
         cache.put(key, styleSheet);
         return styleSheet;
     }
@@ -278,7 +281,7 @@ public class CGDefaults
         if (value == null)
             return null;
 
-        Object object = LookAndFeel.makeObject((String)value, clazz);
+        Object object = lookAndFeel.makeObject((String)value, clazz);
         cache.put(key, object);
         return object;
     }

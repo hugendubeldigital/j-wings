@@ -70,6 +70,7 @@ public class SDefaultTableCellRenderer
      *
      */
     public SDefaultTableCellRenderer() {
+        System.err.println("new SDefaultTableCellRenderer");
         setLayout(null);
         contents = new SLabel();
         contents.setStyle(null);
@@ -77,18 +78,6 @@ public class SDefaultTableCellRenderer
         edit = new SLabel();
         add(contents);
         add(edit);
-        createDefaultIcons();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     */
-    protected void createDefaultIcons() {
-        CGManager cgManager = getSession().getCGManager();
-        if (cgManager == null)
-            return;
-        setEditIcon(cgManager.getIcon("STable.editIcon"));
     }
 
     public SComponent getTableCellRendererComponent(SBaseTable baseTable,
@@ -109,10 +98,6 @@ public class SDefaultTableCellRenderer
         else
             contents.setText(value.toString());
 
-        /*
-         * TODO: create a Render Pipeline. The CellRenderer must not have any
-         * knowledege about the used plaf ..
-         */
         if (baseTable instanceof STable) {
             STable table = (STable)baseTable;
             if (selected) {
@@ -310,6 +295,7 @@ public class SDefaultTableCellRenderer
      * @param newIcon
      */
     public void setEditIcon(Icon newIcon) {
+        System.err.println("SDefaultTableCellRenderer.setEditIcon(" + newIcon + ")");
         editIcon = newIcon;
         edit.setIcon(editIcon);
     }

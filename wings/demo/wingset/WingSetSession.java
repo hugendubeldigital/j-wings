@@ -16,6 +16,7 @@ package wingset;
 
 import java.awt.event.*;
 import java.io.*;
+import java.net.*;
 import java.util.*;
 
 import javax.servlet.*;
@@ -40,22 +41,10 @@ public class WingSetSession
     implements SConstants
 {
     SLabel timeMeasure = new SLabel();
-    Properties css1Properties, oldProperties;
-
 
     public WingSetSession(Session session) {
         super(session);
         System.out.println("new WingSetSession");
-
-        try {
-            css1Properties = new Properties();
-            css1Properties.load(getClass().getResourceAsStream("/org/wings/plaf/xhtml/css1/default.properties"));
-            oldProperties = new Properties();
-            oldProperties.load(getClass().getResourceAsStream("/org/wings/plaf/xhtml/old/default.properties"));
-        }
-        catch (Exception e) {
-            // assert false, e.getMessage();
-        }
     }
 
 
@@ -86,7 +75,7 @@ public class WingSetSession
         tab.add(new BorderExample(), "Border");
         tab.add(new TextComponentExample(), "Text Component");
         // a Tab with icon..
-        tab.addTab("Tree", new ResourceImageIcon("icons/JavaCup.gif"), 
+        tab.addTab("Tree", new ResourceImageIcon("org/wings/icons/JavaCup.gif"), 
                    new TreeExample(), "Tree Tool Tip");
         tab.add(new OptionPaneExample(getFrame()), "OptionPane");
         tab.add(new TableExample(), "Table");
@@ -97,8 +86,7 @@ public class WingSetSession
         tab.add(new FileChooserExample(), "FileChooser");
         tab.add(new ScrollPaneExample(), "ScrollPane");
         //tab.add(new LayoutExample(), "Simple Layout");
-        tab.addTab("Template Layout", new ResourceImageIcon(WingSet.class, 
-                                                            "cowSmall.gif"), 
+        tab.addTab("Template Layout", new ResourceImageIcon(WingSet.class, "cowSmall.gif"), 
                    new TemplateExample(), "Template Layout Manager");
         //tab.add(new DateChooserExample(), "DateChooser");
 
@@ -113,13 +101,20 @@ public class WingSetSession
 
         SButtonGroup group = new SButtonGroup();
         group.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    if (css1.isSelected())
-                        getSession().getCGManager()
-                            .setLookAndFeel(new org.wings.plaf.LookAndFeel(css1Properties));
-                    else
-                        getSession().getCGManager()
-                            .setLookAndFeel(new org.wings.plaf.LookAndFeel(oldProperties));
+                public void actionPerformed(ActionEvent evt) {
+                    try {
+                        URL contextURL = new URL(getFrame().getServerAddress().getAbsoluteAddress());
+                        if (css1.isSelected())
+                            getSession().getCGManager()
+                                .setLookAndFeel(new URL(contextURL, "css1.jar"));
+                        else
+                            getSession().getCGManager()
+                                .setLookAndFeel(new URL(contextURL, "old.jar"));
+                    }
+                    catch (Exception e) {
+                        System.out.println(e.getMessage());
+                        e.printStackTrace(System.err);
+                    }
                 }
             });
         group.add(old);

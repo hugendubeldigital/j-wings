@@ -27,12 +27,12 @@ public final class TabbedPaneCG
     extends org.wings.plaf.xhtml.TabbedPaneCG
 {
     Icon firstIcon;
-    //Icon transIcon;
+    Icon transIcon;
 
     public void installCG(SComponent component) {
         super.installCG(component);
         firstIcon = component.getSession().getCGManager().getIcon("TabbedPaneCG.firstIcon");
-        //transIcon = LookAndFeel.makeIcon(TabbedPaneCG.class, "/org/wings/icons/transdot.gif");
+        transIcon = LookAndFeel.makeIcon(TabbedPaneCG.class, "/org/wings/icons/transdot.gif");
     }
 
 
@@ -44,13 +44,13 @@ public final class TabbedPaneCG
         STabbedPane pane = (STabbedPane)c;
 
         String firstAdr = null;
-        //String transAdr = null;
+        String transAdr = null;
 
         ExternalizeManager ext = c.getExternalizeManager();
         if (ext != null) {
             try {
                 firstAdr = ext.externalize(firstIcon);
-                //transAdr = ext.externalize(transIcon);
+                transAdr = ext.externalize(transIcon);
             }
             catch (java.io.IOException e) {
                 System.err.println(e.getMessage());
@@ -69,13 +69,13 @@ public final class TabbedPaneCG
             contents = (SContainer)pane.getComponentAt(1);
         }
 
-        //d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">")
-        //  .append("<tr><td width=\"17\"></td><td bgcolor=\"#000000\"><img src=\"")
-        //  .append(transAdr)
-        //  .append("width=\"1\" height=\"1\" /></td></tr></table>\n");
-
         d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">")
-            .append("<tr><td width=\"17\"></td><td bgcolor=\"#000000\"><img height=\"1\" width=\"1\"/></td></tr></table>\n");
+            .append("<tr><td width=\"17\"></td><td bgcolor=\"#000000\"><img src=\"")
+            .append(transAdr)
+            .append("width=\"1\" height=\"1\" /></td></tr></table>\n");
+
+        //d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">")
+        //    .append("<tr><td width=\"17\"></td><td bgcolor=\"#000000\"><img height=\"1\" width=\"1\"/></td></tr></table>\n");
 
         for (int i=0; i < buttons.getComponentCount(); i++) {
             d.append("<img src=\"")

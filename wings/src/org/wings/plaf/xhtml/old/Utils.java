@@ -25,7 +25,8 @@ import org.wings.io.Device;
  * @author Holger Engels
  * @version $Revision$
  */
-public final class Utils implements SConstants
+public final class Utils
+    implements SConstants
 {
     final static char[] hexDigits = { 
         '0' , '1' , '2' , '3' , '4' , '5' ,
@@ -116,7 +117,6 @@ public final class Utils implements SConstants
             d.append("</i>");
         d.append("</font>");
     }
-
 }
 
 /*

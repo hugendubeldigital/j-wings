@@ -166,8 +166,8 @@ public class SDefaultCellEditor
      *
      */
     protected void createDefaultIcons() {
-        setCommitIcon(new ResourceImageIcon(SDefaultCellEditor.class,
-                                            "icons/TreeLeaf.gif"));
+        setCommitIcon(new ResourceImageIcon(getClass().getClassLoader(),
+                                            "org/wings/icons/TreeLeaf.gif"));
     }
 
 

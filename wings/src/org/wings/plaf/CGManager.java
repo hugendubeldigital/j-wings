@@ -15,6 +15,8 @@
 package org.wings.plaf;
 
 import java.awt.*;
+import java.io.*;
+import java.net.*;
 import javax.swing.*;
 
 import org.wings.*;
@@ -23,14 +25,7 @@ import org.wings.style.*;
 
 public class CGManager
 {
-    LookAndFeel lookAndFeel;
-
-    public CGManager() {
-        // try {
-        //     setLookAndFeel(new org.wings.plaf.xhtml.css1.CSS1LookAndFeel());
-        // }
-        // catch(Exception e) {}
-    }
+    private LookAndFeel lookAndFeel;
 
     public ComponentCG getCG(SComponent target) {
         return getDefaults().getCG(target);
@@ -78,18 +73,14 @@ public class CGManager
         return getDefaults().getObject(key, clazz);
     }
 
-    private CGDefaults[] tables = new CGDefaults[2];
     private CGDefaults defaults = null;
 
-    CGDefaults getLookAndFeelDefaults() { return tables[0]; }
-    void setLookAndFeelDefaults(CGDefaults x) { tables[0] = x; }
-
-    CGDefaults getSystemDefaults() { return tables[1]; }
-    void setSystemDefaults(CGDefaults x) { tables[1] = x; }
+    public void setLookAndFeelDefaults(CGDefaults defaults) {
+        this.defaults = defaults;
+    }
+    public CGDefaults getLookAndFeelDefaults() { return defaults; }
 
     public CGDefaults getDefaults() {
-        if (defaults == null)
-            defaults = new MultiCGDefaults(tables);
         return defaults;
     }
 
@@ -104,6 +95,7 @@ public class CGManager
     public class LookAndFeelInfo {
         private String name;
         private String className;
+        private ClassLoader classLoader;
 
         /**
          * Constructs an CGManager$LookAndFeelInfo object.
@@ -112,28 +104,28 @@ public class CGManager
          * @param className a String specifiying the name of the class that
          *                  implements the look and feel
          */
+        public LookAndFeelInfo(String name, String className, ClassLoader classLoader) {
+            this.name = name;
+            this.className = className;
+            this.classLoader = classLoader;
+        }
+
         public LookAndFeelInfo(String name, String className) {
             this.name = name;
             this.className = className;
+            this.classLoader = this.getClass().getClassLoader();
         }
 
-        /**
-         * Returns the name of the look and feel in a form sCGtable
-         * for a menu or other presentation
-         * @return a String containing the name
-         * @see LookAndFeel#getName
-         */
         public String getName() {
             return name;
         }
 
-        /**
-         * Returns the name of the class that implements this look and feel.
-         * @return the name of the class that implements this LookAndFeel
-         * @see LookAndFeel
-         */
         public String getClassName() {
             return className;
+        }
+
+        public ClassLoader getClassLoader() {
+            return classLoader;
         }
 
         /**
@@ -157,8 +149,8 @@ public class CGManager
      */
     private LookAndFeelInfo[] installedLAFs = {
         new LookAndFeelInfo("XHTML", "org.wings.plaf.xhtml.XHTMLLookAndFeel")
-        // new LookAndFeelInfo("ECMA", "org.wings.plaf.ecma.ECMALookAndFeel")
-    };
+            // new LookAndFeelInfo("ECMA", "org.wings.plaf.ecma.ECMALookAndFeel")
+            };
 
 
     /**
@@ -178,111 +170,141 @@ public class CGManager
      *
      * @see #setLookAndFeel
      */
-     public LookAndFeelInfo[] getInstalledLookAndFeels() {
-         LookAndFeelInfo[] ilafs = installedLAFs;
-         LookAndFeelInfo[] rv = new LookAndFeelInfo[ilafs.length];
-         System.arraycopy(ilafs, 0, rv, 0, ilafs.length);
-         return rv;
-     }
+    public LookAndFeelInfo[] getInstalledLookAndFeels() {
+        LookAndFeelInfo[] ilafs = installedLAFs;
+        LookAndFeelInfo[] rv = new LookAndFeelInfo[ilafs.length];
+        System.arraycopy(ilafs, 0, rv, 0, ilafs.length);
+        return rv;
+    }
 
 
-     /**
-      * Replaces the current array of installed LookAndFeelInfos.
-      *
-      * @see #getInstalledLookAndFeels
-      */
-     public void setInstalledLookAndFeels(LookAndFeelInfo[] infos)
-         throws SecurityException
-     {
-         LookAndFeelInfo[] newInfos = new LookAndFeelInfo[infos.length];
-         System.arraycopy(infos, 0, newInfos, 0, infos.length);
-         installedLAFs = newInfos;
-     }
+    /**
+     * Replaces the current array of installed LookAndFeelInfos.
+     *
+     * @see #getInstalledLookAndFeels
+     */
+    public void setInstalledLookAndFeels(LookAndFeelInfo[] infos)
+        throws SecurityException
+    {
+        LookAndFeelInfo[] newInfos = new LookAndFeelInfo[infos.length];
+        System.arraycopy(infos, 0, newInfos, 0, infos.length);
+        installedLAFs = newInfos;
+    }
 
-     /**
-      * Adds the specified look and feel to the current array and
-      * then calls {@link #setInstalledLookAndFeels}.
-      * @param info a LookAndFeelInfo object that names the look and feel
-      *        and identifies that class that implements it
-      */
-     public void installLookAndFeel(LookAndFeelInfo info) {
-         LookAndFeelInfo[] infos = getInstalledLookAndFeels();
-         LookAndFeelInfo[] newInfos = new LookAndFeelInfo[infos.length + 1];
-         System.arraycopy(infos, 0, newInfos, 0, infos.length);
-         newInfos[infos.length] = info;
-         setInstalledLookAndFeels(newInfos);
-     }
+    /**
+     * Adds the specified look and feel to the current array and
+     * then calls {@link #setInstalledLookAndFeels}.
+     * @param info a LookAndFeelInfo object that names the look and feel
+     *        and identifies that class that implements it
+     */
+    public void installLookAndFeel(LookAndFeelInfo info) {
+        LookAndFeelInfo[] infos = getInstalledLookAndFeels();
+        LookAndFeelInfo[] newInfos = new LookAndFeelInfo[infos.length + 1];
+        System.arraycopy(infos, 0, newInfos, 0, infos.length);
+        newInfos[infos.length] = info;
+        setInstalledLookAndFeels(newInfos);
+    }
 
-     /**
-      * Creates a new look and feel and adds it to the current array.
-      * Then calls {@link #setInstalledLookAndFeels}.
-      *
-      * @param name       a String specifying the name of the look and feel
-      * @param className  a String specifying the class name that implements the
-      *                   look and feel
-      */
-     public void installLookAndFeel(String name, String className) {
-         installLookAndFeel(new LookAndFeelInfo(name, className));
-     }
-
-
-     /**
-      * Returns The current default look and feel, or null.
-      *
-      * @return The current default look and feel, or null.
-      * @see #setLookAndFeel
-      */
-     public LookAndFeel getLookAndFeel() {
-         return lookAndFeel;
-     }
+    /**
+     * Creates a new look and feel and adds it to the current array.
+     * Then calls {@link #setInstalledLookAndFeels}.
+     *
+     * @param name       a String specifying the name of the look and feel
+     * @param className  a String specifying the class name that implements the
+     *                   look and feel
+     */
+    public void installLookAndFeel(String name, String className) {
+        installLookAndFeel(new LookAndFeelInfo(name, className));
+    }
 
 
-     /**
-      * Set the current default look and feel using a LookAndFeel object.
-      * <p>
-      * This is a JavaBeans bound property.
-      *
-      * @param newLookAndFeel the LookAndFeel object
-      * @see #getLookAndFeel
-      */
-     public void setLookAndFeel(LookAndFeel newLookAndFeel)
-     {
-         LookAndFeel oldLookAndFeel = lookAndFeel;
-         if (oldLookAndFeel != null) {
-             oldLookAndFeel.uninitialize();
-         }
-
-         lookAndFeel = newLookAndFeel;
-         if (newLookAndFeel != null) {
-             newLookAndFeel.initialize();
-             setLookAndFeelDefaults(newLookAndFeel.getDefaults());
-         }
-         else {
-             setLookAndFeelDefaults(null);
-         }
-
-         // have the session fire a propertyChangeEvent regarding the new lookAndFeel
-         if (SessionManager.getSession() != null)
-             ((PropertyService)SessionManager.getSession()).setProperty("lookAndFeel", newLookAndFeel.getName());
-     }
+    /**
+     * Returns The current default look and feel, or null.
+     *
+     * @return The current default look and feel, or null.
+     * @see #setLookAndFeel
+     */
+    public LookAndFeel getLookAndFeel() {
+        return lookAndFeel;
+    }
 
 
-     /**
-      * Set the current default look and feel using a class name.
-      *
-      * @param className  a string specifying the name of the class that implements
-      *        the look and feel
-      * @exception ClassNotFoundException If the LookAndFeel class could not be found.
-      * @exception InstantiationException If a new instance of the class couldn't be creatd.
-      * @exception IllegalAccessException If the class or initializer isn't accessible.
-      */
-     public void setLookAndFeel(String className)
-         throws ClassNotFoundException, InstantiationException,
-         IllegalAccessException
-     {
-         Class lnfClass = Class.forName(className);
-         setLookAndFeel((LookAndFeel)(lnfClass.newInstance()));
-     }
+    /**
+     * Set the current default look and feel using a LookAndFeel object.
+     * If not explicitely specified, the lookAndFeel will use the context
+     * ClassLoader.
+     * <p>
+     * This is a JavaBeans bound property.
+     *
+     * @param newLookAndFeel the LookAndFeel object
+     * @see #getLookAndFeel
+     */
+    public void setLookAndFeel(LookAndFeel newLookAndFeel) {
+        LookAndFeel oldLookAndFeel = lookAndFeel;
+        if (oldLookAndFeel != null) {
+            oldLookAndFeel.uninitialize();
+        }
+
+        lookAndFeel = newLookAndFeel;
+        if (newLookAndFeel != null) {
+            newLookAndFeel.initialize();
+            setLookAndFeelDefaults(newLookAndFeel.getDefaults());
+        }
+        else {
+            setLookAndFeelDefaults(null);
+        }
+
+        // have the session fire a propertyChangeEvent regarding the new lookAndFeel
+        if (SessionManager.getSession() != null)
+            ((PropertyService)SessionManager.getSession())
+                .setProperty("lookAndFeel", newLookAndFeel.getName());
+    }
+
+
+    /**
+     * Set the current default look and feel using a class name.
+     *
+     * @param className  a string specifying the name of the class that implements
+     *        the look and feel
+     * @exception ClassNotFoundException If the LookAndFeel class could not be found.
+     * @exception InstantiationException If a new instance of the class couldn't be creatd.
+     * @exception IllegalAccessException If the class or initializer isn't accessible.
+     * @deprecated provide an URL instead
+     */
+    public void setLookAndFeel(String className)
+        throws ClassNotFoundException, InstantiationException,
+               IllegalAccessException
+    {
+        Class lnfClass = Class.forName(className);
+        setLookAndFeel((LookAndFeel)(lnfClass.newInstance()));
+    }
+
+    /**
+     * Set the current LookAndFeel
+     */
+    public void setLookAndFeel(URL classpath)
+        throws IOException
+    {
+        ClassLoader classLoader = new URLClassLoader(new URL[] { classpath },
+                                                     getClass().getClassLoader());
+        LookAndFeel lookAndFeel = new LookAndFeel(classLoader);
+
+        if (!hasInstalled(lookAndFeel))
+            installLookAndFeel(new LookAndFeelInfo(lookAndFeel.getName(),
+                                                   lookAndFeel.getClass().getName(),
+                                                   classLoader));
+        setLookAndFeel(lookAndFeel);
+    }
+
+    public boolean hasInstalled(LookAndFeel lookAndFeel) {
+        LookAndFeelInfo[] infos = getInstalledLookAndFeels();
+        for (int i=0; i < infos.length; i++)
+            if (infos[i].getClassName().equals(lookAndFeel.getClass().getName()) &&
+                infos[i].getName().equals(lookAndFeel.getName()))
+                return true;
+
+        return false;
+    }
 }
 
 /*

@@ -27,18 +27,30 @@ import java.util.Set;
 public class ResourceStyleSheet
     implements StyleSheet
 {
-    Class baseClass = null;
+    ClassLoader classLoader = null;
     String fileName = null;
 
     /**
      * TODO: documentation
      *
-     * @param file
+     * @param classLoader the classLoader from which the stylesheet should be loaded
+     * @param fileName the path to the style sheet resource
      * @throws IOException
      */
-    public ResourceStyleSheet(Class baseClass, String fileName) {
+    public ResourceStyleSheet(ClassLoader classLoader, String fileName) {
         this.fileName = fileName;
-        this.baseClass = baseClass;
+        this.classLoader = classLoader;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param fileName the path to the style sheet resource
+     * @throws IOException
+     * @deprecated provide the <code>classLoader</code> instead a <code>baseClass</code>
+     */
+    public ResourceStyleSheet(Class baseClass, String fileName) {
+        this(baseClass.getClassLoader(), resolveName(baseClass, fileName));
     }
 
     /**
@@ -48,7 +60,7 @@ public class ResourceStyleSheet
      * @throws IOException
      */
     public InputStream getInputStream() throws IOException {
-        return baseClass.getResourceAsStream(fileName);
+        return classLoader.getResourceAsStream(fileName);
     }
 
     public boolean isStable() {
@@ -62,6 +74,26 @@ public class ResourceStyleSheet
      */
     public Set styleSet() {
         throw new UnsupportedOperationException();
+    }
+
+    private static String resolveName(Class baseClass, String fileName) {
+        if (fileName == null) {
+            return fileName;
+        }
+        if (!fileName.startsWith("/")) {
+            while (baseClass.isArray()) {
+                baseClass = baseClass.getComponentType();
+            }
+            String baseName = baseClass.getName();
+            int index = baseName.lastIndexOf('.');
+            if (index != -1) {
+                fileName = baseName.substring(0, index).replace('.', '/')
+                    + "/" + fileName;
+            }
+        } else {
+            fileName = fileName.substring(1);
+        }
+        return fileName;
     }
 
     /**

@@ -3,6 +3,15 @@
 <!-- $Id$ -->
 
 <project name="wingS-Demo" default="main" basedir=".">
+  <property name="home"    value="."/>
+  <property name="src"     value="."/>
+  <property name="build"   value="build"/>
+  <property name="classes" value="${build}/classes"/>
+  <property name="deploy"  value="${build}/deploy"/>
+  <property name="lib"     value="../build/dist/lib"/>
+
+  <property file="build.properties" />
+
   <path id="build.classpath">
     <pathelement path="${java.class.path}/" />
     <fileset dir="../build/dist/lib">
@@ -10,20 +19,10 @@
     </fileset>
   </path>
 
-  <target name="init">
-    <property name="home"    value="."/>
-    <property name="src"     value="."/>
-    <property name="build"   value="build"/>
-    <property name="classes" value="${build}/classes"/>
-    <property name="deploy"  value="${build}/deploy"/>
-    <property name="lib"     value="../build/dist/lib"/>
-
-    <property file="build.properties" />
-  </target>
 
   <!-- ==================== Preparations ==================== -->
 
-  <target name="prepare" depends="init">
+  <target name="prepare">
     <tstamp/>
     <mkdir dir="${build}" />
     <mkdir dir="${classes}" />
@@ -66,11 +65,9 @@
       </fileset>
     </copy>
 
-    <copy todir="${deploy}/wingset/WEB-INF/lib">
-      <fileset dir="${lib}">
-        <exclude name="j2ee.jar"/>
-      </fileset>
-    </copy>
+    <copy file="${lib}/wings.jar" todir="${deploy}/wingset/WEB-INF/lib" />
+    <copy file="${lib}/css1.jar" todir="${deploy}/wingset" />
+    <copy file="${lib}/old.jar" todir="${deploy}/wingset" />
   </target>
 
   <target name="ldap" depends="build">
@@ -89,11 +86,29 @@
       </fileset>
     </copy>
 
-    <copy todir="${deploy}/ldap/WEB-INF/lib">
-      <fileset dir="${lib}">
-        <exclude name="j2ee.jar"/>
+    <copy file="${lib}/wings.jar" todir="${deploy}/ldap/WEB-INF/lib" />
+    <copy file="${lib}/css1.jar" todir="${deploy}/ldap" />
+    <copy file="${lib}/old.jar" todir="${deploy}/ldap" />
+  </target>
+
+  <target name="jndi" depends="build">
+    <mkdir dir="${deploy}/jndi"/>
+    <mkdir dir="${deploy}/jndi/WEB-INF"/>
+    <mkdir dir="${deploy}/jndi/WEB-INF/lib"/>
+    <mkdir dir="${deploy}/jndi/WEB-INF/classes"/>
+
+    <copy file="jndi/jndi.xml" tofile="${deploy}/jndi/WEB-INF/web.xml"/>
+    <copy file="jndi/index.html" tofile="${deploy}/jndi/index.html"/>
+
+    <copy todir="${deploy}/jndi/WEB-INF/classes">
+      <fileset dir="${classes}">
+        <include name="jndi/**/*" />
       </fileset>
     </copy>
+
+    <copy file="${lib}/wings.jar" todir="${deploy}/jndi/WEB-INF/lib" />
+    <copy file="${lib}/css1.jar" todir="${deploy}/jndi" />
+    <copy file="${lib}/old.jar" todir="${deploy}/jndi" />
   </target>
 
   <target name="explorer" depends="build">
@@ -133,11 +148,9 @@
       </fileset>
     </copy>
 
-    <copy todir="${deploy}/frameset/WEB-INF/lib">
-      <fileset dir="${lib}">
-        <exclude name="j2ee.jar"/>
-      </fileset>
-    </copy>
+    <copy file="${lib}/wings.jar" todir="${deploy}/frameset/WEB-INF/lib" />
+    <copy file="${lib}/css1.jar" todir="${deploy}/frameset" />
+    <copy file="${lib}/old.jar" todir="${deploy}/frameset" />
   </target>
 
   <target name="desktop" depends="build">
@@ -155,18 +168,16 @@
       </fileset>
     </copy>
 
-    <copy todir="${deploy}/desktop/WEB-INF/lib">
-      <fileset dir="${lib}">
-        <exclude name="j2ee.jar"/>
-      </fileset>
-    </copy>
+    <copy file="${lib}/wings.jar" todir="${deploy}/desktop/WEB-INF/lib" />
+    <copy file="${lib}/css1.jar" todir="${deploy}/desktop" />
+    <copy file="${lib}/old.jar" todir="${deploy}/desktop" />
   </target>
 
   <!-- ==================== Make wars ==================== -->
   <target name="deploy" depends="build">
     <war warfile="${deploy}/wingset.war" webxml="wingset/wingset.xml">
       <lib dir="${lib}">
-        <exclude name="j2ee.jar"/>
+        <include name="wings.jar"/>
       </lib>
       <classes dir="build/classes">
         <include name="wingset/**/*" />
@@ -174,11 +185,31 @@
       <fileset dir="wingset">
         <include name="index.html"/>
       </fileset>
+      <fileset dir="${lib}">
+        <include name="css1.jar"/>
+        <include name="old.jar"/>
+      </fileset>
+    </war>
+
+    <war warfile="${deploy}/jndi.war" webxml="jndi/jndi.xml">
+      <lib dir="${lib}">
+        <include name="wings.jar"/>
+      </lib>
+      <classes dir="build/classes">
+        <include name="jndi/**/*" />
+      </classes>
+      <fileset dir="jndi">
+        <include name="*.java"/>
+      </fileset>
+      <fileset dir="${lib}">
+        <include name="css1.jar"/>
+        <include name="old.jar"/>
+      </fileset>
     </war>
 
     <war warfile="${deploy}/ldap.war" webxml="ldap/ldap.xml">
       <lib dir="${lib}">
-        <exclude name="j2ee.jar"/>
+        <include name="wings.jar"/>
       </lib>
       <classes dir="build/classes">
         <include name="ldap/**/*" />
@@ -186,11 +217,15 @@
       <fileset dir="ldap">
         <include name="index.html"/>
       </fileset>
+      <fileset dir="${lib}">
+        <include name="css1.jar"/>
+        <include name="old.jar"/>
+      </fileset>
     </war>
 
     <war warfile="${deploy}/explorer.war" webxml="explorer/explorer.xml">
       <lib dir="${lib}">
-        <exclude name="j2ee.jar"/>
+        <include name="wings.jar"/>
       </lib>
       <classes dir="build/classes">
         <include name="explorer/**/*" />
@@ -198,11 +233,15 @@
       <fileset dir="explorer">
         <include name="index.html"/>
       </fileset>
+      <fileset dir="${lib}">
+        <include name="css1.jar"/>
+        <include name="old.jar"/>
+      </fileset>
     </war>
 
     <war warfile="${deploy}/frameset.war" webxml="frameset/frameset.xml">
       <lib dir="${lib}">
-        <exclude name="j2ee.jar"/>
+        <include name="wings.jar"/>
       </lib>
       <classes dir="build/classes">
         <include name="frameset/**/*" />
@@ -210,11 +249,15 @@
       <fileset dir="frameset">
         <include name="index.html"/>
       </fileset>
+      <fileset dir="${lib}">
+        <include name="css1.jar"/>
+        <include name="old.jar"/>
+      </fileset>
     </war>
 
     <war warfile="${deploy}/desktop.war" webxml="desktop/desktop.xml">
       <lib dir="${lib}">
-        <exclude name="j2ee.jar"/>
+        <include name="wings.jar"/>
       </lib>
       <classes dir="build/classes">
         <include name="desktop/**/*" />
@@ -222,17 +265,21 @@
       <fileset dir="desktop">
         <include name="index.html"/>
       </fileset>
+      <fileset dir="${lib}">
+        <include name="css1.jar"/>
+        <include name="old.jar"/>
+      </fileset>
     </war>
   </target>
 
 
   <!-- ==================== Admin ==================== -->
-  <target name="clean" depends="init">
-    <deltree dir="${build}"/>
-    <deltree dir="${deploy}"/>
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete dir="${deploy}"/>
   </target>
 
-  <target name="cleansource" depends="init">
+  <target name="cleansource">
     <delete>
       <fileset dir="${src}">
         <include name="**/*.class" />

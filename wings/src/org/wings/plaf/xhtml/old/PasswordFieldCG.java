@@ -36,7 +36,7 @@ public final class PasswordFieldCG
         Color foreground = passwordField.getForeground();
         //Color background = passwordField.getBackground();
 
-        Utils.writeFontPrefix(d, font, foreground);
+        org.wings.plaf.xhtml.Utils.writeFontPrefix(d, font, foreground);
 
         d.append("<input type=\"password\"");
         d.append(" size=\"").append(passwordField.getColumns());
@@ -71,7 +71,7 @@ public final class PasswordFieldCG
 
         d.append(" />");
 
-        Utils.writeFontPostfix(d, font, foreground);
+        org.wings.plaf.xhtml.Utils.writeFontPostfix(d, font, foreground);
     }
 }
 

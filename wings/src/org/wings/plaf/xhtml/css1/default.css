@@ -323,10 +323,71 @@ H3 {
    vertical-align: middle;
 }
 
-.menu {  
+.menubar {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10pt;
 	background-color: #CCCCCC;
+	border-color: #EEEEEE #999999 #999999 #eeeeee;
+	padding-right: 8px;
+	padding-left: 8px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	border-style: solid;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px
+}
+
+.menu {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	background-color: #CCCCCC;
+	padding-right: 8px;
+	padding-left: 8px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.amenu {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	background-color: #CCCCCC;
+	border-color: #EEEEEE #999999 #999999 #eeeeee;
+	padding-right: 8px;
+	padding-left: 8px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	border-style: solid;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+}
+
+.pdmenu {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	background-color: #CCCCCC;
+	border-color: #EEEEEE #999999 #999999 #eeeeee;
+	position: absolute;
+	overflow: visible;
+	padding-right: 8px;
+	padding-left: 8px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	border-style: solid;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	margin-left: -9px;
+	margin-top: 1px;
+}
+
+.framebutton {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
 	border-color: #EEEEEE #999999 #999999 #eeeeee;
 	overflow: visible;
 	position: relative;
@@ -338,27 +399,51 @@ H3 {
 	padding-top: 0px;
 	padding-bottom: 0px;
 	border-style: solid;
-	border-top-width: 2px;
-	border-right-width: 2px;
-	border-bottom-width: 2px;
-	border-left-width: 2px
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px
 }
 
-.pdmenu {
+.frametitle {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 10pt;
-	background-color: #CCCCCC;
+	font-size: 10px;
+	border-color: #EEEEEE #999999 #999999 #eeeeee;
+   	color: #ffffff
+	overflow: visible;
+	position: relative;
+	visibility: visible;
+	z-index: auto;
+	clip:  rect(   );
+	padding-right: 0px;
+	padding-left: 8px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	border-style: solid;
+	border-top-width: 1px;
+	border-right-width: 0px;
+	border-bottom-width: 1px;
+	border-left-width: 1px
+}
+
+.frameborder {
 	border-color: #EEEEEE #999999 #999999 #eeeeee;
 	overflow: visible;
-	position: absolute;
+	position: relative;
 	visibility: visible;
-	padding-right: 2px;
-	padding-left: 2px;
-	padding-top: 2px;
-	padding-bottom: 2px;
+	z-index: auto;
+	padding-right: 0px;
+	padding-left: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
 	border-style: solid;
-	border-top-width: 2px;
-	border-right-width: 2px;
-	border-bottom-width: 2px;
-	border-left-width: 2px
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 0px
+}
+
+.textarea {
+	width: 100%;
+	z-index: 0;
 }

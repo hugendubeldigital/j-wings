@@ -14,6 +14,7 @@
 
 package desktop;
 
+import java.net.URL;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -41,7 +42,8 @@ public class Desktop
     {
         // create new default session and set plaf
         DefaultSession session = new DefaultSession();
-        session.getCGManager().setLookAndFeel(new org.wings.plaf.xhtml.css1.CSS1LookAndFeel());
+        session.getCGManager().setLookAndFeel(new URL(new URL(HttpUtils.getRequestURL(req).toString()),
+                                                      "css1.jar"));
 
         // return a new desktop session
         return new DesktopSession(session);

@@ -841,6 +841,7 @@ public class STable
      * Sets the icon used for the buttons that start editing in a cell.
      */
     public void setEditIcon(Icon newIcon) {
+        System.err.println("STable.setEditIcon(" + newIcon + ")");
         editIcon = newIcon;
     }
 
@@ -892,7 +893,7 @@ public class STable
      *
      */
     protected void createDefaultIcons() {
-        setEditIcon(new ResourceImageIcon("icons/Pencil.gif"));
+        setEditIcon(new ResourceImageIcon(STable.class, "icons/Pencil.gif"));
     }
 
     /**

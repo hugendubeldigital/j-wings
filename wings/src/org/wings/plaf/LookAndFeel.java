@@ -30,6 +30,9 @@ public class LookAndFeel
 {
     private static Map wrappers = new HashMap();
 
+    protected Properties properties;
+    protected ClassLoader classLoader;
+
     static {
         wrappers.put(Boolean.TYPE, Boolean.class);
         wrappers.put(Character.TYPE, Character.class);
@@ -41,10 +44,18 @@ public class LookAndFeel
         wrappers.put(Double.TYPE, Double.class);
     }
 
-    protected Properties properties;
 
     public LookAndFeel(Properties properties) {
 	this.properties = properties;
+	this.classLoader = getClass().getClassLoader();
+    }
+
+    public LookAndFeel(ClassLoader classLoader)
+        throws IOException
+    {
+        this.classLoader = classLoader;
+        this.properties = new Properties();
+        this.properties.load(classLoader.getResourceAsStream("default.properties"));
     }
 
     /**
@@ -63,6 +74,10 @@ public class LookAndFeel
         return properties.getProperty("lookandfeel.description");
     }
 
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
     /**
      * This method is called once by CGManager.setLookAndFeel to create
      * the look and feel specific defaults table.  Other applications,
@@ -74,6 +89,7 @@ public class LookAndFeel
      */
     public CGDefaults getDefaults() {
         CGDefaults table = new CGDefaults();
+        table.setLookAndFeel(this);
 	table.putAll(properties);
         return table;
     }
@@ -114,16 +130,37 @@ public class LookAndFeel
     /**
      * Utility method that creates an ImageIcon from a resource
      * located realtive to the given base class.
-     * @param baseClass
-     * @param fileName of gif file
-     * @return image icon
+     * @param baseClass the ClassLoader of the baseClass will be used
+     * @param fileName of the image file
+     * @return a newly allocated ImageIcon
+     * @deprecated give the <code>classLoader</code> instead the <code>baseClass</code>
      */
     public static ImageIcon makeIcon(Class baseClass, String fileName) {
         return new ResourceImageIcon(baseClass, fileName);
     }
 
-    public static ImageIcon makeIcon(String fileName) {
-        return makeIcon(LookAndFeel.class, fileName);
+    /**
+     * Utility method that creates an ImageIcon from a resource
+     * located realtive to the given base class.
+     * @param classLoader the ClassLoader that should load the icon
+     * @param fileName of the image file
+     * @return a newly allocated ImageIcon
+     */
+    public static ImageIcon makeIcon(ClassLoader classLoader, String fileName) {
+        return new ResourceImageIcon(classLoader, fileName);
+    }
+
+    /**
+     * Utility method that creates an ImageIcon from a resource
+     * located realtive to the given base class. Uses the ClassLoader
+     * of the LookAndFeel
+     *
+     * @see LookAndFeel.LookAndFeel(Properties p, ClassLoader cl)
+     * @param fileName of the image file
+     * @return a newly allocated ImageIcon
+     */
+    public ImageIcon makeIcon(String fileName) {
+        return makeIcon(classLoader, fileName);
     }
 
     /**
@@ -174,8 +211,17 @@ public class LookAndFeel
      * @param value styleSheet as a string
      * @return the style
      */
-    public static StyleSheet makeStyleSheet(String resourceName) {
-        return new ResourceStyleSheet(LookAndFeel.class, resourceName);
+    public static StyleSheet makeStyleSheet(ClassLoader classLoader, String resourceName) {
+        return new ResourceStyleSheet(classLoader, resourceName);
+    }
+
+    /**
+     * Utility method that creates a styleSheet from a string
+     * @param value styleSheet as a string
+     * @return the style
+     */
+    public StyleSheet makeStyleSheet(String resourceName) {
+        return new ResourceStyleSheet(classLoader, resourceName);
     }
 
     /**
@@ -185,13 +231,13 @@ public class LookAndFeel
      * @param value class of the object
      * @return the object
      */
-    public static Object makeObject(String value, Class clazz) {
+    public static Object makeObject(ClassLoader classLoader, String value, Class clazz) {
         try {
             System.err.println("makeObject of type " + clazz.getName() + " with " + value);
             if (value.startsWith("new ")) {
                 int bracket = value.indexOf("(");
                 String name = value.substring("new ".length(), bracket);
-                clazz = LookAndFeel.class.forName(name);
+                clazz = LookAndFeel.class.forName(name, true, classLoader);
                 return clazz.newInstance();
             }
             else {
@@ -206,6 +252,10 @@ public class LookAndFeel
             e.printStackTrace(System.err);
             return null;
         }
+    }
+
+    public Object makeObject(String value, Class clazz) {
+        return makeObject(classLoader, value, clazz);
     }
 
     /**

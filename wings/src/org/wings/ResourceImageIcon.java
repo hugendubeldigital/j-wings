@@ -36,7 +36,7 @@ import javax.swing.ImageIcon;
 public class ResourceImageIcon
     extends ImageIcon
 {
-    protected Class baseClass;
+    protected ClassLoader classLoader;
 
     protected String resourceFileName;
     protected String extension; 
@@ -47,12 +47,16 @@ public class ResourceImageIcon
      * @param resourceFileName
      */
     public ResourceImageIcon(String resourceFileName) {
-        this(ResourceImageIcon.class, resourceFileName);
+        this(ResourceImageIcon.class.getClassLoader(), resourceFileName);
     }
 
     public ResourceImageIcon(Class baseClass, String resourceFileName) {
-        super(getImageData(baseClass, resourceFileName));
-        this.baseClass = baseClass;
+        this(baseClass.getClassLoader(), resolveName(baseClass, resourceFileName));
+    }
+
+    public ResourceImageIcon(ClassLoader classLoader, String resourceFileName) {
+        super(getImageData(classLoader, resourceFileName));
+        this.classLoader = classLoader;
         this.resourceFileName = resourceFileName;
         extension = resourceFileName.substring(resourceFileName.lastIndexOf('.') + 1);
         if (extension == null || extension.length() == 0)
@@ -65,7 +69,7 @@ public class ResourceImageIcon
      * @return
      */
     public InputStream getInputStream() {
-        return baseClass.getResourceAsStream(resourceFileName);
+        return classLoader.getResourceAsStream(resourceFileName);
     }
 
     /**
@@ -86,12 +90,35 @@ public class ResourceImageIcon
         return resourceFileName;
     }
 
-    private static byte[] getImageData(Class baseClass, String resourceFileName) {
+    private static String resolveName(Class baseClass, String fileName) {
+        if (fileName == null) {
+            return fileName;
+        }
+        if (!fileName.startsWith("/")) {
+            while (baseClass.isArray()) {
+                baseClass = baseClass.getComponentType();
+            }
+            String baseName = baseClass.getName();
+            int index = baseName.lastIndexOf('.');
+            if (index != -1) {
+                fileName = baseName.substring(0, index).replace('.', '/')
+                    + "/" + fileName;
+            }
+        } else {
+            fileName = fileName.substring(1);
+        }
+        return fileName;
+    }
+
+    private static byte[] getImageData(ClassLoader classLoader, String resourceFileName) {
         InputStream resource = null;
         try {
-            resource = baseClass.getResourceAsStream(resourceFileName);
-            if (resource == null) // not found
+            resource = classLoader.getResourceAsStream(resourceFileName);
+            if (resource == null) {
+                // not found
+                System.err.println("resource not found: " + resourceFileName);
                 return new byte[0];
+            }
 
             byte[] buffer = new byte[resource.available()];
             resource.read(buffer);

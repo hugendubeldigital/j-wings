@@ -31,7 +31,8 @@ import org.wings.io.Device;
  * @author Holger Engels
  * @version $Revision$
  */
-public final class Utils implements SConstants
+public final class Utils
+    implements SConstants
 {
     final static char[] hexDigits = {
         '0' , '1' , '2' , '3' , '4' , '5' ,
@@ -42,7 +43,7 @@ public final class Utils implements SConstants
     private Utils() {
     }
 
-    public static String toHexString(int rgb) {
+    public static String toColorString(int rgb) {
         char[] buf = new char[6];
         int digits = 6;
         do {
@@ -53,8 +54,8 @@ public final class Utils implements SConstants
         return new String(buf);
     }
 
-    public static String toHexString(java.awt.Color c) {
-        return toHexString(c.getRGB());
+    public static String toColorString(java.awt.Color c) {
+        return toColorString(c.getRGB());
     }
 
     public static void writeStyleAttribute(Device d, String prefix, Style style)

@@ -90,15 +90,15 @@ public class InternalFrameCG
 
         SGetAddress addr;
 
-        d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"1\" width=\"100%\"><tr>");
+        d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\"><tr>");
         if (iconAdr != null) {
-            d.append("<td bgcolor=\"#dedede\" width=\"0%\"><img src=\"")
+            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><img src=\"")
                 .append(iconAdr)
                 .append("\" width=\"16\" height=\"16\" border=\"0\"></a></td>");
             cols ++;
         }
 
-        d.append("<td color=\"#ffffff\" bgcolor=\"#5555aa\" width=\"100%\">&nbsp;<b>")
+        d.append("<td color=\"#ffffff\" bgcolor=\"#5555aa\" class=\"frametitle\">&nbsp;<b>")
             .append(text)
             .append("</b></td>");
         cols ++;
@@ -107,7 +107,7 @@ public class InternalFrameCG
             addr = frame.getServerAddress();
             addr.add(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_ICONIFIED);
 
-            d.append("<td bgcolor=\"#dedede\" width=\"0%\"><a href=\"")
+            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
                 .append(addr)
                 .append("\"><img src=\"")
                 .append(iconifyAdr)
@@ -119,7 +119,7 @@ public class InternalFrameCG
             addr = frame.getServerAddress();
             addr.add(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_DEICONIFIED);
 
-            d.append("<td bgcolor=\"#dedede\" width=\"0%\"><a href=\"")
+            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
                 .append(addr)
                 .append("\"><img src=\"")
                 .append(deiconifyAdr)
@@ -131,7 +131,7 @@ public class InternalFrameCG
             addr = frame.getServerAddress();
             addr.add(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_MAXIMIZED);
 
-            d.append("<td bgcolor=\"#dedede\" width=\"0%\"><a href=\"")
+            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
                 .append(addr)
                 .append("\"><img src=\"")
                 .append(maximizeAdr)
@@ -143,7 +143,7 @@ public class InternalFrameCG
             addr = frame.getServerAddress();
             addr.add(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_UNMAXIMIZED);
 
-            d.append("<td bgcolor=\"#dedede\" width=\"0%\"><a href=\"")
+            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
                 .append(addr)
                 .append("\"><img src=\"")
                 .append(unmaximizeAdr)
@@ -155,7 +155,7 @@ public class InternalFrameCG
             addr = frame.getServerAddress();
             addr.add(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_CLOSED);
 
-            d.append("<td bgcolor=\"#dedede\" width=\"0%\"><a href=\"")
+            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
                 .append(addr)
                 .append("\"><img src=\"")
                 .append(closeAdr)
@@ -167,7 +167,7 @@ public class InternalFrameCG
 
         if (!frame.isIconified()) {
             d.append("<tr><td colspan=\"" + cols)
-                .append("\">\n");
+                .append("\" CLASS=\"frameborder\">\n");
             org.wings.plaf.xhtml.Utils.writeContainerContents(d, frame);
             d.append("</td></tr>\n");
         }

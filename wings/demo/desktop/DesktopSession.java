@@ -39,7 +39,6 @@ public class DesktopSession
     implements SConstants
 {
     SDesktopPane desktop;
-    SInternalFrame frame1, frame2, frame3;
 
     public DesktopSession(Session session) {
         super(session);
@@ -53,32 +52,46 @@ public class DesktopSession
     void initGUI() {
         SContainer contentPane = getFrame().getContentPane();
 
+        SMenuBar menuBar = createMenu();
+        contentPane.add(menuBar);
+
         desktop = new SDesktopPane();
         contentPane.add(desktop);
 
-        frame1 = new SInternalFrame();
-        frame2 = new SInternalFrame();
-        frame3 = new SInternalFrame();
-
-        frame1.getContentPane().add(new SLabel(getStory()));
-        frame2.getContentPane().add(new SLabel(getStory()));
-        frame3.getContentPane().add(new SLabel(getStory()));
-
-        Icon icon = new ResourceImageIcon(getClass(), "/org/wings/icons/penguin.gif");
-        frame1.setIcon(icon);
-        frame2.setIcon(icon);
-        frame3.setIcon(icon);
-
-        desktop.add(frame1);
-        desktop.add(frame2);
-        desktop.add(frame3);
+        Editor editor = new Editor();
+        editor.setText(getStory());
+        desktop.add(editor);
     }
 
     protected String getStory() {
         return "Ein Philosoph ist jemand, der in einem absolut dunklen Raum " +
-            "mit verbundenen Augen nach einer Schwarzen Katze sucht, die garnicht " +
+            "mit verbundenen Augen nach einer schwarzen Katze sucht, die gar nicht " +
             "da ist. Ein Theologe ist jemand der genau das gleiche macht und ruft: " +
             "\"ich hab sie!\"";
+    }
+
+    protected SMenuBar createMenu() {
+        SMenuItem newItem = new SMenuItem("New");
+	newItem.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent evt) {
+		    newEditor();
+		}
+	    });
+        SMenuItem openItem = new SMenuItem("Open");
+	openItem.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent evt) {
+		    openEditor();
+		}
+	    });
+
+        SMenu fileMenu = new SMenu("File");
+        fileMenu.add(newItem);
+        fileMenu.add(openItem);
+
+        SMenuBar menuBar = new SMenuBar();
+        menuBar.add(fileMenu);
+
+        return menuBar;
     }
 
     /**
@@ -86,6 +99,52 @@ public class DesktopSession
      */
     public String getServletInfo() {
         return "Desktop ($Revision$)";
+    }
+
+    public void newEditor() {
+        Editor editor = new Editor();
+        desktop.add(editor);
+    }
+
+    public void openEditor() {
+        final Editor editor = new Editor();
+        desktop.add(editor);
+
+        final SDialog dialog = new SDialog();
+        SForm p = new SForm(new SFlowDownLayout());
+        p.setEncodingType("multipart/form-data");
+
+        SLabel label = new SLabel("Choose file");
+        p.add(label);
+
+        final SFileChooser chooser = new SFileChooser();
+        p.add(chooser);
+
+        p.add(new SSpacer(1, VERTICAL));
+
+        SButton submit = new SButton("upload");
+        submit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    File file = chooser.getFile();
+                    Reader reader = new FileReader(file);
+                    StringWriter writer = new StringWriter();
+
+                    int b;
+                    while ((b = reader.read()) > -1)
+                        writer.write(b);
+
+                    editor.setText(writer.toString());
+                    dialog.hide();
+                }
+                catch (Exception e) {
+                    SOptionPane.showMessageDialog(editor, "An error occured", e.getMessage());
+                }
+            }});
+        p.add(submit);
+
+        dialog.add(p);
+        dialog.show(editor);
     }
 }
 

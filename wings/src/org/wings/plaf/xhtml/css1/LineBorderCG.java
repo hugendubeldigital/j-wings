@@ -40,7 +40,7 @@ public final class LineBorderCG
         d.append("<div style=\"border: solid ")
             .append(thickness)
             .append("px; color: ")
-            .append(Utils.toHexString(color));
+            .append(Utils.toColorString(color));
         if (insets != null && !none.equals(insets))
             d.append("; padding: ")
                 .append(insets.top).append(" ")

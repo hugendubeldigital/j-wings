@@ -42,7 +42,6 @@ public abstract class AbstractCG
      */
     protected void configure(Object object, String className, CGManager manager) {
         try {
-            System.err.println("configure " + className + " ..");
             BeanInfo info = Introspector.getBeanInfo(object.getClass());
 
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();

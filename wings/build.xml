@@ -13,8 +13,6 @@
   <!-- ==================== Properties ==================== -->
   <target name="init">
     <tstamp/>
-    <property name="version" value="0.9.8"/>
-    
     <!-- directories -->
     <property name="home"    value="." />
     <property name="src"     value="src" />
@@ -25,7 +23,7 @@
     <property name="distlib" value="${dist}/lib" />
     <property name="lib"     value="lib" />        <!-- external libraries -->
 
-    <!-- some additional properties for ant -->
+    <!-- read additional properties from file -->
     <property file="build.properties" />
   </target>
 
@@ -42,7 +40,9 @@
 
 
   <!-- ==================== Build wingS ==================== -->
-  <target name="build" depends="prepare">
+  <target name="build" depends="jar,plaf" />
+
+  <target name="compile" depends="prepare">
     <javac srcdir="${src}" destdir="${classes}" debug="off">
       <classpath refid="build.classpath" />
     </javac>
@@ -53,8 +53,13 @@
         <include name="**/*.css" />
       </fileset>
     </copy>
+  </target>
 
-    <jar jarfile="${distlib}/wings.jar" basedir="${classes}" />
+
+  <target name="jar" depends="compile">
+    <jar jarfile="${distlib}/wings.jar" basedir="${classes}">
+      <exclude name="org/wings/plaf/xhtml/**" />
+    </jar>
 
     <copy todir="${distlib}">
       <fileset dir="${lib}">
@@ -65,6 +70,37 @@
     </copy>
   </target>
 
+
+  <!-- ==================== LookAndFeel Jars ==================== -->
+  <target name="plaf" depends="css1,old" />
+
+  <target name="css1" depends="compile">
+    <jar jarfile="${distlib}/css1.jar">
+      <fileset dir="${classes}">
+        <include name="org/wings/plaf/xhtml/*.class" />
+        <include name="org/wings/plaf/xhtml/css1/*" />
+        <exclude name="org/wings/plaf/xhtml/css1/default.properties" />
+      </fileset>
+      <fileset dir="${classes}/org/wings/plaf/xhtml/css1">
+        <include name="default.properties" />
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="old" depends="compile">
+    <jar jarfile="${distlib}/old.jar">
+      <fileset dir="${classes}">
+        <include name="org/wings/plaf/xhtml/*.class" />
+        <include name="org/wings/plaf/xhtml/old/*" />
+        <exclude name="org/wings/plaf/xhtml/old/default.properties" />
+      </fileset>
+      <fileset dir="${classes}/org/wings/plaf/xhtml/old">
+        <include name="default.properties" />
+      </fileset>
+    </jar>
+  </target>
+
+
   <!-- ==================== Generate API Docs ==================== -->
   <target name="doc" depends="prepare">
     <javadoc packagenames="org.wings.*"
@@ -74,8 +110,8 @@
 	     classpathref="build.classpath"
              version="true"
              use="true"
-             windowtitle="wingS ${version}"
-             doctitle="wingS ${version}"
+             windowtitle="wingS ${wings.version}"
+             doctitle="wingS ${wings.version}"
              bottom="wingS swings ;-)"
     />
   </target>
@@ -102,13 +138,18 @@
   <target name="all" depends="clean,build" description="re-build everything"/>
   <target name="main" depends="build" description="build changed files"/>
 
+
+  <!--target name="demo" depends="build" description="build demo">
+    <ant dir="demo"/>
+  </target-->
+
   <target name="dist" depends="init" description="create distribution tar.gz">
-      <property name="distname" value="${ant.project.name}-${version}"/>
+      <property name="distname" value="${ant.project.name}-${wings.version}"/>
       <delete dir="${distname}"/>
       <mkdir dir="${distname}"/>
 
       <!-- copy all relevant files for the distribution -->
-      <filter token="VERSION" value="${version}" />
+      <filter token="VERSION" value="${wings.version}" />
       <copy todir="${distname}" file="VERSION" filtering="true" />
       <copy todir="${distname}">
          <fileset dir="${home}">

@@ -17,6 +17,7 @@ package org.wings.plaf.xhtml.old;
 import java.awt.Color;
 import java.awt.Insets;
 import java.io.IOException;
+import javax.swing.Icon;
 
 import org.wings.*;
 import org.wings.externalizer.*;
@@ -32,6 +33,12 @@ public final class LineBorderCG
     private final static boolean BLACK = false;
     private final static boolean WHITE = true;
     private final static Insets none = new Insets(0,0,0,0);
+
+    Icon transIcon;
+
+    public LineBorderCG () {
+        transIcon = LookAndFeel.makeIcon(TabbedPaneCG.class, "/org/wings/icons/transdot.gif");
+    }
 
     public void writePrefix(Device d, SBorder b)
         throws IOException
@@ -92,7 +99,22 @@ public final class LineBorderCG
     public void writeIMG(Device d, int width, int height)
         throws IOException
     {
-        d.append("<img height=\"")
+        String transAdr = null;
+
+        ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
+        if (ext != null) {
+            try {
+                transAdr = ext.externalize(transIcon);
+            }
+            catch (java.io.IOException e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace(System.err);
+            }
+        }
+
+        d.append("<img src=\"")
+            .append(transAdr)
+            .append("\" height=\"")
             .append(height)
             .append("\" width=\"")
             .append(width)

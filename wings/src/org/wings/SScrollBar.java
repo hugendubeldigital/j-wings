@@ -120,11 +120,11 @@ public class SScrollBar
 
                 for ( int direction=0; direction<postfixes.length; direction++ ) {
                     DEFAULT_ICONS[orientation][style][direction][ENABLED] =
-                        new ResourceImageIcon("icons/" + prefixes[style] +
+                        new ResourceImageIcon("org/wings/icons/" + prefixes[style] +
                                               "Scroll" + postfixes[direction] +
                                               ".gif");
                     DEFAULT_ICONS[orientation][style][direction][DISABLED] =
-                        new ResourceImageIcon("icons/Disabled" + prefixes[style] +
+                        new ResourceImageIcon("org/wings/icons/Disabled" + prefixes[style] +
                                               "Scroll" + postfixes[direction] +
                                               ".gif");
                 }

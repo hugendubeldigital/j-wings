@@ -38,16 +38,16 @@ public class SRadioButton
     private static final String cgClassID = "RadioButtonCG";
 
     private static ImageIcon DEFAULT_SELECTED_ICON =
-        new ResourceImageIcon("icons/SelectedRadioButton.gif");
+        new ResourceImageIcon(SRadioButton.class, "icons/SelectedRadioButton.gif");
 
     private static ImageIcon DEFAULT_NOT_SELECTED_ICON =
-        new ResourceImageIcon("icons/NotSelectedRadioButton.gif");
+        new ResourceImageIcon(SRadioButton.class, "icons/NotSelectedRadioButton.gif");
 
     private static ImageIcon DEFAULT_DISABLED_SELECTED_ICON =
-        new ResourceImageIcon("icons/DisabledSelectedRadioButton.gif");
+        new ResourceImageIcon(SRadioButton.class, "icons/DisabledSelectedRadioButton.gif");
 
     private static ImageIcon DEFAULT_DISABLED_NOT_SELECTED_ICON =
-        new ResourceImageIcon("icons/DisabledNotSelectedRadioButton.gif");
+        new ResourceImageIcon(SRadioButton.class, "icons/DisabledNotSelectedRadioButton.gif");
 
     /**
      * TODO: documentation
