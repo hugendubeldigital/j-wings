@@ -43,7 +43,7 @@ public void writeAnchorStart(Device device, AnchorProperties anchor) throws IOEx
         if ( anchor.isFormAnchor() ) {
             %><a href="" onclick="return submitForm(event, '<%=anchor.getFormEventName()%>','<%=anchor.getFormEventValue()%>')"<%
         } else {
-            %><a href="<%=anchor.getURL().toString()%>"<%
+            %><a href="<%=anchor.getURL().toString()%>"<%|target=anchor.getTarget()%><%
         }
         %><%|title=anchor.getToolTipText()%>><%
     }
