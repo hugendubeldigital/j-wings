@@ -518,7 +518,17 @@ public class SContainer extends SComponent implements ClickableRenderComponent
         }
     }
 
-   
+    /*******
+     * Will be called internally
+     * all components will be informed
+     ***/
+   public void removeNotify() {
+       	Iterator iterator = getComponentList().iterator();
+	while (iterator.hasNext()) {
+	    ((SComponent)iterator.next()).removeNotify();
+        }
+        super.removeNotify();
+   }
 }
 
 /*
