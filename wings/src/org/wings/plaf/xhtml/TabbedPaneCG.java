@@ -31,8 +31,11 @@ public class TabbedPaneCG
     }
 
     public void installCG(SComponent component) {
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
+        STabbedPane pane = (STabbedPane)component;
+        pane.setStyle(component.getSession().getCGManager().
+                      getStyle(getPropertyPrefix() + "NonSelection.style"));
+        pane.setSelectionStyle(component.getSession().getCGManager().
+                               getStyle(getPropertyPrefix() + "Selection.style"));
     }
 
     public void uninstallCG(SComponent c) {

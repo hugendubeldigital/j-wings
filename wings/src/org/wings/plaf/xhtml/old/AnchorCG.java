@@ -12,6 +12,8 @@
  * Please see COPYING for the complete licence.
  */
 
+package org.wings.plaf.xhtml.old;
+
 import java.io.IOException;
 
 import java.awt.Color;

@@ -25,6 +25,9 @@ import javax.swing.DefaultSingleSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.wings.plaf.*;
+import org.wings.style.*;
+
 /**
  * TODO: documentation
  *
@@ -35,6 +38,10 @@ public class STabbedPane
     extends SContainer
     implements SConstants, ActionListener
 {
+    /**
+     * @see #getCGClassID
+     */
+    private static final String cgClassID = "TabbedPaneCG";
 
     /**
      * Where the tabs are placed.
@@ -49,6 +56,8 @@ public class STabbedPane
 
     SCardLayout card = new SCardLayout();
     SContainer contents = new SContainer(card);
+
+    protected SButtonGroup group;
 
     /**
      * TODO: documentation
@@ -70,6 +79,11 @@ public class STabbedPane
      * TODO: documentation
      */
     protected Color selectionBackground = null;
+
+    /**
+     * TODO: documentation
+     */
+    protected Style selectionStyle = null;
 
     /**
      * TODO: documentation
@@ -96,6 +110,9 @@ public class STabbedPane
         setTabPlacement(tabPlacement);
 
         super.add(contents, SBorderLayout.CENTER);
+
+        group = new SButtonGroup();
+        group.addActionListener(this);
     }
 
     /**
@@ -114,6 +131,15 @@ public class STabbedPane
      */
     public void setSelectionBackground(Color c) {
         selectionBackground = c;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param c
+     */
+    public void setSelectionStyle(Style s) {
+        selectionStyle = s;
     }
 
     /**
@@ -234,21 +260,11 @@ public class STabbedPane
      * description: The tabbedpane's selected tab index.
      */
     public void setSelectedIndex(int index) {
-        for ( int i=0; i<getTabCount(); i++ ) {
-            Page tab = getPageAt(i);
-            tab.button.setForeground(getForeground());
-            tab.button.setBackground(getBackground());
-            tab.setEnabled(i!=index);
-        }
-
         model.setSelectedIndex(index);
 
         Page p = getPageAt(index);
-        if ( p != null ) {
-            p.button.setForeground(selectionForeground);
-            p.button.setBackground(selectionBackground);
+        if (p != null)
             card.show(p.component);
-        }
     }
 
     /**
@@ -573,6 +589,15 @@ public class STabbedPane
     }
 
     /**
+     * Returns the tab style at <i>index</i>.
+     *
+     * @see #setStyleAt
+     */
+    public Style getStyleAt(int index) {
+        return getPageAt(index).getStyle();
+    }
+
+    /**
      * Returns whether or not the tab at <i>index</i> is
      * currently enabled.
      *
@@ -656,6 +681,20 @@ public class STabbedPane
     }
 
     /**
+     * Sets the style at <i>index</i> to <i>style</i>
+     * which can be null, in which case the tab's style
+     * will default to the style of this tabbedpane.
+     * An internal exception is raised if there is no tab at that index.
+     * @param index the tab index where the style should be set
+     * @param foreground the style to be used as the tab's style
+     *
+     * @see #getStyleAt
+     */
+    public void setStyleAt(int index, Style style) {
+        getPageAt(index).setStyle(style);
+    }
+
+    /**
      * Sets whether or not the tab at <i>index</i> is enabled.
      * An internal exception is raised if there is no tab at that index.
      * @param index the tab index which should be enabled/disabled
@@ -716,7 +755,7 @@ public class STabbedPane
 
     private void removePageAt(int i) {
         Page p = getPageAt(i);
-        p.removed();
+        group.remove(p.button);
         pages.remove(i);
         contents.removeComponent(p.component);
     }
@@ -727,20 +766,25 @@ public class STabbedPane
      */
     protected void updateButtons() {
         buttons.removeAll();
+        group.removeAll();
         for ( int i=0; i<getTabCount(); i++ ) {
             if ( i > 0 ) {
                 SLabel spacer = new SLabel(" | ");
+                spacer.setStyle(null);
                 buttons.add(spacer);
             }
 
             if ( maxTabsPerLine>0 ) {
                 if ( (i+1)%maxTabsPerLine==0 ) {
-                    buttons.add(new SLabel("<br />"));
+                    SLabel breaker = new SLabel("<br />");
+                    breaker.setStyle(null);
+                    buttons.add(breaker);
                 }
             }
 
             Page p = getPageAt(i);
             buttons.add(p.button);
+            group.add(p.button);
         }
     }
 
@@ -759,6 +803,17 @@ public class STabbedPane
      * @param e
      */
     public void actionPerformed(ActionEvent e) {
+        System.err.println("actionPerformed");
+        SCheckBox checkbox = group.getSelection();
+        for (int i=0; i < getTabCount(); i++) {
+            Page page = getPageAt(i);
+            if (checkbox == page.button) {
+                setSelectedIndex(i);
+                fireStateChanged();
+                return;
+            }
+        }
+        /*
         int oldIndex = getSelectedIndex();
         // System.out.println("EVENT " +  e);
         for ( int i=0; i<getTabCount(); i++ ) {
@@ -774,18 +829,19 @@ public class STabbedPane
                 return;
             }
         }
+        */
     }
-
 
     private class Page {
         String title;
         Color background;
         Color foreground;
+        Style style;
         Icon icon;
         Icon disabledIcon;
         STabbedPane parent;
         SComponent component;
-        SButton button;
+        SRadioButton button;
         String tip;
         boolean enabled = true;
 
@@ -798,10 +854,13 @@ public class STabbedPane
             this.component = component;
             this.tip = tip;
 
-            button = new SButton(title);
+            button = new SRadioButton(title);
             button.setShowAsFormComponent(false);
+            button.setSelectedIcon((Icon)null);
+            button.setDisabledSelectedIcon((Icon)null);
+            button.setIcon((Icon)null);
+            button.setDisabledIcon((Icon)null);
             button.setNoBreak(true);
-            button.addActionListener(parent);
         }
 
         /**
@@ -810,7 +869,7 @@ public class STabbedPane
          * @return
          */
         public Color getBackground() {
-            return background != null? background : parent.getBackground();
+            return ((background != null) ? background : parent.getBackground());
         }
 
         /**
@@ -821,14 +880,13 @@ public class STabbedPane
         public void setBackground(Color c) {
             background = c;
         }
-
         /**
          * TODO: documentation
          *
          * @return
          */
         public Color getForeground() {
-            return (foreground != null) ? foreground : parent.getForeground();
+            return ((foreground != null) ? foreground : parent.getForeground());
         }
 
         /**
@@ -838,6 +896,24 @@ public class STabbedPane
          */
         public void setForeground(Color c) {
             foreground = c;
+        }
+
+        /**
+         * TODO: documentation
+         *
+         * @return
+         */
+        public Style getStyle() {
+            return ((style != null) ? style : parent.getStyle());
+        }
+
+        /**
+         * TODO: documentation
+         *
+         * @param c
+         */
+        public void setStyle(Style s) {
+            style = s;
         }
 
         /**
@@ -876,15 +952,22 @@ public class STabbedPane
         public void setVisible(boolean b) {
             parent.setVisible(b);
         }
+    }
 
-        /**
-         * TODO: documentation
-         *
-         */
-        public void removed() {
-            if ( button != null )
-                button.removeActionListener(parent);
-        }
+    /**
+     * Returns the name of the CGFactory class that generates the
+     * look and feel for this component.
+     *
+     * @return "TabbedPaneCG"
+     * @see SComponent#getCGClassID
+     * @see CGDefaults#getCG
+     */
+    public String getCGClassID() {
+        return cgClassID;
+    }
+
+    public void setCG(TabbedPaneCG cg) {
+        super.setCG(cg);
     }
 }
 

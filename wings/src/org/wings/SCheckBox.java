@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.Icon;
 
 import org.wings.plaf.*;
+import org.wings.style.*;
 import org.wings.io.Device;
 
 /*
@@ -81,6 +82,16 @@ public class SCheckBox extends SButton
     /**
      * TODO: documentation
      */
+    protected String selectedStyle = null;
+
+    /**
+     * TODO: documentation
+     */
+    protected Style disabledSelectedStyle = null;
+
+    /**
+     * TODO: documentation
+     */
     protected Icon backupIcon = null;
 
     /**
@@ -97,6 +108,16 @@ public class SCheckBox extends SButton
      * TODO: documentation
      */
     protected String backupDisabledIconAdr = null;
+
+    /**
+     * TODO: documentation
+     */
+    protected Style backupStyle = null;
+
+    /**
+     * TODO: documentation
+     */
+    protected Style backupDisabledStyle = null;
 
 
     private static ResourceImageIcon DEFAULT_SELECTED_ICON =

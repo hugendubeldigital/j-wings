@@ -115,7 +115,23 @@ public final class ServletDevice
      * Print a character.
      */
     public Device print (char c) throws IOException {
-        out.print (c);
+        out.print(c);
+        return this;
+    }
+
+    /**
+     * Print an array of chars.
+     */
+    public Device print (char[] c) throws IOException {
+        return print(c, 0, c.length-1);
+    }
+
+    /**
+     * Print a character array.
+     */
+    public Device print (char[] c, int start, int end) throws IOException {
+        for (int i=start; i <= end; i++)
+            out.print(c[i]);
         return this;
     }
 

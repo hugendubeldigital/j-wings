@@ -48,6 +48,16 @@ public interface Device
     Device print (char c)   throws IOException;
 
     /**
+     * Print a character array.
+     */
+    Device print (char[] c) throws IOException;
+
+    /**
+     * Print a character array.
+     */
+    Device print (char[] c, int start, int end) throws IOException;
+
+    /**
      * Print an integer.
      */
     Device print (int i)    throws IOException;

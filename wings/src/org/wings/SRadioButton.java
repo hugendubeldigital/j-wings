@@ -90,7 +90,6 @@ public class SRadioButton
         setDisabledSelectedIcon(DEFAULT_DISABLED_SELECTED_ICON);
         setIcon(DEFAULT_NOT_SELECTED_ICON);
         setDisabledIcon(DEFAULT_DISABLED_NOT_SELECTED_ICON);
-
     }
 
     /**

@@ -113,7 +113,6 @@ public class ListCG implements org.wings.plaf.ListCG
 
         if (model != null) {
             SListCellRenderer cellRenderer = list.getCellRenderer();
-            SCellRendererPane rendererPane = list.getCellRendererPane();
 
             for (int i=0; i < size; i++) {
                 Object o = model.getElementAt(i);
@@ -127,11 +126,35 @@ public class ListCG implements org.wings.plaf.ListCG
 
                 SComponent renderer
                     = cellRenderer.getListCellRendererComponent(list, o, false, i);
-                rendererPane.writeComponent(d, renderer, list);
+
+                StringBufferDevice device = getStringBufferDevice();
+                renderer.write(device);
+                char[] chars = device.toString().toCharArray();
+                int pos = 0;
+                for (int c=0; c < chars.length; c++) {
+                    switch (chars[c]) {
+                    case '<':
+                        if (c > pos)
+                            d.print(chars, pos, c - 1);
+                        break;
+                    case '>':
+                        pos = c+1;
+                    }
+                }
+                if (chars.length > pos)
+                    d.print(chars, pos, chars.length - 1);
 
                 d.append("</option>\n");
             }
         }
+    }
+
+    private StringBufferDevice stringBufferDevice = null;
+    protected StringBufferDevice getStringBufferDevice() {
+        if (stringBufferDevice == null)
+            stringBufferDevice = new StringBufferDevice();
+        stringBufferDevice.reset();
+        return stringBufferDevice;
     }
 
     protected void writeFormPostfix(Device d, SList list)

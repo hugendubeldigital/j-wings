@@ -52,11 +52,16 @@ public final class StringBufferDevice
     /**
      * Flush this Stream.
      */
-    public void flush () {
+    public void flush() {
         if (byteStream != null) {
             buffer.append (byteStream.toString());
             byteStream = null;
         }
+    }
+
+    public void reset() {
+        flush();
+        buffer.setLength(0);
     }
 
     private OutputStream getStream() {
@@ -81,6 +86,24 @@ public final class StringBufferDevice
     public Device print (char c) {
         if (byteStream != null) flush();
         buffer.append (c);
+        return this;
+    }
+
+    /**
+     * Print a character array.
+     */
+    public Device print (char[] c) throws IOException {
+        if (byteStream != null) flush();
+        buffer.append (c);
+        return this;
+    }
+
+    /**
+     * Print a character array.
+     */
+    public Device print (char[] c, int start, int end) throws IOException {
+        if (byteStream != null) flush();
+        buffer.append(c, start, end);
         return this;
     }
 
