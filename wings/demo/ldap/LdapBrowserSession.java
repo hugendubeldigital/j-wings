@@ -1,25 +1,19 @@
 package ldap;
 
 import java.awt.Color;
+import java.awt.Insets;
 import java.awt.event.*;
 import java.io.*;
+import java.text.*;
 import java.util.*;
-import java.util.HashMap;
-import java.util.AbstractSet;
-
 
 import javax.naming.*;
 import javax.naming.directory.*;
-
-
 import javax.servlet.*;
 import javax.servlet.http.*;
-
 import javax.swing.*;
 import javax.swing.event.*; 
 import javax.swing.table.*;
-import java.awt.Insets;
-
 
 import org.wings.*;
 import org.wings.io.Device;
@@ -31,312 +25,254 @@ import org.wings.util.*;
 
 public class LdapBrowserSession 
     extends SessionServlet
-    implements SConstants,
-	       ListSelectionListener,
-	       ActionListener
+    implements SConstants
 {
-    private final static String NOT_CONNECTED = "not connected";
-    private final static String [] attributes = {"mail","cn"}; 
-    private Hashtable viewAttributes;
+    private DirContext context;
 
-    private LdapWorker worker = null;
+    private String[] overviewAttributes;
+    private String[] overviewLabels;
+    private String[] detailviewAttributes;
+    private String[] detailviewLabels;
 
-    private SPanel tableForm;
+    private String searchLabel;
+    private String searchAttribute;
+
     private String server;
-    private String baseDN;
-    private String bindDN ;
-    private String password ;
-    private String peopleName;
-    ArrayList selList = new ArrayList();
-    int count = 0;
-    SButton submit;
-    STable peopleTable;
-    HashMap peopleDN;
-    SPanel viewPanel;
-    SForm searchForm;
-    STextField searchField;
-    SLabel searchLabel;
-    SButton searchButton;
-    String filter = "(cn=*)";
-    SButton back;
+    private String basedn;
+    private String binddn;
+    private String password;
+
+    private SDesktopPane desktop;
+    private SInternalFrame searchFrame;
+    private SInternalFrame detailFrame;
+
+    private STextField searchTextField;
+    private STable table;
+    private SPanel detailPanel;
+
+    private OverviewModel overviewModel;
 
     public LdapBrowserSession(Session session) {
-	
 	super(session);
-        System.out.println("I`m starting now");
-	
+        System.out.println("launching session for ldap browser");
     }
 
     public void postInit(ServletConfig config) {
+	PropertyService properties = (PropertyService)getSession();
+	StringTokenizer attributes, labels;
+	int i;
+
+	server = properties.getProperty("ldap.server.host");
+	basedn = properties.getProperty("ldap.server.basedn");
+	binddn = properties.getProperty("ldap.server.binddn");
+	password = properties.getProperty("ldap.server.password");
+
+	Hashtable env = new Hashtable();
+	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+	env.put(Context.PROVIDER_URL, "ldap://" + server);
+	env.put(Context.SECURITY_PRINCIPAL, binddn);
+	env.put(Context.SECURITY_CREDENTIALS, password);
+
+	try {
+	    context = new InitialDirContext(env);
+	}
+	catch(NamingException e) {
+	    System.err.println(e.getMessage());
+	    e.printStackTrace(System.err);
+	}
+
+	attributes = new StringTokenizer(properties.getProperty("overview.attributes"), ",");
+	labels = new StringTokenizer(properties.getProperty("overview.labels"), ",");
+	overviewAttributes = new String[attributes.countTokens()];
+	overviewLabels = new String[labels.countTokens()];
+	i = 0;
+	while (attributes.hasMoreTokens()) {
+	    overviewAttributes[i] = attributes.nextToken();
+	    overviewLabels[i] = labels.nextToken();
+	    i++;
+	}
+
+	attributes = new StringTokenizer(properties.getProperty("detailview.attributes"), ",");
+	labels = new StringTokenizer(properties.getProperty("detailview.labels"), ",");
+	detailviewAttributes = new String[attributes.countTokens()];
+	detailviewLabels = new String[labels.countTokens()];
+	i = 0;
+	while (attributes.hasMoreTokens()) {
+	    detailviewAttributes[i] = attributes.nextToken();
+	    detailviewLabels[i] = labels.nextToken();
+	    i++;
+	}
+
+	this.searchAttribute = properties.getProperty("search.attribute");
+	this.searchLabel = properties.getProperty("search.label");
+
         initGUI();
     }
 
     void initGUI() {
+	desktop = new SDesktopPane();
+	getFrame().getContentPane().add(desktop);
 
-	viewAttributes = new Hashtable();
-	viewAttributes.put("cn","Name");
-	viewAttributes.put("title","Titel");
-	viewAttributes.put("mail","e-mail");
-	viewAttributes.put("jpegPhoto", "Foto");
-	viewAttributes.put("telephoneNumber","Telefon");
-	viewAttributes.put("l","Standort");
-	//connection ohne dialog
-	System.out.println("host" + ((PropertyService)getSession()).getProperty("ldap.server.host"));
-	this.server = ((PropertyService)getSession()).getProperty("ldap.server.host");
-	this.baseDN = ((PropertyService)getSession()).getProperty("ldap.server.basedn");
-	this.bindDN = ((PropertyService)getSession()).getProperty("ldap.server.binddn");
-	this.password = ((PropertyService)getSession()).getProperty("ldap.server.password");
-	this.peopleName = ((PropertyService)getSession()).getProperty("ldap.server.peoplename");
-       
-		
-	worker = new LdapWorker(server,
-				baseDN,
-				bindDN,
-				password);
-	
-	boolean success = worker.getSuccess();
-	if (!success) {
-	    System.out.println("no connection");
-	}
-	else {
-	    setLdapWorker(worker);
-	}
+	searchFrame = new SInternalFrame();
+	desktop.add(searchFrame);
 
-	getFrame().getContentPane().setLayout(new SFlowDownLayout());
-	
-		
-	searchForm = new SForm(new SFlowDownLayout());
-	searchForm.setBorder(new SLineBorder());
-	tableForm = new SPanel(new SFlowDownLayout());
-		
-	submit = new SButton("submit");
-	submit.addActionListener(this);
+	detailFrame = new SInternalFrame();
+	desktop.add(detailFrame);
 
-	back = new SButton("back");
-	back.setVisible(false);
-	back.addActionListener(this);
-	
-	viewPanel = new SPanel(new SGridLayout(2));
-	
-	searchLabel = new SLabel("name");
-		
-	searchField = new STextField("");
+	SForm searchForm = new SForm(new SFlowLayout());
+	searchForm.setBorder(new SBevelBorder());
 
-	searchButton = new SButton("search");
-	searchButton.addActionListener(this);
-	
-	searchForm.add(searchLabel);
-	searchForm.add(searchField);
-	searchForm.add(searchButton);
+	SLabel label = new SLabel(searchLabel);
+	searchTextField = new STextField();
 
-	tableForm.add(back);
-	
-	getFrame().getContentPane().add(searchForm);
-	getFrame().getContentPane().add(tableForm);	
-	getFrame().getContentPane().add(viewPanel);
-    }
+	SButton submit = new SButton("submit");
+	submit.addActionListener(new SearchAction());
 
-    
-    public void actionPerformed(ActionEvent evt) {
-	System.out.println ("source ist " + evt.getSource().toString());
-	
-	if((SButton)evt.getSource() == back) {
-	    back.setVisible(false);
-	    peopleTable.setVisible(true);
-	    searchForm.setVisible(true);
-	    viewPanel.removeAll();
-	}
-		
-	if ((SButton)evt.getSource() == searchButton) {
-	    System.out.println("filter is... " + filter);
-	    setFilter("(cn=" + searchField.getText() + "*)");
-	    tableForm.remove(peopleTable);
-	    viewPanel.removeAll();
-	    peopleTable = new STable(new LdapTableModel());
-	    peopleTable.setBorderLines(new Insets(2,2,2,2));
-	    //[REMARK]
-	    SelectableTableCellRenderer renderer = new SelectableTableCellRenderer();
-	    renderer.setSelectableColumns(new int[] {0});
-	    renderer.addCellSelectionListener(new CellSelectionListener() {
-		    public void cellSelected(CellSelectionEvent e) {
-			System.out.println("Cell at position x="+e.getXPosition()+" y="+e.getYPosition());
-			
-			peopleDN = getLdapWorker().getAttributeDNValues(peopleName,baseDN);
-			
-			LdapTableModel model = (LdapTableModel)peopleTable.getModel();
-			String value = (String)model.getValueAt(e.getXPosition(),0);
-			System.out.println("value is" + value);
-			String dn = (String)peopleDN.get(value);
-			viewPanel.removeAll();
-			peopleTable.setVisible(false);
-			searchForm.setVisible(false);
-			back.setVisible(true);
-			
-			BasicAttributes attrs = (BasicAttributes)getLdapWorker().getDNAttributes(dn + "," + baseDN);
-			try {
-				NamingEnumeration en = attrs.getAll();
-				while (en!=null && en.hasMoreElements()) {
-				    BasicAttribute attr = (BasicAttribute)en.nextElement();
-				    String label = attr.getID();
-				    if (viewAttributes.containsKey(label)) {
-					NamingEnumeration aValues = attr.getAll();
-					while (aValues!=null && aValues.hasMore()) {
-					    Object i = aValues.next();
-					    if (i.getClass().getName().equals("java.lang.String")) {
-						String values = "";
-						if(!values.equals("")) {
-						    values = values + "," + i;
-						}
-						else {
-						    values = (String)i;
-						}
-						viewPanel.add(new SLabel((String)viewAttributes.get(label) + "     "));
-						viewPanel.add(new SLabel(values));
-					    }
-					    if (i.getClass().getName().equals("[B")) {
-						if (label.equals("jpegPhoto")) {
-						    viewPanel.add(new SLabel((String)viewAttributes.get(label)));
-						    viewPanel.add(new SLabel(new ImageIcon((byte [])i)));
-						}
-						if (label.equals("userPassword")) {
-						    SLabel attrLabel = new SLabel((String)viewAttributes.get(label));
-						    STextField attrField = new STextField(i.toString());
-						    viewPanel.add(new SLabel(label));
-						    viewPanel.add(new SLabel("*******"));
-						}
-					    }
-					}
-				    }
-				}
-				
-			    }
-			    catch (NamingException exc){
-				System.out.println(exc);
-			    }
-			    viewPanel.setVisible(true);
-		    }
-		});
-	    peopleTable.setDefaultRenderer(renderer);
-	    tableForm.add(peopleTable);
-	}
-    }
+	searchForm.add(label);
+	searchForm.add(searchTextField);
+	searchForm.add(submit);
 
-    private void setFilter(String f) {
-	filter = f;
-    }
+	searchFrame.getContentPane().add(searchForm, "North");
 
-    public String getFilter() {
-	return filter;
-    }
-
-    private void setLdapWorker(LdapWorker worker) {
-	this.worker = worker;
-    }
-    
-    public LdapWorker getLdapWorker() {
-	return worker;
-    }
-    
-    public String getServletInfo() {
-        return "LdapBrowser $Revision$";
-    }
-
-    class LdapTableModel extends AbstractTableModel {
-
-
-	final String[] columnNames = {"cn","mail","telephoneNumber"};
-	final int COLS = columnNames.length;
-	int ROWS ;
-	Object[][] data;
-	ArrayList dnList;
-
-	LdapTableModel() {
-	    dnList = getLdapWorker().getFilteredAllDN(baseDN,getFilter());
-	    ROWS = dnList.size();
-	    int i = 0 ;
-	    data = new Object[ROWS][COLS];
-	    if (ROWS > 0) {
-		for (int c=0; c < COLS; c++) {
-		for (int r=0; r < ROWS; r++) {
-		    if (getLdapWorker()!=null)
-    	        data[r][c] = (String)getLdapWorker().getOAttributeValues((String)dnList.get(r) + "," + baseDN , columnNames[c]);
+	overviewModel = new OverviewModel();
+	table = new STable(overviewModel);
+	table.setBorderLines(new Insets(2,2,2,2));
+	AttributesCellRenderer renderer = new AttributesCellRenderer();
+	renderer.setSelectableColumns(new int[] { 0 });
+	renderer.addCellSelectionListener(new CellSelectionListener() {
+		public void cellSelected(CellSelectionEvent e) {
+		    System.out.println("select: x=" + e.getXPosition() + ", y=" + e.getYPosition());
+		    showDetails(overviewModel.get(e.getYPosition()));
 		}
+	    });
+	table.setDefaultRenderer(Attribute.class, renderer);
+
+	searchFrame.getContentPane().add(table);
+
+	detailPanel = new SPanel(new SGridLayout(2));
+	detailFrame.getContentPane().add(detailPanel, "Center");
+
+	SButton backButton = new SButton("ok");
+	backButton.addActionListener(new BackAction());
+	detailFrame.getContentPane().add(backButton, "South");
+
+	searchFrame.show();
+    }
+
+    protected void showDetails(Attributes attributes) {
+	System.err.println("show detailFrame");
+	detailPanel.removeAll();
+
+	for (int i=0; i < detailviewAttributes.length; i++) {
+	    try {
+		Attribute attribute = attributes.get(detailviewAttributes[i]);
+		detailPanel.add(new SLabel(detailviewLabels[i]));
+
+		if (attribute.get().getClass().getName().equals("[B")) {
+		    if (attribute.getID().equals("jpegPhoto")) {
+			ImageIcon icon = new ImageIcon((byte[])attribute.get());
+			detailPanel.add(new SLabel(icon));
+		    }
+		    else if (attribute.getID().equals("userPassword")) {
+			detailPanel.add(new SLabel("-"));
+		    }
+		}
+		else {
+		    StringBuffer buffer = new StringBuffer();
+
+		    for (int i2=0; i2 < attribute.size(); i2++) {
+			if (i2 > 0)
+			    buffer.append(", ");
+			buffer.append(attribute.get(i2).toString());
+		    }
+
+		    detailPanel.add(new SLabel(buffer.toString()));
 		}
 	    }
-	    else
-		System.out.println("mist");
+	    catch (NullPointerException e) {
+		detailPanel.add(new SLabel("-"));
+	    }
+	    catch (NamingException e) {
+		detailPanel.add(new SLabel(e.getMessage()));
+	    }
+	}
+
+	detailFrame.show();
+    }
+
+    class SearchAction
+	extends AbstractAction
+    {
+	public void actionPerformed(ActionEvent evt) {
+	    String filter = "(" + searchAttribute + "=*" + searchTextField.getText() + "*)";
+	    System.out.println("filter: " + filter);
+	    overviewModel.setFilter(filter);
+	}
+    }
+
+    class BackAction
+	extends AbstractAction
+    {
+	public void actionPerformed(ActionEvent evt) {
+	    searchFrame.show();
+	}
+    }
+
+
+    class OverviewModel
+	extends AbstractTableModel
+    {
+	private String filter = null;
+	private List data = new LinkedList();
+
+	public void setFilter(String filter) {
+	    this.filter = filter;
+	    populateModel();
+	}
+
+	protected void populateModel() {
+	    try {
+		data.clear();
+		NamingEnumeration enum = context.search(basedn, filter, new SearchControls());
+		while (enum.hasMore()) {
+		    SearchResult searchResult = (SearchResult)enum.next();
+		    data.add(searchResult.getAttributes());
+		}
+		enum.close();
+	    }
+	    catch (NamingException e) {
+		System.err.println(e.getMessage());
+		e.printStackTrace(System.err);
+	    }
 	}
 
 	public int getRowCount() {
-	    return ROWS;
+	    return data.size();
 	}
 
 	public int getColumnCount() {
-	    return COLS;
+	    return overviewAttributes.length;
+	}
+
+	public Class getColumnClass(int columnIndex) {
+	    return Attribute.class;
 	}
 
 	public Object getValueAt(int row, int column) {
-	    return data[row][column];
+	    Attributes attributes = (Attributes)data.get(row);
+	    return attributes.get(overviewAttributes[column]);
+	}
+
+	public Attributes get(int row) {
+	    return (Attributes)data.get(row);
 	}
 
 	public String getColumnName(int column) {
-	    return (String)viewAttributes.get(columnNames[column]);
+	    return overviewLabels[column];
 	}
-
     }
 
-
-
-    public void valueChanged(ListSelectionEvent e) {
-
-	peopleDN = getLdapWorker().getAttributeDNValues(peopleName,baseDN);
-	if (e.getSource() == peopleTable) {
-	    int row = peopleTable.getSelectedRow();
-	    LdapTableModel model = (LdapTableModel)peopleTable.getModel();
-	    String value = (String)model.getValueAt(row,0);
-	    String dn = (String)peopleDN.get(value);
-	    viewPanel.removeAll();
-
-	    BasicAttributes attrs = (BasicAttributes)getLdapWorker().getDNAttributes(dn + "," + baseDN);
-		try {
-		    NamingEnumeration en = attrs.getAll();
-		    while (en!=null && en.hasMoreElements()) {
-			BasicAttribute attr = (BasicAttribute)en.nextElement();
-			String label = attr.getID();
-			if (viewAttributes.containsKey(label)) {
-			    NamingEnumeration aValues = attr.getAll();
-			    while (aValues!=null && aValues.hasMore()) {
-				Object i = aValues.next();
-				if (i.getClass().getName().equals("java.lang.String")) {
-				    String values = "";
-				    if(!values.equals("")) {
-					values = values + "," + i;
-				    }
-				    else {
-					values = (String)i;
-				    }
-				    viewPanel.add(new SLabel((String)viewAttributes.get(label) + "     "));
-				    viewPanel.add(new SLabel(values));
-				}
-				if (i.getClass().getName().equals("[B")) {
-				    if (label.equals("jpegPhoto")) {
-					viewPanel.add(new SLabel((String)viewAttributes.get(label)));
-					viewPanel.add(new SLabel(new ImageIcon((byte [])i)));
-				    }
-				    if (label.equals("userPassword")) {
-					SLabel attrLabel = new SLabel((String)viewAttributes.get(label));
-					STextField attrField = new STextField(i.toString());
-					viewPanel.add(new SLabel(label));
-					viewPanel.add(new SLabel("*******"));
-				    }
-				}
-			    }
-			}
-		    }
-		}
-		catch (NamingException exc){
-		    System.out.println(exc);
-		}
-	}
+    public String getServletInfo() {
+        return "LdapBrowser $Revision$";
     }
 }
