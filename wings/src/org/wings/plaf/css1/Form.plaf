@@ -5,13 +5,18 @@
   if (component.isPostMethod()) { %>post<% } else { %>get<% }
   %>"<%
 
-   final String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
-   if (style != null) {
-       %><span class="<%=style%>"><%
-   }
+    // quick hack: we either render the style or the attributes, if set.
+   final String style = ((component.getStyle() != null) 
+			 ? component.getStyle().getName() 
+			 : null);
+   final String attr = ((component.getAttributes().size() > 0)
+			? ("_" + component.getUnifiedId()) 
+			: style);
+
+   %><%|class=attr%><%
    %><%|enctype=component.getEncodingType()%><%
    %><%|action=component.getRequestURL()%><%
-   %><input type="hidden" name="<%?namePrefix%>" \
+   %>><input type="hidden" name="<%?namePrefix%>" \
 value="<%?unifiedId%><%=org.wings.SConstants.UID_DIVIDER%>" /><%
    Utils.renderContainer(device, component);
    %></form><%
