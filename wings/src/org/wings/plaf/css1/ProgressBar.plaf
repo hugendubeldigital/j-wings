@@ -23,11 +23,11 @@ private static final SIcon BLIND_ICON = new ResourceImageIcon("org/wings/icons/b
     %><table border="0" cellpadding="0" cellspacing="0"><%
     %><tr><%
         %><td<%|bgcolor=component.getFilledColor()%>><%
-            %><img<%|src=BLIND_ICON.getURL()%><%|width=(int)(width*component.getPercentComplete())%><%
-                %><%|height=size.getIntHeight()%>></td><%
+            %><img<%|src=BLIND_ICON.getURL()%> width="<%=(int)(width*component.getPercentComplete())%>"<%
+                %> height="<%=size.getIntHeight()%>"></td><%
         %><td<%|bgcolor=component.getUnfilledColor()%>><%
-            %><img<%|src=BLIND_ICON.getURL()%><%|width=(int)(width*(1-component.getPercentComplete()))%><%
-                %><%|height=size.getIntHeight()%>><%
+            %><img<%|src=BLIND_ICON.getURL()%> width="<%=(int)(width*(1-component.getPercentComplete()))%>"<%
+                %> height="<%=size.getIntHeight()%>"><%
         %></td><%
     %></tr><%
     %></table><%
