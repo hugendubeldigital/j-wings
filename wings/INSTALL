@@ -6,6 +6,7 @@ wingS demo installation with JServ and Apache under Linux
 1) compile it (this step is only required if you download wingS via CVS)
    - customize Environment.sh
    - source Environment.sh
+   - make
    - make jar
 
 2) edit <path_to_wings>/demo/zone.properties
