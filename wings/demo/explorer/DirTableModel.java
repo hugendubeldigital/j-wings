@@ -20,6 +20,8 @@ import java.text.*;
 
 import javax.swing.event.*;
 import javax.swing.table.*;
+import javax.swing.Icon;
+import org.wings.ResourceImageIcon;
 
 /**
  * TODO: documentation
@@ -30,6 +32,12 @@ import javax.swing.table.*;
 public class DirTableModel
     extends AbstractTableModel
 {
+    final static Icon DIR_ICON =
+        new ResourceImageIcon(DirTableModel.class, "/explorer/Directory.gif");
+
+    final static Icon FILE_ICON =
+        new ResourceImageIcon(DirTableModel.class, "/explorer/File.gif");
+
     private static FilenameFilter DEFAULT_FILENAMEFILTER =
         new FilenameFilter() {
             public boolean accept(File d, String name) {
@@ -41,7 +49,8 @@ public class DirTableModel
 
     private FilenameFilter filenameFilter = DEFAULT_FILENAMEFILTER;
 
-    private String[] filenames = {};
+    private String[]  filenames = {};
+    private boolean[] dirType = {};
 
     private final HashMap filenameCache = new HashMap();
 
@@ -59,10 +68,12 @@ public class DirTableModel
     public String getColumnName(int column) {
         switch(column) {
         case 0:
-            return "Name";
+            return "";
         case 1:
-            return "Modified";
+            return "Name";
         case 2:
+            return "Modified";
+        case 3:
             return "Size";
         }
 
@@ -70,7 +81,7 @@ public class DirTableModel
     }
 
     public boolean isCellEditable(int row, int column) {
-        if (column == 0)
+        if (column == 1)
             return true;
         else
             return false;
@@ -88,6 +99,11 @@ public class DirTableModel
             
             directory = d;
             filenames = directory.list(filenameFilter);
+            dirType = new boolean[filenames.length];
+            for (int i=0; i < filenames.length; ++i) {
+                // I hate generating objects like this..
+                dirType[i] = (new File(d, filenames[i])).isDirectory();
+            }
         }
 
         fireTableStructureChanged();
@@ -101,10 +117,12 @@ public class DirTableModel
 
         switch ( col ) {
         case 0:
-            return filenames[row];
+            return dirType[row] ? DIR_ICON : FILE_ICON;
         case 1:
-            return new Date(getFile(filenames[row]).lastModified());
+            return filenames[row];
         case 2:
+            return new Date(getFile(filenames[row]).lastModified());
+        case 3:
             return new Long(getFile(filenames[row]).length());
         }
 
@@ -112,7 +130,7 @@ public class DirTableModel
     }
 
     public void setValueAt(Object aValue, int row, int column) {
-        if (column == 0) {
+        if (column == 1) {
             setFileName(row, (String)aValue);
 
             fireTableChanged(new TableModelEvent(this, row, row, column));
@@ -153,14 +171,16 @@ public class DirTableModel
     }
 
     public int getColumnCount() {
-        return 3;
+        return 4;
     }
 
     public Class getColumnClass(int col) {
         switch ( col ) {
-        case 1:
-            return Date.class;
+        case 0:
+            return Icon.class;
         case 2:
+            return Date.class;
+        case 3:
             return Long.class;
         default:
             return String.class;
