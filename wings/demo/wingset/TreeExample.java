@@ -300,7 +300,7 @@ public class TreeExample
         style.add(new DefaultMutableTreeNode("No. 2 - D Minor"));
         style.add(new DefaultMutableTreeNode("No. 3 - F Major"));
         style.add(new DefaultMutableTreeNode("No. 4 - E Minor"));
-        /*
+
         // Mozart
         catagory.add(composer = new DefaultMutableTreeNode("Mozart"));
         composer.add(style = new DefaultMutableTreeNode("Concertos"));
@@ -847,7 +847,7 @@ public class TreeExample
         album.add(new DefaultMutableTreeNode("Come On In My Kitchen"));
         album.add(new DefaultMutableTreeNode("Evil"));
         album.add(new DefaultMutableTreeNode("Something To Believe In"));
-        */
+
         return top;
     }
 }
