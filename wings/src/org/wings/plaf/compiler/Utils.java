@@ -114,6 +114,7 @@ public final class Utils implements SConstants {
     }
 
     public static void writeRaw(Device d, String s) throws IOException {
+        if (s == null) return;
         d.print(s);
     }
 
@@ -295,6 +296,7 @@ public final class Utils implements SConstants {
      * writes anything Renderable
      */
     public static void write(Device d, Renderable r) throws IOException {
+        if (r == null) return;
         r.write(d);
     }
 
