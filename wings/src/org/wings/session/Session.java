@@ -90,6 +90,16 @@ public interface Session
      * create a id unique to the session
      */
     public String createUniqueId();
+
+    /**
+     * The maximal length of data that is accepted in one POST request.
+     * Data can be this big, if your application provides a capability
+     * to upload a file (SFileChooser). This constant limits the maximum
+     * size that is accepted to avoid denial of service attacks.
+     */
+    int getMaxContentLength();
+
+    void setMaxContentLength(int l);
 }
 
 /*
@@ -99,3 +109,8 @@ public interface Session
  * compile-command: "ant -emacs -find build.xml"
  * End:
  */
+
+
+
+
+

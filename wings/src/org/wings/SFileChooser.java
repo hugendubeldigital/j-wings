@@ -15,6 +15,7 @@ package org.wings;
 
 import java.io.File;
 import java.io.FilterOutputStream;
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.logging.*;
 
@@ -46,6 +47,19 @@ import org.wings.io.Device;
  * <p>The form, you add this FileChooser needs to have the encoding type
  * <code>multipart/form-data</code> set 
  * (form.setEncodingType("multipart/form-data")).
+ *
+ * <p>Notifies the form if something has gone wrong with uploading a file. Szenario:
+ * a file is to big to upload, the filechooser got that information from the
+ * request dispatcher. But this is the only request the dispatcher forwards,
+ * so nothing will happen, because most developers do their work on an action
+ * of the form. So the filechooser notifies that form, that a request was
+ * sent. After that the attempt to get a file from the filechooser throws
+ * an IOException and the circle is closed. The problem is to provide a
+ * mechanism to notify the contolling component (e.g. a submit button). The
+ * only way to do this, is to use SForm as control component. This is the
+ * way a developer should work with forms, don't use SButton as control
+ * component. 
+ *
  * @author <a href="mailto:HEngels@mercatis.de">Holger Engels</a>
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
@@ -69,10 +83,10 @@ public class SFileChooser
     protected String fileNameFilter = null;
 
     protected Class filter    = null;
-    protected String filedir  = null;
-    protected String filename = null;
-    protected String fileid   = null;
-    protected String filetype = null;
+    protected String fileDir  = null;
+    protected String fileName = null;
+    protected String fileId   = null;
+    protected String fileType = null;
 
     /**
      * the temporary file created on upload. This file is automatically
@@ -81,9 +95,39 @@ public class SFileChooser
     protected TempFile currentFile = null;
 
     /**
+     * the temporary file created on upload. This file is automatically
+     * removed if and when it is not accessible anymore.
+     */
+    protected IOException exception = null;
+
+    /**
      * Creates a new FileChooser. 
      */
     public SFileChooser() {}
+
+    /**
+     *
+     */
+    protected final SForm getParentForm() {
+        SComponent parent = getParent();
+
+        while ( parent!=null && !(parent instanceof SForm) ) {
+            parent = parent.getParent();
+        }
+
+        return (SForm)parent;
+    }
+
+    /**
+     * notifies the parent form, to fire action performed. This is necessary, if
+     * an exception in parsing a MultiPartRequest occurs, e.g. upload file is to big.
+     */
+    protected final void notifyParentForm() {
+        SForm form = getParentForm();
+
+        if ( form!=null )
+            SForm.addArmedComponent(form);
+    }
 
     /**
      * Set the visible amount of columns in the textfield.
@@ -148,13 +192,30 @@ public class SFileChooser
     }
 
     /**
+     * @deprecated use getFileName()
+     */
+    public String getFilename() throws IOException {
+        return getFileName();
+    }
+
+    /**
      * Returns the filename, that has been given by the user in the
      * upload text-field.
      *
      * @return the filename, given by the user.
      */
-    public String getFilename() {
-        return filename;
+    public String getFileName() throws IOException {
+        if ( exception!=null )
+            throw exception;
+
+        return fileName;
+    }
+
+    /**
+     * @deprecated use getFileDir()
+     */
+    public String getFiledir() throws IOException {
+        return getFileDir();
     }
 
     /**
@@ -165,8 +226,18 @@ public class SFileChooser
      *
      * @return the pathname of the system directory, the file is stored in.
      */
-    public String getFiledir() {
-        return filedir;
+    public String getFileDir() throws IOException {
+        if ( exception!=null )
+            throw exception;
+
+        return fileDir;
+    }
+
+    /**
+     * @deprecated use getFileId()
+     */
+    public String getFileid() throws IOException {
+        return getFileId();
     }
 
     /**
@@ -178,8 +249,18 @@ public class SFileChooser
      *
      * @return the internal, unique file id given to the uploaded file.
      */
-    public String getFileid() {
-        return fileid;
+    public String getFileId() throws IOException {
+        if ( exception!=null )
+            throw exception;
+
+        return fileId;
+    }
+
+    /**
+     * @deprecated use getFileType()
+     */
+    public String getFiletype() throws IOException {
+        return getFileType();
     }
 
     /**
@@ -187,8 +268,11 @@ public class SFileChooser
      *
      * @return the mime type of this file.
      */
-    public String getFiletype() {
-        return filetype;
+    public String getFileType() throws IOException {
+        if ( exception!=null )
+            throw exception;
+
+        return fileType;
     }
 
     /**
@@ -196,7 +280,7 @@ public class SFileChooser
      *
      * @return
      */
-    public File getSelectedFile() {
+    public File getSelectedFile() throws IOException {
         return getFile();
     }
 
@@ -207,8 +291,8 @@ public class SFileChooser
         if (currentFile != null) {
             currentFile.cleanup();
             currentFile = null;
-            fileid  = null;
-            filedir = null;
+            fileId  = null;
+            fileDir = null;
         }
     }
 
@@ -223,7 +307,10 @@ public class SFileChooser
      *
      * @return a File to access the content of the uploaded file.
      */
-    public File getFile() {
+    public File getFile() throws IOException {
+        if ( exception!=null )
+            throw exception;
+
         return currentFile;
     }
 
@@ -269,28 +356,39 @@ public class SFileChooser
 
     // -- Implementation of RequestListener
     public void processRequest(String action, String[] values) {
+        exception = null;
+
         String value = values[0];
-        try {
-            Hashtable params = HttpUtils.parseQueryString(value);
-            String[] arr;
-            arr = (String[])params.get("dir");
-            this.filedir = (arr != null)?arr[0]:null;
-            arr = (String[])params.get("name");
-            this.filename = (arr != null)?arr[0]:null;
-            arr = (String[])params.get("id");
-            this.fileid = (arr != null)?arr[0]:null;
-            arr = (String[])params.get("type");
-            this.filetype = (arr != null)?arr[0]:null;
-            if (filedir != null && fileid != null) {
-                currentFile = new TempFile(filedir, fileid);
+
+        if ( "exception".equals(value) ) {
+            exception = new IOException(values[1]);
+
+            notifyParentForm();
+        } else {
+            try {
+                Hashtable params = HttpUtils.parseQueryString(value);
+                String[] arr;
+                arr = (String[])params.get("dir");
+                this.fileDir = (arr != null)?arr[0]:null;
+                arr = (String[])params.get("name");
+                this.fileName = (arr != null)?arr[0]:null;
+                arr = (String[])params.get("id");
+                this.fileId = (arr != null)?arr[0]:null;
+                arr = (String[])params.get("type");
+                this.fileType = (arr != null)?arr[0]:null;
+                if (fileDir != null && fileId != null) {
+                    currentFile = new TempFile(fileDir, fileId);
+                }
+            }
+            catch ( Exception e ) {
+                logger.log(Level.SEVERE, null, e);
             }
         }
-        catch ( Exception e ) {
-            logger.log(Level.SEVERE, null, e);
-        }
     }
+
     public void fireIntermediateEvents() {
     }
+
     public void fireFinalEvents() {
     }
 

@@ -63,13 +63,8 @@ public abstract class WingServlet extends HttpServlet
     public static final boolean DEBUG = true;
 
     /**
-     * The maximal length of data that is accepted in one POST request.
-     * Data can be this big, if your application provides a capability
-     * to upload a file (SFileChooser). This constant limits the maximum
-     * size that is accepted to avoid denial of service attacks.
+     * used to init session servlets
      */
-    protected int maxContentLength = 64; // in kByte
-
     protected ServletConfig servletConfig = null;
 
     private String lookupName = "SessionServlet";
@@ -137,16 +132,6 @@ public abstract class WingServlet extends HttpServlet
             }
         }
 
-        String maxCL = config.getInitParameter("content.maxlength");
-        if (maxCL != null) {
-            try {
-                maxContentLength = Integer.parseInt(maxCL);
-            }
-            catch (NumberFormatException e) {
-                logger.fine("invalid content.maxlength: " + maxCL);
-                logger.throwing(SessionServlet.class.getName(), "init", e);
-            }
-        }
 
         servletConfig = config;
         postInit(config);
@@ -180,11 +165,7 @@ public abstract class WingServlet extends HttpServlet
     public final void doPost(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException
     {
-        SessionServlet sessionServlet = null;
-        HttpSession session = req.getSession(false);
-
-        if (session != null)
-            sessionServlet = (SessionServlet)session.getAttribute(lookupName);
+        SessionServlet sessionServlet = getSessionServlet(req, res);
 
         if (logger.isLoggable(Level.FINE))
             logger.fine((sessionServlet != null) ?
@@ -194,6 +175,7 @@ public abstract class WingServlet extends HttpServlet
         // Wrap with MultipartRequest which can handle multipart/form-data
         // (file - upload), otherwise behaves like normal HttpServletRequest
         try {
+            int maxContentLength = sessionServlet.getSession().getMaxContentLength();
             req = new MultipartRequest(req, maxContentLength * 1024);
         }
         catch (Exception e) {
@@ -204,10 +186,10 @@ public abstract class WingServlet extends HttpServlet
             if (req instanceof MultipartRequest) {
                 MultipartRequest multi = (MultipartRequest)req;
                 logger.finer("Files:");
-                Enumeration files = multi.getFileNames();
-                while (files.hasMoreElements()) {
-                    String name = (String)files.nextElement();
-                    String filename = multi.getFilename(name);
+                Iterator files = multi.getFileNames();
+                while (files.hasNext()) {
+                    String name = (String)files.next();
+                    String filename = multi.getFileName(name);
                     String type = multi.getContentType(name);
                     File f = multi.getFile(name);
                     logger.finer("name: " + name);

@@ -953,7 +953,8 @@ public class SList
                     if ( sel>=0 ) 
                         selection[sel] = true;
                 } catch (Exception e) {
-                System.err.println("Cannot parse expected integer");
+                System.err.println("Cannot parse expected integer \"" +
+                                   values[i] + "\"");
                 e.printStackTrace();
                 }
             }
@@ -969,7 +970,8 @@ public class SList
                     else
                         addSelectionInterval(sel, sel);
                 } catch (Exception e) {
-                System.err.println("Cannot parse expected integer");
+                System.err.println("Cannot parse expected integer \"" +
+                                   values[i] + "\"");
                 e.printStackTrace();
                 }
 

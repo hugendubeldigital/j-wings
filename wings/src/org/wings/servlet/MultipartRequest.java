@@ -55,8 +55,8 @@ public class MultipartRequest
     private int maxSize;
     private boolean urlencodedRequest;
 
-    private Hashtable parameters = new Hashtable();  // name - value
-    private Hashtable files = new Hashtable();       // name - UploadedFile
+    private final HashMap parameters = new HashMap();  // name - value
+    private final HashMap files = new HashMap();       // name - UploadedFile
 
     /**
      * @param request the servlet request
@@ -97,7 +97,18 @@ public class MultipartRequest
      */
     public Enumeration getParameterNames() {
         if (urlencodedRequest) return super.getParameterNames();
-        return parameters.keys();
+
+        final Iterator iter = parameters.keySet().iterator();
+        return new Enumeration() {
+                public boolean hasMoreElements() {
+                    return iter.hasNext();
+                }
+
+                public Object nextElement() {
+                    return iter.next();
+                }
+                
+            };
     }
 
     /**
@@ -108,8 +119,8 @@ public class MultipartRequest
      *
      * @return the names of all the uploaded files as an Enumeration of Strings
      */
-    public Enumeration getFileNames() {
-        return files.keys();
+    public Iterator getFileNames() {
+        return files.keySet().iterator();
     }
 
     /**
@@ -126,9 +137,9 @@ public class MultipartRequest
         if (urlencodedRequest)
             return super.getParameter(name);
         try {
-            Vector v = (Vector) parameters.get (name);
+            ArrayList v = (ArrayList) parameters.get (name);
             if (v == null) return null;
-            String param = (String) v.elementAt (0);
+            String param = (String) v.get (0);
             if (param == null || param.equals("")) return null;
             return param;
         }
@@ -140,7 +151,7 @@ public class MultipartRequest
     public String[] getParameterValues (String name) {
         if (urlencodedRequest) 
             return super.getParameterValues (name);
-        Vector v = (Vector) parameters.get (name);
+        ArrayList v = (ArrayList) parameters.get (name);
         if (v == null) return null;
         String result[] = new String [ v.size() ];
         return (String[]) v.toArray(result);
@@ -155,10 +166,10 @@ public class MultipartRequest
      * @param name the file name
      * @return the filesystem name of the file
      */
-    public String getFilename(String name) {
+    public String getFileName(String name) {
         try {
             UploadedFile file = (UploadedFile)files.get(name);
-            return file.getFilename();  // may be null
+            return file.getFileName();  // may be null
         }
         catch (Exception e) {
             return null;
@@ -173,7 +184,7 @@ public class MultipartRequest
      * @param name the file name
      * @return the filesystem name of the file
      */
-    public String getFileid(String name) {
+    public String getFileId(String name) {
         try {
             UploadedFile file = (UploadedFile)files.get(name);
             return file.getId();  // may be null
@@ -224,6 +235,14 @@ public class MultipartRequest
         return !urlencodedRequest;
     }
 
+    protected void setException(String param, Exception ex) {
+        parameters.clear();
+        files.clear();
+
+        putParameter(param, "exception");
+        putParameter(param, ex.getMessage());
+    }
+
     /**
      * TODO: documentation
      *
@@ -240,12 +259,7 @@ public class MultipartRequest
         }
         urlencodedRequest = false;
 
-        int length = req.getContentLength();
-        if (length > maxSize) {
-            throw new IOException("Posted content length of " + length +
-                                  " exceeds limit of " + maxSize);
-        }
-        
+
         String boundary = extractBoundary(type);
         if (boundary == null) {
             /*
@@ -262,121 +276,133 @@ public class MultipartRequest
             throw new IOException("Separation boundary was not specified (BUG in Tomcat 3.* with Opera?)");
         }
 
-        MultipartInputStream mimeStream = new MultipartInputStream(req.getInputStream(), req.getContentLength());
+        MultipartInputStream mimeStream = new
+            MultipartInputStream(req.getInputStream(), req.getContentLength(), maxSize);
 
         StringBuffer header = new StringBuffer();
         StringBuffer buffer = new StringBuffer();
-        Hashtable headers = null;
+        HashMap headers = null;
         int current = 0, last = -1;
         boolean done = false;
 
-        while(current != -1) {
-            done = false;
+        String actualParam = null;
 
-            while ((current = mimeStream.read()) != -1 && !done) {
-                header.append((char)current);
-
-                if (last == '\n' && current == '\r') {
-                    done = true;
-                }
-                last = current;
-            }
-            if (current == -1)
-                break;
-
-            headers = parseHeader(header.toString());
-            header.setLength(0);
-
-            if (headers.size() == 1) {                  // .. it's not a file
-                int i;
-                int blength = boundary.length();
-                while ((current = mimeStream.read()) != -1) {
-                    buffer.append((char)current);
-                    if (buffer.length() >= blength) {
-                        for (i=0; i<blength; i++) {
-                            if(boundary.charAt(blength - i -1 ) != buffer.charAt(buffer.length() - i - 1)) {
-                                i = 0;
-                                break;
-                            }
-                        }
-                        if (i == blength) {             // end of part ..
-                            putParameter((String)headers.get("name"),
-                                         (buffer.toString()).substring(0, buffer.length()-
-                                                                       boundary.length()-4));
-                            break;
-                        }
+        try {
+            while(current != -1) {
+                done = false;
+                
+                while ((current = mimeStream.read()) != -1 && !done) {
+                    header.append((char)current);
+                    
+                    if (last == '\n' && current == '\r') {
+                        done = true;
                     }
+                    last = current;
                 }
-            }
-            else {                                      // .. it's a file
-                String filename = (String)headers.get("filename");
-                if (filename != null && filename.length() != 0) {
-                    // The filename may contain a full path.  Cut to just the filename.
-                    int slash = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
-                    if (slash > -1) {
-                        filename = filename.substring(slash + 1);
-                    }
-                    String name = (String)headers.get("name");
-                    String contentType = (String)headers.get("content-type");
-
-                    File file = File.createTempFile("wings_uploaded","tmp");
-
-                    UploadedFile upload = new UploadedFile(filename,
-                                                           contentType, file);
-                    OutputStream fileStream = new FileOutputStream(file);
-
-                    fileStream = UploadFilterManager.createFilterInstance(name, fileStream);
-
-                    AccessibleByteArrayOutputStream byteArray = new AccessibleByteArrayOutputStream();
-                    byte[] bytes = null;
-
-                    int blength = boundary.length();
-                    int i;
-                    while ((current = mimeStream.read()) != -1) {
-                        byteArray.write(current);
-                        for (i=0; i<blength; i++) {
-                            if(boundary.charAt(blength - i - 1) != byteArray.charAt(-i - 1)) {
-                                i = 0;
-                                if (byteArray.size() > 512 + blength + 2)
-                                    byteArray.writeTo(fileStream, 512);
-                                break;
-                            }
-                        }
-                        if (i == blength)   // end of part ..
-                            break;
-                    }
-                    bytes = byteArray.toByteArray();
-                    fileStream.write(bytes, 0, bytes.length - blength - 4);
-                    fileStream.close();
-
-                    files.put(name, upload);
-                    putParameter(name, upload.toString());
-                }
-                else {                              // workaround for some netscape bug
+                if (current == -1)
+                    break;
+                
+                headers = parseHeader(header.toString());
+                header.setLength(0);
+                
+                actualParam = (String)headers.get("name"); 
+                
+                if (headers.size() == 1) {                  // .. it's not a file
+                    
                     int i;
                     int blength = boundary.length();
                     while ((current = mimeStream.read()) != -1) {
                         buffer.append((char)current);
                         if (buffer.length() >= blength) {
                             for (i=0; i<blength; i++) {
-                                if(boundary.charAt(blength -i -1) != buffer.charAt(buffer.length() -i -1)) {
+                                if(boundary.charAt(blength - i -1 ) != buffer.charAt(buffer.length() - i - 1)) {
                                     i = 0;
                                     break;
                                 }
                             }
-                            if (i == blength)
+                            if (i == blength) {             // end of part ..
+                                putParameter( actualParam,
+                                              (buffer.toString()).substring(0, buffer.length()-
+                                                                            boundary.length()-4));
                                 break;
+                            }
                         }
                     }
                 }
-            }
-            buffer.setLength(0);
+                else {                                      // .. it's a file
+                    String filename = (String)headers.get("filename");
+                    if (filename != null && filename.length() != 0) {
+                        // The filename may contain a full path.  Cut to just the filename.
+                        int slash = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
+                        if (slash > -1) {
+                            filename = filename.substring(slash + 1);
+                        }
+                        String name = (String)headers.get("name");
+                        
+                        String contentType = (String)headers.get("content-type");
+                        
+                        File file = File.createTempFile("wings_uploaded","tmp");
+                        
+                        UploadedFile upload = new UploadedFile(filename,
+                                                               contentType, file);
+                        OutputStream fileStream = new FileOutputStream(file);
+                        
+                        fileStream = UploadFilterManager.createFilterInstance(name, fileStream);
+                        
+                        AccessibleByteArrayOutputStream byteArray = new AccessibleByteArrayOutputStream();
+                        byte[] bytes = null;
+                        
+                        int blength = boundary.length();
+                        int i;
+                        while ((current = mimeStream.read()) != -1) {
+                            byteArray.write(current);
+                            for (i=0; i<blength; i++) {
+                                if(boundary.charAt(blength - i - 1) != byteArray.charAt(-i - 1)) {
+                                    i = 0;
+                                    if (byteArray.size() > 512 + blength + 2)
+                                        byteArray.writeTo(fileStream, 512);
+                                    break;
+                                }
+                            }
+                            if (i == blength)   // end of part ..
+                                break;
+                        }
+                        bytes = byteArray.toByteArray();
+                        fileStream.write(bytes, 0, bytes.length - blength - 4);
+                        fileStream.close();
+                        
+                        files.put(name, upload);
+                        putParameter(name, upload.toString());
+                    }
+                    else {                              // workaround for some netscape bug
+                        int i;
+                        int blength = boundary.length();
+                        while ((current = mimeStream.read()) != -1) {
+                            buffer.append((char)current);
+                            if (buffer.length() >= blength) {
+                                for (i=0; i<blength; i++) {
+                                    if(boundary.charAt(blength -i -1) != buffer.charAt(buffer.length() -i -1)) {
+                                        i = 0;
+                                        break;
+                                    }
+                                }
+                                if (i == blength)
+                                    break;
+                            }
+                        }
+                    }
+                }
+                buffer.setLength(0);
 
-            current = mimeStream.read();
-            if (current == '\r' && mimeStream.read() != '\n')
-                System.err.println("na so was: " + current);
-            if (current == '-' && mimeStream.read() != '-')
-                System.err.println("na so was: " + current);
+                current = mimeStream.read();
+                if (current == '\r' && mimeStream.read() != '\n')
+                    System.err.println("na so was: " + current);
+                if (current == '-' && mimeStream.read() != '-')
+                    System.err.println("na so was: " + current);
+            }
+        } catch ( IOException ex ) {
+            // IOException, notify component which process actual param
+            setException(actualParam, ex);
         }
     }
 
@@ -403,7 +429,7 @@ public class MultipartRequest
         /**
          * TODO: documentation
          */
-        public synchronized void writeTo(OutputStream out, int num)
+        public void writeTo(OutputStream out, int num)
             throws IOException
         {
             out.write(buf, 0, num);
@@ -412,11 +438,11 @@ public class MultipartRequest
         }
     }
 
-    private Hashtable parseHeader(String header)
+    private HashMap parseHeader(String header)
     {
         int lastHeader = -1;
         String[] headerLines;
-        Hashtable nameValuePairs = new Hashtable();
+        HashMap nameValuePairs = new HashMap();
 
         StringTokenizer stLines = new StringTokenizer(header, "\r\n", false);
         headerLines = new String[stLines.countTokens()];
@@ -495,12 +521,13 @@ public class MultipartRequest
     private class MultipartInputStream extends InputStream
     {
         ServletInputStream istream = null;
-        int len, pos, num;
+        int len, pos, num, maxLength;
 
-        public MultipartInputStream(ServletInputStream istream, int len) {
+        public MultipartInputStream(ServletInputStream istream, int len, int maxLength) {
             this.istream = istream;
             this.len = len;
             this.pos = 0;
+            this.maxLength = maxLength;
         }
 
         /**
@@ -520,6 +547,9 @@ public class MultipartRequest
          * @throws IOException
          */
         public int read() throws IOException {
+            if ( pos>=maxLength )
+                throw new IOException("Size exceeds maxlength " + maxLength);
+
             if(pos >= len)
                 return -1;
             pos++;
@@ -543,6 +573,10 @@ public class MultipartRequest
 
             num = istream.read(b, 0, num);
             pos += num;
+
+            if ( pos>=maxLength )
+                throw new IOException("Size exceeds maxlength " + maxLength);
+
             return num;
         }
 
@@ -562,6 +596,10 @@ public class MultipartRequest
 
             num = istream.skip(num);
             pos += num;
+
+            if ( pos>=maxLength )
+                throw new IOException("Size exceeds maxlength " + maxLength);
+
             return num;
         }
 
@@ -579,13 +617,13 @@ public class MultipartRequest
      * TODO: documentation
      */
     protected void putParameter (String name, String value) {
-        Vector v = (Vector) parameters.get (name);
+        ArrayList v = (ArrayList) parameters.get (name);
         // there is no Parameter yet; create one
         if (v == null) {
-            v = new Vector();
+            v = new ArrayList(2);
             parameters.put (name, v);
         }
-        v.addElement (value);
+        v.add (value);
     }
 
     // Extracts and returns the boundary token from a line.
@@ -638,13 +676,13 @@ public class MultipartRequest
     //
     class UploadedFile
     {
-        private String filename;
+        private String fileName;
         private String type;
         private File uploadedFile;
 
-        UploadedFile(String filename, String type, File f) {
+        UploadedFile(String fileName, String type, File f) {
             this.uploadedFile = f;
-            this.filename = filename;
+            this.fileName = fileName;
             this.type = type;
         }
 
@@ -665,8 +703,8 @@ public class MultipartRequest
          *
          * @return
          */
-        public String getFilename() {
-            return filename;
+        public String getFileName() {
+            return fileName;
         }
         /**
          * TODO: documentation
@@ -717,13 +755,13 @@ public class MultipartRequest
             StringBuffer buffer = new StringBuffer();
             buffer.append("dir=");
             buffer.append(URLEncoder.encode(getDir()));
-            if (filename != null) {
+            if (getFileName() != null) {
                 buffer.append("&name=");
-                buffer.append(URLEncoder.encode(filename));
+                buffer.append(URLEncoder.encode(getFileName()));
             }
-            if (type != null) {
+            if (getContentType() != null) {
                 buffer.append("&type=");
-                buffer.append(URLEncoder.encode(type));
+                buffer.append(URLEncoder.encode(getContentType()));
             }
             buffer.append("&id=");
             buffer.append(URLEncoder.encode(getId()));

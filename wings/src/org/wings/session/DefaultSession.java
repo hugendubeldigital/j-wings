@@ -52,6 +52,8 @@ public class DefaultSession
 
     private int uniqueIdCounter = 1;
 
+    private int maxContentLength = 64;
+
     /**
      * TODO: documentation
      *
@@ -70,6 +72,18 @@ public class DefaultSession
             return;
         initProps(config);
         servletContext = config.getServletContext();
+
+        String maxCL = config.getInitParameter("content.maxlength");
+        if (maxCL != null) {
+            try {
+                maxContentLength = Integer.parseInt(maxCL);
+            }
+            catch (NumberFormatException e) {
+                //                logger.fine("invalid content.maxlength: " + maxCL);
+                //                logger.throwing(SessionServlet.class.getName(), "init", e);
+            }
+        }
+
     }
 
     /**
@@ -301,6 +315,14 @@ public class DefaultSession
     public final String createUniqueId() {
         return StringUtil.toShortestAlphaNumericString(getUniqueId());
     }
+
+    public final int getMaxContentLength() {
+        return maxContentLength;
+    }
+    public final void setMaxContentLength(int l) {
+        maxContentLength = l;
+    }
+
 }
 
 /*

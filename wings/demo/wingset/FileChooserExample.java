@@ -15,6 +15,7 @@
 package wingset;
 
 import java.awt.event.*;
+import java.io.*;
 import javax.swing.Icon;
 
 import org.wings.*;
@@ -39,19 +40,30 @@ public class FileChooserExample
         final SFileChooser chooser = new SFileChooser();
         p.add(chooser);
 
+        final SLabel message = new SLabel("message: ");
+        p.add(message);
+
         final SLabel filename = new SLabel("filename: ");
         p.add(filename);
         final SLabel fileid = new SLabel("fileid: ");
         p.add(fileid);
 
         SButton submit = new SButton("upload");
-        submit.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                filename.setText("filename: " + chooser.getFilename());
-                fileid.setText("fileid: " + chooser.getFileid());
-                chooser.reset();
-            }});
         p.add(submit);
+
+        p.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    message.setText("message: OK");
+                    filename.setText("filename: " + chooser.getFileName());
+                    fileid.setText("fileid: " + chooser.getFileId());
+                    chooser.reset();
+                } catch ( IOException ex ) {
+                    message.setText("message: " + ex.getMessage());
+                    filename.setText("filename: ");
+                    fileid.setText("fileid: ");
+                }
+            }});
 
         return p;
     }

@@ -61,11 +61,6 @@ public abstract class SessionServlet
     private SRequestDispatcher dispatcher = null;
 
     /**
-     * Maximum length of post-/get-submissions in kByte
-     */
-    private int maxContentLength = 50;
-
-    /**
      * TODO: documentation
      */
     protected HttpServlet parent = this;
@@ -459,12 +454,12 @@ public abstract class SessionServlet
         throws ServletException, IOException
     {
         //value chosen to limit denial of service
-        if (req.getContentLength() > maxContentLength*1024) {
+        if (req.getContentLength() > getSession().getMaxContentLength()*1024) {
             res.setContentType("text/html");
             ServletOutputStream out = res.getOutputStream();
             out.println("<html><head><title>Too big</title></head>");
             out.println("<body><h1>Error - content length &gt; " +
-                        maxContentLength + "k");
+                        getSession().getMaxContentLength() + "k");
             out.println("</h1></body></html>");
         }
         else {
