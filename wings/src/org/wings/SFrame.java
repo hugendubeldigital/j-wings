@@ -245,6 +245,10 @@ public class SFrame
             headers.add(m);
     }
 
+    public void removeHeader(Object m) {
+        headers.remove(m);
+    }
+
     public void clearHeaders() {
 	headers().clear();
     }
