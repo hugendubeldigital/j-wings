@@ -40,6 +40,7 @@ public class DynamicStyleSheetResource
     public static final String NORMAL_ATTR_PREFIX = "n__";
     public static final String SELECT_ATTR_PREFIX = "s__";
 
+    
     public DynamicStyleSheetResource(SFrame frame) {
         super(frame, "css", "text/css");
     }
@@ -76,23 +77,25 @@ public class DynamicStyleSheetResource
                 AttributeSet attributes = component.getAttributes();
                 if (attributes.size() > 0)
                     writeAttributes("." + NORMAL_ATTR_PREFIX 
-                                    + component.getComponentId(), attributes);
+                                    + component.getComponentId(), component);
             }
 
             if (component instanceof SSelectionComponent) {
                 AttributeSet attributes = ((SSelectionComponent)component).getSelectionAttributes();
                 if (attributes.size() > 0)
                     writeAttributes("." + SELECT_ATTR_PREFIX 
-                                    + component.getComponentId(), attributes);
+                                    + component.getComponentId(), component);
             }
+            
         }
         
-        private void writeAttributes(String name, AttributeSet attributes)
+        private void writeAttributes(String name, SComponent comp)
             throws IOException
         {
             out.print(name);
             out.print(" {");
-            attributes.write(out);
+            comp.getAttributes().write(out);
+            if (comp.getBorder() != null) out.print(comp.getBorder().getSpanAttributes());
             out.print("}\n");
         }
 
