@@ -1,5 +1,9 @@
 <template name="ListCG" for="org.wings.SList">
 
+<comp-property name="cellRenderer" type="SDefaultListCellRenderer">
+   new org.wings.SDefaultListCellRenderer()
+</comp-property>
+
     protected void writeFormList(Device device, SList list)
         throws IOException
     {
@@ -76,7 +80,7 @@
             %></span><%
         }
 
-        //Utils.writeHiddenComponent(d, list.getNamePrefix(), "-1");
+        // util method
         %><input type="hidden"<%
         %><%|name=list.getNamePrefix()%><%
         %><%|value=-1%><%
@@ -131,7 +135,7 @@
                 if (selected) {
                     if (selectionStyle != null && selectionAttr != null) {
                         %><li class="<%=selectionStyle%>"><%
-                        %><span class="<%=selectionAttr%>"<%
+                        %><span class="<%=selectionAttr%>"><%
                     }
                     else {
                         String s = selectionStyle;
