@@ -99,3 +99,6 @@
 
 * does it really make sense to derive the SessionServlet from HttpServlet ?
   How much from a 'servlet' a wingS-Session context has ?
+
+* remove all finalize() methods that are used for debugging.
+
