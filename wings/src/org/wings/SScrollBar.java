@@ -307,9 +307,11 @@ public class SScrollBar
         }
         else {
             backward = new SPanel(new SFlowLayout());
+            backward.setHorizontalAlignment(RIGHT);
             add(backward, SBorderLayout.WEST);
 
             forward = new SPanel(new SFlowLayout());
+            forward.setHorizontalAlignment(LEFT);
             add(forward, SBorderLayout.EAST);
         }
 
