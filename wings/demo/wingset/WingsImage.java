@@ -38,7 +38,9 @@ public class WingsImage
         final SBorderLayout layout = new SBorderLayout();
 
         p.setLayout(layout);
+        p.setPreferredSize(new SDimension("100%", null));
         p.setBackground(new java.awt.Color(150, 168, 240));
+
         SLabel label = new SLabel(new ResourceImageIcon(WingSet.class, 
                                                         "wingS.jpg"));
         label.setHorizontalAlignment(CENTER);

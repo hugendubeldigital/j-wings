@@ -33,6 +33,7 @@ public class LabelExample
         SGridLayout layout = new SGridLayout(2);
         layout.setWidth(100);
         layout.setRelative(true); // -> make 100 mean '%'
+        layout.setCellSpacing(10);
         all.setLayout(layout);
 
         Icon icon = new ResourceImageIcon(SConstants.class, "icons/Wait.gif");
