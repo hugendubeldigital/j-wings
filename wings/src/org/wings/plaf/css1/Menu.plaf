@@ -38,12 +38,21 @@ public static String loadScript() {
         component.addScriptListener(SCRIPT_LOADER);
 </install>
 
+static final boolean isInForm (SMenu menu) {
+    if ( menu.getParentMenu() != null ) {
+        return isInForm( menu.getParentMenu() ); 
+    } else {
+        return menu.getResidesInForm();
+    }
+}
+    
 protected void writePopup(final Device device, SMenu menu)
     throws IOException
 {
     String parentId = menu.getParentMenu() != null ? "'" + menu.getParentMenu().getComponentId() + "_pop'" : "null";
     String componentId = menu.getComponentId();
     String popupId = componentId + "_pop";
+    boolean inForm = isInForm( menu );
 
     %><table cellpadding="0" cellspacing="0" id="<%=popupId%>" class="pdmenu" style="display:none"><%
 
@@ -69,7 +78,11 @@ protected void writePopup(final Device device, SMenu menu)
             } else {
                 if (menuItem.isEnabled()) {
                     if ( menuItem instanceof SMenuItem ) {
-                        %> onClick="window.location.href='<%writeAnchorAddress(device, (SMenuItem)menuItem);%>'"<%
+                        if ( inForm ) {
+                            %> onClick="return submitForm(event, '<%=((SMenuItem)menuItem).getEncodedLowLevelEventId()%>','<%=((SMenuItem)menuItem).getActionCommand()%>')"<%
+                        } else {
+                            %> onClick="window.location.href='<%writeAnchorAddress(device, (SMenuItem)menuItem);%>'"<%
+                        }
                     }
                     %> class="menuitem"<%
                 } else {
@@ -78,13 +91,13 @@ protected void writePopup(final Device device, SMenu menu)
             }
             %>><td><%
             menu.getMenuComponent(i).write(device);
-            %></td><td><%
+            %></td><%
             if (menu.getMenuComponent(i) instanceof SMenu) {
-                %><img border="0" align="middle" src="<%=RIGHT_ARROW.getURL()%>"<%
+                %><td><img border="0" align="middle" src="<%=RIGHT_ARROW.getURL()%>"<%
                 %><%|width=RIGHT_ARROW.getIconWidth()%><%
-                %><%|height=RIGHT_ARROW.getIconHeight()%>/><%
+                %><%|height=RIGHT_ARROW.getIconHeight()%>/></td><%
             }
-            %></td></tr><%
+            %></tr><%
          }
     }
     %></table><%
