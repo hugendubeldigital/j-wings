@@ -24,7 +24,6 @@ import org.wings.SDimension;
 import org.wings.SForm;
 import org.wings.SFrame;
 import org.wings.SLabel;
-import org.wings.SLink;
 import org.wings.SMenu;
 import org.wings.SMenuItem;
 import org.wings.io.Device;

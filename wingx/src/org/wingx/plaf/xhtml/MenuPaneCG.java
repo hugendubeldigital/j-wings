@@ -31,12 +31,11 @@ import org.wings.SComponent;
 import org.wings.SDimension;
 import org.wings.SFrame;
 import org.wings.SIcon;
-import org.wings.SLink;
 import org.wings.SMenu;
 import org.wings.SMenuItem;
+import org.wings.header.Link;
 import org.wings.io.Device;
 import org.wings.plaf.ComponentCG;
-import org.wings.plaf.xhtml.ContainerCG;
 import org.wings.plaf.xhtml.css1.Utils;
 import org.wings.style.AttributeSet;
 import org.wings.style.CSSStyleSheet;
@@ -437,7 +436,7 @@ public class MenuPaneCG implements ComponentCG
             this.fStyleSheet.putStyle(fOuterBorderStyle);
 
             frame.addDynamicResource(this);
-            frame.addLink(new SLink("stylesheet", null, "text/css", null, this));
+            frame.addHeader(new Link("stylesheet", null, "text/css", null, this));
         }        
         
 		/**

@@ -27,7 +27,7 @@ import org.wings.Scrollable;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.Device;
 import org.wings.io.StringBufferDevice;
-import org.wings.plaf.xhtml.FrameCG;
+import org.wings.plaf.css1.FrameCG;
 import org.wings.session.SessionManager;
 import org.wings.style.StyleSheet;
 
@@ -86,7 +86,9 @@ public final class IFrameScrollPaneCG
         String language = "en"; // TODO: ???
 
         d.print("<?xml version=\"1.0\" encoding=\"");
-        d.print(FrameCG.charSetFor(frame.getSession().getLocale()));
+        // d.print(FrameCG.(frame.getSession().getLocale()));
+        d.print(org.wings.util.LocaleCharSet.getInstance().getCharSet(
+        	frame.getSession().getLocale()));
         d.print("\"?>\n");
         d.print("<!DOCTYPE html\n");
 		d.print("   PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n");
@@ -98,7 +100,9 @@ public final class IFrameScrollPaneCG
         d.print("\">\n");
         d.print("<head>");
         d.print("<meta http-equiv=\"Content-type\" content='text/html; charset=\"");
-        d.print(FrameCG.charSetFor(frame.getSession().getLocale()));
+        //d.print(FrameCG.charSetFor(frame.getSession().getLocale()));
+        d.print(org.wings.util.LocaleCharSet.getInstance().getCharSet(
+        	frame.getSession().getLocale()));
         d.print("\"' />\n");
         d.print("<meta http-equiv=\"expires\" content=\"0\" />\n");
         d.print("<meta http-equiv=\"pragma\" content=\"no-cache\" />\n");
