@@ -61,16 +61,23 @@ protected int getMenuLevel(SMenu menu) {
     String popupId = "pop_" + menu.getComponentId();
     String menuId = "menu_" + menu.getComponentId();
     int level = getMenuLevel(menu);
+    boolean enabled = menu.isEnabled();
 
-    %><div id="<%=menuId%>" class="menu" onMouseDown="toggle_menu('<%=menuId%>', '<%=popupId%>', <%=level%>)"><%
-    writeMenuItem(device, menu, false);
-    %></div><%
-    %><table id="<%=popupId%>" class="pdmenu" style="display:none"><tr><td><%
-
-    for ( int i=0; i<menu.getMenuComponentCount(); i++ ) {
-        menu.getMenuComponent(i).write(device);
+    if ( enabled ) {
+        %><div id="<%=menuId%>" class="menu" <%
+        %>onMouseDown="toggle_menu('<%=menuId%>', '<%=popupId%>', <%=level%>)"><%
     }
-    %></td></tr></table><%
+    writeMenuItem(device, menu, false);
+
+    if ( enabled ) {
+        %></div><%
+        %><table id="<%=popupId%>" class="pdmenu" style="display:none"><tr><td><%
+
+        for ( int i=0; i<menu.getMenuComponentCount(); i++ ) {
+            menu.getMenuComponent(i).write(device);
+        }
+        %></td></tr></table><%
+    }
 %>
 </write>
 </template>

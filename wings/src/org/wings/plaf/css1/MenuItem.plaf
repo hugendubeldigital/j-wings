@@ -16,25 +16,26 @@ protected void writeMenuItem(final Device device, SMenuItem menuItem, boolean wi
 
     String text = menuItem.getText();
 
-    %><div class="menuitem" onMouseOver="enter_item(this)"<%
-    %> onMouseOut="exit_item(this)"><%
+    %><div class="menuitem"<%
 
-    if ( withAnchor && menuItem.isEnabled() ) {
-        %><a href="<%
-        writeAnchorAddress(device, menuItem);
-        %>"><%
-    } 
+    if ( menuItem.isEnabled() ) {
+        %> onMouseOver="enter_item(this)"<%
+        %> onMouseOut="exit_item(this)"<%
 
+        if ( withAnchor ) {
+            %>><a href="<%writeAnchorAddress(device, menuItem);%>"<%
+        } 
+    } else {
+        %> style="color:#999999"<%
+    }
 
-
-    %>&nbsp;&nbsp;<%
+    %>><nobr><%
 
     if ( icon!=null ) {	
-        %><img border="0" src="<%
-        %><%=icon.getURL()%>"<%
+        %><img border="0" align="middle" src="<%=icon.getURL()%>"<%
         %><%|width=icon.getIconWidth()%><%
         %><%|height=icon.getIconHeight()%><%
-        %> /><%
+        %>/><%
     }
 
     if ( text!=null ) {	
@@ -45,12 +46,10 @@ protected void writeMenuItem(final Device device, SMenuItem menuItem, boolean wi
         }
     }
 
-    %>&nbsp;&nbsp;<%
-
     if ( withAnchor && menuItem.isEnabled() ) {
         %></a><%
     } 
-    %></div><%
+    %></nobr></div><%
 }
 
 <write>
