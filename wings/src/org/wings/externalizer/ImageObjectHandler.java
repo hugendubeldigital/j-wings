@@ -86,7 +86,7 @@ public class ImageObjectHandler
         out.flush();
     }
     
-	public java.util.Set getHeaders(Object obj) { return null; }
+    public java.util.Set getHeaders(Object obj) { return null; }
 }
 
 /*

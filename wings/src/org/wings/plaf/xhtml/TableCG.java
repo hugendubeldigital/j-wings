@@ -175,7 +175,8 @@ public class TableCG
         }
     }
 
-    protected void writeCell(Device d, STable table, SCellRendererPane rendererPane,
+    protected void writeCell(Device d, STable table, 
+                             SCellRendererPane rendererPane,
                              int row, int col)
         throws IOException
     {
@@ -189,7 +190,8 @@ public class TableCG
         if (isEditingCell)
             comp = table.getEditorComponent();
         else
-            comp = table.prepareRenderer(table.getCellRenderer(row, col), row, col);
+            comp = table.prepareRenderer(table.getCellRenderer(row, col), 
+                                         row, col);
 
         d.append("<td");
         Utils.appendTableCellAttributes(d, comp);
@@ -199,15 +201,15 @@ public class TableCG
         d.append("</td>");
     }
 
-    protected void writeHeaderCell(Device d, STable table, SCellRendererPane rendererPane,
-                                   int c)
+    protected void writeHeaderCell(Device d, STable table, 
+                                   SCellRendererPane rendererPane, int col)
         throws IOException
     {
-        if (c >= table.getModel().getColumnCount()
+        if (col >= table.getModel().getColumnCount()
             && table.getSelectionMode() != SConstants.NO_SELECTION)
             d.append("<th>&nbsp;</th>");
         else {
-            SComponent comp = table.prepareHeaderRenderer(c);
+            SComponent comp = table.prepareHeaderRenderer(col);
             d.append("<th>");
             rendererPane.writeComponent(d, comp, table);
             d.append("</th>");

@@ -59,7 +59,7 @@ public class ResourceImageIconObjectHandler
         return ResourceImageIcon.class;
     }
 
-	public java.util.Set getHeaders(Object obj) { return null; }
+    public java.util.Set getHeaders(Object obj) { return null; }
 
 }
 
