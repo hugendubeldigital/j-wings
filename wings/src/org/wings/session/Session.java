@@ -77,6 +77,8 @@ public final class Session
 
     private static int ACTIVE_SESSION_COUNTER = 0;
 
+    private static int ALLOCATED_SESSION_COUNTER = 0;
+
     /**
      * Every session has its own {@link CGManager}. 
      *
@@ -125,6 +127,10 @@ public final class Session
         return ACTIVE_SESSION_COUNTER;
     }
 
+    synchronized public static final int getAllocatedSessions() {
+        return ALLOCATED_SESSION_COUNTER;
+    }
+
     static boolean collectStatistics = true;
 
 
@@ -137,7 +143,7 @@ public final class Session
             synchronized(Session.class) {
                 SESSION_COUNTER++;
                 ACTIVE_SESSION_COUNTER++;
-            }
+                ALLOCATED_SESSION_COUNTER++;            }
         } // end of if ()
     }
 
@@ -639,6 +645,11 @@ public final class Session
 
     protected void finalize() {
         logger.info("gc session");
+        if ( collectStatistics ) {
+            synchronized(Session.class) {
+                ALLOCATED_SESSION_COUNTER--;
+            }
+        } // end of if ()
     }
 
 }
