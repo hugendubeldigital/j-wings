@@ -22,8 +22,6 @@ import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.Hashtable;
 
-import org.wings.template.parser.*;
-
 /**
  * A <CODE>CachedFileDataSource</CODE> implements a DataSource
  * for a file, but caches small ones.
@@ -32,8 +30,8 @@ import org.wings.template.parser.*;
  * @author <A href="mailto:zeller@think.de">Henner Zeller</A>
  * @version $Revision$
  */
-public class CachedFileDataSource
-    extends FileDataSource
+public class CachedFileTemplateSource
+    extends FileTemplateSource
 {
     private final class CacheEntry {
         private byte[] filebuffer = null;
@@ -119,7 +117,7 @@ public class CachedFileDataSource
 
     private CacheEntry entry;
 
-    public CachedFileDataSource (File f)
+    public CachedFileTemplateSource (File f)
         throws IOException
     {
         super(f);
@@ -131,7 +129,7 @@ public class CachedFileDataSource
         }
     }
 
-    public CachedFileDataSource (URL url) 
+    public CachedFileTemplateSource (URL url) 
         throws IOException {
         super(null); // we never read the file directly
         entry = (CacheEntry) cache.get(url);

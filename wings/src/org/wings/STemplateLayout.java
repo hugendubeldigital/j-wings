@@ -24,13 +24,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import org.wings.template.parser.*;
-
 import org.wings.*;
 import org.wings.plaf.*;
 import org.wings.io.*;
 
 import org.wings.template.*;
+import org.wings.template.parser.PageParser;
 
 /*
  * STemplateLayout.java
@@ -67,7 +66,7 @@ import org.wings.template.*;
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @author Jochen Woehrle
- * @author <a href="mailto:hzeller@to.com">Henner Zeller</a>
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
 public class STemplateLayout
@@ -129,7 +128,7 @@ public class STemplateLayout
     /**
      * the template in question ..
      */
-    private DataSource dataSource = null;
+    private TemplateSource templateSource = null;
 
 
     private HashMap components = new HashMap();
@@ -142,9 +141,24 @@ public class STemplateLayout
     }
 
     /**
-     * TODO: documentation
+     * Create a TemplateLayout that reads its content from the generic
+     * {@linke TemplateSource}. The template source can be implemented
+     * to be read from any source you want to, e.g. database BLOBs. Whenever
+     * the source changes (i.e. lastModified() returns a different
+     * modification time the last time this source has been parsed), the
+     * template is reparsed.
      *
-     * @param tmplFileName
+     * @param source the TemplateSource this template is to be read from.
+     */
+    public STemplateLayout(TemplateSource source) {
+        setTemplate(source);
+    }
+
+    /**
+     * Open a template from a file with the given name.
+     * Whenever the file changes, the Template is reloaded.
+     *
+     * @param tmplFileName the filename to read the file from.
      * @throws java.io.IOException
      */
     public STemplateLayout(String tmplFileName) throws java.io.IOException {
@@ -152,10 +166,10 @@ public class STemplateLayout
     }
 
     /**
-     * TODO: documentation
+     * Open a template from a file.
+     * Whenever the file changes, the Template is reloaded.
      *
-     * @param tmplFile
-     * @return
+     * @param tmplFile the File to read the template from.
      * @throws java.io.IOException
      */
     public STemplateLayout (File tmplFile) throws java.io.IOException {
@@ -165,21 +179,16 @@ public class STemplateLayout
     /**
      * Open Template from URL. Reads the content once in a cache.
      *
-     * @param tmplFile
-     * @return
+     * @param  url the URL to read the template from.
      * @throws java.io.IOException
      */
     public STemplateLayout (URL url) throws java.io.IOException {
         setTemplate(url);
     }
 
-    /*
-     * Sucht einen geeigneten PropertyManager fuer die angegeben
-     * Klasse. Vorgehensweise ist dabei so, dass die Ableitungshierarchie herunter
-     * gesucht wird.
-     */
     /**
-     * TODO: documentation
+     * Determines appropriate property manager for the given SComponent or
+     * derived class. Goes up the hierarchy.
      */
     public static final PropertyManager getPropertyManager(Class c) {
         if ( c == null )
@@ -233,7 +242,7 @@ public class STemplateLayout
      * @throws java.io.IOException
      */
     public void setTemplate(File templateFile) throws java.io.IOException {
-        setTemplate(new CachedFileDataSource(templateFile));
+        setTemplate(new CachedFileTemplateSource(templateFile));
     }
 
     /**
@@ -244,18 +253,18 @@ public class STemplateLayout
      * @throws java.io.IOException
      */
     public void setTemplate(URL templateURL) throws java.io.IOException {
-        setTemplate(new CachedFileDataSource(templateURL));
+        setTemplate(new CachedFileTemplateSource(templateURL));
     }
 
     /**
      * Sets the template from the DataSource. Use this, if you hold your
      * templates in databases etc. and write your own DataSource.
      *
-     * @see org.wings.template.parser.DataSource
-     * @param source the datasourse this template is to be read.
+     * @see org.wings.template.TemplateSource
+     * @param source the source this template is to be read.
      */
-    public void setTemplate(DataSource source) {
-        dataSource = source;
+    public void setTemplate(TemplateSource source) {
+        templateSource = source;
     }
 
     /**
@@ -288,8 +297,8 @@ public class STemplateLayout
     /**
      *
      */
-    public DataSource getDataSource() {
-        return dataSource;
+    public TemplateSource getTemplateSource() {
+        return templateSource;
     }
 
     /**
@@ -299,8 +308,11 @@ public class STemplateLayout
         return components;
     }
 
+    /**
+     * @deprecated this will be solved differently.
+     */
     public Map getLabels() {
-        return PageParser.getInstance().getLabels(getDataSource());
+        return PageParser.getInstance().getLabels(getTemplateSource());
     }
     
     /**

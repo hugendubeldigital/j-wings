@@ -17,8 +17,6 @@ package org.wings.template;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.wings.template.parser.*;
-
 /**
  * A <CODE>StreamDataSource</CODE> implements a DataSource
  * as a wrapper around a Stream.
@@ -27,8 +25,7 @@ import org.wings.template.parser.*;
  * @author <A href="mailto:joachim.karrer@mercatis.de">Joachim Karrer</A>
  * @version $Revision$
  */
-public class StreamDataSource implements DataSource
-{
+public class StreamTemplateSource implements TemplateSource {
     /**
      * enable debug output
      */
@@ -48,7 +45,7 @@ public class StreamDataSource implements DataSource
      * <p>generates a new StreamDataSource with the given Stream</p>
      * @param iStream the InputStream from which the template is read.
      */
-    public StreamDataSource (InputStream iStream) {
+    public StreamTemplateSource (InputStream iStream) {
         setInputStream( iStream );
     }
 
@@ -106,7 +103,7 @@ public class StreamDataSource implements DataSource
 
     private static final void debug(String mesg) {
         if ( DEBUG )
-            org.wings.util.DebugUtil.printDebugMessage(StreamDataSource.class, mesg);
+            org.wings.util.DebugUtil.printDebugMessage(StreamTemplateSource.class, mesg);
     }
 }
 

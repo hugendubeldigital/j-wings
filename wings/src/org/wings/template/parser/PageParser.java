@@ -61,11 +61,11 @@ public class PageParser
 	
     /**
      * This Map contains the cached parsed
-     * pages, saved in DataSourceInfo-Objects.
+     * pages, saved in TemplateSourceInfo-Objects.
      * The key is the canonical name of the Data
      * Source.
      */
-    private final Map/*<String, DataSourceInfo>*/ pages;
+    private final Map/*<String, TemplateSourceInfo>*/ pages;
 
     /**
      * a Hashtable with key/value=tagname/handlerClass
@@ -82,14 +82,14 @@ public class PageParser
 
     /**
      * Process a general DataStore representing a Template
-     * @param source        The template DataSource
+     * @param source        The template TemplateSource
      * @param ParseContext  The context used while parsing; contains
      *                      at least the HttpServletRequest and
      *                      HttpServletResponse.
      * @see ParseContext
-     * @see DataSource
+     * @see TemplateSource
      */
-    public void process (DataSource source,
+    public void process (TemplateSource source,
 			 ParseContext context)
 	throws IOException
     {
@@ -107,15 +107,15 @@ public class PageParser
     public void process (File file, ParseContext context) 
 	throws IOException
     {
-	process (new FileDataSource(file), context);
+	process (new FileTemplateSource(file), context);
     }
 
-    public Map getLabels(DataSource source) {
+    public Map getLabels(TemplateSource source) {
 	String cName = source.getCanonicalName();
 	if (cName == null)
 	    return null;
 
-	DataSourceInfo sourceInfo = (DataSourceInfo)pages.get(cName);
+	TemplateSourceInfo sourceInfo = (TemplateSourceInfo)pages.get(cName);
 	if (sourceInfo == null)
 	    return null;
 
@@ -161,20 +161,20 @@ public class PageParser
     }
 
     /**
-     * If DataSource has changed or has not yet been loaded, load
+     * If TemplateSource has changed or has not yet been loaded, load
      * it and chop into sections, storing result for future use.
      * Otherwise, return stored preprocessed page.
-     * @param source DataSource for which we want page section list
+     * @param source TemplateSource for which we want page section list
      * @return list of page sections, as described in parsePage().
      * @see #parsePage
      */
-    private List getPageParts (DataSource source, ParseContext context)
+    private List getPageParts (TemplateSource source, ParseContext context)
 	throws IOException {
 	// first, check to see if we have cached version
 	String cName = source.getCanonicalName();
-	DataSourceInfo sourceInfo = null;
+	TemplateSourceInfo sourceInfo = null;
 	if (cName != null) 
-	    sourceInfo = (DataSourceInfo) pages.get(cName);
+	    sourceInfo = (TemplateSourceInfo) pages.get(cName);
       
 	/*
 	 * parse the page if it has changed or no cached 
@@ -193,7 +193,7 @@ public class PageParser
     /**
      * Scan through vector of page sections and build
      * output. 
-     * Read the static areas of the DataSource and copy them to the 
+     * Read the static areas of the TemplateSource and copy them to the 
      * output until the beginning of the next special tag. Invokes
      * the <CODE>executeTag()</CODE> Method for the tag
      * and goes on with copying.
@@ -201,7 +201,7 @@ public class PageParser
      * @param parts page sections, as provide by parsePage()
      * @see #parsePage
      */
-    private void interpretPage(DataSource source, 
+    private void interpretPage(TemplateSource source, 
 			       List parts, ParseContext context)
 	throws IOException {
 
@@ -231,7 +231,7 @@ public class PageParser
 	    for (int i = 0; i < parts.size(); i++) {
 		/** <critical-path> **/
 		SpecialTagHandler part = (SpecialTagHandler)parts.get(i);
-		// copy DataSource content till the beginning of the Tag:
+		// copy TemplateSource content till the beginning of the Tag:
 		copy(inStream, out, part.getTagStart()-inPos, buf);
 
 		context.startTag(i);
@@ -255,7 +255,7 @@ public class PageParser
 		inPos = part.getTagStart() + part.getTagLength();
 		/** </critical-path> **/
 	    }
-	    // copy rest until end of DataSource
+	    // copy rest until end of TemplateSource
 	    copy (inStream, out, -1, buf);
 	}
 	finally {
@@ -301,10 +301,10 @@ public class PageParser
      * to create the output.
      *
      * @param souce source to open and process
-     * @return DataSourceInfo containing page elements.
+     * @return TemplateSourceInfo containing page elements.
      * <!-- see private <a href="#interpretPage">interpretPage()</a> -->
      */
-    private DataSourceInfo parsePage (DataSource source, ParseContext context)
+    private TemplateSourceInfo parsePage (TemplateSource source, ParseContext context)
 	throws IOException {
 	/*
 	 * read source contents. The SGMLTag requires
@@ -329,7 +329,7 @@ public class PageParser
 	// from JDK 1.1.6, the name of the encoding is ISO8859_1, but the old
 	// value is still accepted.
 	fin = new PositionReader (new BufferedReader (new InputStreamReader (source.getInputStream(),"8859_1")));
-	DataSourceInfo sourceInfo = new DataSourceInfo();
+	TemplateSourceInfo sourceInfo = new TemplateSourceInfo();
 
 	try {
 	    // scan through page parsing SpecialTag statements
@@ -383,16 +383,16 @@ public class PageParser
 
     /**
      * Source info holds the parse information for
-     * a DataSource .. and some statistical stuff which 
+     * a TemplateSource .. and some statistical stuff which 
      * may be interesting for administrative
      * frontends
      */
-    private final class DataSourceInfo {
+    private final class TemplateSourceInfo {
 	ArrayList parts;
 	Map       labels;
 	long      lastModified;
 	long      parseTime;
-	public DataSourceInfo () {}
+	public TemplateSourceInfo () {}
     }
 }
 

@@ -24,7 +24,7 @@ import org.wings.template.TemplateParseContext;
 import org.wings.template.RangeTagHandler;
 import org.wings.template.SimpleTagHandler;
 import org.wings.template.LabelTagHandler;
-import org.wings.template.parser.DataSource;
+import org.wings.template.TemplateSource;
 import org.wings.template.parser.PageParser;
 
 /**
@@ -55,7 +55,7 @@ public class TemplateLayoutCG
     private void write(Device device, STemplateLayout layout)
         throws IOException {
 
-        final DataSource source = layout.getDataSource();
+        final TemplateSource source = layout.getTemplateSource();
         SComponent container = ( SComponent ) layout.getContainer();
 
         if(source == null) {

@@ -14,7 +14,7 @@
  * Another version of this file by the same author has been in the ApacheJSSI
  * Servlet; there with Apache License.
  */
-package org.wings.template.parser;
+package org.wings.template;
 
 import java.io.IOException;
 import java.io.File;
@@ -22,17 +22,17 @@ import java.io.InputStream;
 import java.io.FileInputStream;
 
 /**
- * A <CODE>FileDataSource</CODE> implements a DataSource
+ * A <CODE>FileDataSource</CODE> implements a TemplateSource
  * for a file.
  *
  * @version $Revision$ $Date$
- * @author <A href="mailto:zeller@think.de">Henner Zeller</A>
+ * @author <A href="mailto:H.Zeller@acm.org">Henner Zeller</A>
  */
-public class FileDataSource implements DataSource {
+public class FileTemplateSource implements TemplateSource {
     private File file;
     protected String canonicalName = null;
     
-    public FileDataSource (File f) {
+    public FileTemplateSource (File f) {
 	this.file = f;
 	if (file != null) {
 	    try {
