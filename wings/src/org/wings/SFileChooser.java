@@ -43,6 +43,9 @@ import org.wings.io.Device;
  * <p>If you don't call reset, the file is eventually be removed
  * by the Java garbage collector, if you haven't renamed it.
  *
+ * <p>The form, you add this FileChooser needs to have the encoding type
+ * <code>multipart/form-data</code> set 
+ * (form.setEncodingType("multipart/form-data")).
  * @author <a href="mailto:HEngels@mercatis.de">Holger Engels</a>
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
