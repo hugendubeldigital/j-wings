@@ -28,11 +28,18 @@ public final class TabbedPaneCG
     extends org.wings.plaf.xhtml.TabbedPaneCG
 {
     Icon firstIcon;
+    Icon normalIcon;
+    Icon selectedIcon;
+    Icon lastIcon;
+
     Icon transIcon;
 
     public void installCG(SComponent component) {
         super.installCG(component);
         firstIcon = component.getSession().getCGManager().getIcon("TabbedPaneCG.firstIcon");
+        normalIcon = component.getSession().getCGManager().getIcon("TabbedPaneCG.normalIcon");
+        selectedIcon = component.getSession().getCGManager().getIcon("TabbedPaneCG.selectedIcon");
+        lastIcon = component.getSession().getCGManager().getIcon("TabbedPaneCG.lastIcon");
         transIcon = LookAndFeel.makeIcon(TabbedPaneCG.class, "/org/wings/icons/transdot.gif");
     }
 
@@ -44,15 +51,21 @@ public final class TabbedPaneCG
         SBorder border = c.getBorder();
         STabbedPane pane = (STabbedPane)c;
 
-        String firstAdr = null;
-        String transAdr = null;
+        String firstAdr   = null;
+        String normalAdr  = null;
+        String selectAdr  = null;
+        String lastAdr    = null;
+        String transAdr   = null;
         int maxTabsPerLine = pane.getMaxTabsPerLine();
 
         ExternalizeManager ext = c.getExternalizeManager();
         if (ext != null && firstIcon != null) {
             try {
-                firstAdr = ext.externalize(firstIcon);
-                transAdr = ext.externalize(transIcon);
+                firstAdr   = ext.externalize(firstIcon);
+                normalAdr = ext.externalize(normalIcon);
+                selectAdr = ext.externalize(selectedIcon);
+                lastAdr   = ext.externalize(lastIcon);
+                transAdr   = ext.externalize(transIcon);
             }
             catch (java.io.IOException e) {
                 System.err.println(e.getMessage());
@@ -71,25 +84,38 @@ public final class TabbedPaneCG
             contents = (SContainer)pane.getComponentAt(1);
         }
 
+        /* for browsers, that do not support the border styles, create a line
+         * at top, that starts at position 18 (the first 17 pixels are used up by
+         * the rise of the left tab. This gives the correct illusion at least for the
+         * first line of tabs.
+         */
+        // this is actually only really for NS 4.x. Looks very ugly for Mozilla.
+        // (dunno for IE).
+        /*
         d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">")
-            .append("<tr><td width=\"17\"></td><td bgcolor=\"#000000\"><img src=\"")
-            .append(transAdr)
-            .append("\" width=\"1\" height=\"1\" /></td></tr></table>\n");
-
-        //d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">")
-        //    .append("<tr><td width=\"17\"></td><td bgcolor=\"#000000\"><img height=\"1\" width=\"1\"/></td></tr></table>\n");
+            .append("<tr><td>")
+            .append("<img src=\"").append(transAdr).append("\" width=\"17\" height=\"1\" />")
+            .append("</td><td width=\"100%\" bgcolor=\"#000000\">") // '100%' hack needed for NS4.x
+            .append("<img src=\"").append(transAdr).append("\" width=\"1\" height=\"1\" />")
+            .append("</td></tr></table>\n");
+        */
+        boolean newLine = true;
+        boolean selected = false;
 
         for (int i=0; i < buttons.getComponentCount(); i++) {
             d.append("<img src=\"")
-                .append(firstAdr)
+                .append(newLine 
+                        ? firstAdr 
+                        : (selected) ? selectAdr : normalAdr)
                 .append("\" />");
-
+            newLine = false;
             SRadioButton button = (SRadioButton)buttons.getComponentAt(i);
             String text = button.getText();
             if (text != null && !text.endsWith("&nbsp;"))
                 button.setText(text + "&nbsp;");
 
-            if (i == pane.getSelectedIndex())
+            selected = (i == pane.getSelectedIndex());
+            if (selected)
                 button.setStyle(pane.getSelectionStyle());
             else
                 button.setStyle(pane.getStyleAt(pane.getSelectedIndex()));
@@ -98,8 +124,10 @@ public final class TabbedPaneCG
 
             if ( maxTabsPerLine > 0 && ((i+1) % maxTabsPerLine == 0) ) {
                 d.append("<br />");
+                newLine = true;
             }
         }
+        d.append("<img src=\"").append(lastAdr).append("\" />");
 
         d.append("<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"1\"><tr><td>");
 
