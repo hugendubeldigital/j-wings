@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+    "http://java.sun.com/j2ee/dtds/web-app_2.2.dtd">
+
+<web-app>
+  <servlet>
+    <servlet-name>
+      LdapClient
+    </servlet-name>
+    <servlet-class>
+      ldap.LdapClient
+    </servlet-class>
+    <init-param>
+      <param-name>externalizer.servlet.url</param-name>
+      <param-value>ExternalizerServlet</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ldap.server.host</param-name>
+      <param-value>localhost:389</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ldap.server.basedn</param-name>
+      <param-value>dc=engels, dc=de</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ldap.server.binddn</param-name>
+      <param-value>cn=Manager, dc=engels, dc=de</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>
+      LdapBrowser
+    </servlet-name>
+    <servlet-class>
+      ldap.LdapBrowser
+    </servlet-class>
+    <init-param>
+      <param-name>externalizer.servlet.url</param-name>
+      <param-value>ExternalizerServlet</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ldap.server.host</param-name>
+      <param-value>192.168.10.21:389</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ldap.server.basedn</param-name>
+      <param-value>dc=engels, dc=de</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ldap.server.binddn</param-name>
+      <param-value>cn=admin, dc=engels, dc=de</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ldap.server.password</param-name>
+      <param-value>secret</param-value>
+    </init-param>
+    <init-param>
+      <param-name>search.attribute</param-name>
+      <param-value>cn</param-value>
+    </init-param>
+    <init-param>
+      <param-name>search.label</param-name>
+      <param-value>Name</param-value>
+    </init-param>
+    <init-param>
+      <param-name>overview.attributes</param-name>
+      <param-value>cn,mail,telephoneNumber</param-value>
+    </init-param>
+    <init-param>
+      <param-name>overview.labels</param-name>
+      <param-value>Name,EMail,Telephone</param-value>
+    </init-param>
+    <init-param>
+      <param-name>detailview.attributes</param-name>
+      <param-value>title,cn,mail,telephoneNumber,l,jpegPhoto</param-value>
+    </init-param>
+    <init-param>
+      <param-name>detailview.labels</param-name>
+      <param-value>Title,Name,EMail,Telephone,Location,Photo</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>
+      ExternalizerServlet
+    </servlet-name>
+    <servlet-class>
+      org.wings.externalizer.ExternalizerServlet
+    </servlet-class>
+  </servlet>
+
+<!-- url mappings -->
+
+  <servlet-mapping>
+    <servlet-name>
+      LdapClient
+    </servlet-name>
+    <url-pattern>
+      /LdapClient
+    </url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>
+      LdapBrowser
+    </servlet-name>
+    <url-pattern>
+      /LdapBrowser
+    </url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>
+      ExternalizerServlet
+    </servlet-name>
+    <url-pattern>
+      /ExternalizerServlet
+    </url-pattern>
+  </servlet-mapping>
+</web-app>
