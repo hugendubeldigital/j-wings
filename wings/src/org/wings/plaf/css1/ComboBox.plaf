@@ -4,12 +4,24 @@
    new org.wings.SDefaultListCellRenderer()
 </comp-property>
 
+<import>org.wings.script.*</import>
+<install>
+  
+</install>
+    private static final JavaScriptListener submitListener = new JavaScriptListener(JavaScriptEvent.ON_CHANGE, "submit()");
+
     protected void writeFormComboBox(Device device, SComboBox comboBox)
         throws IOException
     {
         %><select size="1"<%
         %><%|class=Utils.style(comboBox)%><%
         %><%|name=comboBox.getNamePrefix()%><%
+
+        comboBox.removeScriptListener(submitListener);
+        if (comboBox.getActionListeners().length>0) {
+             comboBox.addScriptListener(submitListener);
+        }
+
 	Utils.writeEvents(device, comboBox);
         %>><%
 
