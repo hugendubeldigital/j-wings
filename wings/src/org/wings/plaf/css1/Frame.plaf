@@ -117,7 +117,7 @@ static final SResourceIcon ICON = new SResourceIcon("org/wings/icons/ArrowDown.g
 <%
         }
 
-        %><%=documentType%>
+        %><%#documentType%>
 <%
 
         %><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=language%>" lang="<%=language%>">
