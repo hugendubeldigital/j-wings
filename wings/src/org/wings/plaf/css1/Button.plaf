@@ -32,6 +32,8 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
 
     //    boolean noBreak = abstractButton.isNoBreak();
 
+    final AnchorProperties anchorProperties = AnchorRenderStack.get();
+
     if ( enabled )
     {
         %><a href="<%
@@ -41,6 +43,13 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
         %><%|title=abstractButton.getToolTipText()%><%
         %><%|accesskey=abstractButton.getMnemonic()%><%
         %>style="<% Utils.writeAttributes(device, abstractButton);%>"<%
+    }
+    else if ( anchorProperties!=null ) {
+        if ( anchorProperties.isFormAnchor() ) {
+            %><a href="" onclick="return submitForm(event, '<%=anchorProperties.getFormEventName()%>','<%=anchorProperties.getFormEventValue()%>')"<%
+        } else {
+            %><a href="<%=anchorProperties.getURL().toString()%>"<%
+        }
     }
     else {
         %><span<%
@@ -57,6 +66,9 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
 
     if ( enabled )
     {
+        %></a><%
+    }
+    else if ( anchorProperties!=null ) {
         %></a><%
     }
     else {
@@ -117,6 +129,9 @@ protected void writeAnchorIcon(final Device device, SAbstractButton abstractButt
     boolean enabled = abstractButton.isEnabled() &&
 	(abstractButton.getGroup()==null || !abstractButton.isSelected());
 
+
+    final AnchorProperties anchorProperties = AnchorRenderStack.get();
+
     if ( enabled ) {
         %><a href="<%
         writeAnchorAddress(device, abstractButton);
@@ -127,7 +142,13 @@ protected void writeAnchorIcon(final Device device, SAbstractButton abstractButt
 
 
     }
-    else {
+    else if ( anchorProperties!=null ) {
+        if ( anchorProperties.isFormAnchor() ) {
+            %><a href="" onclick="return submitForm(event, '<%=anchorProperties.getFormEventName()%>','<%=anchorProperties.getFormEventValue()%>')"<%
+        } else {
+            %><a href="<%=anchorProperties.getURL().toString()%>"<%
+        }
+    } else {
         %><span<%
     }
     %><%|class=attr%>><%
@@ -141,6 +162,9 @@ protected void writeAnchorIcon(final Device device, SAbstractButton abstractButt
     %><%|alt=abstractButton.getToolTipText()%> /><%
 
     if ( enabled ) {
+        %></a><%
+    }
+    else if ( anchorProperties!=null ) {
         %></a><%
     }
     else {
