@@ -90,11 +90,8 @@ public class ServletExternalizer
      */
     protected String getExternalizedURL(ExternalizedInfo info) {
         StringBuffer result = new StringBuffer(httpAddress);
-        /* if problem with tomcat and path info not resolved, then */
-	result.append("?NAME=").append(info.extFileName);
-	/* else
         result.append("/").append(info.extFileName);
-	*/
+        
         return result.toString();
     }
 
@@ -112,13 +109,9 @@ public class ServletExternalizer
      * for externalizer servlet
      */
     public static ExternalizedInfo getExternalizedInfo(HttpServletRequest request) {
-    /* if problem with tomcat and path info not resolved, then */
-    String fname = request.getParameter("NAME");
-    /*  else
         String fname = request.getPathInfo();
         if (fname.startsWith("/"))
             fname = fname.substring(1);
-     */
         return (ExternalizedInfo)externalizedNameMap.get(fname);
     }
 }
