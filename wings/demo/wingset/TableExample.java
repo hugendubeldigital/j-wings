@@ -144,6 +144,10 @@ public class TableExample
             return cols;
         }
 
+        public String getColumnName(int col) {
+            return "col " + col;
+        }
+
         public int getRowCount() {
             return rows;
         }
