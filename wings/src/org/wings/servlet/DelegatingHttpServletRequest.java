@@ -16,6 +16,7 @@ package org.wings.servlet;
 
 import java.io.*;
 import java.util.*;
+import java.security.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -168,8 +169,9 @@ public class DelegatingHttpServletRequest
      */
     public ServletInputStream getInputStream()
         throws IOException {
-            return req.getInputStream();
-        }
+
+        return req.getInputStream();
+    }
 
     /**
      * Returns a string containing the lone value of the specified
@@ -435,7 +437,74 @@ public class DelegatingHttpServletRequest
     public boolean isRequestedSessionIdFromUrl() {
         return req.isRequestedSessionIdFromUrl();
     }
+
+
+    // TODO rhaag: Needed for JSDK in j2ee.jar
+
+    public String getContextPath() {
+        return null;
+    }
+
+
+    public Enumeration getHeaders(String s) {
+        return null;
+    }
+
+    
+    public HttpSession getSession() {
+        return null;
+    }
+
+
+    public Principal getUserPrincipal() {
+        return null;
+    }
+
+
+    public boolean isRequestedSessionIdFromURL() {
+        return false;
+    }
+
+
+    public boolean isUserInRole(String s) {
+        return false;
+    }
+
+
+    public Enumeration getAttributeNames() {
+        return null;
+    }
+
+
+    public Locale getLocale() {
+        return null;
+    }
+
+
+    public Enumeration getLocales() {
+        return null;
+    }
+
+
+    public RequestDispatcher getRequestDispatcher(String s) {
+        return null;
+    }
+
+
+    public boolean isSecure() {
+        return false;
+    }
+
+    
+    public void removeAttribute(String s) {
+    }
+
+
+    public void setAttribute(String s, Object o) {
+    }
 }
+
+
 
 /*
  * Local variables:

@@ -19,11 +19,15 @@ import java.io.IOException;
 
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.Locale;
+
+import java.security.Principal;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 import javax.servlet.ServletInputStream;
+import javax.servlet.RequestDispatcher;
 
 /*
  * ServletRequest.java
@@ -374,6 +378,71 @@ public class ServletRequest
      */
     public boolean isRequestedSessionIdFromUrl() {
         return orig.isRequestedSessionIdFromUrl();
+    }
+
+
+    // TODO rhaag: Needed for JSDK in j2ee.jar
+
+    public String getContextPath() {
+        return null;
+    }
+
+
+    public Enumeration getHeaders(String s) {
+        return null;
+    }
+
+    
+    public HttpSession getSession() {
+        return null;
+    }
+
+
+    public Principal getUserPrincipal() {
+        return null;
+    }
+
+
+    public boolean isRequestedSessionIdFromURL() {
+        return false;
+    }
+
+
+    public boolean isUserInRole(String s) {
+        return false;
+    }
+
+
+    public Enumeration getAttributeNames() {
+        return null;
+    }
+
+
+    public Locale getLocale() {
+        return null;
+    }
+
+
+    public Enumeration getLocales() {
+        return null;
+    }
+
+
+    public RequestDispatcher getRequestDispatcher(String s) {
+        return null;
+    }
+
+
+    public boolean isSecure() {
+        return false;
+    }
+
+    
+    public void removeAttribute(String s) {
+    }
+
+
+    public void setAttribute(String s, Object o) {
     }
 }
 
