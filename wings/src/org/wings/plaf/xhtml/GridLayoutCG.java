@@ -48,14 +48,15 @@ public class GridLayoutCG
 
         int cols = layout.getColumns();
         int rows = layout.getRows();
-
+        container.setPreferredSize(null);               /* Disable the Dimension, don't needed */
+        
         d.print("\n<table ");
-        if ( Utils.hasSpanAttributes( container ) )
-         {
-         	d.print("style=\"");
+//        if ( Utils.hasSpanAttributes( container ) )
+//         {
+         	d.print("style=\"width:100%");
         	Utils.writeSpanAttributes( d, (SComponent) container );
             d.print("\" ");
-		 }
+//		 }
 
         if (cellSpacing >= 0)
             d.print(" cellspacing=\"").print(cellSpacing).print("\"");
