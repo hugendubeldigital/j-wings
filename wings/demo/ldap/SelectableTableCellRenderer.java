@@ -102,6 +102,8 @@ public class SelectableTableCellRenderer
         }
     }
 
+    public void fireIntermediateEvents() {}
+    public void fireFinalEvents() {}
 
     public void write(Device d) throws IOException
     {
@@ -116,3 +118,5 @@ public class SelectableTableCellRenderer
     }
 
 }
+
+
