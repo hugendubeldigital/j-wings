@@ -558,20 +558,23 @@ public class STable
 
         STableCellEditor editor = getCellEditor(row, column);
         if (editor != null) {
+            // set up editor environment and make it possible for the editor, to
+            // stop/cancel editing on preparation 
+            editor.addCellEditorListener(this);
+            setCellEditor(editor);
+            setEditingRow(row);
+            setEditingColumn(column);
+
             // prepare editor
             editorComp = prepareEditor(editor, row, column);
 
             if (editor.isCellEditable(e) && editor.shouldSelectCell(e)) {
-                editorComp.setParent(getParent());
-                //this.add(editorComp);
-                setCellEditor(editor);
-                setEditingRow(row);
-                setEditingColumn(column);
-                editor.addCellEditorListener(this);
-
                 return true;
-            }
-            setValueAt(editor.getCellEditorValue(), row, column);
+            } else {
+                setValueAt(editor.getCellEditorValue(), row, column);
+                removeEditor();
+            } // end of else
+            
         }
         return false;
     }
@@ -724,6 +727,9 @@ public class STable
             setCellEditor(null);
             setEditingColumn(-1);
             setEditingRow(-1);
+            if ( editorComp!=null ) {
+                editorComp.setParent(null);
+            } // end of if ()
             editorComp = null;
         }
     }

@@ -14,11 +14,15 @@
 
 package org.wings;
 
+
+
 import java.awt.event.*;
 import java.util.EventObject;
-
 import javax.swing.event.*;
-
+import org.wings.event.SRequestEvent;
+import org.wings.event.SRequestListener;
+import org.wings.event.WeakRequestListenerProxy;
+import org.wings.session.SessionManager;
 import org.wings.table.STableCellEditor;
 
 /**
@@ -30,18 +34,119 @@ import org.wings.table.STableCellEditor;
 public class SDefaultCellEditor
     implements STableCellEditor
 {
-    /** Event listeners */
-    protected EventListenerList listenerList = new EventListenerList();
+    /**
+     * The default ok button icon.
+     *
+     */
+    public static final SIcon OK_BUTTON_ICON = 
+        new ResourceImageIcon("toolbarButtonGraphics/general/Save16.gif");
 
     /**
-     * TODO: documentation
+     * The default cancel button icon.
+     *
      */
-    transient protected ChangeEvent changeEvent = null;
+    public static final SIcon CANCEL_BUTTON_ICON = 
+        new ResourceImageIcon("toolbarButtonGraphics/general/Stop16.gif");
 
-    protected SForm editorForm;
-    protected SPanel editorPanel;
-    protected SComponent editorComponent;
+
+    /**
+     * Label for displaying (error)-messages. It is unvisible, until a message
+     * is set.
+     *
+     */
+    protected final SLabel messageLabel = new SLabel();
+
+    /**
+     * Form for edit fields.
+     *
+     */
+    protected final SForm editorForm = new SForm();
+
+    /**
+     * If this button is pressed, editing is tried to stop. If input validation
+     * found no error, editing is stopped, else an error message is displayed
+     *
+     */
+    protected final SButton ok = new SButton();
+
+    /**
+     * If this button is pressed, editing is canceled. 
+     *
+     */
+    protected final SButton cancel = new SButton();
+
+    /**
+     * Store here the CellEditorListener
+     *
+     */
+    protected final EventListenerList listenerList = new EventListenerList();
+
+    /**
+     * Indicates, that an stopped event occurs. A stop event occurs on pressing
+     * the {@link #ok ok button} or on posting the {@link #editorForm form}. 
+     *
+     */
+    protected boolean fireStoppedEvent = false;
+
+    /**
+     * Indicates, that an cancel event occurs. A cancel event occurs on pressing
+     * the {@link #cancel cancel button}.
+     *
+     */
+    protected boolean fireCanceledEvent = false;
+
+    /**
+     * Event listener, which set the fire... indicators. This event listener is
+     * added to the three buttons {@link #ok}, {@link #cancel} and {@link #undo}
+     * and the {@link #editorFrom form}
+     *
+     */
+    private final ActionListener fireEventListener = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+                    if ( e.getSource()==editorForm || 
+                         e.getSource()==ok ) {
+                        fireStoppedEvent = true;
+                    } else if ( e.getSource()==cancel ) { 
+                        fireCanceledEvent = true;
+                    } // end of if ()
+		}
+	    };
+    
+    /**
+     * This is a trick, after the dispatching is done, check, if this editor
+     * should fire an event. 
+     * the trick is needed, because it is possible to get one or two events on
+     * editing, one from the form and sometimes one from a button. It is only
+     * possible to decide, which event we should fire, if we have all events.
+     *
+     */
+    private final SRequestListener eventChecker = new SRequestListener() {
+            public void processRequest(SRequestEvent e) {
+                if ( e.getType()==SRequestEvent.DISPATCH_DONE ) {
+                    checkFireEvents();
+                } 
+            }
+        };
+
+    /**
+     * Fast edit support is editing with reduced interaction. E.g. a boolean
+     * value can only have to states, true or false. So if editing is started,
+     * the editor just flips the state and fires editing stopped. 
+     *
+     */
+    private boolean fastEditSupport = true;
+
     protected EditorDelegate delegate;
+
+    protected SComponent editorComponent;
+
+    // default init
+    {
+
+        // add request listener as weak reference. This is the only way to make
+        // this object garbage collectable inside the session
+	SessionManager.getSession().addRequestListener(new WeakRequestListenerProxy(eventChecker));
+    }
 
     /**
      * Constructs a DefaultCellEditor that uses a text field.
@@ -49,13 +154,10 @@ public class SDefaultCellEditor
      * @param x  a STextField object ...
      */
     public SDefaultCellEditor(STextField x) {
-        createDefaultIcons();
+        editorForm.add(messageLabel);
+        editorForm.add(x);
 
         this.editorComponent = x;
-        this.editorForm = new SForm();
-        this.editorPanel = new SPanel();
-        editorForm.add(editorPanel);
-        editorPanel.add(editorComponent);
         this.delegate = new EditorDelegate() {
                 public void setValue(Object v) {
                     super.setValue(v);
@@ -79,11 +181,8 @@ public class SDefaultCellEditor
                 }
         };
 
-        SButton button = new SButton("ok");
-        //button.setIcon(commitIcon);
-        button.addActionListener(delegate); // react on button press..
-        editorForm.addActionListener(delegate); // .. and if form submitted
-        editorPanel.add(button);
+        initButtons();
+
     }
 
     /**
@@ -92,15 +191,12 @@ public class SDefaultCellEditor
      * @param x  a SCheckBox object ...
      */
     public SDefaultCellEditor(SCheckBox x) {
-        createDefaultIcons();
+        editorForm.add(messageLabel);
+        editorForm.add(x);
 
         this.editorComponent = x;
-        this.editorForm = null;
-        this.editorPanel = null;
         this.delegate = new EditorDelegate() {
                 public void setValue(Object v) {
-                    super.setValue(v);
-
                     // Try my best to do the right thing with v
                     boolean bool;
                     if (v instanceof Boolean) {
@@ -113,8 +209,16 @@ public class SDefaultCellEditor
                     else {
                         bool = false;
                     }
-                    ((SCheckBox)editorComponent).setSelected(bool);
-                    ((SCheckBox)editorComponent).setSelected(!bool);
+
+                    System.out.println("set value " + bool);
+                    if ( fastEditSupport ) {
+                        System.out.println("fast edit, set value " + !bool);
+                        ((SCheckBox)editorComponent).setSelected(!bool);
+                        SDefaultCellEditor.this.stopCellEditing();
+                    } else {
+                        ((SCheckBox)editorComponent).setSelected(bool);
+                    } // end of if ()
+                    
                 }
 
                 public Object getCellEditorValue() {
@@ -130,7 +234,26 @@ public class SDefaultCellEditor
                 }
         };
 
-        ((SCheckBox)editorComponent).addActionListener(delegate);
+        initButtons();
+
+    }
+
+    /**
+     * Intializes the buttons with default icons, tooltip text and listener.
+     *
+     */
+    protected void initButtons() {
+	ok.addActionListener(fireEventListener);
+        ok.setIcon(OK_BUTTON_ICON);
+        ok.setToolTipText("ok");
+        
+	cancel.addActionListener(fireEventListener);
+        cancel.setIcon(CANCEL_BUTTON_ICON);
+        cancel.setToolTipText("cancel");
+
+	editorForm.addActionListener(fireEventListener);
+        editorForm.add(ok);
+        editorForm.add(cancel);
     }
 
     /**
@@ -138,36 +261,74 @@ public class SDefaultCellEditor
      *
      * @return the editor Component
      */
-    public SComponent getComponent() {
+    public final SComponent getComponent() {
         return editorComponent;
     }
 
-    /** Icon used for the commit button.*/
-    transient protected SIcon commitIcon = null;
-
     /**
-     * Sets the icon used for the commit button.
-     */
-    public void setCommitIcon(SIcon newIcon) {
-        commitIcon = newIcon;
-    }
-
-    /**
-     * Returns the icon used for the commit button.
-     */
-    public SIcon getCommitIcon() {
-        return commitIcon;
-    }
-
-    /**
-     * TODO: documentation
      *
      */
-    protected void createDefaultIcons() {
-        setCommitIcon(new ResourceImageIcon(getClass().getClassLoader(),
-                                            "org/wings/icons/TreeLeaf.gif"));
+    public final SButton getOKButton() {
+        return ok;
     }
 
+    /**
+     *
+     */
+    public final SButton getCancelButton() {
+        return cancel;
+    }
+
+    /**
+     * Fast edit support is editing with reduced interaction. E.g. a boolean
+     * value can only have to states, true or false. So if editing is started,
+     * the editor just flips the state and fires editing stopped. 
+     *
+     * @param b a <code>boolean</code> value
+     */
+    public final void setFastEdit(boolean b) {
+        fastEditSupport = b;
+    }
+
+    /**
+     * Return if fast edit is activated.
+     *
+     * @return a <code>boolean</code> value
+     * @see #setFastEdit
+     */
+    public final boolean getFastEdit() {
+        return fastEditSupport;
+    }
+
+    /**
+     * Checks if a ChangeEvent should be fired. This is done on every
+     * request. Pressing a button just set flags what to do. This method
+     * checks the flags and start the jobs. This is a trick which gets necessary
+     * because the {@link #editorForm form} fires an event on posting the form
+     * and it is not sure, if cancel, ok, undo or a editor component is
+     * responsible for this post. So flags are set and processed after
+     * dispatching of the request, when all flags are set.
+     *
+     */
+    protected void checkFireEvents() {
+        // something is to be done, if the editor form has fired an action
+        // event, so the fireStoppedEvent flag is true
+        if ( fireStoppedEvent ) {
+            System.out.println("fireStoppedEvent " + fireStoppedEvent);
+            System.out.println("fireCanceledEvent " + fireCanceledEvent);
+            // process cancel and undo events before stopped event, because the
+            // form fires a stopped event in any case...
+            if ( fireCanceledEvent ) {
+                cancelCellEditing();
+            } else {
+                stopCellEditing();
+            } // end of if ()
+        
+            // reset the flags.
+            fireStoppedEvent = false;
+            fireCanceledEvent = false;
+        } 
+    }
 
     //
     //  Implementing the CellEditor Interface
@@ -213,12 +374,12 @@ public class SDefaultCellEditor
      * @return
      */
     public boolean stopCellEditing() {
-        boolean stopped = delegate.stopCellEditing();
-        if (stopped) {
+        if ( delegate.stopCellEditing() ) {
             fireEditingStopped();
+            return true;
         }
 
-        return stopped;
+        return false;
     }
 
     // implements javax.swing.CellEditor
@@ -254,6 +415,8 @@ public class SDefaultCellEditor
         listenerList.remove(CellEditorListener.class, l);
     }
 
+    private ChangeEvent changeEvent = null;
+
     /*
      * Notify all listeners that have registered interest for
      * notification on this event type.  The event instance
@@ -262,19 +425,16 @@ public class SDefaultCellEditor
      * @see EventListenerList
      */
     protected void fireEditingStopped() {
-        // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==CellEditorListener.class) {
-                // Lazily create the event:
-                if (changeEvent == null)
-                    changeEvent = new javax.swing.event.ChangeEvent(this);
-                ((CellEditorListener)listeners[i+1]).editingStopped(changeEvent);
-            }
-        }
+	Object[] listeners = listenerList.getListenerList();
+	for ( int i=listeners.length-2; i>=0; i-=2 ) {
+	    if ( listeners[i]==CellEditorListener.class ) {
+		if ( changeEvent==null )
+		    changeEvent = new ChangeEvent(this);
+		((CellEditorListener)listeners[i+1]).editingStopped(changeEvent);
+	    }	       
+	}
     }
+
 
     /*
      * Notify all listeners that have registered interest for
@@ -284,18 +444,14 @@ public class SDefaultCellEditor
      * @see EventListenerList
      */
     protected void fireEditingCanceled() {
-        // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==CellEditorListener.class) {
-                // Lazily create the event:
-                if (changeEvent == null)
-                    changeEvent = new javax.swing.event.ChangeEvent(this);
-                ((CellEditorListener)listeners[i+1]).editingCanceled(changeEvent);
-            }
-        }
+	Object[] listeners = listenerList.getListenerList();
+	for ( int i=listeners.length-2; i>=0; i-=2 ) {
+	    if ( listeners[i]==CellEditorListener.class ) {
+		if ( changeEvent==null )
+		    changeEvent = new ChangeEvent(this);
+		((CellEditorListener)listeners[i+1]).editingCanceled(changeEvent);
+	    }	       
+	}
     }
 
     //
@@ -311,14 +467,7 @@ public class SDefaultCellEditor
         String stringValue = (value != null)?value.toString():"";
 
         delegate.setValue(stringValue);
-        if (editorForm != null && editorPanel != null) {
-            if (containedInForm(tree.getParent()))
-                return editorPanel;
-            else
-                return editorForm;
-        }
-        else
-            return editorComponent;
+        return editorForm;
     }
 
     /**
@@ -344,16 +493,9 @@ public class SDefaultCellEditor
     public SComponent getTableCellEditorComponent(STable table, Object value,
                                                   boolean isSelected,
                                                   int row, int column) {
+        delegate.setValue(value); 
 
-        delegate.setValue(value);
-        if (editorForm != null && editorPanel != null) {
-            if (containedInForm(table.getParent()))
-                return editorPanel;
-            else
-                return editorForm;
-        }
-        else
-            return editorComponent;
+	return editorForm;
     }
 
 
@@ -364,9 +506,7 @@ public class SDefaultCellEditor
     /**
      * TODO: documentation
      */
-    protected class EditorDelegate
-        implements ActionListener, ItemListener
-    {
+    protected class EditorDelegate {
         protected Object value;
 
         /**
@@ -415,26 +555,6 @@ public class SDefaultCellEditor
 
         public boolean shouldSelectCell(EventObject anEvent) {
             return true;
-        }
-
-        // Implementing ActionListener interface
-        /**
-         * TODO: documentation
-         *
-         * @param e
-         */
-        public void actionPerformed(ActionEvent e) {
-            fireEditingStopped();
-        }
-
-        // Implementing ItemListener interface
-        /**
-         * TODO: documentation
-         *
-         * @param e
-         */
-        public void itemStateChanged(ItemEvent e) {
-            fireEditingStopped();
         }
     }
 }
