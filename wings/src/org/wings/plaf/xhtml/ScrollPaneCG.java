@@ -67,6 +67,8 @@ public class ScrollPaneCG
         horizontalScroller.setBlockIncrement( scrollPane.getHorizontalExtent() - 1 );
         verticalScroller.setBlockIncrement( scrollPane.getVerticalExtent() - 1 );
 
+		int policy = 0;
+        
         Dimension dim = scrollable.getScrollableViewportSize();
         if (dim.width != horizontalScroller.getMaximum()) {
             int maximum = dim.width;
@@ -79,7 +81,13 @@ public class ScrollPaneCG
                 value = maxValue;
 
             horizontalScroller.setValues(value, extent, 0, maximum);
-            horizontalScroller.setVisible(maximum > extent);
+            policy = scrollPane.getHorizontalScrollBarPolicy();
+            horizontalScroller.setVisible(
+            		( 
+                      maximum > extent || 
+                      policy == scrollPane.HORIZONTAL_SCROLLBAR_ALWAYS
+                    ) &&
+                    policy != scrollPane.HORIZONTAL_SCROLLBAR_NEVER );
         }
         if (dim.height != verticalScroller.getMaximum()) {
             int maximum = dim.height;
@@ -92,7 +100,13 @@ public class ScrollPaneCG
                 value = maxValue;
 
             verticalScroller.setValues(value, extent, 0, maximum);
-            verticalScroller.setVisible(maximum > extent);
+            policy = scrollPane.getVerticalScrollBarPolicy();
+            verticalScroller.setVisible(
+            		( 
+                      maximum > extent || 
+                      policy == scrollPane.VERTICAL_SCROLLBAR_ALWAYS
+                    ) &&
+                    policy != scrollPane.VERTICAL_SCROLLBAR_NEVER );
         }
     }
 

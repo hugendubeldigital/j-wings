@@ -30,6 +30,7 @@ import org.wings.io.Device;
  */
 public class SScrollPane
     extends SContainer
+    implements javax.swing.ScrollPaneConstants
 {
     /**
      * @see #getCGClassID
@@ -43,6 +44,9 @@ public class SScrollPane
 
     protected int horizontalExtent = 10;
     protected int verticalExtent = 10;
+    
+    protected static int horizontalScrollBarPolicy = HORIZONTAL_SCROLLBAR_AS_NEEDED;
+    protected static int verticalScrollBarPolicy = VERTICAL_SCROLLBAR_AS_NEEDED;
 
     /**
      * Sets the new viewport of the scrollable
@@ -181,6 +185,50 @@ public class SScrollPane
     public void setCG(ScrollPaneCG cg) {
         super.setCG(cg);
     }
+    
+    /**
+      * Returns the horizontal scroll bar policy value.
+      * @returns the horizontal scrollbar policy.
+      * @see #setHorizontalScrollBarPolicy(int)
+      */
+	public int getHorizontalScrollBarPolicy()
+     {
+		return horizontalScrollBarPolicy;
+     }
+
+    /**
+      * Returns the vertical scroll bar policy value.
+      * @returns the vertical scrollbar policy.
+      * @see #setVerticalScrollBarPolicy(int)
+      */
+	public int getVerticalScrollBarPolicy()
+     {
+		return verticalScrollBarPolicy;
+     }
+     
+	/**
+      * Determines when the horizontal scrollbar appears in the scrollpane. 
+	  * The options are:
+      * <li><code>SScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED</code></li>
+      * <li><code>SScrollPane.HORIZONTAL_SCROLLBAR_NEVER</code></li>
+      * <li><code>SScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS</code></li>
+      */
+	public void setHorizontalScrollBarPolicy( int policy)
+     {
+     	horizontalScrollBarPolicy = policy;
+     }
+
+	/**
+      * Determines when the vertical scrollbar appears in the scrollpane. 
+	  * The options are:
+      * <li><code>SScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED</code></li>
+      * <li><code>SScrollPane.VERTICAL_SCROLLBAR_NEVER</code></li>
+      * <li><code>SScrollPane.VERTICAL_SCROLLBAR_ALWAYS</code></li>
+      */
+	public void setVerticalScrollBarPolicy( int policy)
+     {
+     	verticalScrollBarPolicy = policy;
+     }
 }
 
 /*

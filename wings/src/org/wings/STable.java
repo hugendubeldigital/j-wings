@@ -94,6 +94,11 @@ public class STable
      * TODO: documentation
      */
     protected Color selBackground = null;
+    
+    /**
+      * Show/hide selectables. Default is "show".
+      */
+    protected boolean showSelectables = true;
 
     /**
      * TODO: documentation
@@ -236,6 +241,29 @@ public class STable
                 selects[i].setParent(p);
     }
 
+	/**
+      * Show selectables (SRadioButton's) or not.
+      * This is usefull, if we don't want to realize selection 
+      * via radiobuttons (f.e. with {@link org.wings.SButton} in 
+      * table cells).
+      * @param show 
+      *		<li><code>true</code> show them, if selection mode do not equals <code>NO_SELECTION</code>
+      *		<li><code>false</code> hide them at all
+      * @see #getShowSelectables()
+      */
+	public void setShowSelectables( boolean show )
+     {
+		showSelectables = show;
+     }
+
+	/**
+      * Get display mode of selectables.
+      * @see #setShowSelectables(boolean)
+      */
+	public boolean getShowSelectables( )
+     {
+		return showSelectables;
+     }
 
     public void getPerformed(String action, String value) {
         int row = new Integer(value.substring(0, value.indexOf(':'))).intValue();
@@ -586,7 +614,7 @@ public class STable
      * @return
      */
     public int getColumnCount() {
-        if (getSelectionMode() != SConstants.NO_SELECTION) {
+        if (getSelectionMode() != SConstants.NO_SELECTION && showSelectables ) {
             return super.getColumnCount()+1;
         }
         else {
