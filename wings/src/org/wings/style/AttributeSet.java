@@ -31,6 +31,8 @@ import org.wings.Renderable;
  */
 public interface AttributeSet extends Renderable
 {
+    public final AttributeSet EMPTY_ATTRIBUTESET = new SimpleAttributeSet();
+
     /**
      * Returns the number of attributes contained in this set.
      *
