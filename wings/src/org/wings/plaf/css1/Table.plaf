@@ -1,6 +1,3 @@
-<!-- -*- html -*- 
- $Id$
--->
 <template name="TableCG" for="org.wings.STable">
 <import>java.awt.*</import>
 <import>javax.swing.*</import>
@@ -220,7 +217,11 @@
                                                                table.isRowSelected(row),
                                                                row, -1);
 
-        %><td><%
+        %><td<%
+        %><%|class=(comp!=null)?comp.getStyle():null%><% 
+	String compStyle = comp.getStyle();
+	comp.setStyle(null);
+        %>><%
         RequestURL toggleSelectionAddr = table.getRequestURL();
         toggleSelectionAddr.addParameter(table, table.getToggleSelectionParameter(row, col));
 
@@ -241,6 +242,7 @@
         }
 
         %></td><%
+	comp.setStyle(compStyle);
     }
 
     protected void writeHeaderCell(Device device, STable table,
