@@ -225,6 +225,7 @@
 	    <include name="build.*" />
 	    <include name="src/" />
 	    <include name="demo/" />
+	    <include name="doc/" />
 	    <exclude name="demo/build" />
 	    <exclude name="**/CVS" />
 	    <!-- transition to a Makefile free world .. -->
