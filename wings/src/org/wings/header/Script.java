@@ -32,6 +32,7 @@ public class Script implements Renderable
 
     public Script(String language, String type, URLResource urlSource) {
 	this.language = language;
+        this.type = type;
         this.urlSource = urlSource;
     }
 
