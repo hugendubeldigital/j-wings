@@ -57,7 +57,7 @@ public class CheckBoxCG
         throws IOException
     {
         Utils.writeHiddenComponent(d, checkBox.getNamePrefix(),
-                                   checkBox.getUnifiedIdString() + UID_DIVIDER + "0");
+                                   checkBox.getUnifiedId() + UID_DIVIDER + "0");
     }
 
     protected void writeAnchorButton(Device d, SCheckBox checkBox)
@@ -206,7 +206,7 @@ public class CheckBoxCG
     protected void writeAnchorAddress(Device d, SCheckBox checkBox) 
     throws IOException {
         SGetAddress addr = checkBox.getServerAddress();
-        addr.addParameter(checkBox.getNamePrefix() + "=" + checkBox.getUnifiedIdString() + SConstants.UID_DIVIDER);
+        addr.addParameter(checkBox.getNamePrefix() + "=" + checkBox.getUnifiedId() + SConstants.UID_DIVIDER);
         addr.write(d);
     }
 
@@ -366,7 +366,7 @@ public class CheckBoxCG
                 append(checkBox.getNamePrefix()).append("\"");
 
         d.append(" value=\"").
-            append(checkBox.getUnifiedIdString() + UID_DIVIDER + "1").
+            append(checkBox.getUnifiedId() + UID_DIVIDER + "1").
             append("\"");
 
         if (checkBox.isSelected())

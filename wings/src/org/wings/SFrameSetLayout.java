@@ -180,7 +180,7 @@ public class SFrameSetLayout
 	    .append(src)
 	    .append("\"");
 	d.append(" name=\"frame")
-	    .append(frame.getUnifiedIdString())
+	    .append(frame.getUnifiedId())
 	    .append("\"");
 
 	if (properties != null) {

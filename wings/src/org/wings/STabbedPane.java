@@ -364,7 +364,7 @@ public class STabbedPane
         Page p = new Page(this, t, icon, disabledIcon, component, tip);
         pages.add(index, p);
 
-        contents.addComponent(p.component, p.component.getUnifiedIdString());
+        contents.addComponent(p.component, p.component.getUnifiedId());
 
         if ( pages.size() == 1 ) {
             setSelectedIndex(0);

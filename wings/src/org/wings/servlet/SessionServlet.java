@@ -546,7 +546,7 @@ public abstract class SessionServlet
 
                 SForm.fireEvents();
 
-                // moved this beyound SForm.fireEvents()
+                // moved this beyond SForm.fireEvents()
                 getDispatcher().dispatchDone();
 
                 if (DEBUG) {

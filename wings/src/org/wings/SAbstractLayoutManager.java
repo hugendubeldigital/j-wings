@@ -33,11 +33,6 @@ public abstract class SAbstractLayoutManager
     private static final boolean DEBUG = true;
 
     /**
-     * TODO: documentation
-     */
-    protected final int id = SComponent.createUnifiedId();
-
-    /**
      * @see #getCGClassID
      */
     private static final String cgClassID = "DefaultLayoutCG";
@@ -91,25 +86,7 @@ public abstract class SAbstractLayoutManager
     public void write(Device d)
 	throws IOException
     {
-	String name = null;
-
-        if (DEBUG) {
-	    name = getClass().getName();
-	    name = name.substring(name.lastIndexOf('.') + 1);
-
-            d.append("\n\n<!-- ")
-                .append(name)
-                .append(" ").append(id)
-                .append(" -->");
-	}
-
 	cg.write(d, this);
-
-        if (DEBUG)
-            d.append("\n<!-- /")
-		.append(name)
-		.append(" ").append(id)
-		.append(" -->\n\n");
     }
 
     public void setContainer(SContainer c) {

@@ -28,6 +28,7 @@ import org.wings.plaf.*;
 import org.wings.style.StyleSheet;
 import org.wings.session.Session;
 import org.wings.session.SessionManager;
+import org.wings.util.StringUtil;
 
 /*
  * The frame is the root component in every component hierarchie.
@@ -239,7 +240,7 @@ public class SFrame
         if (uniquePrefix < 0)
             uniquePrefix = 0;
 
-        uniquePrefixString = Long.toString(uniquePrefix);
+        uniquePrefixString = StringUtil.toShortestAlphaNumericString(uniquePrefix);
     }
 
     /**

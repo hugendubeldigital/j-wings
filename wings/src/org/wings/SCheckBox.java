@@ -271,7 +271,7 @@ public class SCheckBox extends SButton
      * Selektion zurueckgesetzt.
      */
     public void processRequest(String action, String[] values) {
-        String uid = getUnifiedIdString()+SConstants.UID_DIVIDER;
+        String uid = getUnifiedId()+SConstants.UID_DIVIDER;
 
         if ( getShowAsFormComponent() ) {
             for ( int i=0; i<values.length; i++ ) {

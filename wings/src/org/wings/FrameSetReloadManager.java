@@ -77,8 +77,9 @@ public class FrameSetReloadManager
     }
 
     public String getTarget() {
-	return "frame" + ((ReloadManagerFrame)getManagerComponent()).getUnifiedIdString();
+	return "frame" + ((ReloadManagerFrame)getManagerComponent()).getUnifiedId();
     }
+
 }
 
 /*

@@ -140,7 +140,7 @@ public class ReloadManagerFrame
 	    for (int i=0; i < components.length; i++) {
 		String src = externalizer.externalize(((SFrame)components[i]).show(), "text/html");
 		d.append("parent.frame");
-		d.append(components[i].getUnifiedIdString());
+		d.append(components[i].getUnifiedId());
 		d.append(".location='");
 		d.append(src);
 		d.append("';\n");

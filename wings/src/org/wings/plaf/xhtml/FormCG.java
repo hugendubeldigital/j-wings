@@ -65,7 +65,7 @@ public class FormCG
 
         // the event for the form action
         Utils.writeHiddenComponent(d, form.getNamePrefix(),
-                                   form.getUnifiedIdString() +
+                                   form.getUnifiedId() +
                                    SConstants.UID_DIVIDER);
     }
 

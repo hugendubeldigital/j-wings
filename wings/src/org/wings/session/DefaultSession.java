@@ -29,6 +29,7 @@ import org.wings.ReloadManager;
 import org.wings.SRequestDispatcher;
 import org.wings.plaf.CGManager;
 import org.wings.util.WeakPropertyChangeSupport;
+import org.wings.util.StringUtil;
 import org.wings.externalizer.ExternalizeManager;
 
 /**
@@ -46,6 +47,8 @@ public class DefaultSession
     private ExternalizeManager extManager = null;
     private SRequestDispatcher dispatcher = new DefaultSRequestDispatcher();
     private Properties props = new Properties();
+
+    private int uniqueIdCounter = 1;
 
     /**
      * TODO: documentation
@@ -308,6 +311,14 @@ public class DefaultSession
      */
     public String getCharSet() {
         return charSetOf(getLocale());
+    }
+
+    private final synchronized int getUniqueId() {
+        return uniqueIdCounter++;
+    }
+
+    public final String createUniqueId() {
+        return StringUtil.toShortestAlphaNumericString(getUniqueId());
     }
 }
 

@@ -74,6 +74,11 @@ public interface Session
      * @return Char set of this session
      */
     String getCharSet();
+
+    /**
+     * create a id unique to the session
+     */
+    public String createUniqueId();
 }
 
 /*

@@ -30,6 +30,7 @@ import org.wings.session.Session;
 import org.wings.session.SessionManager;
 import org.wings.style.Style;
 import org.wings.externalizer.ExternalizeManager;
+import org.wings.util.StringUtil;
 
 /**
  * The basic component for all components in this package.
@@ -42,25 +43,8 @@ public abstract class SComponent
 {
     private static final boolean DEBUG = false;
 
-    /*
-     * This is used to generate a unique id (per JVM) for every component. It is required
-     * to be able to generate unique names for forms.
-     */
-    private static int UNIFIED_ID = 0;
-
-    /*
-     * This is used to generate a unique id (per JVM) for every component. It is required
-     * to be able to handle caching problems.
-     * TO CHANGE: To handle reload problems, only s subset of prefixes should be valid.
-     * This way we can filter invalid stuff.
-     */
-    private static int UNIFIED_PREFIX = 0;
-
-    /* unique id */
-    private transient final int unifiedId = createUnifiedId();
-
-    /* Performance!!! */
-    private transient String unifiedIdString = null;
+    /* */
+    private transient String unifiedId = null;
 
     /** @see #getCGClassID */
     private static final String cgClassID = "ComponentCG";
@@ -203,14 +187,6 @@ public abstract class SComponent
     }
 
     /**
-     * Create a unique id.
-     * @return unique id
-     */
-    public static final synchronized int createUnifiedId() {
-        return UNIFIED_ID++;
-    }
-
-    /**
      * Set the preferred size of the receiving component in pixel.
      * It is not guaranteed that the component accepts this property because of
      * missing implementations in the component cg or html properties.
@@ -327,18 +303,10 @@ public abstract class SComponent
      * Return a jvm wide unique id.
      * @return an id
      */
-    public final int getUnifiedId() {
+    public final String getUnifiedId() {
+        if ( unifiedId==null )
+            unifiedId = getSession().createUniqueId();
         return unifiedId;
-    }
-
-    /**
-     * Return a jvm wide unique id.
-     * @return an id
-     */
-    public final String getUnifiedIdString() {
-        if (unifiedIdString == null)
-            unifiedIdString = Integer.toString(unifiedId);
-        return unifiedIdString;
     }
 
     /**
@@ -347,8 +315,9 @@ public abstract class SComponent
      * @return the session
      */
     public Session getSession() {
-        if (session == null)
+        if (session == null) {
             session = SessionManager.getSession();
+        }
 
         return session;
     }
@@ -595,74 +564,6 @@ public abstract class SComponent
 
 
     /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendPrefix(Device s) {
-        if ( font!=null )
-            font.appendPrefix(s);
-        else if ( foreground!=null || background!=null )
-            s.append("<FONT");
-
-        if ( foreground!=null ) {
-            s.append(" COLOR=#").append(SUtil.toColorString(foreground));
-        }
-
-        // hab keine Idee, wie man das sonst machen kann !!!
-        // Mit Table wuerds funktionieren (siehe unten), aber...
-        if ( background!=null )
-            s.append(" STYLE=\"background-color:#").append(SUtil.toColorString(background)).append(";\"");
-
-
-        if ( font!=null )
-            font.appendBody(s);
-        else if ( foreground!=null || background!=null )
-            s.append(">");
-
-        //    if ( background!=null )
-        //      s.append("<TABLE BGCOLOR=#").append(SUtil.toColorString(background)).append(">");
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendPostfix(Device s) {
-        //    if ( background!=null )
-        //      s.append("</TABLE>");
-        if ( font!=null )
-            font.appendPostfix(s);
-        else if ( foreground!=null || background!=null )
-            s.append("</FONT>");
-
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendBody(Device s) {
-        //    s.append("&nbsp;");
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendBorderPrefix(Device s) { }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendBorderPostfix(Device s) { }
-
-    /**
      * Mark the component as subject to reload.
      * The component will be registered with the ReloadManager.
      */
@@ -739,9 +640,9 @@ public abstract class SComponent
     public String getNamePrefix() {
         if (getParentFrame() != null)
             return getParentFrame().getUniquePrefix() + SConstants.UID_DIVIDER
-                + getUnifiedIdString() + SConstants.UID_DIVIDER;
+                + getUnifiedId() + SConstants.UID_DIVIDER;
         else
-            return getUnifiedIdString() + SConstants.UID_DIVIDER;
+            return getUnifiedId() + SConstants.UID_DIVIDER;
     }
 
     /**

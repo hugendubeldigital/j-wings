@@ -40,8 +40,6 @@ public class SBorderLayout
 
     private static final boolean DEBUG = true;
 
-    protected final int id = SComponent.createUnifiedId();
-
     Map components = new HashMap(5);
 
     public static final String NORTH = "North";

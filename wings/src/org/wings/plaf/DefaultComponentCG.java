@@ -28,11 +28,7 @@ public class DefaultComponentCG implements ComponentCG
     }
 
     public void write(Device d, SComponent c) throws IOException {
-        c.appendBorderPrefix(d);
-        c.appendPrefix(d);
-        c.appendBody(d);
-        c.appendPostfix(d);
-        c.appendBorderPostfix(d);
+        d.print("no plaf for component " + c.getClass());
     }
 }
 

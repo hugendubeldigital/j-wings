@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Enumeration;
 
+import org.wings.session.SessionManager;
+
 /*
  * Eine stinknormale ButtonGroup :-). Steckt aber schon ein bisschen
  * Grips dahinter. In HTML werden Gruppen dadurch generiert, dass sie
@@ -53,7 +55,8 @@ public class SButtonGroup
      */
     protected SCheckBox selection = null;
 
-    private final int unifiedId = SComponent.createUnifiedId();
+    /* */
+    private transient String unifiedId = null;
 
     /**
      * TODO: documentation
@@ -65,6 +68,16 @@ public class SButtonGroup
      *
      */
     public SButtonGroup() {}
+
+    /**
+     * Return a jvm wide unique id.
+     * @return an id
+     */
+    public final String getUnifiedId() {
+        if ( unifiedId==null )
+            unifiedId = SessionManager.getSession().createUniqueId();
+        return unifiedId;
+    }
 
     /*
      * Konzeptionell richtiger waere hier SAbstractButton. Macht aber keinen

@@ -37,12 +37,6 @@ public class SGridLayout
 
     private static final boolean DEBUG = true;
 
-    // nur zu Debug Zwecken, macht den HTML Code uebersichtlicher !!
-    /**
-     * TODO: documentation
-     */
-    protected final int id = SComponent.createUnifiedId();
-
     /**
      * TODO: documentation
      */
