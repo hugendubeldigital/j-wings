@@ -206,9 +206,9 @@ public final class WingServlet
                                             HttpServletResponse response)
         throws ServletException
     {
+        long timestamp = System.currentTimeMillis();
         try {
             logger.fine("new session");
-            HttpSession httpSession = request.getSession(true);
 
             SessionServlet sessionServlet = new SessionServlet();
             sessionServlet.init(servletConfig, request);
@@ -233,8 +233,8 @@ public final class WingServlet
             sessionServlet.getSession().setProperty("request.url", requestURL);
 
             sessionServlet.setParent(this);
-            httpSession.setAttribute(lookupName, sessionServlet);
 
+            logger.fine("time to create a new session " + (System.currentTimeMillis()-timestamp));
             return sessionServlet;
         }
         catch (Exception e) {
@@ -243,50 +243,54 @@ public final class WingServlet
         }
     }
 
-    synchronized public final SessionServlet getSessionServlet(HttpServletRequest request,
+    public final SessionServlet getSessionServlet(HttpServletRequest request,
                                                                HttpServletResponse response)
         throws ServletException 
     {
-        HttpSession session = request.getSession(false);
-        SessionServlet sessionServlet = null;
+        HttpSession httpSession = request.getSession(true);
 
-        if (session != null) {
-            sessionServlet = (SessionServlet)session.getAttribute(lookupName);
+        // it should be enough to synchronize on the http session object...
+        synchronized ( httpSession ) {
+            SessionServlet sessionServlet = null;
+
+            if (httpSession != null) {
+                sessionServlet = (SessionServlet)httpSession.getAttribute(lookupName);
+            }
+            else if (response != null) {
+                logger.fine("no http session");
+            }
+
+            /*
+             * we are only interested in a new session, if the response is
+             * not null. If it is null, then we just called getSessionServlet()
+             * for lookup purposes and are satisfied, if we don't get anything.
+             */
+            if (sessionServlet == null && response != null) {
+                logger.info("no session servlet, create new one");
+                sessionServlet = newSession(request, response);
+                httpSession.setAttribute(lookupName, sessionServlet);
+            }
+
+
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.finer("session id " + request.getRequestedSessionId());
+                logger.finer("session from cookie " + request.isRequestedSessionIdFromCookie());
+                logger.finer("session from url " + request.isRequestedSessionIdFromURL());
+                logger.finer("session valid " + request.isRequestedSessionIdValid());
+                logger.finer("session created at " + 
+                             new java.util.Date(httpSession.getCreationTime()));
+                logger.finer("session httpsession id " + httpSession.getId());
+                logger.finer("session httpsession new " + httpSession.isNew());
+                logger.finer("session last accessed at " + 
+                             new java.util.Date(httpSession.getLastAccessedTime()));
+                logger.finer("session max inactive interval " + 
+                             httpSession.getMaxInactiveInterval());
+                logger.finer("session contains wings session " + 
+                             (httpSession.getAttribute(lookupName)!=null));
+            }
+
+            return sessionServlet;
         }
-        else if (response != null) {
-            logger.fine("no http session");
-        }
-
-        /*
-         * we are only interested in a new session, if the response is
-         * not null. If it is null, then we just called getSessionServlet()
-         * for lookup purposes and are satisfied, if we don't get anything.
-         */
-        if (sessionServlet == null && response != null) {
-            logger.info("no session servlet, create new one");
-            sessionServlet = newSession(request, response);
-        }
-
-
-        if ( logger.isLoggable(Level.FINER) ) {
-            session = request.getSession(false);
-            logger.finer("session id " + request.getRequestedSessionId());
-            logger.finer("session from cookie " + request.isRequestedSessionIdFromCookie());
-            logger.finer("session from url " + request.isRequestedSessionIdFromURL());
-            logger.finer("session valid " + request.isRequestedSessionIdValid());
-            logger.finer("session created at " + 
-                         new java.util.Date(session.getCreationTime()));
-            logger.finer("session httpsession id " + session.getId());
-            logger.finer("session httpsession new " + session.isNew());
-            logger.finer("session last accessed at " + 
-                         new java.util.Date(session.getLastAccessedTime()));
-            logger.finer("session max inactive interval " + 
-                         session.getMaxInactiveInterval());
-            logger.finer("session contains wings session " + 
-                         (session.getAttribute(lookupName)!=null));
-        }
-
-        return sessionServlet;
     }
 
     /** -- externalization -- **/
