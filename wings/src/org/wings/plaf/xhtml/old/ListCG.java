@@ -31,7 +31,7 @@ public final class ListCG
     {
         SFont font = list.getFont();
         Color foreground = list.getForeground();
-        org.wings.plaf.xhtml.Utils.writeFontPrefix(d, font, foreground);
+        org.wings.plaf.xhtml.old.Utils.writeFontPrefix(d, font, foreground);
 
         super.writeFormPrefix(d, list);
     }
@@ -43,7 +43,7 @@ public final class ListCG
 
         SFont font = list.getFont();
         Color foreground = list.getForeground();
-        org.wings.plaf.xhtml.Utils.writeFontPostfix(d, font, foreground);
+        org.wings.plaf.xhtml.old.Utils.writeFontPostfix(d, font, foreground);
     }
 
     public void writeAnchorBody(Device d, SList list)
@@ -64,13 +64,13 @@ public final class ListCG
                 boolean selected = list.isSelectedIndex(i);
 
                 d.append("<li>");
-                org.wings.plaf.xhtml.Utils.writeFontPrefix(d, font, foreground);
+                org.wings.plaf.xhtml.old.Utils.writeFontPrefix(d, font, foreground);
 
                 SComponent renderer
                     = cellRenderer.getListCellRendererComponent(list, o, selected, i);
                 rendererPane.writeComponent(d, renderer, list);
 
-                org.wings.plaf.xhtml.Utils.writeFontPostfix(d, font, foreground);
+                org.wings.plaf.xhtml.old.Utils.writeFontPostfix(d, font, foreground);
                 d.append("</li>\n");
             }
         }

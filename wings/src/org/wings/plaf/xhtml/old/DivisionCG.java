@@ -33,7 +33,7 @@ public final class DivisionCG
 
         SFont font = division.getFont();
         Color foreground = division.getForeground();
-        org.wings.plaf.xhtml.Utils.writeFontPrefix(d, font, foreground);
+        org.wings.plaf.xhtml.old.Utils.writeFontPrefix(d, font, foreground);
 
         d.append("\n");
     }
@@ -45,7 +45,7 @@ public final class DivisionCG
 
         SFont font = division.getFont();
         Color foreground = division.getForeground();
-        org.wings.plaf.xhtml.Utils.writeFontPostfix(d, font, foreground);
+        org.wings.plaf.xhtml.old.Utils.writeFontPostfix(d, font, foreground);
 
         d.append("</div>\n");
     }

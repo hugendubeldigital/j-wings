@@ -31,7 +31,7 @@ public final class ContainerCG
     {
         SFont font = container.getFont();
         Color foreground = container.getForeground();
-        org.wings.plaf.xhtml.Utils.writeFontPrefix(d, font, foreground);
+        org.wings.plaf.xhtml.old.Utils.writeFontPrefix(d, font, foreground);
     }
 
     protected void writePostfix(Device d, SContainer container)
@@ -39,7 +39,7 @@ public final class ContainerCG
     {
         SFont font = container.getFont();
         Color foreground = container.getForeground();
-        org.wings.plaf.xhtml.Utils.writeFontPostfix(d, font, foreground);
+        org.wings.plaf.xhtml.old.Utils.writeFontPostfix(d, font, foreground);
     }
 }
 

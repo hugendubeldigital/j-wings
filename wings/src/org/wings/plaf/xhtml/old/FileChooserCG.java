@@ -31,7 +31,7 @@ public final class FileChooserCG
     {
         SFont font = fileChooser.getFont();
         Color foreground = fileChooser.getForeground();
-        org.wings.plaf.xhtml.Utils.writeFontPrefix(d, font, foreground);
+        org.wings.plaf.xhtml.old.Utils.writeFontPrefix(d, font, foreground);
 
         super.writePrefix(d, fileChooser);
     }
@@ -43,7 +43,7 @@ public final class FileChooserCG
 
         SFont font = fileChooser.getFont();
         Color foreground = fileChooser.getForeground();
-        org.wings.plaf.xhtml.Utils.writeFontPostfix(d, font, foreground);
+        org.wings.plaf.xhtml.old.Utils.writeFontPostfix(d, font, foreground);
     }
 }
 

@@ -33,7 +33,7 @@ public final class TextFieldCG
         SFont font = textField.getFont();
         Color foreground = textField.getForeground();
 
-        org.wings.plaf.xhtml.Utils.writeFontPrefix(d, font, foreground);
+        org.wings.plaf.xhtml.old.Utils.writeFontPrefix(d, font, foreground);
 
         d.append("<input type=\"text\"");
         d.append(" size=\"").append(textField.getColumns());
@@ -58,7 +58,7 @@ public final class TextFieldCG
 
         d.append(" />");
 
-        org.wings.plaf.xhtml.Utils.writeFontPostfix(d, font, foreground);
+        org.wings.plaf.xhtml.old.Utils.writeFontPostfix(d, font, foreground);
     }
 }
 

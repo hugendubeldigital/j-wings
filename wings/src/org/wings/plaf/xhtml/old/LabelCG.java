@@ -30,9 +30,9 @@ public final class LabelCG
         final SFont font = label.getFont();
         final Color foreground = label.getForeground();
 
-        org.wings.plaf.xhtml.Utils.writeFontPrefix(device, font, foreground);
+        org.wings.plaf.xhtml.old.Utils.writeFontPrefix(device, font, foreground);
         super.writeText(device, label);
-        org.wings.plaf.xhtml.Utils.writeFontPostfix(device, font, foreground);
+        org.wings.plaf.xhtml.old.Utils.writeFontPostfix(device, font, foreground);
     }
 }
 

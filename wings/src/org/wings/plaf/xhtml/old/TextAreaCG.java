@@ -31,7 +31,7 @@ public final class TextAreaCG
     {
         SFont font = textArea.getFont();
         Color foreground = textArea.getForeground();
-        org.wings.plaf.xhtml.Utils.writeFontPrefix(d, font, foreground);
+        org.wings.plaf.xhtml.old.Utils.writeFontPrefix(d, font, foreground);
 
         super.writePrefix(d, textArea);
     }
@@ -43,7 +43,7 @@ public final class TextAreaCG
 
         SFont font = textArea.getFont();
         Color foreground = textArea.getForeground();
-        org.wings.plaf.xhtml.Utils.writeFontPostfix(d, font, foreground);
+        org.wings.plaf.xhtml.old.Utils.writeFontPostfix(d, font, foreground);
     }
 }
 
