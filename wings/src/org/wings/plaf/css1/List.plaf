@@ -104,7 +104,6 @@
         final String selectionAttr = (list.getSelectionAttributes().size() > 0) ? ("_" + list.getUnifiedId()) : null;
 
         String orderType = list.getOrderType();
-        int start = list.getStart();
 
         if (style != null && attr != null) {
             %><span class="<%=style%>"><%
@@ -128,7 +127,16 @@
         if (model != null) {
             SCellRendererPane rendererPane = list.getCellRendererPane();
 
-            for (int i=0; i < size; i++) {
+            int start = 0;
+            int end = model.getSize();
+
+            java.awt.Rectangle viewport = list.getViewportSize();
+            if ( viewport != null) {
+                start = viewport.y;
+                end = start+viewport.height; 
+	    }
+       
+            for (int i=start; i < end; i++) {
                 Object o = model.getElementAt(i);
                 boolean selected = list.isSelectedIndex(i);
 
