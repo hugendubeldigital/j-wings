@@ -28,15 +28,13 @@ public final class PanelCG
     protected void writePrefix(Device d, SContainer c)
         throws IOException
     {
-        d.append("\n<span");
-        Utils.writeStyleAttribute(d, c.getStyle());
-        d.append(">\n");
+        Utils.writeSpanWithStyleAttributePrefix(d, c.getStyle());
     }
 
     protected void writePostfix(Device d, SContainer c)
         throws IOException
     {
-        d.append("</span>\n");
+        Utils.writeSpanWithStyleAttributePostfix(d, c.getStyle());
     }
 }
 

@@ -31,9 +31,7 @@ public final class LabelCG
         if (text != null && text.trim().length() > 0) {
             boolean noBreak = label.isNoBreak();
 
-            d.append("<span");
-            Utils.writeStyleAttribute(d, label.getStyle());
-            d.append(">");
+            Utils.writeSpanWithStyleAttributePrefix(d, label.getStyle());
 
             if (noBreak)
                 d.append("<nobr>");
@@ -41,16 +39,8 @@ public final class LabelCG
             if (noBreak)
                 d.append("</nobr>");
 
-            d.append("</span>");
+            Utils.writeSpanWithStyleAttributePostfix(d, label.getStyle());
         }
-    }
-
-    protected void writeTextPrefix(Device d, SLabel label)
-        throws IOException
-    {
-        d.append("<span");
-        Utils.writeStyleAttribute(d, "anchor", label.getStyle());
-        d.append(">");
     }
 }
 

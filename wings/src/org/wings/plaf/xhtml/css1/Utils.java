@@ -105,6 +105,26 @@ public final class Utils implements SConstants
         d.append(id);
         d.append("\"");
     }
+
+    public static void writeSpanWithStyleAttributePrefix(Device d, Style style)
+        throws IOException
+    {
+        if (style == null)
+            return;
+
+        d.append("<span");
+        Utils.writeStyleAttribute(d, style);
+        d.append(">");
+    }
+
+    public static void writeSpanWithStyleAttributePostfix(Device d, Style style)
+        throws IOException
+    {
+        if (style == null)
+            return;
+
+        d.append("</span>");
+    }
 }
 
 /*
