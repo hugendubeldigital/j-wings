@@ -37,7 +37,7 @@ public class SMenuItem extends SButton
 {
     private static final String cgClassID = "MenuItemCG";
 
-    protected SMenu parent;
+    protected SMenu menuParent;
 
     /**
      * Create a new MenuItem.
@@ -68,13 +68,13 @@ public class SMenuItem extends SButton
         setNoBreak( true );
     }
 
-    final void setParentMenu(SMenu parent) {
-        this.parent = parent;
-        setParentFrame(parent!=null ? parent.getParentFrame() : null);
+    final void setParentMenu(SMenu menuParent) {
+        this.menuParent = menuParent;
+        setParentFrame(menuParent!=null ? menuParent.getParentFrame() : null);
     }
 
     public SMenu getParentMenu() {
-        return this.parent;
+        return this.menuParent;
     }
 
     public String getCGClassID() {
