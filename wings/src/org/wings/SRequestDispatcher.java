@@ -69,7 +69,8 @@ public final class SRequestDispatcher
 
     /**
      * Registers a listener. The NamePrefix of the listener is stored in the
-     * HashMap as key. The value is a Set (ArrayList) of {@link RequestListener}.
+     * HashMap as key. The value is a Set (ArrayList) of 
+     * {@link RequestListener}s.
      *
      * @param gl listener
      */
@@ -80,13 +81,13 @@ public final class SRequestDispatcher
         String key = gl.getNamePrefix();
         key = key.substring(key.indexOf(SConstants.UID_DIVIDER) + 1);
 
-        debug("register " + key);
+        debug("register   '" + key + "'");
         addRequestListener(gl, key);
 
         if ( namedEvents ) {
             key = gl.getName();
             if ( key!=null && key.trim().length()>0 ) {
-                debug("register " + key);
+                debug("register named   '" + key +"'");
                 addRequestListener(gl, key);
             }
         }
@@ -108,17 +109,21 @@ public final class SRequestDispatcher
         String key = gl.getNamePrefix();
         key = key.substring(key.indexOf(SConstants.UID_DIVIDER)+1);
 
-        debug("unregister " + key);
+        debug("unregister '" + key + "'");
         removeRequestListener(gl, key);
 
         key = gl.getName();
         if ( key!=null && key.trim().length()>0 ) {
-            debug("unregister " + key);
+            debug("unregister named '" + key + "'");
             removeRequestListener(gl, key);
         }
 
     }
 
+    /**
+     * dispatch the events, encoded as [name/(multiple)values]
+     * in the HTTP request.
+     */
     public boolean dispatch(String name, String[] values) {
         boolean erg = false;
 
@@ -130,18 +135,19 @@ public final class SRequestDispatcher
             epoch = name.substring(0, dividerIndex);
             name = name.substring(dividerIndex + 1);
 
-            // make ImageButtons work in Forms ..
+            // make ImageButtons work in Forms .. browsers return
+            // the click position as .x and .y suffix of the name
             if (epoch.endsWith(".x") || epoch.endsWith(".X"))
                 epoch = epoch.substring(0, epoch.length()-2);
 
             if ( DEBUG ) {
-                System.out.print("dispatch " + epoch +
-                                 SConstants.UID_DIVIDER + name + " : ");
-                System.out.print("epoch " + epoch + " , ");
-                System.out.print("name " + name + " , ");
+                debug("dispatch " + epoch +
+                      SConstants.UID_DIVIDER + name + " : ");
+                System.err.print(" ..... epoch " + epoch + " , ");
+                System.err.print("name " + name + " ;values[ ");
                 for ( int i=0; i<values.length; i++ )
                     System.out.print(values[i] + " , ");
-                System.out.println();
+                System.out.println("]");
             }
         }
 
@@ -161,6 +167,7 @@ public final class SRequestDispatcher
                 return false;
             }
 
+            debug("process event '" + epoch + "_" + name + "'");
             for (int i=0; i<l.size(); i++) {
                 gl = (RequestListener)l.get(i);
                 gl.processRequest(name, values);
