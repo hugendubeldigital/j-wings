@@ -29,8 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.wings.*;
-import org.wings.util.Timer;
-import org.wings.util.TimeMeasure;
+import org.wings.util.*;
 import org.wings.externalizer.*;
 
 /**
@@ -70,23 +69,37 @@ public abstract class WingServlet
 
 
     /**
-     * preInit, called by init before doing something
+     * preInit is called by init before doing something. <br>
+     * Normally one overwrites postInit...
+     *
+     * @param config the serlvet configuration
      */
     protected void preInit(ServletConfig config) throws ServletException {
     }
 
 
     /**
-     * TODO: documentation
+     * Initializes and registers the externalizer. Called by init(). <br>
+     * Overwrite this method if you want to use another externalizer.
      *
-     * @param config
+     * @param config the serlvet configuration
      */
-    protected void initExternalizeManager(ServletConfig config) {
-        extManager.setExternalizer( new FileExternalizer( config ) );
-        extManager.addObjectHandler( new ImageObjectHandler() );
-        extManager.addObjectHandler( new ImageIconObjectHandler() );
-        extManager.addObjectHandler( new ResourceImageIconObjectHandler() );
-        extManager.addObjectHandler( new ResourceStyleSheetObjectHandler() );
+    protected void initExternalizer(ServletConfig config) {
+        extManager.setExternalizer(new FileExternalizer(config));
+    }
+
+    /**
+     * Initializes and registers the object handlers which are used by the
+     * externalizer. <br>
+     * Overwrite this method if you want to change the object handlers.
+     *
+     * @param config the serlvet configuration
+     */
+    protected void initExtObjectHandler(ServletConfig config) {
+        extManager.addObjectHandler(new ImageObjectHandler());
+        extManager.addObjectHandler(new ImageIconObjectHandler());
+        extManager.addObjectHandler(new ResourceImageIconObjectHandler());
+        extManager.addObjectHandler(new ResourceStyleSheetObjectHandler());
     }
 
 
@@ -111,6 +124,11 @@ public abstract class WingServlet
     /*
      * Hier wird ein ExternalizeManager instantiert, wenn folgende
      * InitParameter definiert sind:
+     *
+     * Achtung: diese Parameter stimmen z.T. nicht mehr. Zumindest die
+     * fuer den Externalizer haben sich geaendert; sie haengen nun vom
+     * jeweiligen Externalizer ab.
+     *
      * <DL compact>
      * <DT>ExternalizerPath</DT><DD>DateisystemPfad, in dem der Externalizer files
      * ablegen soll</DD>
@@ -141,7 +159,8 @@ public abstract class WingServlet
             }
         }
 
-        initExternalizeManager(config);
+        initExternalizer(config);
+        initExtObjectHandler(config);
         initMaxContentLength(config);
 
         uploaddir = config.getInitParameter("uploaddir");
@@ -153,7 +172,11 @@ public abstract class WingServlet
     }
 
     /**
-     * postInit, called by init after it's finished
+     * postInit is called by init after it's finished. <br>
+     * Overwrite this method if you have to initialize something in your
+     * servlet.
+     *
+     * @param config the serlvet configuration
      */
     protected void postInit(ServletConfig config) throws ServletException {
     }
@@ -171,8 +194,8 @@ public abstract class WingServlet
 
     /**
      * This factory returns a new SessionServlet used to handle
-     * all the requests within a usersession.
-     * Must be overridden.
+     * all the requests within a usersession. <br>
+     * Must be overwritten.
      *
      * @return a SessionServlet
      * @throws Exception everything might happen here.
@@ -184,21 +207,21 @@ public abstract class WingServlet
     /**
      * TODO: documentation
      */
-    public final void doPost (HttpServletRequest req, HttpServletResponse res)
+    public final void doPost(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException
     {
         SessionServlet sessionServlet = null;
         HttpSession session = req.getSession(false);
 
         if ( session != null )
-            sessionServlet = (SessionServlet) session.getValue (lookupName);
+            sessionServlet = (SessionServlet)session.getValue(lookupName);
 
         if ( sessionServlet!=null )
             debug("sessionServlet: " + sessionServlet.getClass().getName());
         else
-            debug("noch keine Session :-(");
+            debug("no session yet...");
 
-        // es könnte multipart/form-data sein ..
+        // es koennte multipart/form-data sein ..
         try {
             req = new MultipartRequest(req, uploaddir, maxContentLength * 1024);
         }
@@ -278,9 +301,9 @@ public abstract class WingServlet
         synchronized (initializer) {
             HttpSession session = req.getSession(false);
             if ( session != null )
-                sessionServlet = (SessionServlet) session.getValue (lookupName);
+                sessionServlet = (SessionServlet)session.getValue(lookupName);
 
-            if ( sessionServlet==null )
+            if ( sessionServlet == null )
                 sessionServlet = newSession(req);
         }
 
@@ -299,9 +322,9 @@ public abstract class WingServlet
     }
 
 
-    private static final void debug(String mesg) {
+    private static final void debug(String msg) {
         if ( DEBUG ) {
-            System.err.println("[" + WingServlet.class.getName() + "] " + mesg);
+            DebugUtil.printDebugMessage(WingServlet.class, msg);
         }
     }
 }
