@@ -200,7 +200,7 @@ public class MenuPaneCG implements ComponentCG
 			menu.setCG(menuButtonCG);
 			menu.setStyle(fStyleSheet.getMenuLinkStyle().getName());
             writeMenu(d, menu);
-            if (menu.isActive())
+            if (menu.isPopupMenuVisible())
             	break;
         }
         int subMenuCount = menu.getMenuComponentCount();

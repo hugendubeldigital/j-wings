@@ -151,7 +151,7 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
         if (!(menu instanceof SMenu))
             throw new IllegalArgumentException(
                 "Added component is not of type SMenu! It is " + menu.getClass());
-        menu.setKeepOpen(true);
+
         fMenus.add(menu);
         if (comp != null)
         {
@@ -162,7 +162,7 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
             this.add(comp, menu.getName());
             menu.addActionListener(this);
         }
-        if (menu.isActive())
+        if (menu.isPopupMenuVisible())
             fSelectedMenu = menu;
         return menu;
     }
@@ -194,9 +194,6 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
         if (!fMenus.contains(menu))
             add(menu, comp);
 
-        if (item.isSelected())
-            setSelectedMenu(item);
-
         return item;
     }
 
@@ -217,8 +214,8 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
         if (comp instanceof SMenu)
         {
             if (fSelectedMenu != null && fSelectedMenu instanceof SMenu)
-                 ((SMenu) fSelectedMenu).setActive(false);
-            ((SMenu) comp).setActive(true);
+                 ((SMenu) fSelectedMenu).setPopupMenuVisible(false);
+            ((SMenu) comp).setPopupMenuVisible(true);
             fSelectedMenu = comp;
         }
         else
@@ -228,14 +225,14 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
             for (int m = 0; m < getMenuCount(); m++)
             {
                 SMenu menu = getMenu(m);
-                if (menu.isActive())
-                    menu.setActive(false);
+                if (menu.isPopupMenuVisible())
+                    menu.setPopupMenuVisible(false);
                 for (int mi = 0;
                     fSelectedMenu == null && mi < menu.getMenuComponentCount();
                     mi++)
                     if (menu.getMenuComponent(mi).equals(comp))
                     {
-                        menu.setActive(true);
+                        menu.setPopupMenuVisible(true);
                         fSelectedMenu = menu.getMenuComponent(mi);
                         break;
                     }
@@ -304,10 +301,10 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
         if (button instanceof SMenu)
         {
             for (int i = 0; i < fMenus.size(); i++) {
-                if (((SMenu) fMenus.get(i)).isActive())
-                     ((SMenu) fMenus.get(i)).setActive(false);
+                if (((SMenu) fMenus.get(i)).isPopupMenuVisible())
+                     ((SMenu) fMenus.get(i)).setPopupMenuVisible(false);
             }
-            ((SMenu) ae.getSource()).setActive(true);
+            ((SMenu) ae.getSource()).setPopupMenuVisible(true);
         }
 
         setSelectedMenu(button);
@@ -467,7 +464,7 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
         // first set one menu active, if not already set
         if (getSelectedIndex() == -1 && getMenuCount() > 0)
         {
-            ((SMenu) getMenu(0)).setActive(true);
+            ((SMenu) getMenu(0)).setPopupMenuVisible(true);
             this.setSelectedMenu((SAbstractButton) getMenu(0));
         }
         if (visible)
