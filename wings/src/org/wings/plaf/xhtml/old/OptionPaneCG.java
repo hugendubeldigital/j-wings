@@ -20,8 +20,7 @@ import org.wings.plaf.*;
 import org.wings.io.*;
 
 public final class OptionPaneCG
-    extends DefaultComponentCG
-    implements org.wings.plaf.OptionPaneCG
+    extends org.wings.plaf.xhtml.OptionPaneCG
 {
 }
 
