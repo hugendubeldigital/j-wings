@@ -62,7 +62,7 @@ public class STabbedPane
     /**
      * TODO: documentation
      */
-    protected Color buttonOrigBackground = null;
+    protected Color buttonOrigBackground;
 
     int maxTabsPerLine = -1;
 
@@ -73,17 +73,17 @@ public class STabbedPane
     /**
      * TODO: documentation
      */
-    protected Color selectionForeground = null;
+    protected Color selectionForeground;
 
     /**
      * TODO: documentation
      */
-    protected Color selectionBackground = null;
+    protected Color selectionBackground;
 
     /**
      * TODO: documentation
      */
-    protected Style selectionStyle = null;
+    protected Style selectionStyle;
 
     /**
      * TODO: documentation
@@ -141,6 +141,13 @@ public class STabbedPane
     public void setSelectionStyle(Style s) {
         selectionStyle = s;
     }
+
+    /**
+     * TODO: documentation
+     *
+     * @return selection style
+     */
+    public Style getSelectionStyle() { return selectionStyle; }
 
     /**
      * TODO: documentation
@@ -769,21 +776,8 @@ public class STabbedPane
     protected void updateButtons() {
         buttons.removeAll();
         group.removeAll();
-        for ( int i=0; i<getTabCount(); i++ ) {
-            if ( i > 0 ) {
-                SLabel spacer = new SLabel(" | ");
-                spacer.setStyle(null);
-                buttons.add(spacer);
-            }
 
-            if ( maxTabsPerLine>0 ) {
-                if ( (i+1)%maxTabsPerLine==0 ) {
-                    SLabel breaker = new SLabel("<br />");
-                    breaker.setStyle(null);
-                    buttons.add(breaker);
-                }
-            }
-
+        for (int i=0; i < getTabCount(); i++) {
             Page p = getPageAt(i);
             buttons.add(p.button);
             group.add(p.button);

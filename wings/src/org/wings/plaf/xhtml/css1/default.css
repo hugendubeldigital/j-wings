@@ -1,7 +1,7 @@
 BODY { 
    background: #dedede;
    padding: 0;
-   margin: 0;
+   margin: 10;
    border-width: 0 
 }
 
@@ -258,6 +258,33 @@ H3 {
 .listnonselection {
    text-decoration: none;
    color: #000000;
+}
+
+.tabbedpane {
+   color: #000000;
+   text-decoration: none;
+   font-family: sans-serif;
+   font-weight: normal
+}
+
+.anchortabbedpaneselection {
+   display: inline;
+   color: #000000;
+   font-family: sans-serif;
+   font-size: 12px;
+   border-top: black thin solid;
+   padding-top: 7px;
+   font-weight: bold;
+}
+
+.anchortabbedpanenonselection { 
+   display: inline;
+   color: #000000;
+   font-family: sans-serif;
+   font-size: 12px;
+   border-top: black thin solid;
+   padding-top: 7px;
+   font-weight: normal;
 }
 
 .topleft { 

@@ -32,11 +32,6 @@ public final class RadioButtonCG
         if (checkBox.isEnabled() && !checkBox.isSelected()) {
             d.append("<a href=\"").append(generateAnchorAddress(checkBox)).append("\"");
 
-            if (checkBox.isSelected())
-                Utils.writeStyleAttribute(d, "anchor", checkBox.getStyle(), "selection");
-            else
-                Utils.writeStyleAttribute(d, "anchor", checkBox.getStyle(), "nonselection");
-
             if (checkBox.getRealTarget() != null)
                 d.append(" target=\"").append(checkBox.getRealTarget()).append("\"");
 
@@ -45,6 +40,15 @@ public final class RadioButtonCG
 
             d.append(">");
         }
+
+        d.append("<span");
+
+        if (checkBox.isSelected())
+            Utils.writeStyleAttribute(d, "anchor", checkBox.getStyle(), "selection");
+        else
+            Utils.writeStyleAttribute(d, "anchor", checkBox.getStyle(), "nonselection");
+
+        d.append(">");
     }
 
     protected void writeFormPrefix(Device d, SCheckBox checkBox)
@@ -58,6 +62,15 @@ public final class RadioButtonCG
             Utils.writeStyleAttribute(d, "form", checkBox.getStyle(), "selection");
         else
             Utils.writeStyleAttribute(d, "form", checkBox.getStyle(), "nonselection");
+    }
+
+    protected void writeAnchorPostfix(Device d, SCheckBox checkBox)
+        throws IOException
+    {
+        if (checkBox.isEnabled() && !checkBox.isSelected())
+            d.append("</span></a>\n");
+        else
+            d.append("</span>\n");
     }
 }
 

@@ -126,6 +126,12 @@ public final class OldLookAndFeel
             "Table.selectionForeground", table.get("textHighlightText"),
             "Table.selectionBackground", table.get("textHighlight"),
             "Table.editIcon", LookAndFeel.makeIcon(getClass(), "/org/wings/icons/Pencil.gif"),
+
+            // *** TabbedPane
+            "TabbedPane.firstIcon", LookAndFeel.makeIcon(getClass(), "/org/wings/icons/TabbedPaneFirst.gif"),
+            "TabbedPane.lastIcon", LookAndFeel.makeIcon(getClass(), "/org/wings/icons/TabbedPaneLast.gif"),
+            "TabbedPane.normalIcon", LookAndFeel.makeIcon(getClass(), "/org/wings/icons/TabbedPaneNormal.gif"),
+            "TabbedPane.selectedIcon", LookAndFeel.makeIcon(getClass(), "/org/wings/icons/TabbedPaneSelected.gif"),
         };
         table.putDefaults(defaults);
     }

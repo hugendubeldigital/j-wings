@@ -21,6 +21,7 @@ import javax.swing.Icon;
 import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
+import org.wings.util.*;
 import org.wings.externalizer.ExternalizeManager;
 
 public class CheckBoxCG
@@ -274,11 +275,9 @@ public class CheckBoxCG
         String text = checkBox.getText();
         boolean noBreak = checkBox.isNoBreak();
 
-        if (noBreak)
-            d.append("<nobr>");
-        d.append((text != null) ? text : "");
-        if (noBreak)
-            d.append("</nobr>");
+        if (text == null)
+            text = "";
+        d.append((noBreak) ? StringUtil.replace(text, " ", "&nbsp;") : text);
     }
 
     protected void writeAnchorPostfix(Device d, SCheckBox checkBox)

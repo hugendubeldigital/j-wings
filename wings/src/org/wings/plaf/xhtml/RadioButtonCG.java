@@ -21,6 +21,7 @@ import javax.swing.Icon;
 import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
+import org.wings.util.*;
 
 public class RadioButtonCG
     extends CheckBoxCG
@@ -64,19 +65,16 @@ public class RadioButtonCG
         String text = checkBox.getText();
         boolean noBreak = checkBox.isNoBreak();
 
-        if (noBreak)
-            d.append("<nobr>");
-        d.append((text != null) ? text : "");
-        if (noBreak)
-            d.append("</nobr>");
+        if (text == null)
+            text = "";
+        d.append((noBreak) ? StringUtil.replace(text, " ", "&nbsp;") : text);
     }
 
     protected void writeAnchorPostfix(Device d, SCheckBox checkBox)
         throws IOException
     {
-        if (checkBox.isEnabled() && !checkBox.isSelected()) {
+        if (checkBox.isEnabled() && !checkBox.isSelected())
             d.append("</a>\n");
-        }
     }
 }
 

@@ -34,7 +34,6 @@ public class ScrollPaneExample
     public ScrollPaneExample() {
         super(new SFlowDownLayout());
 
-        add(new SSeparator());
         add(new SLabel("<h4>Table in a ScrollPane</h4>"));
 
         // table.setSelectionMode(MULTIPLE_SELECTION);
