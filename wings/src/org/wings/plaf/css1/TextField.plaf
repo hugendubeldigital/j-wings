@@ -17,7 +17,7 @@
     if (!component.isEditable() || !component.isEnabled() ) { %> readonly="1"<% }
     if (component.isEnabled()) {
         %> name="<%=Utils.event(component)%>"<%
-        %> id="<%=Utils.event(component)%>"<%
+        %> id="<%=component.getComponentId()%>"<%
     } else { %> disabled="1"<% } 
     %><%|tabindex=component.getFocusTraversalIndex()%><%
     

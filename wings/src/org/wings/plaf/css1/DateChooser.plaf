@@ -43,7 +43,7 @@ static final ResourceImageIcon ICON = new ResourceImageIcon("org/wings/icons/Arr
     %><%|class=Utils.style(component)%><%
     if (component.isEnabled()) {
         %> name="<%=Utils.event(component)%>"<%
-        %> id="<%=Utils.event(component)%>"<%
+        %> id="<%=component.getComponentId()%>"<%
     }
     %><%|tabindex=component.getFocusTraversalIndex()%><%
     Utils.writeEvents(device, component);

@@ -19,7 +19,7 @@
     %><%|accept=component.getFileNameFilter()%><%
     if ( component.isEnabled() ) {
         %> name="<%=Utils.event(component)%>"<%
-        %> id="<%=Utils.event(component)%>"<%
+        %> id="<%=component.getComponentId()%>"<%
     } else {
 	%> readonly="1"<%
     }
