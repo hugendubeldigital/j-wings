@@ -109,7 +109,7 @@ public class SimpleAttributeSet
      * @param name the attribute name
      * @param value the attribute value
      */
-    public final String put(String name, String value) {
+    public String put(String name, String value) {
         if (map == null) {
             map = new HashMap(8);
         }

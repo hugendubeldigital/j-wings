@@ -31,7 +31,20 @@ import org.wings.Renderable;
  */
 public interface AttributeSet extends Renderable
 {
-    public final AttributeSet EMPTY_ATTRIBUTESET = new SimpleAttributeSet();
+    public final AttributeSet EMPTY_ATTRIBUTESET = 
+        new SimpleAttributeSet() {
+            private String doThrow() throws UnsupportedOperationException {
+                throw new UnsupportedOperationException("cannot change values for the global EMPTY_ATTRIBUTESET. You attempted to modify this unmodifiable AttributeSet: create your own instance of a SimpleAttributeSet first!");
+            }
+            public String put(String name, String value) {
+                doThrow();
+                return null; // make compiler happy.
+            }
+            public boolean putAll(AttributeSet attributes) {
+                doThrow();
+                return false; // make compiler happy.
+            }
+        };
 
     /**
      * Returns the number of attributes contained in this set.
