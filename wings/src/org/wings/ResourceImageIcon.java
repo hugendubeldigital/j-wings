@@ -107,7 +107,8 @@ public class ResourceImageIcon
         }
         finally {
             try {
-                resource.close();
+                if (resource != null)
+                    resource.close();
             }
             catch(Exception e) {
                 System.err.println("Cannot close " + resourceFileName);
