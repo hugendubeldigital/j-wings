@@ -182,6 +182,7 @@ public class LdapClientSession
 		if (!((String)o).equals("jpegPhoto")) {
 		    attrField = new STextField("");
 		    ((STextField)attrField).setColumns(columns);
+		    textHashtable.put(o,"uu");
 		}
 		else {
 		    attrField = new SLabel("");

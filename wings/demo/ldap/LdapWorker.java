@@ -39,7 +39,7 @@ public class LdapWorker
 	env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
 	env.put(Context.PROVIDER_URL, "ldap://" + getServer());
 	env.put(Context.SECURITY_PRINCIPAL,getBindDN());
-	env.put(Context.SECURITY_CREDENTIALS,password);
+	env.put(Context.SECURITY_CREDENTIALS,"secret");
 	try {
 	    ctx = new InitialDirContext(env);
 	}
