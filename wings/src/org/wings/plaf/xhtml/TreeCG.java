@@ -23,6 +23,7 @@ import javax.swing.tree.*;
 import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
+import org.wings.style.Style;
 import org.wings.util.CGUtil;
 
 public class TreeCG
@@ -162,9 +163,10 @@ public class TreeCG
 
         boolean isLeaf = tree.getModel().isLeaf(node);
         boolean isExpanded = tree.isExpanded(path);
+        boolean isSelected = tree.isPathSelected(path);
 
         SComponent renderer = cellRenderer.getTreeCellRendererComponent(tree, node,
-                                                                        tree.isPathSelected(path),
+                                                                        isSelected,
                                                                         isExpanded,
                                                                         isLeaf, 0,
                                                                         false);
@@ -193,7 +195,15 @@ public class TreeCG
         } 
         d.append("&nbsp;");
         
-        d.append("<a href=").append(selectionAddr.toString()).append(">");
+        d.append("<a href=").append(selectionAddr.toString());
+
+        Style cellStyle = isSelected ? 
+            tree.getSelectionStyle() : tree.getStyle();
+
+        if (cellStyle != null)
+            cellStyle.write(d);
+
+        d.append(">");
         SCellRendererPane rendererPane = tree.getCellRendererPane();
         rendererPane.writeComponent(d, renderer, tree);
         d.append("</a>");
