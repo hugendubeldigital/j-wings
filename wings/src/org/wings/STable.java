@@ -265,8 +265,16 @@ public class STable
 
     public void processRequest(String action, String[] values) {
         String value = values[0];
-        int row = new Integer(value.substring(0, value.indexOf(':'))).intValue();
-        int col = new Integer(value.substring(value.indexOf(':') + 1)).intValue();
+        System.out.println("process request " + value);
+        int colonIndex = value.indexOf(':');
+        if ( colonIndex<0 )
+            return;
+
+        int row = new Integer(value.substring(0, colonIndex)).intValue();
+        int col = new Integer(value.substring(colonIndex + 1)).intValue();
+
+        System.out.println("edit cell " + row + ":" +col);
+ 
         editCellAt(row, col, null);
     }
 
@@ -935,6 +943,11 @@ public class STable
     public void setCG(TableCG cg) {
         super.setCG(cg);
     }
+    
+    public String getEditParameter(int row, int col) {
+        return getNamePrefix() + "=" + row + ":" + col;
+    }
+
 }
 
 /*

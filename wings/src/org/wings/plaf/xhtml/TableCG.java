@@ -29,6 +29,10 @@ public class TableCG
     extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.TableCG, SConstants
 {
+
+    private static final SIcon EDIT_ICON = 
+        new ResourceImageIcon("org/wings/icons/Pencil.gif");
+
     protected static final byte LEFT   = 1;
     protected static final byte RIGHT  = 2;
     protected static final byte TOP    = 4;
@@ -52,6 +56,16 @@ public class TableCG
     }
 
     private final static String propertyPrefix = "Table";
+
+    private SIcon editIcon = EDIT_ICON;
+
+    public void setEditIcon(SIcon i) {
+        editIcon = i;
+    }
+
+    public SIcon getEditIcon() {
+        return editIcon;
+    }
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
@@ -166,6 +180,10 @@ public class TableCG
             }
             d.append("</tr>\n");
         }
+
+        // make sure internal table structure is  ok
+        table.checkSelectables();
+
         for (int r = originRow; r < rowCount; r++) {
             d.append("<tr>\n");
             for (int c = originCol; c < colCount; c++) {
@@ -180,8 +198,6 @@ public class TableCG
                              int row, int col)
         throws IOException
     {
-        table.checkSelectables();
-
         SComponent comp = null;
         boolean isEditingCell = table.isEditing()
             && row == table.getEditingRow()
@@ -197,7 +213,19 @@ public class TableCG
         Utils.appendTableCellAttributes(d, comp);
         d.append(">");
 
+        if ( !isEditingCell && table.isCellEditable(row, col) ) {
+            SGetAddress editAddr = table.getServerAddress();
+            editAddr.addParameter(table.getEditParameter(row, col));
+            
+            d.append("<a href=\"").append(editAddr.toString()).
+                append("\">");
+            Utils.appendIcon(d, editIcon, null);
+            d.append("</a>&nbsp;");
+        }
+
         rendererPane.writeComponent(d, comp, table);
+
+
         d.append("</td>");
     }
 
