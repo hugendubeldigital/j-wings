@@ -15,6 +15,7 @@
 package org.wings.session;
 
 import java.util.Properties;
+import java.util.Map;
 
 /**
  * TODO: documentation
@@ -54,9 +55,15 @@ public interface PropertyService
      * @return     the previous value of the session property,
      *             or <code>null</code> if it did not have one.
      * @see        org.wings.session.PropertyService#getProperty(java.lang.String)
-     * @see        org.wings.session.PropertyService#getProperty(java.lang.String, java.lang.String)
+     * @see        org.wings.session.PropertyService#getProperty(java.lang.String, java.lang.Object)
      */
     Object setProperty(String key, Object value);
+
+    Map getProperties();
+
+    Object removeProperty(String key);
+
+    boolean containsProperty(String key);
 }
 
 /*

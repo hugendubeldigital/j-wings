@@ -50,16 +50,19 @@ import org.wings.externalizer.ExternalizedResource;
 public final class WingServlet
     extends HttpServlet
 {
-    private static int REQUEST_COUNTER = 0;
-
-    private static final long BIRTHDAY = System.currentTimeMillis();
-
-    synchronized public static final int getRequestCount() {
-        return REQUEST_COUNTER;
+    /**
+     *
+     * @deprecated use {@link WingsStatistics#getStatistics()} instead
+     */
+    public static final int getRequestCount() {
+        return WingsStatistics.getStatistics().getRequestCount();
     }
 
+    /**
+     * @deprecated use {@link WingsStatistics#getStatistics()} instead
+     */
     public static final long getUptime() {
-        return System.currentTimeMillis()-BIRTHDAY;
+        return WingsStatistics.getStatistics().getUptime();
     }
 
     static {
@@ -80,8 +83,6 @@ public final class WingServlet
     
     /** */
     private String lookupName = "SessionServlet";
-
-    private boolean collectStatistics = true;
 
     /**
      * TODO: documentation
@@ -334,13 +335,6 @@ public final class WingServlet
                             HttpServletResponse response)
         throws ServletException, IOException
     {
-        if ( collectStatistics ) {
-            synchronized(WingServlet.class) {
-                REQUEST_COUNTER++;
-            }
-        } // end of if ()
-
-
         try {
             /* 
              * make sure, that our context ends with '/'. Otherwise redirect

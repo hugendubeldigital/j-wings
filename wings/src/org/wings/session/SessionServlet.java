@@ -387,10 +387,6 @@ final class SessionServlet
 
         session.fireRequestEvent(SRequestEvent.REQUEST_START);
 
-        TimeMeasure measure = null;
-        if (logger.isLoggable(Level.FINER)) {        
-            measure = new TimeMeasure(new MessageFormat("{0}: {1} {2}"));
-        }
         // in case, the previous thread did not clean up.
         SForm.clearArmedComponents();
 
@@ -437,11 +433,6 @@ final class SessionServlet
 
             handleLocale(req);
 
-            if (logger.isLoggable(Level.FINER)) {
-                measure.start("time to dispatch");
-            }
-            
-
             Enumeration en = req.getParameterNames();
             
             // are there parameters/low level events to dispatch 
@@ -458,11 +449,6 @@ final class SessionServlet
                     session.getDispatcher().dispatch(paramName, value);
                 }
 
-                if (logger.isLoggable(Level.FINER)) {
-                    measure.stop();
-                    measure.start("time to fire form events");
-                }
-            
                 SForm.fireEvents();
             
                 // only fire DISPATCH DONE if we have parameters to dispatch
@@ -471,11 +457,6 @@ final class SessionServlet
 
             session.fireRequestEvent(SRequestEvent.PROCESS_REQUEST);
             
-            
-            if (logger.isLoggable(Level.FINER)) {
-                measure.stop();
-                measure.start("time to process request");
-            }
             
             // if the user chose to exit the session as a reaction on an
             // event, we got an URL to redirect after the session.
@@ -575,11 +556,6 @@ final class SessionServlet
                 session.fireRequestEvent(SRequestEvent.DELIVER_DONE, extInfo);
             }
             
-            if (logger.isLoggable(Level.FINER)) {
-                measure.stop();
-                logger.finer(measure.print());
-                measure.reset();
-            }
         }
         catch (Throwable e) {
             logger.log(Level.SEVERE, "exception: ", e);

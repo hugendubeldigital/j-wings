@@ -15,10 +15,8 @@
 package org.wings.session;
 
 
-
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
-import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.EventListener;
@@ -36,6 +34,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.event.EventListenerList;
+
 import org.wings.DefaultReloadManager;
 import org.wings.ReloadManager;
 import org.wings.SContainer;
@@ -76,14 +75,10 @@ public final class Session
      */
     public static String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
 
-    private static int SESSION_COUNTER = 0;
-
-    private static int ACTIVE_SESSION_COUNTER = 0;
-
-    private static int ALLOCATED_SESSION_COUNTER = 0;
+    private final SessionStatistics statistics = new SessionStatistics();
 
     /**
-     * Every session has its own {@link CGManager}. 
+     * Every session has its own {@link CGManager}.
      *
      */
     private CGManager cgManager = new CGManager();
@@ -96,7 +91,7 @@ public final class Session
     private final HashSet frames = new HashSet();
 
     private int uniqueIdCounter = 1;
-    
+
     /**
      * Maximum upload content length. This is used by the {@link SessionServlet}
      * to avoid denial of service attacks.
@@ -104,7 +99,7 @@ public final class Session
     private int maxContentLength = 64;
 
     private transient ServletContext servletContext;
-    
+
     private transient Browser browser;
 
     private transient HttpServletResponse servletResponse;
@@ -117,37 +112,75 @@ public final class Session
 
 
     /**
-     * Store here only weak references. 
+     * Store here only weak references.
      *
      */
     private final EventListenerList listenerList = new EventListenerList();
 
-    synchronized public static final int getOverallSessions() {
-        return SESSION_COUNTER;
+    /**
+     * @deprecated use {@link WingsStatistics#getStatistics} instead
+     */
+    public final int getOverallSessions() {
+        return WingsStatistics.getStatistics().getOverallSessionCount();
     }
 
-    synchronized public static final int getActiveSessions() {
-        return ACTIVE_SESSION_COUNTER;
+    /**
+     * @deprecated use {@link WingsStatistics#getStatistics} instead
+     */
+    public final int getActiveSessions() {
+        return WingsStatistics.getStatistics().getActiveSessionCount();
     }
 
-    synchronized public static final int getAllocatedSessions() {
-        return ALLOCATED_SESSION_COUNTER;
+    /**
+     * @deprecated use {@link WingsStatistics#getStatistics} instead
+     */
+    public final int getAllocatedSessions() {
+        return WingsStatistics.getStatistics().getAllocatedSessionCount();
     }
 
-    static boolean collectStatistics = true;
+    public final SessionStatistics getStatistics() {
+        return statistics;
+    }
 
+    static boolean collectStatistics = false;
+
+    static final SRequestListener SESSION_STATISTIC_COLLECTOR = new SRequestListener() {
+        public void processRequest(SRequestEvent e) {
+            switch (e.getType()) {
+                case SRequestEvent.DISPATCH_START:
+                    SessionManager.getSession().getStatistics().startDispatching();
+                    break;
+                case SRequestEvent.DISPATCH_DONE:
+                    SessionManager.getSession().getStatistics().endDispatching();
+                    break;
+                case SRequestEvent.DELIVER_START:
+                    SessionManager.getSession().getStatistics().startDelivering();
+                    break;
+                case SRequestEvent.DELIVER_DONE:
+                    SessionManager.getSession().getStatistics().endDelivering();
+                    break;
+                case SRequestEvent.REQUEST_START:
+                    SessionManager.getSession().getStatistics().startRequest();
+                    break;
+                case SRequestEvent.REQUEST_END:
+                    SessionManager.getSession().getStatistics().endRequest();
+                    break;
+
+            }
+        }
+    };
 
     /**
      * TODO: documentation
      *
      */
-    public Session()  {
-        if ( collectStatistics ) {
-            synchronized(Session.class) {
-                SESSION_COUNTER++;
-                ACTIVE_SESSION_COUNTER++;
-                ALLOCATED_SESSION_COUNTER++;            
-            }
+    public Session() {
+        if (collectStatistics) {
+            WingsStatistics.getStatistics().incrementSessionCount();
+            WingsStatistics.getStatistics().incrementActiveSessionCount();
+            WingsStatistics.getStatistics().incrementAllocatedSessionCount();
+
+            addRequestListener(SESSION_STATISTIC_COLLECTOR);
         } // end of if ()
     }
 
@@ -173,7 +206,7 @@ public final class Session
             getCGManager().setLookAndFeel(LookAndFeelFactory.createLookAndFeel());
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "could not load look and feel: " +
-                       config.getInitParameter("wings.lookandfeel.factory"), ex);
+                                     config.getInitParameter("wings.lookandfeel.factory"), ex);
             throw new ServletException(ex);
         }
 
@@ -189,8 +222,7 @@ public final class Session
         if (maxCL != null) {
             try {
                 maxContentLength = Integer.parseInt(maxCL);
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 logger.log(Level.WARNING, "invalid content.maxlength: " + maxCL, e);
             }
         }
@@ -203,7 +235,7 @@ public final class Session
      */
     protected void initProps(ServletConfig config) {
         Enumeration params = config.getInitParameterNames();
-        while(params.hasMoreElements()) {
+        while (params.hasMoreElements()) {
             String name = (String)params.nextElement();
             props.put(name, config.getInitParameter(name));
         }
@@ -212,8 +244,8 @@ public final class Session
     void setServletRequest(HttpServletRequest servletRequest) {
         this.servletRequest = servletRequest;
     }
-    
-    
+
+
     /**
      * Describe <code>getServletRequest</code> method here.
      *
@@ -226,6 +258,7 @@ public final class Session
     void setServletResponse(HttpServletResponse servletResponse) {
         this.servletResponse = servletResponse;
     }
+
     /**
      * Describe <code>getServletResponse</code> method here.
      *
@@ -300,7 +333,7 @@ public final class Session
         try {
             browser = new Browser(request.getHeader("User-Agent"));
             logger.fine("User-Agent is " + browser);
-        } catch (Exception ex)  {
+        } catch (Exception ex) {
             logger.log(Level.WARNING, "Cannot get User-Agent from request", ex);
         }
     }
@@ -322,6 +355,7 @@ public final class Session
     public void addFrame(SFrame frame) {
         frames.add(frame);
     }
+
     /**
      * Describe <code>removeFrame</code> method here.
      *
@@ -330,6 +364,7 @@ public final class Session
     public void removeFrame(SFrame frame) {
         frames.remove(frame);
     }
+
     /**
      * Describe <code>frames</code> method here.
      *
@@ -344,7 +379,7 @@ public final class Session
      * @return a <code>SFrame</code> value
      */
     public SFrame getRootFrame() {
-        if ( frames.size() == 0)
+        if (frames.size() == 0)
             return null;
 
         SFrame rootFrame = (SFrame)frames.iterator().next();
@@ -383,8 +418,8 @@ public final class Session
      *             or the default value if there is no property with that key.
      * @see        org.wings.session.PropertyService#getProperties()
      */
-    public synchronized Object getProperty(String key, Object def) {
-        if ( !props.containsKey(key) ) {
+    public Object getProperty(String key, Object def) {
+        if (!props.containsKey(key)) {
             return def;
         } else {
             return props.get(key);
@@ -399,16 +434,27 @@ public final class Session
      * @return     the previous value of the session property,
      *             or <code>null</code> if it did not have one.
      * @see        org.wings.session.PropertyService#getProperty(java.lang.String)
-     * @see        org.wings.session.PropertyService#getProperty(java.lang.String, java.lang.String)
+     * @see        org.wings.session.PropertyService#getProperty(java.lang.String, java.lang.Object)
      */
-    public synchronized Object setProperty(String key, Object value) {
+    public Object setProperty(String key, Object value) {
         //System.err.print("DefaultSession.setProperty");
         Object old = props.put(key, value);
         propertyChangeSupport.firePropertyChange(key, old, value);
         return old;
     }
 
-    private final WeakPropertyChangeSupport propertyChangeSupport = 
+    public boolean containsProperty(String key) {
+        return props.containsKey(key);
+    }
+
+    public Object removeProperty(String key) {
+        //System.err.print("DefaultSession.setProperty");
+        Object old = props.remove(key);
+        propertyChangeSupport.firePropertyChange(key, old, null);
+        return old;
+    }
+
+    private final WeakPropertyChangeSupport propertyChangeSupport =
         new WeakPropertyChangeSupport(this);
 
     /**
@@ -435,9 +481,9 @@ public final class Session
      * @param propertyName a <code>String</code> value
      * @param listener a <code>PropertyChangeListener</code> value
      */
-    public void addPropertyChangeListener(String propertyName, 
+    public void addPropertyChangeListener(String propertyName,
                                           PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(propertyName,listener);
+        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
     }
 
     /**
@@ -446,11 +492,11 @@ public final class Session
      * @param propertyName a <code>String</code> value
      * @param listener a <code>PropertyChangeListener</code> value
      */
-    public void removePropertyChangeListener(String propertyName, 
+    public void removePropertyChangeListener(String propertyName,
                                              PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(propertyName,listener);
+        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
     }
-    
+
     private Locale locale = Locale.getDefault();
 
     /**
@@ -459,7 +505,7 @@ public final class Session
      * @param l
      */
     public void setLocale(Locale l) {
-        if ( l==null || locale.equals(l) )
+        if (l == null || locale.equals(l))
             return;
         locale = l;
         propertyChangeSupport.firePropertyChange(LOCALE_PROPERTY, locale, l);
@@ -473,7 +519,7 @@ public final class Session
         return locale;
     }
 
-    private final synchronized int getUniqueId() {
+    private final int getUniqueId() {
         return uniqueIdCounter++;
     }
 
@@ -495,7 +541,7 @@ public final class Session
     public final int getMaxContentLength() {
         return maxContentLength;
     }
-    
+
     /**
      * Set the maximum content length (file size) for a post
      * request.
@@ -511,10 +557,8 @@ public final class Session
      *
      */
     protected void destroy() {
-        if ( collectStatistics ) {
-            synchronized(Session.class) {
-                ACTIVE_SESSION_COUNTER--;
-            }
+        if (collectStatistics) {
+            WingsStatistics.getStatistics().decrementActiveSessionCount();
         } // end of if ()
 
 
@@ -524,7 +568,7 @@ public final class Session
             if (container != null)
                 container.removeAll();
         }
-        
+
         reloadManager.clear();
         reloadManager = null;
         extManager.clear();
@@ -535,9 +579,9 @@ public final class Session
         frames.clear();
         props.clear();
 
-        Object[] listeners = listenerList.getListenerList(); 
-        for ( int i = listeners.length-2; i>=0; i -= 2 ) {
-            listenerList.remove((Class)listeners[i], (EventListener)listeners[i+1]);
+        Object[] listeners = listenerList.getListenerList();
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            listenerList.remove((Class)listeners[i], (EventListener)listeners[i + 1]);
         } // end of for (int i=0; i<; i++)
 
     }
@@ -547,15 +591,15 @@ public final class Session
      *
      * This removes the session and its associated
      * application from memory. The browser is redirected to the given
-     * URL. Note, that it is not even possible for the user to re-enter 
-     * the application with the BACK-button, since all information is 
-     * removed. 
+     * URL. Note, that it is not even possible for the user to re-enter
+     * the application with the BACK-button, since all information is
+     * removed.
      *
-     * <em>Always</em> exit an application by calling an 
-     * <code>exit()</code> method, especially, if it is an application 
+     * <em>Always</em> exit an application by calling an
+     * <code>exit()</code> method, especially, if it is an application
      * that requires a login and thus handles sensitive information accessible
-     * through the session. Usually, you will call this on behalf of an 
-     * event within an <code>ActionListener.actionPerformed()</code> like for 
+     * through the session. Usually, you will call this on behalf of an
+     * event within an <code>ActionListener.actionPerformed()</code> like for
      * a pressed 'EXIT'-Button.
      *
      * @param redirectAddress the address, the browser is redirected after
@@ -574,17 +618,19 @@ public final class Session
      * This removes the session and its associated
      * application from memory. The browser is redirected to the same
      * application with a fresh session. Note, that it is not even
-     * possible for the user to re-enter the old application with the 
-     * BACK-button, since all information is removed. 
-     * 
-     * <em>Always</em> exit an application by calling an 
-     * <code>exit()</code> method, especially, if it is an application 
+     * possible for the user to re-enter the old application with the
+     * BACK-button, since all information is removed.
+     *
+     * <em>Always</em> exit an application by calling an
+     * <code>exit()</code> method, especially, if it is an application
      * that requires an login and thus handles sensitive information accessible
-     * through the session. Usually, you will call this on behalf of an 
-     * event within an <code>ActionListener.actionPerformed()</code> like for 
+     * through the session. Usually, you will call this on behalf of an
+     * event within an <code>ActionListener.actionPerformed()</code> like for
      * a pressed 'EXIT'-Button.
      */
-    public void exit() { exit(""); }
+    public void exit() {
+        exit("");
+    }
 
     public String getExitAddress() {
         return exitAddress;
@@ -639,15 +685,15 @@ public final class Session
      */
     final void firePrepareExit() throws ExitVetoException {
         SExitEvent event = null;
-        
+
         Object[] listeners = listenerList.getListenerList();
-        for ( int i = listeners.length-2; i>=0; i -= 2 ) {
-            if ( listeners[i]==SExitListener.class ) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == SExitListener.class) {
                 // Lazily create the event:
-                if ( event==null ) {
+                if (event == null) {
                     event = new SExitEvent(this);
                 }
-                ((SExitListener)listeners[i+1]).prepareExit(event);
+                ((SExitListener)listeners[i + 1]).prepareExit(event);
             }
         }
     }
@@ -684,25 +730,23 @@ public final class Session
      */
     final void fireRequestEvent(int type, ExternalizedResource resource) {
         SRequestEvent event = null;
-        
+
         Object[] listeners = listenerList.getListenerList();
-        for ( int i = listeners.length-2; i>=0; i -= 2 ) {
-            if ( listeners[i]==SRequestListener.class ) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == SRequestListener.class) {
                 // Lazily create the event:
-                if ( event==null ) {
+                if (event == null) {
                     event = new SRequestEvent(this, type, resource);
                 }
-                ((SRequestListener)listeners[i+1]).processRequest(event);
+                ((SRequestListener)listeners[i + 1]).processRequest(event);
             }
         }
     }
 
     protected void finalize() {
         logger.info("gc session");
-        if ( collectStatistics ) {
-            synchronized(Session.class) {
-                ALLOCATED_SESSION_COUNTER--;
-            }
+        if (collectStatistics) {
+            WingsStatistics.getStatistics().decrementAllocatedSessionCount();
         } // end of if ()
     }
 
