@@ -156,11 +156,11 @@
       <para>Comparison of wingS with Java Server Faces (JSF), and to a lesser
       extent Java Server Pages (JSP).</para>
 
-      <para>Reasons to Choose JSF</para>
+      <para><emphasis>Reasons to Choose JSF</emphasis></para>
 
       <para>It is backed by Sun</para>
 
-      <para>Reason to Choose wingS</para>
+      <para><emphasis>Reason to Choose wingS</emphasis></para>
 
       <itemizedlist>
         <listitem>
@@ -212,7 +212,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>JSP Comments</para>
+      <para><emphasis>JSP Comments</emphasis></para>
 
       <para>JSF was conceived to address the severe shortcomings of JSP.
       However by taking this as a starting point it inherits most of the
@@ -234,7 +234,7 @@
       disadvantages, created a new pure windows client library, and require
       yet another technology for mobile devices).</para>
 
-      <para>Reasons to Choose Scripting<itemizedlist>
+      <para><emphasis>Reasons to Choose Scripting</emphasis><itemizedlist>
           <listitem>
             <para>Quick solution for small applications</para>
           </listitem>
@@ -245,7 +245,7 @@
           </listitem>
         </itemizedlist></para>
 
-      <para>Reasons to Choose wingS<itemizedlist>
+      <para><emphasis>Reasons to Choose wingS</emphasis><itemizedlist>
           <listitem>
             <para>Single technology</para>
           </listitem>
