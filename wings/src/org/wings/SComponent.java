@@ -159,14 +159,19 @@ public abstract class SComponent
     /**
      * Return the server address of the frame.
      *
+     * @deprecated
      * @return the server address
      */
-    public SGetAddress getServerAddress() {
+    public RequestURL getServerAddress() {
+        return getRequestURL();
+    }
+
+    public RequestURL getRequestURL() {
         SFrame p = getParentFrame();
         if (p == null)
             throw new IllegalStateException("no parent frame");
 
-        return p.getServerAddress();
+        return p.getRequestURL();
     }
 
     /**
@@ -469,7 +474,7 @@ public abstract class SComponent
         boolean old = visible;
         visible = v;
         if (old != visible) {
-            reload(RELOAD_STATE);
+            reload(RELOAD_CODE);
             SComponentEvent evt = new SComponentEvent(this, v ?
                                                       SComponentEvent.COMPONENT_SHOWN :
                                                       SComponentEvent.COMPONENT_HIDDEN);
@@ -505,7 +510,7 @@ public abstract class SComponent
         boolean old = enabled;
         enabled = e;
         if (old != enabled)
-            reload(RELOAD_STATE);
+            reload(RELOAD_CODE);
     }
 
     /**
@@ -594,7 +599,7 @@ public abstract class SComponent
      * The component will be registered with the ReloadManager.
      */
     public final void reload(int aspect) {
-        getSession().getReloadManager().markDirty(this, aspect);
+        cg.reload(this, aspect);
     }
 
     /**

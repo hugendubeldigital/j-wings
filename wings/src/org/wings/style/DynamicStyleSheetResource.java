@@ -1,35 +1,25 @@
 package org.wings.style;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.IOException;
 
-import org.wings.*;
-import org.wings.io.*;
-import org.wings.util.*;
+import org.wings.SComponent;
+import org.wings.SFrame;
+import org.wings.DynamicResource;
+import org.wings.io.Device;
+import org.wings.util.ComponentVisitor;
 
 public class DynamicStyleSheetResource
     extends DynamicResource
 {
-    protected String extension = "css";
-    protected String mimeType = "text/css";
-    protected int epoch = 1;
-
-    protected SFrame frame;
-
     public DynamicStyleSheetResource(SFrame frame) {
-	this.frame = frame;
-	this.extension = "css";
-	this.extension = "text/css";
+        super(frame, ".css", "text/css");
     }
 
     public void write(Device out)
 	throws IOException
     {
 	StyleSheetWriter visitor = new StyleSheetWriter(out);
-	visitor.visit(frame);
+	visitor.visit(getFrame());
     }
 
     protected static class StyleSheetWriter
@@ -46,27 +36,11 @@ public class DynamicStyleSheetResource
 	}
     }
 
-    public void invalidate() {
-	epoch++;
-    }
-    public int getEpoch() {
-        return epoch;
-    }
-
-    public final String getExtension() {
-        return extension;
-    }
-
-    public final String getMimeType() {
-        return mimeType;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String toString() {
-        return mimeType + " " + getEpoch();
-    }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

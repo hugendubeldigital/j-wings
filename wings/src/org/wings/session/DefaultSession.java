@@ -24,7 +24,6 @@ import java.util.Locale;
 import javax.servlet.ServletConfig;
 
 import org.wings.DefaultReloadManager;
-import org.wings.DefaultSRequestDispatcher;
 import org.wings.ReloadManager;
 import org.wings.SRequestDispatcher;
 import org.wings.plaf.CGManager;
@@ -45,7 +44,7 @@ public class DefaultSession
     private final CGManager cgManager = new CGManager();
     private ReloadManager reloadManager = null;
     private ExternalizeManager extManager = null;
-    private SRequestDispatcher dispatcher = new DefaultSRequestDispatcher();
+    private final SRequestDispatcher dispatcher = new SRequestDispatcher();
     private Properties props = new Properties();
 
     private int uniqueIdCounter = 1;

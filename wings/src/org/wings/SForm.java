@@ -282,8 +282,8 @@ public class SForm
      *
      * @return
      */
-    public SGetAddress getServerAddress() {
-        SGetAddress addr = super.getServerAddress();
+    public RequestURL getRequestURL() {
+        RequestURL addr = super.getRequestURL();
         if ( getAction()!=null )
             addr.addParameter(getAction().toString());
 

@@ -29,6 +29,14 @@ public class FrameCG
 {
     private final static String propertyPrefix = "Frame";
 
+    public void installCG(SComponent component) {
+        super.installCG(component);
+
+        SFrame frame = (SFrame)component;
+
+        frame.addDynamicResource(new DynamicCodeResource(frame));
+    }
+
     protected String getPropertyPrefix() {
         return propertyPrefix;
     }

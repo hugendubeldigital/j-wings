@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.awt.Color;
 
 import org.wings.SConstants;
-import org.wings.SGetAddress;
+import org.wings.RequestURL;
 import org.wings.io.Device;
 import org.wings.SIcon;
 
@@ -139,7 +139,7 @@ public final class Utils implements SConstants {
 	}
     }
 
-    public static void write(Device d, SGetAddress a) throws IOException {
+    public static void write(Device d, RequestURL a) throws IOException {
 	a.write(d);
     }
     

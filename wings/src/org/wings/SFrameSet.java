@@ -122,25 +122,17 @@ public class SFrameSet
     }
 
     /**
-     * TODO: documentation
-     */
-    public void setServer(String path) {
-	super.setServer(path);
-	setServerAddress(serverAddress);
-    }
-
-    /**
      * Set server address and propagate it to all frames
      */
-    protected void setServerAddress(SGetAddress serverAddress) {
-        this.serverAddress = serverAddress;
+    public void setRequestURL(RequestURL requestURL) {
+        super.setRequestURL(requestURL);
 
 	// propagate it to all frame(set)s
 	Iterator iterator = getComponentList().iterator();
 	while (iterator.hasNext()) {
 	    Object object = iterator.next();
 	    if (object instanceof SFrame)
-		((SFrame)object).setServerAddress(serverAddress);
+		((SFrame)object).setRequestURL(requestURL);
 	}
     }
 

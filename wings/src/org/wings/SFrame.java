@@ -44,7 +44,7 @@ import org.wings.util.*;
  */
 public class SFrame
     extends SContainer
-    implements DynamicResource, PropertyChangeListener
+    implements PropertyChangeListener
 {
     /**
      * @see #getCGClassID
@@ -62,8 +62,6 @@ public class SFrame
      * The container for the contentPane.
      */
     protected final SContainer contentPane = new SContainer();
-
-    SGetAddress serverAddress = new SGetAddress();
 
     protected String baseTarget = null;
 
@@ -110,9 +108,7 @@ public class SFrame
 
     private Session session;
 
-    protected String extension = "html";
-    protected String mimeType = "text/xhtml"; 
-    protected int epoch = 1;
+    private final HashMap dynamicResources = new HashMap();
 
     /**
      * TODO: documentation
@@ -133,6 +129,23 @@ public class SFrame
         this();
         setTitle(title);
     }
+
+    /**
+     * TODO: documentation
+     *
+     */
+    public void addDynamicResource(DynamicResource d) {
+        dynamicResources.put(d.getClass(), d);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     */
+    public DynamicResource getDynamicResource(Class c) {
+        return (DynamicResource)dynamicResources.get(c);
+    }
+
 
     /**
      * TODO: documentation
@@ -247,7 +260,7 @@ public class SFrame
         int count = getComponentCount();
         System.err.println("pushDialog: " + count);
         dialog.setFrame(this);
-        reload(RELOAD_STATE);
+        reload(RELOAD_CODE);
     }
 
     /**
@@ -263,7 +276,7 @@ public class SFrame
         dialog.setFrame((SFrame)null);
         System.err.println("popDialog: " + count);
 
-        reload(RELOAD_STATE);
+        reload(RELOAD_CODE);
         return dialog;
     }
 
@@ -275,50 +288,19 @@ public class SFrame
     }
 
     /**
-     * TODO: documentation
-     */
-    public final void setServer(String server, int port, String path) {
-        setServer("http", server, port, path);
-    }
-
-    /**
-     * TODO: documentation
-     */
-    public final void setServer(String scheme, String server, int port,
-                                String path) {
-        String addr = scheme + "://"+server;
-
-        if (port > 0 && (port != 443 && "https".equals(scheme) || port != 80 && "http".equals(scheme))
-            addr += ":" + port;
-
-        addr += path;
-
-        setServer(addr);
-    }
-
-    /**
-     * TODO: documentation
-     */
-    public void setServer(String path) {
-        serverAddress.clear();
-        serverAddress.setAbsoluteAddress(path);
-    }
-
-    /**
      * Set server address.
      */
-    protected void setServerAddress(SGetAddress serverAddress) {
-        this.serverAddress = serverAddress;
+    public void setRequestURL(RequestURL r) {
+        for ( Iterator iter=dynamicResources.values().iterator(); iter.hasNext(); ) {
+            ((DynamicResource)iter.next()).setRequestURL(r);
+        }
     }
 
     /**
      * TODO: documentation
      */
-    public final SGetAddress getServerAddress() {
-        if  (DEBUG && serverAddress.getRelativeAddress() == null && getParent() != null)
-            System.out.println("Frame " + serverAddress);
-
-        return (SGetAddress)serverAddress.clone();
+    public final RequestURL getRequestURL() {
+        return getDynamicResource(DynamicCodeResource.class).getRequestURL();
     }
 
     /**
@@ -555,28 +537,6 @@ public class SFrame
         return cgClassID;
     }
 
-    public void invalidate() {
-        epoch++;
-    }
-
-    public int getEpoch() {
-        return epoch;
-    }
-
-    public void setExtension(String extension) {
-        this.extension = extension;
-    }
-    public String getExtension() {
-        return extension;
-    }
-
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
-    public String getMimeType() {
-        return mimeType;
-    }
-
     private class SStackLayout extends SAbstractLayoutManager
     {
         private SContainer container = null;
@@ -617,6 +577,7 @@ public class SFrame
     public void invite(ComponentVisitor visitor) {
         getContentPane().invite(visitor);
     }
+
 }
 
 /*

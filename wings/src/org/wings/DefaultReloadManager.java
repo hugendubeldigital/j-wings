@@ -14,21 +14,9 @@
 
 package org.wings;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.beans.*;
-import java.io.IOException;
-import java.lang.reflect.*;
-import java.util.*;
-
-import org.wings.io.Device;
-import org.wings.io.StringBufferDevice;
-import org.wings.plaf.*;
-import org.wings.plaf.ComponentCG;
-import org.wings.session.Session;
-import org.wings.session.SessionManager;
-import org.wings.style.Style;
-import org.wings.externalizer.ExternalizeManager;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This is the default implementation of the reload manager.
@@ -39,46 +27,34 @@ import org.wings.externalizer.ExternalizeManager;
 public class DefaultReloadManager
     implements ReloadManager
 {
-    Aspect[] aspects = new Aspect[0];
 
-    public void addAspect(int aspect) {
-        int count = aspects.length;
-        Aspect[] newAspects = new Aspect[count+1];
-        System.arraycopy(aspects, 0, newAspects, 0, count);
-        newAspects[count] = new Aspect(aspect);
-        aspects = newAspects;
-    }
+    protected final HashMap dirtyResources = new HashMap();
 
-    public void markDirty(SComponent component, int aspect) {
-        SFrame frame = component.getParentFrame();
-        for (int i=0; i < aspects.length; i++)
-            if ((aspects[i].aspect & aspect) == aspects[i].aspect)
-                aspects[i].dirty.add(frame);
-    }
+    public void markDirty(DynamicResource d) {
+        HashSet resources = (HashSet)dirtyResources.get(d.getClass());
 
-    public SComponent[] getDirtyComponents(int aspect) {
-        List components = new LinkedList();
-        for (int i=0; i < aspects.length; i++)
-            if ((aspects[i].aspect & aspect) == aspects[i].aspect)
-                components.addAll(aspects[i].dirty);
-
-        return (SComponent[])components.toArray(new SComponent[components.size()]);
-    }
-
-    public void clearDirtyComponents(int aspect) {
-        for (int i=0; i < aspects.length; i++)
-            if ((aspects[i].aspect & aspect) == aspects[i].aspect)
-                aspects[i].dirty.clear();
-    }
-
-    static class Aspect {
-        public int aspect;
-        public List dirty = new LinkedList();
-
-        public Aspect(int aspect) {
-            this.aspect = aspect;
+        if ( resources==null ) {
+            resources = new HashSet();
+            dirtyResources.put(d.getClass(), resources);
         }
+
+        resources.add(d);
     }
+
+    public Set getDirtyResources(Class resourceType) {
+        return (HashSet)dirtyResources.get(resourceType);
+    }
+
+    public void clear(Class resourceType) {
+        Set s = getDirtyResources(resourceType);
+        if ( s!=null )
+            s.clear();
+    }
+
+    public void clear() {
+        dirtyResources.clear();
+    }
+
 }
 
 /*

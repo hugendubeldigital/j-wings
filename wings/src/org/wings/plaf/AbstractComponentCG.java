@@ -31,20 +31,53 @@ import org.wings.style.*;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public abstract class AbstractComponentCG implements ComponentCG
+public abstract class AbstractComponentCG implements ComponentCG, SConstants
 {
     static Map cache = Collections.synchronizedMap(new HashMap());
+
+    protected AbstractComponentCG() {
+    }
+
+    public void reload(SComponent comp, int aspect) {
+        if ( comp==null )
+            return;
+
+        SFrame parent = comp.getParentFrame();
+
+        if ( parent==null )
+            return;
+
+        ReloadManager reloadManager = comp.getSession().getReloadManager();
+
+        switch ( aspect ) {
+        case RELOAD_CODE: 
+            reloadManager.markDirty(parent.getDynamicResource(DynamicCodeResource.class));
+            break;
+        case RELOAD_STYLE: 
+            reloadManager.markDirty(parent.getDynamicResource(DynamicStyleSheetResource.class));
+            break;
+        case RELOAD_SCRIPT: 
+            // TODO
+            //            reloadManager.markDirty(parent.getDynamicResource(DynamicScriptResource.class));
+            break;
+                                    
+        }
+    }
 
     /**
      * Install the appropriate CG for <code>component</code>.
      * @param component the component
      */
     public void installCG(SComponent component) {
+        System.err.println("install CG " + getClass().getName());
+        long start = System.currentTimeMillis();
 	CGManager manager = component.getSession().getCGManager();
         String className = component.getClass().getName();
         className = className.substring(className.lastIndexOf(".") + 1);
 
         configure(component, className, manager);
+        System.err.println("install CG done in " +
+                           (System.currentTimeMillis()-start) + " ms");
     }
 
     /**

@@ -18,9 +18,38 @@ import java.io.IOException;
 
 import org.wings.*;
 import org.wings.io.*;
+import org.wings.style.*;
 
-public class DefaultComponentCG implements ComponentCG
+
+public class DefaultComponentCG implements ComponentCG, SConstants
 {
+
+    public void reload(SComponent comp, int aspect) {
+        if ( comp==null )
+            return;
+
+        SFrame parent = comp.getParentFrame();
+
+        if ( parent==null )
+            return;
+
+        ReloadManager reloadManager = comp.getSession().getReloadManager();
+
+        switch ( aspect ) {
+        case RELOAD_CODE: 
+            reloadManager.markDirty(parent.getDynamicResource(DynamicCodeResource.class));
+            break;
+        case RELOAD_STYLE: 
+            reloadManager.markDirty(parent.getDynamicResource(DynamicStyleSheetResource.class));
+            break;
+        case RELOAD_SCRIPT: 
+            // TODO
+            //            reloadManager.markDirty(parent.getDynamicResource(DynamicScriptResource.class));
+            break;
+                                    
+        }
+    }
+
     public void installCG(SComponent c) {
     }
 

@@ -52,7 +52,7 @@ public class SDefaultListCellRenderer
     /**
      * TODO: documentation
      */
-    protected SGetAddress addr = null;
+    protected RequestURL addr = null;
 
     /**
      * Create a SDefaultListCellRenderer with default properties.
@@ -66,7 +66,7 @@ public class SDefaultListCellRenderer
                                                    int index)
     {
         if (list.isEnabled()) {
-            addr = list.getServerAddress();
+            addr = list.getRequestURL();
             addr.addParameter(list.getNamePrefix() + "=" + index);
         }
         else

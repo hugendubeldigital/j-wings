@@ -64,7 +64,7 @@ public class SFrameSetLayout
     public void setColumns(String columns) {
 	this.columns = columns;
 	if (getContainer() != null)
-	    getContainer().reload(SConstants.RELOAD_STATE);
+	    getContainer().reload(SConstants.RELOAD_CODE);
     }
 
     public String getColumns() { return columns; }
@@ -81,7 +81,7 @@ public class SFrameSetLayout
     public void setRows(String rows) {
 	this.rows = rows;
 	if (getContainer() != null)
-	    getContainer().reload(SConstants.RELOAD_STATE);
+	    getContainer().reload(SConstants.RELOAD_CODE);
     }
 
     public String getRows() { return rows; }
@@ -160,7 +160,7 @@ public class SFrameSetLayout
 	d.append("</frameset>\n");
 
 	if (frameSet.getParent() == null) {
-	    frameSet.getSession().getReloadManager().clearDirtyComponents(SConstants.RELOAD_ALL);
+	    //frameSet.getSession().getReloadManager().clearDirtyComponents(SConstants.RELOAD_ALL);
 	    //writeFrame(d, (SFrame)frameSet.getSession().getReloadManager().getManagerComponent(), null);
 	    d.append("</frameset>\n");
 	}

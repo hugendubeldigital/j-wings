@@ -101,6 +101,15 @@ public class ExternalizeManager extends AbstractExternalizeManager
         externalized.put(identifier, extInfo);
     }
 
+    public final Object getExternalizedObject(String identifier) {
+        ExternalizedInfo info = getExternalizedInfo(identifier);
+
+        if ( info!=null )
+            return info.getObject();
+
+        return null;
+    }
+
     public final ExternalizedInfo getExternalizedInfo(String identifier) {
         if ( identifier == null || identifier.length() < 1 )
             return null;

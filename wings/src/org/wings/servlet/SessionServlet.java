@@ -59,7 +59,7 @@ public abstract class SessionServlet
     /**
      * TODO: documentation
      */
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     /**
      * TODO: documentation
@@ -383,14 +383,9 @@ public abstract class SessionServlet
      */
     public final void setFrame(SFrame frame) {
         if (this.frame != null)
-          frame.setServer(this.frame.getServerAddress().getAbsoluteAddress());
-        this.frame = frame;
+          frame.setRequestURL(this.frame.getRequestURL());
 
-        String target = null;
-        SComponent component = getSession().getReloadManager().getManagerComponent();
-        if (component != null)
-            target = "frame" + component.getUnifiedId();
-        frame.setBaseTarget(target);
+        this.frame = frame;
     }
 
     /**
@@ -516,7 +511,9 @@ public abstract class SessionServlet
                 }
 
                 handleLocale(req);
-                getFrame().setServer(response.encodeURL(HttpUtils.getRequestURL(req).toString()));
+
+                //evtl. HttpUtils.getRequestURL(req).toString()
+                getFrame().setRequestURL(new RequestURL("", response.encodeURL("")));
             }
             finally {
                 prepareRequest(req, response);
@@ -525,40 +522,54 @@ public abstract class SessionServlet
             try {
                 ServletRequest asreq = new ServletRequest(req);
 
+                ExternalizeManager extManager = getSession().getExternalizeManager();
+
                 if (DEBUG)
                     measure.start("time to dispatch");
 
-                boolean eventsContained = false;
-                Enumeration en = null;
-                en = req.getParameterNames();
-                while (en.hasMoreElements()) {
-                    String paramName = (String)en.nextElement();
-                    String[] value = req.getParameterValues(paramName);
-                    if (!getDispatcher().dispatch(paramName, value))
-                        asreq.addParam(paramName,value);
-                    else
-                        eventsContained = true;
+                // check actuality
+                RequestURL request = new RequestURL(req.getQueryString());
+
+                debug("request " + request);
+
+                DynamicResource context = null;
+                if ( request.getContext()==null && request.getEpoch()!=null )
+                    context = getFrame().getDynamicResource(DynamicCodeResource.class);
+                else 
+                    context = 
+                        (DynamicResource)extManager.getExternalizedObject(request.getContext());
+                
+                if ( request.getEpoch()==null || 
+                     context.getEpoch().equals(request.getEpoch()) ) {
+
+                    debug("dispatching");
+
+                    Enumeration en = null;
+                    en = req.getParameterNames();
+                    while (en.hasMoreElements()) {
+                        String paramName = (String)en.nextElement();
+                        String[] value = req.getParameterValues(paramName);
+                        if (!getDispatcher().dispatch(paramName, value))
+                            asreq.addParam(paramName,value);
+                    }
+                    
+                    if (req.getMethod().toUpperCase().equals("POST")) {
+                        dispatchPostQuery(req.getQueryString());
+                    }
+                    
+                    if (DEBUG) {
+                        measure.stop();
+                        measure.start("time to fire form events");
+                    }
+                    
+                    SForm.fireEvents();
                 }
-
-                if (req.getMethod().toUpperCase().equals("POST")) {
-                    eventsContained = dispatchPostQuery(req.getQueryString()) || eventsContained;
-                }
-
-                if (DEBUG) {
-                    measure.stop();
-                    measure.start("time to fire form events");
-                }
-
-                SForm.fireEvents();
-
-                // moved this beyond SForm.fireEvents()
-                getDispatcher().dispatchDone();
-
+                    
                 if (DEBUG) {
                     measure.stop();
                     measure.start("time to process request");
                 }
-
+                    
                 // default content ist text/html
                 response.setContentType("text/html;charset=" + session.getCharSet());
 
@@ -571,16 +582,15 @@ public abstract class SessionServlet
 
                 processRequest(asreq, response);
 
-                log("eventsContained: " + eventsContained);
 
-                SComponent reload = null;
-                if (eventsContained)
-                    reload = getSession().getReloadManager().getManagerComponent();
+                //                externalizeManager schreibt Resource
+                DynamicResource resource = 
+                    (DynamicResource)extManager.getExternalizedObject(request.getResource());
 
-                if (reload == null)
-                    reload = getFrame();
+                if ( resource==null )
+                    resource = getFrame().getDynamicResource(DynamicCodeResource.class);
 
-                reload.write(new ServletDevice(response.getOutputStream()));
+                resource.write(new ServletDevice(response.getOutputStream()));
 
                 if (DEBUG) {
                     measure.stop();

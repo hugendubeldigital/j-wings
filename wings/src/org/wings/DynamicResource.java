@@ -15,30 +15,163 @@
 package org.wings;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.ByteArrayOutputStream;
+import java.util.Set;
 
-import org.wings.io.*;
+import org.wings.SFrame;
+import org.wings.io.Device;
+import org.wings.util.StringUtil;
 import org.wings.session.SessionManager;
-import org.wings.externalizer.ExternalizeManager;
 
-/**
- * TODO: documentation
- *
- * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
- * @version $Revision$
- */
-public interface DynamicResource
+public abstract class DynamicResource
 {
-    private static final int EXTERNALIZER_FLAGS = ExternalizeManager.FINAL;
+    /**
+     *
+     */
+    protected String extension;
 
-    void invalidate();
-    int getEpoch();
+    /**
+     *
+     */
+    protected String mimeType;
 
-    void write(Device out);
-    String getExtension();
-    String getMimeType();
+    /**
+     *
+     */
+    private int epoch = 0;
+
+    /**
+     *
+     */
+    private String epochCache = StringUtil.toShortestAlphaNumericString(epoch);
+
+    /**
+     *
+     */
+    private SFrame frame;
+
+    /**
+     *
+     */
+    private RequestURL requestURL;
+
+    /**
+     *
+     */
+    private final String id = 
+        SessionManager.getSession().getExternalizeManager().externalize(this);
+
+    /**
+     *
+     */
+    public DynamicResource(SFrame frame) {
+      this(frame, "", "");
+    } 
+
+    /**
+     *
+     */
+    public DynamicResource(SFrame frame, String extension, String mimeType) {
+        this.frame = frame;
+        this.extension = extension;
+        this.mimeType = mimeType;
+    }
+
+    /**
+     *
+     */
+    public final SFrame getFrame() {
+        return frame;
+    }
+
+    /**
+     *
+     */
+    public final void invalidate() {
+        epochCache = StringUtil.toShortestAlphaNumericString(++epoch);
+    }
+    
+    /**
+     *
+     */
+    public final String getId() {
+        return id;
+    }
+
+    /**
+     * returns the file extension of the given object. Some (old) browsers use
+     * this information instead of the mime type
+     */
+    public final String getExtension() {
+        return extension;
+    }
+
+    /**
+     * returns the mime type of the given object
+     */
+    public final String getMimeType() {
+        return mimeType;
+    }
+
+    /**
+     *
+     */
+    public final String getEpoch() {
+        return epochCache;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public String toString() {
+        return mimeType + " " + getEpoch();
+    }
+
+
+    /**
+      * Get additional http-headers.
+      * Returns <tt>null</tt>, if there are no additional headers to be set.
+      * @return Set of {@link java.util.Map.Entry} (key-value pairs)
+      * @param obj get headers for this object
+      */
+    public Set getHeaders() {
+        return null;
+    }
+
+    /**
+      * Get additional http-headers.
+      * Returns <tt>null</tt>, if there are no additional headers to be set.
+      * @return Set of {@link java.util.Map.Entry} (key-value pairs)
+      * @param obj get headers for this object
+      */
+    public Set getCookies() {
+        return null;
+    }
+
+    /**
+     *
+     */
+    public void setRequestURL(RequestURL r) {
+        requestURL = r;
+    }
+
+    /**
+     *
+     */
+    public RequestURL getRequestURL() {
+        RequestURL result =  (RequestURL)requestURL.clone();
+        result.setEpoch(getEpoch());
+        result.setContext(getId());
+        
+        return result;
+    }
+
+    /**
+     *
+     */
+    public abstract void write(Device out) throws IOException;
+    
 }
 
 /*

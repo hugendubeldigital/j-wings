@@ -131,7 +131,7 @@ public class SCheckBox extends SButton
     public void setSelectedIcon(SIcon i) {
         if ( i!=selectedIcon || i!=null && !i.equals(selectedIcon) ) {
             selectedIcon = i;
-            reload(RELOAD_STATE);
+            reload(RELOAD_CODE);
         } 
     }
 
@@ -153,7 +153,7 @@ public class SCheckBox extends SButton
         if ( i!=disabledSelectedIcon || 
              i!=null && !i.equals(disabledSelectedIcon) ) {
             disabledSelectedIcon = i;
-            reload(RELOAD_STATE);
+            reload(RELOAD_CODE);
         } 
     }
 
@@ -218,7 +218,7 @@ public class SCheckBox extends SButton
         if (group != null)
             group.setSelected(this, selected);
         if (oldSelected != selected)
-            reload(RELOAD_MODEL);
+            reload(RELOAD_CODE);
     }
 
     /**
