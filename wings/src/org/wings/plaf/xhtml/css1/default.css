@@ -1,5 +1,5 @@
 BODY { 
-   background: #dddddd;
+   background: white;
    padding: 0;
    margin: 0;
    border-width: 0 
@@ -204,7 +204,7 @@ H3 {
 
 .tableselection {
    color: #ffff00;
-   background-color: #99dddd;
+   background-color: #dcdcdc;
 }
 
 .tablenonselection {
@@ -230,13 +230,13 @@ H3 {
 
 .basetablecell {
    color: #000000;
-   background-color: #eeeeee;
+   background-color: white;
 }
 
 .treenodeselection {
    text-decoration: none;
    color: #000000;
-   background-color: #99dddd;
+   background-color: #dcdcdc;
 }
 
 .treenodenonselection {
