@@ -84,6 +84,8 @@ public class SGetAddress
     public String getRelativeAddress() {
         if (relativeAddress == null) {
             int pos = absoluteAddress.indexOf('/', "http://".length() + 1);
+            if (pos == -1)
+                pos = 0;  // we already got an relative address without host.
             relativeAddress = absoluteAddress.substring(pos);
             relativeAddressByte = relativeAddress.getBytes();
             hasQuestMark = (relativeAddress.indexOf ('?') >= 0);
