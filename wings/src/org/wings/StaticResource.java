@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
 
-import org.wings.session.SessionManager;
+import org.wings.session.*;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.externalizer.AbstractExternalizeManager;
 
@@ -214,8 +214,15 @@ public class StaticResource
     public final int getLength() {
         if ( buffer!=null && buffer.isValid())
             return buffer.size();
-        else 
+        else
             return -1;
+    }
+
+    public String getURL() {
+        if (extension != null)
+            return getId() + "." + extension;
+        else
+            return getId();
     }
 
     /**

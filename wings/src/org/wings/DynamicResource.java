@@ -21,7 +21,7 @@ import org.wings.SFrame;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.Device;
 import org.wings.util.StringUtil;
-import org.wings.session.SessionManager;
+import org.wings.session.*;
 
 /**
  * Dynamic Resources are web resources representing rendered components 
@@ -103,6 +103,25 @@ public abstract class DynamicResource
         return epochCache;
     }
 
+    public String getURL() {
+        RequestURL requestURL = (RequestURL)getPropertyService().getProperty("request.url");
+        requestURL.setEpoch(getEpoch());
+
+        if (extension != null)
+            requestURL.setResource(getId() + "." + extension);
+        else
+            requestURL.setResource(getId());
+
+        return requestURL.toString();
+    }
+
+    private PropertyService propertyService;
+    protected PropertyService getPropertyService() {
+        if (propertyService == null)
+            propertyService = (PropertyService)SessionManager.getSession();
+        return propertyService;
+    }
+
     /**
      * TODO: documentation
      *
@@ -131,11 +150,6 @@ public abstract class DynamicResource
       */
     public Set getCookies() {
         return null;
-    }
-
-    protected void applyConfiguration(RequestURL requestURL) {
-        super.applyConfiguration(requestURL);
-        requestURL.setEpoch(getEpoch());
     }
 
     /**

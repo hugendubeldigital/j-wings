@@ -98,8 +98,9 @@ public final class TableCG
                 .append(intercellPadding.width)
                 .append("\""); 
 
+        if (style != null)
+            style.write(d);
 
-        Utils.writeStyleAttribute(d, style);
         d.append(">\n");
     }
 
@@ -123,7 +124,8 @@ public final class TableCG
         SCellRendererPane rendererPane = table.getCellRendererPane();
         if (table.isHeaderVisible()) {
             d.append("<tr");
-            Utils.writeStyleAttribute(d, "", style, "header");
+            if (style != null)
+                style.write(d);
             d.append(">\n");
             for (int c = originCol; c < colCount; c++) {
                 writeHeaderCell(d, table, rendererPane, c);
@@ -132,10 +134,10 @@ public final class TableCG
         }
         for (int r = originRow; r < rowCount; r++) {
             d.append("<tr");
+            if (style != null)
+                style.write(d);
             if (table.isRowSelected(r))
-                Utils.writeStyleAttribute(d, "", style, "selection");
-            else
-                Utils.writeStyleAttribute(d, "", style, "nonselection");
+                d.append(" style=\"color:#990000\"");
             d.append(">\n");
             for (int c = originCol; c < colCount; c++) {
                 writeCell(d, table, rendererPane, r, c);
@@ -159,8 +161,10 @@ public final class TableCG
         else
             comp = table.prepareRenderer(table.getCellRenderer(row, col), row, col);
 
+        Style style = comp.getStyle();
         d.append("<td");
-        Utils.writeStyleAttribute(d, comp.getStyle());
+        if (style != null)
+            style.write(d);
         d.append(">");
         comp.write(d);
         d.append("</td>");
@@ -175,8 +179,10 @@ public final class TableCG
         else {
             SComponent comp = table.prepareHeaderRenderer(c);
 
+            Style style = comp.getStyle();
             d.append("<th");
-            Utils.writeStyleAttribute(d, comp.getStyle());
+            if (style != null)
+                style.write(d);
             d.append(">");
             comp.write(d);
             d.append("</th>");

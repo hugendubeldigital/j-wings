@@ -38,11 +38,9 @@ public final class LabelCG
                 .append(label.getUnifiedId())
                 .append("\"");
 
-            if (style != null) {
-                d.append(" class=\"")
-                    .append(style)
-                    .append("\"");
-            }
+            if (style != null)
+                style.write(d);
+
             d.append(">");
 
             if (noBreak)

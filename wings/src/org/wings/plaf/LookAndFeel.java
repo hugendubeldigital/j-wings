@@ -119,9 +119,10 @@ public class LookAndFeel
      */
     public StyleSheet getStyleSheet() {
         if (styleSheet == null)
-            //            styleSheet =
-            //            (StyleSheet)defaults.get("lookandfeel.stylesheet");
-            styleSheet = makeStyleSheet("org/wings/plaf/xhtml/css1/default.css");
+            styleSheet = (StyleSheet)defaults.get("lookandfeel.stylesheet", StyleSheet.class);
+        if (styleSheet == null)
+            throw new RuntimeException("mmmmmmmiiiiiiiiiiiissssssssssstttttttt");
+        // styleSheet = makeStyleSheet("org/wings/plaf/xhtml/css1/default.css");
         return styleSheet;
     }
 
@@ -239,7 +240,11 @@ public class LookAndFeel
      * @return the style
      */
     public Style makeStyle(String name) {
-        return getStyleSheet().getStyle(name);
+        Style style = getStyleSheet().getStyle(name);
+        if (style == null)
+            System.err.println("the style specification '" + name +
+                               "' has no corresponding style definition in the 'lookandfeel.stylesheet'");
+        return style;
     }
 
     /**

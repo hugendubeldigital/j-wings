@@ -20,6 +20,7 @@ import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.plaf.xhtml.*;
+import org.wings.style.*;
 
 public final class ButtonCG
     extends org.wings.plaf.xhtml.ButtonCG
@@ -28,16 +29,18 @@ public final class ButtonCG
         throws IOException
     {
         String tooltip = button.getToolTipText();
+        Style style = button.getStyle();
 
         if (button.isEnabled()) {
             d.append("<a href=\"");
             writeAnchorAddress(d, button);
             d.append("\"");
 
+            if (style != null)
+                style.write(d);
+
             if (button.isSelected())
-                Utils.writeStyleAttribute(d, "anchor", button.getStyle(), "selection");
-            else
-                Utils.writeStyleAttribute(d, "anchor", button.getStyle(), "nonselection");
+                d.append(" style=\"color:#990000\"");
 
             if (button.getRealTarget() != null)
                 d.append(" target=\"").append(button.getRealTarget()).append("\"");
@@ -52,12 +55,15 @@ public final class ButtonCG
     protected void writeFormPrefix(Device d, SButton button)
         throws IOException
     {
+        Style style = button.getStyle();
+
         d.append("<input type=\"submit\"");
 
-        Utils.writeStyleAttribute(d, "form", button.getStyle(), 
-                                  button.isSelected() 
-                                  ? "selection" 
-                                  : "nonselection");
+        if (style != null)
+            style.write(d);
+
+        if (button.isSelected())
+            d.append(" style=\"color:#990000\"");
     }
 }
 

@@ -97,18 +97,7 @@ public abstract class Resource
      */
     public abstract String getId();
 
-    public String getURL() {
-        RequestURL requestURL = (RequestURL)((PropertyService)SessionManager.getSession()).getProperty("request.url");
-        applyConfiguration(requestURL);
-        return requestURL.toString();
-    }
-
-    protected void applyConfiguration(RequestURL requestURL) {
-        if (extension != null)
-            requestURL.setResource(getId() + "." + extension);
-        else
-            requestURL.setResource(getId());
-    }
+    public abstract String getURL();
 
     /**
      * TODO: documentation

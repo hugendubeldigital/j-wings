@@ -14,7 +14,10 @@
 
 package org.wings.style;
 
+import java.io.*;
 import java.util.*;
+
+import org.wings.io.*;
 
 /**
  * TODO: documentation
@@ -26,6 +29,7 @@ public final class Style
     extends SimpleAttributeSet
 {
     StyleSheet sheet;
+    byte[] attr;
 
     public Style(String name, AttributeSet attributes) {
         super(attributes);
@@ -36,6 +40,7 @@ public final class Style
 
     public void setName(String name) {
         this.name = name;
+        attr = null;
     }
     public String getName() { return name; }
 
@@ -43,6 +48,14 @@ public final class Style
         this.sheet = sheet;
     }
     public StyleSheet getSheet() { return sheet; }
+
+    public void write(Device d)
+        throws IOException
+    {
+        if (attr == null)
+            attr = (" class=\"" + name.substring(name.indexOf(".") + 1) + "\"").getBytes();
+        d.write(attr);
+    }
 
     public String toString() {
         return name + " { " + super.toString() + "}";

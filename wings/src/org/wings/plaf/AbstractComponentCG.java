@@ -107,10 +107,7 @@ public abstract class AbstractComponentCG implements ComponentCG, SConstants
                 Class propertyType = descriptors[i].getPropertyType();
                 boolean configurable = false;
 
-                //                System.err.println(propertyName + " " + propertyType);
                 value = manager.getObject(propertyName, propertyType);
-                //                if (value!=null )
-                //                    System.err.println(value.getClass().getName());
                 configurable = !propertyType.isPrimitive();
 
                 if (value != null) {

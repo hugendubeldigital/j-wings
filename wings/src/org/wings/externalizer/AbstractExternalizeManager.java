@@ -207,7 +207,7 @@ public abstract class AbstractExternalizeManager
      * removes the {@link ExternalizedInfo} by identifier. 
      */
     protected abstract void removeExternalizedInfo(String identifier);
-    
+
     /**
      * externalizes (make a java object available for a browser) an object with
      * the given {@link Externalizer}. The object is externalized in the 
