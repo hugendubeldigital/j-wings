@@ -766,24 +766,29 @@ public class STable
         // kill active editors
         editingCanceled(null);
 
-        switch ( e.getType() ) {
-        case TableModelEvent.INSERT:
-            if (e.getFirstRow() >= 0)
-                addSelectables(e.getFirstRow(), e.getLastRow());
-            break;
-
-        case TableModelEvent.DELETE:
-            if (e.getFirstRow() >= 0)
-                deleteSelectables(e.getFirstRow(), e.getLastRow());
-            break;
-
-        case TableModelEvent.UPDATE:
-            // Falls sich die Daten geaendert haben, sonst sind keine
-            // Aenderungen noetig.
-            if (e.getFirstRow() <= 0 ||
-                 e.getLastRow()>selects.length)
-                initSelectables();
-            break;
+        // this could be null !!!
+        if ( e!=null ) {
+            switch ( e.getType() ) {
+            case TableModelEvent.INSERT:
+                if (e.getFirstRow() >= 0)
+                    addSelectables(e.getFirstRow(), e.getLastRow());
+                break;
+                
+            case TableModelEvent.DELETE:
+                if (e.getFirstRow() >= 0)
+                    deleteSelectables(e.getFirstRow(), e.getLastRow());
+                break;
+                
+            case TableModelEvent.UPDATE:
+                // Falls sich die Daten geaendert haben, sonst sind keine
+                // Aenderungen noetig.
+                if (e.getFirstRow() <= 0 ||
+                    e.getLastRow()>selects.length)
+                    initSelectables();
+                break;
+            }
+        } else {
+            initSelectables();
         }
     }
 
