@@ -27,7 +27,6 @@ import org.wings.*;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.ServletDevice;
 import org.wings.session.*;
-import org.wings.util.ASUtil;
 import org.wings.util.DebugUtil;
 import org.wings.util.TimeMeasure;
 import org.wings.plaf.LookAndFeelFactory;
@@ -230,8 +229,8 @@ public abstract class SessionServlet
      */
     protected final void setLocale(Locale l) throws IllegalArgumentException {
         if (supportedLocales==null ||
-             supportedLocales.length==0 ||
-             ASUtil.inside(l, supportedLocales)) {
+            supportedLocales.length==0 ||
+            Arrays.asList(supportedLocales).contains(l)) {
             session.setLocale(l);
             logger.config("Set Locale " + l);
         } else
