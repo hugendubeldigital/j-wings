@@ -84,19 +84,31 @@ public class LabelExample extends WingSetPane
     }
 
     SContainer createRoundRadio(final SLabel label) {
-        SPanel b = new SPanel(new SGridLayout(3));
-
+        SPanel b = new SPanel(new SBoxLayout(null, SBoxLayout.Y_AXIS));
+        
+        SPanel sp = new SPanel(new SBoxLayout(b, SBoxLayout.X_AXIS));
         SButtonGroup g = new SButtonGroup();
-        final SRadioButton nw = createRadio(b,"p=nw", g, "North West", 0);
-        final SRadioButton n  = createRadio(b,"p=n",  g, "North", 1);
-        final SRadioButton ne = createRadio(b,"p=ne", g, "North East", 2);
-        final SRadioButton w  = createRadio(b,"p=w",  g, "West", 3);
-        b.add(new SLabel());
-        final SRadioButton e  = createRadio(b,"p=e",  g, "East", 4);
-        final SRadioButton sw = createRadio(b,"p=sw", g, "South West", 5);
-        final SRadioButton s  = createRadio(b,"p=s",  g, "South", 6);
-        final SRadioButton se = createRadio(b,"p=se", g, "South East", 7);
+        final SRadioButton nw = createRadio(sp,"p=nw", g, "North West", 0);
+        final SRadioButton n  = createRadio(sp,"p=n",  g, "North", 1);
+        final SRadioButton ne = createRadio(sp,"p=ne", g, "North East", 2);
+        b.add(sp);
+        
+        SPanel sp1 = new SPanel(new SBoxLayout(b, SBoxLayout.X_AXIS));
 
+        final SRadioButton w  = createRadio(sp1,"p=w",  g, "West", 3);
+        SLabel sl = new SLabel();
+        sl.setIcon(new SResourceIcon(WingSet.class.getClassLoader(), "wingset/icons/cowSmall.gif"));
+        sp1.add(sl);
+        final SRadioButton e  = createRadio(sp1,"p=e",  g, "East", 4);
+        b.add(sp1);
+        
+        SPanel sp2 = new SPanel(new SBoxLayout(b, SBoxLayout.X_AXIS));
+        final SRadioButton sw = createRadio(sp2,"p=sw", g, "South West", 5);
+        final SRadioButton s  = createRadio(sp2,"p=s",  g, "South", 6);
+        final SRadioButton se = createRadio(sp2,"p=se", g, "South East", 7);
+
+        b.add(sp2);
+        
         g.addActionListener (new ActionListener() {
                 public void actionPerformed(ActionEvent ev) {
                     Object button = ((SButtonGroup) ev.getSource())
