@@ -43,33 +43,42 @@ function numberFormatter (__minIntDig, __maxIntDig, __minFracDig, __maxFracDig, 
                         }
             	}
 
-		if (fractionDigits.length > __maxFracDig ){
-                        var round = fractionDigits.substring(__maxFracDig-1,__maxFracDig) +"."+ fractionDigits.substring( __maxFracDig );
-                        round = new String(Math.round( round ));
-                        fractionDigits = fractionDigits.substring(0, __maxFracDig-1) + round;
-            	} else if (fractionDigits.length < __minFracDig && fractionDigits.length >= 0 ){
-                        var fillFrac = new String( fractionDigits );
-                        for(var i = 0; i < __minFracDig - fractionDigits.length; i++) {
-                            fillFrac = fillFrac + "0";
-                        }
-                        fractionDigits = fillFrac;
-            	}
+		if ( __intOnly == false ) {
+			if (fractionDigits.length > __maxFracDig ){
+                        	var round = fractionDigits.substring(__maxFracDig-1,__maxFracDig) +"."+ fractionDigits.substring( __maxFracDig );
+                        	round = new String(Math.round( round ));
+                        	fractionDigits = fractionDigits.substring(0, __maxFracDig-1) + round;
+            		} else if (fractionDigits.length < __minFracDig && fractionDigits.length >= 0 ){
+                        	var fillFrac = new String( fractionDigits );
+                        	for(var i = 0; i < __minFracDig - fractionDigits.length; i++) {
+                            		fillFrac = fillFrac + "0";
+                        	}
+                        	fractionDigits = fillFrac;
+            		}
+		}
 
 		if ( __field.value < __minVal ) {
                         // alert("Field.value("+__field.value+") < minVal("+__minVal+")");
 			__field.value = __minVal;	
-			return false;
-		}
-		if ( __field.value > __maxVal) {
+			return true;
+		} else if ( __field.value > __maxVal) {
 			// alert("Field.value("+__field.value+") > maxVal("+__maxVal+")");
                         __field.value = __maxVal;
-			return false;
+			return true;
+		} else {
+			if ( __intOnly ) {
+				__field.value = integerDigits;
+			} else {
+				__field.value = integerDigits + __decSep + fractionDigits;
+			}
+			return true;
 		}
-		if ( __intOnly ) {
-			__field.value = Math.round( __field.value );
-		}
-                __field.value = integerDigits + __decSep + fractionDigits;
-		return true;
+
+        //      if ( __intOnly ) {
+        //              __field.value = Math.round( __field.value );
+        //      }
+
+
 	} else {
 		__field.value = old;
 		return true;
