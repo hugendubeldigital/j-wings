@@ -1260,6 +1260,134 @@ public abstract class SComponent
     public final boolean getFirePropertyChangeEvents() {
         return firePropertyChangeEvents;
     }
+    /**
+     * Reports a bound property change.
+     *
+     * @param propertyName the programmatic name of the property
+     *		that was changed
+     * @param oldValue the old value of the property (as a byte)
+     * @param newValue the new value of the property (as a byte)
+     * @see #firePropertyChange(java.lang.String, java.lang.Object,
+     *		java.lang.Object)
+     */
+    public void firePropertyChange(String propertyName, byte oldValue, byte newValue) {
+        if ( firePropertyChangeEvents && (oldValue != newValue)) {
+            firePropertyChange(propertyName, new Byte(oldValue), new Byte(newValue));
+        }
+    }
+
+    /**
+     * Reports a bound property change.
+     *
+     * @param propertyName the programmatic name of the property
+     *		that was changed
+     * @param oldValue the old value of the property (as a char)
+     * @param newValue the new value of the property (as a char)
+     * @see #firePropertyChange(java.lang.String, java.lang.Object,
+     *		java.lang.Object)
+     */
+     public void firePropertyChange(String propertyName, char oldValue, char newValue) {
+         if ( firePropertyChangeEvents && (oldValue != newValue)) {
+             firePropertyChange(propertyName, new Character(oldValue), new Character(newValue));
+         }
+    }
+
+    /**
+     * Reports a bound property change.
+     *
+     * @param propertyName the programmatic name of the property
+     *		that was changed
+     * @param oldValue the old value of the property (as a short)
+     * @param newValue the old value of the property (as a short)
+     * @see #firePropertyChange(java.lang.String, java.lang.Object,
+     *		java.lang.Object)
+     */
+    public void firePropertyChange(String propertyName, short oldValue, short newValue) {
+        if ( firePropertyChangeEvents && (oldValue != newValue)) {
+            firePropertyChange(propertyName, new Short(oldValue), new Short(newValue));
+        }
+    }
+
+    /**
+     * Reports a bound property change.
+     *
+     * @param propertyName the programmatic name of the property
+     *		that was changed
+     * @param oldValue the old value of the property (as an int)
+     * @param newValue the new value of the property (as an int)
+     * @see #firePropertyChange(java.lang.String, java.lang.Object,
+     *		java.lang.Object)
+     */
+    public void firePropertyChange(String propertyName, int oldValue, int newValue) {
+        if ( firePropertyChangeEvents && (oldValue != newValue)) {
+            firePropertyChange(propertyName, new Integer(oldValue), new Integer(newValue));
+        }
+    }
+
+    /**
+     * Reports a bound property change.
+     *
+     * @param propertyName the programmatic name of the property
+     *		that was changed
+     * @param oldValue the old value of the property (as a long)
+     * @param newValue the new value of the property (as a long)
+     * @see #firePropertyChange(java.lang.String, java.lang.Object,
+     *		java.lang.Object)
+     */
+    public void firePropertyChange(String propertyName, long oldValue, long newValue) {
+        if ( firePropertyChangeEvents && (oldValue != newValue)) {
+            firePropertyChange(propertyName, new Long(oldValue), new Long(newValue));
+        }
+    }
+
+    /**
+     * Reports a bound property change.
+     *
+     * @param propertyName the programmatic name of the property
+     *		that was changed
+     * @param oldValue the old value of the property (as a float)
+     * @param newValue the new value of the property (as a float)
+     * @see #firePropertyChange(java.lang.String, java.lang.Object,
+     *		java.lang.Object)
+     */
+    public void firePropertyChange(String propertyName, float oldValue, float newValue) {
+        if ( firePropertyChangeEvents && (oldValue != newValue)) {
+            firePropertyChange(propertyName, new Float(oldValue), new Float(newValue));
+        }
+    }
+
+    /**
+     * Reports a bound property change.
+     *
+     * @param propertyName the programmatic name of the property
+     *		that was changed
+     * @param oldValue the old value of the property (as a double)
+     * @param newValue the new value of the property (as a double)
+     * @see #firePropertyChange(java.lang.String, java.lang.Object,
+     *		java.lang.Object)
+     */
+    public void firePropertyChange(String propertyName, double oldValue, double newValue) {
+        if ( firePropertyChangeEvents && (oldValue != newValue)) {
+            firePropertyChange(propertyName, new Double(oldValue), new Double(newValue));
+        }
+    }
+
+    /**
+     * Reports a bound property change.
+     *
+     * @param propertyName the programmatic name of the property
+     *		that was changed
+     * @param oldValue the old value of the property (as a boolean)
+     * @param oldValue the old value of the property (as a boolean)
+     * @see #firePropertyChange(java.lang.String, java.lang.Object,
+     *		java.lang.Object)
+     */
+    public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
+        if ( firePropertyChangeEvents && (oldValue != newValue)) {
+        firePropertyChange(propertyName, oldValue ? Boolean.TRUE : Boolean.FALSE, 
+                           newValue ? Boolean.TRUE : Boolean.FALSE);
+        }
+    }
 
     /**
      * Fires a PropertyChangedEvent to all listeners if the
