@@ -69,7 +69,7 @@ public class SScrollPane
     protected Adjustable horizontalScrollBar = null;
 
     /**
-     * Sets the new viewport of the scrollable
+     * 
      */
     protected AdjustmentListener adjustmentListener;
 
@@ -272,6 +272,16 @@ public class SScrollPane
      * @param sb the scrollbar that controls the viewports horizontal view position
      */
     public void setHorizontalScrollBar(Adjustable sb) {
+        setHorizontalScrollBar(sb, SBorderLayout.SOUTH);
+    }
+
+    /**
+     * Set the horizontal scroll bar.
+     * @param constraint the constraint for the {@link LayoutManager} of this 
+     * {@link SContainer}. The {@link LayoutManager} is per default 
+     * {@link SBorderLayout}. 
+     */
+    public void setHorizontalScrollBar(Adjustable sb, String constraint) {
         if (horizontalScrollBar!=null) {
             horizontalScrollBar.removeAdjustmentListener(getAdjustmentListener());
             if ( horizontalScrollBar instanceof SComponent )
@@ -282,7 +292,7 @@ public class SScrollPane
         if ( horizontalScrollBar!=null ) {
             if ( horizontalScrollBar instanceof SComponent ) {
                 super.addComponent((SComponent)horizontalScrollBar,
-                                   SBorderLayout.SOUTH, 
+                                   constraint, 
                                    getComponentCount());
             }
 
@@ -315,6 +325,17 @@ public class SScrollPane
      * @param sb the scrollbar that controls the viewports vertical view position
      */
     public void setVerticalScrollBar(Adjustable sb) {
+        setVerticalScrollBar(sb, SBorderLayout.EAST);
+    }
+
+    /**
+     * Set the vertical scroll bar.
+     * @param sb the scrollbar that controls the viewports vertical view position
+     * @param constraint the constraint for the {@link LayoutManager} of this 
+     * {@link SContainer}. The {@link LayoutManager} is per default 
+     * {@link SBorderLayout}. 
+     */
+    public void setVerticalScrollBar(Adjustable sb, String constraint) {
         if (verticalScrollBar!=null) {
             verticalScrollBar.removeAdjustmentListener(getAdjustmentListener());
             if ( verticalScrollBar instanceof SComponent )
@@ -326,7 +347,7 @@ public class SScrollPane
         if ( verticalScrollBar!=null ) {
             if ( verticalScrollBar instanceof SComponent ) {
                 super.addComponent((SComponent)verticalScrollBar,
-                                   SBorderLayout.EAST,
+                                   constraint,
                                    getComponentCount());
             }
 
@@ -353,7 +374,7 @@ public class SScrollPane
      * <li><code>SScrollPane.HORIZONTAL_SCROLLBAR_NEVER</code></li>
      * <li><code>SScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS</code></li>
      */
-    public void setHorizontalScrollBarPolicy( int policy) {
+    public void setHorizontalScrollBarPolicy(int policy) {
         if ( policy!=horizontalScrollBarPolicy ) {
             horizontalScrollBarPolicy = policy;
             reload(ReloadManager.RELOAD_CODE);
