@@ -108,7 +108,8 @@ public final class Utils
     }
 
 	/**
-      * Write component class and background-color.
+      * Write component class and all other style attributes including border.
+      * The <i>span</i>-tag is used.
       * @param d the device to write to
       * @param component the component to get style and bg-color from
       */
@@ -141,7 +142,10 @@ public final class Utils
     public static void writeSpanWithStyleAttributePostfix(Device d, SComponent component )
         throws IOException
     {
-        if ( component.getStyle() == null && component.getBackground() == null )
+        if (
+        	component.getStyle() == null && 
+        	org.wings.plaf.xhtml.Utils.hasSpanAttributes( component )
+           )
             return;
 
         d.append("</span>");

@@ -27,13 +27,13 @@ public class ScrollPaneCG
 {
     public void installCG(SComponent component) {
         SScrollPane scrollPane = (SScrollPane)component;
-        scrollPane.setLayout(new SBorderLayout());
+
 
         SScrollBar horizontalScroller = new SScrollBar(SConstants.HORIZONTAL);
-        scrollPane.addComponent(horizontalScroller, "South");
+        scrollPane.addComponent( horizontalScroller );
 
         SScrollBar verticalScroller = new SScrollBar(SConstants.VERTICAL);
-        scrollPane.addComponent(verticalScroller, "East");
+        scrollPane.addComponent( verticalScroller );
 
         horizontalScroller.addAdjustmentListener(scrollPane.getAdjustmentListener());
         verticalScroller.addAdjustmentListener(scrollPane.getAdjustmentListener());
@@ -55,7 +55,8 @@ public class ScrollPaneCG
         updateScrollBars(scrollPane);
 
         writePrefix(d, scrollPane);
-        Utils.writeContainerContents(d, scrollPane);
+        System.out.println("\t:::getScrollable is " + scrollPane.getScrollable().getClass() );
+        ((SComponent) scrollPane.getScrollable()).write( d );
         writePostfix(d, scrollPane);
     }
 
@@ -63,6 +64,9 @@ public class ScrollPaneCG
         SScrollBar horizontalScroller = (SScrollBar)scrollPane.getComponentAt(1);
         SScrollBar verticalScroller = (SScrollBar)scrollPane.getComponentAt(2);
         Scrollable scrollable = scrollPane.getScrollable();
+        
+        horizontalScroller.setBlockIncrement( scrollPane.getHorizontalExtent() - 1 );
+        verticalScroller.setBlockIncrement( scrollPane.getVerticalExtent() - 1 );
 
         Dimension dim = scrollable.getScrollableViewportSize();
         if (dim.width != horizontalScroller.getMaximum()) {
@@ -96,11 +100,40 @@ public class ScrollPaneCG
     protected void writePrefix(Device d, SContainer container)
         throws IOException
     {
+        SScrollBar horizontalScroller = (SScrollBar)container.getComponentAt(1);
+        SScrollBar verticalScroller = (SScrollBar)container.getComponentAt(2);
+
+    	int cspan = ( horizontalScroller.isVisible() )? ((ScrollBarCG) horizontalScroller.getCG()).SCROLLBAR_STEPS + 2 : 1 ;
+    	int rspan = ( verticalScroller.isVisible() )? ((ScrollBarCG) verticalScroller.getCG()).SCROLLBAR_STEPS + 2 : 1 ;
+        
+		d.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td ");
+        if ( cspan > 1 )
+         {
+        	d.append( "colspan=\"" );
+        	d.append( cspan );
+            d.append( "\"" );
+		 }
+		if ( rspan > 1 )
+         {
+        	d.append( " rowspan=\"" );
+        	d.append( rspan );
+            d.append( "\"" );
+		 }
+		d.append(">");
     }
 
     protected void writePostfix(Device d, SContainer container)
         throws IOException
     {
+        SScrollBar horizontalScroller = (SScrollBar)container.getComponentAt(1);
+        SScrollBar verticalScroller = (SScrollBar)container.getComponentAt(2);
+
+		d.append( "</td>" );
+        verticalScroller.write( d );
+        d.append( "</tr>" );
+		horizontalScroller.write( d );
+        d.append("</tr></table>");
+        
     }
 }
 

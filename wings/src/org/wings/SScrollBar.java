@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.AdjustmentEvent;
 import java.io.Serializable;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.BoundedRangeModel;
@@ -28,6 +29,9 @@ import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.Icon;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+
+import org.wings.plaf.*;
+import org.wings.io.Device;
 
 /**
  * TODO: documentation
@@ -39,6 +43,11 @@ public class SScrollBar
     extends SContainer
     implements Adjustable, SConstants
 {
+    /**
+     * @see #getCGClassID
+     */
+    private static final String cgClassID = "ScrollBarCG";
+
     /**
      * TODO: documentation
      */
@@ -152,7 +161,7 @@ public class SScrollBar
      * @see #setMaximum
      */
     public SScrollBar(int orientation, int value, int extent, int min, int max) {
-        super(new SBorderLayout());
+        super( );
         this.unitIncrement = 1;
         this.blockIncrement = (extent == 0) ? 1 : extent;
         this.orientation = orientation;
@@ -163,7 +172,7 @@ public class SScrollBar
         checkOrientation(orientation);
 
         // removeStyle(UNIT);
-        removeStyle(BLOCK);
+        // removeStyle(BLOCK);
         // removeStyle(MARGIN);
     }
 
@@ -282,9 +291,9 @@ public class SScrollBar
      */
     protected void initScrollers() {
         for ( int i=0; i<buttons.length; i++ ) {
-            buttons[i][FORWARD] = new SButton("");
+            buttons[i][FORWARD] = new SButton();
             buttons[i][FORWARD].addActionListener(scrollerAction);
-            buttons[i][BACKWARD] = new SButton("");
+            buttons[i][BACKWARD] = new SButton();
             buttons[i][BACKWARD].addActionListener(scrollerAction);
         }
         initLayout();
@@ -294,28 +303,30 @@ public class SScrollBar
      * TODO: documentation
      *
      */
-    protected void initLayout() {
+    protected void initLayout()
+    {
+    /*
+	*/
         removeAllComponents();
         SPanel backward = null;
         SPanel forward = null;
         if ( orientation == SConstants.VERTICAL) {
-            backward = new SPanel(new SFlowDownLayout());
-            add(backward, SBorderLayout.NORTH);
+            backward = new SPanel(new SFlowDownLayout() );
+            add( backward );
 
-            forward = new SPanel(new SFlowDownLayout());
-            add(forward, SBorderLayout.SOUTH);
+            forward = new SPanel(new SFlowDownLayout() );
+            add( forward );
         }
         else {
-            backward = new SPanel(new SFlowLayout());
-            backward.setHorizontalAlignment(RIGHT);
-            add(backward, SBorderLayout.WEST);
+            backward = new SPanel(new SFlowLayout() );
+            add( backward );
 
-            forward = new SPanel(new SFlowLayout());
-            forward.setHorizontalAlignment(LEFT);
-            add(forward, SBorderLayout.EAST);
+            forward = new SPanel(new SFlowLayout() );
+            add( forward );
         }
 
-        for ( int i=0; i<buttons.length; i++ ) {
+        for ( int i=0; i<buttons.length; i++ )
+        {
             forward.add(buttons[i][FORWARD]);
             backward.add(buttons[buttons.length-i-1][BACKWARD]);
         }
@@ -748,6 +759,40 @@ public class SScrollBar
             children[i].setEnabled(x);
         }
     }
+
+    /**
+     * TODO: documentation
+     *
+     * @param s
+     */
+    public void write(Device d)
+        throws IOException
+    {
+    	System.out.println(":::SScrollBar.write" );
+        if (visible)
+            cg.write(d, this);
+    }
+
+    /**
+     * Returns the name of the CGFactory class that generates the
+     * look and feel for this component.
+     *
+     * @return "ContainerCG"
+     * @see SComponent#getCGClassID
+     * @see CGDefaults#getCG
+     */
+    public String getCGClassID() {
+        return cgClassID;
+    }
+
+    public void setCG(ScrollBarCG cg) {
+        super.setCG(cg);
+    }
+
+	public String toString()
+     {
+		return "SScrollBar[orientation=" + ((orientation == SComponent.HORIZONTAL)?"horizontal":"vertical") + "]";
+     }
 }
 
 /*
