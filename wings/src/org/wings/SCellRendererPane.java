@@ -60,18 +60,23 @@ public class SCellRendererPane
     /**
      * Write a cell renderer component c to device d. Before the component
      * is drawn it's reparented to this (if that's neccessary).
-     * The Container p is the component we're actually drawing on, typically it's
-     * equal to this.getParent().
+     * The Component p is the component we're actually drawing on.
      */
-    public void writeComponent(Device d, SComponent c, SContainer p)
+    public void writeComponent(Device d, SComponent c, SComponent p)
         throws IOException
     {
+        if ( getParent() == null )
+            System.err.println("SCellRendererPane: parent == null!");
+
+        if ( getParentFrame() == null )
+            System.err.println("SCellRendererPane: parentFrame == null!");
+
         if ( c == null ) {
             return;
         }
 
         if ( c.getParent() != this ) {
-            this.add(c);
+            this.addComponent(c);
         }
 
         c.write(d);
