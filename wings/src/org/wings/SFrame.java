@@ -60,7 +60,7 @@ public class SFrame
     /**
      * A Set containing additional tags for the html header.
      */
-    protected Set headers;
+    protected List headers;
 
 
     // do not initialize with null
@@ -241,16 +241,17 @@ public class SFrame
     }
 
     public void addHeader(Object m) {
-	headers().add(m);
+    if (!headers.contains(m))
+		headers().add(m);
     }
 
     public void clearHeaders() {
 	headers().clear();
     }
     
-    public Set headers() {
+    public List headers() {
         if (headers == null)
-            headers = new HashSet(2);
+            headers = new ArrayList(2);
 	return headers;
     }
 

@@ -24,7 +24,7 @@
         StaticResource staticResource = (StaticResource)cgManager
             .getObject("lookandfeel.stylesheet", Resource.class);
         staticResource.setMimeType("text/css");
-        component.addHeader(new Link("stylesheet", null, 
+        component.headers().add(0, new Link("stylesheet", null, 
                                      "text/css", null, 
                                      staticResource));
 </install>
@@ -35,8 +35,9 @@
     try {
         String language = "en"; // TODO: ???
         String title = frame.getTitle();
-        Set headers = frame.headers();
-        String encoding = charSetFor(frame.getSession().getLocale());
+        List headers = frame.headers();
+        String encoding = org.wings.util.LocaleCharSet.getInstance().getCharSet(
+        	frame.getSession().getLocale());
 
         %><?xml version="1.0" encoding="<%=encoding%>"?><%
         %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd"><%
@@ -84,15 +85,4 @@
     }
 %>
 </write>
-
-
-    private String charSetFor(Locale locale) {
-        final String language = locale.getLanguage();
-
-        if(language.equals("pl"))
-            return "iso-8859-2";
-
-        return "iso-8859-1";
-    }
-
 </template>
