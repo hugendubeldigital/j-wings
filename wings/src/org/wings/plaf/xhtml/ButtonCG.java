@@ -25,7 +25,7 @@ import org.wings.util.*;
 import org.wings.externalizer.ExternalizeManager;
 
 public class ButtonCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.ButtonCG, SConstants
 {
     private final static String propertyPrefix = "Button";

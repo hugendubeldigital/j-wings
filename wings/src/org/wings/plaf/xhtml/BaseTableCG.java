@@ -26,7 +26,7 @@ import org.wings.plaf.*;
 import org.wings.externalizer.ExternalizeManager;
 
 public class BaseTableCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.BaseTableCG, SConstants
 {
     protected static final byte LEFT   = 1;

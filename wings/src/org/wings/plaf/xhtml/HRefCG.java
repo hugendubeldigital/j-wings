@@ -25,7 +25,7 @@ import org.wings.externalizer.ExternalizeManager;
 
 
 public class HRefCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.HRefCG
 {
     private final static String propertyPrefix = "HRef";

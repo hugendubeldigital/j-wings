@@ -24,7 +24,7 @@ import org.wings.plaf.*;
 import org.wings.externalizer.ExternalizeManager;
 
 public class LabelCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.LabelCG, SConstants
 {
     private final static String propertyPrefix = "Label";

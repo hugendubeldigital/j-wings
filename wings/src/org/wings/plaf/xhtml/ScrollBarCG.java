@@ -25,7 +25,7 @@ import org.wings.plaf.*;
 import org.wings.externalizer.*;
 
 public class ScrollBarCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.ScrollBarCG
 {
     public static final int SCROLLBAR_STEPS        = 15;

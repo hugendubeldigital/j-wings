@@ -22,7 +22,7 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 
 public class ContainerCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.ContainerCG
 {
     private final static String propertyPrefix = "Container";

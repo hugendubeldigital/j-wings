@@ -22,7 +22,7 @@ import org.wings.io.*;
 import org.wings.*;
 
 public class PasswordFieldCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.PasswordFieldCG
 {
     private final static String propertyPrefix = "PasswordField";

@@ -54,10 +54,10 @@ public final class ButtonCG
     {
         d.append("<input type=\"submit\"");
 
-        if (button.isSelected())
-            Utils.writeStyleAttribute(d, "form", button.getStyle(), "selection");
-        else
-            Utils.writeStyleAttribute(d, "form", button.getStyle(), "nonselection");
+        Utils.writeStyleAttribute(d, "form", button.getStyle(), 
+                                  button.isSelected() 
+                                  ? "selection" 
+                                  : "nonselection");
     }
 }
 

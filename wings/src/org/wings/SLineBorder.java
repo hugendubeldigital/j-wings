@@ -76,26 +76,6 @@ public class SLineBorder
     public int getThickness() { return thickness; }
 
     /**
-     * Set the lineColor color.
-     *
-     * @param c the new lineColor color
-     * @deprecated replaced by {@link org.wings.SBorder#setColor(java.awt.Color)}
-     */
-    public void setLineColor(Color c) {
-        setColor( c );
-    }
-
-    /**
-     * Return the lineColor color.
-     *
-     * @return the lineColor color
-     * @deprecated replaced by {@link org.wings.SBorder#getColor()}
-     */
-    public Color getLineColor() {
-        return getColor();
-    }
-
-    /**
      * Returns the name of the CGFactory class that generates the
      * look and feel for this border.
      *

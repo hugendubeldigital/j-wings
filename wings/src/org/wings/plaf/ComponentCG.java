@@ -23,8 +23,8 @@ public interface ComponentCG
 {
     /**
      * Installs the CG. <p>
-     * <b>Note</b>: Be very carefull here as this method is called from
-     * the SComponent constructor! Don't call any methods which relay on
+     * <b>Note</b>: Be very careful here since this method is called from
+     * the SComponent constructor! Don't call any methods which rely on
      * something that will be constructed in a subconstructor later!
      */
     void installCG(SComponent c);

@@ -34,7 +34,7 @@ public final class LineBorderCG
     {
         SLineBorder border = (SLineBorder)b;
         int thickness = border.getThickness();
-        Color color = border.getLineColor();
+        Color color = border.getColor();
         Insets insets = b.getInsets();
 
         d.append("<div style=\"border: solid ")

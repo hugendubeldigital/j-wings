@@ -26,28 +26,28 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.style.*;
 
-public abstract class AbstractCG
-    implements ComponentCG
+public abstract class AbstractComponentCG implements ComponentCG
 {
     public void installCG(SComponent component) {
 	CGManager manager = component.getSession().getCGManager();
         String className = component.getClass().getName();
         className = className.substring(className.lastIndexOf(".") + 1);
-
+        
         configure(component, className, manager);
     }
-
+    
     /**
      * recursively configure the component and dependant objects
      */
-    protected void configure(Object object, String className, CGManager manager) {
+    protected void configure(Object object, String className, 
+                             CGManager manager) {
         try {
             BeanInfo info = Introspector.getBeanInfo(object.getClass());
-
+            
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
             for (int i=0; i < descriptors.length; i++) {
                 Object value = null;
-
+                
                 if (descriptors[i] instanceof IndexedPropertyDescriptor ||
                     descriptors[i].getPropertyType() == null)
                     continue;

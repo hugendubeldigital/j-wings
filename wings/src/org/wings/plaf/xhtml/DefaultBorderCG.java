@@ -32,21 +32,21 @@ public class DefaultBorderCG
 	    .append(b.getInsets().left)
 	    .append("\">");
     }
-
+    
     public void writePostfix(Device d, SBorder b)
 	throws IOException
     {
 	d.append("</td></tr></table>");
     }
     
-	public void writeSpanAttributes( Device d, SBorder border )
-    	throws IOException
-     {
+    public void writeSpanAttributes( Device d, SBorder border )
+        throws IOException
+    {
      	/* thickness & type */
-		d.append( "border: 1px solid;" );
+        d.append( "border: 1px solid;" );
         /* color */
-		d.append( "border-color: #000000;" );
-     }
+        d.append( "border-color: #000000;" );
+    }
 }
 
 /*

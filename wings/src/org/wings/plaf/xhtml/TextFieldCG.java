@@ -22,7 +22,7 @@ import org.wings.io.*;
 import org.wings.*;
 
 public class TextFieldCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.TextFieldCG
 {
     private final static String propertyPrefix = "TextField";

@@ -45,7 +45,7 @@ public final class LineBorderCG
     {
         SLineBorder border = (SLineBorder)b;
         int thickness = border.getThickness();
-        Color lineColor = border.getLineColor();
+        Color lineColor = border.getColor();
         Insets insets = b.getInsets();
 
         d.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n<tr>");
@@ -66,7 +66,7 @@ public final class LineBorderCG
     {
         SLineBorder border = (SLineBorder)b;
         int thickness = border.getThickness();
-        Color lineColor = border.getLineColor();
+        Color lineColor = border.getColor();
         Insets insets = b.getInsets();
 
         if (insets != null && none.equals(insets))

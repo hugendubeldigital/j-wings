@@ -14,7 +14,7 @@
 
 package org.wings.plaf;
 
-public interface LineBorderCG extends ComponentCG {
+public interface LineBorderCG extends BorderCG {
 }
 
 /*

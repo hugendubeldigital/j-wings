@@ -22,7 +22,7 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 
 public class DivisionCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.DivisionCG
 {
     private final static String propertyPrefix = "Division";

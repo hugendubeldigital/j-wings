@@ -22,7 +22,7 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 
 public abstract class InternalFrameCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.InternalFrameCG
 {
     private final static String propertyPrefix = "InternalFrame";

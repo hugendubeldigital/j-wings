@@ -24,7 +24,7 @@ import org.wings.plaf.*;
 import org.wings.externalizer.ExternalizeManager;
 
 public class ResetButtonCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.ResetButtonCG
 {
     private final static String propertyPrefix = "ResetButton";

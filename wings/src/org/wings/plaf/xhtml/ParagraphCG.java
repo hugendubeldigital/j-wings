@@ -22,7 +22,7 @@ import org.wings.io.*;
 import org.wings.*;
 
 public class ParagraphCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.ParagraphCG
 {
     private final static String propertyPrefix = "Paragraph";

@@ -22,7 +22,7 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 
 public class DesktopPaneCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.DesktopPaneCG
 {
     private final static String propertyPrefix = "DesktopPane";

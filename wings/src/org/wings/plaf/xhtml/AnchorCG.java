@@ -22,7 +22,7 @@ import org.wings.io.*;
 import org.wings.*;
 
 public class AnchorCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.AnchorCG
 {
     private final static String propertyPrefix = "Anchor";

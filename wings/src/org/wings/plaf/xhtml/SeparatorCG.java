@@ -21,7 +21,7 @@ import org.wings.io.*;
 import org.wings.*;
 
 public class SeparatorCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.SeparatorCG
 {
     private final static String propertyPrefix = "Separator";

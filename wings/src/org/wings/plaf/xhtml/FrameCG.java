@@ -24,7 +24,7 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 
 public class FrameCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.FrameCG
 {
     private final static String propertyPrefix = "Frame";

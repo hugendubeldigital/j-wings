@@ -26,7 +26,7 @@ import org.wings.plaf.*;
 import org.wings.util.CGUtil;
 
 public class TreeCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.TreeCG
 {
     private final static String propertyPrefix = "Tree";
