@@ -15,8 +15,30 @@
 package org.wings.session;
 
 
+import org.wings.DefaultReloadManager;
+import org.wings.ReloadManager;
+import org.wings.SContainer;
+import org.wings.SFrame;
+import org.wings.event.ExitVetoException;
+import org.wings.event.SExitEvent;
+import org.wings.event.SExitListener;
+import org.wings.event.SRequestEvent;
+import org.wings.event.SRequestListener;
+import org.wings.externalizer.ExternalizeManager;
+import org.wings.externalizer.ExternalizedResource;
+import org.wings.plaf.CGManager;
+import org.wings.plaf.LookAndFeelFactory;
+import org.wings.util.LocaleCharSet;
+import org.wings.util.StringUtil;
+import org.wings.util.WeakPropertyChangeSupport;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.swing.event.EventListenerList;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,31 +52,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.swing.event.EventListenerList;
-
-import org.wings.DefaultReloadManager;
-import org.wings.ReloadManager;
-import org.wings.SContainer;
-import org.wings.SFrame;
-import org.wings.event.ExitVetoException;
-import org.wings.event.SExitEvent;
-import org.wings.event.SExitListener;
-import org.wings.event.SRequestEvent;
-import org.wings.event.SRequestListener;
-import org.wings.event.WeakRequestListenerProxy;
-import org.wings.externalizer.ExternalizeManager;
-import org.wings.externalizer.ExternalizedResource;
-import org.wings.plaf.CGManager;
-import org.wings.plaf.LookAndFeelFactory;
-import org.wings.util.LocaleCharSet;
-import org.wings.util.StringUtil;
-import org.wings.util.WeakPropertyChangeSupport;
 
 /**
  * TODO: documentation
@@ -798,8 +795,7 @@ public final class Session
      * @param listener
      */
     public void addRequestListener(SRequestListener listener) {
-        listenerList.add(SRequestListener.class,
-                         new WeakRequestListenerProxy(listener));
+        listenerList.add(SRequestListener.class, listener);
     }
 
     /**
@@ -808,8 +804,7 @@ public final class Session
      * @param listener
      */
     public void removeRequestListener(SRequestListener listener) {
-        listenerList.remove(SRequestListener.class,
-                            new WeakRequestListenerProxy(listener));
+        listenerList.remove(SRequestListener.class, listener);
     }
 
     /**
