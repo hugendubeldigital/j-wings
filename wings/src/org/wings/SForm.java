@@ -228,7 +228,7 @@ public class SForm
      *
      * @param postMethod
      */
-    public void setMethod(boolean postMethod) {
+    public void setPostMethod(boolean postMethod) {
         this.postMethod = postMethod;
     }
 
@@ -237,7 +237,7 @@ public class SForm
      *
      * @return
      */
-    public boolean getMethod() {
+    public boolean isPostMethod() {
         return postMethod;
     }
 
