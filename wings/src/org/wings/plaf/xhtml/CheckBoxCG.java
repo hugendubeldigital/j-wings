@@ -260,102 +260,105 @@ public class CheckBoxCG
         }
 
         String text = checkBox.getText();
+        String id = "_" + checkBox.getUnifiedId();
         int horizontalTextPosition = checkBox.getHorizontalTextPosition();
         int verticalTextPosition = checkBox.getVerticalTextPosition();
 
         if (icon == null ) {
-            writeFormText(d, checkBox);
+            writeFormText(d, checkBox, id);
         } else if (text == null) {
-            writeFormIcon(d, checkBox);
+            writeFormIcon(d, checkBox, id);
         } else {
             // Hauptsache, es funktioniert !!!
             if (verticalTextPosition == NO_ALIGN || horizontalTextPosition == NO_ALIGN) {
-                writeFormIcon(d, checkBox);
-                writeFormText(d, checkBox);
+                writeFormIcon(d, checkBox, id);
+                writeFormText(d, checkBox, id);
             } else if (verticalTextPosition == TOP && horizontalTextPosition == LEFT) {
                 d.append("<table><tr><td valign=\"top\">");
-                writeFormText(d, checkBox);
+                writeFormText(d, checkBox, id);
                 d.append("</td><td>");
-                writeFormIcon(d, checkBox);
+                writeFormIcon(d, checkBox, id);
                 d.append("</td></tr></table>");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == LEFT) {
                 d.append("<table><tr><td>");
-                writeFormText(d, checkBox);
+                writeFormText(d, checkBox, id);
                 d.append("</td><td>");
-                writeFormIcon(d, checkBox);
+                writeFormIcon(d, checkBox, id);
                 d.append("</td></tr></table>");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == LEFT) {
                 d.append("<table><tr><td valign=\"bottom\">");
-                writeFormText(d, checkBox);
+                writeFormText(d, checkBox, id);
                 d.append("</td><td>");
-                writeFormIcon(d, checkBox);
+                writeFormIcon(d, checkBox, id);
                 d.append("</td></tr></table>");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
-                writeFormText(d, checkBox);
+                writeFormText(d, checkBox, id);
                 d.append("</td></tr><tr><td>");
-                writeFormIcon(d, checkBox);
+                writeFormIcon(d, checkBox, id);
                 d.append("</td></tr></table>");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
-                writeFormText(d, checkBox);
+                writeFormText(d, checkBox, id);
                 d.append("</td><td>");
-                writeFormIcon(d, checkBox);
+                writeFormIcon(d, checkBox, id);
                 d.append("</td></tr></table>");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
-                writeFormIcon(d, checkBox);
+                writeFormIcon(d, checkBox, id);
                 d.append("</td></tr><tr><td>");
-                writeFormText(d, checkBox);
+                writeFormText(d, checkBox, id);
                 d.append("</td></tr></table>");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == RIGHT) {
                 d.append("<table><tr><td valign=\"top\">");
-                writeFormIcon(d, checkBox);
+                writeFormIcon(d, checkBox, id);
                 d.append("</td><td align=\"right\">");
-                writeFormText(d, checkBox);
+                writeFormText(d, checkBox, id);
                 d.append("</td></tr></table>");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == RIGHT) {
                 d.append("<table><tr><td>");
-                writeFormIcon(d, checkBox);
+                writeFormIcon(d, checkBox, id);
                 d.append("</td><td align=\"right\">");
-                writeFormText(d, checkBox);
+                writeFormText(d, checkBox, id);
                 d.append("</td></tr></table>");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == RIGHT) {
                 d.append("<table><tr><td valign=\"bottom\">");
-                writeFormIcon(d, checkBox);
+                writeFormIcon(d, checkBox, id);
                 d.append("</td></tr><tr><td align=\"right\">");
-                writeFormText(d, checkBox);
+                writeFormText(d, checkBox, id);
                 d.append("</td></tr></table>");
             } else {
                 d.append("<table><tr><td>");
-                writeFormIcon(d, checkBox);
+                writeFormIcon(d, checkBox, id);
                 d.append("</td></tr><tr><td>");
-                writeFormText(d, checkBox);
+                writeFormText(d, checkBox, id);
                 d.append("</td></tr></table>");
             }
         }
     }
 
-    protected void writeFormText(Device d, SCheckBox checkBox)
+    protected void writeFormText(Device d, SCheckBox checkBox, String id)
         throws IOException
     {
+        d.append("<label for=\"").append(id).append("\">");
         d.append(checkBox.getText());
+        d.append("</label>");
     }
 
-    protected void writeFormIcon(Device d, SCheckBox checkBox)
+    protected void writeFormIcon(Device d, SCheckBox checkBox, String id)
         throws IOException
     {
-        writeFormPrefix(d, checkBox);
+        writeFormPrefix(d, checkBox, id);
         writeFormBody(d, checkBox);
         writeFormPostfix(d, checkBox);
     }
 
-    protected void writeFormPrefix(Device d, SCheckBox checkBox)
+    protected void writeFormPrefix(Device d, SCheckBox checkBox, String id)
         throws IOException
     {
         d.append("<input type=\"");
         d.append(checkBox.getType());
-        d.append("\"");
+        d.append("\" id=\"").append(id).append("\"");
     }
 
     protected void writeFormBody(Device d, SCheckBox checkBox)
