@@ -14,10 +14,18 @@
 
 package org.wings;
 
+import java.util.ArrayList;
+import java.util.ListIterator;
 import java.awt.Color;
+import java.awt.ItemSelectable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.*;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.Action;
 
@@ -34,7 +42,7 @@ import org.wings.style.Style;
  * @version $Revision$
  */
 public abstract class SAbstractIconTextCompound
-    extends SComponent
+    extends SComponent implements ItemSelectable
 {
 
     public static final int ICON_COUNT = 7;
@@ -129,6 +137,11 @@ public abstract class SAbstractIconTextCompound
      */
     private boolean imageAbsBottom = false;
 
+    /** 
+     * All item listeners.
+     */
+    protected ArrayList itemListeners;
+
     /**
      * Create a button with given text.
      * @param text the button text
@@ -143,6 +156,39 @@ public abstract class SAbstractIconTextCompound
     public SAbstractIconTextCompound() {
         this("");
     }
+
+	/**
+	 * Adds a ItemListener to the button.
+	 * @see #removeItemListener(ItemListener)
+	 */
+	public void addItemListener(ItemListener il) {
+	    if (il == null) return;
+		if ( itemListeners == null ) {
+            itemListeners = new ArrayList();
+        }
+
+        itemListeners.add( il );	    
+	}
+
+	/**
+	 * Returns the selected items or null if no items are selected.
+	 */
+	public Object[] getSelectedObjects() {
+	    return selected?new Object[] {this}:null;
+	}
+
+	/**
+	 * Remove the given itemListener from list of
+	 * item listeners.
+	 * @see #addItemListener(ItemListener)
+	 */
+	public void removeItemListener(ItemListener il) {
+	    if (il == null || itemListeners == null) return;
+        int index = itemListeners.indexOf( il );
+        if ( index == -1 ) return;
+        itemListeners.remove( index );
+        return;
+	}
 
     /**
      * TODO: documentation
@@ -398,12 +444,21 @@ public abstract class SAbstractIconTextCompound
     }
 
     /**
-     * TODO: documentation
-     *
-     * @return
+     * Toggle the selection. If the new selection
+     * is different to the old selection 
+     * an {@link ItemEvent} is raised.
      */
     public void setSelected(boolean b) {
-        selected = b;
+        if (b != selected) {
+        	selected = b;
+        	fireItemStateChanged(new ItemEvent(
+        		this, 
+        		ItemEvent.ITEM_STATE_CHANGED,
+        		this, 
+        		b?ItemEvent.SELECTED:ItemEvent.DESELECTED));
+        }
+		else
+			return;
 
         // this leads to problems, don't know why...
         //        reload(ReloadManager.RELOAD_CODE |
@@ -441,6 +496,21 @@ public abstract class SAbstractIconTextCompound
         setPressedIcon(icons[PRESSED_ICON]);
         setSelectedIcon(icons[SELECTED_ICON]);
     }
+    
+    /**
+     * Reports a selection change.
+     * @param ie report this event to all listeners
+     * @see java.awt.event.ItemListener
+     * @see java.awt.ItemSelectable
+     */
+    protected void fireItemStateChanged( ItemEvent ie)
+    {
+        if ( itemListeners == null ) return;
+        for ( ListIterator it = itemListeners.listIterator(); it.hasNext(); )
+            ((ItemListener) it.next()).itemStateChanged(ie);
+    }
+
+
 
 }
 

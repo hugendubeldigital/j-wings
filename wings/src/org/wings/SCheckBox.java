@@ -90,6 +90,15 @@ public class SCheckBox extends SAbstractButton
         super.setCG(cg);
     }
 
+	public void processLowLevelEvent(String action, String[] values) {
+	    boolean toggleSelection = 
+	    	isEnabled() && 
+	    	getShowAsFormComponent() && 
+	    	((isSelected() ? getSelectedIcon() : getIcon()) != null);
+	    super.processLowLevelEvent(action, values);
+	    if (toggleSelection)
+	    	this.setSelected(!this.isSelected());
+	}
 }
 
 /*
