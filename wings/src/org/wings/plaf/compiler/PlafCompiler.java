@@ -32,7 +32,6 @@ class PlafCompiler {
 	    return;
 	}
 	for (int arg=0; arg < argv.length; ++arg) {
-	    System.err.println (argv[arg]);
 	    IncludingReader input = new IncludingReader(argv[arg]);
 	    TemplateParser parser;
 	    SGMLTag tag = new SGMLTag(input);
@@ -42,11 +41,12 @@ class PlafCompiler {
 		if (name == null || forClass == null) {
 		    throw new IOException ("'name' and 'for' as template attributes expected");
 		}
+		System.err.println ("template for " + name);
 		parser = new TemplateParser(name,
 					    "org.wings.plaf.compiler",
 					    forClass);
 		parser.parse(input);
-		parser.generate(new File("/tmp/plaf"));
+		parser.generate(new File("."));
 
 		tag = new SGMLTag(input);
 	    }
