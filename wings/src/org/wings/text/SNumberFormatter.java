@@ -77,7 +77,7 @@ public class SNumberFormatter extends SAbstractFormatter{
         return numberFormat.format( value );
     }
     
-    /**
+    /** Specified by stringToValue in class AbstractFormatter
      * @return Object representation of text
      * @param text text - String to convert
      */    
@@ -121,7 +121,7 @@ public class SNumberFormatter extends SAbstractFormatter{
         return minVal;
     }
     
-    public char getDecimalSeparator () {       
+    private char getDecimalSeparator () {       
         DecimalFormatSymbols dfs = new DecimalFormatSymbols();
         if ( numberFormat instanceof DecimalFormat ) {
             dfs = ((DecimalFormat)numberFormat).getDecimalFormatSymbols();
@@ -129,7 +129,7 @@ public class SNumberFormatter extends SAbstractFormatter{
         return dfs.getDecimalSeparator();
     }
     
-    public char getGroupingSeparator() {
+    private char getGroupingSeparator() {
         DecimalFormatSymbols dfs = new DecimalFormatSymbols();
         if ( numberFormat instanceof DecimalFormat ) {
             dfs = ((DecimalFormat)numberFormat).getDecimalFormatSymbols();
@@ -154,7 +154,7 @@ public class SNumberFormatter extends SAbstractFormatter{
             javaScriptListener = new JavaScriptListener("onchange", funct );
         }
         else{
-            javaScriptListener = new JavaScriptListener("onchange", "numberFormatter(this)");
+            javaScriptListener = new JavaScriptListener("onchange", "numberFormatter(" + numberFormat.getMinimumIntegerDigits() + "," + numberFormat.getMaximumIntegerDigits() + "," + numberFormat.getMinimumFractionDigits() + "," + numberFormat.getMaximumFractionDigits() + "," + minVal + "," + maxVal + "," + numberFormat.isGroupingUsed() + "," + numberFormat.isParseIntegerOnly() + ",'"+this.getDecimalSeparator()+"','"+this.getGroupingSeparator()+"',this)");
         }
         return javaScriptListener;
     }
@@ -167,13 +167,13 @@ public class SNumberFormatter extends SAbstractFormatter{
         return alert;
     }
     
-    public static String functStr = "saveOld(this)";
+    private static String functStr = "saveOld(this)";
     
-    public static final JavaScriptListener SCRIPT_NUMBERFORMATTER   = new JavaScriptListener("", "", loadScript());
+    private static final JavaScriptListener SCRIPT_NUMBERFORMATTER   = new JavaScriptListener("", "", loadScript());
 
-    public static final JavaScriptListener SCRIPT_SAVEOLD           = new JavaScriptListener("onfocus", functStr);
+    private static final JavaScriptListener SCRIPT_SAVEOLD           = new JavaScriptListener("onfocus", functStr);
 
-    public static String loadScript() {
+    private static String loadScript() {
         try {    
             InputStream in = SNumberFormatter.class.getClassLoader().getResourceAsStream("org/wings/text/SNumberFormatter.js");
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
