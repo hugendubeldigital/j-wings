@@ -234,8 +234,8 @@ public class TreeCG
         }
 
         SCellRendererPane rendererPane = tree.getCellRendererPane();
-        if ( renderer instanceof ClickableComponent ) {
-            ((ClickableComponent)renderer).setEventParam(selectionAddr.toString());
+        if ( renderer instanceof ClickableRenderComponent ) {
+            ((ClickableRenderComponent)renderer).setEventParam(selectionAddr.toString());
             rendererPane.writeComponent(d, renderer, tree);
         } else {
             d.print("<a href=\"").print(selectionAddr.toString()).print("\"");
