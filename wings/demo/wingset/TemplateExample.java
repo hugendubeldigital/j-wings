@@ -27,18 +27,6 @@ public class TemplateExample
     extends WingSetPane
     implements SConstants
 {
-    /*
-    public TemplateExample () {
-        add(createTemplateExample());
-
-        add(new SSeparator());
-
-        SHRef href =  new SHRef("View Source Code");
-        href.setReference("/demo/wingset/" +
-                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
-        add(href);
-    }
-    */
 
     protected SComponent createExample() {
         SForm c = new SForm();
