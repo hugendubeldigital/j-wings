@@ -219,11 +219,10 @@ public class LdapClientSession
 
 	System.out.println(">> commit <<");
 	
-	
+	LdapWorker worker = getLdapWorker();
+	BasicAttributes attributes = new BasicAttributes();
 	Enumeration enumer = componentTable.keys();
 	while (enumer != null && enumer.hasMoreElements()) {
-	
-	
 	    SLabel key = (SLabel)enumer.nextElement();
 	    System.out.println(key.getText());
 
@@ -238,22 +237,23 @@ public class LdapClientSession
 	    System.out.println("old value " +oldValue);
 	    
 	    if (!oldValue.equals(newValue)) {
-		BasicAttributes attributes = new BasicAttributes();
-		BasicAttribute attr = new BasicAttribute();
+		//attributes = new BasicAttributes();
+		BasicAttribute attr = new BasicAttribute((String)key.getText());
 		StringTokenizer st = new StringTokenizer(newValue,",");
-		if st
-		toBeChanged.put((key).getText(),newValue);
-		System.out.println((key).getText() + "  " + newValue);
+		String atV;
+		boolean b = (st !=null && st.hasMoreTokens());
+		if (b) 
+		    while (st !=null && st.hasMoreTokens()) {
+			attr.add(st.nextToken());
+		}
+		else attr.add(newValue);
+		attributes.put(attr);
 	    }
-	    
-	    
-	    /*if (!toBeChanged.isEmpty()) {
-		LdapWorker worker = getLdapWorker();
-		System.out.println(getDN());
-		worker.modifyAttributes(getDN(), toBeChanged);
-		}*/
 	}
+	if (attributes.size() > 0) 
+	    worker.modifyAttributes(dn,attributes);
     }
+    
     
     private void setDN(String dn) {
 	this.dn = dn;

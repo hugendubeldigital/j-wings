@@ -73,23 +73,23 @@ public class LdapWorker
 
 
     //veraendert attribute
-    public boolean modifyAttributes(String dn, Hashtable h) {
-	Hashtable hashT;
-	String DN;
-	Object key;
+    public boolean modifyAttributes(String dn, BasicAttributes attributes) {
+	//Hashtable hashT;
+	//String DN;
+	//Object key;
 	
-	DN = dn;
-	hashT = h;
+	//DN = dn;
+	//hashT = h;
 		
 	try {
-	    BasicAttributes a = new BasicAttributes();
-	    Enumeration e = h.keys();
-	    while (e!=null && e.hasMoreElements()) {
-		key = e.nextElement();
-		System.out.println("replaced" + (String)(key) + " : " + (String)h.get(key));
-		a.put(new BasicAttribute((String)(key),(String)h.get(key)));
-	    }
-	    ctx.modifyAttributes(dn,ctx.REPLACE_ATTRIBUTE,a);
+	    //BasicAttributes a = new BasicAttributes();
+	    //Enumeration e = h.keys();
+	    //while (e!=null && e.hasMoreElements()) {
+	    //key = e.nextElement();
+	    //	System.out.println("replaced" + (String)(key) + " : " + (String)h.get(key));
+	    //a.put(new BasicAttribute((String)(key),(String)h.get(key)));
+	    //}
+	    ctx.modifyAttributes(dn,ctx.REPLACE_ATTRIBUTE,attributes);
 	    return true;
 	    
 	}
