@@ -85,13 +85,13 @@ public final class Session
     private CGManager cgManager = new CGManager();
 
     private ReloadManager reloadManager = null;
-    
+
     private ExternalizeManager extManager = new ExternalizeManager();
-    
+
     private LowLevelEventDispatcher dispatcher = new LowLevelEventDispatcher();
 
     private final HashMap props = new HashMap();
-    
+
     private final HashSet frames = new HashSet();
 
     private long uniqueIdCounter = 1;
@@ -113,25 +113,25 @@ public final class Session
     private String redirectAddress;
 
     private String exitAddress;
-    
+
     private Locale locale = Locale.getDefault();
-    
+
     private boolean localeFromHeader = true;
-    
+
     /**
      * Which locales are supported by this servlet. If null, every locale from
      * the browser is accepted. If not null only locales listed in this array
      * are supported.
      */
     private Locale[] supportedLocales = null;
-    
-    /** 
+
+    /**
      * The current character encoding used for the communication with the clients browser.
      * If <code>null</code> then the current characterEncoding is determined by the current
      * session Locale via the charset.properties map.
      */
-    private String characterEncoding = null;    
-    
+    private String characterEncoding = null;
+
 
     /**
      * Store here only weak references.
@@ -165,7 +165,7 @@ public final class Session
     }
 
     static boolean collectStatistics = true;
-    
+
     static final SRequestListener SESSION_STATISTIC_COLLECTOR = new SRequestListener() {
         public void processRequest(SRequestEvent e) {
             switch (e.getType()) {
@@ -258,7 +258,7 @@ public final class Session
     protected void initProps(ServletConfig config) {
         Enumeration params = config.getInitParameterNames();
         while (params.hasMoreElements()) {
-            String name = (String)params.nextElement();
+            String name = (String) params.nextElement();
             props.put(name, config.getInitParameter(name));
         }
     }
@@ -404,9 +404,9 @@ public final class Session
         if (frames.size() == 0)
             return null;
 
-        SFrame rootFrame = (SFrame)frames.iterator().next();
+        SFrame rootFrame = (SFrame) frames.iterator().next();
         while (rootFrame.getParent() != null)
-            rootFrame = (SFrame)rootFrame.getParent();
+            rootFrame = (SFrame) rootFrame.getParent();
 
         return rootFrame;
     }
@@ -520,12 +520,11 @@ public final class Session
     }
 
 
-
     /**
      * sets a new locale for this session. The locale is <em>only</em> set,
      * if it is one of the supported locales {@link #setSupportedLocales},
      * otherwise an IllegalArgumentException is thrown.
-     * 
+     *
      * @param l the locale to be associated with this session.
      * @throws IllegalArgumentException if this locale is not supported, as
      *         predefined with {@link #setSupportedLocales}.
@@ -533,14 +532,14 @@ public final class Session
     public void setLocale(Locale l) throws IllegalArgumentException {
         if (l == null || locale.equals(l))
             return;
-        if (supportedLocales==null ||
-            supportedLocales.length==0 ||
+        if (supportedLocales == null ||
+            supportedLocales.length == 0 ||
             Arrays.asList(supportedLocales).contains(l)) {
-            locale =  l;
+            locale = l;
             propertyChangeSupport.firePropertyChange(LOCALE_PROPERTY, locale, l);
             logger.config("Set Locale " + l);
         } else
-            throw new IllegalArgumentException("Locale " + l +" not supported");
+            throw new IllegalArgumentException("Locale " + l + " not supported");
     }
 
     /**
@@ -550,7 +549,7 @@ public final class Session
     public Locale getLocale() {
         return locale;
     }
-    
+
     /**
      * Indicates if the wings session servlet should adopt the clients Locale provided by the
      * browsers in the HTTP header.
@@ -566,25 +565,25 @@ public final class Session
      */
     public final boolean getLocaleFromHeader() {
         return localeFromHeader;
-    }   
-    
-    
+    }
+
+
     /**
      * sets the locales, supported by this application. If empty or <em>null</em>, all locales are supported.
      */
     public final void setSupportedLocales(Locale[] locales) {
         supportedLocales = locales;
     }
-    
+
     /**
      * Returns the locales, supported by this application. If empty or <em>null</em>, all locales are supported.
      */
     public final Locale[] getSupportedLocales() {
         return supportedLocales;
     }
-    
-    
-    /** 
+
+
+    /**
      * The current character encoding used for the communication with the clients browser.
      * If <code>null</code> then the current characterEncoding is determined by the current
      * session Locale via the charset.properties map.
@@ -592,22 +591,22 @@ public final class Session
      * or <code>null</code> if it should be determined by the clients browser Locale.
      */
     public void setCharacterEncoding(String characterEncoding) {
-        this.characterEncoding = characterEncoding;    
+        this.characterEncoding = characterEncoding;
     }
-    
-    /** 
+
+    /**
      * The current character encoding used for the communication with the clients browser.
      * If <code>null</code> then the current characterEncoding is determined by the current
      * session Locale via the charset.properties map.
      * @return The characterEncoding set for this sesson or determined by the current Locale.
      */
     public String getCharacterEncoding() {
-        if (this.characterEncoding == null) {            
+        if (this.characterEncoding == null) {
             return LocaleCharSet.getInstance().getCharSet(getLocale());
-        } else  {
-            return this.characterEncoding;    
+        } else {
+            return this.characterEncoding;
         }
-    }    
+    }
 
     private final long getUniqueId() {
         return uniqueIdCounter++;
@@ -648,6 +647,13 @@ public final class Session
      *
      */
     protected void destroy() {
+
+        try {
+            firePrepareExit(true);
+        } catch (ExitVetoException ex) {
+            // ignore this, because no veto possible
+        }
+
         if (collectStatistics) {
             WingsStatistics.getStatistics().decrementActiveSessionCount();
         } // end of if ()
@@ -655,7 +661,7 @@ public final class Session
 
         Iterator it = frames.iterator();
         while (it.hasNext()) {
-            SContainer container = ((SFrame)it.next()).getContentPane();
+            SContainer container = ((SFrame) it.next()).getContentPane();
             if (container != null)
                 container.removeAll();
         }
@@ -670,9 +676,10 @@ public final class Session
         frames.clear();
         props.clear();
 
+
         Object[] listeners = listenerList.getListenerList();
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
-            listenerList.remove((Class)listeners[i], (EventListener)listeners[i + 1]);
+            listenerList.remove((Class) listeners[i], (EventListener) listeners[i + 1]);
         } // end of for (int i=0; i<; i++)
 
     }
@@ -767,7 +774,7 @@ public final class Session
      * @return a <code>SExitListener[]</code> value
      */
     public SExitListener[] getExitListeners() {
-        return (SExitListener[])listenerList.getListeners(SExitListener.class);
+        return (SExitListener[]) listenerList.getListeners(SExitListener.class);
     }
 
 
@@ -775,6 +782,10 @@ public final class Session
      * Fire an RequestEvent at each registered listener.
      */
     final void firePrepareExit() throws ExitVetoException {
+        firePrepareExit(false);
+    }
+
+    final void firePrepareExit(boolean ignoreVeto) throws ExitVetoException {
         SExitEvent event = null;
 
         Object[] listeners = listenerList.getListenerList();
@@ -784,7 +795,13 @@ public final class Session
                 if (event == null) {
                     event = new SExitEvent(this);
                 }
-                ((SExitListener)listeners[i + 1]).prepareExit(event);
+                try {
+                    ((SExitListener) listeners[i + 1]).prepareExit(event);
+                } catch (ExitVetoException ex) {
+                    if (!ignoreVeto) {
+                        throw ex;
+                    }
+                }
             }
         }
     }
@@ -827,7 +844,7 @@ public final class Session
                 if (event == null) {
                     event = new SRequestEvent(this, type, resource);
                 }
-                ((SRequestListener)listeners[i + 1]).processRequest(event);
+                ((SRequestListener) listeners[i + 1]).processRequest(event);
             }
         }
     }
