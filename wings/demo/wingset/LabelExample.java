@@ -16,6 +16,7 @@ package wingset;
 
 import javax.swing.Icon;
 
+import java.awt.event.*;
 import org.wings.*;
 
 /**
@@ -39,74 +40,132 @@ public class LabelExample
         add(href);
     }
 
-    SPanel createLabelExample() {
-        SPanel p = new SPanel();
+    SContainer createRoundRadio(final SLabel label) {
+        SPanel b = new SPanel();
+        try {
+            java.net.URL templateURL = 
+                getClass().getResource("/wingset/roundRadio.thtml");
+            if( templateURL == null ){
+                b.add(new SLabel("Sorry, can't find roundRadio.thtml. Are you using a JAR-File?"));
+                return b;
+            }
+            // you can of course directly give files here.
+            STemplateLayout layout = new STemplateLayout( templateURL );
+            b.setLayout( layout );
+        }
+        catch ( java.io.IOException except ) {
+            except.printStackTrace();
+        }
 
-        SGridLayout layout = new SGridLayout(3);
-        layout.setBorder(1);
-        p.setLayout(layout);
+        SButtonGroup g = new SButtonGroup();
+        final SRadioButton n = new SRadioButton();
+        n.setToolTipText("North");
+        b.add(n, "p=n");
+        g.add(n);
+
+        final SRadioButton s = new SRadioButton();
+        s.setToolTipText("South");
+        b.add(s, "p=s");
+        g.add(s);
+
+        final SRadioButton w = new SRadioButton();
+        w.setToolTipText("West");
+        b.add(w, "p=w");
+        g.add(w);
+
+        final SRadioButton e = new SRadioButton();
+        e.setToolTipText("East");
+        b.add(e, "p=e");
+        g.add(e);
+
+        final SRadioButton nw = new SRadioButton();
+        nw.setToolTipText("North West");
+        b.add(nw, "p=nw");
+        g.add(nw);
+
+        final SRadioButton ne = new SRadioButton();
+        ne.setToolTipText("North East");
+        b.add(ne, "p=ne");
+        g.add(ne);
+
+        final SRadioButton sw = new SRadioButton();
+        sw.setToolTipText("South West");
+        b.add(sw, "p=sw");
+        g.add(sw);
+
+        final SRadioButton se = new SRadioButton();
+        se.setToolTipText("South East");
+        b.add(se, "p=se");
+        g.add(se);
+
+        final SRadioButton cc = new SRadioButton();
+        se.setToolTipText("Center");
+        b.add(cc, "p=cc");
+        g.add(cc);
+
+        g.addActionListener (new ActionListener() {
+                public void actionPerformed(ActionEvent ev) {
+                    Object button = ((SButtonGroup) ev.getSource())
+                        .getSelection();
+                    if (button == n) {
+                        label.setVerticalTextPosition(TOP);
+                        label.setHorizontalTextPosition(CENTER);
+                    }
+                    else if (button == nw) {
+                        label.setVerticalTextPosition(TOP);
+                        label.setHorizontalTextPosition(LEFT);
+                    }
+                    else if (button == ne) {
+                        label.setVerticalTextPosition(TOP);
+                        label.setHorizontalTextPosition(RIGHT);
+                    }
+                    else if (button == w) {
+                        label.setVerticalTextPosition(CENTER);
+                        label.setHorizontalTextPosition(LEFT);
+                    }
+                    else if (button == e) {
+                        label.setVerticalTextPosition(CENTER);
+                        label.setHorizontalTextPosition(RIGHT);
+                    }
+                    else if (button == sw) {
+                        label.setVerticalTextPosition(BOTTOM);
+                        label.setHorizontalTextPosition(LEFT);
+                    }
+                    else if (button == se) {
+                        label.setVerticalTextPosition(BOTTOM);
+                        label.setHorizontalTextPosition(RIGHT);
+                    }
+                    else if (button == s) {
+                        label.setVerticalTextPosition(BOTTOM);
+                        label.setHorizontalTextPosition(CENTER);
+                    }
+                    else if (button == cc) {
+                        label.setVerticalTextPosition(CENTER);
+                        label.setHorizontalTextPosition(CENTER);
+                    }
+
+                }
+            });
+
+        n.setSelected(true);
+
+        return b;
+    }
+
+    SPanel createLabelExample() {
+        SPanel all = new SPanel();
+        SBorderLayout layout = new SBorderLayout();
+        all.setLayout(layout);
 
         Icon icon = new ResourceImageIcon(SConstants.class, "icons/Wait.gif");
 
-        SLabel testLabelTL = new SLabel("Text oben links");
-        SLabel testLabelTC = new SLabel("Text oben mitte");
-        SLabel testLabelTR = new SLabel("Text oben rechts");
-        SLabel testLabelCL = new SLabel("Text mitte links");
-        SLabel testLabelCC = new SLabel("Text mitte mitte");
-        SLabel testLabelCR = new SLabel("Text mitte rechts");
-        SLabel testLabelBL = new SLabel("Text unten links");
-        SLabel testLabelBC = new SLabel("Text unten mitte");
-        SLabel testLabelBR = new SLabel("Text unten rechts");
-
-        testLabelTL.setIcon(icon);
-        testLabelTL.setVerticalTextPosition(SConstants.TOP);
-        testLabelTL.setHorizontalTextPosition(SConstants.LEFT);
-
-        testLabelTC.setIcon(icon);
-        testLabelTC.setVerticalTextPosition(SConstants.TOP);
-        testLabelTC.setHorizontalTextPosition(SConstants.CENTER);
-
-        testLabelTR.setIcon(icon);
-        testLabelTR.setVerticalTextPosition(SConstants.TOP);
-        testLabelTR.setHorizontalTextPosition(SConstants.RIGHT);
-
-        testLabelCL.setIcon(icon);
-        testLabelCL.setVerticalTextPosition(SConstants.CENTER);
-        testLabelCL.setHorizontalTextPosition(SConstants.LEFT);
-
-        testLabelCC.setIcon(icon);
-        testLabelCC.setVerticalTextPosition(SConstants.CENTER);
-        testLabelCC.setHorizontalTextPosition(SConstants.CENTER);
-
-        testLabelCR.setIcon(icon);
-        //testLabelCR.setIcon("http://194.95.24.168/~armin/WingSet/swing-64.gif");
-        testLabelCR.setVerticalTextPosition(SConstants.CENTER);
-        testLabelCR.setHorizontalTextPosition(SConstants.RIGHT);
-
-        testLabelBL.setIcon(icon);
-        testLabelBL.setVerticalTextPosition(SConstants.BOTTOM);
-        testLabelBL.setHorizontalTextPosition(SConstants.LEFT);
-
-        testLabelBC.setIcon(icon);
-        testLabelBC.setVerticalTextPosition(SConstants.BOTTOM);
-        testLabelBC.setHorizontalTextPosition(SConstants.CENTER);
-
-        testLabelBR.setIcon(icon);
-        testLabelBR.setVerticalTextPosition(SConstants.BOTTOM);
-        testLabelBR.setHorizontalTextPosition(SConstants.RIGHT);
-
-
-        p.add(testLabelTL);
-        p.add(testLabelTC);
-        p.add(testLabelTR);
-        p.add(testLabelCL);
-        p.add(testLabelCC);
-        p.add(testLabelCR);
-        p.add(testLabelBL);
-        p.add(testLabelBC);
-        p.add(testLabelBR);
-
-        return p;
+        final SLabel testLabel = new SLabel("LabelText");
+        testLabel.setHorizontalAlignment(CENTER);
+        testLabel.setBackground(new java.awt.Color(180, 180, 255));
+        testLabel.setIcon(icon);
+        all.add(testLabel, "West");
+        all.add(createRoundRadio(testLabel), "East");
+        return all;
     }
 }
 
