@@ -45,7 +45,7 @@ public class ExternalizerServlet
         throws ServletException, java.io.IOException
     {
         ExternalizedInfo info = ServletExternalizer.getExternalizedInfo(request);
-        response.setContentType( info.handler.getMimeType(info.extObject) );
+        response.setContentType(info.handler.getMimeType(info.extObject));
         OutputStream out = response.getOutputStream();
         info.handler.write(info.extObject, out);
         out.flush();
