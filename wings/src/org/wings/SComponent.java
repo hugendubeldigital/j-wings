@@ -699,6 +699,149 @@ public abstract class SComponent
     }
 
     /**
+     * Mark this component as subject to reload for the given
+     * aspect if the property, that is given in its old and new
+     * fashion, changed. Convenience method for {@link #reload(int)}
+     *
+     * @param aspect the aspect to reload; this is one of the constants
+     *               defined in ReloadManager: 
+     *               <code>ReloadManager.RELOAD_*</code>
+     * @param oldVal the old value of some property
+     * @param newVal the new value of some property
+     */
+    protected final void reloadIfChange(int aspect, 
+                                        int oldVal, int newVal) {
+        if ( oldVal!=newVal ) {
+            reload(aspect);
+        }
+    }
+
+    /**
+     * Mark this component as subject to reload for the given
+     * aspect if the property, that is given in its old and new
+     * fashion, changed. Convenience method for {@link #reload(int)}
+     *
+     * @param aspect the aspect to reload; this is one of the constants
+     *               defined in ReloadManager: 
+     *               <code>ReloadManager.RELOAD_*</code>
+     * @param oldVal the old value of some property
+     * @param newVal the new value of some property
+     */
+    protected final void reloadIfChange(int aspect, 
+                                        boolean oldVal, boolean newVal) {
+        if ( oldVal!=newVal ) {
+            reload(aspect);
+        }
+    }
+
+    /**
+     * Mark this component as subject to reload for the given
+     * aspect if the property, that is given in its old and new
+     * fashion, changed. Convenience method for {@link #reload(int)}
+     *
+     * @param aspect the aspect to reload; this is one of the constants
+     *               defined in ReloadManager: 
+     *               <code>ReloadManager.RELOAD_*</code>
+     * @param oldVal the old value of some property
+     * @param newVal the new value of some property
+     */
+    protected final void reloadIfChange(int aspect, 
+                                        byte oldVal, byte newVal) {
+        if ( oldVal!=newVal ) {
+            reload(aspect);
+        }
+    }
+
+    /**
+     * Mark this component as subject to reload for the given
+     * aspect if the property, that is given in its old and new
+     * fashion, changed. Convenience method for {@link #reload(int)}
+     *
+     * @param aspect the aspect to reload; this is one of the constants
+     *               defined in ReloadManager: 
+     *               <code>ReloadManager.RELOAD_*</code>
+     * @param oldVal the old value of some property
+     * @param newVal the new value of some property
+     */
+    protected final void reloadIfChange(int aspect, 
+                                        short oldVal, short newVal) {
+        if ( oldVal!=newVal ) {
+            reload(aspect);
+        }
+    }
+
+    /**
+     * Mark this component as subject to reload for the given
+     * aspect if the property, that is given in its old and new
+     * fashion, changed. Convenience method for {@link #reload(int)}
+     *
+     * @param aspect the aspect to reload; this is one of the constants
+     *               defined in ReloadManager: 
+     *               <code>ReloadManager.RELOAD_*</code>
+     * @param oldVal the old value of some property
+     * @param newVal the new value of some property
+     */
+    protected final void reloadIfChange(int aspect, 
+                                        long oldVal, long newVal) {
+        if ( oldVal!=newVal ) {
+            reload(aspect);
+        }
+    }
+
+    /**
+     * Mark this component as subject to reload for the given
+     * aspect if the property, that is given in its old and new
+     * fashion, changed. Convenience method for {@link #reload(int)}
+     *
+     * @param aspect the aspect to reload; this is one of the constants
+     *               defined in ReloadManager: 
+     *               <code>ReloadManager.RELOAD_*</code>
+     * @param oldVal the old value of some property
+     * @param newVal the new value of some property
+     */
+    protected final void reloadIfChange(int aspect, 
+                                        float oldVal, float newVal) {
+        if ( oldVal!=newVal ) {
+            reload(aspect);
+        }
+    }
+
+    /**
+     * Mark this component as subject to reload for the given
+     * aspect if the property, that is given in its old and new
+     * fashion, changed. Convenience method for {@link #reload(int)}
+     *
+     * @param aspect the aspect to reload; this is one of the constants
+     *               defined in ReloadManager: 
+     *               <code>ReloadManager.RELOAD_*</code>
+     * @param oldVal the old value of some property
+     * @param newVal the new value of some property
+     */
+    protected final void reloadIfChange(int aspect, 
+                                        double oldVal, double newVal) {
+        if ( oldVal!=newVal ) {
+            reload(aspect);
+        }
+    }
+
+    /**
+     * Mark this component as subject to reload for the given
+     * aspect if the property, that is given in its old and new
+     * fashion, changed. Convenience method for {@link #reload(int)}
+     *
+     * @param aspect the aspect to reload; this is one of the constants
+     *               defined in ReloadManager: 
+     *               <code>ReloadManager.RELOAD_*</code>
+     * @param oldVal the old value of some property
+     * @param newVal the new value of some property
+     */
+    protected final void reloadIfChange(int aspect, 
+                                        char oldVal, char newVal) {
+        if ( oldVal!=newVal ) {
+            reload(aspect);
+        }
+    }
+    /**
      * Let the code generator deletate write the component's code 
      * to the device. The code generator is the actual 'plaf'.
      *
