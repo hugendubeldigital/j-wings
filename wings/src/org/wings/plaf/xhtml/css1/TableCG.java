@@ -106,8 +106,17 @@ public final class TableCG
                 .print(intercellPadding.width)
                 .print("\""); 
 
-        if (style != null)
-            style.write(d);
+        String style = ((table.getStyle() != null) 
+                              ? table.getStyle().getName() 
+                              : null);
+        if ( style == null ) {
+            style = ((table.getAttributes().size() > 0) 
+                     ? ("_" + table.getUnifiedId()) 
+                     : null);
+        }
+        if (style != null) {
+            d.print(" class=\"").print(style).print("\"");
+        }
 
         d.print(">\n");
     }
@@ -131,7 +140,7 @@ public final class TableCG
 
         SCellRendererPane rendererPane = table.getCellRendererPane();
         if (table.isHeaderVisible()) {
-            d.print("<tr>\n");
+            d.print("<tr>");
 
             boolean selectionWritten = table.getRowSelectionColumn()<0;
             for (int c = startCol; c < endCol; c++) {
@@ -158,10 +167,10 @@ public final class TableCG
             Style rowStyle = table.isRowSelected(r) ? 
                 table.getSelectionStyle() : table.getStyle();
             
-            if (rowStyle != null)
+            if (rowStyle != null) {
                 d.print(" class=\"").print(rowStyle.getName()).print("\"");
-
-            d.print(">\n");
+            }
+            d.print(">");
 
             boolean selectionWritten = table.getRowSelectionColumn()<0;
 
