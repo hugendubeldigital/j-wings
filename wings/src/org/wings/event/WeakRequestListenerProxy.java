@@ -39,13 +39,43 @@ public final class WeakRequestListenerProxy extends WeakReference implements SRe
         } else {
             requestListener.processRequest(e);
         } // end of if ()
-        
+    }
+
+    public int hashCode() {
+        Object requestListener = get();
+
+        if (  requestListener==null ) {
+            return 0;
+        } else {
+            return requestListener.hashCode();
+        } // end of if ()
+    }
+
+    public boolean equals(WeakRequestListenerProxy p) {
+        Object requestListener = get();
+
+        if (  requestListener==null ) {
+            return p.get()==null;
+        } else {
+            return requestListener.equals(p.get());
+        } // end of if ()
+    }
+
+    public boolean equals(Object o) {
+        if ( o instanceof WeakRequestListenerProxy ) {
+            return equals((WeakRequestListenerProxy)o);
+        } else {
+            return false;   
+        } // end of if ()
     }
 
 }// WeakRequestListenerProxy
 
 /*
    $Log$
+   Revision 1.2  2003/03/24 17:05:37  arminhaaf
+   o add equals and hashcode methods
+
    Revision 1.1  2002/10/25 16:29:16  ahaaf
    o add cancel editing button
    o change the table editor handling to support events on the preparation of the editor
