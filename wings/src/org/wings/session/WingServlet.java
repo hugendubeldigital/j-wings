@@ -14,31 +14,26 @@
 
 package org.wings.session;
 
-import java.io.*;
-import java.net.URL;
-import java.util.*;
-import java.util.logging.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.wings.*;
-import org.wings.util.*;
-import org.wings.io.Device;
-import org.wings.io.ServletDevice;
-import org.wings.plaf.LookAndFeelFactory;
-import org.wings.session.Session;
-import org.wings.session.PropertyService;
-import org.wings.externalizer.SystemExternalizeManager;
-import org.wings.externalizer.ExternalizeManager;
+import org.wings.RequestURL;
 import org.wings.externalizer.AbstractExternalizeManager;
 import org.wings.externalizer.ExternalizedResource;
+import org.wings.externalizer.SystemExternalizeManager;
+import org.wings.io.Device;
+import org.wings.io.ServletDevice;
 
 /**
  * TODO: documentation
@@ -354,7 +349,7 @@ public final class WingServlet
             String pathInfo = req.getPathInfo();
 
             if (pathInfo == null || pathInfo.length() == 0) {
-                StringBuffer pathUrl = HttpUtils.getRequestURL(req);
+                StringBuffer pathUrl = req.getRequestURL();
                 pathUrl.append('/');
                 if (req.getQueryString() != null) {
                     pathUrl.append('?').append(req.getQueryString());
