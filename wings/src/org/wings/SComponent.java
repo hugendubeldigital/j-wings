@@ -546,20 +546,14 @@ public abstract class SComponent
      *
      * @param s
      */
-    public void appendBorderPrefix(Device s) {
-        if ( border!=null )
-            border.appendPrefix(s);
-    }
+    public void appendBorderPrefix(Device s) { }
 
     /**
      * TODO: documentation
      *
      * @param s
      */
-    public void appendBorderPostfix(Device s) {
-        if ( border!=null )
-            border.appendPostfix(s);
-    }
+    public void appendBorderPostfix(Device s) { }
 
     /**
      * Let the delegate write the component's code to the device.
@@ -938,6 +932,9 @@ public abstract class SComponent
         if (SessionManager.getSession().getCGManager() == null)
             System.err.println("kein CGManager - das darf nicht sein!");
         setCG((ComponentCG)SessionManager.getSession().getCGManager().getCG(this));
+
+        if (border != null)
+            border.updateCG();
     }
 
     /**

@@ -34,6 +34,7 @@ public interface SLayoutManager
 
     void write(Device s) throws IOException;
     String getCGClassID();
+    void updateCG();
 }
 
 /*

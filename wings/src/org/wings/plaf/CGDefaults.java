@@ -164,6 +164,10 @@ public class CGDefaults extends Hashtable
     public LayoutCG getCG(SLayoutManager target) {
         return (LayoutCG)getCGInstance(target.getCGClassID());
     }
+
+    public BorderCG getCG(SBorder target) {
+        return (BorderCG)getCGInstance(target.getCGClassID());
+    }
     
     /**
      * Return the Style for the

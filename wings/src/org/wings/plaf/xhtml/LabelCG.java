@@ -13,7 +13,7 @@ import org.wings.externalizer.ExternalizeManager;
 public class LabelCG
     implements org.wings.plaf.LabelCG, SConstants
 {
-    private final static String propertyPrefix = "Label" + ".";
+    private final static String propertyPrefix = "Label";
     
     protected String getPropertyPrefix() {
         return propertyPrefix;
@@ -21,7 +21,7 @@ public class LabelCG
     
     public void installCG(SComponent component) {
         component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + "style"));
+                           getStyle(getPropertyPrefix() + ".style"));
     }
     
     public void uninstallCG(SComponent c) {
@@ -34,10 +34,14 @@ public class LabelCG
 	
 	Icon icon = label.getIcon();
 	String text = label.getText();
+	SBorder border = label.getBorder();
 	int horizontalTextPosition = label.getHorizontalTextPosition();
 	int verticalTextPosition = label.getVerticalTextPosition();
 	String iconAddress = label.getIconAddress();
 	
+	if (border != null)
+	    Utils.writeBorderPrefix(d, border);
+
 	if (icon == null && iconAddress == null)
 	    writeText(d, label);
 	else if (text == null)
@@ -94,6 +98,9 @@ public class LabelCG
 		writeIcon(d, label, "middle");
 	    }
 	}
+
+	if (border != null)
+	    Utils.writeBorderPostfix(d, border);
     }
     
     protected void writeText(Device d, SLabel label)
@@ -179,114 +186,4 @@ public class LabelCG
 	    d.append(">");
 	}
     }
-
-
-
-
-
-
-/*
-    public void write(SLabel label, Device s) {
-	boolean noBreak = label.getNoBreak();
-	boolean hasIcon = label.hasIcon();
-	
-	if (noBreak)
-	    d.append("<nobr>");
-	
-	if (hasIcon) {
-	    if (text != null) {
-		if (verticalTextPosition==SConstants.TOP &&
-		    horizontalTextPosition==SConstants.LEFT) {
-		    d.append("<table><tr><td valign=\"top\">");
-		    paintText(d);
-		    d.append("</td><td>");
-		    drawIcon(d);
-		    d.append("</td></tr></table>\n");
-		} else if ( verticalTextPosition==SConstants.CENTER &&
-			    horizontalTextPosition==SConstants.LEFT ) {
-		    d.append("<table><tr><td>");
-		    paintText(d);
-		    d.append("</td><td>");
-		    drawIcon(d);
-		    d.append("</td></tr></table>\n");
-		} else if ( verticalTextPosition==SConstants.BOTTOM &&
-			    horizontalTextPosition==SConstants.LEFT ) {
-		    d.append("<table><tr><td valign=\"bottom\">");
-		paintText(d);
-		d.append("</td><td>");
-		drawIcon(d);
-		d.append("</td></tr></table>\n");
-	    } else if ( verticalTextPosition==SConstants.TOP &&
-			horizontalTextPosition==SConstants.CENTER ) {
-		d.append("<table><tr><td>");
-		paintText(d);
-		d.append("</td></tr><tr><td>");
-		drawIcon(d);
-		d.append("</td></tr></table>\n");
-	    } else if ( verticalTextPosition==SConstants.CENTER &&
-			horizontalTextPosition==SConstants.CENTER ) {
-		d.append("<table><tr><td>");
-		paintText(d);
-		d.append("</td><td>");
-		drawIcon(d);
-		d.append("</td></tr></table>\n");
-	    } else if ( verticalTextPosition==SConstants.BOTTOM &&
-			horizontalTextPosition==SConstants.CENTER ) {
-		d.append("<table><tr><td>");
-		drawIcon(d);
-		d.append("</td></tr><tr><td>");
-		paintText(d);
-		d.append("</td></tr></table>\n");
-	    } else if ( verticalTextPosition==SConstants.TOP &&
-			horizontalTextPosition==SConstants.RIGHT ) {
-		drawIcon(d, "top");
-		paintText(d);
-	    } else if ( verticalTextPosition==SConstants.CENTER &&
-			horizontalTextPosition==SConstants.RIGHT ) {
-		drawIcon(d, "middle");
-		paintText(d);
-	    } else if ( verticalTextPosition==SConstants.BOTTOM &&
-			horizontalTextPosition==SConstants.RIGHT ) {
-		drawIcon(d, "bottom");
-		paintText(d);
-	    } else {
-		paintText(d);
-		drawIcon(d, "middle");
-	    }
-	}
-	else
-	    drawIcon(d);
-    } else {
-      if ( alignText ) {
-        if ( horizontalTextPosition==SConstants.RIGHT ) {
-          d.append("<div align=\"right\">");
-        } else
-        if ( horizontalTextPosition==SConstants.CENTER ) {
-          d.append("<div align=\"center\">");
-        } else {
-          d.append("<div align=\"center\">");
-        }
-        paintText(d);
-        d.append("</DIV>");
-      } else
-        paintText(d);
-    }
-
-    if ( noBreak )
-      d.append("</NOBR>");
-
-  }
-
-  protected void paintText(Device s) {
-    if ( text == null ) {
-      d.append("&nbsp;");
-    }
-    else if ( getEscapeSpecialChars() ) {
-      d.append(doEscapeSpecialChars(text));
-    }
-    else {
-      d.append(text);
-    }
-  }
-*/
 }

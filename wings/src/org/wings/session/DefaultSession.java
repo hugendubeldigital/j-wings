@@ -198,7 +198,9 @@ public class DefaultSession
      * @see        org.wings.session.PropertyService#getProperty(java.lang.String, java.lang.String)
      */
     public String setProperty(String key, String value) {
-        return (String)props.put(key, value);
+        String old = (String)props.setProperty(key, value);
+        propertyChangeSupport.firePropertyChange(key, old, value);
+        return old;
     }
 
     private final WeakPropertyChangeSupport propertyChangeSupport = new WeakPropertyChangeSupport(this);

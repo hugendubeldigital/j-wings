@@ -14,8 +14,8 @@
 
 package org.wings;
 
+import java.awt.Color;
 import java.awt.Insets;
-import java.io.IOException;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
@@ -26,15 +26,34 @@ import org.wings.io.Device;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public interface SBorder {
-    void setInsets(Insets insets);
-    Insets getInsets();
+public class SEmptyBorder
+    extends SAbstractBorder
+{
+    /**
+     * @see #getCGClassID
+     */
+    private static final String cgClassID = "EmptyBorderCG";
 
-    void writePrefix(Device d) throws IOException;
-    void writePostfix(Device d) throws IOException;
+    /**
+     * TODO: documentation
+     *
+     * @param insets
+     */
+    public SEmptyBorder(Insets insets) {
+        setInsets(insets);
+    }
 
-    String getCGClassID();
-    void updateCG();
+    /**
+     * Returns the name of the CGFactory class that generates the
+     * look and feel for this border.
+     *
+     * @return "EmptyBorderCG"
+     * @see SBorder#getCGClassID
+     * @see org.wings.plaf.CGDefaults#getCG
+     */
+    public String getCGClassID() {
+        return cgClassID;
+    }
 }
 
 /*

@@ -548,7 +548,9 @@ public class SFrame extends SContainer implements PropertyChangeListener
     public void propertyChange(PropertyChangeEvent pe) {
         if ("lookAndFeel".equals(pe.getPropertyName())) {
             updateComponentTreeCG(getContentPane());
+            System.err.println("lookAndFeel Change: " + pe.getPropertyName());
         }
+        System.err.println("propertyChange: " + pe.getPropertyName());
     }
 
     private void updateComponentTreeCG(SComponent c) {

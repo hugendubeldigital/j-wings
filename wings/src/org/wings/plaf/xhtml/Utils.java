@@ -23,14 +23,14 @@ final class Utils implements SConstants
         throws IOException
     {
         if (border != null)
-            border.appendPrefix(d);
+            border.writePrefix(d);
     }
 
     static void writeBorderPostfix(Device d, SBorder border)
         throws IOException
     {
         if (border != null)
-            border.appendPostfix(d);
+            border.writePostfix(d);
     }
 
     static void writeContainerContents(Device d, SContainer c)

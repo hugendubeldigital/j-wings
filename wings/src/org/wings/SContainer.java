@@ -93,13 +93,21 @@ public class SContainer extends SComponent
         super.setCG(newCG);
     }
 
+
+    public void updateCG() {
+        super.updateCG();
+
+        if (layout != null)
+            layout.updateCG();
+    }
+
     /**
      * TODO: documentation
      *
      * @param l
      */
     public void setLayout(SLayoutManager l) {
-        if ( layout!=null )
+        if (layout != null)
             for ( int i=0; i<components.size(); i++ )
                 layout.removeComponent((SComponent)components.get(i));
 
@@ -218,9 +226,7 @@ public class SContainer extends SComponent
 
     public SComponent[] getComponents() {
         // vorsichtig mit Threads ( eigentlich TreeLock!!!)
-        SComponent list[] = new SComponent[getComponentCount()];
-        System.arraycopy(components, 0, list, 0, getComponentCount());
-        return list;
+        return (SComponent[])components.toArray(new SComponent[components.size()]);
     }
 
 

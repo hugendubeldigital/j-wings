@@ -24,6 +24,10 @@ public class CGManager
     public LayoutCG getCG(SLayoutManager target) {
 	return getDefaults().getCG(target);
     }
+
+    public BorderCG getCG(SBorder target) {
+	return getDefaults().getCG(target);
+    }
     
     /**
      * Returns an object from the defaults table.

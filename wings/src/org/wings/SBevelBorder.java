@@ -26,77 +26,61 @@ import org.wings.io.Device;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SLineBorder
+public class SBevelBorder
     extends SAbstractBorder
 {
     /**
      * @see #getCGClassID
      */
-    private static final String cgClassID = "LineBorderCG";
+    private static final String cgClassID = "BevelBorderCG";
 
-    int thickness = 1;
-    Color lineColor = Color.black;
+    public static final int RAISED = 0;
+    public static final int LOWERED = 1;
+
+    int bevelType = RAISED;
 
     /**
      * TODO: documentation
      *
      */
-    public SLineBorder() {}
+    public SBevelBorder() {}
 
     /**
      * TODO: documentation
      *
-     * @param thickness
+     * @param bevelType
      */
-    public SLineBorder(int thickness) {
-        setThickness(thickness);
+    public SBevelBorder(int bevelType) {
+        setBevelType(bevelType);
     }
 
     /**
      * TODO: documentation
      *
-     * @param thickness
+     * @param bevelType
      * @param insets
      */
-    public SLineBorder(int thickness, Insets insets) {
-        setThickness(thickness);
+    public SBevelBorder(int bevelType, Insets insets) {
+        setBevelType(bevelType);
         setInsets(insets);
     }
 
     /**
      * TODO: documentation
      *
-     * @param thickness
+     * @param bevelType
      */
-    public void setThickness(int thickness) {
-        this.thickness = thickness;
+    public void setBevelType(int bevelType) {
+        this.bevelType = bevelType;
     }
     
-    public int getThickness() { return thickness; }
-
-    /**
-     * Set the lineColor color.
-     *
-     * @param c the new lineColor color
-     */
-    public void setLineColor(Color c) {
-        lineColor = c;
-    }
-
-    /**
-     * Return the lineColor color.
-     *
-     * @return the lineColor color
-     */
-    public Color getLineColor() {
-        return lineColor;
-    }
+    public int getBevelType() { return bevelType; }
 
     /**
      * Returns the name of the CGFactory class that generates the
      * look and feel for this border.
      *
-     * @return "LineBorderCG"
+     * @return "BevelBorderCG"
      * @see SBorder#getCGClassID
      * @see org.wings.plaf.CGDefaults#getCG
      */

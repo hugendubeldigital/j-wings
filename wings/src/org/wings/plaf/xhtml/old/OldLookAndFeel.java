@@ -83,6 +83,14 @@ public final class OldLookAndFeel
         };
 	
 	table.putDefaults(layoutCgDefaults);
+
+	Object[] borderCgDefaults = {
+	      "BevelBorderCG", oldPackageName + "BevelBorderCG",
+	       "LineBorderCG", oldPackageName + "LineBorderCG",
+	      "EmptyBorderCG", oldPackageName + "EmptyBorderCG",
+        };
+	
+	table.putDefaults(borderCgDefaults);
     }
     
     protected void initComponentDefaults(CGDefaults table) {
