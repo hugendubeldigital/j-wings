@@ -39,20 +39,8 @@ public class FrameSet
     {
         // create new default session and set plaf
         DefaultSession session = new DefaultSession();
-
-        /*
-        if (!LookAndFeelFactory.isDeployed("xhtml/css1")) {
-            try {
-                URL url = servletConfig.getServletContext().getResource("css1.jar");
-                LookAndFeelFactory.deploy(url);
-            }
-            catch (Exception e) {
-                System.err.println(e.getMessage());
-                e.printStackTrace(System.err);
-            }
-        }
-        */
-        session.getCGManager().setLookAndFeel("xhtml/css1");
+        URL url = getServletConfig().getServletContext().getResource("/css1.jar");
+        session.getCGManager().setLookAndFeel(url);
 
         // return a new frameSet session
         return new FrameSetSession(session, req);

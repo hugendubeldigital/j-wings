@@ -37,8 +37,8 @@ public class Desktop
     {
         // create new default session and set plaf
         DefaultSession session = new DefaultSession();
-        session.getCGManager().setLookAndFeel(new URL(new URL(HttpUtils.getRequestURL(req).toString()),
-                                                      "../css1.jar"));
+        URL url = getServletConfig().getServletContext().getResource("/css1.jar");
+        session.getCGManager().setLookAndFeel(url);
 
         // return a new desktop session
         return new DesktopSession(session);

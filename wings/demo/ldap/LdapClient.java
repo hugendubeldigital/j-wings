@@ -31,10 +31,11 @@ public class LdapClient
     {
         // create new default session and set plaf
         DefaultSession session = new DefaultSession();
-        session.getCGManager().setLookAndFeel(new org.wings.plaf.xhtml.css1.CSS1LookAndFeel());
+        URL url = getServletConfig().getServletContext().getResource("/css1.jar");
+        session.getCGManager().setLookAndFeel(url);
  
         // return a new wingset session
-        return new LdapClientSession(session);        
+        return new LdapClientSession(session);
     }
 
     /** @link dependency 
