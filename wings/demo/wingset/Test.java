@@ -23,9 +23,10 @@ import javax.swing.*;
 
 import org.wings.util.*;
 import org.wings.*;
+import org.wings.externalizer.*;
+import org.wings.plaf.*;
 import org.wings.servlet.*;
 import org.wings.session.*;
-import org.wings.externalizer.ExternalizeManager;
 
 /**
  * TODO: documentation
@@ -38,11 +39,29 @@ public class Test
     implements SConstants
 {
     public Test() {
-        super( new DefaultSession() );
-        System.out.println("I`m starting now");
-        System.err.println("I`m starting now");
+        super(new DefaultSession());
+        System.out.println("Test servlet's starting now");
+        System.err.println("Test servlet's starting now");
     }
 
+
+    public void preInit(ServletConfig config) {
+        DefaultSession session = (DefaultSession)getSession();
+        try {
+            CGManager cgManager = session.getCGManager();
+            cgManager.setLookAndFeel(new org.wings.plaf.xhtml.old.OldLookAndFeel());
+
+            /*
+            ExternalizeManager externalizeManager = new ExternalizeManager();
+            super.setExternalizeManager(externalizeManager);
+            externalizeManager.setExternalizer(new ServletExternalizer(config));
+            */
+        }
+        catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace(System.err);
+        }
+    }
 
     public void postInit(ServletConfig config) {
         initGUI();
@@ -50,91 +69,18 @@ public class Test
 
     void initGUI() {
         SContainer contentPane = getFrame().getContentPane();
-        contentPane.setLayout(new SFlowDownLayout());
 
-        Icon sel = SUtil.makeIcon(SCheckBox.class, "icons/bulb2.gif");
-        Icon nsel = SUtil.makeIcon(SCheckBox.class, "icons/bulb1.gif");
-        Icon dissel = SUtil.makeIcon(SCheckBox.class, "icons/bulb3.gif");
-        Icon disnsel = SUtil.makeIcon(SCheckBox.class, "icons/bulb3.gif");
-
-        SCheckBox testCheckBoxTL = new SCheckBox("testTL");
-        SCheckBox testCheckBoxTC = new SCheckBox("testTC");
-        SCheckBox testCheckBoxTR = new SCheckBox("testTR");
-        SCheckBox testCheckBoxCL = new SCheckBox("testCL");
-        SCheckBox testCheckBoxCC = new SCheckBox("testCC");
-        SCheckBox testCheckBoxCR = new SCheckBox("testCR");
-        SCheckBox testCheckBoxBL = new SCheckBox("testBL");
-        SCheckBox testCheckBoxBC = new SCheckBox("testBC");
-        SCheckBox testCheckBoxBR = new SCheckBox("testBR");
-
-        SCheckBox[] boxes = new SCheckBox[9];
-        boxes[0] = testCheckBoxTL;
-        boxes[1] = testCheckBoxTC;
-        boxes[2] = testCheckBoxTR;
-        boxes[3] = testCheckBoxCL;
-        boxes[4] = testCheckBoxCC;
-        boxes[5] = testCheckBoxCR;
-        boxes[6] = testCheckBoxBL;
-        boxes[7] = testCheckBoxBC;
-        boxes[8] = testCheckBoxBR;
-
-        for ( int i=0; i<boxes.length; i++ ) {
-            boxes[i].setIcon(nsel);
-            boxes[i].setSelectedIcon(sel);
-            boxes[i].setDisabledIcon(disnsel);
-            boxes[i].setDisabledSelectedIcon(dissel);
-        }
-
-        testCheckBoxTL.setVerticalTextPosition(SConstants.TOP);
-        testCheckBoxTL.setHorizontalTextPosition(SConstants.LEFT);
-
-        testCheckBoxTC.setVerticalTextPosition(SConstants.TOP);
-        testCheckBoxTC.setHorizontalTextPosition(SConstants.CENTER);
-
-        testCheckBoxTR.setVerticalTextPosition(SConstants.TOP);
-        testCheckBoxTR.setHorizontalTextPosition(SConstants.RIGHT);
-
-        testCheckBoxCL.setVerticalTextPosition(SConstants.CENTER);
-        testCheckBoxCL.setHorizontalTextPosition(SConstants.LEFT);
-
-        testCheckBoxCC.setVerticalTextPosition(SConstants.CENTER);
-        testCheckBoxCC.setHorizontalTextPosition(SConstants.CENTER);
-
-        testCheckBoxCR.setVerticalTextPosition(SConstants.CENTER);
-        testCheckBoxCR.setHorizontalTextPosition(SConstants.RIGHT);
-
-        testCheckBoxBL.setVerticalTextPosition(SConstants.BOTTOM);
-        testCheckBoxBL.setHorizontalTextPosition(SConstants.LEFT);
-
-        testCheckBoxBC.setSelected(true);
-        testCheckBoxBC.setEnabled(false);
-        testCheckBoxBC.setVerticalTextPosition(SConstants.BOTTOM);
-        testCheckBoxBC.setHorizontalTextPosition(SConstants.CENTER);
-
-        testCheckBoxBR.setSelected(false);
-        testCheckBoxBR.setEnabled(false);
-        testCheckBoxBR.setVerticalTextPosition(SConstants.BOTTOM);
-        testCheckBoxBR.setHorizontalTextPosition(SConstants.RIGHT);
-
-        SPanel erg = new SPanel(new SFlowDownLayout());
-
-        SGridLayout grid = new SGridLayout(3,3);
-        grid.setBorder(1);
-        SPanel b = new SPanel(grid);
-
-        b.add(testCheckBoxTL);
-        b.add(testCheckBoxTC);
-        b.add(testCheckBoxTR);
-        b.add(testCheckBoxCL);
-        b.add(testCheckBoxCC);
-        b.add(testCheckBoxCR);
-        b.add(testCheckBoxBL);
-        b.add(testCheckBoxBC);
-        b.add(testCheckBoxBR);
-
-        erg.add(b);
-
-        contentPane.add(b);
+        SLabel label = new SLabel("<font face=\"helvetica\">" +
+                                  "<font color=\"#990000\">wingS i</font>" +
+                                  "<font color=\"#000099\">s </font>" +
+                                  "<font color=\"#990000\">n</font>" +
+                                  "<font color=\"#000099\">ext </font>" +
+                                  "<font color=\"#990000\">g</font>" +
+                                  "<font color=\"#000099\">eneration </font>" +
+                                  "<font color=\"#990000\">S</font>" +
+                                  "<font color=\"#000099\">wing</font>" +
+                                  "</font>");
+        contentPane.add(label);
     }
 
     /**
