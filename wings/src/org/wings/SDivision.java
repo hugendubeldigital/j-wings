@@ -52,33 +52,6 @@ public class SDivision
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendPrefix(Device s) {
-        s.append("<DIV");
-
-        if ( alignment==SConstants.RIGHT_ALIGN )
-            s.append(" ALIGN=RIGHT");
-        else if ( alignment==SConstants.CENTER_ALIGN )
-            s.append(" ALIGN=CENTER");
-        else if ( alignment==SConstants.BLOCK_ALIGN )
-            s.append(" ALIGN=JUSTIFY");
-
-        s.append(">\n");
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendPostfix(Device s) {
-        s.append("</DIV>");
-    }
-
-    /**
      * Returns the name of the CGFactory class that generates the
      * look and feel for this component.
      *

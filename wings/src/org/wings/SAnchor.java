@@ -84,27 +84,6 @@ public class SAnchor
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendPrefix(Device s) {
-        s.append("<A");
-        if ( reference!=null )
-            s.append(" NAME=\"").append(reference).append("\"");
-        s.append(">");
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendPostfix(Device s) {
-        s.append("</A>");
-    }
-
-    /**
      * Returns the name of the CGFactory class that generates the
      * look and feel for this component.
      *
