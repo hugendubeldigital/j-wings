@@ -3,14 +3,14 @@
 
 
 Q: What is wingS?
-A: wingS is next generation servlets.
+A: wingS is net generation Swing.
 
 
 Q: Why should I use wingS?
 
 
 Q: What are the requirements for wingS?
-
+A: JSDK2.0 or something similar and the GifEncoder from Acme labs
 
 Q: How do I install it?
 
@@ -42,13 +42,17 @@ Q: What is this org.wings.session stuff?
 
 
 Q: What is a plaf?
-
+A: wingS supports some kind of pluggable look and feel. Each SComponent delegates it's
+   codegeneration to a special ComponentCG. There are different CGs for each SComponent
+   and each plaf. For now, there exist two plafs xhtml/css1 and xhtml/old. Feel free to
+   implement additional plafs like wap or xml/xsl ;-)
 
 Q: How can I use another plaf?
 
 
 Q: How can I write a new plaf?
-
+A: I suggest, your first copy the most applicable from the existing plafs to a new package
+   and then successively implement the CGs for each component
 
 Q: What is an Externalizer?
 
@@ -60,5 +64,5 @@ Q: How can I write a new Externalizer?
 
 
 Q: Where can I find more information about wingS?
-
+A: Read the javax.swing API docs from Sun Microsystems ;-)
 
