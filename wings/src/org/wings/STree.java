@@ -16,6 +16,7 @@ package org.wings;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.awt.Color;
 
 import java.util.Enumeration;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import javax.swing.event.*;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
+import org.wings.style.*;
 
 /**
  * TODO: documentation
@@ -108,6 +110,12 @@ public class STree
      * TODO: documentation
      */
     protected Rectangle viewport = null;
+
+    /** The style of selected cells */
+    protected Style selectionStyle;
+
+    /** The dynamic attributes of selected cells */
+    protected AttributeSet selectionAttributes = new SimpleAttributeSet();
 
     /**
      * TODO: documentation
@@ -1060,6 +1068,76 @@ public class STree
      */
     public Rectangle getViewportSize() {
         return viewport;
+    }
+
+    /**
+     * @param style the style of selected cells
+     */
+    public void setSelectionStyle(Style selectionStyle) {
+        this.selectionStyle = selectionStyle;
+    }
+
+    /**
+     * @return the style of selected cells.
+     */
+    public Style getSelectionStyle() { return selectionStyle; }
+
+
+    /**
+     * Set the selectionAttributes.
+     * @param selectionAttributes the selectionAttributes
+     */
+    public void setSelectionAttributes(AttributeSet selectionAttributes) {
+        if (selectionAttributes == null)
+            throw new IllegalArgumentException("null not allowed");
+
+        if (!this.selectionAttributes.equals(selectionAttributes)) {
+            this.selectionAttributes = selectionAttributes;
+            reload(ReloadManager.RELOAD_STYLE);
+        }
+    }
+
+    /**
+     * @return the current selectionAttributes
+     */
+    public AttributeSet getSelectionAttributes() {
+        return selectionAttributes;
+    }
+
+    /**
+     * Set the background color.
+     * @param c the new background color
+     */
+    public void setSelectionBackground(Color color) {
+        boolean changed = selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, "background-color"));
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * Return the background color.
+     * @return the background color
+     */
+    public Color getSelectionBackground() {
+        return CSSStyleSheet.getBackground(selectionAttributes);
+    }
+
+    /**
+     * Set the foreground color.
+     * @param color the foreground color of selected cells
+     */
+    public void setSelectionForeground(Color color) {
+        boolean changed = selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, "color"));
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * Return the foreground color.
+     * @return the foreground color
+     */
+    public Color getSelectionForeground() {
+        return CSSStyleSheet.getForeground(selectionAttributes);
     }
 
     public void setCG(TreeCG cg) {
