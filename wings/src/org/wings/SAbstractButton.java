@@ -32,8 +32,9 @@ import org.wings.io.Device;
  * @version $Revision$
  */
 public abstract class SAbstractButton
-extends SAbstractIconTextCompound
-implements LowLevelEventListener {
+    extends SAbstractIconTextCompound
+    implements LowLevelEventListener 
+{
     private static final String cgClassID = "ButtonCG";
   
     public static final String SUBMIT_BUTTON  = "submit";

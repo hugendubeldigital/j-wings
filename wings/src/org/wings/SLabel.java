@@ -161,18 +161,22 @@ public class SLabel
 
 
     /**
-     * TODO: documentation
+     * Render the Text in this Label non-breakable. Usually, this means
+     * that the content ist enclosed in a &lt;nobr&gt;&lt;/nobr&gt;
+     * area.
      *
-     * @param b
+     * @param breakable flag to indicate, whether the text-output should
+     *        be rendered non-breakable.
      */
-    public void setNoBreak(boolean b) {
+    public void setNoBreak(boolean breakable) {
         noBreak = b;
     }
 
     /**
-     * TODO: documentation
+     * Return the state of the <code>noBreak</code> flag.
      *
-     * @return
+     * @return a flag that states, if the output should be rendered
+     *         non-breakbable
      */
     public boolean isNoBreak() { return noBreak; }
 

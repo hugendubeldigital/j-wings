@@ -17,7 +17,9 @@ package org.wings;
 import org.wings.plaf.*;
 
 /**
- * TODO: documentation
+ * An SPanel is basically a container that can be displayed with
+ * its own CG. The components in the container are placed with a
+ * Layout Manager. 
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
