@@ -44,8 +44,7 @@ import org.wings.style.*;
  */
 public class STable
     extends SComponent
-    implements TableModelListener, Scrollable, CellEditorListener, LowLevelEventListener, SSelectionComponent
-{
+    implements TableModelListener, Scrollable, CellEditorListener, LowLevelEventListener, SSelectionComponent {
     /**
      * <p>stores the ID of the class to access the <code>ComponentGenerator</code>.</p>
      * @see #getCGClassID
@@ -68,10 +67,15 @@ public class STable
      **/
     protected STableCellRenderer defaultRenderer;
 
-    /** 
+    /**
      * <p>The <code>headerRenderer</code> is used to render the header line.</p>
      **/
     protected STableCellRenderer headerRenderer;
+
+    /**
+     * is used to get the row style
+     */
+    protected STableRowRenderer rowRenderer;
 
     /**
      * <p>In this <code>Map</code>, the renderers for the different
@@ -80,8 +84,8 @@ public class STable
      **/
     protected final HashMap renderer = new HashMap();
 
-    /** 
-     * <p>If editing, this is the <code>SComponent</code> that is handling the editing. 
+    /**
+     * <p>If editing, this is the <code>SComponent</code> that is handling the editing.
      **/
     transient protected SComponent editorComp;
 
@@ -91,12 +95,12 @@ public class STable
      **/
     transient protected STableCellEditor cellEditor;
 
-    /** 
+    /**
      * <p>Identifies the column of the cell being edited.</p>
      **/
     transient protected int editingColumn = -1;
 
-    /** 
+    /**
      * <p>Identifies the row of the cell being edited.</p>
      **/
     transient protected int editingRow = -1;
@@ -108,12 +112,12 @@ public class STable
      **/
     protected final HashMap editors = new HashMap();
 
-    /** 
+    /**
      * <p>The style of selected cells.</p>
      **/
     protected String selectionStyle;
 
-    /** 
+    /**
      * <p>The dynamic attributes of selected cells.</p>
      **/
     protected AttributeSet selectionAttributes = new SimpleAttributeSet();
@@ -126,7 +130,7 @@ public class STable
      */
     protected boolean headerVisible = true;
 
-    /** 
+    /**
      * <p>The style of header cells.</p>
      **/
     protected String headerStyle;
@@ -185,7 +189,7 @@ public class STable
      * <p>Default is none.</p>
      */
     protected SIcon fSelectedIcon;
-    
+
     /**
      * <p>Determines an icon for a deselected row.</p>
      * <p>Default is none.</p>
@@ -196,7 +200,7 @@ public class STable
      * <p>Creates a new <code>STable</code>.</p>
      **/
     public STable() {
-        this ( null );
+        this(null);
     }
 
     /**
@@ -204,7 +208,7 @@ public class STable
      *
      * @param tm the <code>TableModel</code> for the table's contents.
      **/
-    public STable(TableModel tm){
+    public STable(TableModel tm) {
         setSelectionModel(new SDefaultListSelectionModel());
         createDefaultEditors();
         setModel(tm);
@@ -275,8 +279,8 @@ public class STable
     }
 
     /**
-     * is this component rendered as form component. 
-     * @return true, if the component resides in a {@link SForm} and 
+     * is this component rendered as form component.
+     * @return true, if the component resides in a {@link SForm} and
      * {@link #setShowAsFormComponent} is set to true (the default)
      */
     public boolean getShowAsFormComponent() {
@@ -307,8 +311,7 @@ public class STable
     /**
      * Adds the row from <i>index0</i> to <i>index0</i> inclusive to the current selection.
      */
-    public void addRowSelectionInterval(int index0, int index1)
-    {
+    public void addRowSelectionInterval(int index0, int index1) {
         selectionModel.addSelectionInterval(index0, index1);
     }
 
@@ -340,40 +343,40 @@ public class STable
         getSelectionModel().setDelayEvents(true);
         getSelectionModel().setValueIsAdjusting(true);
 
-        for ( int i=0; i<values.length; i++ ) {
+        for (int i = 0; i < values.length; i++) {
             String value = values[i];
-            if ( value.length()>1 ) {
+            if (value.length() > 1) {
 
                 char modus = value.charAt(0);
                 value = value.substring(1);
 
                 int colonIndex = value.indexOf(':');
-                if ( colonIndex<0 )
-					continue; // maybe next value fits ...
+                if (colonIndex < 0)
+                    continue; // maybe next value fits ...
 
                 try {
 
                     int row = Integer.parseInt(value.substring(0, colonIndex));
                     int col = Integer.parseInt(value.substring(colonIndex + 1));
                     // editor event
-                    switch ( modus ) {
-                    case 'e':
-                        editCellAt(row, col, null);
-                        break;
-                    case 't':
-                        if ( getSelectionModel().isSelectedIndex(row) )
-                            getSelectionModel().removeSelectionInterval(row, row);
-                        else
+                    switch (modus) {
+                        case 'e':
+                            editCellAt(row, col, null);
+                            break;
+                        case 't':
+                            if (getSelectionModel().isSelectedIndex(row))
+                                getSelectionModel().removeSelectionInterval(row, row);
+                            else
+                                getSelectionModel().addSelectionInterval(row, row);
+                            break;
+                        case 's':
                             getSelectionModel().addSelectionInterval(row, row);
-                        break;
-                    case 's':
-                        getSelectionModel().addSelectionInterval(row, row);
-                        break;
-                    case 'd':
-                        getSelectionModel().removeSelectionInterval(row, row);
-                        break;
+                            break;
+                        case 'd':
+                            getSelectionModel().removeSelectionInterval(row, row);
+                            break;
                     }
-                } catch ( NumberFormatException ex ) {
+                } catch (NumberFormatException ex) {
                     // hier loggen...
                     ex.printStackTrace();
                 }
@@ -433,7 +436,7 @@ public class STable
         } else {
             Object r = renderer.get(columnClass);
             if (r != null) {
-                return (STableCellRenderer)r;
+                return (STableCellRenderer) r;
             } else {
                 return getDefaultRenderer(columnClass.getSuperclass());
             }
@@ -458,13 +461,21 @@ public class STable
         return headerRenderer;
     }
 
+    public STableRowRenderer getRowRenderer() {
+        return rowRenderer;
+    }
+
+    public void setRowRenderer(STableRowRenderer pRowRenderer) {
+        rowRenderer = pRowRenderer;
+    }
+
     public STableCellRenderer getCellRenderer(int row, int column) {
         return getDefaultRenderer(getColumnClass(column));
     }
 
     public SComponent prepareRenderer(STableCellRenderer r, int row, int col) {
         return r.getTableCellRendererComponent(this,
-                                               model.getValueAt(row,col),
+                                               model.getValueAt(row, col),
                                                isRowSelected(row),
                                                row, col);
     }
@@ -477,7 +488,7 @@ public class STable
      */
     public SComponent prepareHeaderRenderer(int col) {
         return headerRenderer.getTableCellRendererComponent(this,
-                                                            col>=0 ? model.getColumnName(col) : null,
+                                                            col >= 0 ? model.getColumnName(col) : null,
                                                             false,
                                                             -1, col);
     }
@@ -526,13 +537,11 @@ public class STable
     public STableCellEditor getDefaultEditor(Class columnClass) {
         if (columnClass == null) {
             return null;
-        }
-        else {
+        } else {
             Object r = editors.get(columnClass);
             if (r != null) {
-                return (STableCellEditor)r;
-            }
-            else {
+                return (STableCellEditor) r;
+            } else {
                 return getDefaultEditor(columnClass.getSuperclass());
             }
         }
@@ -571,7 +580,7 @@ public class STable
      *                                          are not in the valid range
      * @return  false if for any reason the cell cannot be edited.
      */
-    public boolean editCellAt(int row, int column, EventObject e){
+    public boolean editCellAt(int row, int column, EventObject e) {
         if (isEditing()) {
             // Try to stop the current editor
             if (cellEditor != null) {
@@ -587,7 +596,7 @@ public class STable
         STableCellEditor editor = getCellEditor(row, column);
         if (editor != null) {
             // set up editor environment and make it possible for the editor, to
-            // stop/cancel editing on preparation 
+            // stop/cancel editing on preparation
             editor.addCellEditorListener(this);
             setCellEditor(editor);
             setEditingRow(row);
@@ -602,7 +611,7 @@ public class STable
                 setValueAt(editor.getCellEditorValue(), row, column);
                 removeEditor();
             } // end of else
-            
+
         }
         return false;
     }
@@ -613,7 +622,7 @@ public class STable
      * the value of that cell.
      *
      * @param   row      the row whose value is to be looked up
-     * @param   column   the column whose value is to be looked up
+     * @param   col the column whose value is to be looked up
      * @return  true if the cell is editable.
      * @see #setValueAt
      */
@@ -734,13 +743,13 @@ public class STable
      *
      * @param editor  the TableCellEditor to set up
      * @param row     the row of the cell to edit, where 0 is the first
-     * @param column  the column of the cell to edit, where 0 is the first
+     * @param col     the column of the cell to edit, where 0 is the first
      */
-    protected SComponent prepareEditor(STableCellEditor r, int row, int col) {
-        return r.getTableCellEditorComponent(this,
-                                             model.getValueAt(row,col),
-                                             isRowSelected(row), // true?
-                                             row, col);
+    protected SComponent prepareEditor(STableCellEditor editor, int row, int col) {
+        return editor.getTableCellEditorComponent(this,
+                                                  model.getValueAt(row, col),
+                                                  isRowSelected(row), // true?
+                                                  row, col);
     }
 
     /**
@@ -755,7 +764,7 @@ public class STable
             setCellEditor(null);
             setEditingColumn(-1);
             setEditingRow(-1);
-            if ( editorComp!=null ) {
+            if (editorComp != null) {
                 editorComp.setParent(null);
             } // end of if ()
             editorComp = null;
@@ -831,12 +840,12 @@ public class STable
      * Sets the row selection model for this table to <code>model</code>.
      *
      * @param   model        the new selection model
-     * @exception IllegalArgumentException    if <code>model</code> 
+     * @exception IllegalArgumentException    if <code>model</code>
      *                                        is <code>null</code>
      * @see     #getSelectionModel
      */
     public void setSelectionModel(SListSelectionModel model) {
-        if ( getSelectionModel()!=null ) {
+        if (getSelectionModel() != null) {
             removeSelectionListener(reloadOnSelectionChangeListener);
         }
 
@@ -855,9 +864,9 @@ public class STable
      */
     public int getSelectedRowCount() {
         int result = 0;
-        for ( int i=getSelectionModel().getMinSelectionIndex(); 
-              i<=getSelectionModel().getMaxSelectionIndex(); i++ ) {
-            if ( getSelectionModel().isSelectedIndex(i) )
+        for (int i = getSelectionModel().getMinSelectionIndex();
+             i <= getSelectionModel().getMaxSelectionIndex(); i++) {
+            if (getSelectionModel().isSelectedIndex(i))
                 result++;
         }
 
@@ -877,9 +886,9 @@ public class STable
         int[] result = new int[getSelectedRowCount()];
 
         int index = 0;
-        for ( int i=getSelectionModel().getMinSelectionIndex(); 
-              i<=getSelectionModel().getMaxSelectionIndex(); i++ ) {
-            if ( getSelectionModel().isSelectedIndex(i) )
+        for (int i = getSelectionModel().getMinSelectionIndex();
+             i <= getSelectionModel().getMaxSelectionIndex(); i++) {
+            if (getSelectionModel().isSelectedIndex(i))
                 result[index++] = i;
         }
 
@@ -908,11 +917,11 @@ public class STable
      * Sets the selection mode. Use one of the following values:
      * <UL>
      * <LI> {@link SConstants#NO_SELECTION}
-     * <LI> {@link ListSelectionModel#SINGLE_SELECTION} or 
+     * <LI> {@link ListSelectionModel#SINGLE_SELECTION} or
      *      {@link SConstants#SINGLE_SELECTION}
-     * <LI> {@link ListSelectionModel#SINGLE_INTERVAL_SELECTION} or 
+     * <LI> {@link ListSelectionModel#SINGLE_INTERVAL_SELECTION} or
      *      {@link SConstants#SINGLE_INTERVAL_SELECTION}
-     * <LI> {@link ListSelectionModel#MULTIPLE_INTERVAL_SELECTION} or 
+     * <LI> {@link ListSelectionModel#MULTIPLE_INTERVAL_SELECTION} or
      *      {@link SConstants#MULTIPLE_SELECTION}
      * </UL>
      */
@@ -925,11 +934,11 @@ public class STable
      * @return
      * <UL>
      * <LI> {@link SConstants#NO_SELECTION}
-     * <LI> {@link ListSelectionModel#SINGLE_SELECTION} or 
+     * <LI> {@link ListSelectionModel#SINGLE_SELECTION} or
      *      {@link SConstants#SINGLE_SELECTION}
-     * <LI> {@link ListSelectionModel#SINGLE_INTERVAL_SELECTION} or 
+     * <LI> {@link ListSelectionModel#SINGLE_INTERVAL_SELECTION} or
      *      {@link SConstants#SINGLE_INTERVAL_SELECTION}
-     * <LI> {@link ListSelectionModel#MULTIPLE_INTERVAL_SELECTION} or 
+     * <LI> {@link ListSelectionModel#MULTIPLE_INTERVAL_SELECTION} or
      *      {@link SConstants#MULTIPLE_SELECTION}
      * </UL>
      */
@@ -981,25 +990,25 @@ public class STable
             // The whole thing changed
             clearSelection();
         } else {
-            switch ( e.getType() ) {
-            case TableModelEvent.INSERT:
-                if (e.getFirstRow() >= 0)
-                    getSelectionModel().insertIndexInterval(e.getFirstRow(),
-                                                            e.getLastRow(), true);
-                break;
-                
-            case TableModelEvent.DELETE:
-                if (e.getFirstRow() >= 0)
-                    getSelectionModel().removeIndexInterval(e.getFirstRow(),
-                                                            e.getLastRow());
-                break;
+            switch (e.getType()) {
+                case TableModelEvent.INSERT:
+                    if (e.getFirstRow() >= 0)
+                        getSelectionModel().insertIndexInterval(e.getFirstRow(),
+                                                                e.getLastRow(), true);
+                    break;
+
+                case TableModelEvent.DELETE:
+                    if (e.getFirstRow() >= 0)
+                        getSelectionModel().removeIndexInterval(e.getFirstRow(),
+                                                                e.getLastRow());
+                    break;
             }
         }
         reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
-     * @param style the style of selected cells
+     * @param selectionStyle the style of selected cells
      */
     public void setSelectionStyle(String selectionStyle) {
         this.selectionStyle = selectionStyle;
@@ -1008,16 +1017,24 @@ public class STable
     /**
      * @return the style of selected cells.
      */
-    public String getSelectionStyle() { return selectionStyle; }
+    public String getSelectionStyle() {
+        return selectionStyle;
+    }
 
     /**
      * Override this method, if you want to give rows different
      * attributes. E.g. for displaying an alternating background color
      * for rows.
      *
-     * @return the style of a specific row. 
+     * @return the style of a specific row.
      */
-    public String getRowStyle(int row) { return null; }
+    public String getRowStyle(int row) {
+        if (rowRenderer != null) {
+            return rowRenderer.getTableRowStyle(this, row, isRowSelected(row));
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Set the selectionAttributes.
@@ -1042,7 +1059,7 @@ public class STable
 
     /**
      * Set the background color.
-     * @param c the new background color
+     * @param color the new background color
      */
     public void setSelectionBackground(Color color) {
         boolean changed = selectionAttributes.putAll(CSSStyleSheet.getAttributes(color, Style.BACKGROUND_COLOR));
@@ -1099,8 +1116,6 @@ public class STable
 
     /**
      * TODO: documentation
-     *
-     * @return
      */
     public void setHeaderStyle(String style) {
         this.headerStyle = style;
@@ -1109,7 +1124,9 @@ public class STable
     /**
      * TODO: documentation
      */
-    public String getHeaderStyle() { return headerStyle; }
+    public String getHeaderStyle() {
+        return headerStyle;
+    }
 
     /**
      * Set the headerAttributes.
@@ -1134,7 +1151,7 @@ public class STable
 
     /**
      * Set the background color.
-     * @param c the new background color
+     * @param color the new background color
      */
     public void setHeaderBackground(Color color) {
         boolean changed = headerAttributes.putAll(CSSStyleSheet.getAttributes(color, "background-color"));
@@ -1152,7 +1169,7 @@ public class STable
 
     /**
      * Set the foreground color.
-     * @param c the new foreground color
+     * @param color the new foreground color
      */
     public void setHeaderForeground(Color color) {
         boolean changed = headerAttributes.putAll(CSSStyleSheet.getAttributes(color, "color"));
@@ -1281,7 +1298,7 @@ public class STable
     public void setCG(TableCG cg) {
         super.setCG(cg);
     }
-    
+
     public String getEditParameter(int row, int col) {
         return "e" + row + ":" + col;
     }
@@ -1342,7 +1359,7 @@ public class STable
      * @param d
      */
     public void setViewportSize(Rectangle d) {
-        if ( isDifferent(viewport, d) ) {
+        if (isDifferent(viewport, d)) {
             viewport = d;
             reload(ReloadManager.RELOAD_CODE);
         }
@@ -1366,16 +1383,16 @@ public class STable
      */
     protected final ListSelectionListener reloadOnSelectionChangeListener =
         new ListSelectionListener() {
-                public void valueChanged(ListSelectionEvent e) {
-                    reload(ReloadManager.RELOAD_CODE);
-                }
-            };
+            public void valueChanged(ListSelectionEvent e) {
+                reload(ReloadManager.RELOAD_CODE);
+            }
+        };
+
     /**
      * Gets the deselected Icon.
      * @return Returns a SIcon
      */
-    public SIcon getDeselectedIcon()
-    {
+    public SIcon getDeselectedIcon() {
         return fDeselectedIcon;
     }
 
@@ -1383,8 +1400,7 @@ public class STable
      * Sets the deselected Icon.
      * @param deselectedIcon The deselectedIcon to set
      */
-    public void setDeselectedIcon(SIcon deselectedIcon)
-    {
+    public void setDeselectedIcon(SIcon deselectedIcon) {
         fDeselectedIcon = deselectedIcon;
     }
 
@@ -1392,8 +1408,7 @@ public class STable
      * Gets the selected Icon.
      * @return Returns a SIcon
      */
-    public SIcon getSelectedIcon()
-    {
+    public SIcon getSelectedIcon() {
         return fSelectedIcon;
     }
 
@@ -1401,8 +1416,7 @@ public class STable
      * Sets the selected Icon.
      * @param selectedIcon The selectedIcon to set
      */
-    public void setSelectedIcon(SIcon selectedIcon)
-    {
+    public void setSelectedIcon(SIcon selectedIcon) {
         fSelectedIcon = selectedIcon;
     }
 

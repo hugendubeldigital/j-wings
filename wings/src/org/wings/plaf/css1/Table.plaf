@@ -113,10 +113,10 @@
     for (int r = startRow; r < endRow; r++) {
         String rowStyle = table.getRowStyle(r);
 
-        String actualRowStyle = rowStyle!=null ? rowStyle :
+        String currentRowStyle = rowStyle!=null ? rowStyle :
 	  (table.isRowSelected(r) ?  selectionStyle : style );
 
-        %><tr<%|class=actualRowStyle%>><%
+        %><tr<%|class=currentRowStyle%>><%
 
         boolean selectionWritten = ((selectionMode == SListSelectionModel.NO_SELECTION)
                                    || (rowSelectionColumn < 0));
