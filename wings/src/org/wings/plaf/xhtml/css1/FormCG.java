@@ -45,6 +45,11 @@ public final class FormCG
 
         d.append(" action=\"").append(form.getServerAddress()).
             append("\">\n");
+
+        // the event for the form action
+        Utils.writeHiddenComponent(d, form.getNamePrefix(),
+                                   form.getUnifiedIdString() +
+                                   SConstants.UID_DIVIDER);
     }
 }
 
