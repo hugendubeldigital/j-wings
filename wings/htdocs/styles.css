@@ -11,7 +11,7 @@ P {
    font-weight: normal;
    font-style: normal;
    color: #000077;
-   text-align: left 
+   text-align: left
 }
 
 UL {
@@ -20,21 +20,21 @@ UL {
    font-weight: normal;
    font-style: normal;
    color: #000077;
-   text-align: left 
+   text-align: left
 }
 
 B {
-   font-weight: bold 
+   font-weight: bold
 }
 
 EM {
    font-style: normal;
-   color: #990000 
+   color: #990000
 }
 
 STRONG {
    font-weight: bold;
-   color: #990000 
+   color: #990000
 }
 
 SMALL {
@@ -66,13 +66,13 @@ HR {
 H1 {
    font-size: 16pt;
    font-weight: bold;
-   font-family: sans-serif
+   font-family: sans-serif;
 }
 
 H2 {
    font-size: 14pt;
    font-weight: bold;
-   font-family: sans-serif
+   font-family: sans-serif;
 }
 
 H3 { 
@@ -94,7 +94,7 @@ H3 {
    font-size: 10pt;
    font-weight: normal;
    font-style: normal;
-   color: #000077;
+   color: #000077
 }
 
 .bigwings {
@@ -102,7 +102,16 @@ H3 {
    font-size: 18pt;
    font-weight: bold;
    font-style: normal;
-   color: #770000 
+   color: #770000
+}
+
+.bigwingsheader {
+   vertical-align: middle;
+   font-family: sans-serif;
+   font-size: 18pt;
+   font-weight: bold;
+   font-style: normal;
+   color: #ffffff
 }
 
 .bigis {
@@ -110,7 +119,7 @@ H3 {
    font-size: 16pt;
    font-weight: normal;
    font-style: normal;
-   color: #000077;
+   color: #000077
 }
 
 .menu {
