@@ -15,6 +15,7 @@ void writeIcon(Device device, SIcon icon, SLabel label,
         if (label.isImageAbsBottom()) {
 	    %> align="absbottom"<%
 	}
+        %> <%|title=label.getToolTipText()%><%
         /*
 	 * write optional attributes ..
 	 */
