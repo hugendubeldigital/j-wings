@@ -30,7 +30,6 @@ import javax.swing.event.ListDataListener;
 
 import org.wings.plaf.ListCG;
 import org.wings.style.*;
-import org.wings.io.Device;
 
 /**
  * <em>CAVEAT</em>
@@ -111,17 +110,17 @@ public class SList
     private Rectangle viewport = null;
 
     /**
-     * <li type="...">
+     * 
      */
     protected String type = SConstants.UNORDERED_LIST;
 
     /**
-     * <li type="...">
+     * 
      */
     protected String orderType = null;
 
     /**
-     * <li start="...">
+     * 
      */
     protected int start = 0;
 
@@ -927,7 +926,7 @@ public class SList
     }
 
     /**
-     * <li type="...">
+     * 
      *
      * @param t
      */
@@ -936,7 +935,7 @@ public class SList
     }
 
     /**
-     * <li type="...">
+     * 
      *
      * @return
      */
@@ -945,7 +944,7 @@ public class SList
     }
 
     /*
-     * <li type="...">
+     * 
      * <code>null</code> is default style.
      */
     public void setType(String[] t) {
@@ -960,7 +959,7 @@ public class SList
     }
 
     /**
-     * <li start="...">
+     * 
      * TODO: documentation
      *
      * @param s
@@ -970,7 +969,7 @@ public class SList
     }
 
     /**
-     * <li start="...">
+     * 
      *
      * @return
      */
