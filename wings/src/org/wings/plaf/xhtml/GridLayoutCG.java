@@ -97,11 +97,15 @@ public class GridLayoutCG
             SComponent c = (SComponent)iter.next();
 
             if (firstRow && header) {
-                d.print("<th>");
+                d.print("<th");
+                Utils.printTableCellAlignment(d, c);
+                Utils.printTableCellColors(d, c);
+                d.print(">");                
             }
             else {
                 d.print("<td");
                 Utils.printTableCellAlignment(d, c);
+                Utils.printTableCellColors(d, c);
                 d.print(">");
             }
 

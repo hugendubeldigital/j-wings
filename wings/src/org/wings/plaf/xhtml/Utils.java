@@ -162,6 +162,7 @@ public final class Utils implements SConstants
         }
     }
 
+    /** Encolors the actual table cell with the background of the contained component. */
     public static void printTableCellColors(Device s, SComponent c) 
         throws IOException {
         // if (c.getForeground()!=null)
@@ -169,8 +170,9 @@ public final class Utils implements SConstants
         //         print(toColorString(c.getForeground()));
 
         if (c.getBackground()!=null)
-            s.print(" bgcolor=#")
-                .print(toColorString(c.getBackground()));
+            s.print(" bgcolor=\"#")
+                .print(toColorString(c.getBackground()))
+                .print("\"");
     }
 
     public static void printTableCellSpan(Device s, SComponent c) {
