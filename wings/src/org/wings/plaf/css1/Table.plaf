@@ -155,10 +155,9 @@
             %>></td><%
             return;
         }
-        %>
 
-        <%|class=comp.getStyle()%><%
         final String compStyle = comp.getStyle();
+        %><%|class=compStyle%><%
 	comp.setStyle(null);
 
         switch (comp.getHorizontalAlignment()) {
