@@ -40,7 +40,7 @@ public class LineBorderCG
         /* color */
 		d.append( "border-color: #" );
         if ( color != null )
-			d.append( org.wings.plaf.xhtml.Utils.toColorString( b.getLineColor() ) );
+			d.append( org.wings.plaf.xhtml.Utils.toColorString( b.getColor() ) );
 		else
         	d.append( "000000" );
 		d.append( ";" );

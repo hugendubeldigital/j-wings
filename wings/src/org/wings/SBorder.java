@@ -28,6 +28,16 @@ import org.wings.io.Device;
 public interface SBorder {
     void setInsets(Insets insets);
     Insets getInsets();
+    
+    /**
+      * Get the color of the border.
+      */
+    java.awt.Color getColor();
+
+    /**
+      * Get the color of this border.
+      */
+    void setColor( java.awt.Color color );
 
     void writePrefix(Device d) throws IOException;
     void writePostfix(Device d) throws IOException;

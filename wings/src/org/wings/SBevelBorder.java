@@ -24,6 +24,7 @@ import org.wings.io.Device;
  * TODO: documentation
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
  * @version $Revision$
  */
 public class SBevelBorder
@@ -37,7 +38,9 @@ public class SBevelBorder
     public static final int RAISED = 0;
     public static final int LOWERED = 1;
 
-    int bevelType = RAISED;
+    private int bevelType = RAISED;
+    
+    private int fThickness = 1;
 
     /**
      * TODO: documentation
@@ -66,6 +69,19 @@ public class SBevelBorder
     }
 
     /**
+     * Create a new border with given
+     * bevelType, insets and border thickness
+     * @param bevelType <i>RAISED</i> or <i>LOWERED</i>
+     * @param insets padding (space between border and component) around
+     * @param thickness the thickness of drawn line
+     */
+    public SBevelBorder(int bevelType, Insets insets, int thickness ) {
+        setBevelType(bevelType);
+        setInsets(insets);
+        setThickness( thickness );
+    }
+
+    /**
      * TODO: documentation
      *
      * @param bevelType
@@ -87,6 +103,26 @@ public class SBevelBorder
     public String getCGClassID() {
         return cgClassID;
     }
+    
+    /**
+      * Get the thickness in pixel for this border.
+      * @return thickness
+      * @see #setThickness(int)
+      */
+	public int getThickness()
+     {
+		return fThickness;
+     }
+
+    /**
+      * Set the thickness in pixel for this border.
+      * @param thickness
+      * @see #getThickness()
+      */
+	public void setThickness( int thickness )
+     {
+		fThickness = thickness;
+     }
 }
 
 /*

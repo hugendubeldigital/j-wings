@@ -41,6 +41,7 @@ public class TreeCG
         throws IOException
     {
         STree tree = (STree)component;
+        SBorder border = tree.getBorder();
 
         int start = 0;
         int count = tree.getRowCount();
@@ -57,12 +58,12 @@ public class TreeCG
         int depth = tree.getMaximumExpandedDepth(); // - ( ( tree.isRootVisible() )?0:1 );
         d.append("<table border=\"0\" cellpadding=\"0\"");
 		CGUtil.writeSize( d, tree );
-        if ( bgcolor != null )
+        if ( Utils.hasSpanAttributes( tree ) )
          {
-			d.append( " bgcolor=\"#" );
-            d.append( Utils.toColorString( bgcolor ) );
-            d.append( "\"");
-         }
+         	d.append( " style=\"" );
+			Utils.writeSpanAttributes( d, tree );
+         	d.append( "\"" );
+		 }
         d.append(">");
         
         for (int i=start; i < count; i++)

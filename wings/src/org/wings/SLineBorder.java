@@ -33,9 +33,8 @@ public class SLineBorder
      * @see #getCGClassID
      */
     private static final String cgClassID = "LineBorderCG";
-
+    
     int thickness = 1;
-    Color lineColor = Color.black;
 
     /**
      * TODO: documentation
@@ -78,18 +77,20 @@ public class SLineBorder
      * Set the lineColor color.
      *
      * @param c the new lineColor color
+     * @deprecated replaced by {@link org.wings.SBorder#setColor(java.awt.Color)}
      */
     public void setLineColor(Color c) {
-        lineColor = c;
+        setColor( c );
     }
 
     /**
      * Return the lineColor color.
      *
      * @return the lineColor color
+     * @deprecated replaced by {@link org.wings.SBorder#getColor()}
      */
     public Color getLineColor() {
-        return lineColor;
+        return getColor();
     }
 
     /**

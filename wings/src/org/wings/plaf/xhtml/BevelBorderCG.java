@@ -22,6 +22,9 @@ import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 
+/**
+  * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+  */
 public class BevelBorderCG
     extends DefaultBorderCG
 {
@@ -31,12 +34,23 @@ public class BevelBorderCG
      	SBevelBorder b = ( SBevelBorder ) border;
 		String borderStyle = ( b.getBevelType() == SBevelBorder.RAISED) ? "outset" : "inset";
      	java.awt.Insets insets = b.getInsets();
+        java.awt.Color color = b.getColor();
         
         /* thickness & type */
-		d.append( "border: 1px " );
+		d.append( "border: ");
+        d.append( b.getThickness() );
+        d.append("px " );
         d.append( borderStyle );
         d.append( ";" );
         
+        /* color */
+		d.append( "border-color: #" );
+        if ( color != null )
+			d.append( org.wings.plaf.xhtml.Utils.toColorString( b.getColor() ) );
+		else
+        	d.append( "000000" );
+		d.append( ";" );
+		
         /* padding */
         if ( insets == null ) return;
         d.append( "padding-top: " );

@@ -53,7 +53,7 @@ public class ScrollPaneCG
     {
         SScrollPane scrollPane = (SScrollPane)c;
         updateScrollBars(scrollPane);
-
+		
         writePrefix(d, scrollPane);
         ((SComponent) scrollPane.getScrollable()).write( d );
         writePostfix(d, scrollPane);
@@ -101,11 +101,19 @@ public class ScrollPaneCG
     {
         SScrollBar horizontalScroller = (SScrollBar)container.getComponentAt(1);
         SScrollBar verticalScroller = (SScrollBar)container.getComponentAt(2);
+        SBorder border = container.getBorder();
 
     	int cspan = ( horizontalScroller.isVisible() )? ((ScrollBarCG) horizontalScroller.getCG()).SCROLLBAR_STEPS + 2 : 1 ;
     	int rspan = ( verticalScroller.isVisible() )? ((ScrollBarCG) verticalScroller.getCG()).SCROLLBAR_STEPS + 2 : 1 ;
         
-		d.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td ");
+		d.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"");
+        if ( border != null )
+         {
+			d.append("style=\"");
+            border.writeSpanAttributes( d );
+            d.append("\"");
+         }
+        d.append("><tr><td ");
         if ( cspan > 1 )
          {
         	d.append( "colspan=\"" );

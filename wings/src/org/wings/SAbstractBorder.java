@@ -44,6 +44,11 @@ public class SAbstractBorder
     protected Insets insets = new Insets(0, 0, 0, 0);
 
     /**
+      * border color
+      */
+    private java.awt.Color fColor = java.awt.Color.black;
+
+    /**
      * TODO: documentation
      *
      */
@@ -142,6 +147,21 @@ public class SAbstractBorder
 		cg.writeSpanAttributes( d, this );
      }
      
+    /**
+      * Get the color of the border.
+      */
+    public java.awt.Color getColor()
+     {
+		return fColor;
+     }
+
+    /**
+      * Get the color of this border.
+      */
+    public void setColor( java.awt.Color color )
+     {
+		fColor = color;
+     }
 }
 
 /*
