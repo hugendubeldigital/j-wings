@@ -174,7 +174,14 @@ void writeFormIcon(final Device device, SAbstractButton abstractButton, String a
     String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
     final String attr = (component.getAttributes().size() > 0) ? ("_" + component.getUnifiedId()) : null;
 
-    SIcon   icon = component.getIcon();
+    SIcon   icon = null;
+    if ( component.isSelected() ) {
+        icon = component.isEnabled() ? component.getSelectedIcon() :
+           component.getDisabledSelectedIcon();
+    } else {
+        icon = component.isEnabled() ? component.getIcon() :
+           component.getDisabledIcon();
+    }
     String  text = component.getText();
     int     horizontalTextPosition = component.getHorizontalTextPosition();
     int     verticalTextPosition   = component.getVerticalTextPosition();
