@@ -14,6 +14,8 @@
 
 package frameset;
 
+import java.text.SimpleDateFormat;
+
 import java.awt.event.*;
 
 import javax.servlet.*;
@@ -25,10 +27,10 @@ import org.wings.session.*;
 
 public class FrameSetSession
     extends SessionServlet{
-  
-    private static SIcon on = new ResourceImageIcon(SCheckBox.class,
+
+    private final static SIcon on = new ResourceImageIcon(SCheckBox.class,
                                               "icons/bulb2.gif");
-    private static SIcon off = new ResourceImageIcon(SCheckBox.class, 
+    private final static SIcon off = new ResourceImageIcon(SCheckBox.class, 
                                               "icons/bulb1.gif");
 
     private SLabel leftLabel = createLabel(null, on);
@@ -126,12 +128,15 @@ public class FrameSetSession
 }
 
 class TimestampLabel extends SLabel {
+    private final static SimpleDateFormat dateFormat = 
+        new SimpleDateFormat("'rendered&nbsp;at&nbsp;'HH.mm.ss'&nbsp;'SSS");
+    
     TimestampLabel() {
         setHorizontalAlignment(RIGHT);
     }
         
     public String getText() {
-        return "rendered&nbsp;at&nbsp;" + System.currentTimeMillis();
+        return dateFormat.format(new java.util.Date());
     }
 }
 
