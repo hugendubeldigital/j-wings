@@ -62,7 +62,7 @@ public class BorderLayoutCG
 	    d.append(">");
 
         if (north != null) {
-            d.append("\n<tr><td colspan=\"").append(cols).append("\"");
+            d.append("\n<tr><td height=\"1\" colspan=\"").append(cols).append("\"");
             writeComponentAlignment(d, north);
             d.append(">");
             writeComponent(d, north);
@@ -71,7 +71,7 @@ public class BorderLayoutCG
         d.append("\n<tr>");
 
         if (west != null) {
-            d.append("<td");
+            d.append("<td width=\"1\"");
             writeComponentAlignment(d, west);
             d.append(">");
             writeComponent(d, west);
@@ -87,7 +87,7 @@ public class BorderLayoutCG
         }
 
         if (east != null) {
-            d.append("<td");
+            d.append("<td width=\"1\"");
             writeComponentAlignment(d, east);
             d.append(">");
             writeComponent(d, east);
@@ -96,7 +96,7 @@ public class BorderLayoutCG
         d.append("</tr>\n");
 	
         if (south != null) {
-            d.append("\n<tr><td colspan=\"").append(cols).append("\"");
+            d.append("\n<tr><td height=\"1\" colspan=\"").append(cols).append("\"");
             writeComponentAlignment(d, south);
             d.append(">");
             writeComponent(d, south);
