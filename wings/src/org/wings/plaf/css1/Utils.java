@@ -163,43 +163,6 @@ public final class Utils
             break;
         case SConstants.BOTTOM:
             d.write(VALIGN_BOTTOM);
-
-    public static String toColorString(int rgb) {
-        char[] buf = new char[6];
-        int digits = 6;
-        do {
-            buf[--digits] = hexDigits[rgb & 15];
-            rgb >>>= 4;
-        }
-        while (digits!=0);
-
-        return new String(buf);
-    }
-
-    public static String toColorString(java.awt.Color c) {
-        return toColorString(c.getRGB());
-    }
-
-    public static void writeAttributes(Device d, SComponent component)
-        throws IOException {
-
-        java.awt.Color fgColor = component.getForeground();
-        SFont font = component.getFont();
-
-        if (fgColor != null) {
-            d.print("font-color:#").print(toColorString(fgColor)).print(";");
-            d.print("color:#").print(toColorString(fgColor)).print(";");
-        }
-        if ( font != null) {
-            int style = font.getStyle();
-            d.print("font-size:").print(font.getSize()).print("pt;");
-            d.print("font-style:").print((style & java.awt.Font.ITALIC) > 0 ?"italic;":"normal;");
-            d.print("font-weight:").print((style & java.awt.Font.BOLD) > 0 ?"bold;":"normal;");
-            d.print("font-family:").print(font.getFace()).print(";");
-        }
-
-    }
-
             break;
         case SConstants.BASELINE:
             d.write(VALIGN_BASELINE);
