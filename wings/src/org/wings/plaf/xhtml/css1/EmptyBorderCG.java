@@ -26,21 +26,15 @@ import org.wings.style.Style;
 public final class EmptyBorderCG
     extends org.wings.plaf.xhtml.EmptyBorderCG
 {
-    private final static boolean BLACK = false;
-    private final static boolean WHITE = true;
 
     public void writePrefix(Device d, SBorder b)
 	throws IOException
     {
-	SEmptyBorder border = (SEmptyBorder)b;
-	Insets insets = b.getInsets();
+	d.print("<div ");
 
-	d.print("<div style=\"padding: ")
-	    .print(insets.top).print(" ")
-	    .print(insets.right).print(" ")
-	    .print(insets.bottom).print(" ")
-	    .print(insets.left)
-	    .print("\">");
+        writeSpanAttributes(d, b);
+        
+        d.print("\">");
     }
 
     public void writePostfix(Device d, SBorder b)
@@ -48,6 +42,19 @@ public final class EmptyBorderCG
     {
 	d.print("</div>");
     }
+
+    public void writeSpanAttributes(Device d, SBorder b )
+        throws IOException
+    {
+	Insets insets = b.getInsets();
+
+        d.print("style=\"padding:")
+            .print(insets.top).print("px ")
+            .print(insets.right).print("px ")
+            .print(insets.bottom).print("px ")
+            .print(insets.left).print("px");
+    }
+
 }
 
 /*
