@@ -49,6 +49,13 @@ public class TextAreaCG
         d.append("<textarea name=\"")
             .append(textArea.getNamePrefix())
             .append("\"");
+        if ( Utils.hasSpanAttributes( textArea ) )
+         {
+            d.append( " style=\"" );
+            Utils.writeSpanAttributes( d, textArea );
+            d.append( "\"" );
+         }
+
     }
 
     public void writeBody(Device d, STextArea textArea)

@@ -46,6 +46,13 @@ public class TextFieldCG
         if (!textField.isEditable())
             d.append(" readonly=\"1\"");
 
+        if ( Utils.hasSpanAttributes( textField ) )
+         {
+            d.append( " style=\"" );
+            Utils.writeSpanAttributes( d, textField );
+            d.append( "\"" );
+         }
+
         String text = textField.getText();
         if (text != null) {
             d.append(" value=\"");
@@ -59,7 +66,7 @@ public class TextFieldCG
             d.append("\"");
         }
 
-        d.append(" />");
+        d.append(">");
     }
 }
 

@@ -197,7 +197,8 @@ public final class Utils implements SConstants
              ( component.getBackground() != null || 
                component.getForeground() != null ||
                component.getFont() != null ||
-               component.getBorder() != null )
+               component.getBorder() != null ||
+               component.getPreferredSize() != null)
              ;
      }
     
@@ -215,22 +216,27 @@ public final class Utils implements SConstants
         java.awt.Color fgcolor = component.getForeground();
         SFont font = component.getFont();
         SBorder border = component.getBorder();
+        java.awt.Dimension dim = component.getPreferredSize();
         
-        if ( bgcolor != null ) d.append( "background-color: #").append(toColorString( bgcolor )).append(";" );
-        if ( fgcolor != null ) d.append( "font-color: #").append(toColorString( fgcolor )).append(";" );
+        if ( bgcolor != null ) d.append( "background-color:#").append(toColorString( bgcolor )).append(";" );
+        if ( fgcolor != null ) d.append( "font-color:#").append(toColorString( fgcolor )).append(";" );
         if ( font != null )
          {
          	int style = font.getStyle();
-         	d.append( "font-size: ").append(font.getSize()).append("pt;");
-         	d.append( "font-style: ").append(( style | java.awt.Font.ITALIC ) > 0 ?"italic;":"normal;");
-            d.append( "font-weight: ").append(( style | java.awt.Font.BOLD ) > 0 ?"bold;":"normal;");
-            d.append( "font-family: ").append(font.getFace() ).append( ";" );
+         	d.append( "font-size:").append(font.getSize()).append("pt;");
+         	d.append( "font-style:").append(( style & java.awt.Font.ITALIC ) > 0 ?"italic;":"normal;");
+            d.append( "font-weight:").append(( style & java.awt.Font.BOLD ) > 0 ?"bold;":"normal;");
+            d.append( "font-family:").append(font.getFace() ).append( ";" );
 		 }
         
         if ( border != null )
          {
          	border.writeSpanAttributes( d );
-         } 
+         }
+
+        if ( dim != null )
+         d.append( "width:").append(dim.width).
+          append("px;height:").append(dim.height).append("px;");
      }
 }
 

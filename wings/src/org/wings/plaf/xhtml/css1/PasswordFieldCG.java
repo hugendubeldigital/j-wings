@@ -44,6 +44,13 @@ public final class PasswordFieldCG
         if (!passwordField.isEditable())
             d.append(" readonly=\"1\"");
 
+        if ( org.wings.plaf.xhtml.Utils.hasSpanAttributes( passwordField ) )
+         {
+            d.append( " style=\"" );
+            org.wings.plaf.xhtml.Utils.writeSpanAttributes( d, passwordField );
+            d.append( "\"" );
+         }
+
         String text = passwordField.getText();
         if (text != null) {
             int pos=-1, lastpos=0;

@@ -41,6 +41,14 @@ public final class TextFieldCG
 
         if (!textField.isEditable())
             d.append(" readonly=\"1\"");
+            
+        if ( org.wings.plaf.xhtml.Utils.hasSpanAttributes( textField ) )
+         {
+            d.append( " style=\"" );
+            org.wings.plaf.xhtml.Utils.writeSpanAttributes( d, textField );
+            d.append( "\"" );
+         }
+
 
         String text = textField.getText();
         if (text != null) {
@@ -55,7 +63,7 @@ public final class TextFieldCG
             d.append("\"");
         }
 
-        d.append(" />");
+        d.append(">");
     }
 }
 
