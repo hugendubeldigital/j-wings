@@ -112,7 +112,8 @@ public class ImageExternalizer
     public void writePNG(Image img, Device out)
         throws java.io.IOException
     {
-        PngEncoder png =  new PngEncoder(img, PngEncoder.ENCODE_ALPHA);
+        PngEncoder png =  new PngEncoder(img, PngEncoder.ENCODE_ALPHA,
+                                         PngEncoder.FILTER_NONE, 6);
         byte[] pngbytes = png.pngEncode();
         if (pngbytes == null) {
             System.err.println("Null image");
