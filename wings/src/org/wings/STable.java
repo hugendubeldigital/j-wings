@@ -219,16 +219,13 @@ public class STable
         if (model != null)
             model.removeTableModelListener(this);
 
-        TableModel oldModel = model;
+        reloadIfChange(ReloadManager.RELOAD_CODE, model, tm);
+
         model = tm;
         if (model == null)
             model = new DefaultTableModel();
 
         model.addTableModelListener(this);
-
-        if ((model == null && oldModel != null) ||
-            model != null && !model.equals(oldModel))
-            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
