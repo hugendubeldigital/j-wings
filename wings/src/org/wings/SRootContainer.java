@@ -76,7 +76,7 @@ public abstract class SRootContainer extends SContainer {
         SDialog dialog = (SDialog) getComponent(count - 1);
         super.remove(dialog);
         logger.debug("popDialog: " + count);
-        dialog.setFrame((SFrame) null);
+//        dialog.setFrame((SFrame) null);
         reload(ReloadManager.RELOAD_CODE);
         return dialog;
     }
