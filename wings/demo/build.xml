@@ -3,6 +3,7 @@
 <!-- $Id$ -->
 
 <project name="wingS-Demo" default="main" basedir=".">
+  <property environment="env" />
   <!-- read custom properties from file -->
   <property file="build.properties" />
 
@@ -169,38 +170,38 @@
     </war>
   </target>
 
-  <target name="tomcat" unless="tomcat.home">
-    <fail message="tomcat.home must be set"/>
+  <target name="check-deploydir" unless="webapps.deploydir">
+    <fail message="webapps.deploydir must be set"/>
   </target>
 
   <target name="deploy.wingset" depends="wingset" if="deploy.wingset">
-    <mkdir dir="${tomcat.home}/webapps/wingset"/>
-    <unwar src="${dist.deploy}/wingset.war" dest="${tomcat.home}/webapps/wingset"/>
-    <touch file="${tomcat.home}/webapps/wingset/WEB-INF/web.xml"/>
+    <mkdir dir="${webapps.deploydir}/wingset"/>
+    <unwar src="${dist.deploy}/wingset.war" dest="${webapps.deploydir}/wingset"/>
+    <touch file="${webapps.deploydir}/wingset/WEB-INF/web.xml"/>
   </target>
 
   <target name="deploy.ldap" depends="ldap" if="deploy.ldap">
-    <mkdir dir="${tomcat.home}/webapps/ldap"/>
-    <unwar src="${dist.deploy}/ldap.war" dest="${tomcat.home}/webapps/ldap"/>
-    <touch file="${tomcat.home}/webapps/ldap/WEB-INF/web.xml"/>
+    <mkdir dir="${webapps.deploydir}/ldap"/>
+    <unwar src="${dist.deploy}/ldap.war" dest="${webapps.deploydir}/ldap"/>
+    <touch file="${webapps.deploydir}/ldap/WEB-INF/web.xml"/>
   </target>
 
   <target name="deploy.explorer" depends="explorer" if="deploy.explorer">
-    <mkdir dir="${tomcat.home}/webapps/explorer"/>
-    <unwar src="${dist.deploy}/explorer.war" dest="${tomcat.home}/webapps/explorer"/>
-    <touch file="${tomcat.home}/webapps/explorer/WEB-INF/web.xml"/>
+    <mkdir dir="${webapps.deploydir}/explorer"/>
+    <unwar src="${dist.deploy}/explorer.war" dest="${webapps.deploydir}/explorer"/>
+    <touch file="${webapps.deploydir}/explorer/WEB-INF/web.xml"/>
   </target>
 
   <target name="deploy.frameset" depends="frameset" if="deploy.frameset">
-    <mkdir dir="${tomcat.home}/webapps/frameset"/>
-    <unwar src="${dist.deploy}/frameset.war" dest="${tomcat.home}/webapps/frameset"/>
-    <touch file="${tomcat.home}/webapps/frameset/WEB-INF/web.xml"/>
+    <mkdir dir="${webapps.deploydir}/frameset"/>
+    <unwar src="${dist.deploy}/frameset.war" dest="${webapps.deploydir}/frameset"/>
+    <touch file="${webapps.deploydir}/frameset/WEB-INF/web.xml"/>
   </target>
 
   <target name="deploy.desktop" depends="desktop" if="deploy.desktop">
-    <mkdir dir="${tomcat.home}/webapps/desktop"/>
-    <unwar src="${dist.deploy}/desktop.war" dest="${tomcat.home}/webapps/desktop"/>
-    <touch file="${tomcat.home}/webapps/desktop/WEB-INF/web.xml"/>
+    <mkdir dir="${webapps.deploydir}/desktop"/>
+    <unwar src="${dist.deploy}/desktop.war" dest="${webapps.deploydir}/desktop"/>
+    <touch file="${webapps.deploydir}/desktop/WEB-INF/web.xml"/>
   </target>
 
   <!-- ==================== Admin ==================== -->
@@ -220,7 +221,7 @@
   </target>
 
   <target name="build" depends="wingset,ldap,explorer,frameset,desktop"/>
-  <target name="deploy" depends="deploy.wingset,deploy.ldap,deploy.explorer,deploy.frameset,deploy.desktop"/>
+  <target name="deploy" depends="check-deploydir,deploy.wingset,deploy.ldap,deploy.explorer,deploy.frameset,deploy.desktop"/>
 
   <target name="all" depends="clean,build"/>
   <target name="main" depends="build"/>
