@@ -2,6 +2,7 @@ package org.wings;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 
 /**
  * 
@@ -10,15 +11,15 @@ import java.io.IOException;
  * @deprecated use {@link SFileImageIcon} instead
  */
 public class FileImageIcon extends SFileImageIcon {
-    public FileImageIcon(String name) throws IOException {
+    public FileImageIcon(String name) throws FileNotFoundException {
         super(name);
     }
 
-    public FileImageIcon(File file) throws IOException {
+    public FileImageIcon(File file) throws FileNotFoundException {
         super(file);
     }
 
-    public FileImageIcon(File file, String ext, String mt) {
+    public FileImageIcon(File file, String ext, String mt) throws FileNotFoundException {
         super(file, ext, mt);
     }
 }

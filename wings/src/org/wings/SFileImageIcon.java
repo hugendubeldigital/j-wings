@@ -14,10 +14,11 @@
 
 package org.wings;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
+import org.wings.util.ImageInfo;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -46,7 +47,7 @@ public class SFileImageIcon extends FileResource implements SIcon {
      *
      * @param fileName
      */
-    public SFileImageIcon(String fileName) throws IOException {
+    public SFileImageIcon(String fileName) throws FileNotFoundException {
         this(new File(fileName));
     }
 
@@ -61,51 +62,34 @@ public class SFileImageIcon extends FileResource implements SIcon {
      * @param mimetype  the user provided mimetype. If this is 'null', then
      *                  the mimetype is guessed from the extension.
      */
-    public SFileImageIcon(File file, String extension, String mimetype) {
+    public SFileImageIcon(File file, String extension, String mimetype) throws FileNotFoundException {
         super(file, extension, mimetype);
 
-        // if either of the extension or mimetype is missing, try to guess it.
-        if (this.mimeType == null || this.mimeType.length() == 0) {
-            if (this.extension == null || this.extension.length() == 0) {
-                this.extension = "";
-                this.mimeType = "image/png";
-            } else if (this.extension.toUpperCase().equals("JPG"))
-                this.mimeType = "image/jpeg";
-            else
-                this.mimeType = "image/" + this.extension;
-        } else if (this.extension == null || this.extension.length() == 0) {
-            int slashPos = -1;
-            if (this.mimeType != null
-                && (slashPos = this.mimeType.lastIndexOf('/')) >= 0) {
-                this.extension = this.mimeType.substring(slashPos + 1);
+        ImageInfo tImageInfo = new ImageInfo();
+        FileInputStream tImageInput = new FileInputStream(file);
+        tImageInfo.setInput(tImageInput);
+
+        if (tImageInfo.check()) {
+            // if either of the extension or mimetype is missing, try to guess it.
+            if (this.mimeType == null || this.mimeType.length() == 0) {
+                this.mimeType = tImageInfo.getMimeType();
+            } else if (this.extension == null || this.extension.length() == 0) {
+                this.extension = tImageInfo.getFormatName();
             }
+
+            width = tImageInfo.getWidth();
+            height = tImageInfo.getHeight();
         }
-        calcDimensions();
-    }
 
-    public SFileImageIcon(File file) throws IOException {
-        this(file, null, null);
-    }
-
-    /**
-     *
-     */
-    protected void calcDimensions() {
         try {
-            bufferResource();
-
-            if (buffer != null && buffer.isValid()) {
-                BufferedImage image =
-                    ImageIO.read(new ByteArrayInputStream(buffer.getBytes()));
-                width = image.getWidth();
-                height = image.getHeight();
-            }
-        } catch (Throwable e) {
-            // is not possible to calc Dimensions
-            // maybe it is not possible to buffer resource,
-            // or resource is not a
-            // supported image type
+            tImageInput.close();
+        } catch (IOException ex) {
+            // ignore close exception, we don't need it anymore
         }
+    }
+
+    public SFileImageIcon(File file) throws FileNotFoundException {
+        this(file, null, null);
     }
 
     public int getIconWidth() {
