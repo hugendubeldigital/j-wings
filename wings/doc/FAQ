@@ -1,1 +1,64 @@
-TODO
+
+                                 wingS FAQ
+
+
+Q: What is wingS?
+A: wingS is next generation servlets.
+
+
+Q: Why should I use wingS?
+
+
+Q: What are the requirements for wingS?
+
+
+Q: How do I install it?
+
+
+Q: How can I contribute?
+
+
+Q: How do I create a new servlet using wingS?
+A: This depends on the type of servlet you want to create:
+
+   - If you only want a very simple one, you only need one class
+     FooBarServlet which extends org.wings.servlet.SessionServlet and
+     overwrites the method postInit to do something. See
+     demo/wingset/Test.java for an example.
+
+   - Otherwise you will need at least two classes, FooBar and FooBarSession.
+      - FooBar should extend org.wings.servlet.WingServlet and overwrite the
+        method generateSessionServlet which returns new instances of
+        FooBarSession.
+
+      - FooBarSession should extend org.wings.servlet.WingServlet and
+        overwrite the method postInit to do something.
+
+     See demo/wingset/WingSet.java and demo/wingset/WingSetSession.java for
+     an axample.
+
+
+Q: What is this org.wings.session stuff?
+
+
+Q: What is a plaf?
+
+
+Q: How can I use another plaf?
+
+
+Q: How can I write a new plaf?
+
+
+Q: What is an Externalizer?
+
+
+Q: How can I use another Externalizer?
+
+
+Q: How can I write a new Externalizer?
+
+
+Q: Where can I find more information about wingS?
+
+
