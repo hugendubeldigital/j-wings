@@ -41,7 +41,7 @@ public interface SIcon extends URLResource
     void setIconWidth(int width);
 
     /**
-     * @sets the height of the icon, -1 if unknown.
+     * sets the height of the icon, -1 if unknown.
      */
     void setIconHeight(int height);
 }

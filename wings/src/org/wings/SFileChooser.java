@@ -13,16 +13,15 @@
  */
 package org.wings;
 
+import org.wings.plaf.FileChooserCG;
+
+import javax.servlet.http.HttpUtils;
 import java.io.File;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.util.Hashtable;
-import java.util.logging.*;
-
-import javax.servlet.http.HttpUtils;
-
-import org.wings.plaf.FileChooserCG;
-import org.wings.io.Device;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A filechooser shows a textfield with a browse-button to enter a file.
@@ -72,7 +71,7 @@ import org.wings.io.Device;
  * <p>Note, that in this case, this will <em>not</em> trigger the action
  * listener that you might have added to the submit-button.
  * This means, that you <em>always</em> should add your action listener
- * to the {@link SForm} ({@link SForm#addActionListener(ActionListener)}),
+ * to the {@link SForm} ({@link SForm#addActionListener(java.awt.event.ActionListener)}),
  * <em>not</em> the submit button.
  *
  * @author <a href="mailto:HEngels@mercatis.de">Holger Engels</a>
