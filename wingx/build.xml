@@ -41,7 +41,7 @@
 
   <target name="depend" if="wings.home">
     <copy todir="lib">
-      <fileset dir="${wings.home}/build/dist/lib">
+      <fileset dir="${wings.home}/dist/lib">
         <include name="wings.jar"/>
         <include name="logging.jar"/>
         <include name="css1.jar"/>
@@ -52,6 +52,25 @@
     </copy>
   </target>
 
+  <!-- ==================== MenuPane ==================== -->
+  <target name="menupane" depends="prepare,depend">
+    <javac srcdir="src" destdir="${build.class}"
+	   debug="${build.debug}"
+	   deprecation="${build.deprecation}"
+       excludes="org/wingx/beans/**,org/wingx/plaf/**"
+       includes="org/wingx/*MenuPane*"
+       >
+      <classpath refid="build.classpath"/>
+    </javac>
+    <jar jarfile="${dist.lib}/wingx.jar">
+      <fileset dir="${build.class}"/>
+    </jar>
+    <copy todir="${dist.lib}">
+      <fileset dir="lib"/>
+    </copy>
+    <ant dir="demo" target="menupane" inheritAll="false"/>
+  </target>
+  
 
   <!-- ==================== Build wingX ==================== -->
   <target name="compile" depends="prepare,depend">

@@ -33,6 +33,25 @@
   <!-- ==================== Build wingX Demos ================ -->
   <target name="build" depends="beaneditor,ide"/>
 
+  <target name="menupane" depends="prepare">
+    <javac srcdir="menupane" destdir="${build.class}"
+	   debug="${build.debug}"
+	   deprecation="${build.deprecation}">
+      <classpath refid="build.classpath"/>
+    </javac>
+    <war warfile="${dist.deploy}/menupane.war"
+	 webxml="menupane/web.xml">
+      <lib dir="../dist/lib">
+        <include name="wings.jar"/>
+        <include name="wingx.jar"/>
+        <include name="css1.jar"/>
+      </lib>
+      <classes dir="${build.class}">
+        <include name="menupane/**"/>
+      </classes>
+    </war>
+  </target>
+
   <target name="compile" depends="prepare">
     <javac srcdir="src" destdir="${build.class}"
 	   debug="${build.debug}"
