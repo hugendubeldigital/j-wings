@@ -145,8 +145,6 @@ public class SDefaultTableCellRenderer
     public void write(Device d)
         throws IOException
     {
-    	d.append("SDefaultTableCellRenderer");
-    	/*
         d.append("<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr>");
         d.append("<td");
         SUtil.appendTableCellAttributes(d, contents);
@@ -159,7 +157,6 @@ public class SDefaultTableCellRenderer
         d.append("\">");
         edit.write(d);
         d.append("</a></td></tr></table>");
-        */
     }
 
     /**

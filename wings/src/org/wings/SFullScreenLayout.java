@@ -25,8 +25,9 @@ import org.wings.io.Device;
 /**
  * This is a {@link SBorderLayout}, which occupies the whole browser window.
  * Works perfect on IE, and pretty good on Netscape, Mozilla and Opera *sniff*.
- * The {@link SContainer} has a fixed position at 0x0 (upper left corner), so it should only be used to
- * set Layout for <tt>org.wings.SFrame.getContentPane()</tt>!
+ * The {@link SContainer} has a fixed position at 0x0 (upper left corner), so
+ * it should only be used to set Layout for <tt>org.wings.SFrame.getContentPane()</tt>!
+ *
  * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
  * @version $Revision$
  */
@@ -40,50 +41,47 @@ public class SFullScreenLayout
 
     private static final boolean DEBUG = true;
     
-    private final static Dimension fDim = new Dimension( 100, 100 );
+    private final static SDimension fDim = new SDimension("100%", "100%");
 
-	public SFullScreenLayout()
-     {
-		super();
-     }
+    public SFullScreenLayout() {
+        super();
+        setPreferredSize(fDim);
+    }
 
-	/**
+    /**
       * Add a component to this layout.
       * Aligments are set if component has no aligment.
       */
-	public void addComponent( SComponent c, Object constraint )
-     {
-		if (constraint == null)
+    public void addComponent(SComponent c, Object constraint) {
+        if (constraint == null)
             constraint = CENTER;
 		
-        if ( c.getHorizontalAlignment() == SConstants.NO_ALIGN )
-         {
-			if ( constraint == WEST )
-				c.setHorizontalAlignment( SConstants.LEFT );
-			else
-			if ( constraint == EAST )
-				c.setHorizontalAlignment( SConstants.RIGHT );
-			/* CENTER, SOUTH, NORTH */
-			else
-				c.setHorizontalAlignment( SConstants.CENTER );
-         }
-        if ( c.getVerticalAlignment() == SConstants.NO_ALIGN )
-         {
-			if ( constraint == CENTER )
-				c.setVerticalAlignment( SConstants.CENTER );
-			else
-			if ( constraint == SOUTH )
-				c.setVerticalAlignment( SConstants.BOTTOM );
-			else
-			if ( constraint == NORTH )
-				c.setVerticalAlignment( SConstants.TOP );
-			/* WEST, EAST */
-			else
-				c.setVerticalAlignment( SConstants.CENTER );
-         }
+        if (c.getHorizontalAlignment() == SConstants.NO_ALIGN) {
+            if (constraint == WEST)
+                c.setHorizontalAlignment(SConstants.LEFT);
+            else
+                if (constraint == EAST)
+                    c.setHorizontalAlignment(SConstants.RIGHT);
+            /* CENTER, SOUTH, NORTH */
+                else
+                    c.setHorizontalAlignment(SConstants.CENTER);
+        }
+        if (c.getVerticalAlignment() == SConstants.NO_ALIGN) {
+            if (constraint == CENTER)
+                c.setVerticalAlignment(SConstants.CENTER);
+            else
+                if (constraint == SOUTH)
+                    c.setVerticalAlignment(SConstants.BOTTOM);
+                else
+                    if (constraint == NORTH)
+                        c.setVerticalAlignment(SConstants.TOP);
+            /* WEST, EAST */
+                    else
+                        c.setVerticalAlignment(SConstants.CENTER);
+        }
          
-		super.addComponent( c, constraint );
-        getContainer().setPreferredPercentageSize( fDim );
+        super.addComponent(c, constraint);
+        setPreferredSize(fDim);
      }
 
     /**

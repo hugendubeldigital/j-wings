@@ -19,10 +19,9 @@ import java.util.ArrayList;
 import java.net.URL;
 import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.StringTokenizer;
+import java.util.Map;
 
-import org.wings.template.parser.DataSource;
+import org.wings.template.parser.*;
 
 import org.wings.*;
 import org.wings.plaf.*;
@@ -222,7 +221,7 @@ public class STemplateLayout
      */
     public void setTemplate(String templateFileName) 
         throws java.io.IOException {
-        setTemplate(templateFileName);
+        setTemplate(new File(templateFileName));
     }
 
     /**
@@ -273,6 +272,10 @@ public class STemplateLayout
      */
     public Hashtable getComponents() {
         return components;
+    }
+
+    public Map getLabels() {
+        return PageParser.getInstance().getLabels(getDataSource());
     }
     
     // testing purposes ..

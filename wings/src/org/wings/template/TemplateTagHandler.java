@@ -65,7 +65,7 @@ abstract class TemplateTagHandler implements SpecialTagHandler
      * @exception Exception anything can happen .. and throw an Exception
      *            which is caught in PageParser
      */
-    public void executeTag (ParseContext context)
+    public void executeTag(ParseContext context, InputStream input)
         throws Exception
     {
         TemplateParseContext tcontext = (TemplateParseContext) context;
@@ -80,7 +80,7 @@ abstract class TemplateTagHandler implements SpecialTagHandler
             sink.append ("<!-- Template: '" + name + "' Component not given -->");
         }
         else {
-            // set properties; the STemplateLayout knows how knows how.
+            // set properties; the STemplateLayout knows how
             if (properties.size() > 0) {
                 PropertyManager propManager = STemplateLayout
                     .getPropertyManager(c.getClass());
@@ -95,6 +95,7 @@ abstract class TemplateTagHandler implements SpecialTagHandler
             }
             c.write(sink);
         }
+        input.skip(getTagLength());
     }
 }
 

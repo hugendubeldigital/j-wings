@@ -128,7 +128,7 @@ public interface SpecialTagHandler {
      * @exception Exception anything can happen .. and throw an Exception 
      *            which is caught in PageParser
      */
-    void executeTag (ParseContext context)
+    void executeTag (ParseContext context, InputStream input)
 	throws Exception;
 }
 

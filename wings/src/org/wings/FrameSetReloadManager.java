@@ -45,7 +45,13 @@ public class FrameSetReloadManager
     private ReloadManagerFrame reloadManagerFrame = null;
 
     public void markDirty(SComponent component) {
-	if (component.getParentFrame() != null)
+	if (component instanceof SFrameSet) {
+	    SFrameSet frameSet = (SFrameSet)component;
+	    while (frameSet.getParent() != null)
+		frameSet = (SFrameSet)frameSet.getParent();
+	    dirtyFrames.add(frameSet);
+	}
+	else if (component.getParentFrame() != null)
 	    dirtyFrames.add(component.getParentFrame());
     }
 

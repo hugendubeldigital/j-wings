@@ -73,11 +73,11 @@ public class TableCG
         Insets borderLines = table.getBorderLines();
         boolean showHorizontalLines = table.getShowHorizontalLines();
         boolean showVerticalLines = table.getShowVerticalLines();
-        Dimension intercellPadding = table.getIntercellPadding();
-        Dimension intercellSpacing = table.getIntercellSpacing();
+        SDimension intercellPadding = table.getIntercellPadding();
+        SDimension intercellSpacing = table.getIntercellSpacing();
 
         d.append("<table");
-		CGUtil.writeSize( d, table );
+        CGUtil.writeSize(d, table);
 
         int thickness = 0;
         if (borderLines != null) {
@@ -124,12 +124,12 @@ public class TableCG
                 .append(thickness)
                 .append("\"");
 
-        if (intercellSpacing != null)
+        if (intercellSpacing != null && intercellSpacing.width != null)
             d.append(" cellspacing=\"")
                 .append(intercellSpacing.width)
                 .append("\""); 
 
-        if (intercellPadding != null)
+        if (intercellPadding != null && intercellPadding.width != null)
             d.append(" cellpadding=\"")
                 .append(intercellPadding.width)
                 .append("\""); 

@@ -35,8 +35,8 @@ public final class BaseTableCG
         Insets borderLines = table.getBorderLines();
         boolean showHorizontalLines = table.getShowHorizontalLines();
         boolean showVerticalLines = table.getShowVerticalLines();
-        Dimension intercellPadding = table.getIntercellPadding();
-        Dimension intercellSpacing = table.getIntercellSpacing();
+        SDimension intercellPadding = table.getIntercellPadding();
+        SDimension intercellSpacing = table.getIntercellSpacing();
         Style style = table.getStyle();
 
         d.append("<table");
@@ -87,12 +87,12 @@ public final class BaseTableCG
                 .append(thickness)
                 .append("\"");
 
-        if (intercellSpacing != null)
+        if (intercellSpacing != null && intercellSpacing.width != null)
             d.append(" cellspacing=\"")
                 .append(intercellSpacing.width)
                 .append("\""); 
 
-        if (intercellPadding != null)
+        if (intercellPadding != null && intercellPadding.width != null)
             d.append(" cellpadding=\"")
                 .append(intercellPadding.width)
                 .append("\""); 

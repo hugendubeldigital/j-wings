@@ -39,8 +39,8 @@ public class SFrameSetLayout
     private List components = new LinkedList();
     private List constraints = new LinkedList();
 
-    private String[] columns;
-    private String[] rows;
+    private String columns;
+    private String rows;
 
     public SFrameSetLayout(String cols, String rows) {
 	setColumns(cols);
@@ -52,35 +52,38 @@ public class SFrameSetLayout
 	setRows(rows);
     }
 
-    public void setColumns(String colstring) {
-	if (colstring != null) {
-	    StringTokenizer tokens = new StringTokenizer(colstring, ",");
-	    String[] newcols = new String[tokens.countTokens()];
-	    int i=0;
-	    while (tokens.hasMoreTokens())
-		newcols[i++] = tokens.nextToken().trim();
-	    setColumns(newcols);
+    public void setColumns(String[] c) {
+	StringBuffer buffer = new StringBuffer(c[0]);
+	for (int i=1; i < c.length; i++) {
+	    buffer.append(",");
+	    buffer.append(c[i]);
 	}
+	setColumns(buffer.toString());
     }
-
-    public void setColumns(String[] columns) {
+    public void setColumns(String columns) {
 	this.columns = columns;
+	if (getContainer() != null)
+	    getContainer().reload();
     }
 
-    public void setRows(String rowstring) {
-	if (rowstring != null) {
-	    StringTokenizer tokens = new StringTokenizer(rowstring, ",");
-	    String[] newrows = new String[tokens.countTokens()];
-	    int i=0;
-	    while (tokens.hasMoreTokens())
-		newrows[i++] = tokens.nextToken().trim();
-	    setRows(newrows);
+    public String getColumns() { return columns; }
+
+    public void setRows(String[] r) {
+	StringBuffer buffer = new StringBuffer(r[0]);
+	for (int i=1; i < r.length; i++) {
+	    buffer.append(",");
+	    buffer.append(r[i]);
 	}
+	setRows(buffer.toString());
     }
 
-    public void setRows(String[] rows) {
+    public void setRows(String rows) {
 	this.rows = rows;
+	if (getContainer() != null)
+	    getContainer().reload();
     }
+
+    public String getRows() { return rows; }
 
     public void addComponent(SComponent c, Object constraint) {
         components.add(c);
@@ -131,23 +134,15 @@ public class SFrameSetLayout
 
 	d.append("<frameset");
 
-	if (columns != null && columns.length > 0) {
+	if (columns != null && columns.length() > 0) {
 	    d.append(" cols=\"");
-	    d.append(columns[0]);
-	    for (int i=1; i < columns.length; i++) {
-		d.append(",");
-		d.append(columns[i]);
-	    }
+	    d.append(columns);
 	    d.append("\"");
 	}
 
-	if (rows != null && rows.length > 0) {
+	if (rows != null && rows.length() > 0) {
 	    d.append(" rows=\"");
-	    d.append(rows[0]);
-	    for (int i=1; i < rows.length; i++) {
-		d.append(",");
-		d.append(rows[i]);
-	    }
+	    d.append(rows);
 	    d.append("\"");
 	}
 

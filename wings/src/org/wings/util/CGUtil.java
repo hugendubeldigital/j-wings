@@ -21,38 +21,31 @@ import org.wings.*;
 import org.wings.io.*;
 
 public class CGUtil
- {
- 
+{
     /**
-	  * Write <i>width</i> and <i>height</i> argument to component tag.
-      */
-	public static void writeSize( Device d, SComponent c )
-        throws IOException
-     {
-        Dimension dim = c.getPreferredSize();
-        Dimension dimp = c.getPreferredPercentageSize();
-
-        if ( dim != null )
-         {
-            if ( dim.width != 0 ) d.append(" width=\"").append(dim.width).append("\"");
-            if ( dim.height != 0 ) d.append(" height=\"").append(dim.height).append("\"");
-		 }
-		else
-        if ( dimp != null )
-         {
-            if ( dimp.width != 0 ) d.append(" width=\"").append(dimp.width).append("%\"");
-            if ( dimp.height != 0 ) d.append(" height=\"").append(dimp.height).append("%\"");
-		 }
-		else
-		 {
-         	/* for compatibility with older versions */
-			if ( c instanceof STable )
-             {
-        		String width = ((STable) c).getWidth();
-        		if (width != null)
-            		d.append(" width=\"").append(width).append("\"");
-             }
-         }
+     * Write <i>width</i> and <i>height</i> argument to component tag.
+     */
+    public static void writeSize(Device d, SComponent c)
+	throws IOException
+    {
+	SDimension dim = c.getPreferredSize();
+	 
+	if (dim != null) {
+	    if (dim.width != null)
+		d.append(" width=\"").append(dim.width).append("\"");
+            if (dim.height != null)
+		d.append(" height=\"").append(dim.height).append("\"");
+	}
     }
 
- }
+    public static void writeSize(Device d, SAbstractLayoutManager lm)
+        throws IOException
+    {
+        SDimension dim = lm.getPreferredSize();
+
+        if (dim != null) {
+	    if (dim.width != null) d.append(" width=\"").append(dim.width).append("\"");
+	    if (dim.height != null) d.append(" height=\"").append(dim.height).append("\"");
+	}
+    }
+}

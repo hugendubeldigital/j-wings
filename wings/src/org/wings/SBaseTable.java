@@ -112,12 +112,12 @@ public class SBaseTable
     /**
      * TODO: documentation
      */
-    protected Dimension intercellSpacing = null;
+    protected SDimension intercellSpacing = null;
 
     /**
      * TODO: documentation
      */
-    protected Dimension intercellPadding = new Dimension(1,1);
+    protected SDimension intercellPadding = new SDimension("1", "1");
 
     /**
      * TODO: documentation
@@ -257,8 +257,8 @@ public class SBaseTable
      *
      * @param d
      */
-    public void setIntercellSpacing(Dimension d) {
-        Dimension oldIntercellSpacing = intercellSpacing;
+    public void setIntercellSpacing(SDimension d) {
+        SDimension oldIntercellSpacing = intercellSpacing;
         intercellSpacing = d;
         if ((intercellSpacing == null && oldIntercellSpacing != null) ||
             intercellSpacing != null && !intercellSpacing.equals(oldIntercellSpacing))
@@ -270,7 +270,7 @@ public class SBaseTable
      *
      * @return
      */
-    public Dimension getIntercellSpacing() {
+    public SDimension getIntercellSpacing() {
         return intercellSpacing;
     }
 
@@ -284,8 +284,8 @@ public class SBaseTable
      *
      * @param d
      */
-    public void setIntercellPadding(Dimension d) {
-        Dimension oldIntercellPadding = intercellPadding;
+    public void setIntercellPadding(SDimension d) {
+        SDimension oldIntercellPadding = intercellPadding;
         intercellPadding = d;
         if ((intercellPadding == null && oldIntercellPadding != null) ||
             intercellPadding != null && !intercellPadding.equals(oldIntercellPadding))
@@ -297,7 +297,7 @@ public class SBaseTable
      *
      * @return
      */
-    public Dimension getIntercellPadding() {
+    public SDimension getIntercellPadding() {
         return intercellPadding;
     }
 

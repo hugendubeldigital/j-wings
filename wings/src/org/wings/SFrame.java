@@ -258,7 +258,10 @@ public class SFrame
      */
     public final void pushDialog(SDialog dialog) {
         super.addComponent(dialog, null);
+        int count = getComponentCount();
+        System.err.println("pushDialog: " + count);
         dialog.setFrame(this);
+        reload();
     }
 
     /**
@@ -272,6 +275,9 @@ public class SFrame
         SDialog dialog = (SDialog)getComponent(count - 1);
         super.removeComponent(dialog);
         dialog.setFrame((SFrame)null);
+        System.err.println("popDialog: " + count);
+
+        reload();
         return dialog;
     }
 

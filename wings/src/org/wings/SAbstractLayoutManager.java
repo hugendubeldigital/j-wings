@@ -15,7 +15,6 @@
 package org.wings;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.io.IOException;
 
 import org.wings.io.Device;
@@ -51,6 +50,12 @@ public abstract class SAbstractLayoutManager
 
     /** The container using this layout */
     protected SContainer container;
+
+    /**
+     * Preferred size of component in pixel.
+     */
+    protected SDimension preferredSize = null;
+    
 
     protected SAbstractLayoutManager() {
 	updateCG();
@@ -120,4 +125,21 @@ public abstract class SAbstractLayoutManager
     }
     public SContainer getContainer() { return container; }
 
+    /**
+     * Set the preferred size of the receiving {@link SLayoutManager} in pixel.
+     * It is not guaranteed that the {@link SLayoutManager} accepts this property because of
+     * missing implementations in the {@link SLayoutManager } cg or html properties.
+     * If <i>width</i> or <i>height</i> is zero, it is ignored and the browser
+     * defines the size.
+     * @see #getPreferredSize
+     */
+    public final void setPreferredSize(SDimension preferredSize) {
+     	this.preferredSize = preferredSize;
+    }
+    
+    /**
+     * Get the preferred size of this {@link SLayoutManager }.
+     * @see #setPreferredSize
+     */
+    public final SDimension getPreferredSize() { return this.preferredSize; }
 }

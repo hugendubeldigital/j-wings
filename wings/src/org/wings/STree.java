@@ -166,9 +166,6 @@ public class STree
     public void valueChanged(TreeSelectionEvent e) {
         //    System.out.println("VALUE CHANGED " + e);
 
-        if (selectionListener == null)
-            return;
-
         if (selectionListener != null) {
             for (int i=selectionListener.size()-1; i>=0; i-- ) {
                 ((TreeSelectionListener)selectionListener.get(i)).valueChanged(e);

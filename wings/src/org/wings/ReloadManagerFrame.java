@@ -115,13 +115,25 @@ public class ReloadManagerFrame
 	d.append("<script language=\"javascript\">\n");
 	d.append("function reload() {\n");
 	SComponent[] components = getReloadManager().getDirtyComponents();
-	for (int i=0; i < components.length; i++) {
-	    String src = externalizer.externalize(((SFrame)components[i]).show(), "text/html");
-	    d.append("parent.frame");
-	    d.append(components[i].getUnifiedIdString());
-	    d.append(".location='");
-	    d.append(src);
+	SFrameSet toplevel = null;
+	for (int i=0; i < components.length; i++)
+	    if (components[i].getParent() == null)
+		toplevel = (SFrameSet)components[i];
+	if (toplevel != null) {
+	    System.err.println("reload the whole frameset");
+	    d.append("parent.location='");
+	    d.append(toplevel.getServerAddress());
 	    d.append("';\n");
+	}
+	else {
+	    for (int i=0; i < components.length; i++) {
+		String src = externalizer.externalize(((SFrame)components[i]).show(), "text/html");
+		d.append("parent.frame");
+		d.append(components[i].getUnifiedIdString());
+		d.append(".location='");
+		d.append(src);
+		d.append("';\n");
+	    }
 	}
 	d.append("}\n");
 	d.append("</script>\n");

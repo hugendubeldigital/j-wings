@@ -189,9 +189,14 @@ public class FastDispatcher
     public void dispatchDone() {
         System.err.println("Dispatcher.dispatchDone");
         SComponent[] components = SessionManager.getSession().getReloadManager().getDirtyComponents();
-        if (components != null)
-            for (int i=0; i < components.length; i++)
-                components[i].getParentFrame().dispatchDone();
+        if (components != null) {
+            for (int i=0; i < components.length; i++) {
+                if (components[i] instanceof SFrame)
+                    ((SFrame)components[i]).dispatchDone();
+                else
+                    components[i].getParentFrame().dispatchDone();
+            }
+        }
     }
 
     private String target = null;

@@ -72,7 +72,7 @@ import java.io.FileInputStream;
 public class FileDataSource
     implements DataSource {
     private File file;
-    private String canonicalName = null;
+    protected String canonicalName = null;
 
     public FileDataSource (File f) {
 	this.file = f;

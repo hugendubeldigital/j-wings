@@ -76,34 +76,54 @@ public class SInternalFrame
         super.addComponent(getContentPane(), null);
     }
 
-
-    public void setIconifyable(boolean iconifyable) {
-        this.iconifyable = iconifyable;
+    public void setIconifyable(boolean v) {
+        boolean old = iconifyable;
+        iconifyable = v;
+        if (old != iconifyable)
+            reload();
     }
     public boolean isIconifyable() { return iconifyable; }
 
-    public void setMaximizable(boolean maximizable) {
-        this.maximizable = maximizable;
+    public void setMaximizable(boolean v) {
+        boolean old = maximizable;
+        maximizable = v;
+        if (old != maximizable)
+            reload();
     }
     public boolean isMaximizable() { return maximizable; }
 
-    public void setClosable(boolean closable) {
-        this.closable = closable;
+    public void setClosable(boolean v) {
+        boolean old = closable;
+        closable = v;
+        if (old != closable)
+            reload();
     }
     public boolean isClosable() { return closable; }
 
-    public void setIconified(boolean iconified) {
-        this.iconified = iconified;
+    public void setIconified(boolean v) {
+        boolean old = iconified;
+        iconified = v;
+        if (old != iconified)
+            reload();
     }
     public boolean isIconified() { return iconified; }
 
-    public void setMaximized(boolean maximized) {
-        this.maximized = maximized;
+    public void setMaximized(boolean v) {
+        boolean old = maximized;
+        maximized = v;
+        if (old != maximized)
+            reload();
+
+        if (maximized)
+            setIconified(false);
     }
     public boolean isMaximized() { return maximized; }
 
-    public void setClosed(boolean closed) {
-        this.closed = closed;
+    public void setClosed(boolean v) {
+        boolean old = closed;
+        closed = v;
+        if (old != closed)
+            reload();
     }
     public boolean isClosed() { return closed; }
 
@@ -249,8 +269,8 @@ public class SInternalFrame
      *
      * @param listener
      */
-    public void addInternalFrameListener(InternalFrameListener listener) {
-        listenerList.add(InternalFrameListener.class, listener);
+    public void addInternalFrameListener(SInternalFrameListener listener) {
+        listenerList.add(SInternalFrameListener.class, listener);
     }
 
     /**
@@ -258,8 +278,8 @@ public class SInternalFrame
      *
      * @param listener
      */
-    public void removeInternalFrameListener(InternalFrameListener listener) {
-        listenerList.remove(InternalFrameListener.class, listener);
+    public void removeInternalFrameListener(SInternalFrameListener listener) {
+        listenerList.remove(SInternalFrameListener.class, listener);
     }
 
     private SInternalFrameEvent event;

@@ -289,6 +289,11 @@ public class CGManager
                                                      getClass().getClassLoader());
         LookAndFeel lookAndFeel = new LookAndFeel(classLoader);
 
+        ClassLoader loader = classLoader;
+        System.err.println("cl: " + loader);
+        while ((loader = loader.getParent()) != null)
+            System.err.println("cl: " + loader);
+
         if (!hasInstalled(lookAndFeel))
             installLookAndFeel(new LookAndFeelInfo(lookAndFeel.getName(),
                                                    lookAndFeel.getClass().getName(),

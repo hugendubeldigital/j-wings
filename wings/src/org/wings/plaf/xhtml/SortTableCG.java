@@ -48,12 +48,13 @@ public class SortTableCG
         throws IOException
     {
         String width = sortTable.getWidth();
+        /*
         Insets borderLines = sortTable.getBorderLines();
         boolean showHorizontalLines = sortTable.getShowHorizontalLines();
         boolean showVerticalLines = sortTable.getShowVerticalLines();
-        Dimension intercellPadding = sortTable.getIntercellPadding();
-        Dimension intercellSpacing = sortTable.getIntercellSpacing();
-
+        SDimension intercellPadding = sortTable.getIntercellPadding();
+        SDimension intercellSpacing = sortTable.getIntercellSpacing();
+        */
         d.append("<table");
         if (width != null && width.trim().length() > 0)
             d.append(" width=\"").append(width).append("\"");

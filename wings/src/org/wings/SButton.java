@@ -98,6 +98,11 @@ public class SButton extends SAbstractButton
         setIcon(i);
     }
 
+    public SButton(String text, Icon i) {
+        super(text);
+        setIcon(i);
+    }
+
     /**
      * TODO: documentation
      *

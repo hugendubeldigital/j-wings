@@ -15,6 +15,7 @@
 package org.wings.template;
 
 import java.io.*;
+import java.util.*;
 import org.wings.template.parser.*;
 
 /**
@@ -55,7 +56,7 @@ public class SimpleTagHandler extends TemplateTagHandler
         startPos = startPosition + tag.getOffset();
 
         /*
-         * get needed properties
+         * get required properties
          */
         name = tag.value ("NAME", null);
         if (name == null)

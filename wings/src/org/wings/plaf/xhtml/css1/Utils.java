@@ -104,7 +104,7 @@ public final class Utils
 
         d.append(" class=\"");
         d.append(id);
-        d.append("\" ");
+        d.append("\"");
     }
 
 	/**

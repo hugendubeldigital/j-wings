@@ -23,6 +23,7 @@ import org.wings.plaf.LayoutCG;
 import org.wings.template.TemplateParseContext;
 import org.wings.template.RangeTagHandler;
 import org.wings.template.SimpleTagHandler;
+import org.wings.template.LabelTagHandler;
 import org.wings.template.parser.DataSource;
 import org.wings.template.parser.PageParser;
 
@@ -34,21 +35,16 @@ public class TemplateLayoutCG
     implements LayoutCG
 {
     /**
-     * The PageParser parses the templates once and then
-     * reuses the cached parse results. To let the cache survive
-     * multiple invocations, this PageParser is static.
-     */
-    static private final PageParser PARSER = new PageParser();
-
-    /**
      * The parser looks for the '<OBJECT></OBJECT>' - tags.
      */
     static {
-        PARSER.addTagHandler(STemplateLayout.COMPONENT_TAG,
+        PageParser parser = PageParser.getInstance();
+        parser.addTagHandler(STemplateLayout.COMPONENT_TAG,
                              RangeTagHandler.class);
-        PARSER.addTagHandler("TEXTAREA", RangeTagHandler.class);
-        PARSER.addTagHandler("SELECT",   RangeTagHandler.class);
-        PARSER.addTagHandler("INPUT",    SimpleTagHandler.class);
+        parser.addTagHandler("TEXTAREA", RangeTagHandler.class);
+        parser.addTagHandler("SELECT",   RangeTagHandler.class);
+        parser.addTagHandler("INPUT",    SimpleTagHandler.class);
+        parser.addTagHandler("LABEL",    LabelTagHandler.class);
     }
 
     /**
@@ -66,22 +62,17 @@ public class TemplateLayoutCG
             device.append("'</b>");
         }
 	else {
-
-        	if ( Utils.hasSpanAttributes( container ) )
-         	 {
-         		device.append("<span style=\"");
-        		Utils.writeSpanAttributes( device, container );
+            if (Utils.hasSpanAttributes(container)) {
+                device.append("<span style=\"");
+                Utils.writeSpanAttributes( device, container );
             	device.append("\">");
-			 }
+            }
 
-            PARSER.process(source,
-                           new TemplateParseContext(device, layout));
+            PageParser.getInstance().process(source, new TemplateParseContext(device, layout));
 
-        	if ( Utils.hasSpanAttributes( container ) )
-         	 {
-         		device.append("</span>");
-			 }
-
+            if ( Utils.hasSpanAttributes( container ) ) {
+                device.append("</span>");
+            }
         }
     }
 

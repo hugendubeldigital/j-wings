@@ -122,7 +122,8 @@ public class CachedFileDataSource
     public CachedFileDataSource (File f)
         throws IOException
     {
-        super (f);
+        super(f);
+
         entry = (CacheEntry) cache.get (f);
         if (entry == null && f.length() <= CACHED_LIMIT) {
             entry = new CacheEntry (f);
@@ -138,6 +139,7 @@ public class CachedFileDataSource
             entry = new CacheEntry(url);
             cache.put (url, entry);
         }
+        canonicalName = url.toString();
     }
 
     /**

@@ -99,6 +99,12 @@ public class SLabel
         this(null, icon, horizontalAlignment);
     }
 
+    public SLabel(String text, Icon icon) {
+        setText(text);
+        setIcon(icon);
+        setHorizontalAlignment(LEFT);
+    }
+
     public SLabel(String text, Icon icon, int horizontalAlignment) {
         setText(text);
         setIcon(icon);

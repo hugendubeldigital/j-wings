@@ -28,18 +28,19 @@ import org.wings.io.Device;
 /**
  * A TemplateTagHandler 
  *
- * @author <A href="mailto:zeller@think.de">Henner Zeller</A>
+ * @author <A href="mailto:hengels@mercatis.de">Holger Engels</A>
  * @version $Revision$
  */
-public class RangeTagHandler extends TemplateTagHandler
+public class LabelTagHandler
+    extends TemplateTagHandler
 {
     boolean close_is_missing = false;
+    StringBuffer content = new StringBuffer();
 
     /**
-     * Parse special tag.
-     * @param config    Servlet configuration
-     * @param input     The PositionReader, located after the Name token of the Tag
-     * @param startPos  The Position parsing of this token began
+     * @param context   the parsing context
+     * @param input     the PositionReader, located after the name token of the tag
+     * @param startPos  the position where parsing of this token began
      * @param startTag  the SGMLTag found in the file.
      */
     public SGMLTag parseTag(ParseContext context,
@@ -53,17 +54,14 @@ public class RangeTagHandler extends TemplateTagHandler
 
         /*
          * parse the full tag to get all parameters
-         * (i.e. an optional 'format'-parameter)
-         * and to place the Reader at the position
+         * and to place the Reader to the position
          * after the closing '>'
          */
         startTag.parse(input);
 
         /*
-         * The Offset is the space the reader skipped
+         * The offset is the space the reader skipped
          * before it reached the opening '<'
-         *   <!-- a comment --> some garbage <DATE>
-         * ^----- offset --------------------^
          */
         startPos = startPosition + startTag.getOffset();
 
@@ -72,32 +70,49 @@ public class RangeTagHandler extends TemplateTagHandler
          */
         properties = startTag.getAttributes();
 
-        name = startTag.value ("NAME", null);
-        if (name == null)
+        if (startTag.value("FOR", null) == null)
             return null;
 
-        endPos = input.getPosition();  // in case </component> is missing
+        endPos = input.getPosition();  // in case </label> is missing
 
-        while (!startTag.finished()) {
-            startTag = new SGMLTag (input, true);
-            if (startTag.isNamed(endTagName) || startTag.isNamed(startTagName))
-                break;
+        SGMLTag endTag;
+        int len;
+        do {
+            len = readContent(input, content);
+            endTag = new SGMLTag(input, false);
         }
+        while (!endTag.finished() && !endTag.isNamed(endTagName));
 
-        // Either EOF or newly opened COMPONENT (unexpectedly)
-        if (startTag.finished() || startTag.isNamed(startTagName)) {
+        if (startTag.finished())
             close_is_missing = true;
-        }
-        else {
-            // The current Position is after the closing '>'
+        else
             endPos = input.getPosition();
-        }
 
-        // remove properties, which are not necessary for the PropertyManager
-        properties.remove("NAME");
-        properties.remove("TYPE");
+        return endTag;
+    }
 
-        return startTag;
+    public int readContent(Reader r, StringBuffer content) 
+	throws IOException
+    {
+	int c, len=0;
+	do {
+	    r.mark(1);
+	    c = r.read();
+	    len++;
+            content.append((char)c);
+	} 
+	while (c >= 0 && c != '<');
+	r.reset();
+        content.setLength(content.length() - 1);
+	return len - 1;
+    }
+
+    public String getContent() {
+        return content.toString();
+    }
+
+    public String getFor() {
+        return (String)properties.get("FOR");
     }
 
     /**
@@ -108,11 +123,11 @@ public class RangeTagHandler extends TemplateTagHandler
     public void executeTag(ParseContext context, InputStream input)
         throws Exception
     {
-        super.executeTag(context, input);
+        TemplateParseContext tcontext = (TemplateParseContext)context;
+        copy(input, tcontext.getDevice(), getTagLength(), new byte[512]);
 
         // warn, if the closing tag was not found ..
         if (close_is_missing) {
-            TemplateParseContext tcontext = (TemplateParseContext) context;
             Device sink = tcontext.getDevice();
             sink.append ("<table bgcolor='#FFAA55'><tr><td>");
             sink.append ("&nbsp;<blink><b>");
@@ -121,6 +136,20 @@ public class RangeTagHandler extends TemplateTagHandler
             sink.append ("</b></blink>&nbsp;");
             sink.append ("</td></tr></table>");
         }
+    }
+
+    private static void copy(InputStream in, Device device, long length, byte buf[]) 
+	throws IOException
+    {
+	int len;
+	boolean limited = (length >= 0);
+	int rest = limited ? (int) length : buf.length;
+	while( rest > 0 &&
+	       (len = in.read(buf, 0, 
+			      (rest > buf.length) ? buf.length : rest)) > 0) {
+	    device.write(buf, 0, len);
+	    if (limited) rest -= len;
+	}
     }
 }
 

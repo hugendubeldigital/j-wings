@@ -394,6 +394,7 @@ public class SGMLTag {
     private boolean readAttributes(Reader input) 
     throws IOException {
       // just try to read Attributes once
+
         if (attr_ready)
 	  return wellFormed && values != null;
         attr_ready = true;
@@ -405,45 +406,49 @@ public class SGMLTag {
             values = new Hashtable();
 
             while (true) {
-	      // check for valid value tag (or end delimiter)
-	      key = nextToken(input); 
+		// check for valid value tag (or end delimiter)
+		key = nextToken(input);
 
-	      // close-Tag
-	      if (key != null && key.equals(closeTag)) {
-		wellFormed = true;
-		break;
-	      }
+		// close-Tag
+		if (key != null && key.equals(closeTag)) {
+		    wellFormed = true;
+		    break;
+		}
 
-	      // 'key'-part 
-	      if (key == null 
-		  || isDelimiter(key.charAt(0))
-		  // REVISE: keys ain't be quoted ??
-		  // so "href"="http://foo.bar" isn't allowed ?
-		  || key.charAt(0) == doubleQuote
-		  || key.charAt(0) == singleQuote)
-		break;
+		// close-Tag
+		if (key != null && key.equals("/>")) {
+		    wellFormed = true;
+		    break;
+		}
 
-                // now insure that we have an equals sign
-                token = nextToken(input);
-                if (token == null || token.charAt(0) != '=')
-		  break;
+		// 'key'-part 
+		if (key == null 
+		    || isDelimiter(key.charAt(0))
+		    || key.charAt(0) == doubleQuote
+		    || key.charAt(0) == singleQuote)
+		    break;
 
-                // read value of tag
-                token = nextToken(input);
-                if (token == null || isDelimiter(token.charAt(0)))
-                    break;
+		// now insure that we have an equals sign
+		token = nextToken(input);
+		if (token == null || token.charAt(0) != '=')
+		    break;
+
+		// read value of tag
+		token = nextToken(input);
+		if (token == null || isDelimiter(token.charAt(0)))
+		    break;
 
 		// strip quotes
-                if (token.charAt(0) == doubleQuote || token.charAt(0) == singleQuote) 
-                    token = token.substring(1, token.length() - 1);
+		if (token.charAt(0) == doubleQuote || token.charAt(0) == singleQuote) 
+		    token = token.substring(1, token.length() - 1);
 
-                // store attribute name with original case
-                String upperCase = key.toUpperCase();
-                if (!values.containsKey(upperCase))
-                    attrs.addElement(key);
+		// store attribute name with original case
+		String upperCase = key.toUpperCase();
+		if (!values.containsKey(upperCase))
+		    attrs.addElement(key);
 
-                // store assignment in case-insensitive manner
-                values.put(upperCase, token);
+		// store assignment in case-insensitive manner
+		values.put(upperCase, token);
             }
         }
         return wellFormed && values != null;
@@ -487,8 +492,8 @@ public class SGMLTag {
      * @return next token, or null if whitespace was encountered
      */
     public String nextToken(Reader input) 
-      throws IOException {
-      return nextToken (input, true);
+	throws IOException {
+	return nextToken (input, true);
     }
 
     /**
@@ -503,101 +508,104 @@ public class SGMLTag {
      * @return next token, or null if whitespace was encountered
      */
     public String nextToken(Reader input, boolean skipWhitespaces) 
-      throws IOException {
-      StringBuffer token = new StringBuffer();
+	throws IOException {
+	StringBuffer token = new StringBuffer();
 
-      if (skipWhitespaces) 
-	skipWhiteSpace (input);
+	if (skipWhitespaces) 
+	    skipWhiteSpace (input);
       
-      input.mark(1);
-      int c = input.read();
+	input.mark(1);
+	int c = input.read();
 
-      if (c == -1) { offset = -1; return null; }
+	if (c == -1) { offset = -1; return null; }
 
-      // quoted string? (handle both single and double)
-      if (c == doubleQuote || c == singleQuote) {
-	boolean inSingle = false;
-	boolean inDouble = false;
-	if (c == singleQuote) inSingle = true; else inDouble = true;
-	token.append ((char) c);
-	do {
-	  c = input.read();
-	  if (c == -1) {
-	      offset = -1;
-	      String reportString = token.toString();
-	      if (reportString.length() > 30) {
-		  reportString = reportString.substring(0, 30) + 
-		      " (truncated, length is " + reportString.length() + ")";
-	      }
-	      throw new IOException ("EOF in String: " +  reportString);
-	  }
-	  if (c == '\\') {
-	    int quoted = input.read();
-	    if (quoted >= 0) token.append ((char) quoted);
-	  }
-	  else 
+	// quoted string? (handle both single and double)
+	if (c == doubleQuote || c == singleQuote) {
+	    boolean inSingle = false;
+	    boolean inDouble = false;
+	    if (c == singleQuote) inSingle = true; else inDouble = true;
+	    token.append ((char) c);
+	    do {
+		c = input.read();
+		if (c == -1) {
+		    offset = -1;
+		    String reportString = token.toString();
+		    if (reportString.length() > 30) {
+			reportString = reportString.substring(0, 30) + 
+			    " (truncated, length is " + reportString.length() + ")";
+		    }
+		    throw new IOException ("EOF in String: " +  reportString);
+		}
+		if (c == '\\') {
+		    int quoted = input.read();
+		    if (quoted >= 0) token.append ((char) quoted);
+		}
+		else 
+		    token.append((char) c);
+	    } while ((inDouble && c != doubleQuote) || (inSingle && c != singleQuote));
+	} 
+
+	// parameter delimiter? read just one
+	else if (isDelimiter((char) c)) { 
 	    token.append((char) c);
-	} while ((inDouble && c != doubleQuote) || (inSingle && c != singleQuote));
-      } 
+	}
 
-      // parameter delimiter? read just one
-      else if (isDelimiter((char) c)) { 
-	token.append((char) c);
-      }
-      
-      // Inserted for token "-->".
-      // Like a word token, but includes the delimiter ">".
-      else if (c == '-') {
-	do { 
-	  token.append((char) c); 
-	  input.mark(1);
-	  c = input.read(); 
-	} 
-	while (c >= 0 && 
-	       !Character.isWhitespace((char) c) && 
-	       !isDelimiter((char) c));
-	input.reset();
-	token.append((char) input.read());
-      }
+	// Inserted for token "-->".
+	// Like a word token, but includes the delimiter ">".
+	else if (c == '-') {
+	    do { 
+		token.append((char) c); 
+		input.mark(1);
+		c = input.read(); 
+	    } 
+	    while (c >= 0 && 
+		   !Character.isWhitespace((char) c) && 
+		   !isDelimiter((char) c));
+	    input.reset();
+	    token.append((char) input.read());
+	}
 
-      // If we did not skip Whitespaces but actually got one
-      // this token is empty.
-      else if (!skipWhitespaces && 
-	       Character.isWhitespace((char) c)) {
-	input.reset();
-	return null;
-      }
+	// If we did not skip Whitespaces but actually got one
+	// this token is empty.
+	else if (!skipWhitespaces && 
+		 Character.isWhitespace((char) c)) {
+	    input.reset();
+	    return null;
+	}
 	
-      // word token
-      else {
-	do { 
-	  token.append((char) c); 
-	  input.mark(1);
-	  c = input.read(); 
-	} 
-	while (c >= 0 && 
-	       !Character.isWhitespace((char) c) && 
-	       !isDelimiter((char) c));
-	input.reset();
-      }
-      return token.toString();
+	// word token or />
+	else {
+	    do { 
+		token.append((char) c); 
+		input.mark(1);
+		c = input.read(); 
+	    } 
+	    while (c >= 0 && 
+		   !Character.isWhitespace((char) c) && 
+		   !isDelimiter((char) c));
+	    if (token.length() == 1 && token.charAt(0) == '/')
+		token.append((char)c);
+	    else
+		input.reset();
+	}
+	return token.toString();
     }
 
-  /**
+    /**
    * could be overwritten
    */
-  public static int skipWhiteSpace(Reader r) 
-    throws IOException {
-    int c, len=0;
-    do {
-      r.mark(1);
-      c = r.read();
-      len++;
-    } 
-    while (c >= 0 && Character.isWhitespace((char) c));
-    r.reset();
-    return len - 1;
-  }
+    public static int skipWhiteSpace(Reader r) 
+	throws IOException {
+	int c, len=0;
+	do {
+	    r.mark(1);
+	    c = r.read();
+	    len++;
+	} 
+	while (c >= 0 && Character.isWhitespace((char) c));
+	r.reset();
+	return len - 1;
+    }
 
     /**
      * Decide whether character is SGML delimiter or equals.

@@ -77,7 +77,7 @@ public final class Utils implements SConstants
 
     public static String escapeSpecialChars(String text) {
         StringBuffer escaped = new StringBuffer(text.length());
-        for ( int i = 0; i < text.length(); i++ ) {
+        for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             switch (c) {
             case '&' : escaped.append("&amp;"); break;
@@ -127,7 +127,7 @@ public final class Utils implements SConstants
     }
 
     public static void appendTableCellAlignment(Device s, SComponent c) {
-        switch ( c.getHorizontalAlignment() ) {
+        switch (c.getHorizontalAlignment()) {
         case NO_ALIGN:
             break;
         case CENTER:
@@ -144,7 +144,7 @@ public final class Utils implements SConstants
             break;
         }
     
-        switch ( c.getVerticalAlignment() ) {
+        switch (c.getVerticalAlignment()) {
         case NO_ALIGN:
         case CENTER:
             break;
@@ -161,20 +161,20 @@ public final class Utils implements SConstants
     }
 
     public static void appendTableCellColors(Device s, SComponent c) {
-        // if ( c.getForeground()!=null )
+        // if (c.getForeground()!=null)
         //     s.append(" COLOR=#").
         //         append(toColorString(c.getForeground()));
 
-        if ( c.getBackground()!=null )
+        if (c.getBackground()!=null)
             s.append(" bgcolor=#").
                 append(toColorString(c.getBackground()));
     }
 
     public static void appendTableCellSpan(Device s, SComponent c) {
-        if ( c.getRowSpan()>0 )
+        if (c.getRowSpan()>0)
             s.append(" rowspan=").append(c.getRowSpan());
 
-        if ( c.getColSpan()>0 )
+        if (c.getColSpan()>0)
             s.append(" colspan=").append(c.getColSpan());
     }
 
@@ -190,11 +190,11 @@ public final class Utils implements SConstants
       * Test, if either background-, foreground color, font or border is set.
       * @return false, if no attribute was set, true otherwise.
       */
-    public static boolean hasSpanAttributes( SComponent component )
+    public static boolean hasSpanAttributes(SComponent component)
      {
          
          return component != null && 
-             ( component.getBackground() != null || 
+             (component.getBackground() != null || 
                component.getForeground() != null ||
                component.getFont() != null ||
                component.getBorder() != null ||
@@ -203,40 +203,37 @@ public final class Utils implements SConstants
      }
     
     /**
-      * Write all span-attributes except the <i>class</i>.
-      * @return null, if not attribute was set, otherwise the attributes in css syntax otherwise.
-      */
-	public static void writeSpanAttributes( Device d, SComponent component )
+     * Write all span-attributes except the <i>class</i>.
+     * @return null, if not attribute was set, otherwise the attributes in css syntax otherwise.
+     */
+    public static void writeSpanAttributes(Device d, SComponent component)
     	throws IOException
      {
-        if ( ! hasSpanAttributes( component ) )
+        if (!hasSpanAttributes(component))
             return;
             
         java.awt.Color bgcolor = component.getBackground();
         java.awt.Color fgcolor = component.getForeground();
         SFont font = component.getFont();
         SBorder border = component.getBorder();
-        java.awt.Dimension dim = component.getPreferredSize();
+        SDimension dim = component.getPreferredSize();
         
-        if ( bgcolor != null ) d.append( "background-color:#").append(toColorString( bgcolor )).append(";" );
-        if ( fgcolor != null ) d.append( "font-color:#").append(toColorString( fgcolor )).append(";" );
-        if ( font != null )
-         {
-         	int style = font.getStyle();
-         	d.append( "font-size:").append(font.getSize()).append("pt;");
-         	d.append( "font-style:").append(( style & java.awt.Font.ITALIC ) > 0 ?"italic;":"normal;");
-            d.append( "font-weight:").append(( style & java.awt.Font.BOLD ) > 0 ?"bold;":"normal;");
-            d.append( "font-family:").append(font.getFace() ).append( ";" );
-		 }
+        if (bgcolor != null) d.append("background-color:#").append(toColorString(bgcolor)).append(";");
+        if (fgcolor != null) d.append("font-color:#").append(toColorString(fgcolor)).append(";");
+        if (font != null) {
+            int style = font.getStyle();
+            d.append("font-size:").append(font.getSize()).append("pt;");
+            d.append("font-style:").append((style & java.awt.Font.ITALIC) > 0 ?"italic;":"normal;");
+            d.append("font-weight:").append((style & java.awt.Font.BOLD) > 0 ?"bold;":"normal;");
+            d.append("font-family:").append(font.getFace()).append(";");
+        }
         
-        if ( border != null )
-         {
-         	border.writeSpanAttributes( d );
-         }
+        if (border != null)
+            border.writeSpanAttributes(d);
 
-        if ( dim != null )
-         d.append( "width:").append(dim.width).
-          append("px;height:").append(dim.height).append("px;");
+        if (dim != null)
+            d.append("width:").append(dim.width).
+                append(";height:").append(dim.height);
      }
 }
 

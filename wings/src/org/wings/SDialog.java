@@ -52,6 +52,8 @@ public class SDialog
      */
     public static final String UNKNOWN_ACTION = "UNKNOWN";
 
+    protected String title;
+
     /*
      * Alle die es interessiert, wann der OptionPane fertig ist. Z.B. um
      * das Ergebnis zu bekommen.
@@ -80,6 +82,24 @@ public class SDialog
      */
     public SDialog() {}
 
+    /**
+     * TODO: documentation
+     *
+     * @param t
+     */
+    public void setTitle(String t) {
+        if ( t==null )
+            title = "";
+        else
+            title = t;
+    }
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public String getTitle() { return title; }
+
     protected void fireActionPerformed(String state) {
         setActionCommand(state);
         //ActionEvent e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, state);
@@ -100,6 +120,7 @@ public class SDialog
      * Remove this dialog from its frame.
      */
     public void hide() {
+        System.err.println("hide");
         if (frame != null) {
             if (frame instanceof SFrame)
                 ((SFrame)frame).popDialog();

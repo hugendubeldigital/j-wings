@@ -14,9 +14,8 @@
 
 package org.wings.event;
 
-import org.wings.SComponent;
+import org.wings.*;
 import java.awt.AWTEvent;
-import java.awt.Dimension;
 
 /**
  * A low-level event which indicates that a component moved, changed
@@ -48,108 +47,91 @@ import java.awt.Dimension;
  * @version $Revision$, $Date$
  */
 public class SComponentEvent
-	extends java.awt.AWTEvent
+    extends java.awt.AWTEvent
 {
-	/**
-      * The first number in the range of ids used for component events.
-      */
-	public static final int COMPONENT_FIRST = 1 << 0;
+    /**
+     * The first number in the range of ids used for component events.
+     */
+    public static final int COMPONENT_FIRST = 1 << 0;
 
-	/**
-	  * This event indicates that the component was rendered invisible.
-      */
-	public static final int COMPONENT_HIDDEN = 1 << 1;
+    /**
+     * This event indicates that the component was rendered invisible.
+     */
+    public static final int COMPONENT_HIDDEN = 1 << 1;
 
-	/**
-      * The last number in the range of ids used for component events.
-      */
-	public static final int COMPONENT_LAST = 1 << 2;
+    /**
+     * The last number in the range of ids used for component events.
+     */
+    public static final int COMPONENT_LAST = 1 << 2;
     
     /**
-      * This event indicates that the component's position changed.
-      */
-	public static final int COMPONENT_MOVED = 1 << 3;
+     * This event indicates that the component's position changed.
+     */
+    public static final int COMPONENT_MOVED = 1 << 3;
 	
     /**
-      * This event indicates that the component's size changed.
-      */
-	public static final int COMPONENT_RESIZED = 1 << 4;
+     * This event indicates that the component's size changed.
+     */
+    public static final int COMPONENT_RESIZED = 1 << 4;
 
-	/**
-      * This event indicates that the component was made visible.
-      */
-	public static final int COMPONENT_SHOWN = 1 << 5;
+    /**
+     * This event indicates that the component was made visible.
+     */
+    public static final int COMPONENT_SHOWN = 1 << 5;
 	
     /**
-      * Constructs a ComponentEvent object.
-      * @param aSource the Component object that originated the event
-      * @param aId an integer indicating the type of event
-      */
-	public SComponentEvent( SComponent aSource, int aId )
-     {
-		super( aSource, aId );
-     }
+     * Constructs a ComponentEvent object.
+     * @param aSource the Component object that originated the event
+     * @param aId an integer indicating the type of event
+     */
+    public SComponentEvent(SComponent aSource, int aId) {
+        super(aSource, aId);
+    }
 
-	/**
-      * Returns the originator of the event.
-      * @return the Component object that originated the event
-      */
-	public SComponent getComponent()
-     {
-		return ( SComponent ) source;
-     }
+    /**
+     * Returns the originator of the event.
+     * @return the Component object that originated the event
+     */
+    public SComponent getComponent() {
+        return (SComponent) source;
+    }
 
-	public String toString()
-     {
-		return "ComponentEvent[source=" + source + "; " + paramString() + "]";
-     }
+    public String toString() {
+        return "ComponentEvent[source=" + source + "; " + paramString() + "]";
+    }
 
-	/**
-	  * Returns a string representing the state of this event. This 
-	  * method is intended to be used only for debugging purposes, and the 
-	  * content and format of the returned string may vary between implementations.
-      * The returned string may be empty but may not be <tt>null</tt>.
-	  * @return a string representation of this event.          
-	  */
-	public String paramString()
-     {
+    /**
+     * Returns a string representing the state of this event. This 
+     * method is intended to be used only for debugging purposes, and the 
+     * content and format of the returned string may vary between implementations.
+     * The returned string may be empty but may not be <tt>null</tt>.
+     * @return a string representation of this event.          
+     */
+    public String paramString() {
+        if (source == null)
+            return "no source";
+
         String typeStr;
-        Dimension d = null;
-        String postfix = "";
-        if ( source != null )
-         {
-			if ( ( d = ((SComponent)source).getPreferredSize() ) != null )
-            	d = ((SComponent)source).getPreferredSize();
-			else
-			if ( ( d = ((SComponent)source).getPreferredPercentageSize() ) != null )
-             {
-            	d = ((SComponent)source).getPreferredPercentageSize();
-                postfix = "%";
-			 }
-         }
-		else
-        	return "empty source";
+        SDimension d = ((SComponent)source).getPreferredSize();
 
-        switch(id) {
-          case COMPONENT_SHOWN:
-              typeStr = "COMPONENT_SHOWN";
-              break;
-          case COMPONENT_HIDDEN:
-              typeStr = "COMPONENT_HIDDEN";
-              break;
-          case COMPONENT_MOVED:
-              typeStr = "COMPONENT_MOVED ("+ 
-                         d.width+postfix+"x"+d.height+postfix+")";
-              break;
-          case COMPONENT_RESIZED:
-              typeStr = "COMPONENT_RESIZED ("+ 
-                         d.width+postfix+"x"+d.height+postfix+")";
-              break;
-          default:
-              typeStr = "unknown type";
+        switch (id) {
+        case COMPONENT_SHOWN:
+            typeStr = "COMPONENT_SHOWN";
+            break;
+        case COMPONENT_HIDDEN:
+            typeStr = "COMPONENT_HIDDEN";
+            break;
+        case COMPONENT_MOVED:
+            typeStr = "COMPONENT_MOVED ("+ d.width + "x" + d.height + ")";
+            break;
+        case COMPONENT_RESIZED:
+            typeStr = "COMPONENT_RESIZED (" + d.width + "x" + d.height + ")";
+            break;
+        default:
+            typeStr = "unknown type";
         }
         return typeStr;
-     }
+    }
 }
 
 /*

@@ -60,6 +60,8 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.wings.template.*;
+
 /**
  * <CODE>PageParser</CODE> 
  * parses SGML markup'd pages and executes
@@ -81,21 +83,21 @@ import javax.servlet.http.*;
  * @see javax.servlet.http.HttpServlet
  */
 
-public class PageParser {
+public class PageParser
+{
+    private static PageParser sharedInstance = null;
 
-    /**
-     * Source info holds the parse information for
-     * a DataSource .. and some statistical stuff which 
-     * may be interesting for administrative
-     * frontends
-     */
-    private final class DataSourceInfo {
-	Vector parts;
-	long   lastModified;
-	long   parseTime;
-	public DataSourceInfo () {}
+    public static PageParser getInstance() {
+	if (sharedInstance == null) {
+	    synchronized(PageParser.class) {
+		if (sharedInstance == null)
+		    sharedInstance = new PageParser();
+	    }
+	}
+
+	return sharedInstance;
     }
-
+	
     /**
      * This hashtable contains the cached parsed
      * pages, saved in DataSourceInfo-Objects.
@@ -132,7 +134,8 @@ public class PageParser {
      */
     public void process (DataSource source,
 			 ParseContext context)
-	throws IOException {
+	throws IOException
+    {
 	interpretPage(source, getPageParts(source, context), context);
     }
 
@@ -144,10 +147,22 @@ public class PageParser {
      *                      HttpServletResponse.
      * @see ParseContext
      */
-    public void process (File file,
-			 ParseContext context) 
-	throws IOException {
+    public void process (File file, ParseContext context) 
+	throws IOException
+    {
 	process (new FileDataSource(file), context);
+    }
+
+    public Map getLabels(DataSource source) {
+	String cName = source.getCanonicalName();
+	if (cName == null)
+	    return null;
+
+	DataSourceInfo sourceInfo = (DataSourceInfo)pages.get(cName);
+	if (sourceInfo == null)
+	    return null;
+
+	return sourceInfo.labels;
     }
 
     /**
@@ -232,16 +247,16 @@ public class PageParser {
     private void interpretPage(DataSource source, 
 			       Vector parts, ParseContext context)
 	throws IOException {
-      
+
 	OutputStream out = context.getOutputStream();
 	InputStream inStream = null;
 	byte buf[] = null;
-      
+
 	try {
 	    // input
 	    inStream = source.getInputStream();
 	    long inPos = 0;
-	  
+
 	    /*
 	     * Get Copy Buffer.
 	     * If we allocate it here once and pass it to the
@@ -258,13 +273,13 @@ public class PageParser {
 	  
 	    for (int i = 0; i < parts.size(); i++) {
 		/** <critical-path> **/
-		SpecialTagHandler part = (SpecialTagHandler) parts.elementAt(i);
+		SpecialTagHandler part = (SpecialTagHandler)parts.elementAt(i);
 		// copy DataSource content till the beginning of the Tag:
-		copy (inStream, out, part.getTagStart()-inPos, buf);
-	      
-		context.startTag (i);
-		try{
-		    part.executeTag (context);
+		copy(inStream, out, part.getTagStart()-inPos, buf);
+
+		context.startTag(i);
+		try {
+		    part.executeTag(context, inStream);
 		}
 		/*
 		 * Display any Exceptions or Errors as
@@ -278,11 +293,9 @@ public class PageParser {
 		    pout.println("-->");
 		    pout.flush();
 		}
-		context.doneTag (i);
-	      
-		// skip the <SPECIAL_TAG> ... </SPECIAL_TAG> area:
-		inStream.skip(part.getTagLength());
-		inPos = part.getTagStart()+part.getTagLength();
+		context.doneTag(i);
+
+		inPos = part.getTagStart() + part.getTagLength();
 		/** </critical-path> **/
 	    }
 	    // copy rest until end of DataSource
@@ -360,14 +373,15 @@ public class PageParser {
 	// value is still accepted.
 	fin = new PositionReader (new BufferedReader (new InputStreamReader (source.getInputStream(),"8859_1")));
 	DataSourceInfo sourceInfo = new DataSourceInfo();
-       
+
 	try {
 	    // scan through page parsing SpecialTag statements
 	    sourceInfo.lastModified = source.lastModified();
 	    sourceInfo.parts = new Vector();
+	    sourceInfo.labels = new HashMap();
 	    long startPos;
 	    SGMLTag tag, endTag;
-	    long StartTime = System.currentTimeMillis();
+	    long startTime = System.currentTimeMillis();
 	    do {
 		endTag = null;
 		startPos = fin.getPosition();
@@ -377,24 +391,26 @@ public class PageParser {
 		    if (handlerClasses.containsKey(upName)) {
 			SpecialTagHandler handler = null;
 			try {
-			    Class handlerClass;
-			    
-			    handlerClass = (Class)handlerClasses.get(upName);
-			    handler= (SpecialTagHandler) handlerClass
-				.newInstance();
-			    endTag=handler.parseTag(context,fin,startPos,tag);
+			    Class handlerClass = (Class)handlerClasses.get(upName);
+			    handler = (SpecialTagHandler)handlerClass.newInstance();
+
+			    endTag = handler.parseTag(context, fin, startPos, tag);
 			}
 			catch (Exception e) {
-			    System.err.println (e.getMessage());
+			    System.err.println(e.getMessage());
 			}
 			if (endTag != null) {
-			    sourceInfo.parts.addElement (handler);
+			    if ("LABEL".equals(upName)) {
+				LabelTagHandler labelHandler = (LabelTagHandler)handler;
+				sourceInfo.labels.put(labelHandler.getFor(), labelHandler.getContent());
+			    }
+			    sourceInfo.parts.addElement(handler);
 			}
 		    }
 		}
 	    } 
 	    while (!tag.finished());
-	    sourceInfo.parseTime = System.currentTimeMillis() - StartTime;
+	    sourceInfo.parseTime = System.currentTimeMillis() - startTime;
 	    /***
 		System.err.println ("PageParser: parsing '" + 
 		source.getCanonicalName() + "' took " + 
@@ -406,6 +422,20 @@ public class PageParser {
 	    if (fin != null) fin.close();
 	}
 	return sourceInfo;
+    }
+
+    /**
+     * Source info holds the parse information for
+     * a DataSource .. and some statistical stuff which 
+     * may be interesting for administrative
+     * frontends
+     */
+    private final class DataSourceInfo {
+	Vector parts;
+	Map    labels;
+	long   lastModified;
+	long   parseTime;
+	public DataSourceInfo () {}
     }
 }
 
