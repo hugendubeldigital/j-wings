@@ -856,10 +856,11 @@ public class STabbedPane
 
             button = new SRadioButton(title);
             button.setShowAsFormComponent(false);
-            button.setSelectedIcon((Icon)null);
-            button.setDisabledSelectedIcon((Icon)null);
-            button.setIcon((Icon)null);
-            button.setDisabledIcon((Icon)null);
+            button.setSelectedIcon(icon);
+            button.setDisabledSelectedIcon(disabledIcon);
+            button.setIcon(icon);
+            button.setDisabledIcon(disabledIcon);
+            button.setToolTipText(tip);
             button.setNoBreak(true);
         }
 
