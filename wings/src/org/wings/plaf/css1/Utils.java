@@ -35,7 +35,7 @@ public final class Utils
      * (value != null && value.length > 0), the attrib is added otherwise
      * it is left out
      */
-    void printOptAttr(Device d, String attr, String value)
+    static void printOptAttr(Device d, String attr, String value)
         throws IOException
     {
         if (value != null && value.length() > 0) {
@@ -51,7 +51,7 @@ public final class Utils
      * Prints an optional attribute. If the integer value is greater than 0,
      * the attrib is added otherwise it is left out
      */
-    void printOptAttr(Device d, String attr, int value)
+    static void printOptAttr(Device d, String attr, int value)
         throws IOException
     {
         if (value > 0) {
@@ -66,7 +66,7 @@ public final class Utils
     /**
      * Prints the given style (if it does exist)
      */
-    void printStyle(Device d, Style style)
+    static void printStyle(Device d, Style style)
         throws IOException
     {
         String value = null;
@@ -77,7 +77,7 @@ public final class Utils
     /**
      * Renders a border prefix
      */
-    void renderBorderPrefix(Device d, org.wings.SBorder b)
+    static void renderBorderPrefix(Device d, org.wings.SBorder b)
         throws IOException
     {
         if (b != null)
@@ -87,7 +87,7 @@ public final class Utils
     /**
      * Renders a border postfix
      */
-    void renderBorderPostfix(Device d, org.wings.SBorder b)
+    static void renderBorderPostfix(Device d, org.wings.SBorder b)
         throws IOException
     {
         if (b != null)
@@ -97,7 +97,7 @@ public final class Utils
     /**
      * Renders a container
      */
-    void renderContainer(Device d, SContainer c)
+    static void renderContainer(Device d, SContainer c)
         throws IOException
     {
         SLayoutManager layout = c.getLayout();
