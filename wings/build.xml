@@ -99,11 +99,12 @@
   <!-- ==================== LookAndFeel Jars ==================== -->
   <target name="plaf" depends="css1.jar" />
 
-  <target name="css1.jar" depends="compile">
+  <target name="css1.jar" depends="compile,claf-compile">
     <jar jarfile="${distlib}/css1.jar">
       <fileset dir="${classes}">
         <include name="org/wings/plaf/xhtml/*.class" />
         <include name="org/wings/plaf/xhtml/css1/*" />
+        <include name="org/wings/plaf/css1/*" />  <!-- TEST: claf-compiled -->
         <exclude name="org/wings/plaf/xhtml/css1/default.properties" />
       </fileset>
       <fileset dir="${classes}/org/wings/plaf/xhtml/css1">
@@ -122,6 +123,15 @@
         <include name="org/wings/plaf/css1/*.plaf"/>
       </fileset>
     </claf>
+  </target>
+
+  <target name="claf-compile" depends="claf">
+    <javac srcdir="build/src" 
+           destdir="${classes}"
+           debug="on" 
+           deprecation="off">
+      <classpath refid="build.classpath" />
+    </javac>
   </target>
 
   <target name="testcompile" depends="wings.jar,css1.jar">
