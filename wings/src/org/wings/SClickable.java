@@ -14,7 +14,6 @@
 
 package org.wings;
 
-import org.wings.plaf.*;
 
 /**
  * An icon-text compound, where you can set an event by hand or which could be
@@ -24,10 +23,7 @@ import org.wings.plaf.*;
  * @version $Revision$
  */
 public class SClickable
-    extends SAbstractIconTextCompound
-    implements ClickableRenderComponent
-{
-    private static final String cgClassID = "ClickableCG";
+    extends SAbstractClickable {
 
     /**
      * if this is set (!=null) this event is rendered as anchor. If it is null,
@@ -55,7 +51,7 @@ public class SClickable
      * Creates a new <code>SClickable</code> instance with no text and no icon.
      */
     public SClickable() {
-        this((String)null);
+        this((String) null);
     }
 
     /**
@@ -127,7 +123,7 @@ public class SClickable
     }
 
     public boolean checkEpoch() {
-        return requestTarget==null ? true : requestTarget.checkEpoch();
+        return requestTarget == null ? true : requestTarget.checkEpoch();
     }
 
     /**
@@ -144,7 +140,7 @@ public class SClickable
      * the anchor in the AnchorRenderStack is rendered
      */
     public void setEvent(String e) {
-        if ( isDifferent(event, e) ) {
+        if (isDifferent(event, e)) {
             event = e;
             reload(ReloadManager.RELOAD_CODE);
         }
@@ -162,7 +158,7 @@ public class SClickable
      * sets the LowLevelEventListener for which to create a event.
      */
     public void setEventTarget(LowLevelEventListener t) {
-        if ( isDifferent(requestTarget, t) ) {
+        if (isDifferent(requestTarget, t)) {
             requestTarget = t;
             reload(ReloadManager.RELOAD_CODE);
         }
@@ -176,13 +172,23 @@ public class SClickable
         return requestTarget;
     }
 
-    public String getCGClassID() {
-        return cgClassID;
+    public SimpleURL getURL() {
+        if (getEvent() != null && getEventTarget() != null) {
+            RequestURL u = getRequestURL();
+            if (!checkEpoch()) {
+                u.setEpoch(null);
+                u.setResource(null);
+            }
+
+            u.addParameter(getEventTarget(),
+                           getEvent());
+            return u;
+        } else {
+            return null;
+        }
     }
 
-    public void setCG(ClickableCG cg) {
-        super.setCG(cg);
-    }
+
 }
 
 /*

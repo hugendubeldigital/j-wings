@@ -1,4 +1,4 @@
-<template name="ClickableCG" for="org.wings.SClickable">
+<template name="ClickableCG" for="org.wings.SAbstractClickable">
 
 <comp-property type="String" name="selectionStyle">selection</comp-property>
 
@@ -48,7 +48,7 @@ protected SIcon getIcon(SAbstractIconTextCompound iconTextCompound) {
 
 
 
-void writeText(final Device device, SClickable clickable, String attr)
+void writeText(final Device device, SAbstractClickable clickable, String attr)
     throws IOException
 {
     boolean noBreak = clickable.isNoBreak();
@@ -57,23 +57,7 @@ void writeText(final Device device, SClickable clickable, String attr)
 	return;
     }
 
-    SimpleURL url = null;
-    
-    if ( clickable.getEvent()!=null && clickable.getEventTarget()!=null) {
-        RequestURL u = clickable.getRequestURL();
-        if ( !clickable.checkEpoch() ) {
-            u.setEpoch(null);
-            u.setResource(null);
-        }
-        u.addParameter(clickable.getEventTarget(),
-	               clickable.getEvent());
-        url = u;
-    } else {
-        AnchorProperties anchor	= AnchorRenderStack.get();
-	if ( anchor!=null ) {
-	    url = anchor.getURL();
-	}	
-    }
+    SimpleURL url = getURL(clickable);
 
     boolean writeAnchor = clickable.isEnabled() && 
         url!=null;
@@ -101,29 +85,25 @@ void writeText(final Device device, SClickable clickable, String attr)
     }
 }
 
-void writeIcon(final Device device, SClickable clickable, String attr)
+SimpleURL getURL(SAbstractClickable clickable) {
+    SimpleURL url = clickable.getURL();
+
+    if ( url==null ) {
+        AnchorProperties anchor	= AnchorRenderStack.get();
+	    if ( anchor!=null ) {
+	        url = anchor.getURL();
+	    }
+    }
+
+    return url;
+}
+
+void writeIcon(final Device device, SAbstractClickable clickable, String attr)
      throws IOException
 {
     SIcon icon = getIcon(clickable);
 
-    SimpleURL url = null;
-    
-    if ( clickable.getEvent()!=null && clickable.getEventTarget()!=null) {
-        RequestURL u = clickable.getRequestURL();
-        if ( !clickable.checkEpoch() ) {
-            u.setEpoch(null);
-            u.setResource(null);
-        }
-
-        u.addParameter(clickable.getEventTarget(),
-	               clickable.getEvent());
-        url = u;
-    } else {
-        AnchorProperties anchor	= AnchorRenderStack.get();
-	if ( anchor!=null ) {
-	    url = anchor.getURL();
-	}	
-    }
+    SimpleURL url = getURL(clickable);
 
     boolean writeAnchor = clickable.isEnabled() && 
         url!=null;
