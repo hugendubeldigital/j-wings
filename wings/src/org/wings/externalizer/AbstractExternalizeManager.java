@@ -14,50 +14,46 @@
 
 package org.wings.externalizer;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Collections;
-import java.util.Collection;
-import java.util.Date;
-import java.util.logging.*;
+import org.wings.io.Device;
+import org.wings.util.StringUtil;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletOutputStream;
-
-import org.wings.RequestURL;
-import org.wings.util.StringUtil;
-import org.wings.io.Device;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * 
+ *
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public abstract class AbstractExternalizeManager
-{
+public abstract class AbstractExternalizeManager {
     protected static Logger logger = Logger.getLogger("org.wings.externalizer");
 
     /**
      * The identifier generated, if the {@link ExternalizeManager} did not find
-     * an apropriate {@link Externalizer}. 
+     * an apropriate {@link Externalizer}.
      */
     public static final String NOT_FOUND_IDENTIFIER = "0";
 
-    
+
     /*---------------------------------------------------------------
      * The externalized ID is just a counter start starts with zero. This
      * happens with each start of the server, and thus generates the same
-     * ID if we restart the application (especially, if we are in the 
+     * ID if we restart the application (especially, if we are in the
      * development phase). Since we externalize the resource with a long
      * caching timeout, the browser might not refetch a resource externalized
      * in a fresh instance of the web-application, since the browser has cached
      * it already.
      * Thus, we need a unique prefix for each externalized resource, that
-     * changes with each start of the server. 
+     * changes with each start of the server.
      * These static variables create a new ID every UNIQUE_TIMESLICE, which
      * means, that, if we use a 2-character prefix, can offer the browser
      * the timeframe of FINAL_EXPIRES for this resource to be cached (since
@@ -73,13 +69,13 @@ public abstract class AbstractExternalizeManager
      * in seconds; Computed from UNIQUE_TIMESLICE; do not change.
      */
     public final long FINAL_EXPIRES =
-        (StringUtil.MAX_RADIX*StringUtil.MAX_RADIX - 1) * UNIQUE_TIMESLICE;
+        (StringUtil.MAX_RADIX * StringUtil.MAX_RADIX - 1) * UNIQUE_TIMESLICE;
 
     /**
      * Prefix for the externalized ID; long. Computed, do not change.
      */
     protected final long PREFIX_TIMESLICE =
-        ((System.currentTimeMillis()/1000)%FINAL_EXPIRES)/UNIQUE_TIMESLICE;
+        ((System.currentTimeMillis() / 1000) % FINAL_EXPIRES) / UNIQUE_TIMESLICE;
 
     /**
      * String prefix for externalized ID as String. Computed, do not change.
@@ -99,7 +95,7 @@ public abstract class AbstractExternalizeManager
     /**
      * for an externalized object with the request flag on, the externalized
      * object is removed from the {@link ExternalizeManager} after one request
-     * of the object. 
+     * of the object.
      */
     public static final int REQUEST = 1;
 
@@ -107,7 +103,7 @@ public abstract class AbstractExternalizeManager
      * for an externalized object with the session flag on, the externalized
      * object only available to requests within the session which created the
      * object. The object is not accessible anymore after the session is
-     * destroyed (it is garbage collected after the session is garbage 
+     * destroyed (it is garbage collected after the session is garbage
      * collected)
      */
     public static final int SESSION = 2;
@@ -126,7 +122,7 @@ public abstract class AbstractExternalizeManager
 
     /**
      * To search for an already externalized object. This performs way better
-     * than search in the value set of the 
+     * than search in the value set of the
      * identifier-{@link ExternalizedResource} map.
      */
     protected final Map/*<ExternalizedResource,String>*/ reverseExternalized;
@@ -134,7 +130,7 @@ public abstract class AbstractExternalizeManager
     /**
      * To support Session local externalizing, the {@link ExternalizeManager}
      * needs to encode the session identifier of the servlet container in the
-     * URL of the externalized object. This is set in the constructor 
+     * URL of the externalized object. This is set in the constructor
      * and should work (I hope so) with all servlet containers.
      */
     protected String sessionEncoding = "";
@@ -146,7 +142,7 @@ public abstract class AbstractExternalizeManager
         logger.info("final scope expires in " + FINAL_EXPIRES + " seconds");
         logger.info("use prefix " + PREFIX_TIMESLICE_STRING);
 
-        reverseExternalized = Collections.synchronizedMap( new HashMap() );
+        reverseExternalized = Collections.synchronizedMap(new HashMap());
     }
 
     public void setResponse(HttpServletResponse response) {
@@ -168,7 +164,7 @@ public abstract class AbstractExternalizeManager
     protected String getPrefix() {
         return PREFIX_TIMESLICE_STRING;
     }
-    
+
     /**
      *
      */
@@ -177,33 +173,32 @@ public abstract class AbstractExternalizeManager
     }
 
     /**
-     * store the {@link ExternalizedResource} in a map. 
-     * The {@link ExternalizedResource} should later on accessible by the 
+     * store the {@link ExternalizedResource} in a map.
+     * The {@link ExternalizedResource} should later on accessible by the
      * identifier {@link #getExternalizedResource}, {@link #removeExternalizedResource}
      */
     protected abstract void storeExternalizedResource(String identifier,
-                                                  ExternalizedResource extInfo);
+                                                      ExternalizedResource extInfo);
 
     /**
-     * get the {@link ExternalizedResource} by identifier. 
+     * get the {@link ExternalizedResource} by identifier.
      * @return null, if not found!!
      */
     public abstract ExternalizedResource getExternalizedResource(String identifier);
 
     /**
-     * removes the {@link ExternalizedResource} by identifier. 
+     * removes the {@link ExternalizedResource} by identifier.
      */
     protected abstract void removeExternalizedResource(String identifier);
 
     /**
      * externalizes (make a java object available for a browser) an object with
-     * the given {@link Externalizer}. The object is externalized in the 
+     * the given {@link Externalizer}. The object is externalized in the
      * {@link #SESSION} scope.
      *
      * @return a URL for accessing the object relative to the base URL.
      */
-    public String externalize(Object obj, Externalizer externalizer)
-    {
+    public String externalize(Object obj, Externalizer externalizer) {
         return externalize(obj, externalizer, SESSION);
     }
 
@@ -211,13 +206,12 @@ public abstract class AbstractExternalizeManager
      * externalizes (make a java object available for a browser) an object with
      * the given {@link Externalizer}. If the given headers are !=null the
      * headers overwrite the headers from the {@link Externalizer}.
-     * The object is externalized in the 
+     * The object is externalized in the
      * {@link #SESSION} scope.
      *
      * @return a URL for accessing the object relative to the base URL.
      */
-    public String externalize(Object obj, Externalizer externalizer, Collection headers)
-    {
+    public String externalize(Object obj, Externalizer externalizer, Collection headers) {
         return externalize(obj, externalizer, headers, SESSION);
     }
 
@@ -234,9 +228,8 @@ public abstract class AbstractExternalizeManager
      *
      * @return a URL for accessing the object relative to the base URL.
      */
-    public String externalize(Object obj, Externalizer externalizer, int flags)
-    {
-        if ( obj == null || externalizer == null )
+    public String externalize(Object obj, Externalizer externalizer, int flags) {
+        if (obj == null || externalizer == null)
             throw new IllegalStateException("no externalizer");
 
         return externalize(obj, externalizer, externalizer.getMimeType(obj),
@@ -246,7 +239,7 @@ public abstract class AbstractExternalizeManager
     /**
      * externalizes (make a java object available for a browser) an object with
      * the given {@link Externalizer}. If the given headers are !=null the
-     * headers overwrite the headers from the {@link Externalizer}. 
+     * headers overwrite the headers from the {@link Externalizer}.
      * Valid flags are (this may change, look
      * also in the static variable section)
      * <ul>
@@ -258,9 +251,8 @@ public abstract class AbstractExternalizeManager
      *
      * @return a URL for accessing the object relative to the base URL.
      */
-    public String externalize(Object obj, Externalizer externalizer, 
-                              Collection headers, int flags)
-    {
+    public String externalize(Object obj, Externalizer externalizer,
+                              Collection headers, int flags) {
         if (obj == null || externalizer == null)
             throw new IllegalStateException("no externalizer");
 
@@ -270,43 +262,41 @@ public abstract class AbstractExternalizeManager
 
     /**
      * externalizes (make a java object available for a browser) an object with
-     * the given {@link Externalizer}. 
-     * If the mimeType!=null, mimeType overwrites the mimeType of the 
+     * the given {@link Externalizer}.
+     * If the mimeType!=null, mimeType overwrites the mimeType of the
      * {@link Externalizer}.
-     * The object is externalized in the 
+     * The object is externalized in the
      * {@link #SESSION} scope.
      *
      * @return a URL for accessing the object relative to the base URL.
      */
-    public String externalize(Object obj, Externalizer externalizer, 
-                              String mimeType)
-    {
+    public String externalize(Object obj, Externalizer externalizer,
+                              String mimeType) {
         return externalize(obj, externalizer, mimeType, null, SESSION);
     }
 
     /**
      * externalizes (make a java object available for a browser) an object with
-     * the given {@link Externalizer}. 
-     * If the mimeType!=null, mimeType overwrites the mimeType of the 
+     * the given {@link Externalizer}.
+     * If the mimeType!=null, mimeType overwrites the mimeType of the
      * {@link Externalizer}.
      * If the given headers are !=null the
-     * headers overwrite the headers from the {@link Externalizer}. 
+     * headers overwrite the headers from the {@link Externalizer}.
      *
      * @return a URL for accessing the object relative to the base URL.
      */
-    public String externalize(Object obj, Externalizer externalizer, 
-                              String mimeType, Collection headers)
-    {
+    public String externalize(Object obj, Externalizer externalizer,
+                              String mimeType, Collection headers) {
         return externalize(obj, externalizer, mimeType, headers, SESSION);
     }
 
     /**
      * externalizes (make a java object available for a browser) an object with
-     * the given {@link Externalizer}. 
-     * If the mimeType!=null, mimeType overwrites the mimeType of the 
+     * the given {@link Externalizer}.
+     * If the mimeType!=null, mimeType overwrites the mimeType of the
      * {@link Externalizer}.
      * If the given headers are !=null the
-     * headers overwrite the headers from the {@link Externalizer}. 
+     * headers overwrite the headers from the {@link Externalizer}.
      * Valid flags are (this may change, look
      * also in the static variable section)
      * <ul>
@@ -318,22 +308,21 @@ public abstract class AbstractExternalizeManager
      *
      * @return a URL for accessing the object relative to the base URL.
      */
-    public String externalize(Object obj, Externalizer externalizer, 
-                              String mimeType, Collection headers, int flags)
-    {
-        if ( externalizer == null )
+    public String externalize(Object obj, Externalizer externalizer,
+                              String mimeType, Collection headers, int flags) {
+        if (externalizer == null)
             throw new IllegalStateException("no externalizer");
 
-        if ( mimeType == null )
+        if (mimeType == null)
             mimeType = externalizer.getMimeType(obj);
 
-        if ( headers == null )
+        if (headers == null)
             headers = externalizer.getHeaders(obj);
 
         ExternalizedResource extInfo = new ExternalizedResource(obj, externalizer,
                                                                 mimeType, headers, flags);
 
-        if ( (flags & GLOBAL) > 0 ) {
+        if ((flags & GLOBAL) > 0) {
             // session encoding is not necessary here
             return SystemExternalizeManager.getSharedInstance().externalize(extInfo);
         } else {
@@ -344,17 +333,17 @@ public abstract class AbstractExternalizeManager
 
     /**
      * externalizes (make a java object available for a browser) the object in
-     * extInfo. 
+     * extInfo.
      *
      * @return a URL for accessing the externalized object relative to the base URL.
      */
     public String externalize(ExternalizedResource extInfo) {
-        String identifier = (String)reverseExternalized.get(extInfo);
+        String identifier = (String) reverseExternalized.get(extInfo);
 
         if (identifier == null) {
             identifier = createIdentifier();
             extInfo.setId(identifier);
-            
+
             storeExternalizedResource(identifier, extInfo);
             reverseExternalized.put(extInfo, identifier);
 
@@ -369,16 +358,17 @@ public abstract class AbstractExternalizeManager
 
     /**
      * externalizes (make a java object available for a browser) the object in
-     * extInfo. 
+     * extInfo.
      *
      * @return a URL for accessing the externalized object relative to the base URL.
      */
-    public String getId(String url)
-    {
-        String result = url.substring(0, url.length()-sessionEncoding.length());
-        int pos = result.lastIndexOf(".");
-        if (pos >= 0)
-            result = result.substring(0, pos);
+    public String getId(String url) {
+        String result;
+        if (url.charAt(0) == '-') {
+            result = url;
+        } else {
+            result = url.substring(0, url.length() - sessionEncoding.length());
+        }
         return result;
     }
 
@@ -391,8 +381,8 @@ public abstract class AbstractExternalizeManager
     public void deliver(String identifier, HttpServletResponse response,
                         Device out) throws IOException {
         ExternalizedResource extInfo = getExternalizedResource(identifier);
-        
-        if ( extInfo == null ) {
+
+        if (extInfo == null) {
             logger.warning("identifier " + identifier + " not found");
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -402,8 +392,7 @@ public abstract class AbstractExternalizeManager
 
     public void deliver(ExternalizedResource extInfo, HttpServletResponse response,
                         Device out)
-        throws IOException 
-    {
+        throws IOException {
         /* FIXME: re-implement.
         if ( extInfo.deliverOnce() ) {
             removeExternalizedResource(identifier);
@@ -411,34 +400,34 @@ public abstract class AbstractExternalizeManager
         */
 
         response.setContentType(extInfo.getMimeType());
-        
+
         // FIXME find out, if this is correct: if the content length
         // is not size preserving (like a gzip-device), then we must not
         // send the content size we know..
         if (out.isSizePreserving()) {
             int resourceLen = extInfo
                 .getExternalizer().getLength(extInfo.getObject());
-            if ( resourceLen > 0 ) {
+            if (resourceLen > 0) {
                 logger.log(Level.FINER, extInfo.getMimeType() + ": " + resourceLen);
                 //response.setContentLength( resourceLen );
             }
         }
 
         Collection headers = extInfo.getHeaders();
-        if ( headers != null ) {
-            for ( Iterator it = headers.iterator(); it.hasNext(); ) {
+        if (headers != null) {
+            for (Iterator it = headers.iterator(); it.hasNext();) {
                 Map.Entry entry = (Map.Entry) it.next();
-                if ( entry.getValue() instanceof String  ) {
-                    response.addHeader( (String) entry.getKey(), 
-                                        (String) entry.getValue());
-                } else if ( entry.getValue() instanceof Date  ) {
-                    response.addDateHeader( (String) entry.getKey(), 
-                                            ((Date) entry.getValue()).getTime());
-                     
-                } else if ( entry.getValue() instanceof Integer  ) {
-                    response.addIntHeader( (String) entry.getKey(), 
-                                           ((Integer) entry.getValue()).intValue());
-                     
+                if (entry.getValue() instanceof String) {
+                    response.addHeader((String) entry.getKey(),
+                                       (String) entry.getValue());
+                } else if (entry.getValue() instanceof Date) {
+                    response.addDateHeader((String) entry.getKey(),
+                                           ((Date) entry.getValue()).getTime());
+
+                } else if (entry.getValue() instanceof Integer) {
+                    response.addIntHeader((String) entry.getKey(),
+                                          ((Integer) entry.getValue()).intValue());
+
                 } // end of if ()
             }
         }

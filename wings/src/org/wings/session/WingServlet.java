@@ -289,6 +289,8 @@ public final class WingServlet
                              (httpSession.getAttribute(lookupName)!=null));
             }
 
+            sessionServlet.getSession().getExternalizeManager().setResponse(response);
+
             return sessionServlet;
         }
     }
