@@ -315,6 +315,7 @@ public class SFileChooser
             fileId  = null;
             fileDir = null;
             fileType = null;
+            fileName = null;
         }
     }
 
