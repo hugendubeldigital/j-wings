@@ -63,6 +63,15 @@ public class SInternalFrame
         throw new IllegalArgumentException("use getContentPane().removeComponent()");
     }
 
+    
+    /**
+     * @return the number of Dialogs that belong to this SInternalFrame
+     */
+    public final int getDialogCount() {
+        return getComponentCount() - 1;
+    }
+
+
     /**
      * TODO: documentation
      */
