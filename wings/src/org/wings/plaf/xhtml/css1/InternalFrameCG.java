@@ -36,12 +36,12 @@ public class InternalFrameCG
 
     public void installCG(SComponent component) {
         super.installCG(component);
-
-        iconify = component.getSession().getCGManager().getIcon("InternalFrameCG.iconifyIcon");
-        deiconify = component.getSession().getCGManager().getIcon("InternalFrameCG.deiconifyIcon");
-        maximize = component.getSession().getCGManager().getIcon("InternalFrameCG.maximizeIcon");
-        unmaximize = component.getSession().getCGManager().getIcon("InternalFrameCG.unmaximizeIcon");
-        close = component.getSession().getCGManager().getIcon("InternalFrameCG.closeIcon");
+        CGManager cg = component.getSession().getCGManager();
+        iconify    = cg.getIcon("InternalFrameCG.iconifyIcon");
+        deiconify  = cg.getIcon("InternalFrameCG.deiconifyIcon");
+        maximize   = cg.getIcon("InternalFrameCG.maximizeIcon");
+        unmaximize = cg.getIcon("InternalFrameCG.unmaximizeIcon");
+        close      = cg.getIcon("InternalFrameCG.closeIcon");
     }
 
 
