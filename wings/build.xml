@@ -123,7 +123,7 @@
         <javadoc bottom="wingS swings ;-)" classpathref="build.classpath" destdir="${build.doc}/api" doctitle="wingS ${wings.version}" link="http://java.sun.com/j2se/1.4/docs/api/" maxmemory="128m" packagenames="org.wings.*" sourcepath="src" use="true" version="true" windowtitle="wingS ${wings.version}"/>
     </target>
 
-    <target depends="all,javadoc" name="dist">
+    <target depends="all,javadoc" name="dist"> 
         <!-- manual -->
         <mkdir dir="${dist.doc}/manual"/>
         <copy todir="${dist.doc}/manual">
@@ -165,6 +165,14 @@
                 <exclude name="**/*.u"/>
                 <exclude name="**/*~"/>
             </fileset>
+            <fileset dir="${build.src}">
+                <exclude name="**/CVS"/>
+                <exclude name="**/.*"/>
+                <exclude name="**/.*/**"/>
+                <exclude name="**/*.class"/>
+                <exclude name="**/*.u"/>
+                <exclude name="**/*~"/>
+            </fileset>                        
         </copy>
 
         <!-- demo -->
