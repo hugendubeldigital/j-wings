@@ -69,13 +69,9 @@ public class MenuPaneCG implements ComponentCG
 
     public MenuPaneCG()
     {
-        System.out.println("new MenuPaneCG");
     }
 
-    public void installCG(SComponent component) {
-        System.out.println("installCG("+component.getComponentId()+")");
-    }
-
+    public void installCG(SComponent component) { }
     public void uninstallCG(SComponent component) { }
 
     protected static final SIcon fBlindImage = 
@@ -190,7 +186,7 @@ public class MenuPaneCG implements ComponentCG
 	    	print("\">");
 	    org.wings.plaf.xhtml.Utils.printBlindIcon(d, fBlindImage, 3, 3);
 	    d.print("</td>\n");
-	    d.print("<td class=\"").print(fStyleSheet.getInnerBorderTopStyle().getName()).print("\">");
+	    d.print("<td valign=\"top\" class=\"").print(fStyleSheet.getInnerBorderTopStyle().getName()).print("\">");
         d.print("<table border=\"1\" height=\"1%\" cellspacing=\"0\" cellpadding=\"3\" width=\"");
         d.print(menuWidth);
         // small trick for konqueror(set and delete border to enable 
@@ -633,7 +629,7 @@ public class MenuPaneCG implements ComponentCG
             fContentInnerBorderStyle = contentInnerBorderStyle;
         }
 
-}
+	}
 
 
 }

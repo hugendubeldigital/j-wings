@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
@@ -122,6 +125,8 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
      * The current selected component.
      */
     protected SComponent fSelectedMenu = null;
+    
+    private Logger fLogger = Logger.getLogger("org.wingx.SMenuPane");
     
     /**
      * Constructor for SMenuPane.
@@ -313,15 +318,16 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
      */
     public void setParentFrame(SFrame f)
     {
-        System.out.println("SMenuPane.setParentFrame");
+        fLogger.entering("SMenuPane.setParentFrame", f==null?"null":f.getTitle());
+        System.out.println("SMenuPane.setParentFrame="+( f==null?"null":f.getTitle()));
         super.setParentFrame(f);
         for (int i = 0; i < fMenus.size(); i++)
              ((SMenu) fMenus.get(i)).setParentFrame(f);
 		ComponentCG cg = this.getCG();
-		System.out.println("\tcg is " + cg);
-		if (cg instanceof org.wingx.plaf.xhtml.MenuPaneCG)
+		fLogger.log(Level.FINER, "cg is " + cg);
+		if (f != null && cg instanceof org.wingx.plaf.xhtml.MenuPaneCG)
 		{
-		    System.out.println("SMemnupane.setParentFrame, Installing stylesheet ...");
+		    fLogger.log(Level.FINEST, "SMemupane.setParentFrame, Installing stylesheet ...");
 		    ((org.wingx.plaf.xhtml.MenuPaneCG) cg).installStyleSheet(this);
 		}
     }
@@ -552,8 +558,9 @@ public class SMenuPane extends SContainer implements ActionListener, PropertyCha
         ComponentCG cg = this.getCG();
         if (cg != null && cg instanceof org.wingx.plaf.xhtml.MenuPaneCG)
 		{
-		    System.out.println("SMemnupane.propertyChange("+pev.getPropertyName()+"), invalidating stylesheet");
-		    ((org.wingx.plaf.xhtml.MenuPaneCG) cg).getStyleSheet().invalidate();
+		    // System.out.println("SMemnupane.propertyChange("+pev.getPropertyName()+"), invalidating stylesheet");
+		    if (((org.wingx.plaf.xhtml.MenuPaneCG) cg).getStyleSheet() != null)
+		    	((org.wingx.plaf.xhtml.MenuPaneCG) cg).getStyleSheet().invalidate();
 		}
     }
 
