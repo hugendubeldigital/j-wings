@@ -32,62 +32,61 @@ protected void writeFormComboBox(Device device, SComboBox comboBox) throws IOExc
     javax.swing.ComboBoxModel model = comboBox.getModel();
     int size = model.getSize();
     int selected = comboBox.getSelectedIndex();
-    if (model != null) {
-        SListCellRenderer renderer = comboBox.getRenderer();
 
-        for (int i=0; i < size; i++) {
-            SComponent cellRenderer = null;
-            if (renderer != null) {
-                cellRenderer = renderer.getListCellRendererComponent(comboBox, model.getElementAt(i), false, i);
-            } else {
-                %><!--renderer==null--><%
-            }
+    SListCellRenderer renderer = comboBox.getRenderer();
 
-            %>
+    for (int i=0; i < size; i++) {
+        SComponent cellRenderer = null;
+        if (renderer != null) {
+            cellRenderer = renderer.getListCellRendererComponent(comboBox, model.getElementAt(i), false, i);
+        } else {
+            %><!--renderer==null--><%
+        }
+
+        %>
 <option<%|value=comboBox.getSelectionParameter(i)%><%
 
-            if (selected == i) {
-                %> selected="selected"<%
-            }
-
-            if (cellRenderer!=null) {
-                if (cellRenderer.getToolTipText() != null) {
-                    %> title="<%
-                    %><%=cellRenderer.getToolTipText()%><%
-                    %>"<%
-                }
-
-                org.wings.io.StringBufferDevice stringBufferDevice = getStringBufferDevice();
-                org.wings.plaf.xhtml.Utils.writeAttributes(stringBufferDevice, cellRenderer);
-                String styleString = stringBufferDevice.toString();
-                if ( styleString!=null && styleString.length()>0) {
-                    %> style="<%=styleString%>"<%
-                }
-            }
-            %>><%
-				
-		    if (cellRenderer != null) {
-	            // Hack: remove all tags, because in form selections, looks ugly.
-	            org.wings.io.StringBufferDevice string = getStringBufferDevice();
-	            cellRenderer.write(string);
-	            char[] chars = string.toString().toCharArray();
-	            int pos = 0;
-	            for (int c=0; c < chars.length; c++) {
-	                 switch (chars[c]) {
-	                 case '<':
-	                     device.print(chars, pos, c - pos);
-	                     break;
-	                 case '>':
-	                     pos = c+1;
-                     }
-	            }
-	            device.print(chars, pos, chars.length - pos);
-		    } else {
-                %><!--cellrenderer==null, use toString--><%
-		        device.print(model.getElementAt(i).toString());
-            }
-            %></option><%
+        if (selected == i) {
+            %> selected="selected"<%
         }
+
+        if (cellRenderer!=null) {
+            if (cellRenderer.getToolTipText() != null) {
+                %> title="<%
+                %><%=cellRenderer.getToolTipText()%><%
+                %>"<%
+            }
+
+            org.wings.io.StringBufferDevice stringBufferDevice = getStringBufferDevice();
+            org.wings.plaf.xhtml.Utils.writeAttributes(stringBufferDevice, cellRenderer);
+            String styleString = stringBufferDevice.toString();
+            if ( styleString!=null && styleString.length()>0) {
+                %> style="<%=styleString%>"<%
+            }
+        }
+        %>><%
+				
+	    if (cellRenderer != null) {
+	        // Hack: remove all tags, because in form selections, looks ugly.
+	        org.wings.io.StringBufferDevice string = getStringBufferDevice();
+	        cellRenderer.write(string);
+	        char[] chars = string.toString().toCharArray();
+	        int pos = 0;
+	        for (int c=0; c < chars.length; c++) {
+	             switch (chars[c]) {
+	             case '<':
+	                 device.print(chars, pos, c - pos);
+	                 break;
+	             case '>':
+	                 pos = c+1;
+                 }
+	        }
+	        device.print(chars, pos, chars.length - pos);
+	     } else {
+             %><!--cellrenderer==null, use toString--><%
+	     device.print(model.getElementAt(i).toString());
+        }
+        %></option><%
     }
 
     %>
