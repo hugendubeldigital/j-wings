@@ -137,6 +137,31 @@ public class SScrollPane
 
     public Scrollable getScrollable() { return scrollable; }
 
+    /**
+      * Creates a viewport if neccessary and then sets its view. Applications 
+      * that don't provide the view directly to the SScrollPane constructor
+      * should use this method to specify the scrollable child that's going
+      * to be displayed in the scrollpane, e.g.:
+      * <pre><code>
+      *     SScrollPane scrollpane = new SScrollPane();
+      *     scrollpane.setViewportView(myBigComponentToScroll);
+      * </code></pre>
+      * @param view the Component to add to the viewport
+      */
+    public void setViewportView(SComponent view) {
+        addComponent(view, "");
+    }
+
+
+
+    /**
+      * Add a new SComponent to this ScrollPane.
+      * This behaves like JScrollPane.setViewportView, it replaces
+      * the former component in this scrollpane.
+      * @param c the component to scroll.
+      * It should implement {@link org.wings.Scrollable}
+      * @param constraint not used, any object but not <code>null</code>!
+      */
     public SComponent addComponent(SComponent c, Object constraint) {
         SComponent ret;
         if (c instanceof Scrollable) {
@@ -170,6 +195,8 @@ public class SScrollPane
      */
     public void setHorizontalExtent(int horizontalExtent) {
         this.horizontalExtent = horizontalExtent;
+        if (horizontalScrollBar != null)
+            horizontalScrollBar.setVisibleAmount(horizontalExtent);
     }
 
     /**
@@ -188,6 +215,8 @@ public class SScrollPane
      */
     public void setVerticalExtent(int verticalExtent) {
         this.verticalExtent = verticalExtent;
+        if (verticalScrollBar != null)
+            verticalScrollBar.setVisibleAmount(verticalExtent);
     }
 
     /**
