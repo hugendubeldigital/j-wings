@@ -31,6 +31,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.wings.*;
 import org.wings.util.*;
+import org.wings.io.Device;
+import org.wings.io.ServletDevice;
 import org.wings.session.Session;
 import org.wings.session.PropertyService;
 import org.wings.externalizer.SystemExternalizeManager;
@@ -281,7 +283,7 @@ public abstract class WingServlet extends HttpServlet
     }
 
     public final SessionServlet getSessionServlet(HttpServletRequest request,
-                                                  HttpServletResponse response) 
+                                                  HttpServletResponse response)
         throws ServletException 
     {
         HttpSession session = request.getSession(false);
@@ -343,8 +345,8 @@ public abstract class WingServlet extends HttpServlet
                             HttpServletResponse response)
         throws ServletException, IOException
     {
-        org.wings.util.TimeMeasure m = new TimeMeasure();
-        m.start("doGet");
+        //org.wings.util.TimeMeasure m = new TimeMeasure();
+        //m.start("doGet");
         try {
             /* 
              * make sure, that our context ends with '/'. Otherwise redirect
@@ -381,8 +383,15 @@ public abstract class WingServlet extends HttpServlet
              */
             if ( isSystemExternalizeRequest(req) ) {
                 String identifier = pathInfo.substring(1);
-                SystemExternalizeManager.getSharedInstance()
-                    .deliver(identifier, response);
+                AbstractExternalizeManager extManager = 
+                    SystemExternalizeManager.getSharedInstance();
+                ExternalizedInfo extInfo = extManager
+                    .getExternalizedInfo(identifier);
+                if (extInfo != null) {
+                    extManager.deliver(extInfo, response,
+                                       createOutputDevice(req, response, 
+                                                          extInfo));
+                }
                 return;
             }
 
@@ -401,9 +410,35 @@ public abstract class WingServlet extends HttpServlet
             throw new ServletException(e);
         }
         finally {
-            m.stop();
-            logger.fine(m.print());
+            //m.stop();
+            //logger.fine(m.print());
         }
+    }
+
+    /**
+     * create a Device that is used to deliver the content, that is
+     * not session specific, i.e. that is delivered by the SystemExternalizer.
+     * The default
+     * implementation just creates a ServletDevice. You can override this
+     * method to decide yourself what happens to the output. You might, for
+     * instance, write some device, that logs the output for debugging
+     * purposes, or one that creates a gziped output stream to transfer
+     * data more efficiently. You get the request and response as well as
+     * the ExternalizedInfo to decide, what kind of device you want to create.
+     * You can rely on the fact, that extInfo is not null.
+     * Further, you can rely on the fact, that noting has been written yet
+     * to the output, so that you can set you own set of Headers.
+     *
+     * @param request  the HttpServletRequest that is answered
+     * @param response the HttpServletResponse.
+     * @param extInfo  the externalized info of the resource about to be
+     *                 delivered.
+     */
+    protected Device createOutputDevice(HttpServletRequest request,
+                                        HttpServletResponse response,
+                                        ExternalizedInfo extInfo) 
+        throws IOException {
+        return new ServletDevice(response.getOutputStream());
     }
 }
 

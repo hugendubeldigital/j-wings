@@ -25,7 +25,10 @@ import javax.servlet.http.*;
 import org.wings.*;
 
 import org.wings.externalizer.ExternalizeManager;
+import org.wings.externalizer.ExternalizedInfo;
 import org.wings.io.ServletDevice;
+import org.wings.io.Device;
+import org.wings.util.ComponentVisitor;
 import org.wings.session.*;
 import org.wings.util.DebugUtil;
 import org.wings.util.TimeMeasure;
@@ -364,11 +367,11 @@ public abstract class SessionServlet
      *
      * @return set the frame(set) for this session
      */
-    public final void setFrame(SFrame frame) {
-        if (this.frame != null)
-          frame.setRequestURL(this.frame.getRequestURL());
+    public final void setFrame(SFrame newFrame) {
+        if (frame != null && newFrame != null)
+          newFrame.setRequestURL(frame.getRequestURL());
 
-        this.frame = frame;
+        frame = newFrame;
     }
 
     /**
@@ -488,6 +491,7 @@ public abstract class SessionServlet
         }
         // in case, the previous thread did not clean up.
         SForm.clearArmedComponents();
+        Device outputDevice = null;
 
         try {
             /*
@@ -603,13 +607,18 @@ public abstract class SessionServlet
                     getSession().getReloadManager().invalidateResources();
                 }
 
-                // deliver resource
-                // the externalizer is able to handle static and dynamic resources
+                // deliver resource. The
+                // externalizer is able to handle static and dynamic resources
                 ExternalizeManager extManager = getSession().getExternalizeManager();
                 String pathInfo = req.getPathInfo().substring(1);
                 logger.fine("pathInfo: " + pathInfo);
 
-                // no pathInfo .. getFrame()
+                /*
+                 * if we have no path info, or the special '_' path info
+                 * (that should be explained somewhere, Holger), then we
+                 * deliver the toplevel Frame of this application.
+                 */
+                String externalizeIdentifier = null;
                 if (pathInfo == null 
                     || pathInfo.length() == 0 
                     || "_".equals(pathInfo) 
@@ -619,10 +628,19 @@ public abstract class SessionServlet
                     
                     DynamicResource resource
                         = (DynamicResource)getFrame().getDynamicResource(DynamicCodeResource.class);
-                    extManager.deliver(resource.getId(), response);
+                    externalizeIdentifier = resource.getId();
                 }
-                else
-                    extManager.deliver(pathInfo, response);
+                else {
+                    externalizeIdentifier = pathInfo;
+                }
+
+                // externalized this resource.
+                ExternalizedInfo extInfo = extManager
+                    .getExternalizedInfo(externalizeIdentifier);
+                if (extInfo != null) {
+                    outputDevice = createOutputDevice(req, response, extInfo);
+                    extManager.deliver(extInfo,response,outputDevice);
+                }
 
                 if (logger.isLoggable(Level.FINER)) {
                     measure.stop();
@@ -637,6 +655,9 @@ public abstract class SessionServlet
                 throw new ServletException(e);
             }
             finally {
+                if (outputDevice != null) {
+                    try { outputDevice.close(); } catch (Exception e) {}
+                }
                 finalizeRequest(req, response);
             }
         }
@@ -646,12 +667,45 @@ public abstract class SessionServlet
         }
     }
 
-    protected void prepareRequest(HttpServletRequest req, HttpServletResponse response) {}
+    /**
+     * create a Device that is used to deliver the content, that is
+     * session specific.
+     * The default
+     * implementation just creates a ServletDevice. You can override this
+     * method to decide yourself what happens to the output. You might, for
+     * instance, write some device, that logs the output for debugging
+     * purposes, or one that creates a gziped output stream to transfer
+     * data more efficiently. You get the request and response as well as
+     * the ExternalizedInfo to decide, what kind of device you want to create.
+     * You can rely on the fact, that extInfo is not null.
+     * Further, you can rely on the fact, that noting has been written yet
+     * to the output, so that you can set you own set of Headers.
+     *
+     * @param request  the HttpServletRequest that is answered
+     * @param response the HttpServletResponse.
+     * @param extInfo  the externalized info of the resource about to be
+     *                 delivered.
+     */
+    protected Device createOutputDevice(HttpServletRequest request,
+                                        HttpServletResponse response,
+                                        ExternalizedInfo extInfo) 
+        throws IOException {
+        return new ServletDevice(response.getOutputStream());
+    }
 
-    protected void processRequest(HttpServletRequest req, HttpServletResponse response)
+    protected void prepareRequest(HttpServletRequest req,
+                                  HttpServletResponse response) {}
+
+    protected void processRequest(HttpServletRequest req,
+                                  HttpServletResponse response)
         throws ServletException, IOException {}
 
-    protected void finalizeRequest(HttpServletRequest req, HttpServletResponse response) {}
+    /**
+     * called after all data has been delivered and the output stream
+     * is already closed.
+     */
+    protected void finalizeRequest(HttpServletRequest req,
+                                   HttpServletResponse response) {}
 
     // Exception Handling
 
@@ -660,7 +714,9 @@ public abstract class SessionServlet
     private SLabel errorStackTraceLabel;
     private SLabel errorMessageLabel;
 
-    protected void handleException(HttpServletRequest req, HttpServletResponse res, Throwable e) {
+    protected void handleException(HttpServletRequest req, 
+                                   HttpServletResponse res, Throwable e) 
+    {
         try {
             if (errorFrame == null) {
                 errorFrame = new SFrame();
@@ -764,8 +820,15 @@ public abstract class SessionServlet
         try {
             SFrame f = getFrame();
             // traverse all frames in a frameset ?
-            if (f != null && f.getContentPane() != null)
+            if (f != null && f.getContentPane() != null) {
                 f.getContentPane().removeAll();
+            }
+            // hint the gc.
+            setFrame(null);
+            setParent(null);
+            getSession().setExternalizeManager(null);
+            getSession().setReloadManager(null);
+            session = null;
             // remove all elements in ExternalizerCache ?
         }
         catch (Exception e) {
@@ -780,7 +843,6 @@ public abstract class SessionServlet
                 logger.fine("free mem after gc: " + rt.freeMemory());
         }
     }
-
 
     public static final void debug(String msg) {
         logger.fine(msg);
