@@ -22,6 +22,10 @@ import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 
+/**
+ * CG for a scrollbar.
+ * @author <a href="mailto:andre.lison@general-bytes.com">Andre Lison</a>
+ */
 public class ScrollBarCG
     extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.ScrollBarCG
@@ -55,7 +59,9 @@ public class ScrollBarCG
         
         SScrollBar sb = (SScrollBar)c;
 
-        d.print("<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\"><tr>");
+        d.print("<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" class=\"");
+        d.print(sb.getStyle()!=null?sb.getStyle():"scrollbar");
+        d.print("\"><tr>");
         writePrefix(d, sb);
         writePostfix(d, sb);
         d.print("</tr></table>");

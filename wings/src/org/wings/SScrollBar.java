@@ -316,7 +316,7 @@ public class SScrollBar
             clickables[BACKWARD].setEvent(getEventParameter(getValue()-1));
             int first = getMinimum();
             clickables[FIRST].setEvent(getEventParameter(first));
-            int blockValue = Math.min(first,
+            int blockValue = Math.max(first,
                                       getValue()-getBlockIncrement());
             clickables[BACKWARD_BLOCK].setEvent(getEventParameter(blockValue));
         }

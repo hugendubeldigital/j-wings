@@ -310,3 +310,8 @@ FORM {
    font-size: 12px;
    color: #000000;
 }
+
+.scrollbar {
+	font-size: 1px;
+	border-width: 0px;
+}
