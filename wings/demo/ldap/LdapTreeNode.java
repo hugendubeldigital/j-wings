@@ -69,7 +69,7 @@ public class LdapTreeNode implements TreeNode {
     public Enumeration children() {
 	if (children == null )getChildren();
 	return Collections.enumeration(children);
-    };
+    }
     
     private void getChildren() {
 	NamingEnumeration results = worker.list(dn);

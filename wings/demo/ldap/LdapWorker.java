@@ -222,138 +222,13 @@ public class LdapWorker
 	try {
 	    a = ctx.getAttributes(dn);
 	    e = a.getAll();
-	    /*while (e != null && e.hasMoreElements()) {
-		BasicAttribute ba = (BasicAttribute)e.next();
-		int i = 0;
-		int size = ba.size();
-		if (size > 1) {
-		    ArrayList al = new ArrayList();
-		    while (i < size) {
-			al.add(ba.get(i));
-			System.out.println("attribut" + ba.getID() + ba.get(i) + "bei " + i);
-			i++;
-		    }
-		    h.put(ba.getID(),al);
-		}
-		else {
-		    ArrayList al = new ArrayList();
-		    System.out.println("attribut " + ba);
-		    if (ba.get() == null)
-			al.add("");
-		    else
-			al.add(ba.get());
-		    h.put(ba.getID(),al);
-		}
-		}*/
 	}
 	catch (NamingException exc) {
 	}
-	/*Enumeration enum = h.keys();
-	while (enum !=null  && enum.hasMoreElements()) {
-	    Object key = enum.nextElement();
-	    ArrayList al = (ArrayList)(h.get(key));
-	    int index = 0;
-	    while (index<al.size()) {
-		System.out.println("das ist ein attr" + (String)key + al.get(index));
-		index++;
-	    }
-	}
-	
-	Vector objectAttributes = getObjectAttributes(dn);
-	
-	Enumeration en = h.keys();
-	while (en != null && en.hasMoreElements()) {
-	    Object key = en.nextElement();
-	    if (objectAttributes.contains((String)key)) 
-		objectAttributes.remove((String)key);
-	}
-	
-	Enumeration er  = objectAttributes.elements();
-	
-	
-	
-	while (er!=null && er.hasMoreElements()) {
-	    ArrayList al = new ArrayList();
-	    al.add("");
-	    h.put((String)er.nextElement(),al);
-	    }*/
-	
-	
 	
 	return (a);
     }
     
-    /*public Hashtable getDNAttributes(String dn)
-    {
-	ArrayList attrList = new ArrayList();
-	Hashtable h = new Hashtable();
-	Attributes a;
-	NamingEnumeration e;
-	try {
-	    a = ctx.getAttributes(dn);
-	    e = a.getAll();
-	    while (e != null && e.hasMoreElements()) {
-		BasicAttribute ba = (BasicAttribute)e.next();
-		int i = 0;
-		int size = ba.size();
-		if (size > 1) {
-		    ArrayList al = new ArrayList();
-		    while (i < size) {
-			al.add(ba.get(i));
-			System.out.println("attribut" + ba.getID() + ba.get(i) + "bei " + i);
-			i++;
-		    }
-		    h.put(ba.getID(),al);
-		}
-		else {
-		    ArrayList al = new ArrayList();
-		    System.out.println("attribut " + ba);
-		    if (ba.get() == null)
-			al.add("");
-		    else
-			al.add(ba.get());
-		    h.put(ba.getID(),al);
-		}
-	    }
-	}
-	catch (NamingException exc) {
-	}
-	Enumeration enum = h.keys();
-	while (enum !=null  && enum.hasMoreElements()) {
-	    Object key = enum.nextElement();
-	    ArrayList al = (ArrayList)(h.get(key));
-	    int index = 0;
-	    while (index<al.size()) {
-		System.out.println("das ist ein attr" + (String)key + al.get(index));
-		index++;
-	    }
-	}
-	
-	Vector objectAttributes = getObjectAttributes(dn);
-	
-	Enumeration en = h.keys();
-	while (en != null && en.hasMoreElements()) {
-	    Object key = en.nextElement();
-	    if (objectAttributes.contains((String)key)) 
-		objectAttributes.remove((String)key);
-	}
-	
-	Enumeration er  = objectAttributes.elements();
-	
-	
-	
-	while (er!=null && er.hasMoreElements()) {
-	    ArrayList al = new ArrayList();
-	    al.add("");
-	    h.put((String)er.nextElement(),al);
-	    }
-	
-	
-	
-	return (h);
-    }
-    
-    */
 
     public Vector getObjectAttributes(String dn) {
 	
@@ -415,10 +290,66 @@ public class LdapWorker
 	return results;
 	
     }
+
+    public Object getOAttributeValues (String o,String attr) {
+	Object val = null;
+	try {
+	    Attributes matchAttrs = new BasicAttributes(true); // ignore attribute name case
+	    matchAttrs.put(new BasicAttribute(attr));
+	    matchAttrs.put(new BasicAttribute("cn", o));
+	    //Search for objects that have those matching attributes
+	    NamingEnumeration enum = ctx.search("dc=tiscon,dc=de", matchAttrs);
+	    
+	    
+	    while (enum.hasMore()) {
+		SearchResult sr = (SearchResult)enum.next();
+		System.out.println(">>>" + sr.getName());
+	     BasicAttributes bas = (BasicAttributes)sr.getAttributes();
+	     BasicAttribute ba = (BasicAttribute)bas.get(attr);
+	     val = ba.get();
+		 }
+	}
+	catch(NamingException u) {
+	}
+	
+	return val;
+    }
+    
+
+    public ArrayList  getAttributeValues(String attribute) {
+	
+	ArrayList attrList = new ArrayList();
+
+	try {
+
+	Attributes matchAttrs = new BasicAttributes(true); // ignore attribute name case
+	matchAttrs.put(new BasicAttribute("cn"));
+         
+         // Search for objects that have those matching attributes
+	NamingEnumeration enum = ctx.search("dc=tiscon,dc=de", matchAttrs);
+
+     
+         while (enum.hasMore()) {
+             SearchResult sr = (SearchResult)enum.next();
+             System.out.println(">>>" + sr.getName());
+	     BasicAttributes ba = (BasicAttributes)sr.getAttributes();
+	     BasicAttribute cn = (BasicAttribute)ba.get("cn");
+	     attrList.add(cn.get());
+	 }
+	}
+	catch(NamingException u) {
+	}
+	return attrList;
+    }
+
     
     private NamingEnumeration search(String dn, String filter, String []attribs,
 				     int type) 
 	throws NamingException {
+	System.out.println(dn);
+	System.out.println(filter);
+	System.out.println(attribs[0]);
+	System.out.println(type);
 	
 	/* specify search constraints to search subtree */
 	SearchControls constraints = new SearchControls();
@@ -429,7 +360,9 @@ public class LdapWorker
 	constraints.setReturningAttributes(attribs);
 	
 	NamingEnumeration results = ctx.search(dn, filter, constraints);	
-	if (results == null) System.out.println("nichts im result");
+	if (results == null) 
+	    System.out.println("nichts im result");
+	
 	return results;
 	
     }
