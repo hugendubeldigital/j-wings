@@ -1,0 +1,16 @@
+<template name="Anchor" for="org.wings.SAnchor">
+
+<write>
+<%
+SBorder border = component.getBorder();
+Utils.renderBorderPrefix(device, border);
+%><a<% 
+Utils.printOptAttr(device, "name", component.getName());
+Utils.printOptAttr(device, "href", component.getReference());
+%>><%
+Utils.renderContainer(device, component);
+%></a><%
+Utils.renderBorderPrefix(device, border);
+%>
+</write>
+</template>

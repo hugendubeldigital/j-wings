@@ -1,5 +1,4 @@
 <template name="Button" for="org.wings.SButton">
-<%@ include file="common.plaf">
 
 <%!void foo() {%>
   Hallo Welt

@@ -1,9 +1,8 @@
 <template name="LineBreak" for="org.wings.LineBreak">
-<%@ include file="common.plaf"%>
 
 <write>
 <br<% 
-printStyle(component.getStyle());
+Utils.printStyle(device, component.getStyle());
 switch (component.getClear()) {
    case SLineBreak.CLEAR_ALL  : %> clear="all"<%; break;
    case SLineBreak.CLEAR_LEFT : %> clear="left"<%; break;

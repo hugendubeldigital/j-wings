@@ -1,11 +1,10 @@
 <template name="Separator" for="org.wings.SSeparator">
-<%@ include file="common.plaf"%>
 
 <write>
 <hr<% 
-printStyle(component.getStyle());
-printOptAttr("width", component.getWidth());
-printOptAttr("size", component.getSize());
+Utils.printStyle(device, component.getStyle());
+Utils.printOptAttr(device, "width", component.getWidth());
+Utils.printOptAttr(device, "size", component.getSize());
 switch (component.getAlignment()) {
    case SSeparator.RIGHT_ALIGN : %> align="right"<%; break;
    case SSeparator.CENTER_ALIGN: %> align="center"<%; break;
