@@ -66,7 +66,7 @@ public class STabbedPane
      * container for all tabs. The card layout shows always one on
      * top.
      */
-    final SContainer contents = new SContainer(card);
+    final SContainer contents = new SPanel(card);
 
     /**
      * All tabs are buttons, that are handled in this button
@@ -78,7 +78,7 @@ public class STabbedPane
     /** the maximum tabs per line */
     protected int maxTabsPerLine = -1;
 
-    SContainer buttons = new SContainer();
+    SContainer buttons = new SPanel();
     ArrayList changeListener = new ArrayList(2);
 
     /** The style of selected tabs */

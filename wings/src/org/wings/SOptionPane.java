@@ -119,23 +119,23 @@ public class SOptionPane
     /**
      * ContentPane with border layout.
      */
-    private final SContainer contents = new SContainer(new SBorderLayout());
+    private final SContainer contents = new SPanel(new SBorderLayout());
 
     /**
      * Die Message des OptionPanes wird hier rein getan.
      */
-    private final SContainer optionData = new SContainer(new SFlowDownLayout());
+    private final SContainer optionData = new SPanel(new SFlowDownLayout());
 
     /**
      * Die Message des OptionPanes wird hier rein getan.
      */
-    private final SContainer images = new SContainer();
+    private final SContainer images = new SPanel();
 
     /**
      * TODO: documentation
      */
     protected final SContainer optionButtons =
-        new SContainer(new SFlowLayout( RIGHT ));
+        new SPanel(new SFlowLayout( RIGHT ));
 
     /**
      * TODO: documentation
@@ -319,7 +319,7 @@ public class SOptionPane
         resetOptions();
 
         if ( customButtons==null )
-            customButtons = new SContainer();
+            customButtons = new SPanel();
 
         for ( int i=0; i<options.length; i++ ) {
             if ( options[i] instanceof SComponent ) {
