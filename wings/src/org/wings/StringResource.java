@@ -32,7 +32,7 @@ public class StringResource
 {
     private final String string;
 
-    private final String id;
+    private String id;
 
     /**
      * Flags that influence the behaviour of the externalize manager
@@ -53,9 +53,6 @@ public class StringResource
 
 	this.string = string;
 	this.externalizerFlags = externalizerFlags;
-
-	ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
-	id = ext.getId(ext.externalize(this, externalizerFlags));
     }
 
     /**
@@ -67,14 +64,23 @@ public class StringResource
 	return string.length();
     }
 
+    /**
+     * Get the id that identifies this resource as an externalized object.
+     * If the object has not been externalized yet, it will be externalized.
+     * @return the externalization id
+     */
     public String getId() {
-	return id;
+        if (id == null) {
+            ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
+            id = ext.getId(ext.externalize(this, externalizerFlags));
+        }
+        return id;
     }
 
     public SimpleURL getURL() {
-        String name = getId();
-        if (extension != null)
-            name += "." + extension;
+        String name = extension!=null ? 
+	    getId() + "." + extension : 
+	    getId();
 
         // append the sessionid, if not global
         if ((externalizerFlags & ExternalizeManager.GLOBAL) > 0) {
@@ -96,8 +102,11 @@ public class StringResource
         return externalizerFlags;
     }
 
+    private PropertyService propertyService;
     protected PropertyService getPropertyService() {
-	return (PropertyService)SessionManager.getSession();
+        if (propertyService == null)
+            propertyService = (PropertyService)SessionManager.getSession();
+        return propertyService;
     }
 
 }
