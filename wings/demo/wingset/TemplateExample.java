@@ -41,14 +41,17 @@ public class TemplateExample
         SForm c = new SForm();
 
         try {
-            STemplateLayout layout = new STemplateLayout( "/tmp/TemplateExample.thtml" );
+            java.net.URL templateURL = getClass()
+                .getResource("/wingset/TemplateExample.thtml");
+            // you can of course directly give files here.
+            STemplateLayout layout = new STemplateLayout( templateURL );
             c.setLayout( layout );
         }
         catch ( java.io.IOException except ) {
             except.printStackTrace();
         }
 
-        c.add(new SLabel ((new java.util.Date()).toString()), "derLabel");
+        c.add(new SLabel ((new java.util.Date()).toString()), "theLabel");
         c.add(new SButton ("Button"), "TESTBUTTON");
         c.add(new STextField (), "NAME");
         c.add(new STextField (), "VORNAME");

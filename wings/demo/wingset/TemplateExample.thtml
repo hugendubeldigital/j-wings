@@ -1,20 +1,25 @@
-<table bgcolor=#DDDDDD>
+<h4 align=center>Using Templates as LayoutManager</h4>
+<table bgcolor=#EEEEEE>
 <tr><td>
 This is an example for the Template Layout Manager. Like any
 other layout manager it allows to place arbitrary elements, but you can
 write a simple HTML-page being the template for your components. Thus,
-this is a very flexible approach.
-For example input fields or whole trees.
+this is a very flexible approach. The <em>constraints</em> of this
+layout manager is are just the names of the components. The
+<hr size=1 noshade><code>&lt;object name=&quot;compname&quot;&gt&lt;/object&gt;</code><hr size=1 noshade> are
+replaced by the actual component.
+In this example input fields or whole trees in hideously colored tables:
 <table cellpadding=2>
-<tr bgcolor=blue><td>Name:</td><td><component name="NAME"></component></td>
-<td rowspan=2 bgcolor=red>
- <component name="BAUM"></component>
-</td>
+<tr bgcolor=blue>
+   <td>Name:</td><td><object name="NAME">Name-object</object></td>
+   <td rowspan=2 bgcolor=red><object name="BAUM"></object></td>
 </tr>
-<tr valign=top bgcolor=lightgreen><td>Vorname:</td><td><component name="VORNAME"></component></td></tr>
+<tr valign=top bgcolor=lightgreen>
+   <td>Vorname:</td><td><object name="VORNAME"></object></td>
+</tr>
 </table>
-or consider labels: <b><component name="derLabel"></component></b>
-or buttons <component name="TESTBUTTON"></component>.
+or consider labels: <b><object name="theLabel"></object></b>
+or buttons <object name="TESTBUTTON"></object>.
 This layout Manager caches the intermediate result of the internal
 parse stage, thus it is very fast generating pages.
 </td></tr>
