@@ -182,7 +182,7 @@ public class SForm
                                         actionCommand);
                 }
                 ((ActionListener)listeners[i+1]).actionPerformed(e);
-            }
+            } 
         }
     }
 
@@ -227,32 +227,45 @@ public class SForm
             // hopefully there is only one form ;-)
             LowLevelEventListener form = null;
             Iterator iterator = armedComponents.iterator();
+            LinkedList formEvents = null;
             while (iterator.hasNext()) {
                 component = (LowLevelEventListener)iterator.next();
-
+                // fire form events at last
+                // there could be more than one form event (e.g. mozilla posts a
+                // hidden element even if it is in a form outside the posted
+                // form (if the form are nested
                 if ( component instanceof SForm ) {
-                    form = component;
+                    if ( formEvents==null ) {
+                        formEvents = new LinkedList();
+                    } // end of if ()
+                    formEvents.add(component);
                 } else {
                     component.fireIntermediateEvents();
                 }
             }
-            if ( form!=null ) {
-                form.fireIntermediateEvents();
-                form = null;
+
+            if ( formEvents!=null ) {
+                iterator = formEvents.iterator();
+                while ( iterator.hasNext() ) {
+                    ((SForm)iterator.next()).fireIntermediateEvents();
+                }
             }
 
             iterator = armedComponents.iterator();
             while (iterator.hasNext()) {
                 component = (LowLevelEventListener)iterator.next();
-                if ( component instanceof SForm ) {
-                    form = component;
-                } else {
+                // fire form events at last
+                if ( !(component instanceof SForm) ) {
                     component.fireFinalEvents();
                 }
             }
-            if ( form!=null ) {
-                form.fireFinalEvents();
-                form = null;
+
+            if ( formEvents!=null ) {
+                iterator = formEvents.iterator();
+                while ( iterator.hasNext() ) {
+                    ((SForm)iterator.next()).fireFinalEvents();
+                }
+                formEvents.clear();
             }
         }
         finally {
