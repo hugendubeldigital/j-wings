@@ -1,11 +1,12 @@
 package ldap;
 
 import java.awt.event.*; 
+import java.io.*; 
 import java.util.*;
 import java.util.logging.*;
 import javax.naming.*;
-import javax.swing.tree.*;
 import javax.naming.directory.*;
+import javax.swing.tree.*;
 
 import org.wings.*;
 import org.wings.session.*;
@@ -15,9 +16,7 @@ public class EditObjectPanel
 {
     private final static Logger logger = Logger.getLogger("ldap");
 
-    ResourceBundle objectClassBundle;
-    ResourceBundle attributeBundle;
-
+    Properties attributeOrdering;
     Attributes backedAttributes;
 
     SLabel dnLabel;
@@ -34,9 +33,15 @@ public class EditObjectPanel
     {
         super(new SFlowDownLayout());
         //setEncodingType("multipart/form-data");
-        
-        //objectClassBundle = ResourceBundle.getBundle("ldap.objectclass.names", getSession().getLocale());
-        //attributeBundle = ResourceBundle.getBundle("ldap.attribute.names", getSession().getLocale());
+
+        attributeOrdering = new Properties();
+        try {
+            InputStream in = getClass().getResourceAsStream("attributeorder.properties");
+            attributeOrdering.load(in);
+        }
+        catch (Exception e) {
+	    logger.log(Level.WARNING, "no attribute ordering", e);
+        }
 
         dnLabel = new SLabel();
         add(dnLabel);
@@ -59,7 +64,6 @@ public class EditObjectPanel
         removeButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
                     remove();
-                    //editor.removeAll();
                 }
             });
         buttons.add(removeButton);
@@ -80,6 +84,10 @@ public class EditObjectPanel
 	Attribute objectClassAttribute = attributes.get("objectClass");
 	String objectClass = (String)objectClassAttribute.get();
 	List definitions = LDAP.getClassDefinitions(getSchema(), objectClass);
+
+        String order = attributeOrdering.getProperty(objectClass);
+        if (order != null)
+            editor.setSorter(new AttributeOrderComparator(order));
 
 	editor.clearClassDefinitions();
 	Iterator it = definitions.iterator();

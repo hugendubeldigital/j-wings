@@ -16,8 +16,7 @@ public class AddObjectPanel
 {
     private final static Logger logger = Logger.getLogger("ldap");
 
-    private static String OBJECTCLASS = "objectClass";
-    static Properties dn;
+    Properties dn;
     
     ResourceBundle objectClassBundle;
     ResourceBundle attributeBundle;
@@ -162,10 +161,7 @@ public class AddObjectPanel
             }
             
             Attributes attributes = editor.getData();
-            //vielleicht muss if wieder weg
-            if (attributes !=null) {
-                Attributes specifiedAttributes = new BasicAttributes();
-
+            Attributes specifiedAttributes = new BasicAttributes();
             NamingEnumeration enum = attributes.getAll();
             HashMap dnMap = new HashMap();
 	    while (enum.hasMore()) {
@@ -218,7 +214,6 @@ public class AddObjectPanel
             cancelButton.setVisible(false);
             addButton.setVisible(true);
             objectClassList.setVisible(true);
-            }
         }
 	catch (InvalidAttributeValueException e) {
 	    String message = e.getMessage();
@@ -234,7 +229,6 @@ public class AddObjectPanel
 	catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
 	}
-        
     }
 
     protected void cancel() {
