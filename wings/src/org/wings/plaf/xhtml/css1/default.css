@@ -5,32 +5,6 @@ BODY {
    border-width: 0
 }
 
-P { 
-   font-family: sans-serif;
-   font-weight: normal;
-   font-style: normal;
-   text-align: left
-}
-
-B { 
-   font-weight: bold
-}
-
-EM { 
-   font-style: normal;
-   color: #990000
-}
-
-STRONG { 
-   font-weight: bold;
-   color: #990000 
-}
-
-SMALL { 
-   font-size: 80%;
-   color: #000044 
-}
-
 A:link { 
    color: #000066;
    text-decoration: none
@@ -49,24 +23,6 @@ A:visited {
 HR { 
    margin-top: 0;
    margin-bottom: 0 
-}
-
-H1 { 
-   font-size: 130%;
-   font-weight: bold;
-   font-family: sans-serif 
-}
-
-H2 { 
-   font-size: 110%;
-   font-weight: bold;
-   font-family: sans-serif 
-}
-
-H3 {
-   font-size: 100%;
-   font-weight: bold;
-   font-family: sans-serif 
 }
 
 FORM {
