@@ -121,19 +121,22 @@ public class SGetAddress
     }
 
     /**
-     * Add an additional paramter to this Address
-     * @param parameter
-     * @return
+     * Add an additional parameter to be included in the GET paramter
+     * list. Usually, this paramter will be in the form 'name=value'.
+     *
+     * @param parameter to be included in the GET parameters.
+     * @return this SGetAddress that simplifies 'chaining'
      */
-    public SGetAddress add(String parameter) {
-        return addParameter(parameter);
-    }
+    //public SGetAddress add(String parameter) {
+    // return addParameter(parameter);
+    //}
     
     /**
-     * TODO: documentation
+     * Add an additional parameter to be included in the GET paramter
+     * list. Usually, this paramter will be in the form 'name=value'.
      *
-     * @param parameter
-     * @return
+     * @param parameter to be included in the GET parameters.
+     * @return this SGetAddress that simplifies 'chaining'
      */
     public SGetAddress addParameter(String parameter) {
         if (parameter!=null) {
@@ -147,7 +150,7 @@ public class SGetAddress
     }
 
     /**
-     * removes all parameters.
+     * clear all additional paramters given in the {@link #addParameter()} call.
      */
     public void clear() {
         if (parameters != null) {
@@ -156,8 +159,10 @@ public class SGetAddress
     }
 
     /**
-     * writes the context Address to the output Device. Tries to avoid
-     * charset conversion as much as possible by precalculating the
+     * Writes the context Address to the output Device. Appends all
+     * parameters given. Only the context URL is given, since all GET urls generated
+     * by wings are relative to the WingS servlet.
+     * Tries to avoid charset conversion as much as possible by precalculating the
      * byteArray representation of the non-parameter part.
      *
      * @param d the Device to write to 
@@ -175,7 +180,8 @@ public class SGetAddress
     }
 
     /**
-     * TODO: documentation
+     * Returns the string representation of the context URL plus
+     * all paramters given.
      *
      * @return
      */
