@@ -6,15 +6,15 @@ write a simple HTML-page being the template for your components. Thus,
 this is a very flexible approach.
 For example input fields or whole trees.
 <table cellpadding=2>
-<tr bgcolor=blue><td>Name:</td><td><component name=NAME></component></td>
+<tr bgcolor=blue><td>Name:</td><td><component name="NAME"></component></td>
 <td rowspan=2 bgcolor=red>
- <component name=BAUM></component>
+ <component name="BAUM"></component>
 </td>
 </tr>
-<tr valign=top bgcolor=lightgreen><td>Vorname:</td><td><component name=VORNAME></component></td></tr>
+<tr valign=top bgcolor=lightgreen><td>Vorname:</td><td><component name="VORNAME"></component></td></tr>
 </table>
 or consider labels: <b><component name="derLabel"></component></b>
-or buttons <component name=TESTBUTTON></component>.
+or buttons <component name="TESTBUTTON"></component>.
 This layout Manager caches the intermediate result of the internal
 parse stage, thus it is very fast generating pages.
 </td></tr>
