@@ -389,7 +389,7 @@ public class SOptionPane
 
     /*
      * The chosen option.
-     * @see #OK_OPTION
+     * @see #OK_OPTIONhttp://localhost:8080/RLSAdmin/Admin/mP1
      * @see #YES_OPTION
      * @see #CANCEL_OPTION
      * @see #NO_OPTION
@@ -399,11 +399,11 @@ public class SOptionPane
     }
 
     private final void initPanel() {
-        optionButtons.add(optionOK);
-        optionButtons.add(optionYes);
-        optionButtons.add(optionCancel);
-        optionButtons.add(optionNo);
-        optionButtons.add(optionReset);
+        optionButtons.add(optionOK, "OK");
+        optionButtons.add(optionYes, "YES");
+        optionButtons.add(optionCancel, "CANCEL");
+        optionButtons.add(optionNo, "NO");
+        optionButtons.add(optionReset, "RESET");
         
         /*    images.add(messageLabel);
               messageLabel.setToolTipText("info");
@@ -808,7 +808,7 @@ public class SOptionPane
      */
     public static void showConfirmDialog(SComponent parent, Object message, 
                                          String title, int type) {
-        showConfirmDialog(parent, message, title, null);
+        showConfirmDialog(parent, message, title, type, null);
     }
 
     /**
@@ -816,10 +816,22 @@ public class SOptionPane
      */
     public static void showConfirmDialog(SComponent parent, Object message,
                                          String title, int type, ActionListener al) {
-        SOptionPane p = new SOptionPane();
-        p.addActionListener(al);
+        showConfirmDialog(parent, message, title, type, al, null);
+    }
 
-        p.showQuestion(parent, message, title);
+    /**
+     * TODO: documentation
+     */
+    public static void showConfirmDialog(SComponent parent, Object message,
+                                         String title, int type, ActionListener al, 
+                                         SLayoutManager layout) {
+        SOptionPane p = new SOptionPane();
+        if ( layout!=null ) {
+            p.optionButtons.setLayout(layout);
+        } // end of if ()
+        
+        p.addActionListener(al);
+        p.showQuestion(parent, message, title, type);
     }
 
     public void showYesNo(SComponent parent, Object question, String title) {
