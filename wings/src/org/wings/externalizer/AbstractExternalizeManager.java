@@ -73,12 +73,6 @@ public abstract class AbstractExternalizeManager
         (StringUtil.MAX_RADIX*StringUtil.MAX_RADIX - 1) * UNIQUE_TIMESLICE;
 
     /**
-     * in seconds as String. Computed, do not change.
-     */
-    public static final String FINAL_EXPIRES_STRING = 
-        Long.toString(FINAL_EXPIRES);
-
-    /**
      * Prefix for the externalized ID; long. Computed, do not change.
      */
     protected static final long PREFIX_TIMESLICE = 
@@ -91,7 +85,7 @@ public abstract class AbstractExternalizeManager
         StringUtil.toShortestAlphaNumericString(PREFIX_TIMESLICE, 2);
 
     static {
-        logger.info("final scope expires in " + FINAL_EXPIRES_STRING + " seconds");
+        logger.info("final scope expires in " + FINAL_EXPIRES + " seconds");
         logger.info("use prefix " + PREFIX_TIMESLICE_STRING);
     }
     
@@ -431,9 +425,19 @@ public abstract class AbstractExternalizeManager
 
         // non-transient items can be cached by the browser
         if (extInfo.isFinal() ) {
-            response.setHeader("expires", FINAL_EXPIRES_STRING);
+            /*
+             * This would be the correct way to do it; alas, that means, that
+             * for static resources, after a day or so, no caching could take
+             * place, since the last modification was at the start of the
+             * application server. .. have to think about it.
+             */
+            //response.setDateHeader("Expires", FINAL_EXPIRES + extInfo.getLastModified());
+            // .. so do this for now, which is the best approximation of what
+            // we want.
+            response.setDateHeader("Expires", FINAL_EXPIRES + System.currentTimeMillis());
         } else {
-            response.setDateHeader("expires", 0);
+            // expire in deep past ..
+            response.setDateHeader("Expires", 1000); // 1000 instead of 0: work around IE bug.
         }
 
         OutputStream out = response.getOutputStream();
