@@ -34,11 +34,16 @@ public final class LabelCG
             final boolean escape   = label.isEscapeSpecialChars();
             final Style style = label.getStyle();
 
+            d.append("<span id=\"s_")
+                .append(label.getUnifiedId())
+                .append("\"");
+
             if (style != null) {
-                d.append("<span class=\"")
+                d.append(" class=\"")
                     .append(style)
-                    .append("\">");
+                    .append("\"");
             }
+            d.append(">");
 
             if (noBreak)
                 d.append("<nobr>");

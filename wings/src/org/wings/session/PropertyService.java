@@ -26,38 +26,6 @@ public interface PropertyService
     extends Service
 {
     /**
-     * Determines the current session properties.
-     * The current set of system properties for use by the
-     * {@link #getProperty(String)} method is returned as a
-     * <code>Properties</code> object.
-     * This set of session properties always includes values
-     * for the following keys:
-     * <table>
-     * <tr><th>Key</th>
-     *     <th>Description of Associated Value</th></tr>
-     * <tr><td><code>java.version</code></td>
-     *     <td>Java Runtime Environment version</td></tr>
-     * </table>
-     *
-     * @see        java.util.Properties
-     */
-    Properties getProperties();
-
-    /**
-     * Sets the session properties to the <code>Properties</code>
-     * argument.
-     * <p>
-     * The argument becomes the current set of session properties for use
-     * by the {@link #getProperty(String)} method. If the argument is
-     * <code>null</code>, then the current set of session properties is
-     * forgotten.
-     *
-     * @param      props   the new session properties.
-     * @see        java.util.Properties
-     */
-    void setProperties(Properties props);
-
-    /**
      * Gets the session property indicated by the specified key.
      *
      * @param      key   the name of the session property.
@@ -65,7 +33,7 @@ public interface PropertyService
      *             or <code>null</code> if there is no property with that key.
      * @see        org.wings.session.PropertyService#getProperties()
      */
-    String getProperty(String key);
+    Object getProperty(String key);
 
     /**
      * Gets the session property indicated by the specified key.
@@ -76,7 +44,7 @@ public interface PropertyService
      *             or the default value if there is no property with that key.
      * @see        org.wings.session.PropertyService#getProperties()
      */
-    String getProperty(String key, String def);
+    Object getProperty(String key, Object def);
 
     /**
      * Sets the session property indicated by the specified key.
@@ -88,7 +56,7 @@ public interface PropertyService
      * @see        org.wings.session.PropertyService#getProperty(java.lang.String)
      * @see        org.wings.session.PropertyService#getProperty(java.lang.String, java.lang.String)
      */
-    String setProperty(String key, String value);
+    Object setProperty(String key, Object value);
 }
 
 /*

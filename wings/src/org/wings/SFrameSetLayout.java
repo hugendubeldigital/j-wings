@@ -124,8 +124,6 @@ public class SFrameSetLayout
 	    d.append(title);
 	    d.append("</title>\n");
 	    d.append("</head>\n");
-
-	    d.append("<frameset rows=\"*,10\" frameborder=\"0\" noresize=\"noresize\" scrolling=\"no\">\n");
 	}
 
 	d.append("<frameset");
@@ -158,23 +156,14 @@ public class SFrameSetLayout
 	}
 
 	d.append("</frameset>\n");
-
-	if (frameSet.getParent() == null) {
-	    //frameSet.getSession().getReloadManager().clearDirtyComponents(SConstants.RELOAD_ALL);
-	    //writeFrame(d, (SFrame)frameSet.getSession().getReloadManager().getManagerComponent(), null);
-	    d.append("</frameset>\n");
-	}
     }
 
     protected void writeFrame(Device d, SFrame frame, Properties properties)
 	throws IOException
     {
-	String src = getSession().getExternalizeManager()
-	    .externalize(frame.show(), "text/html", ExternalizeManager.REQUEST);
-
-	d.append("<frame src=\"")
-	    .append(src)
-	    .append("\"");
+	d.append("<frame src=\"");
+        d.append(frame.getDynamicResource(DynamicCodeResource.class).getURL());
+        d.append("\"");
 	d.append(" name=\"frame")
 	    .append(frame.getUnifiedId())
 	    .append("\"");
@@ -190,7 +179,7 @@ public class SFrameSetLayout
 		d.append('"');
 	    }
 	}
-	d.append(" />\n");
+	d.append("/>\n");
     }
 
     private Session session = null;

@@ -70,10 +70,10 @@ public class LdapBrowserSession
 	StringTokenizer attributes, labels;
 	int i;
 
-	server = properties.getProperty("ldap.server.host");
-	basedn = properties.getProperty("ldap.server.basedn");
-	binddn = properties.getProperty("ldap.server.binddn");
-	password = properties.getProperty("ldap.server.password");
+	server = (String)properties.getProperty("ldap.server.host");
+	basedn = (String)properties.getProperty("ldap.server.basedn");
+	binddn = (String)properties.getProperty("ldap.server.binddn");
+	password = (String)properties.getProperty("ldap.server.password");
 
 	Hashtable env = new Hashtable();
 	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
@@ -89,8 +89,8 @@ public class LdapBrowserSession
 	    e.printStackTrace(System.err);
 	}
 
-	attributes = new StringTokenizer(properties.getProperty("overview.attributes"), ",");
-	labels = new StringTokenizer(properties.getProperty("overview.labels"), ",");
+	attributes = new StringTokenizer((String)properties.getProperty("overview.attributes"), ",");
+	labels = new StringTokenizer((String)properties.getProperty("overview.labels"), ",");
 	overviewAttributes = new String[attributes.countTokens()];
 	overviewLabels = new String[labels.countTokens()];
 	i = 0;
@@ -100,8 +100,8 @@ public class LdapBrowserSession
 	    i++;
 	}
 
-	attributes = new StringTokenizer(properties.getProperty("detailview.attributes"), ",");
-	labels = new StringTokenizer(properties.getProperty("detailview.labels"), ",");
+	attributes = new StringTokenizer((String)properties.getProperty("detailview.attributes"), ",");
+	labels = new StringTokenizer((String)properties.getProperty("detailview.labels"), ",");
 	detailviewAttributes = new String[attributes.countTokens()];
 	detailviewLabels = new String[labels.countTokens()];
 	i = 0;
@@ -111,8 +111,8 @@ public class LdapBrowserSession
 	    i++;
 	}
 
-	this.searchAttribute = properties.getProperty("search.attribute");
-	this.searchLabel = properties.getProperty("search.label");
+	this.searchAttribute = (String)properties.getProperty("search.attribute");
+	this.searchLabel = (String)properties.getProperty("search.label");
 
         initGUI();
     }

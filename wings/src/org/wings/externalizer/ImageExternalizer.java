@@ -18,6 +18,8 @@ import java.awt.Image;
 import Acme.JPM.Encoders.GifEncoder;
 import com.keypoint.*;
 
+import org.wings.RequestURL;
+
 /**
  * TODO: documentation
  *

@@ -19,6 +19,8 @@ import javax.swing.ImageIcon;
 
 import Acme.JPM.Encoders.GifEncoder;
 
+import org.wings.RequestURL;
+
 /**
  * TODO: documentation
  *

@@ -126,13 +126,12 @@ public class TreeCG
 
         int depth = tree.getMaximumExpandedDepth(); // - ( ( tree.isRootVisible() )?0:1 );
         d.append("<table border=\"0\" cellpadding=\"0\"");
-		CGUtil.writeSize( d, tree );
-        if ( Utils.hasSpanAttributes( tree ) )
-         {
-         	d.append( " style=\"" );
-			Utils.writeSpanAttributes( d, tree );
-         	d.append( "\"" );
-		 }
+        CGUtil.writeSize( d, tree );
+        if ( Utils.hasSpanAttributes( tree ) ) {
+            d.append( " style=\"" );
+            Utils.writeSpanAttributes( d, tree );
+            d.append( "\"" );
+        }
         d.append(">");
         
         for (int i=start; i < count; i++)

@@ -20,6 +20,8 @@ import org.wings.io.OutputStreamDevice;
 import java.io.*;
 import java.util.Set;
 
+import org.wings.RequestURL;
+
 /**
  * TODO: documentation
  *

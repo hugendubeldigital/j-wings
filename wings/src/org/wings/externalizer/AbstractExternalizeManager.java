@@ -24,6 +24,7 @@ import java.util.Collections;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.wings.RequestURL;
 import org.wings.util.StringUtil;
 
 /**
@@ -148,12 +149,23 @@ public abstract class AbstractExternalizeManager
      */
     protected String sessionEncoding = "";
 
+    protected HttpServletResponse response;
+
     /**
      *
      */
     public AbstractExternalizeManager(HttpServletResponse response) {
-        if ( response != null )
+        this.response = response;
+    }
+
+    public void setResponse(HttpServletResponse response) {
+        this.response = response;
+        if (response != null)
             sessionEncoding = response.encodeURL("");
+    }
+
+    public String encodeURL(String url) {
+        return response.encodeURL(url);
     }
 
     /**
@@ -409,7 +421,7 @@ public abstract class AbstractExternalizeManager
         if ( resourceLen > 0 ) {
             response.setContentLength( resourceLen );
         }
-        
+
         Set headers = extInfo.getHeaders();
         if ( headers != null ) {
             for ( Iterator it = headers.iterator(); it.hasNext(); ) {
@@ -425,7 +437,7 @@ public abstract class AbstractExternalizeManager
         } else {
             response.setDateHeader("expires", 0);
         }
-        
+
         OutputStream out = response.getOutputStream();
         extInfo.getExternalizer().write(extInfo.getObject(), out);
         out.flush();

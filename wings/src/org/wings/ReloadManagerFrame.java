@@ -97,52 +97,39 @@ public class ReloadManagerFrame
 	throw new IllegalArgumentException("No LayoutManager allowed");
     }
 
+    private Set dirtyResources;
+    public void setDirtyResources(Set dirtyResources) {
+        this.dirtyResources = dirtyResources;
+    }
+
     /**
      * Generate a minimal document with a javascript function, that reloads
      * all dirty frames. The list of dirty frames is obtained from the ReloadManager.
      * After the code has been generated, the dirty components list is cleared.
      */
     public void write(Device d) throws IOException {
-        /*
 	ExternalizeManager externalizer = getSession().getExternalizeManager();
 
 	d.append("<head><title>ReloadManager</title>\n");
 	d.append("<script language=\"javascript\">\n");
 	d.append("function reload() {\n");
-	SComponent[] components = getReloadManager().getDirtyComponents();
-	SFrameSet toplevel = null;
-	for (int i=0; i < components.length; i++)
-	    if (components[i].getParent() == null)
-		toplevel = (SFrameSet)components[i];
-	if (toplevel != null) {
-	    System.err.println("reload the whole frameset");
-	    d.append("parent.location='");
-	    d.append(toplevel.getRequestURL());
-	    d.append("';\n");
-	}
-	else {
-	    for (int i=0; i < components.length; i++) {
-		String src = externalizer.externalize(((SFrame)components[i]).show(), "text/html");
-		d.append("parent.frame");
-		d.append(components[i].getUnifiedId());
-		d.append(".location='");
-		d.append(src);
-		d.append("';\n");
-	    }
-	}
+
+        Iterator it = dirtyResources.iterator();
+        while (it.hasNext()) {
+            DynamicResource resource = (DynamicResource)it.next();
+            resource.invalidate();
+
+            d.append("parent.frame");
+            d.append(resource.getId());
+            d.append(".location='");
+            d.append(resource.getURL());
+            d.append("';\n");
+        }
+
 	d.append("}\n");
 	d.append("</script>\n");
 	d.append("</head>\n");
 	d.append("<body onload=\"reload()\"></body>");
-	getReloadManager().clearDirtyComponents();
-        */
-    }
-
-    private ReloadManager reloadManager = null;
-    protected ReloadManager getReloadManager() {
-	if (reloadManager == null)
-	    reloadManager = getSession().getReloadManager();
-	return reloadManager;
     }
 
     public void updateCG() {}

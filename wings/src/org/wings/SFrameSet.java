@@ -123,7 +123,6 @@ public class SFrameSet
 
     /**
      * Set server address and propagate it to all frames
-     */
     public void setRequestURL(RequestURL requestURL) {
         super.setRequestURL(requestURL);
 
@@ -135,6 +134,7 @@ public class SFrameSet
 		((SFrame)object).setRequestURL(requestURL);
 	}
     }
+    */
 
     /**
      * Set the base target and propagate it to all frames

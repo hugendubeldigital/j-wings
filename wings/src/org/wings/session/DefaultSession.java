@@ -45,7 +45,7 @@ public class DefaultSession
     private ReloadManager reloadManager = null;
     private ExternalizeManager extManager = null;
     private final SRequestDispatcher dispatcher = new SRequestDispatcher();
-    private Properties props = new Properties();
+    private Map props = new HashMap();
 
     private int uniqueIdCounter = 1;
 
@@ -78,7 +78,6 @@ public class DefaultSession
         while(params.hasMoreElements()) {
             String name = (String)params.nextElement();
             props.put(name, config.getInitParameter(name));
-            // was: props.setProperty(name, config.getInitParameter(name));
         }
     }
 
@@ -160,44 +159,6 @@ public class DefaultSession
     }
 
     /**
-     * Determines the current session properties.
-     * The current set of session properties for use by the
-     * {@link #getProperty(String)} method is returned as a
-     * <code>Properties</code> object.
-     * This set of session properties always includes values
-     * for the following keys:
-     * <table>
-     * <tr><th>Key</th>
-     *     <th>Associated Value</th></tr>
-     * <tr><td><code>locale</code></td>
-     *     <td>The current locale</td></tr>
-     * <tr><td><code>lookAndFeel</code></td>
-     *     <td>The current look and feel</td></tr>
-     * </table>
-     *
-     * @see java.util.Properties
-     */
-    public Properties getProperties() {
-        return props;
-    }
-
-    /**
-     * Sets the session properties to the <code>Properties</code>
-     * argument.
-     * <p>
-     * The argument becomes the current set of session properties for use
-     * by the {@link #getProperty(String)} method. If the argument is
-     * <code>null</code>, then the current set of session properties is
-     * forgotten.
-     *
-     * @param      props   the new session properties.
-     * @see        java.util.Properties
-     */
-    public void setProperties(Properties props) {
-        this.props = props;
-    }
-
-    /**
      * Gets the session property indicated by the specified key.
      *
      * @param      key   the name of the session property.
@@ -205,8 +166,8 @@ public class DefaultSession
      *             or <code>null</code> if there is no property with that key.
      * @see        org.wings.session.PropertyService#getProperties()
      */
-    public String getProperty(String key) {
-        return props.getProperty(key);
+    public Object getProperty(String key) {
+        return props.get(key);
     }
 
     /**
@@ -218,8 +179,11 @@ public class DefaultSession
      *             or the default value if there is no property with that key.
      * @see        org.wings.session.PropertyService#getProperties()
      */
-    public String getProperty(String key, String def) {
-        return props.getProperty(key, def);
+    public Object getProperty(String key, Object def) {
+        Object value = props.get(key);
+        if (value == null)
+            value = def;
+        return value;
     }
 
     /**
@@ -232,9 +196,9 @@ public class DefaultSession
      * @see        org.wings.session.PropertyService#getProperty(java.lang.String)
      * @see        org.wings.session.PropertyService#getProperty(java.lang.String, java.lang.String)
      */
-    public String setProperty(String key, String value) {
+    public Object setProperty(String key, Object value) {
         System.err.print("DefaultSession.setProperty");
-        String old = (String)props.setProperty(key, value);
+        Object old = props.put(key, value);
         propertyChangeSupport.firePropertyChange(key, old, value);
         return old;
     }

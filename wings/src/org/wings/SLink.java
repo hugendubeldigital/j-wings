@@ -93,7 +93,7 @@ public class SLink
             d.append(" href=\"");
 
             if (href instanceof Resource)
-                ((Resource)href).getRequestURL().write(d);
+                d.append(((Resource)href).getURL());
             else if (href instanceof String)
                 d.append((String)href);
 

@@ -331,7 +331,7 @@ public class STabbedPane
      */
     public int indexOfComponent(SComponent component) {
         for ( int i = 0; i < getTabCount(); i++ ) {
-            if ( getComponentAt(i).equals(component) ) {
+            if ( contents.getComponentAt(i).equals(component) ) {
                 return i;
             }
         }

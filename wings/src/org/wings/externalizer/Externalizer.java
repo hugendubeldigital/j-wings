@@ -18,6 +18,8 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.util.Set;
 
+import org.wings.RequestURL;
+
 /**
  * Externalizer Interface
  *
@@ -59,7 +61,7 @@ public interface Externalizer
      * control the caching in the browser. 
      */
     boolean isFinal( Object obj );
-    
+
     /**
      * Writes the given object into the given stream. 
      */

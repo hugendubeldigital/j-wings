@@ -47,8 +47,6 @@ public class FExplorerSession
 
     public void postInit(ServletConfig config) throws ServletException
     {
-        getSession().setReloadManager(new FrameSetReloadManager());
-
         super.postInit( config );
 
         String dir = config.getInitParameter("ExplorerBaseDir");

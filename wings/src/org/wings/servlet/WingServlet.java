@@ -334,8 +334,14 @@ public abstract class WingServlet extends HttpServlet
              * or just a normal request to this servlet.
              */
             if (isSystemExternalizeRequest(req)) {
-                System.err.println("system externalizer");
-                SystemExternalizeManager.getSharedInstance().deliver(pathInfo.substring(1), response);
+                String identifier = pathInfo.substring(1);
+                System.err.println("system externalizer: " + identifier);
+
+                int pos = identifier.indexOf(".");
+                if (pos > -1)
+                    identifier = identifier.substring(0, pos);
+
+                SystemExternalizeManager.getSharedInstance().deliver(identifier, response);
                 return;
             }
 

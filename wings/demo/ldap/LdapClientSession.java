@@ -118,20 +118,20 @@ public class LdapClientSession
         SLabel descServer = new SLabel("sever:port");
         server = new STextField("");
         server.setColumns(30);
-        server.setText(((PropertyService)getSession()).getProperty("ldap.server.host"));
+        server.setText((String)((PropertyService)getSession()).getProperty("ldap.server.host"));
         settingsForm.add(descServer);
         settingsForm.add(server);
 	
         SLabel descBaseDN = new SLabel("base DN");
         baseDN = new STextField();
         baseDN.setColumns(30);
-        baseDN.setText(((PropertyService)getSession()).getProperty("ldap.server.basedn"));
+        baseDN.setText((String)((PropertyService)getSession()).getProperty("ldap.server.basedn"));
         settingsForm.add(descBaseDN);
         settingsForm.add(baseDN);
 	
         SLabel descBindDN = new SLabel("bind DN");
         bindDN= new STextField();
-        bindDN.setText(((PropertyService)getSession()).getProperty("ldap.server.binddn"));
+        bindDN.setText((String)((PropertyService)getSession()).getProperty("ldap.server.binddn"));
         bindDN.setColumns(30);
         settingsForm.add(descBindDN);
         settingsForm.add(bindDN);

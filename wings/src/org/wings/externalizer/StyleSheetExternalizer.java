@@ -16,6 +16,7 @@ package org.wings.externalizer;
 
 import java.io.InputStream;
 
+import org.wings.RequestURL;
 import org.wings.style.StyleSheet;
 
 /**

@@ -17,6 +17,7 @@ package org.wings.externalizer;
 import java.io.InputStream;
 
 import org.wings.StaticResource;
+import org.wings.RequestURL;
 
 /**
  * TODO: documentation

@@ -19,7 +19,7 @@ public class DynamicStyleSheetResource
 	throws IOException
     {
 	StyleSheetWriter visitor = new StyleSheetWriter(out);
-	visitor.visit(getFrame());
+	getFrame().invite(visitor);
     }
 
     protected static class StyleSheetWriter
@@ -32,10 +32,16 @@ public class DynamicStyleSheetResource
 	}
 
 	public void visit(SComponent component) {
+            //System.err.println("StyleSheetWriter.visit(" + component.getClass() + ")");
+            if (component.getAttributes().size() == 0)
+                return;
+            out.append("#s_");
+            out.append(component.getUnifiedId());
+            out.append("{ ");
 	    out.append(component.getAttributes().toString());
+            out.append("}\n");
 	}
     }
-
 }
 
 /*

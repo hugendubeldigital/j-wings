@@ -27,32 +27,34 @@ import java.net.MalformedURLException;
  * @version $Revision
  */
 
-public class SURLIcon implements SIcon {
+public class SURLIcon
+    implements SIcon
+{
 
-  URL url;
+    URL url;
 
-  public SURLIcon (URL u) {
-    url = u;
-  }
-
-  public SURLIcon (String u) {
-    try {
-      url = new URL(u);
-    } catch ( MalformedURLException e ) {
+    public SURLIcon (URL u) {
+        url = u;
     }
-  }
 
-  public int getIconWidth() {
-    return -1;
-  }
+    public SURLIcon (String u) {
+        try {
+            url = new URL(u);
+        } catch ( MalformedURLException e ) {
+        }
+    }
+
+    public int getIconWidth() {
+        return -1;
+    }
   
-  public int getIconHeight() {
-    return -1;
-  }
+    public int getIconHeight() {
+        return -1;
+    }
   
-  public String getURL() {
-    return url.toString();
-  }
+    public String getURL() {
+        return url.toString();
+    }
 
 }// SURLIcon
 

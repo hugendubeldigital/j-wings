@@ -33,7 +33,7 @@ import org.wings.externalizer.ExternalizeManager;
  * benutzen und implementiert schon alles was benoetigt wird...
  */
 /**
- * TODO: documentation
+ * An SIcon of this type is externalized globally. It is not bound to a session.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -106,10 +106,6 @@ public class ResourceImageIcon
     public int getIconHeight() {
         return height;
     }
-
-    public String getURL() {
-        return getRequestURL().toString();
-    }
 }
 
 /*
@@ -119,4 +115,3 @@ public class ResourceImageIcon
  * compile-command: "ant -emacs -find build.xml"
  * End:
  */
-

@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
 
-import org.wings.session.SessionManager;
+import org.wings.session.*;
 import org.wings.externalizer.ExternalizeManager;
 
 /*
@@ -42,12 +42,12 @@ public abstract class Resource
     /**
      *
      */
-    private String id;
+    protected String id;
 
     /**
      *
      */
-    protected RequestURL requestURL;
+    protected RequestURL requestURL = new RequestURL();;
 
     /**
      * TODO: documentation
@@ -63,12 +63,6 @@ public abstract class Resource
     protected Resource(String extension, String mimeType) {
         this.extension = extension;
         this.mimeType = mimeType;
-
-        ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
-        this.id = ext.getId(ext.externalize(this));
-        System.err.println("new " + getClass().getName() + " with id " + id);
-
-        requestURL = new RequestURL();
     }
 
     /**
@@ -101,27 +95,19 @@ public abstract class Resource
     /**
      *
      */
-    public final String getId() {
-        return id;
+    public abstract String getId();
+
+    public String getURL() {
+        RequestURL requestURL = (RequestURL)((PropertyService)SessionManager.getSession()).getProperty("request.url");
+        applyConfiguration(requestURL);
+        return requestURL.toString();
     }
 
-    /**
-     *
-     */
-    public void setRequestURL(RequestURL r) {
-        requestURL = r;
-    }
-
-    /**
-     *
-     */
-    public RequestURL getRequestURL() {
-        RequestURL result =  (RequestURL)requestURL.clone();
+    protected void applyConfiguration(RequestURL requestURL) {
         if (extension != null)
-            result.setResource(id + "." + extension);
+            requestURL.setResource(getId() + "." + extension);
         else
-            result.setResource(id);
-        return result;
+            requestURL.setResource(getId());
     }
 
     /**

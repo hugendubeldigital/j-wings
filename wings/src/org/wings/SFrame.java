@@ -107,6 +107,8 @@ public class SFrame
     private transient SRequestDispatcher dispatcher = null;
 
     private Session session;
+    private RequestURL requestURL = new RequestURL();
+    private String targetResource;
 
     private HashMap dynamicResources;
 
@@ -118,6 +120,7 @@ public class SFrame
         super.setLayout(new SStackLayout());
         super.addComponent(getContentPane(), null);
         getSession().addPropertyChangeListener("lookAndFeel", this);
+        getSession().addPropertyChangeListener("request.url", this);
     }
 
     /**
@@ -275,17 +278,34 @@ public class SFrame
     /**
      * Set server address.
      */
-    public void setRequestURL(RequestURL r) {
-        for ( Iterator iter=dynamicResources.values().iterator(); iter.hasNext(); ) {
-            ((DynamicResource)iter.next()).setRequestURL(r);
-        }
+    public final void setRequestURL(RequestURL requestURL) {
+        this.requestURL = requestURL;
     }
 
     /**
      * TODO: documentation
      */
     public final RequestURL getRequestURL() {
-        return getDynamicResource(DynamicCodeResource.class).getRequestURL();
+        RequestURL result = (RequestURL)requestURL.clone();
+        // maybe null
+        result.setResource(targetResource);
+        return result;
+    }
+
+    /**
+     * Set the target resource
+     */
+    public void setTargetResource(String targetResource) {
+        this.targetResource = targetResource;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public String getTargetResource() {
+        return targetResource;
     }
 
     /**
@@ -507,6 +527,9 @@ public class SFrame
             updateComponentTreeCG(getContentPane());
             System.err.println("lookAndFeel Change: " + pe.getPropertyName());
         }
+        if ("request.url".equals(pe.getPropertyName())) {
+            setRequestURL((RequestURL)pe.getNewValue());
+        }
         else
             System.err.println("propertyChange: " + pe.getPropertyName());
     }
@@ -566,6 +589,7 @@ public class SFrame
     }
 
     public void invite(ComponentVisitor visitor) {
+        visitor.visit(this);
         getContentPane().invite(visitor);
     }
 

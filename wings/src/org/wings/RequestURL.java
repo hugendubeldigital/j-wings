@@ -106,7 +106,7 @@ public class RequestURL
      * list. Usually, this paramter will be in the form 'name=value'.
      *
      * @param parameter to be included in the GET parameters.
-     * @return this SGetAddress that simplifies 'chaining'
+     * @return a reference to <code>this</code> to simplify 'call chaining'
      */
     public RequestURL addParameter(String parameter) {
         if (parameter!=null) {
@@ -144,12 +144,12 @@ public class RequestURL
             d.print(baseURL);
         }
 
-        if ( epoch!=null ) {
+        if (resource != null && epoch != null) {
             d.print(epoch);
             d.write(_delimiter);
         }
 
-        if ( resource!=null ) {
+        if (resource != null) {
             d.print(resource);
         }
 
@@ -176,7 +176,7 @@ public class RequestURL
             erg.append(baseURL);
         }
 
-        if ( epoch!=null ) {
+        if ( resource!=null && epoch!=null ) {
             erg.append(epoch);
             erg.append("_");
         }

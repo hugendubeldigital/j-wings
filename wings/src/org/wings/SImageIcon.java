@@ -30,7 +30,7 @@ public class SImageIcon implements SIcon {
     public SImageIcon(String name) {
         this.img = new ImageIcon(name);
     }
-    
+
     public int getIconWidth() {
 	return img.getIconWidth();
     }
@@ -44,18 +44,15 @@ public class SImageIcon implements SIcon {
      * be relative, usually if generated from the externalizer.
      */
     public String getURL() {
-	if (url == null) {
-	    url = SessionManager.getSession()
-		.getExternalizeManager()
-		.externalize(img);
-	}
-	return url;
+        return SessionManager.getSession()
+            .getExternalizeManager()
+            .externalize(img);
     }
 
     // get the image e.g. if you want to grey it out
     public java.awt.Image getImage() {
         return img.getImage();
-    } 
+    }
 }
 
 /*

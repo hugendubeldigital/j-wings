@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.wings.session.SessionManager;
 import org.wings.externalizer.ExternalizeManager;
+import org.wings.externalizer.AbstractExternalizeManager;
 
 /*
  * Diese Klasse ist nur ein Wrapper, um Eingabestroeme von Grafiken mit dem
@@ -132,6 +133,15 @@ public class StaticResource
         if (dotIndex > -1) {
             extension = resourceFileName.substring(dotIndex + 1);
 	}
+    }
+
+    public String getId() {
+        if (id == null) {
+            ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
+            id = ext.getId(ext.externalize(this, AbstractExternalizeManager.GLOBAL));
+            System.err.println("new " + getClass().getName() + " with id " + id);
+        }
+        return id;
     }
 
     /**

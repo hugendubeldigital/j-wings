@@ -25,9 +25,7 @@ import org.wings.*;
 
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.ServletDevice;
-import org.wings.session.DefaultSession;
-import org.wings.session.Session;
-import org.wings.session.SessionManager;
+import org.wings.session.*;
 import org.wings.util.ASUtil;
 import org.wings.util.DebugUtil;
 import org.wings.util.TimeMeasure;
@@ -506,6 +504,8 @@ public abstract class SessionServlet
 
         try {
             RequestURL requestURL = new RequestURL("", response.encodeURL(""));
+            // this will fire an event, if the encoding has changed ..
+            ((PropertyService)session).setProperty("request.url", requestURL);
 
             try {
                 if (DEBUG) {
@@ -520,7 +520,7 @@ public abstract class SessionServlet
                 handleLocale(req);
 
                 //evtl. HttpUtils.getRequestURL(req).toString()
-                getFrame().setRequestURL(requestURL);
+                //getFrame().setRequestURL(requestURL);
             }
             finally {
                 prepareRequest(req, response);
@@ -598,7 +598,7 @@ public abstract class SessionServlet
                 System.err.println("pathInfo: " + pathInfo);
 
                 // no pathInfo .. getFrame()
-                if (pathInfo == null || pathInfo.length() == 0){
+                if (pathInfo == null || pathInfo.length() == 0) {
                     debug("delivering default frame");
 
                     DynamicResource resource

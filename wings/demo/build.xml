@@ -33,7 +33,7 @@
   <!-- ==================== Build wingS Demos ================ -->
   <target name="build" depends="prepare">
     <!--ant antfile="build.xml" dir=".." target="main"/-->
-    <javac srcdir="${src}" destdir="${classes}" debug="off">
+    <javac srcdir="${src}" destdir="${classes}" debug="${build.debug}">
       <classpath refid="build.classpath" />
     </javac>
     <copy todir="${classes}">
@@ -235,6 +235,7 @@
       </fileset>
     </war>
 
+<!--
     <war warfile="${deploy}/explorer.war" webxml="explorer/explorer.xml">
       <lib dir="${lib}">
         <include name="wings.jar"/>
@@ -250,6 +251,7 @@
         <include name="old.jar"/>
       </fileset>
     </war>
+-->
 
     <war warfile="${deploy}/frameset.war" webxml="frameset/frameset.xml">
       <lib dir="${lib}">
@@ -303,5 +305,5 @@
 
   <target name="all" depends="clean,build,deploy"/>
   <target name="main" depends="build"/>
-  <target name="webapps" depends="wingset,ldap,explorer,frameset,desktop"/>
+  <target name="webapps" depends="wingset,frameset,ldap,explorer,desktop"/>
 </project>

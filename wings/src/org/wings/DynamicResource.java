@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import org.wings.SFrame;
+import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.Device;
 import org.wings.util.StringUtil;
 import org.wings.session.SessionManager;
@@ -62,8 +63,6 @@ public abstract class DynamicResource
     public DynamicResource(SFrame frame, String extension, String mimeType) {
         super(extension, mimeType);
         this.frame = frame;
-
-        System.err.println("Externalize DynamicResource " + getId());
     }
 
     /**
@@ -73,9 +72,18 @@ public abstract class DynamicResource
         return frame;
     }
 
+    public String getId() {
+        if (id == null) {
+            ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
+            id = ext.getId(ext.externalize(this));
+            System.err.println("new " + getClass().getName() + " with id " + id);
+        }
+        return id;
+    }
+
     /**
      * Mark this dynamic resource as to be re-rendered. This method is
-     * called, whenever any change took place in the frame, so that this
+     * called, whenever some change took place in the frame, so that this
      * dynamic resource is to be externalized with a new version-number.
      */
     public final void invalidate() {
@@ -125,13 +133,9 @@ public abstract class DynamicResource
         return null;
     }
 
-    /**
-     *
-     */
-    public RequestURL getRequestURL() {
-        RequestURL result = super.getRequestURL();
-        result.setEpoch(getEpoch());
-        return result;
+    protected void applyConfiguration(RequestURL requestURL) {
+        super.applyConfiguration(requestURL);
+        requestURL.setEpoch(getEpoch());
     }
 
     /**

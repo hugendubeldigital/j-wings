@@ -6,7 +6,7 @@ package org.wings.externalizer;
 
 import java.io.*;
 
-import org.wings.externalizer.*;
+import org.wings.RequestURL;
 
 public class TextExternalizer
     implements Externalizer
