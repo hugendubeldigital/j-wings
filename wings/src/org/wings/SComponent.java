@@ -1169,10 +1169,7 @@ public abstract class SComponent
             cg.installCG(this);
         }
         firePropertyChange("CG", oldCG, newCG);
-
-        if ((cg == null && oldCG != null) ||
-            (cg != null && !cg.equals(oldCG)))
-            reload(ReloadManager.RELOAD_ALL);
+        reloadIfChange(ReloadManager.RELOAD_ALL, cg, oldCG);
     }
 
     /**
@@ -1571,6 +1568,53 @@ public abstract class SComponent
             */
         }
 
+    }
+
+
+    private transient SRenderEvent renderEvent;
+
+    /**
+     * for performance reasons
+     *
+     */
+    private boolean fireRenderEvents = false;
+
+    public static final int START_RENDERING = 1;
+    public static final int DONE_RENDERING = 2;
+
+    public final void addRenderListener(SRenderListener l) {
+        addEventListener(SRenderListener.class, l);
+        fireRenderEvents = true;
+    }
+
+    public final void removeRenderListener(SRenderListener l) {
+        removeEventListener(SRenderListener.class, l);
+    }
+
+    public final void fireRenderEvent(int type) {
+        if ( fireRenderEvents ) {
+            // maybe the better way to do this is to user the getListenerList
+            // and iterate through all listeners, this saves the creation of
+            // an array but it must cast to the apropriate listener
+            Object[] listeners = getListenerList();
+            for ( int i = listeners.length-2; i>=0; i -= 2 ) {
+                if ( listeners[i]==SRenderListener.class ) {
+                    // Lazily create the event:
+                    if ( renderEvent==null ) {
+                        renderEvent = new SRenderEvent(this);
+                    } // end of if ()
+                    
+                    switch ( type ) {
+                        case START_RENDERING:
+                            ((SRenderListener)listeners[i+1]).startRendering(renderEvent);
+                            break;
+                        case DONE_RENDERING:
+                            ((SRenderListener)listeners[i+1]).doneRendering(renderEvent);
+                            break;
+                    } // end of switch ()
+                }
+            }
+        } // end of if ()
     }
 
 }

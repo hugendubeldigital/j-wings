@@ -370,6 +370,8 @@ public class TemplateParser {
 
         out.println(INDENT + INDENT + "if ( !_c.isVisible() ) return;");
 
+        out.println(INDENT + INDENT + "_c.fireRenderEvent(SComponent.START_RENDERING);");
+
         out.println(INDENT + INDENT
                     + "final " + forClassName + " component = ("
                     + forClassName + ") _c;");
@@ -390,6 +392,9 @@ public class TemplateParser {
             out.println(INDENT + INDENT
                         + "if (_border != null) { _border.writePostfix(device); }");
         }
+
+        out.println(INDENT + INDENT + "_c.fireRenderEvent(SComponent.DONE_RENDERING);");
+
         out.println ("\n" + INDENT + "}");
 
         if (cgProperties.size() > 0) {
