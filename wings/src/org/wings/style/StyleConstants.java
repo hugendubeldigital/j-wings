@@ -73,6 +73,8 @@ public interface StyleConstants {
 
     public final String FONT = "font";
 
+    public final String FONT_COLOR = "font-color";
+
     public final String FONT_FAMILY = "font-family";
 
     public final String FONT_SIZE = "font-size";
