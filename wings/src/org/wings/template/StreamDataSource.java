@@ -17,18 +17,17 @@ package org.wings.template;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.servlet.ssi.DataSource;
+import org.wings.template.parser.*;
 
 /**
  * A <CODE>StreamDataSource</CODE> implements a DataSource
  * for a Stream.
  *
- * @see org.apache.servlet.ssi.DataSource
+ * @see org.wings.template.parser.DataSource
  * @author <A href="mailto:joachim.karrer@mercatis.de">Joachim Karrer</A>
  * @version $Revision$
  */
-public class StreamDataSource
-    implements DataSource
+public class StreamDataSource implements DataSource
 {
     /**
      * Debug Ausgaben aktivieren.

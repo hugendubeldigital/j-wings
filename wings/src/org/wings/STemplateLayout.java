@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 
-import org.apache.servlet.ssi.PageParser;
-import org.apache.servlet.ssi.DataSource;
+import org.wings.template.parser.PageParser;
+import org.wings.template.parser.DataSource;
 
 import org.wings.*;
 import org.wings.plaf.*;
@@ -107,7 +107,7 @@ public class STemplateLayout
      * Der PageParser. Damit der eine chance hat, die Templates
      * zu cachen, ist der static ..
      */
-    private static org.apache.servlet.ssi.PageParser parser;
+    private static PageParser parser;
 
     /*
      * Setzen von ein paar default PropertyManagern
@@ -120,7 +120,7 @@ public class STemplateLayout
         addPropertyManager(new STextAreaPropertyManager());
         addPropertyManager(new SBaseTablePropertyManager());
         addPropertyManager(new STablePropertyManager());
-        parser = new org.apache.servlet.ssi.PageParser();
+        parser = new PageParser();
         parser.addTagHandler (COMPONENT, TemplateTagHandler.class);
     }
 

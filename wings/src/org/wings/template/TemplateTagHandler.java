@@ -20,9 +20,7 @@ import java.util.Dictionary;
 import javax.servlet.http.*;
 import javax.servlet.ServletConfig;
 
-import org.apache.java.util.SGMLTag;
-import org.apache.java.io.PositionReader;
-import org.apache.servlet.ssi.*;
+import org.wings.template.parser.*;
 
 import org.wings.SComponent;
 import org.wings.io.Device;
@@ -33,8 +31,7 @@ import org.wings.io.Device;
  * @author <A href="mailto:zeller@think.de">Henner Zeller</A>
  * @version $Revision$
  */
-public class TemplateTagHandler
-    implements org.apache.servlet.ssi.SpecialTagHandler
+public class TemplateTagHandler implements SpecialTagHandler
 {
     private static String ERRORMSG = "Error in Template: &lt;/component&gt; missing";
     long startPos;
@@ -49,7 +46,6 @@ public class TemplateTagHandler
      * @param input     The PositionReader, located after the Name token of the Tag
      * @param startPos  The Position parsing of this token began
      * @param startTag  the SGMLTag found in the file.
-     * @see   org.apache.java.util.SGMLTag
      */
     public SGMLTag readTag(ParseContext context,
                            PositionReader input,

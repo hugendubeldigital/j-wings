@@ -21,14 +21,15 @@ import org.wings.io.Device;
 
 import org.wings.SComponent;
 
+import org.wings.template.parser.*;
+
 /**
  * TODO: documentation
  *
  * @author
  * @version $Revision$
  */
-public final class TemplateParseContext
-    implements org.apache.servlet.ssi.ParseContext
+public final class TemplateParseContext implements ParseContext
 {
     private OutputStream myOut;
     private Device sink;

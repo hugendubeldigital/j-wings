@@ -21,13 +21,13 @@ import java.io.FileInputStream;
 import java.io.ByteArrayInputStream;
 import java.util.Hashtable;
 
-import org.apache.servlet.ssi.FileDataSource;
+import org.wings.template.parser.*;
 
 /**
  * A <CODE>CachedFileDataSource</CODE> implements a DataSource
  * for a file, but caches small ones.
  *
- * @see org.apache.servlet.ssi.DataSource
+ * @see org.wings.template.parser.DataSource
  * @author <A href="mailto:zeller@think.de">Henner Zeller</A>
  * @version $Revision$
  */
