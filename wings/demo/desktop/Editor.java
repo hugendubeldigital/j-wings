@@ -53,7 +53,7 @@ public class Editor
 	textArea.setRows(24);
 	getContentPane().add(textArea);
 
-        Icon icon = new ResourceImageIcon(getClass(), "/org/wings/icons/penguin.gif");
+        Icon icon = new ResourceImageIcon(getClass(), "/desktop/penguin.png");
         setIcon(icon);
     }
 
