@@ -1,4 +1,4 @@
-<template name="DialogCG" for="org.wings.SDialog">
+<template name="DialogCG" for="org.wings.SDialog" extends="org.wings.plaf.css1.FormCG">
 <property type="SIcon" name="closeIcon">org/wings/icons/close.gif</property>
 <comp-property type="String" name="style">form</comp-property>
 
@@ -61,15 +61,7 @@ private void writeWindowIcon(Device device, SDialog dialog,
 
         %></tr><%
         %><tr><td colspan="<%=cols%>" class="frameborder"><%
-        %><form method="<%=(dialog.isPostMethod()) ? "post" : "get"%>"<%
-        %><%|enctype=dialog.getEncodingType()%><%
-        %><%|action=dialog.getRequestURL()%><%
-        Utils.writeEvents(device, dialog);
-        %>><%
-
-        Utils.renderContainer(device, dialog);
-
-        %></form><%
+        super.write(device, component);
         %></td></tr></table><%
         %></td></tr></table><%
 %>
