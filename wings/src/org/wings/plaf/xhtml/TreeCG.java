@@ -171,14 +171,14 @@ public class TreeCG
         boolean isExpanded = tree.isExpanded(path);
         boolean isSelected = tree.isPathSelected(path);
 
-        SComponent renderer = cellRenderer.getTreeCellRendererComponent(tree, node,
+        // not yet supported 
+        boolean isSelectable = true;
+
+        SComponent comp = cellRenderer.getTreeCellRendererComponent(tree, node,
                                                                         isSelected,
                                                                         isExpanded,
                                                                         isLeaf, row,
                                                                         false);
-
-        RequestURL selectionAddr = tree.getRequestURL();
-        selectionAddr.addParameter(tree.getSelectionParameter(node));
 
 
         d.print("<tr height=\"1\">");
@@ -199,63 +199,60 @@ public class TreeCG
         d.print(">");
 
 
-        // render control icons
-        if ( !(isLeaf && leafIcon==null) ) {
+        boolean renderControlIcon = !(isLeaf && leafIcon==null);
+
+        if ( renderControlIcon ) {
             // in most applications, the is no need to render a control icon for
             // a leaf. 
-            d.print("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"");
-            /*            
-                          if ( Utils.hasSpanAttributes( tree ) ) {
-                          d.print( " style=\"" );
-                          Utils.writeSpanAttributes( d, tree );
-                          d.print( "\"" );
-                          }*/
-            d.print("><tr><td nowrap>");
-        }
+            d.print("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">").
+                print("<tr><td nowrap>");
 
-        if (isLeaf) {
-            Utils.appendIcon(d, leafIcon, null);
-        } else {
-            RequestURL expansionAddr = tree.getRequestURL();
-            expansionAddr.addParameter(tree.getExpansionParameter(node));
-            d.print("<a href=\"").print(expansionAddr.toString()).print("\">");
-
-            if (isExpanded) {
-                if (openIcon == null)
-                    d.print("-");
-                else
-                    Utils.appendIcon(d, openIcon, null);
+            if (isLeaf) {
+                Utils.appendIcon(d, leafIcon, null);
             } else {
-                if (closedIcon == null)
-                    d.print("+");
-                else
-                    Utils.appendIcon(d, closedIcon, null);
-            }
-            d.print("</a>");
-        } 
+                RequestURL expansionAddr = tree.getRequestURL();
+                expansionAddr.addParameter(tree.getExpansionParameter(node));
+                d.print("<a href=\"").print(expansionAddr.toString()).print("\">");
+                
+                if (isExpanded) {
+                    if (openIcon == null)
+                        d.print("-");
+                    else
+                        Utils.appendIcon(d, openIcon, null);
+                } else {
+                    if (closedIcon == null)
+                        d.print("+");
+                    else
+                        Utils.appendIcon(d, closedIcon, null);
+                }
+                d.print("</a>");
+            } 
 
-        if ( !(isLeaf && leafIcon==null) ) {
             d.print("</td><td nowrap>");
         }
 
         SCellRendererPane rendererPane = tree.getCellRendererPane();
-        if ( renderer instanceof ClickableRenderComponent ) {
-            ((ClickableRenderComponent)renderer).setEventURL(selectionAddr);
-            rendererPane.writeComponent(d, renderer, tree);
+        if ( isSelectable ) {
+            RequestURL selectionAddr = tree.getRequestURL();
+            selectionAddr.addParameter(tree.getSelectionParameter(node));
+            
+            if ( comp instanceof ClickableRenderComponent ) {
+                ((ClickableRenderComponent)comp).setEventURL(selectionAddr);
+                rendererPane.writeComponent(d, comp, tree);
+                ((ClickableRenderComponent)comp).setEventURL(null);
+            } else {
+                d.print("<a href=\"").print(selectionAddr.toString()).print("\">");
+                rendererPane.writeComponent(d, comp, tree);
+                d.print("</a>");
+            }
         } else {
-            d.print("<a href=\"").print(selectionAddr.toString()).print("\">");
-            rendererPane.writeComponent(d, renderer, tree);
-            d.print("</a>");
+            rendererPane.writeComponent(d, comp, tree);
         }
 
-        if ( renderer instanceof ClickableRenderComponent ) {
-            ((ClickableRenderComponent)renderer).setEventURL(null);
-        }
-
-        if ( !(isLeaf && leafIcon==null) ) {
+        if ( renderControlIcon ) {
             d.print("</td></tr></table>");
         }
-
+        
         d.print("\n</td><td width=\"100%\"></td></tr>\n");
     }
 }
@@ -267,3 +264,7 @@ public class TreeCG
  * compile-command: "ant -emacs -find build.xml"
  * End:
  */
+
+
+
+
