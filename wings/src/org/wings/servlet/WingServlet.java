@@ -129,7 +129,7 @@ public abstract class WingServlet extends HttpServlet
         preInit(config);
         super.init(config);
         
-        initLookupName();
+        initLookupName(config);
 
         if (logger.isLoggable(Level.CONFIG)) {
             logger.config("init-params:");
