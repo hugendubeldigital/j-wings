@@ -251,11 +251,7 @@ public final class Utils implements SConstants
         
         if (font != null) {
             int style = font.getStyle();
-/*            d.print("font-style:").print((style & java.awt.Font.ITALIC) > 0 ? "italic;" : "normal;");
-            d.print("font-weight:").print((style & java.awt.Font.BOLD) > 0 ? "bold;" : "normal;");
-            d.print("font-size:").print(font.getSize()).print("pt;");
-            d.print("font-family:").print(font.getFace()).print(";");
- */         d.print("font:").print((style & java.awt.Font.ITALIC) > 0 ? "italic " : "normal ");
+            d.print("font:").print((style & java.awt.Font.ITALIC) > 0 ? "italic " : "normal ");
             d.print((style & java.awt.Font.BOLD) > 0 ? "bold " : "normal ");
             d.print(font.getSize()).print("pt ");
             d.print(font.getFace()).print(";");
@@ -266,10 +262,12 @@ public final class Utils implements SConstants
         }
 
         if (dim != null) {
-            if ((dim.width != null) && !"".equals(dim.width)) d.print("width:").print(dim.width).print(";");
-            if ((dim.height != null) && !"".equals(dim.height)) d.print("Height:").print(dim.height).print(";");
+          d.print(dim.toString());
         }
-     }
+         if ((component instanceof SLabel) && (((SLabel)component).isNoBreak())) {
+          d.print("white-space:pre;");
+        }
+    }
 
     static String[] alignment = new String[] { " aleft", " aright", " acenter", " ablock", " atop", " abottom", " amiddle" };
 

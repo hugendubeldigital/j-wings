@@ -77,7 +77,7 @@ protected void writeFormList(Device device, SList list) throws IOException {
                  case '>':
                      pos = c+1;
                  }
-            }
+            } 
             device.print(chars, pos, chars.length - pos);
         } else {
                 device.print(model.getElementAt(i).toString());

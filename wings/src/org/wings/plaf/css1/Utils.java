@@ -269,11 +269,7 @@ public final class Utils {
         }
         if (font != null) {
             int style = font.getStyle();
-/*            d.print("font-style:").print((style & java.awt.Font.ITALIC) > 0 ? "italic;" : "normal;");
-            d.print("font-weight:").print((style & java.awt.Font.BOLD) > 0 ? "bold;" : "normal;");
-            d.print("font-size:").print(font.getSize()).print("pt;");
-            d.print("font-family:").print(font.getFace()).print(";");
- */         d.print("font:").print((style & java.awt.Font.ITALIC) > 0 ? "italic " : "normal ");
+            d.print("font:").print((style & java.awt.Font.ITALIC) > 0 ? "italic " : "normal ");
             d.print((style & java.awt.Font.BOLD) > 0 ? "bold " : "normal ");
             d.print(font.getSize()).print("pt ");
             d.print(font.getFace()).print(";");
@@ -284,11 +280,13 @@ public final class Utils {
         }
 
         if (dim != null) {
-            if ((dim.width != null) && (!"".equals(dim.width))) d.print("wIdth:").print(dim.width).print(";");
-            if ((dim.height != null) && (!"".equals(dim.height))) d.print("hEight:").print(dim.height).print(";");
+          d.print(dim.toString());
         }
 
 
+        if ((component instanceof SLabel) && (((SLabel)component).isNoBreak())) {
+          d.print("white-space:pre;");
+        }
     }
 
 }

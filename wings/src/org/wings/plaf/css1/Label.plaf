@@ -82,6 +82,7 @@ public void writeAnchorEnd(Device device, AnchorProperties anchor) throws IOExce
             %><span class="<%=style%>"><%
         }
         writeText(device, component, anchor);
+        
         if (style != null) {
             %></span><%
         }
@@ -90,7 +91,13 @@ public void writeAnchorEnd(Device device, AnchorProperties anchor) throws IOExce
         %><span class="<%=style%>"><%
         }
         writeIcon(device, icon, component, anchor);
-        if (style != null) {
+        if (noBreak) {
+            if (style == null) {
+              %><span <%
+            }
+            %>white-Space:pre; <%
+        }
+        if ((style != null) || noBreak) {
             %></span><%
         }
     } else {
