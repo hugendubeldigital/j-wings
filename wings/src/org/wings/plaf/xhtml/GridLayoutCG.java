@@ -63,7 +63,7 @@ public class GridLayoutCG
         if (border > 0)
             d.append(" border=\"").append(border).append("\"");
         else
-            d.append(" border=\"1\"");
+            d.append(" border=\"0\"");
 
         if (container != null && container.getBackground() != null)
             d.append(" bgcolor=\"#").
