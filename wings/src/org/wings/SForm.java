@@ -170,7 +170,7 @@ public class SForm
     /**
      * Fire a ActionEvent at each registered listener.
      */
-    protected void fireActionPerformed() {
+    protected void fireActionPerformed(String pActionCommand) {
         ActionEvent e = null;
         // Guaranteed to return a non-null array
         Object[] listeners = listenerList.getListenerList();
@@ -181,7 +181,7 @@ public class SForm
                 // lazy create ActionEvent
                 if (e == null) {
                     e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-                                        actionCommand);
+                                        pActionCommand);
                 }
                 ((ActionListener) listeners[i + 1]).actionPerformed(e);
             }
@@ -420,7 +420,7 @@ public class SForm
     }
 
     public void fireFinalEvents() {
-        fireActionPerformed();
+        fireActionPerformed(getActionCommand());
     }
 
     public boolean checkEpoch() {
@@ -439,6 +439,12 @@ public class SForm
 
     public void setCG(FormCG cg) {
         super.setCG(cg);
+    }
+
+    public static interface FormComponent {
+        public boolean getShowAsFormComponent();
+
+        public void setShowAsFormComponent(boolean b);
     }
 }
 

@@ -89,7 +89,7 @@ public class SDialog extends SForm {
      * Creates a dialog with the specified title and the specified owner frame.
      *
      * @param owner the parent <code>SFrame</code>
-     * @param title  the <code>String</code> to display as titke
+     * @param title the <code>String</code> to display as titke
      */
     public SDialog(SFrame owner, String title) {
         this.owner = owner;
@@ -168,15 +168,8 @@ public class SDialog extends SForm {
         contentStyle = pContentStyle;
     }
 
-    // fireFinalEvents() somewhere up the stack
-    protected void fireActionPerformed(String state) {
-        setActionCommand(state);
-        fireActionPerformed();
-    }
-
     /**
      * Removes all <code>SComponents</code> from the pane
-     *
      */
     public void dispose() {
         removeAll();
