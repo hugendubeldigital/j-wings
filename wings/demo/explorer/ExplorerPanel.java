@@ -41,7 +41,11 @@ public class ExplorerPanel
 
     public ExplorerPanel(String dir) {
         try {
-            setLayout(new STemplateLayout("/tmp/Explorer.thtml"));
+            java.net.URL templateURL = getClass()
+                .getResource("/explorer/Explorer.thtml");
+            // you can of course directly give files here.
+            STemplateLayout layout = new STemplateLayout( templateURL );
+            setLayout(new STemplateLayout(templateURL));
         }
         catch ( java.io.IOException e ) {
             setLayout(new SFlowLayout());
