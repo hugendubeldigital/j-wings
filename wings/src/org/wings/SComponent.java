@@ -101,7 +101,7 @@ public abstract class SComponent
     protected int rowSpan = 0;
 
     /** The style */
-    protected Style style = null;
+    protected Style style;
 
     /** The font */
     protected SFont font;

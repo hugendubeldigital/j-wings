@@ -59,6 +59,9 @@ public final class FrameCG
                 d.append("\" />");
             }
         }
+        else {
+            System.err.println("Frame.styleSheet == null!");
+        }
     }
 }
 

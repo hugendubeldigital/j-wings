@@ -128,10 +128,8 @@ public class SFrame
      */
     protected boolean resizable = true;
 
-    /**
-     * TODO: documentation
-     */
-    protected StyleSheet styleSheet = null;
+    /** the style sheet used in certain look and feels. */
+    protected StyleSheet styleSheet;   // = null removed!! Do NOT add!
 
     /**
      * TODO: documentation
@@ -146,7 +144,7 @@ public class SFrame
      */
     protected transient SGetDispatcher dispatcher = null;
 
-    private Session session = null;
+    private Session session;
 
     /**
      * TODO: documentation
