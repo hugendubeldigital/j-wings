@@ -179,6 +179,11 @@ void writeFormIcon(final Device device, SAbstractButton abstractButton, String a
     int     horizontalTextPosition = component.getHorizontalTextPosition();
     int     verticalTextPosition   = component.getVerticalTextPosition();
   
+    if (horizontalTextPosition == NO_ALIGN)
+	horizontalTextPosition = RIGHT;
+    if (verticalTextPosition == NO_ALIGN)
+	verticalTextPosition = CENTER;
+
     if (icon == null) {
          writeText(device, component, attr);
     } else if (text == null) {
