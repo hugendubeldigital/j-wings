@@ -112,6 +112,11 @@ public abstract class SessionServlet
     private Session session = null;
 
     /**
+     * 
+     */
+    private boolean generateCode = true;
+
+    /**
      * TODO: documentation
      *
      * @param session
@@ -122,11 +127,30 @@ public abstract class SessionServlet
     }
 
     /**
+     * TODO: documentation
+     *
+     * @param session
+     */
+    protected SessionServlet(Session session, boolean generateCode) {
+        this.session = session;
+        
+        setCodeGeneration(generateCode);
+        SessionManager.setSession(session);
+    }
+
+    /**
      * This default constructor sets the default session.
      * @see org.wings.session.DefaultSession
      */
     protected SessionServlet() {
         this(new DefaultSession());
+    }
+
+    /**
+     * TODO: documentation
+     */
+    public final void setCodeGeneration(boolean on) {
+        generateCode = on;
     }
 
     /**
@@ -533,20 +557,26 @@ public abstract class SessionServlet
                 measure.start("time to process request");
             }
 
-            // default content ist text/html
-            response.setContentType("text/html;charset=" + session.getCharSet());
+            if ( generateCode ) {
 
-            // Page must not be cached since higly dynamic
-            response.setHeader("Pragma", "no-cache");
-            response.setHeader("Cache-Control",
-                               "max-age=0, no-cache, must-revalidate");
-            // 1000 (one second after Jan 01 1970) because of some IE bug:
-            response.setDateHeader("Expires", 1000); 
+                // default content ist text/html
+                response.setContentType("text/html;charset=" + session.getCharSet());
+                
+                // Page must not be cached since higly dynamic
+                response.setHeader("Pragma", "no-cache");
+                response.setHeader("Cache-Control",
+                                   "max-age=0, no-cache, must-revalidate");
+                // 1000 (one second after Jan 01 1970) because of some IE bug:
+                response.setDateHeader("Expires", 1000); 
 
+            }
+                
             processRequest(asreq, response);
-
-            // writes directly to the ServletDevice
-            getFrame().write(new ServletDevice(response.getOutputStream()));
+                
+            if ( generateCode ) {
+                // writes directly to the ServletDevice
+                getFrame().write(new ServletDevice(response.getOutputStream()));
+            }
 
             if ( DEBUG ) {
                 measure.stop();
@@ -588,6 +618,9 @@ public abstract class SessionServlet
                                    HttpServletResponse res,
                                    Exception e)
     {
+        if ( !generateCode ) 
+            return;
+
         try {
             if ( errorFrame == null ) {
                 errorFrame = new SFrame();
