@@ -135,7 +135,7 @@ public class SGMLTag {
 
     // private stuff
     private LinkedList attrs = null;            // tag attributes (mixed)
-    private HashMap values = null;        // tag attribute values (uc)
+    private LinkedHashMap values = null;        // tag attribute values (uc)
     private boolean wellFormed = true;      // looks good?
     private boolean attr_ready = false;
   
@@ -403,7 +403,7 @@ public class SGMLTag {
             String key = null, token;
             wellFormed = false;
             attrs = new LinkedList();
-            values = new HashMap();
+            values = new LinkedHashMap();
 
             while (true) {
 		// check for valid value tag (or end delimiter)
