@@ -27,67 +27,13 @@ import org.wings.io.Device;
  * @version $Revision$
  */
 public class SFlowDownLayout
-    implements SLayoutManager
+    extends SFlowLayout
 {
     /**
      * TODO: documentation
      */
-    protected ArrayList components = new ArrayList(2);
-
-    /**
-     * TODO: documentation
-     *
-     */
-    public SFlowDownLayout() {}
-
-    public void addComponent(SComponent c, Object constraint) {
-        components.add(c);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
-    public void removeComponent(SComponent c) {
-        components.remove(c);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     * @return
-     */
-    public SComponent getComponentAt(int i) {
-        return (SComponent)components.get(i);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     * @throws IOException
-     */
-    public void write(Device s)
-        throws IOException
-    {
-        for ( int i=0; i<components.size(); i++ ) {
-            SComponent comp = (SComponent)components.get(i);
-            if ( comp.isVisible() ) {
-                comp.write(s);
-                s.append("\n<BR>\n");
-            }
-        }
-
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
-    public void setContainer(SContainer c) {
+    public SFlowDownLayout() {
+        super(SConstants.VERTICAL);
     }
 }
 

@@ -29,8 +29,11 @@ public interface SLayoutManager
 {
     void addComponent(SComponent c, Object constraint);
     void removeComponent(SComponent c);
-    void write(Device s) throws IOException;
     void setContainer(SContainer c);
+    SContainer getContainer();
+
+    void write(Device s) throws IOException;
+    String getCGClassID();
 }
 
 /*

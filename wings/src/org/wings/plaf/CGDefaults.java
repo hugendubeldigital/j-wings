@@ -90,14 +90,14 @@ public class CGDefaults extends Hashtable
      *
      * @return The shared instance for code generation of classes with <code>uidClassID</code>.
      */
-    public ComponentCG getCGInstance(String cgClassID) {
+    private Object getCGInstance(String cgClassID) {
         try {
             String className = (String)get(cgClassID);
-            ComponentCG instance = (ComponentCG)get(className);
+            Object instance = get(className);
             if (instance == null) {
 		Class cgClass = Class.forName(className);
                 if (cgClass != null) {
-		    instance = (ComponentCG)cgClass.newInstance();
+		    instance = cgClass.newInstance();
                     // Save shared instance for future use
                     put(className, instance);
                 }
@@ -118,6 +118,10 @@ public class CGDefaults extends Hashtable
         }
 	catch (IllegalAccessException e) {
             getCGError("Constructor of ComponentCG class for: " + cgClassID + " is not accessible");
+            return null;
+        }
+	catch (NullPointerException e) {
+	    getCGError("there's no value for " + cgClassID + " in the defaults table");
             return null;
         }
     }
@@ -154,7 +158,11 @@ public class CGDefaults extends Hashtable
      * </ul>
      */
     public ComponentCG getCG(SComponent target) {
-        return getCGInstance(target.getCGClassID());
+        return (ComponentCG)getCGInstance(target.getCGClassID());
+    }
+
+    public LayoutCG getCG(SLayoutManager target) {
+        return (LayoutCG)getCGInstance(target.getCGClassID());
     }
     
     /**

@@ -16,8 +16,7 @@ package org.wings;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
@@ -28,8 +27,14 @@ import org.wings.io.Device;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SGridLayout implements SLayoutManager
+public class SGridLayout
+    extends SAbstractLayoutManager
 {
+    /**
+     * @see #getCGClassID
+     */
+    private static final String cgClassID = "GridLayoutCG";
+
     private static final boolean DEBUG = true;
 
     // nur zu Debug Zwecken, macht den HTML Code uebersichtlicher !!
@@ -48,13 +53,10 @@ public class SGridLayout implements SLayoutManager
 
     int border = 0;
 
-    boolean headerBold = false;
-    boolean usePercent = false;
-    boolean useAbsolute = false;
+    boolean header = false;
+    boolean relative = false;
 
-    int percent=0;
-    int absolute=0;
-
+    int width = -1;
     int cellPadding = -1;
     int cellSpacing = -1;
 
@@ -82,6 +84,7 @@ public class SGridLayout implements SLayoutManager
     public void setColumns(int c) {
         cols = c;
     }
+    public int getColumns() { return cols; }
 
     /**
      * TODO: documentation
@@ -91,24 +94,7 @@ public class SGridLayout implements SLayoutManager
     public void setRows(int r) {
         rows = r;
     }
-
-    /**
-     * TODO: documentation
-     *
-     * @param p
-     */
-    public void setPadding(int p) {
-        cellPadding = p;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void setSpacing(int s) {
-        cellSpacing = s;
-    }
+    public int getRows() { return rows; }
 
     public void addComponent(SComponent c, Object constraint) {
         components.add(c);
@@ -129,9 +115,29 @@ public class SGridLayout implements SLayoutManager
      * @param i
      * @return
      */
-    public SComponent getComponentAt(int i) {
-        return (SComponent)components.get(i);
+    public List getComponents() {
+        return components;
     }
+
+    /**
+     * TODO: documentation
+     *
+     * @param p
+     */
+    public void setCellPadding(int p) {
+        cellPadding = p;
+    }
+    public int getCellPadding() { return cellPadding; }
+
+    /**
+     * TODO: documentation
+     *
+     * @param s
+     */
+    public void setCellSpacing(int s) {
+        cellSpacing = s;
+    }
+    public int getCellSpacing() { return cellSpacing; }
 
     /**
      * TODO: documentation
@@ -141,147 +147,48 @@ public class SGridLayout implements SLayoutManager
     public void setBorder(int pixel) {
         border = pixel;
     }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     * @throws IOException
-     */
-    public void write(Device s)
-        throws IOException
-    {
-        // mit diesem Ansatz ist es moeglich nur die Anzahl der Zeilen
-        // anzugeben.
-        if ( DEBUG ) {
-            s.append("\n\n<!-- GridLayout ").append(id).append(" -->");
-        }
-        s.append("\n<TABLE");
-        if ( cellSpacing>=0 )
-            s.append(" CELLSPACING=").append(cellSpacing);
-        else
-            s.append(" CELLSPACING=0");
-
-        if ( cellPadding>=0 )
-            s.append(" CELLPADDING=").append(cellPadding);
-
-        if ( useAbsolute )
-            s.append(" WIDTH=").append(percent);
-        else if ( usePercent )
-            s.append(" WIDTH=").append(percent).append("%");
-
-        if ( border>0 )
-            s.append(" BORDER=").append(border);
-        else
-            s.append(" BORDER=0");
-
-        if ( container!=null && container.getBackground()!=null  )
-            s.append(" BGCOLOR=#").
-                append(SUtil.toColorString(container.getBackground()));
-
-        s.append(">\n");
-
-        int cols = this.cols;
-        if ( cols<=0 )
-            cols = components.size()/rows;
-
-        boolean firstRow = true;
-
-        int col = 0;
-        for ( Iterator iter = components.iterator();
-              iter.hasNext(); ) {
-
-            if ( col==0 )
-                s.append("<TR>");
-            else if ( col%cols==0 && iter.hasNext() ) {
-                s.append("</TR>\n<TR>");
-                firstRow = false;
-            }
-
-            if ( firstRow && headerBold )
-                s.append("<TH");
-            else
-                s.append("<TD");
-            SComponent c = (SComponent)iter.next();
-
-            Color backupBackground = c.getBackground();
-            SUtil.appendTableCellAttributes(s, c);
-
-            s.append(">");
-
-            c.setBackground(null);
-
-            c.write(s);
-
-            c.setBackground(backupBackground);
-
-            if ( firstRow && headerBold )
-                s.append("</TH>");
-            else
-                s.append("</TD>");
-
-            col++;
-
-            if ( !iter.hasNext() )
-                s.append("</TR>\n");
-        }
-
-        // Einfachste Loesung, hier muss aber immer vorher bekannt sein,
-        // wieviele Zeilen an Komponenten kommen. Der obere Ansatz ist der
-        // bessere.
-        //     for ( int i=0; i<rows; i++ ) {
-        //       s.append("<TR>");
-        //       for ( int j=0; j<cols; j++ ) {
-        // 	s.append("<TD>");
-        // 	getComponentAt(i*cols+j).write(s);
-        // 	s.append("</TD>");
-
-        //       }
-        //       s.append("</TR>");
-        //     }
-        s.append("</TABLE>");
-
-        if ( DEBUG ) {
-            s.append("\n<!-- GridLayout ").append(id).append(" End -->\n\n");
-        }
-    }
+    public int getBorder() { return border; }
 
     /**
      * TODO: documentation
      *
      * @param percentage
      */
-    public void setWidthRelative(int percentage) {
-        usePercent = true;
-        percent = percentage;
+    public void setWidth(int width) {
+        this.width = width;
     }
+    public int getWidth() { return width; }
 
     /**
      * TODO: documentation
      *
      * @param abs
      */
-    public void setWidthAbsolute(int abs) {
-        useAbsolute = true;
-        absolute = abs;
+    public void setRelative(boolean relative) {
+        this.relative = relative;
     }
+    public boolean isRelative() { return relative; }
 
     /**
      * TODO: documentation
      *
      * @param b
      */
-    public void setHeaderBold(boolean b) {
-        headerBold = b;
+    public void setHeader(boolean b) {
+        header = b;
     }
+    public boolean getHeader() { return header; }
 
     /**
-     * TODO: documentation
+     * Returns the name of the CGFactory class that generates the
+     * look and feel for this layout.
      *
-     * @param c
+     * @return "GridLayoutCG"
+     * @see SLayoutManager#getCGClassID
+     * @see org.wings.plaf.CGDefaults#getCG
      */
-    public void setContainer(SContainer c) {
-        container = c;
+    public String getCGClassID() {
+        return cgClassID;
     }
 }
 

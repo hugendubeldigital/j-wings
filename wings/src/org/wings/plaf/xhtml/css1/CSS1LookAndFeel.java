@@ -77,6 +77,17 @@ public final class CSS1LookAndFeel
         };
 	
 	table.putDefaults(cgDefaults);
+
+	Object[] layoutCgDefaults = {
+	    // remove this later
+	     "DefaultLayoutCG", "org.wings.plaf.xhtml." + "DefaultLayoutCG",
+	     "BorderLayoutCG", css1PackageName + "BorderLayoutCG",
+	       "CardLayoutCG", css1PackageName + "CardLayoutCG",
+	       "FlowLayoutCG", css1PackageName + "FlowLayoutCG",
+	       "GridLayoutCG", css1PackageName + "GridLayoutCG",
+        };
+	
+	table.putDefaults(layoutCgDefaults);
     }
     
     protected void initStyleDefaults(CGDefaults table)

@@ -207,8 +207,6 @@ public class SImage
      * @param s
      */
     public void appendPrefix(Device s) {
-        super.appendPrefix(s);
-
         String imagePath = this.imagePath;
 
         if ( image!=null ) {

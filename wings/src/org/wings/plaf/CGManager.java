@@ -20,6 +20,10 @@ public class CGManager
     public ComponentCG getCG(SComponent target) {
 	return getDefaults().getCG(target);
     }
+
+    public LayoutCG getCG(SLayoutManager target) {
+	return getDefaults().getCG(target);
+    }
     
     /**
      * Returns an object from the defaults table.

@@ -69,7 +69,7 @@ import org.wings.template.*;
  * @version $Revision$
  */
 public class STemplateLayout
-    implements SLayoutManager
+    extends SAbstractLayoutManager
 {
     /**
      * TODO: documentation

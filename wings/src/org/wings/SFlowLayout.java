@@ -15,7 +15,7 @@
 package org.wings;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
@@ -27,8 +27,13 @@ import org.wings.io.Device;
  * @version $Revision$
  */
 public class SFlowLayout
-    implements SLayoutManager
+    extends SAbstractLayoutManager
 {
+    /**
+     * @see #getCGClassID
+     */
+    private static final String cgClassID = "FlowLayoutCG";
+
     /**
      * TODO: documentation
      */
@@ -75,6 +80,15 @@ public class SFlowLayout
     /**
      * TODO: documentation
      *
+     * @return
+     */
+    public List getComponents() {
+        return components;
+    }
+
+    /**
+     * TODO: documentation
+     *
      * @param i
      * @return
      */
@@ -97,6 +111,7 @@ public class SFlowLayout
     public void setOrientation(int o) {
         orientation = o;
     }
+    public int getOrientation() { return orientation; }
 
     /*
      * Sets the alignment. Use one of the following types:
@@ -105,61 +120,24 @@ public class SFlowLayout
      * <LI> {@link SConstants#CENTER_ALIGN}
      * <LI> {@link SConstants#RIGHT_ALIGN}
      * </UL>
-     */
-    /**
-     * TODO: documentation
      *
      * @param a
      */
     public void setAlignment(int a) {
         align = a;
     }
-
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     * @throws IOException
-     */
-    public void write(Device s)
-        throws IOException
-    {
-        if ( components.size()>0 ) {
-            switch (align) {
-            case SConstants.RIGHT_ALIGN:
-                s.append("\n<DIV ALIGN=RIGHT>");
-                break;
-            case SConstants.CENTER_ALIGN:
-                s.append("\n<DIV ALIGN=CENTER>");
-                break;
-            }
-            int count = 0;
-            for ( int i=0; i<components.size(); i++ ) {
-                SComponent comp = (SComponent)components.get(i);
-                if ( comp.isVisible() ) {
-                    if ( orientation==SConstants.VERTICAL && count>0 )
-                        s.append("<BR>\n");
-                    ((SComponent)components.get(i)).write(s);
-                    count++;
-                }
-            }
-            switch (align) {
-            case SConstants.RIGHT_ALIGN:
-            case SConstants.CENTER_ALIGN:
-                s.append("\n</DIV>");
-                break;
-            }
-
-        }
-    }
+    public int getAlignment() { return align; }
 
     /**
-     * TODO: documentation
+     * Returns the name of the CGFactory class that generates the
+     * look and feel for this layout.
      *
-     * @param c
+     * @return "FlowLayoutCG"
+     * @see SLayoutManager#getCGClassID
+     * @see org.wings.plaf.CGDefaults#getCG
      */
-    public void setContainer(SContainer c) {
+    public String getCGClassID() {
+        return cgClassID;
     }
 }
 

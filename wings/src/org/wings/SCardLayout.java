@@ -27,8 +27,14 @@ import org.wings.io.Device;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SCardLayout implements SLayoutManager
+public class SCardLayout
+    extends SAbstractLayoutManager
 {
+    /**
+     * @see #getCGClassID
+     */
+    private static final String cgClassID = "CardLayoutCG";
+
     /**
      * TODO: documentation
      */
@@ -193,7 +199,7 @@ public class SCardLayout implements SLayoutManager
      *
      * @return
      */
-    public SComponent getVisible() {
+    public SComponent getVisibleComponent() {
         for (Iterator en = tab.values().iterator() ; en.hasNext() ; ) {
             SComponent c = (SComponent)en.next();
             if (c.isVisible())
@@ -217,28 +223,16 @@ public class SCardLayout implements SLayoutManager
         return null;
     }
 
-
     /**
-     * TODO: documentation
+     * Returns the name of the CGFactory class that generates the
+     * look and feel for this layout.
      *
-     * @param s
-     * @throws IOException
+     * @return "CardLayoutCG"
+     * @see SLayoutManager#getCGClassID
+     * @see org.wings.plaf.CGDefaults#getCG
      */
-    public void write(Device s)
-        throws IOException
-    {
-        SComponent c = getVisible();
-        if ( c!=null )
-            c.write(s);
-        return;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
-    public void setContainer(SContainer c) {
+    public String getCGClassID() {
+        return cgClassID;
     }
 }
 

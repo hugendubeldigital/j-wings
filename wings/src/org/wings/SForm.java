@@ -318,7 +318,7 @@ public class SForm
      * TODO: documentation
      *
      * @param s
-     */
+     *
     public void appendPrefix(Device s) {
         super.appendPrefix(s);
         s.append("<FORM METHOD=\"");
@@ -340,11 +340,12 @@ public class SForm
      * TODO: documentation
      *
      * @param s
-     */
+     *
     public void appendPostfix(Device s) {
         s.append("</FORM>");
         super.appendPostfix(s);
     }
+    */
 
     public void getPerformed(String name, String value) {
         fireActionPerformed();

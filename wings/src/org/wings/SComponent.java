@@ -18,9 +18,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.beans.*;
 import java.io.IOException;
-import java.util.Locale;
-import java.util.Hashtable;
-import java.util.Dictionary;
+import java.lang.reflect.*;
+import java.util.*;
 
 import org.wings.io.Device;
 import org.wings.io.StringBufferDevice;
@@ -31,31 +30,8 @@ import org.wings.session.SessionManager;
 import org.wings.style.Style;
 import org.wings.externalizer.ExternalizeManager;
 
-/*
- * SComponent.java
- *
- * Basiskomponente des HTML Packages. Vergleichbar zu
- * java.awt.Component. Alle HTML Komponenten werden hiervon
- * abgeleitet. Diese Komponente fuehrt die typische Erzeugung von HTML
- * Code ein:
- * <UL>
- * <LI> Erzeugen des Border Prefixes - typischerweise ein Table
- * <LI> Erzeugen eines Prefixes - typischerweise das Oeffnungs Tag mit
- * seinen Attribute
- * <LI> Erzeugen des Body - der Inhalt einer HTML Komponente, z.B. die
- * Listenelemente
- * <LI> Erzeugen des Postfixes - typischerweise des Schliessen Tag.
- * <LI> Erzeugen des Border Postfixes - typischerweise das Schlusstag
- * eines Tables
- * </UL>
- * <P>
- * Eine davon abgeleitete Componente sollte die entsprechenden
- * Methoden ueberschreiben und zu Beginn der Methode (bei Prefix und
- * Body) bzw. am Ende (bei Postfix) die Methode der Super Klasse
- * aufrufen.
- */
 /**
- * TODO: documentation
+ * The basic component for all components in this package.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -97,28 +73,28 @@ public abstract class SComponent
     private static final String cgClassID = "ComponentCG";
 
     /**
-     * TODO: documentation
+     * The code generation delegate, which is responsible for
+     * the visual representation of a component.
      */
     protected transient ComponentCG cg;
 
     /*
-     * Die Hintergrundfarbe der Komponente. Wird derzeit ignoriert
+     * Background color.
      */
     protected Color background;
 
     /*
-     * Die Vordergrundfarbe der Komponente. Wird mit dem COLOR Tag
-     * gesetzt falls ungleich null.
+     * Foreground color.
      */
     protected Color foreground;
 
     /**
-     * TODO: documentation
+     * Vertical alignment.
      */
     protected int verticalAlignment = NO_ALIGN;
 
     /**
-     * TODO: documentation
+     * Horizontal alignment.
      */
     protected int horizontalAlignment = NO_ALIGN;
 
@@ -132,81 +108,85 @@ public abstract class SComponent
      */
     protected int rowSpan = 0;
 
-    /** the style */
+    /** The style */
     protected Style style = null;
 
+    /** The font */
     protected SFont font;
 
     /**
-     * TODO: documentation
+     * Visibility.
      */
     protected boolean visible = true;
 
     /**
-     * TODO: documentation
+     * Enabled / disabled.
      */
     protected boolean enabled = true;
 
     /**
-     * TODO: documentation
+     * The container, this component resides in.
      */
     protected SContainer parent = null;
 
     /**
-     * TODO: documentation
+     * The frame, this component resides in.
      */
     protected SFrame parentFrame = null;
 
     /**
-     * TODO: documentation
+     * The name of the component.
      */
     protected String name = null;
 
     /**
-     * TODO: documentation
+     * The border for the component.
      */
     protected SBorder border = null;
 
     /**
-     * TODO: documentation
+     * The tooltip for this component.
      */
     protected String tooltip = null;
 
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
     
     /**
-     * TODO: documentation
-     *
+     * Default constructor.
+     * The method updateCG is called to get a cg delegate installed.
      */
     public SComponent() {
         updateCG();
     }
 
     /**
-     * TODO: documentation
+     * Return the border of this component.
+     * @return the border
      */
     public final SBorder getBorder() {
         return border;
     }
 
     /**
-     * TODO: documentation
+     * Set the border to be drawn around this component.
+     * @param b the new border
      */
     public final void setBorder(SBorder b) {
         border = b;
     }
 
     /**
-     * TODO: documentation
+     * Return the parent container.
+     * @return the container this component resides in
      */
     public final SContainer getParent() {
         return parent;
     }
 
     /**
-     * TODO: documentation
+     * Set the parent container.
      *
-     * @param p
+     * @param p the container
      */
     public void setParent(SContainer p) {
         parent = p;
@@ -217,9 +197,9 @@ public abstract class SComponent
     }
 
     /**
-     * TODO: documentation
+     * Set the parent frame.
      *
-     * @param f
+     * @param f the frame
      */
     protected void setParentFrame(SFrame f) {
         if ( f!=parentFrame ) {
@@ -230,9 +210,9 @@ public abstract class SComponent
     }
 
     /**
-     * TODO: documentation
+     * Return the server address of the frame.
      *
-     * @return
+     * @return the server address
      */
     public SGetAddress getServerAddress() {
         SFrame p = getParentFrame(this);
@@ -242,36 +222,29 @@ public abstract class SComponent
     }
 
     /**
-     * TODO: documentation
+     * Create a unique id.
      */
     public static final synchronized int createUnifiedId() {
         return UNIFIED_ID++;
     }
 
     /**
-     * TODO: documentation
-     *
+     * This method gets called when a component is added to its container.
      */
     protected void addedToFrame() {
     }
 
-
-    /*
-     * Eine in der virtuellen Maschine eindeutige Id.
-     */
     /**
-     * TODO: documentation
+     * Return a jvm wide unique id.
+     * @return an id
      */
     public final int getUnifiedId() {
         return unifiedId;
     }
 
-    /*
-     * Eine in der virtuellen Maschine eindeutige Id. Bringt
-     * Performance.
-     */
     /**
-     * TODO: documentation
+     * Return a jvm wide unique id.
+     * @return an id
      */
     public final String getUnifiedIdString() {
         if ( unifiedIdString==null )
@@ -279,32 +252,30 @@ public abstract class SComponent
         return unifiedIdString;
     }
 
-    /*
-     * Eine in der virtuellen Maschine eindeutige Id.
-     */
     /**
-     * TODO: documentation
+     * Return a jvm wide unique prefix.
+     * @return a prefix
      */
     public static final synchronized int getUnifiedPrefix() {
         return UNIFIED_PREFIX++;
     }
 
     /**
-     * TODO: documentation
+     * Return the session this component belongs to.
      *
-     * @return
+     * @return the session
      */
     public Session getSession() {
-        if ( parentFrame==null )
+        if (parentFrame == null)
             return SessionManager.getSession();
         else
             return parentFrame.getSession();
     }
 
     /**
-     * TODO: documentation
+     * Return the dispatcher.
      *
-     * @return
+     * @return the dispatcher
      */
     public SGetDispatcher getDispatcher() {
         if ( parentFrame==null )
@@ -313,121 +284,109 @@ public abstract class SComponent
             return parentFrame.getDispatcher();
     }
 
-    /*
-     * Setzt das Locale.
-     * @param Falls l null ist, wird das default Locale gesetzt.
-     */
     /**
-     * TODO: documentation
+     * Set the locale.
      *
-     * @param l
+     * @param l the new locale
      */
     public void setLocale(Locale l) {
         getSession().setLocale(l);
     }
 
     /**
-     * TODO: documentation
+     * Return the local.
      *
-     * @return
+     * @return the locale
      */
     public Locale getLocale() {
         return getSession().getLocale();
     }
 
     /*
-     * Deregistiert Komponente beim dem gesetzten Dispatcher, falls
-     * Komponente das Interface {@link SGetListener} implementiert.
+     * If a subclass implements the {@link GetListener} interface,
+     * it will be unregistered at the associated dispatcher.
      */
     private void unregister() {
-        if ( getDispatcher()!=null && this instanceof SGetListener )
+        if (getDispatcher() != null && this instanceof SGetListener)
             getDispatcher().unregister((SGetListener)this);
     }
 
     /*
-     * Registiert Komponente beim dem gesetzten Dispatcher, falls
-     * Komponente das Interface {@link SGetListener} implementiert.
+     * If a subclass implements the {@link GetListener} interface,
+     * it will be registered at the associated dispatcher.
      */
     private void register() {
-        if ( getDispatcher()!=null && this instanceof SGetListener )
+        if (getDispatcher() != null && this instanceof SGetListener)
             getDispatcher().register((SGetListener)this);
     }
 
-    /*
-     * Deregistiert Komponente
-     */
     /**
-     * TODO: documentation
-     *
+     * Watch components beeing garbage collected.
      */
     protected void finalize() {
-        if ( DEBUG )
+        if (DEBUG)
             System.out.println("finalize " + getClass().getName());
     }
 
     /**
-     * TODO: documentation
+     * Set the style.
+     * The style is used by style based lafs like xhtml/css1.
      *
-     * @param s
+     * @param s the style
      */
     public void setStyle(Style s) {
         style = s;
     }
 
     /**
-     * TODO: documentation
+     * Return the style.
      *
-     * @return
+     * @return the style
      */
     public Style getStyle() {
         return style;
     }
 
     /**
-     * TODO: documentation
+     * Set the background color.
      *
-     * @param c
+     * @param c the new background color
      */
     public void setBackground(Color c) {
         background = c;
     }
 
     /**
-     * TODO: documentation
+     * Return the background color.
      *
-     * @return
+     * @return the background color
      */
     public Color getBackground() {
         return background;
     }
 
     /**
-     * TODO: documentation
+     * Set the foreground color.
      *
-     * @param c
+     * @param c the new foreground color
      */
     public void setForeground(Color c) {
         foreground = c;
     }
 
     /**
-     * TODO: documentation
+     * Return the foreground color.
      *
-     * @return
+     * @return the foreground color
      */
     public Color getForeground() {
         return foreground;
     }
 
-    /*
-     * Der Font der Komponente. Wird mit dem Font Tag gesetzt. Die
-     * Groesse des Java Fonts wird durch 4 geteilt und dieser Wert
-     * gesetzt. Hier sollte ein besserer Algorithmus gwaehlt werden.
-     */
     /**
-     * TODO: documentation
+     * Set the font.
      *
-     * @param f
+     * @param f the new font
      */
     public void setFont(Font f) {
         if ( f==null ) {
@@ -445,81 +404,82 @@ public abstract class SComponent
     }
 
     /**
-     * TODO: documentation
+     * Set the font.
      *
-     * @param f
+     * @param f the new font
      */
     public void setFont(SFont f) {
         font = f;
     }
 
     /**
-     * TODO: documentation
+     * Return the font.
      *
-     * @return
+     * @return f the font
      */
     public SFont getFont() {
         return font;
     }
 
     /**
-     * TODO: documentation
+     * Set the visibility.
      *
-     * @param v
+     * @param v wether this component wil show or not
      */
     public void setVisible(boolean v) {
         visible = v;
     }
 
     /**
-     * TODO: documentation
+     * Return the visibility.
      *
-     * @return
+     * @return wether the component will show
+     * @deprecated use isVisible instead
      */
     public boolean getVisible() {
         return visible;
     }
 
     /**
-     * TODO: documentation
+     * Return the visibility.
      *
-     * @return
+     * @return wether the component will show
      */
     public boolean isVisible() {
         return visible;
     }
 
     /**
-     * TODO: documentation
+     * Set wether this component should be enabled.
      *
-     * @param v
+     * @param v true if the component is enabled, false otherwise
      */
     public void setEnabled(boolean v) {
         enabled = v;
     }
 
     /**
-     * TODO: documentation
+     * Return true if this component is enabled.
      *
-     * @return
+     * @return true if component is enabled
      */
     public boolean isEnabled() {
         return enabled;
     }
 
     /**
-     * TODO: documentation
+     * Return the name of this component.
      *
-     * @return
+     * @return the name of this component
      */
     public String getName() {
         return name;
     }
 
     /**
-     * TODO: documentation
+     * Set the name of this component.
      *
-     * @param n
+     * @param n the new name for this component
      */
     public void setName(String n) {
         name = n;
@@ -601,26 +561,12 @@ public abstract class SComponent
             border.appendPostfix(s);
     }
 
-
-    /*
-     * Haengt die HTML Ausgabe dieser Komponente an den Puffer an.
-     * Die Vorgehensweise ist die folgende:
-     * <OL>
-     * <LI> Falls Komponente sichtbar ist
-     * <LI> Haenge BorderPrefix an Puffer an
-     * <LI> Haenge Prefix an Puffer an
-     * <LI> Haenge Body an Puffer an
-     * <LI> Haenge Postfix an Puffer an
-     * <LI> Haenge BorderPostfix an Puffer an
-     * </OL>
-     * @param s the Device to write to
-     * @exception IOException may be the user stopped loading ..
-     */
     /**
-     * TODO: documentation
+     * Let the delegate write the component's code to the device.
      *
-     * @param s
-     * @throws IOException
+     * @param s the Device to write into
+     * @throws IOException Thrown when the connection to the client gets broken,
+     *         for example when the user stops loading
      */
     public void write(Device s)
         throws IOException
@@ -629,29 +575,45 @@ public abstract class SComponent
             cg.write(s, this);
     }
 
-    /*
-     * Erzeugt die HTML Ausgabe der Komponente.
-     * @see #write(Device)
-     */
     /**
-     * TODO: documentation
+     * Generic implementation for generating a string that represents the components
+     * configuration.
+     * @return a string containing all properties
      */
-    public final String toString() {
-        StringBufferDevice erg = new StringBufferDevice();
+    public String paramString() {
+        StringBuffer buffer = new StringBuffer(getClass().getName());
+        buffer.append("[");
+
         try {
-            write(erg);
-        } catch (IOException e) {}
-        return erg.toString();
+            BeanInfo info = Introspector.getBeanInfo(getClass());
+            PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
+
+            boolean first=true;
+            for (int i=0; i < descriptors.length; i++) {
+                try {
+                    Method getter = descriptors[i].getReadMethod();
+                    if (getter == null)
+                        continue;
+                    Object value = getter.invoke(this, null);
+                    if (first)
+                        first = false;
+                    else
+                        buffer.append(",");
+                    buffer.append(descriptors[i].getName() + "=" + value);
+                }
+                catch (Exception e) {}
+            }
+        }
+        catch (Exception e) {}
+
+        buffer.append("]");
+        return buffer.toString();
     }
 
-    /*
-     * Erzeugt ein eindeutiges Prefix. Erzeugt wird das durch das
-     * Anhaengen eines Zeichens (Text) an die eindeutige Id.
-     */
     /**
-     * TODO: documentation
+     * Return a unique name prefix.
      *
-     * @return
+     * @return a unique name prefix
      */
     public String getNamePrefix() {
         if ( getDispatcher()!=null )
@@ -662,25 +624,26 @@ public abstract class SComponent
     }
 
     /**
-     * TODO: documentation
+     * Return the frame the specified component is contained in.
+     * @return the frame
      */
     public static SFrame getParentFrame(SComponent c) {
         return c.getParentFrame();
     }
 
     /**
-     * TODO: documentation
+     * Return the parent frame.
      *
-     * @return
+     * @return the parent frame
      */
     public SFrame getParentFrame() {
         return parentFrame;
     }
 
     /**
-     * TODO: documentation
+     * Return true, if this component is contained in a form.
      *
-     * @return
+     * @return true, if this component resides in a form, false otherwise
      */
     public boolean getResidesInForm() {
         SComponent parent = getParent();
@@ -693,33 +656,34 @@ public abstract class SComponent
     }
 
     /**
-     * TODO: documentation
+     * Convenience method that return the externalize manager.
      *
-     * @return
+     * @return the externalize manager
      */
     public ExternalizeManager getExternalizeManager() {
         return getSession().getExternalizeManager();
     }
 
     /**
-     * TODO: documentation
+     * Set the tooltip text.
      *
-     * @param t
+     * @param t the new tooltip text
      */
     public void setToolTipText(String t) {
         tooltip = t;
     }
+
     /**
-     * TODO: documentation
+     * Return the tooltip text.
      *
-     * @return
+     * @return the tooltip text
      */
     public String getToolTipText() { return tooltip; }
 
     /**
-     * TODO: documentation
+     * Clone this component.
      *
-     * @return
+     * @return a clone of this component
      */
     public Object clone() {
         try {
@@ -731,71 +695,79 @@ public abstract class SComponent
     }
 
     /**
-     * TODO: documentation
+     * Return the value of the horizontal alignment property.
+     * @return the horizontal alignment
+     * @see SConstants
      */
     public final int getHorizontalAlignment() {
         return horizontalAlignment;
     }
 
     /**
-     * TODO: documentation
+     * Set the horizontal alignment.
+     * @param the new value for the horizontal alignment
+     * @see SConstants
      */
     public final void setHorizontalAlignment(int alignment) {
         horizontalAlignment = alignment;
     }
 
     /**
-     * TODO: documentation
+     * Set the vertical alignment.
+     * @param the new value for the vertical alignment
+     * @see SConstants
      */
     public final void setVerticalAlignment(int alignment) {
         verticalAlignment = alignment;
     }
 
     /**
-     * TODO: documentation
+     * Return the value of the vertical alignment property.
+     * @return the vertical alignment
+     * @see SConstants
      */
     public final int getVerticalAlignment() {
         return verticalAlignment;
     }
 
     /**
-     * TODO: documentation
+     * @deprecated use GridBagLayout instead
      */
     public final int getColSpan() {
         return colSpan;
     }
 
     /**
-     * TODO: documentation
+     * @deprecated use GridBagLayout instead
      */
     public final void setColSpan(int span) {
         colSpan = span;
     }
 
     /**
-     * TODO: documentation
+     * @deprecated use GridBagLayout instead
      */
     public final int getRowSpan() {
         return rowSpan;
     }
 
     /**
-     * TODO: documentation
+     * @deprecated use GridBagLayout instead
      */
     public final void setRowSpan(int span) {
         rowSpan = span;
     }
 
-    private Hashtable clientProperties;
+    private Map clientProperties;
 
     /**
      * @return a small Hashtable
      * @see #putClientProperty
      * @see #getClientProperty
      */
-    private Dictionary getClientProperties() {
+    private Map getClientProperties() {
         if (clientProperties == null) {
-            clientProperties = new Hashtable(2);
+            clientProperties = new HashMap(2);
         }
         return clientProperties;
     }
@@ -835,7 +807,7 @@ public abstract class SComponent
      * events) is <code>key.toString()</code>.
      * <p>
      * The clientProperty dictionary is not intended to support large
-     * scale extensions to JComponent nor should be it considered an
+     * scale extensions to SComponent nor should be it considered an
      * alternative to subclassing when designing a new component.
      *
      * @see #getClientProperty
@@ -871,34 +843,51 @@ public abstract class SComponent
 	propertyChangeSupport.removePropertyChangeListener(l);
     }
     
+    /**
+     * Notify all listeners that a property change has occured.
+     * @param propertyName the name of the property
+     * @param oldValue the old value
+     * @param newValue the new value
+     */
     protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
         propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
     }
 
+    /**
+     * Notify all listeners that a property change has occured.
+     * @param propertyName the name of the property
+     * @param oldValue the old value
+     * @param newValue the new value
+     */
     protected void firePropertyChange(String propertyName, int oldValue, int newValue) {
         propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
     }
 
+    /**
+     * Notify all listeners that a property change has occured.
+     * @param propertyName the name of the property
+     * @param oldValue the old value
+     * @param newValue the new value
+     */
     protected void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
         propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
     }
 
     /**
      * Set the look and feel delegate for this component.
-     * JComponent subclasses generally override this method
-     * to narrow the argument type, e.g. in JSlider:
+     * SComponent subclasses generally override this method
+     * to narrow the argument type, e.g. in STextField:
      * <pre>
-     * public void setCG(SliderCG newCG) {
+     * public void setCG(TextFieldCG newCG) {
      *     super.setCG(newCG);
      * }
-     *  </pre>
+     * </pre>
      *
      * @see #updateCG
-     * @see CGManager#getLookAndFeel
-     * @see CGManager#getCG
+     * @see org.wings.plaf.CGManager#getLookAndFeel
+     * @see org.wings.plaf.CGManager#getCG
      * @beaninfo
      *        bound: true
-     *    attribute: visualUpdate true
      *  description: The component's look and feel delegate
      */
     protected void setCG(ComponentCG newCG) {
@@ -919,9 +908,9 @@ public abstract class SComponent
     }
 
     /**
-     * TODO: documentation
+     * Return the look and feel delegate.
      *
-     * @return
+     * @return the componet's cg
      */
     public ComponentCG getCG() {
         return cg;
@@ -947,7 +936,7 @@ public abstract class SComponent
      *
      * @return "ComponentCG"
      * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
+     * @see org.wings.plaf.CGDefaults#getCG
      */
     public String getCGClassID() {
         return cgClassID;

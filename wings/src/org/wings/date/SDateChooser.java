@@ -163,7 +163,6 @@ public class SDateChooser
     public void appendPrefix(org.wings.io.Device s) {
         cardLayout.show(isFormComponent() ? (SComponent)formDateChooser :
                         (SComponent)anchorDateChooser);
-        super.appendPrefix(s);
     }
 
     protected boolean adjusting = false;

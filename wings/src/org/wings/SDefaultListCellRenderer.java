@@ -94,6 +94,10 @@ public class SDefaultListCellRenderer
         return this;
     }
 
+    public String toString() {
+        return getText();
+    }
+
     /**
      * TODO: documentation
      *

@@ -14,14 +14,15 @@
 
 package org.wings;
 
-import org.wings.plaf.*;
-import org.wings.io.Device;
-
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.AdjustmentEvent;
+import java.io.IOException;
+
+import org.wings.plaf.*;
+import org.wings.io.Device;
 
 /**
  * TODO: documentation
@@ -32,6 +33,11 @@ import java.awt.event.AdjustmentEvent;
 public class SScrollPane
     extends SContainer
 {
+    /**
+     * @see #getCGClassID
+     */
+    private static final String cgClassID = "ContainerCG";
+
     /**
      * The name says all I think
      */
@@ -170,10 +176,13 @@ public class SScrollPane
      *
      * @param s
      */
-    public void appendBody(Device s) {
-        // kann sein, dass das mit dem ChangeListener gemacht wird
-        adjustScrollBars();
-        super.appendBody(s);
+    public void write(Device s)
+        throws IOException
+    {
+        if (visible) {
+            adjustScrollBars();
+            cg.write(s, this);
+        }
     }
 
     /**
@@ -210,6 +219,18 @@ public class SScrollPane
      */
     public int getVerticalExtent() {
         return verticalExtent;
+    }
+
+    /**
+     * Returns the name of the CGFactory class that generates the
+     * look and feel for this component.
+     *
+     * @return "ContainerCG"
+     * @see SComponent#getCGClassID
+     * @see CGDefaults#getCG
+     */
+    public String getCGClassID() {
+        return cgClassID;
     }
 }
 

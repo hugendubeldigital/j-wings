@@ -26,7 +26,7 @@ import org.wings.io.Device;
  * @version $Revision$
  */
 public class SListLayout
-    implements SLayoutManager
+    extends SAbstractLayoutManager
 {
     /**
      * TODO: documentation

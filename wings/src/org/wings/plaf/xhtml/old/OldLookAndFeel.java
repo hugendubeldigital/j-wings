@@ -72,6 +72,15 @@ public final class OldLookAndFeel
 	};
 	
 	table.putDefaults(cgDefaults);
+
+	Object[] layoutCgDefaults = {
+	     "BorderLayoutCG", oldPackageName + "BorderLayoutCG",
+	       "CardLayoutCG", oldPackageName + "CardLayoutCG",
+	       "FlowLayoutCG", oldPackageName + "FlowLayoutCG",
+	       "GridLayoutCG", oldPackageName + "GridLayoutCG",
+        };
+	
+	table.putDefaults(layoutCgDefaults);
     }
     
     protected void initComponentDefaults(CGDefaults table) {

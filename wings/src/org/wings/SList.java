@@ -36,9 +36,7 @@ import org.wings.io.Device;
  * @see javax.swing.ListModel
  * @see SDefaultListModel
  * @see javax.swing.ListSelectionModel
- * @see javax.swing.DefaultListSelectionModel
  * @see SListCellRenderer
- * @see SDefaultListCellRenderer
  *
  * @beaninfo
  *   attribute: isContainer false
@@ -75,26 +73,23 @@ public class SList
      */
     protected boolean[] oldSelection = null;
 
-    /**
-     * TODO: documentation
-     */
-    protected boolean hidden = true;
+    private boolean hidden = true;
 
     protected EventListenerList listenerList = new EventListenerList();
     private Rectangle viewport = null;
 
     /**
-     * TODO: documentation
+     * <li type="...">
      */
     protected String type = SConstants.UNORDERED_LIST;
 
     /**
-     * TODO: documentation
+     * <li type="...">
      */
     protected String orderType = null;
 
     /**
-     * TODO: documentation
+     * <li start="...">
      */
     protected int start = 0;
 
@@ -178,21 +173,16 @@ public class SList
     }
 
     /**
-     * Sets the delegate that's used to paint each cell in the list.  If
-     * prototypeCellValue was set then the fixedCellWidth and fixedCellHeight
-     * properties are set as well.  Only one PropertyChangeEvent is generated
-     * however - for the "cellRenderer" property.
+     * Sets the renderer that's used to write out each cell in the list.
      * <p>
-     * The default value of this property is provided by the ListUI
-     * delegate, i.e. by the look and feel implementation.
+     * The default value of this property is provided by the ListCG.
      * <p>
      * This is a JavaBeans bound property.
      *
-     * @param cellRenderer the ListCellRenderer that paints list cells
+     * @param cellRenderer the SListCellRenderer that paints list cells
      * @see #getCellRenderer
      * @beaninfo
      *       bound: true
-     *   attribute: visualUpdate true
      * description: The component used to draw the cells.
      */
     public void setCellRenderer(SListCellRenderer cellRenderer) {
@@ -233,7 +223,6 @@ public class SList
      * @see #setFont
      * @beaninfo
      *       bound: true
-     *   attribute: visualUpdate true
      * description: The foreground color of selected cells.
      */
     public void setSelectionForeground(Color selectionForeground) {
@@ -273,7 +262,6 @@ public class SList
      * @see #setFont
      * @beaninfo
      *       bound: true
-     *   attribute: visualUpdate true
      * description: The background color of selected cells.
      */
     public void setSelectionBackground(Color selectionBackground) {
@@ -284,7 +272,8 @@ public class SList
 
 
     /**
-     * Return the preferred number of visible rows.
+     * Return the preferred number of visible rows. If rendered as a form
+     * component it is used for the size-attribute.
      *
      * @return an int indicating the preferred number of rows to display
      *         without using a scrollbar
@@ -296,9 +285,7 @@ public class SList
 
     /**
      * Set the preferred number of rows in the list that can be displayed
-     * without a scollbar, as determined by the nearest JViewport ancestor,
-     * if any.  The value of this property only affects the value of
-     * the SLists preferredScrollableViewportSize.
+     * without a scollbar.
      * <p>
      * The default value of this property is 8.
      * <p>
@@ -307,11 +294,8 @@ public class SList
      * @param visibleRowCount  an int specifying the preferred number of
      *                         visible rows
      * @see #getVisibleRowCount
-     * @see JComponent#getVisibleRect
-     * @see JViewport
      * @beaninfo
      *       bound: true
-     *   attribute: visualUpdate true
      * description: The preferred number of cells that can be displayed without a scrollbar.
      */
     public void setVisibleRowCount(int visibleRowCount) {
@@ -744,23 +728,23 @@ public class SList
      *
      * @param b the boolean value for the property value
      * @see ListSelectionModel#setValueIsAdjusting
-     *
+     */
     public void setValueIsAdjusting(boolean b) {
         getSelectionModel().setValueIsAdjusting(b);
     }
 
-    *
+    /**
      * Returns the value of the data model's isAdjusting property.
      * This value is true if multiple changes are being made.
      *
      * @return true if multiple selection-changes are occuring, as
      *         when the mouse is being dragged over the list
      * @see ListSelectionModel#getValueIsAdjusting
-     *
+     */
     public boolean getValueIsAdjusting() {
         return getSelectionModel().getValueIsAdjusting();
     }
-     */
+
 
     /**
      * Return an array of all of the selected indices in increasing
@@ -941,7 +925,7 @@ public class SList
     }
 
     /**
-     * TODO: documentation
+     * <li type="...">
      *
      * @param t
      */
@@ -950,7 +934,7 @@ public class SList
     }
 
     /**
-     * TODO: documentation
+     * <li type="...">
      *
      * @return
      */
@@ -959,6 +943,7 @@ public class SList
     }
 
     /*
+     * <li type="...">
      * <code>null</code> is default style.
      */
     public void setType(String[] t) {
@@ -973,6 +958,7 @@ public class SList
     }
 
     /**
+     * <li start="...">
      * TODO: documentation
      *
      * @param s
@@ -982,7 +968,7 @@ public class SList
     }
 
     /**
-     * TODO: documentation
+     * <li start="...">
      *
      * @return
      */
@@ -991,11 +977,7 @@ public class SList
     }
 
 
-    /**
-     * TODO: documentation
-     *
-     */
-    protected void syncSelection() {
+    private void syncSelection() {
 	if (dataModel == null)
             return;
 
@@ -1007,10 +989,11 @@ public class SList
     }
 
     /**
-     * TODO: documentation
-     *
+     * Commit selection changes to the model.
+     * The model will generate events.
      */
     protected void fireEvents() {
+        setValueIsAdjusting(true);
         for (int i=0; i < selection.length; i++) {
             if (selection[i] != isSelectedIndex(i)) {
                 if (selection[i])
@@ -1019,8 +1002,14 @@ public class SList
                     removeSelectionInterval(i, i);
             }
         }
+        setValueIsAdjusting(false);
     }
 
+    /*
+     * Implement GetListener interface.
+     * @param action the name
+     * @param value the value
+     */
     public void getPerformed(String action, String value) {
         try {
             int sel = Integer.parseInt(value);
@@ -1051,47 +1040,28 @@ public class SList
         }
     }
 
-
     /**
-     * Returns a string representation of this SList. This method
-     * is intended to be used only for debugging purposes, and the
-     * content and format of the returned string may vary between
-     * implementations. The returned string may be empty but may not
-     * be <code>null</code>.
+     * Return the scrollable viewport size, i.e. the number of entries
+     * in the model.
      *
-     * @return  a string representation of this SList.
-     */
-    protected String paramString() {
-        String selectionForegroundString = (selectionForeground != null ?
-                                            selectionForeground.toString() :
-                                            "");
-        String selectionBackgroundString = (selectionBackground != null ?
-                                            selectionBackground.toString() :
-                                            "");
-
-        return
-            ",selectionBackground=" + selectionBackgroundString +
-            ",selectionForeground=" + selectionForegroundString +
-            ",visibleRowCount=" + visibleRowCount;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
+     * @return the scrollable viewport dimension
      */
     public Dimension getScrollableViewportSize() {
         return new Dimension(1, dataModel.getSize());
     }
 
+    /**
+     * Set the visible viewport size.
+     * @param d the visible viewport size
+     */
     public void setViewportSize(Rectangle d) {
         viewport = d;
     }
 
     /**
-     * TODO: documentation
+     * Return the visible viewport size.
      *
-     * @return
+     * @return the visible viewport size
      */
     public Rectangle getViewportSize() { return viewport; }
 

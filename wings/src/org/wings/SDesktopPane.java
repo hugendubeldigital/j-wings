@@ -190,7 +190,7 @@ public class SDesktopPane
         return getIndexOf(c);
     }
 
-    private class SStackLayout implements SLayoutManager
+    private class SStackLayout extends SAbstractLayoutManager
     {
         private SContainer container = null;
 

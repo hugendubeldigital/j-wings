@@ -35,7 +35,6 @@ import org.wings.io.Device;
  *
  * @see javax.swing.ComboBoxModel
  * @see SListCellRenderer
- * @see SDefaultListCellRenderer
  *
  * @beaninfo
  *   attribute: isContainer false
@@ -52,7 +51,16 @@ public class SComboBox
      */
     private static final String cgClassID = "ComboBoxCG";
 
+    /**
+     * The model.
+     * @see javax.swing.ComboBoxModel
+     */
     protected ComboBoxModel    dataModel;
+    
+    /**
+     * The renderer used for cell rendering each cell.
+     * @see SListCellRenderer
+     */
     protected SListCellRenderer renderer;
     protected int maximumRowCount = 8;
     protected Object lastSelectedItem = null;

@@ -1,0 +1,97 @@
+package org.wings.plaf.xhtml;
+
+import java.io.IOException;
+import java.util.*;
+
+import org.wings.*;
+import org.wings.io.*;
+import org.wings.plaf.*;
+
+public class GridLayoutCG implements LayoutCG
+{
+    /**
+     * TODO: documentation
+     *
+     * @param d the device to write the code to
+     * @param l the layout manager
+     * @throws IOException
+     */
+    public void write(Device d, SLayoutManager l)
+        throws IOException
+    {
+	SGridLayout layout = (SGridLayout)l;
+	SContainer container = layout.getContainer();
+	List components = layout.getComponents();
+
+	boolean header = layout.getHeader();
+	boolean relative = layout.isRelative();
+	int width = layout.getWidth();
+	int cellSpacing = layout.getCellSpacing();
+	int cellPadding = layout.getCellPadding();
+	int border = layout.getBorder();
+
+	int cols = layout.getColumns();
+	int rows = layout.getRows();
+
+        d.append("\n<table");
+        if (cellSpacing >= 0)
+            d.append(" cellspacing=\"").append(cellSpacing).append("\"");
+        else
+            d.append(" cellspacing=\"0\"");
+
+        if (cellPadding >= 0)
+            d.append(" cellpadding=\"").append(cellPadding).append("\"");
+
+	if (width > 0) {
+	    if (relative)
+		d.append(" width=\"").append(width).append("%\"");
+	    else
+		d.append(" width=\"").append(width).append("\"");
+	}
+
+        if (border > 0)
+            d.append(" border=").append(border).append("\"");
+        else
+            d.append(" border=\"0\"");
+
+        if (container != null && container.getBackground() != null)
+            d.append(" bgcolor=\"#").
+                append(SUtil.toColorString(container.getBackground())).append("\"");
+
+        d.append(">\n");
+
+        if (cols <= 0)
+            cols = components.size() / rows;
+
+        boolean firstRow = true;
+
+        int col = 0;
+        for (Iterator iter = components.iterator(); iter.hasNext();) {
+            if (col == 0)
+                d.append("<tr>");
+            else if (col%cols == 0 && iter.hasNext()) {
+                d.append("</tr>\n<tr>");
+                firstRow = false;
+            }
+
+            if (firstRow && header)
+                d.append("<th>");
+            else
+                d.append("<td>");
+            SComponent c = (SComponent)iter.next();
+            c.write(d);
+
+            if (firstRow && header)
+                d.append("</th>");
+            else
+                d.append("</td>");
+
+            col++;
+
+            if (!iter.hasNext())
+                d.append("</tr>\n");
+        }
+
+        d.append("</table>");
+    }
+}
