@@ -31,6 +31,14 @@
      <include name="jakarta-regexp-*.jar"/>
   </fileset>     
 
+  <fileset dir="../lib" id="jlfgr.jar">
+     <include name="jlfgr-*.jar"/>
+  </fileset>     
+
+  <fileset dir="../lib" id="bsh.jar">
+     <include name="bsh-*.jar"/>
+  </fileset>     
+
   <!-- ==================== Preparations ==================== -->
 
   <target name="prepare">
@@ -41,6 +49,8 @@
     <mkdir dir="${build.etc}"/>
     <mkdir dir="${dist}"/>
     <mkdir dir="${dist.deploy}"/>
+
+    <ant antfile="build.xml" dir=".."/>
   </target>
 
 
@@ -58,6 +68,8 @@
 	 webxml="wingset/wingset.xml">
       <lib refid="wings.jar"/>
       <lib refid="regexp.jar"/>
+      <lib refid="jlfgr.jar"/>
+      <lib refid="bsh.jar"/>
       <classes dir="${build.class}">
         <include name="wingset/**"/>
       </classes>
