@@ -28,14 +28,10 @@ public class STextField
 {
     private static final String cgClassID = "TextFieldCG";
 
-    /**
-     * maximum amount of letters
-     */
+    /** maximum columns shown */
     protected int columns = 12;
 
-    /**
-     * TODO: documentation
-     */
+    /** maximum columns allowed */
     protected int maxColumns = 50;
 
 
