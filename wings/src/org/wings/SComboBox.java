@@ -44,7 +44,7 @@ import org.wings.io.Device;
  */
 public class SComboBox
     extends SComponent
-    implements SGetListener, ListDataListener, ItemSelectable
+    implements RequestListener, ListDataListener, ItemSelectable
 {
     /**
      * @see #getCGClassID
@@ -539,6 +539,10 @@ public class SComboBox
     // do not initalize with null!
     private SCellRendererPane cellRendererPane = new SCellRendererPane();
 
+    public void fireIntermediateEvents() {
+    }
+    public void fireFinalEvents() {
+    }
 
     /**
      * TODO: documentation

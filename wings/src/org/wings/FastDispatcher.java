@@ -43,7 +43,7 @@ public class FastDispatcher
     public FastDispatcher() {
     }
 
-    private final void addGetListener(SGetListener gl, String namePrefix) {
+    private final void addGetListener(RequestListener gl, String namePrefix) {
         ArrayList l = (ArrayList)listener.get(namePrefix);
         if ( l==null ) {
             l = new ArrayList(2);
@@ -54,7 +54,7 @@ public class FastDispatcher
             l.add(gl);
     }
 
-    private final void removeGetListener(SGetListener gl, String namePrefix) {
+    private final void removeGetListener(RequestListener gl, String namePrefix) {
         ArrayList l = (ArrayList)listener.get(namePrefix);
         if ( l!=null ) {
             l.remove(gl);
@@ -69,11 +69,11 @@ public class FastDispatcher
 
     /**
      * Registers a listener. The NamePrefix of the listener is stored in the
-     * HasMap as key. The value is a Set (ArrayList) of {@link SGetListener}.
+     * HasMap as key. The value is a Set (ArrayList) of {@link RequestListener}.
      *
      * @param gl listener
      */
-    public void register(SGetListener gl) {
+    public void register(RequestListener gl) {
         if ( gl==null )
             return;
 
@@ -101,7 +101,7 @@ public class FastDispatcher
      *
      * @param gl
      */
-    public void unregister(SGetListener gl) {
+    public void unregister(RequestListener gl) {
         if ( gl==null )
             return;
 
@@ -147,8 +147,8 @@ public class FastDispatcher
 
         ArrayList l = (ArrayList)listener.get(name);
         if (l != null) {
-            SGetListener gl = (SGetListener)l.get(0);
-            SFrame frame = gl.getParentFrame();
+            RequestListener gl = (RequestListener)l.get(0);
+            SFrame frame = ((SComponent)gl).getParentFrame();
             if (prefix != null && !prefix.equals(frame.getUniquePrefix())) {
                 debug("parameter '" + name + "' is out of date");
                 // do not fire those outdated events but enforce immediate reload of the frame
@@ -160,7 +160,7 @@ public class FastDispatcher
             }
 
             for (int i=0; i<l.size(); i++) {
-                gl = (SGetListener)l.get(i);
+                gl = (RequestListener)l.get(i);
                 for (int j=0; j<values.length; j++)
                     gl.getPerformed(name, values[j]);
                 erg = true;

@@ -31,7 +31,7 @@ import org.wings.io.Device;
  */
 public abstract class SAbstractButton
     extends SComponent
-    implements Selectable, RequestListener //SGetListener
+    implements Selectable, RequestListener
 {
     /** the text the button is showing */
     protected String text;

@@ -39,7 +39,7 @@ import org.wings.externalizer.ExternalizeManager;
  */
 public class STable
     extends SBaseTable
-    implements ActionListener, CellEditorListener, SGetListener
+    implements ActionListener, CellEditorListener, RequestListener
 {
     /**
      * @see #getCGClassID
@@ -744,6 +744,11 @@ public class STable
         reload();
     }
 
+    public void fireIntermediateEvents() {
+    }
+
+    public void fireFinalEvents() {
+    }
 
     /*
      * Hier wird der SelectionPerformed Event gefeuert.

@@ -388,8 +388,8 @@ public abstract class SComponent
      * it will be unregistered at the associated dispatcher.
      */
     private void unregister() {
-        if (getDispatcher() != null && this instanceof SGetListener)
-            getDispatcher().unregister((SGetListener)this);
+        if (getDispatcher() != null && this instanceof RequestListener)
+            getDispatcher().unregister((RequestListener)this);
     }
 
     /*
@@ -397,8 +397,8 @@ public abstract class SComponent
      * it will be registered at the associated dispatcher.
      */
     private void register() {
-        if (getDispatcher() != null && this instanceof SGetListener)
-            getDispatcher().register((SGetListener)this);
+        if (getDispatcher() != null && this instanceof RequestListener)
+            getDispatcher().register((RequestListener)this);
     }
 
     /**

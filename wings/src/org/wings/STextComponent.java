@@ -29,7 +29,7 @@ import org.wings.io.Device;
  */
 public abstract class STextComponent
     extends SComponent
-    implements RequestListener //SGetListener
+    implements RequestListener
 {
     private boolean editable = true;
 

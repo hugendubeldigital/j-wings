@@ -28,7 +28,7 @@ import org.wings.io.Device;
  */
 public class SFileChooser
     extends SComponent
-    implements SGetListener
+    implements RequestListener
 {
     private static final String cgClassID = "FileChooserCG";
 
@@ -197,6 +197,11 @@ public class SFileChooser
 
         UploadFilterManager.registerFilter(getNamePrefix(), filter);
         this.filter = filter;
+    }
+
+    public void fireIntermediateEvents() {
+    }
+    public void fireFinalEvents() {
     }
 
     /**

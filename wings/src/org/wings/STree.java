@@ -34,7 +34,7 @@ import org.wings.io.Device;
  */
 public class STree
     extends SComponent
-    implements SGetListener, TreeSelectionListener, Scrollable
+    implements RequestListener, TreeSelectionListener, Scrollable
 {
     private static final String cgClassID = "TreeCG";
 
@@ -246,6 +246,10 @@ public class STree
         }
     }
 
+    public void fireIntermediateEvents() {
+    }
+    public void fireFinalEvents() {
+    }
 
     /**
      * TODO: documentation

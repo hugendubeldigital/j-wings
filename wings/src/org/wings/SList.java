@@ -47,7 +47,7 @@ import org.wings.io.Device;
  */
 public class SList
     extends SComponent
-    implements Scrollable, SGetListener
+    implements Scrollable, RequestListener
 {
     public static final boolean DEBUG = true;
 
@@ -893,6 +893,11 @@ public class SList
             }
         }
         setValueIsAdjusting(false);
+    }
+
+    public void fireIntermediateEvents() {
+    }
+    public void fireFinalEvents() {
     }
 
     /*

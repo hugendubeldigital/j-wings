@@ -31,7 +31,7 @@ import org.wings.plaf.*;
  */
 public class SInternalFrame
     extends SContainer
-    implements SGetListener
+    implements RequestListener
 {
     /**
      * @see #getCGClassID

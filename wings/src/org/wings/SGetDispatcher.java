@@ -25,25 +25,49 @@ package org.wings;
  * erzeugenden) Objekte weiterzuleiten.
  */
 /**
- * TODO: documentation
+ * Delivers low level events to all components, that implement the RequestListener
+ * interface and hence are registered with this dispatcher.
  *
- * @author
+ * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public interface SGetDispatcher
 {
-    void register(SGetListener l);
-    void unregister(SGetListener l);
+    /**
+     * Register a RequestListener.
+     * @param l an interactive component
+     */
+    void register(RequestListener l);
 
-    /*
-     * Verteilt die angebenen values an die Listener, die sich fuer den
-     * Namen registriert haben. Die values werden einzeln an die
-     * Listener "geschickt".
+    /**
+     * Unregister a RequestListener.
+     * @param l an interactive component
+     */
+    void unregister(RequestListener l);
+
+    /**
+     * Deliver low level events to the registered RequestListener
+     * with the specified name.
+     * @param name the name of the event target
+     * @param values the values
      */
     boolean dispatch(String name, String[] values);
+
+    /**
+     * Event dispatching is done
+     */
     void dispatchDone();
 
+    /**
+     * Set the target of all links.
+     * @param the target
+     */
     void setTarget(String target);
+
+    /**
+     * Get the target of all links.
+     * @return the target
+     */
     String getTarget();
 }
 

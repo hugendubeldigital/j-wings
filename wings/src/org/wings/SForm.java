@@ -42,7 +42,7 @@ import org.wings.io.Device;
  */
 public class SForm
     extends SContainer
-    implements RequestListener //SGetListener
+    implements RequestListener
 {
     /**
      * @see #getCGClassID
