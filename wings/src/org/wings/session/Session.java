@@ -33,8 +33,7 @@ import org.wings.externalizer.ExternalizeManager;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public interface Session
-    extends Serializable
+public interface Session extends Serializable
 {
     String LOCALE_PROPERTY = "locale";
     String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
