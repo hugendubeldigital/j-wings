@@ -50,12 +50,12 @@ public interface Device
     Device print (char[] c) throws IOException;
 
     /**
-     * Print a portion of a character array. Start at position
-     * 'start' and write 'len' characters.
+     * Print len characters from the specified char array starting at offset
+     * off to this Device.
      */
     Device print (char[] c, int start, int len) throws IOException;
 
-    //-- print objects --
+    //-- print basic objects --
 
     /**
      * Print a String.
@@ -101,7 +101,7 @@ public interface Device
 
 
     /*-------------*
-     ** Methods which write bytes to the stream. Much like an OutputStream.
+     ** Methods which write raw bytes to the Device. Much like an OutputStream.
      **-------------*/
 
     /**
@@ -117,7 +117,7 @@ public interface Device
 
     /**
      * Writes len bytes from the specified byte array starting at offset
-     * off to this output stream.
+     * off to this Device.
      */
     Device write(byte b[], int off, int len) throws IOException;
 }
