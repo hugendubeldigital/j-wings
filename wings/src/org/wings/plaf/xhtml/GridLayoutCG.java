@@ -34,19 +34,19 @@ public class GridLayoutCG
     public void write(Device d, SLayoutManager l)
         throws IOException
     {
-	SGridLayout layout = (SGridLayout)l;
-	SContainer container = layout.getContainer();
-	List components = layout.getComponents();
+        SGridLayout layout = (SGridLayout)l;
+        SContainer container = layout.getContainer();
+        List components = layout.getComponents();
 
-	boolean header = layout.getHeader();
-	boolean relative = layout.isRelative();
-	int width = layout.getWidth();
-	int cellSpacing = layout.getCellSpacing();
-	int cellPadding = layout.getCellPadding();
-	int border = layout.getBorder();
+        boolean header = layout.getHeader();
+        boolean relative = layout.isRelative();
+        int width = layout.getWidth();
+        int cellSpacing = layout.getCellSpacing();
+        int cellPadding = layout.getCellPadding();
+        int border = layout.getBorder();
 
-	int cols = layout.getColumns();
-	int rows = layout.getRows();
+        int cols = layout.getColumns();
+        int rows = layout.getRows();
 
         d.append("\n<table");
         if (cellSpacing >= 0)
@@ -57,12 +57,12 @@ public class GridLayoutCG
         if (cellPadding >= 0)
             d.append(" cellpadding=\"").append(cellPadding).append("\"");
 
-	if (width > 0) {
-	    if (relative)
-		d.append(" width=\"").append(width).append("%\"");
-	    else
-		d.append(" width=\"").append(width).append("\"");
-	}
+        if (width > 0) {
+            if (relative)
+                d.append(" width=\"").append(width).append("%\"");
+            else
+                d.append(" width=\"").append(width).append("\"");
+        }
 
         if (border > 0)
             d.append(" border=\"").append(border).append("\"");
@@ -71,7 +71,7 @@ public class GridLayoutCG
 
         if (container != null && container.getBackground() != null)
             d.append(" bgcolor=\"#").
-                append(SUtil.toColorString(container.getBackground())).append("\"");
+                append(Utils.toColorString(container.getBackground())).append("\"");
 
         d.append(">\n");
 
@@ -89,11 +89,17 @@ public class GridLayoutCG
                 firstRow = false;
             }
 
-            if (firstRow && header)
-                d.append("<th>");
-            else
-                d.append("<td>");
             SComponent c = (SComponent)iter.next();
+
+            if (firstRow && header) {
+                d.append("<th>");
+            }
+            else {
+                d.append("<td");
+                Utils.appendTableCellAlignment(d, c);
+                d.append(">\n");
+            }
+
             c.write(d);
 
             if (firstRow && header)
