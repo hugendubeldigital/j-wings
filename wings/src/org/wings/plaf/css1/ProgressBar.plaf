@@ -1,6 +1,8 @@
 <!-- -*- html -*- -->
 <template name="ProgressBarCG" for="org.wings.SProgressBar">
 
+private static final SIcon BLIND_ICON = new ResourceImageIcon("org/wings/icons/blind.gif");
+
 <write>
 <%
 
@@ -21,10 +23,10 @@
     %><table border="0" cellpadding="0" cellspacing="0"><%
     %><tr><%
         %><td<%|bgcolor=component.getFilledColor()%>><%
-            %><img src="/blank.gif"<%|width=(int)(width*component.getPercentComplete())%><%
+            %><img<%|src=BLIND_ICON.getURL()%><%|width=(int)(width*component.getPercentComplete())%><%
                 %><%|height=size.getIntHeight()%>></td><%
         %><td<%|bgcolor=component.getUnfilledColor()%>><%
-            %><img src="/blank.gif"<%|width=(int)(width*(1-component.getPercentComplete()))%><%
+            %><img<%|src=BLIND_ICON.getURL()%><%|width=(int)(width*(1-component.getPercentComplete()))%><%
                 %><%|height=size.getIntHeight()%>><%
         %></td><%
     %></tr><%
