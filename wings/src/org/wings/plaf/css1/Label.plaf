@@ -37,7 +37,7 @@ public void writeText(Device device, SLabel label) throws IOException {
 <write>
 <%
     String text = component.getText();
-    SIcon  icon = component.getIcon();
+    SIcon  icon = component.isEnabled() ? component.getIcon() : component.getDisabledIcon();
     String style = Utils.style(component);
     final int horizontalTextPosition = component.getHorizontalTextPosition();
     final int verticalTextPosition   = component.getVerticalTextPosition();
