@@ -61,7 +61,7 @@ public class Script implements Renderable
             urlSource.getURL().write(d);
             d.print("\"");
         }
-        d.print("/>");
+        d.print("></script>");
     }
 }
 
