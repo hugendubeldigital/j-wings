@@ -254,7 +254,7 @@ public class LdapClientSession
 		public void actionPerformed(ActionEvent e) {
 		    createTreeModel(null);
 		    tree.setModel(treeModel);
-                attrPanel.removeAll();
+		    //attrPanel.removeAll();
 		
                 bindDNPassword.setText("");
 		

@@ -77,6 +77,7 @@ public class LdapTreeNode implements TreeNode {
 	try {
 	    while (results != null && results.hasMoreElements()) {
 		SearchResult sr  = (SearchResult)results.next(); 
+		System.out.println("fuer list" + sr.getName());
 		children.add(new LdapTreeNode(worker,this,sr.getName() + "," + dn));
 	    }
 	}

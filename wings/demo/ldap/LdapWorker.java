@@ -33,7 +33,6 @@ public class LdapWorker
 	setBindDN(bind);
 	setServer(s);
 
-	
 	this.password = p;
 	Hashtable env = new Hashtable();
 	env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
@@ -58,14 +57,11 @@ public class LdapWorker
     private void setServer(String b) {
 	server = b;
     }
-    
-    
+        
     public String getBaseDN() {
 	return baseDN;
     }
     
-
-
     public String getBindDN() {
 	return bindDN;
     }
@@ -83,13 +79,11 @@ public class LdapWorker
     }
 
 
-
-    //veraendert attribute
+    //veraendert attribute eines entry's mit dem DN=dn
     public boolean modifyAttributes(String dn, BasicAttributes attributes) {
 	try {
 	    ctx.modifyAttributes(dn,ctx.REPLACE_ATTRIBUTE,attributes);
 	    return true;
-	    
 	}
 	catch(Exception e) {
 	    System.out.println(e);
@@ -97,17 +91,14 @@ public class LdapWorker
 	}
     }
 
-    //gibt einen Vector der unterstuetzten objketklassen zurueck
+    //gibt einen Vector der unterstuetzten objektklassen zurueck
     public ArrayList getObjects() {
 	ArrayList ol = null;
 	try {
-	    	    
-	    DirContext schema = ctx.getSchema("");
-	    SearchControls ctrl = new SearchControls();
-
 	    String [] attrs = null;
 	    attrs = new String [] {"objectclasses"};
 	    
+	    SearchControls ctrl = new SearchControls();
 	    ctrl.setSearchScope(SearchControls.OBJECT_SCOPE);
 	    ctrl.setReturningAttributes(attrs);
 	    
@@ -115,24 +106,19 @@ public class LdapWorker
 	    NamingEnumeration answer = ctx.search("cn=subschema","(objectclass=*)",ctrl);
 	    
 	    Attribute attr = null;
-
-
 	    while (answer.hasMore()) {
 		SearchResult sr = (SearchResult)answer.next();
-		//System.out.println(">>>" + sr.getName());
+		System.out.println(">>>" + sr.getName());
 		Attributes attribs = sr.getAttributes();
 		for (NamingEnumeration ae = attribs.getAll();
 		     ae.hasMore();) {
 		    attr = (Attribute)ae.next();
-		    //System.out.println("attribute: " + attr.getID());
+		    System.out.println("attribute: " + attr.getID());
 		}
 
-		//ab da
 		NamingEnumeration ne = attr.getAll();
 		ol = getObjNames(ne);
 	    }
-	    // Close the context when we're done
-	    schema.close();
 	} 
 	catch (Exception e) {
 	    e.printStackTrace();
@@ -140,35 +126,30 @@ public class LdapWorker
 	return ol;
     }
     
-    
-    public ArrayList getObjNames(NamingEnumeration ne) {
+    //parst die Objektklassen und gibt nur die NAmen zurueck
+    private ArrayList getObjNames(NamingEnumeration ne) {
 	ArrayList objArray = new ArrayList();
-
+	
 	try {
 	    while (ne!=null && ne.hasMore()) {
-	    String oString = ne.next().toString();
-	    //System.out.println(oString);
-	    StringTokenizer sto = new StringTokenizer(oString,new String("'"));
-	    String obj = sto.nextToken();
-	    obj = sto.nextToken();
-	    
-	    int index = oString.indexOf("SUP") + 4;
-	    String rest = null;
-	    String sup = null;
-	    if (index > 0)
-		rest = oString.substring(index);
-	    if (rest!=null) { 
-		StringTokenizer suptok = new StringTokenizer(rest," ");
-		sup = suptok.nextToken();
-	    }
-	    
-	    //System.out.println("rest" + rest);
-	    if (sup!=null && !sup.equals("top")) obj = obj + "TOP" +"(" + sup + ")";
+		String oString = ne.next().toString();
+		StringTokenizer sto = new StringTokenizer(oString,new String("'"));
+		String obj = sto.nextToken();
+		obj = sto.nextToken();
 		
-	    //System.out.println(obj);	    
-	    objArray.add(obj);
-	    	    
-	}
+		int index = oString.indexOf("SUP") + 4;
+		String rest = null;
+		String sup = null;
+		if (index > 0)
+		    rest = oString.substring(index);
+		if (rest!=null) { 
+		    StringTokenizer suptok = new StringTokenizer(rest," ");
+		    sup = suptok.nextToken();
+		}
+		if (sup!=null && !sup.equals("top")) obj = obj + "TOP" +"(" + sup + ")";
+		
+		objArray.add(obj);
+	    }
 	}
 	catch (NamingException nex) {
 	    System.out.println(nex);
@@ -177,6 +158,7 @@ public class LdapWorker
     }
     
 
+    /* //wird derzeit nicht benutzt, prueft nur ob jemand das Schreibrecht auf das Attribut hat
     public boolean getWAccess(String dn, String attrName, String attrValue) {
 	try {
 	    ModificationItem mods = new ModificationItem(ctx.REPLACE_ATTRIBUTE,
@@ -187,7 +169,7 @@ public class LdapWorker
 		a.put(new BasicAttribute(attrName, attrValue));
 	    else 
 		a.put(new BasicAttribute(attrName, "01"));
-
+	    
 	    if (!attrValue.equals(""))
 		ctx.modifyAttributes(dn, ctx.REPLACE_ATTRIBUTE,a);
 	    else {
@@ -203,22 +185,20 @@ public class LdapWorker
 		    bat.put(new BasicAttribute(attrName,"aaa"));
 		    ctx.modifyAttributes(dn, ctx.REPLACE_ATTRIBUTE,bat);
 		    ctx.modifyAttributes(dn, ctx.REMOVE_ATTRIBUTE,bat);
-		    
 		}
-		
 	    }
 	    System.out.println(a + "kann ich aendern");
 	    return true;
-	    }
+	}
 	catch (Exception e) {
 	    System.out.println(e);
 	    return(false);
 	}
 	
-    }
-
+	}*/
     
-    //gibt die attribute eines dn's zurueck
+    
+    //gibt die attribute eines entry's zurueck
     public Attributes getDNAttributes(String dn)
     {
 	System.out.println("bei dn "  +dn);
@@ -232,17 +212,13 @@ public class LdapWorker
 	}
 	catch (NamingException exc) {
 	}
-	
 	return (a);
     }
     
-
+    //gibt die Attribute der Objektklassen eines entry's zurueck
     public Vector getObjectAttributes(String dn) {
-	
 	Vector myNames = null;
 	try {
-
-	    DirContext ctx1 = null;
 	    DirContext dc = ctx.getSchemaClassDefinition(dn);
 	    
 	    NamingEnumeration enum = dc.search("", null);
@@ -254,7 +230,6 @@ public class LdapWorker
 		//System.out.println("NAME of oc is " + name);
 		Attribute must = ocAttrs.get("MUST");
 		
-
 		if (must!=null) {
 		    NamingEnumeration mt = must.getAll();
 		    while (mt!= null && mt.hasMore()) {
@@ -284,84 +259,75 @@ public class LdapWorker
     NamingEnumeration list(String searchbase) {
 	BasicAttribute n;
 	Integer i;
+	
 	String [] attrs = null;
 	NamingEnumeration results = null;
 	
 	attrs = new String [] {"objectclass"};
 	try {
-		results = search(searchbase, "(objectclass=*)",attrs, ONE);
+	    results = search(searchbase, "(objectclass=*)",attrs, ONE);
 	}
 	catch (NamingException e) {
 	    System.err.println(e);
 	}
 	return results;
-	
     }
 
-    public Object getOAttributeValues (String o,String attrName) {
+    //gibt den Wert fuer das genannte Attribut zurueck
+    public Object getOAttributeValues (String dn,String attrName) {
 
 	System.out.println("na was denn");
 	Object val = null;
-	System.out.println(o);
+	System.out.println(dn);
 	try {
 	    Attributes matchAttrs = new BasicAttributes(true); // ignore attribute name case
 	    matchAttrs.put(new BasicAttribute(attrName));
-	    //matchAttrs.put(new BasicAttribute("cn", o));
 	    //Search for objects that have those matching attributes
-	    System.out.println(o + "," + getBaseDN());
-	    System.out.println(attrName);
-	    SearchControls c = new SearchControls();
-	    c.setSearchScope(0);
-	    c.setReturningAttributes(new String[] {attrName});
-	    NamingEnumeration enum = ctx.search(o, "(objectclass=*)",c);
 	    
-	    
+	    NamingEnumeration enum = search(dn, "(objectclass=*)",new String[] {attrName},BASE);
 	    while (enum.hasMore()) {
 		SearchResult sr = (SearchResult)enum.next();
-		System.out.println("hallo>>>" + sr.getName());
-	     BasicAttributes bas = (BasicAttributes)sr.getAttributes();
-	     BasicAttribute ba = (BasicAttribute)bas.get(attrName);
-	     if (ba != null)
-		 val = ba.get();
-	     else val = "";
+		BasicAttributes bas = (BasicAttributes)sr.getAttributes();
+		BasicAttribute ba = (BasicAttribute)bas.get(attrName);
+		if (ba != null)
+		    val = ba.get();
+		else val = "";
 	    }
 	}
 	catch(NamingException u) {
 	}
-	
 	return val;
     }
     
-    //attribute-dn mapping
+    //attribute-dn mapping- gibt die dn 's zurueck fuer die es das Attribut "attribute" gefunden wurde
     public HashMap  getAttributeDNValues(String attribute,String baseDN) {
 	
 	ArrayList attrList = new ArrayList();
 	HashMap peopleDNMap = new HashMap(); 
 
 	try {
-
-	Attributes matchAttrs = new BasicAttributes(true); // ignore attribute name case
-	matchAttrs.put(new BasicAttribute("cn"));
-         
-         // Search for objects that have those matching attributes
-	NamingEnumeration enum = ctx.search(getBaseDN(), matchAttrs);
-
-     
-         while (enum.hasMore()) {
-             SearchResult sr = (SearchResult)enum.next();
-	     BasicAttributes ba = (BasicAttributes)sr.getAttributes();
-	     BasicAttribute cn = (BasicAttribute)ba.get("cn");
-	     attrList.add(cn.get());
-	     peopleDNMap.put(cn.get(),sr.getName());
-	     System.out.println("dn ist "+ sr.toString());
-	     
-	 }
+	    Attributes matchAttrs = new BasicAttributes(true); // ignore attribute name case
+	    matchAttrs.put(new BasicAttribute(attribute));
+	    
+	    // Search for objects that have those matching attributes
+	    NamingEnumeration enum = ctx.search(getBaseDN(), matchAttrs);
+	    
+	    
+	    while (enum.hasMore()) {
+		SearchResult sr = (SearchResult)enum.next();
+		BasicAttributes ba = (BasicAttributes)sr.getAttributes();
+		BasicAttribute cn = (BasicAttribute)ba.get("cn");
+		attrList.add(cn.get());
+		peopleDNMap.put(cn.get(),sr.getName());
+		System.out.println("dn ist "+ sr.toString());
+	    }
 	}
 	catch(NamingException u) {
 	}
 	return peopleDNMap;
     }
 
+    //gibt die Liste der DN's die filter haben
     public ArrayList getFilteredAllDN(String baseDN,String f) {
 	String filter = f;
 	String [] attribs = {"cn"};
@@ -395,27 +361,17 @@ public class LdapWorker
 	    System.out.println("nichts im result");
 	
 	return results;
-	
     }
     
-
-    public void add(String toAdd) {
-	 
-    }
-
 
     //gibt alle Attribute fuer die Liste zurueck, die must attr. objectclass haben schon ihr value zugeordnet
-    
     public Hashtable getAttributes(ArrayList objectClasses) {
 	
-		
 	Hashtable attributes = new Hashtable();
 	ArrayList attrValues;
 	try {
-	    
 	    DirContext sch =ctx.getSchema("");
 	    
-	    	    
 	    // From object classes, get list of mandatory and optional attributes
 	    Vector[] attrNames = getAttributeLists(sch, objectClasses);
 	    
@@ -495,6 +451,8 @@ public class LdapWorker
 	return new Vector[] {mandatory,optional};
     }
 
+    
+    
     private void addAttrNameToList(Vector store,NamingEnumeration vals) 
 	throws NamingException {
 
@@ -507,6 +465,7 @@ public class LdapWorker
 	
     }
 
+    
     public void addNewEntry(String dn, Hashtable vals) {
 	try {
 	System.out.println("ein neues Entry");
@@ -514,9 +473,10 @@ public class LdapWorker
 	ctx.createSubcontext(dn,attrs);
 	}
 	catch (NamingException e){
-	    System.out.println("so ein mist");
+	    System.out.println("neuer Eintrag einfuegen gescheitert");
 	}
     }
+    
     
     private Attributes getAttributes(Hashtable vals) {
 	Attributes attrs = new BasicAttributes();
@@ -535,6 +495,7 @@ public class LdapWorker
 	return attrs;
     }
 
+    //remove the entry
     public void removeEntry(String dn) {
 	try { 
 	    System.out.println("entry " + dn + "removed");
