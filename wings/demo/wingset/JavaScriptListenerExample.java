@@ -20,6 +20,10 @@ import org.wings.*;
 
 import org.wings.script.JavaScriptListener;
 import org.wings.script.JavaScriptEvent;
+import java.text.NumberFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 /**
  * Create some text fields and add two listeners: a standard server side
@@ -32,8 +36,16 @@ import org.wings.script.JavaScriptEvent;
 public class JavaScriptListenerExample
     extends WingSetPane
 {
+    /**
+     * The JavaScript code that is executed on any change of input fields.
+     * The curly braces with a number in it are replaced by the numbered
+     * SComponent argument.
+     */
     private final static String JS_ADD_SCRIPT 
         = "{2}.value = ((1.0 * {0}.value) + (1.0 * {1}.value));";
+
+    private final static DecimalFormatSymbols DSYM
+        = new DecimalFormatSymbols(Locale.US); // '.' as fraction separator
 
     public SComponent createExample() {
         SPanel p = new SPanel();
@@ -87,6 +99,9 @@ public class JavaScriptListenerExample
         return p;
     }
 
+    /**
+     * do the calculation and normalize the output fields.
+     */
     private void doCalculation(STextField a, STextField b, STextField sum) {
         double aNum = parseNumber(a);
         double bNum = parseNumber(b);
@@ -96,8 +111,31 @@ public class JavaScriptListenerExample
         }
         else {
             sum.setBackground(null);
-            sum.setText(String.valueOf(aNum + bNum));
+            /*
+             * normalize the output: set the same number of decimal
+             * digits for all fields.
+             */
+            int decimalsNeeded = Math.max(fractionDecimals(aNum),
+                                          fractionDecimals(bNum));
+            NumberFormat fmt;
+            fmt = new DecimalFormat("#.#", DSYM);
+            fmt.setMinimumFractionDigits(decimalsNeeded);
+        
+            a.setText(fmt.format(aNum));
+            b.setText(fmt.format(bNum));
+            sum.setText(fmt.format(aNum + bNum));
         }
+    }
+
+    /**
+     * returns the number of decimals needed to display the given
+     * number
+     */
+    private int fractionDecimals(double number) {
+        // FIXME: is there a simple and more efficient way ?
+        NumberFormat fmt = new DecimalFormat("#.########");
+        String fractionStr = fmt.format(Math.IEEEremainder(number, 1.0));
+        return fractionStr.length()-2;
     }
 
     /**
@@ -112,7 +150,6 @@ public class JavaScriptListenerExample
         double result = Double.NaN;
         try {
             result = Double.parseDouble(text);
-            field.setText(String.valueOf(result)); // normalize output
             field.setBackground(null);
         }
         catch (Exception e) {
