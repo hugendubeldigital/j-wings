@@ -471,7 +471,7 @@ public class STable
      */
     public SComponent prepareHeaderRenderer(int col) {
         return headerRenderer.getTableCellRendererComponent(this,
-                                                            model.getColumnName(col),
+                                                            col>=0 ? model.getColumnName(col) : null,
                                                             false,
                                                             -1, col);
     }

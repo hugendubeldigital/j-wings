@@ -69,7 +69,7 @@
         for (int c = startCol; c < endCol; c++) {
             if (!selectionWritten && 
                 c >= table.getRowSelectionColumn() ) {
-                writeEmptyHeaderCell(device, table);
+                writeHeaderCell(device, table, rendererPane, -1);
                 selectionWritten = true;
             }
             writeHeaderCell(device, table, rendererPane, c);
