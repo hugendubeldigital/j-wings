@@ -92,6 +92,9 @@ public class SComboBox
     // Flag to ensure the we don't get multiple ActionEvents on item selection.
     private boolean selectingItem = false;
 
+    private boolean delayEvent = false;
+    private boolean delayedEvent = false;
+
     /**
      * Creates a SComboBox that takes its items from an existing ComboBoxModel.
      *
@@ -223,14 +226,24 @@ public class SComboBox
 	    dataModel.setSelectedItem(object);
 	    selectingItem = false;
 
-	    if (selectedItemReminder != dataModel.getSelectedItem()) {
-		// in case a users implementation of ComboBoxModel
-		// doesn't fire a ListDataEvent when the selection
-		// changes.
-		selectedItemChanged();
-	    }
+            if ( !delayEvent ) {
+                System.out.println("event in place");
 
-            fireActionEvent();
+                if (selectedItemReminder != dataModel.getSelectedItem()) {
+                    // in case a users implementation of ComboBoxModel
+                    // doesn't fire a ListDataEvent when the selection
+                    // changes.
+                    selectedItemChanged();
+                }
+
+                fireActionEvent();
+
+                delayedEvent = false;
+            } else {
+                System.out.println("delayed Event");
+                delayedEvent = true;
+            }
+
             reload(ReloadManager.RELOAD_CODE);
 	}
     }
@@ -569,6 +582,8 @@ public class SComboBox
     }
 
     public void processLowLevelEvent(String action, String[] values) {
+        delayEvent = true;
+
         int selectedIndex = -1;
         // last will win!!
         for ( int i=0; i<values.length; i++ ) {
@@ -582,7 +597,11 @@ public class SComboBox
 
         if ( selectedIndex>=0 ) {
             setSelectedIndex(selectedIndex);
+
+            SForm.addArmedComponent(this);
         }
+
+        delayEvent = false;
     }
 
 
@@ -602,7 +621,22 @@ public class SComboBox
 
     public void fireIntermediateEvents() {
     }
+
     public void fireFinalEvents() {
+        System.out.println("fire final event");
+        if ( delayedEvent ) {
+            if (selectedItemReminder != dataModel.getSelectedItem()) {
+                // in case a users implementation of ComboBoxModel
+                // doesn't fire a ListDataEvent when the selection
+                // changes.
+                selectedItemChanged();
+            }
+            
+            fireActionEvent();
+            
+            delayedEvent = false;
+        }
+
     }
 
     /**
