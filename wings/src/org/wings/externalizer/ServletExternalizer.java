@@ -54,6 +54,19 @@ public class ServletExternalizer
         httpAddress = config.getInitParameter("externalizer.servlet.url");
 
         if ( httpAddress == null ) {
+            httpAddress = "ExternalizerServlet";
+            //            throw new IllegalStateException("externalizer.servlet.url required in initArgs");
+        }
+    }
+
+    /**
+     * TODO: documentation
+     *
+     */
+    public ServletExternalizer(String externalizerURL) {
+        httpAddress = externalizerURL;
+
+        if ( httpAddress == null ) {
             throw new IllegalStateException("externalizer.servlet.url required in initArgs");
         }
     }
