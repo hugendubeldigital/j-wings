@@ -86,9 +86,9 @@
 	      else          { %><%|src=lastIconNormal.getURL()%><% }
 	      %> /><%
        }
-
-      %><table width="100%" cellpadding="0" cellspacing="0" border="1"><tr><td><%
+      %>
+<table width="100%" cellpadding="0" cellspacing="0" border="1"><tr><td><%
         contents.write(device);
-        %></td></tr></table><%
-       %></write>
+        %></td></tr></table>
+</write>
 </template>
