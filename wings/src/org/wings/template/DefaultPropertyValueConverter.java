@@ -14,8 +14,20 @@
 package org.wings.template;
 
 import java.awt.Color;
+import java.io.InputStream;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.wings.ClasspathResource;
+import org.wings.Resource;
+import org.wings.SDimension;
+import org.wings.SFont;
 import org.wings.SIcon;
 import org.wings.SURLIcon;
+import org.wings.style.AttributeSet;
+import org.wings.style.CSSStyleSheet;
+import org.wings.style.SimpleAttributeSet;
+import org.wings.style.StyleSheet;
 import org.wings.template.PropertyValueConverter;
 
 
@@ -33,6 +45,8 @@ import org.wings.template.PropertyValueConverter;
  * @version $Revision$
  */
 public class DefaultPropertyValueConverter  implements PropertyValueConverter  {
+
+    private final static Logger logger = Logger.getLogger("org.wings.template");
     
     /**
      * 
@@ -66,6 +80,7 @@ public class DefaultPropertyValueConverter  implements PropertyValueConverter  {
 	if ( targetClass==Boolean.TYPE || targetClass==Boolean.class ) {
 	    return Boolean.valueOf(value);
 	}
+
 	if ( targetClass==Integer.TYPE || targetClass==Integer.class ) {
 	    return Integer.valueOf(value);
 	}
@@ -97,8 +112,58 @@ public class DefaultPropertyValueConverter  implements PropertyValueConverter  {
 	}
 
 	if ( targetClass==Color.class ) {
-	    return Color.decode(value);
+	    try {
+		return Color.decode(value);
+	    } catch ( Exception ex ) {
+		logger.log(Level.WARNING, "cannot convert color value", ex);
+		return null;
+	    }
 	}
+
+	if ( targetClass==SDimension.class ) {
+            int commaIndex = value.indexOf(',');
+            if ( commaIndex>0 ) {
+                return new SDimension(value.substring(0, commaIndex),
+                                      value.substring(commaIndex+1));
+            }
+	    return null;
+	}
+
+	if ( targetClass==SFont.class ) {
+	    return TemplateUtil.parseFont(value);
+	}
+
+	if ( Resource.class.isAssignableFrom(targetClass) ) {
+	    return new ClasspathResource(value);
+	}
+
+	if ( AttributeSet.class.isAssignableFrom(targetClass) ) {
+	    AttributeSet attributes = new SimpleAttributeSet();
+	    StringTokenizer tokens = new StringTokenizer(value, ";");
+	    while (tokens.hasMoreTokens()) {
+		String token = tokens.nextToken();
+		int pos = token.indexOf(":");
+		if (pos >= 0) {
+		    attributes.put(token.substring(0, pos), 
+				   token.substring(pos + 1));
+		}
+	    }
+	    return attributes;
+	}
+
+	if ( StyleSheet.class.isAssignableFrom(targetClass) ) {
+	    try {
+		CSSStyleSheet styleSheet = new CSSStyleSheet();
+		InputStream in = getClass().getClassLoader().getResourceAsStream(value);
+		styleSheet.read(in);
+		return styleSheet;
+	    }
+	    catch (Exception ex) {
+		logger.log(Level.WARNING, "style sheet resource not found:" + value, ex);
+		return null;
+	    }
+	}
+
 	
 	throw new UnsupportedOperationException();
     }
@@ -107,6 +172,9 @@ public class DefaultPropertyValueConverter  implements PropertyValueConverter  {
 
 /*
    $Log$
+   Revision 1.2  2002/11/01 14:17:50  ahaaf
+   o add support for more types
+
    Revision 1.1  2002/08/06 16:45:55  ahaaf
    add DefaultPropertyManager using reflection and bean shell scripting support
 
