@@ -40,16 +40,15 @@ public class SComponentPropertyManager
     public void setProperty(SComponent comp, String name, String value) {
         if ( "BACKGROUND".equals(name) )
             comp.setBackground(Color.decode(value));
-        else if ( "FOREGROUND".equals(name) )
+        else if ( "FOREGROUND".equals(name) ) 
             comp.setForeground(Color.decode(value));
         else if ( "FONT".equals(name) )
             comp.setFont(TemplateUtil.parseFont(value));
         else if ( "TABINDEX".equals(name) )
             comp.setFocusTraversalIndex(Integer.parseInt(value));
         else if ( "STYLE".equals(name) ) {
-            LookAndFeel laf = SessionManager.getSession().getCGManager().getLookAndFeel();
-            comp.setAttributes(laf.makeAttributeSet(value));
-            System.out.println("attrs " + comp.getAttributes());
+            PropertyValueConverter valueConverter = getValueConverter(AttributeSet.class);
+            comp.setAttributes((AttributeSet)valueConverter.convertPropertyValue(value, AttributeSet.class));
         } else if ( "CLASS".equals(name) )
             comp.setStyle(value);
         else {
