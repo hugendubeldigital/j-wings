@@ -49,6 +49,7 @@ public class FrameSetSession
         SFrameSet vertical = new SFrameSet(new SFrameSetLayout(null, "50,*"));
         SFrame toolbarFrame = new SFrame("toolbar");
         toolbarFrame.getContentPane().setLayout(new SBorderLayout());
+        toolbarFrame.getContentPane().add(new SLabel("This demonstrates, that frames are only reloaded, if any of their contents have changed."), SBorderLayout.NORTH);
         toolbarFrame.getContentPane().add(new TimestampLabel(), SBorderLayout.EAST);
         vertical.add(toolbarFrame);
 
@@ -56,11 +57,11 @@ public class FrameSetSession
         vertical.add(horizontal);
         SFrame leftFrame = new SFrame("left frame");
         leftFrame.getContentPane().setLayout(new SBorderLayout());
-        leftFrame.getContentPane().add(new TimestampLabel(), SBorderLayout.EAST);
+        leftFrame.getContentPane().add(new TimestampLabel(), SBorderLayout.NORTH);
         horizontal.add(leftFrame);
         SFrame rightFrame = new SFrame("right frame");
         rightFrame.getContentPane().setLayout(new SBorderLayout());
-        rightFrame.getContentPane().add(new TimestampLabel(), SBorderLayout.EAST);
+        rightFrame.getContentPane().add(new TimestampLabel(), SBorderLayout.NORTH);
         horizontal.add(rightFrame);
 
 
@@ -101,12 +102,20 @@ public class FrameSetSession
         toolbarPanel.add(changeBothButton);
         toolbarFrame.getContentPane().add(toolbarPanel, SBorderLayout.CENTER);
 
-        SPanel leftFramePanel = new SPanel(null);
-        leftFramePanel.add(leftLabel);
+        // left frame
+        SPanel leftFramePanel = new SPanel(new SBorderLayout());
+        leftFramePanel.add(leftLabel,  SBorderLayout.WEST);
+        SForm leftButtons = createFormButtons("here", changeLeft,
+                                              "-->",  changeRight);
+        leftFramePanel.add(leftButtons, SBorderLayout.EAST);
         leftFrame.getContentPane().add(leftFramePanel, SBorderLayout.CENTER);
 
-        SPanel rightFramePanel = new SPanel(null);
-        rightFramePanel.add(rightLabel);
+        // right frame
+        SPanel rightFramePanel = new SPanel(new SBorderLayout());
+        rightFramePanel.add(rightLabel, SBorderLayout.EAST);
+        SForm rightButtons = createFormButtons("<--", changeLeft,
+                                               "here",  changeRight);
+        rightFramePanel.add(rightButtons, SBorderLayout.WEST);
         rightFrame.getContentPane().add(rightFramePanel, SBorderLayout.CENTER);
 
         setFrame(vertical);
@@ -120,6 +129,19 @@ public class FrameSetSession
     SLabel createLabel(String text, SIcon icon) {
         SLabel l = new SLabel(icon);
         return l;
+    }
+
+    SForm createFormButtons(String text1, ActionListener listener1,
+                            String text2, ActionListener listener2) {
+        SForm f = new SForm(new SBorderLayout());
+        SButton b;
+        b = new SButton(text1);
+        b.addActionListener(listener1);
+        f.add(b, SBorderLayout.WEST);
+        b = new SButton(text2);
+        b.addActionListener(listener2);
+        f.add(b, SBorderLayout.EAST);
+        return f;
     }
 
     public String getServletInfo() {
