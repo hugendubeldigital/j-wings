@@ -84,6 +84,7 @@ implements LowLevelEventListener {
      */
     private PropertyChangeListener actionPropertyChangeListener;
   
+    private String mnemonic;
   
     /**
      * Create a button with given text.
@@ -595,7 +596,14 @@ implements LowLevelEventListener {
             }
         }
     }
-  
+
+    public void setMnemonic(String m) {
+        mnemonic = m;
+    }
+
+    public String getMnemonic() {
+        return mnemonic;
+    }
 }
 
 /*
