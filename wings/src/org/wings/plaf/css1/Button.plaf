@@ -73,6 +73,35 @@ void writeAnchorIcon(final Device device, SButton button, String attr)
 
     %><img border="0" src="<%
     %><%=icon.getURL()%>"<%
+
+    if ( button.isEnabled() ) {
+       // render rollover
+       SIcon rolloverIcon = button.getRolloverIcon();
+       SIcon pressedIcon = button.getPressedIcon();
+
+       if ( rolloverIcon!=null || pressedIcon!=null ) {
+           String iconName = "Icon_" + button.getUnifiedId();
+
+           %> name="<%=iconName%>"<%
+   
+           if ( rolloverIcon!=null ) {
+               %> onMouseover="if(document.images){document.<%=iconName
+               %>.src='<%=rolloverIcon.getURL()
+               %>';}" onMouseout="if(document.images){document.<%=iconName
+               %>.src='<%=icon.getURL()
+               %>';}"<%
+           }
+
+           if ( pressedIcon!=null ) {
+               %> onMousedown="if(document.images){document.<%=iconName
+               %>.src='<%=pressedIcon.getURL()
+               %>';}" onMouseUp="if(document.images){document.<%=iconName
+               %>.src='<%=rolloverIcon!=null ? rolloverIcon.getURL() : icon.getURL()
+               %>';}"<%
+           }
+        }
+    }
+
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
     %><%|alt=tooltip%> /><%

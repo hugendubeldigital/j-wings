@@ -28,10 +28,14 @@ import org.wings.*;
 public class ButtonExample
     extends WingSetPane
 {
-    static final SIcon icon = new ResourceImageIcon(SButton.class.getClassLoader(),
-                                                    "org/wings/icons/Warn.gif");
-    static final SIcon disabledIcon = new ResourceImageIcon(SButton.class.getClassLoader(),
-                                                    "org/wings/icons/WarnDis.gif");
+    static final SIcon icon = 
+        new ResourceImageIcon("wingset/icons/ButtonIcon.gif");
+    static final SIcon disabledIcon = 
+        new ResourceImageIcon("wingset/icons/ButtonDisabledIcon.gif");
+    static final SIcon pressedIcon = 
+        new ResourceImageIcon("wingset/icons/ButtonPressedIcon.gif");
+    static final SIcon rolloverIcon = 
+        new ResourceImageIcon("wingset/icons/ButtonRolloverIcon.gif");
     
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));
@@ -104,11 +108,12 @@ public class ButtonExample
         for ( int i=0; i<buttons.length; i++ ) {
             buttons[i].setIcon(icon);
             buttons[i].setDisabledIcon(disabledIcon);
+            buttons[i].setRolloverIcon(rolloverIcon);
+            buttons[i].setPressedIcon(pressedIcon);
             buttons[i].setToolTipText("Button " + i);
         }
 
         buttons[4].setIcon(null);
-        //buttons[4].setIcon("http://194.95.24.168/~armin/WingSet/swing-64.gif");
 
         buttons[0].setVerticalTextPosition(SConstants.TOP);
         buttons[0].setHorizontalTextPosition(SConstants.LEFT);

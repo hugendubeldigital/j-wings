@@ -25,7 +25,18 @@ import org.wings.*;
 public class CheckBoxExample
     extends WingSetPane
 {
-    SIcon icon = null;
+    static final SIcon sel = 
+        new ResourceImageIcon("wingset/icons/ComboBoxSelectedIcon.gif");
+    static final SIcon nsel = 
+        new ResourceImageIcon("wingset/icons/ComboBoxIcon.gif");
+    static final SIcon dissel = 
+        new ResourceImageIcon("wingset/icons/ComboBoxDisabledSelectedIcon.gif");
+    static final SIcon disnsel = 
+        new ResourceImageIcon("wingset/icons/ComboBoxDisabledIcon.gif");
+    static final SIcon rollsel = 
+        new ResourceImageIcon("wingset/icons/ComboBoxRolloverSelectedIcon.gif");
+    static final SIcon rollnsel = 
+        new ResourceImageIcon("wingset/icons/ComboBoxRolloverIcon.gif");
 
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));
@@ -74,12 +85,6 @@ public class CheckBoxExample
     }
 
     SContainer createImageCheckBoxExample() {
-        SIcon sel = new ResourceImageIcon("wingset/icons/ComboBoxSelectedIcon.gif");
-        SIcon nsel = new ResourceImageIcon("wingset/icons/ComboBoxIcon.gif");
-        SIcon dissel = new ResourceImageIcon("wingset/icons/ComboBoxDisabledSelectedIcon.gif");
-        SIcon disnsel = new ResourceImageIcon("wingset/icons/ComboBoxDisabledIcon.gif");
-        SIcon rollsel = new ResourceImageIcon("wingset/icons/ComboBoxRolloverSelectedIcon.gif");
-        SIcon rollnsel = new ResourceImageIcon("wingset/icons/ComboBoxRolloverIcon.gif");
 
         SCheckBox[] boxes = new SCheckBox[9];
         boxes[0] = new SCheckBox("testTL");

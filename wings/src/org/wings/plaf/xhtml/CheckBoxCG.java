@@ -179,30 +179,31 @@ public class CheckBoxCG
 
                 SIcon pressedIcon = checkBox.getPressedIcon();
 
-                String iconName = "Icon_" + checkBox.getUnifiedId();
                 if ( rolloverIcon!=null || pressedIcon!=null ) {
+                    String iconName = "Icon_" + checkBox.getUnifiedId();
+
                     d.print(" name=\"").print(iconName).print("\"");
-                }
 
-                if ( rolloverIcon!=null ) {
-                    d.print(" onMouseOver=\"if(document.images){document.")
-                        .print(iconName).print(".src='").print(rolloverIcon.getURL())
-                        .print("';}\"")
-                        .print(" onMouseOut=\"if(document.images){document.")
-                        .print(iconName).print(".src='").print(actualIcon.getURL())
-                        .print("';}\"");
-                }
-
-                // render pressed
-                if ( pressedIcon!=null ) {
-                    d.print(" onMouseDown=\"if(document.images){document.")
-                        .print(iconName).print(".src='").print(pressedIcon.getURL())
-                        .print("';}\"")
-                        .print(" onMouse=\"if(document.images){document.")
-                        .print(iconName).print(".src='")
-                             .print(rolloverIcon!=null ? rolloverIcon.getURL() : 
+                    if ( rolloverIcon!=null ) {
+                        d.print(" onMouseover=\"if(document.images){document.")
+                            .print(iconName).print(".src='").print(rolloverIcon.getURL())
+                            .print("';}\"")
+                            .print(" onMouseout=\"if(document.images){document.")
+                            .print(iconName).print(".src='").print(actualIcon.getURL())
+                            .print("';}\"");
+                    }
+                    
+                    // render pressed
+                    if ( pressedIcon!=null ) {
+                        d.print(" onMousedown=\"if(document.images){document.")
+                            .print(iconName).print(".src='").print(pressedIcon.getURL())
+                            .print("';}\"")
+                            .print(" onMouseUp=\"if(document.images){document.")
+                            .print(iconName).print(".src='")
+                            .print(rolloverIcon!=null ? rolloverIcon.getURL() : 
                                    actualIcon.getURL())
-                             .print("';}\"");
+                            .print("';}\"");
+                    }
                 }
 
             }

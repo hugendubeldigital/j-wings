@@ -27,9 +27,22 @@ import org.wings.*;
 public class RadioButtonExample
     extends WingSetPane
 {
-    SForm form = new SForm();
-    SPanel panel= new SPanel();
-    javax.swing.Icon icon = null;
+
+    static final SIcon sel = 
+        new ResourceImageIcon("wingset/icons/RadioButtonSelectedIcon.gif");
+    static final SIcon nsel = 
+        new ResourceImageIcon("wingset/icons/RadioButtonIcon.gif");
+    static final SIcon pressed = 
+        new ResourceImageIcon("wingset/icons/RadioButtonPressedIcon.gif");
+    static final SIcon dissel = 
+        new ResourceImageIcon("wingset/icons/RadioButtonDisabledSelectedIcon.gif");
+    static final SIcon disnsel = 
+        new ResourceImageIcon("wingset/icons/RadioButtonDisabledIcon.gif");
+    static final SIcon rollsel = 
+        new ResourceImageIcon("wingset/icons/RadioButtonRolloverSelectedIcon.gif");
+    static final SIcon rollnsel = 
+        new ResourceImageIcon("wingset/icons/RadioButtonRolloverIcon.gif");
+
 
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));
@@ -79,14 +92,6 @@ public class RadioButtonExample
 
     SContainer createImageRadioButtonExample() {
         SButtonGroup group = new SButtonGroup();
-
-        SIcon sel = new ResourceImageIcon("wingset/icons/RadioButtonSelectedIcon.gif");
-        SIcon nsel = new ResourceImageIcon("wingset/icons/RadioButtonIcon.gif");
-        SIcon pressed = new ResourceImageIcon("wingset/icons/RadioButtonPressedIcon.gif");
-        SIcon dissel = new ResourceImageIcon("wingset/icons/RadioButtonDisabledSelectedIcon.gif");
-        SIcon disnsel = new ResourceImageIcon("wingset/icons/RadioButtonDisabledIcon.gif");
-        SIcon rollsel = new ResourceImageIcon("wingset/icons/RadioButtonRolloverSelectedIcon.gif");
-        SIcon rollnsel = new ResourceImageIcon("wingset/icons/RadioButtonRolloverIcon.gif");
 
         SRadioButton[] boxes = new SRadioButton[9];
         boxes[0] = new SRadioButton("testTL");
