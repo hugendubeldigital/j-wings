@@ -133,8 +133,11 @@ public class ToggleButtonExample
         toggleButtons[3].setVerticalTextPosition(SConstants.CENTER);
         toggleButtons[3].setHorizontalTextPosition(SConstants.LEFT);
 
+        /* Huh?
         toggleButtons[4].setVerticalTextPosition(SConstants.CENTER);
         toggleButtons[4].setHorizontalTextPosition(SConstants.CENTER);
+        */
+        toggleButtons[4].setIcon(null);
 
         toggleButtons[5].setVerticalTextPosition(SConstants.CENTER);
         toggleButtons[5].setHorizontalTextPosition(SConstants.RIGHT);
