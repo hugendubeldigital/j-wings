@@ -1,8 +1,8 @@
 <template name="TextField" for="org.wings.STextField">
-<%@ include file="common.plaf">
-<input type="text" size="<%?columns%>" maxlength="<%?maxColumns%>" \
-<% if(!component.isEditable()) { %>readonly="1" <%}%>\
-<% if(component.isEnabled())   { %>name="<%?namePrefix%>" <%}%>\
+<%@ include file="Common.plaf">
+<input type="text" size="<%?columns%>" maxlength="<%?maxColumns%>"\
+<% if(!component.isEditable()) { %> readonly="1"<%}%>\
+<% if(component.isEnabled())   { %> name="<%?namePrefix%>" <%}%>\
 <% printStyle(<%?style%>) %>\
-value="<%?text%>"/>
+ value="<%?text%>"/>
 </template>

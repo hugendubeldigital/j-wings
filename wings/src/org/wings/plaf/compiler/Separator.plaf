@@ -1,0 +1,13 @@
+<template name="Separator" for="org.wings.SSeparator">
+<%@ include file="Common.plaf">
+<hr<% 
+printStyle(<%?style%>);
+printOptAttr(<%?width%>);
+switch (<%?alignment%>) {
+   case SSeparator.RIGHT_ALIGN : %> align="right"<%; break;
+   case SSeparator.CENTER_ALIGN: %> align="center"<%; break;
+   case SSeparator.BLOCK_ALIGN : %> align="justify"<%; break;
+};
+printOptAttr(<%?size%>);
+if (!<%?shade%>) %> noshade<%;%>
+</template>
