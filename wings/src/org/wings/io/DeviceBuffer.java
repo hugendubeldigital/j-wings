@@ -172,7 +172,7 @@ public final class DeviceBuffer
      * @throws IOException
      */
     public Device write(byte b) throws IOException {
-        if ( position+1>buffer.length )
+        while ( position+1>buffer.length )
             incrementCapacity();
         buffer[position++] = b;
         return this;
@@ -200,8 +200,6 @@ public final class DeviceBuffer
         int newCapacity = (capacityIncrement > 0) ?
             (buffer.length + capacityIncrement) : (buffer.length * 2);
 
-        System.out.println("increment Capacity to " + newCapacity);
-
         buffer = new byte[newCapacity];
         System.arraycopy(oldBuffer, 0, buffer, 0, position);
     }
@@ -211,7 +209,7 @@ public final class DeviceBuffer
      * off to this output stream.
      */
     public Device write(byte b[], int off, int len) throws IOException {
-        if ( position+len>buffer.length )
+        while ( position+len>buffer.length )
             incrementCapacity();
 
         System.arraycopy(b, off, buffer, position, len);
