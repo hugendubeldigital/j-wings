@@ -1,0 +1,25 @@
+
+make is no longer supported, use ant
+
+
+Requirements:
+-------------
+
+- jdk 1.2 or above
+- jsdk 2.2 (tomcat 3.2.1 or above)
+- ant 1.3 or above
+
+Installation:
+-------------
+
+To compile and build the jar file, start 
+
+ant all
+
+in this directory
+
+You find the wings.jar in build/dist/lib
+
+
+To make the demo-wars look at demo/README
+
