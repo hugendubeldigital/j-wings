@@ -161,6 +161,22 @@ public final class Utils implements SConstants {
     }
 
     /**
+     * Prints an optional attribute. If the String value has a content
+     * (value != null && value.length > 0), the attrib is added otherwise
+     * it is left out
+     */
+    public static void optAttribute(Device d, String attr, Color value) 
+        throws IOException {
+        if (value != null ) {
+            d.write( SPACE );
+            d.print( attr );
+            d.write( EQUALS_QUOT );
+            write(d, value);
+            d.write( QUOT );
+        }
+    }
+
+    /**
      * Prints an optional, renderable attribute.
      */
     public static void optAttribute(Device d, String attr, Renderable r) 
