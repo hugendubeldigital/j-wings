@@ -133,7 +133,11 @@ public final class Utils implements SConstants
 	}
     }
 
-    public static String toColorString(int rgb) {
+    /**
+      * @deprecated use {@link org.wings.SColor#getHex()}
+      */
+    public static String toColorString(int rgb)
+    {
         char[] buf = new char[6];
         int digits = 6;
         do {
