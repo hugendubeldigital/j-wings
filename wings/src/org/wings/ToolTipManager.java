@@ -111,14 +111,7 @@ public class ToolTipManager {
   public void installListener(SFrame sf) {
     sf.removeScriptListener(TOOLTIP_SCRIPT_LOADER);
     if (!componentMap.isEmpty()) {
-      java.util.Iterator it = componentMap.entrySet().iterator();
-      while (it.hasNext()) {
-        java.util.Map.Entry sc = (java.util.Map.Entry)it.next();
-        if (sf.equals(((SComponent)sc.getKey()).getSession().getRootFrame())) {
-          sf.addScriptListener(TOOLTIP_SCRIPT_LOADER);
-          break;
-        }
+        sf.addScriptListener(TOOLTIP_SCRIPT_LOADER);
       }
     }
-  }
 }
