@@ -465,7 +465,35 @@ public class TemplateParser {
                 .append(input)
                 .append(");\n");
             break;
+
+            /* not supported .. quoted characters */
+        case '\'':
+            input.deleteCharAt(0);
+            output.append("\torg.wings.plaf.compiler.Utils.quote( device, ")
+                .append(input)
+                .append(");\n");
+            break;
             
+        case '|': {
+            input.deleteCharAt(0);
+            int pos;
+            for (pos=0; pos < input.length(); ++pos) {
+                if ((input.charAt(pos)) == '=')
+                    break;
+            }
+            if (pos >= input.length()) {
+                reportError("'=' expected in attribute expression");
+                return;
+            }
+            String attributeName = input.substring(0, pos).trim();
+            String expression    = input.substring(pos+1);
+            output.append("\torg.wings.plaf.compiler.Utils.optAttribute( device, ")
+                .append("\"").append(attributeName).append("\", ")
+                .append(expression)
+                .append(");\n");
+            break;
+        }
+
         case '?': 
             // FIXME: make introspection to find out the name of the getter.
             input.deleteCharAt(0);

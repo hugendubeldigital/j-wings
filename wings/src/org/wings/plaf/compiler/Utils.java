@@ -36,6 +36,9 @@ public final class Utils implements SConstants {
     // byte representation of special characters
     private final static byte HASH_CHAR      = (byte) '#';
     private final static byte MINUS_CHAR     = (byte) '-';
+    private final static byte SPACE          = (byte) ' ';
+    private final static byte[] EQUALS_QUOT  = "=\"".getBytes();
+    private final static byte QUOT           = (byte) '"';
 
     /**
      * This is just a collection of static functions, thus not instanciable
@@ -70,6 +73,37 @@ public final class Utils implements SConstants {
     public static void write(Device d, String s) throws IOException {
 	//d.print(s);
 	quote(d, s);
+    }
+    
+    /**
+     * Prints an optional attribute. If the String value has a content
+     * (value != null && value.length > 0), the attrib is added otherwise
+     * it is left out
+     */
+    public static void optAttribute(Device d, String attr, String value) 
+        throws IOException {
+        if (value != null && value.length() > 0) {
+            d.write( SPACE );
+            d.print( attr );
+            d.write( EQUALS_QUOT );
+            d.print(value);
+            d.write( QUOT );
+        }
+    }
+
+    /**
+     * Prints an optional attribute. If the integer value is greater than 0,
+     * the attrib is added otherwise it is left out
+     */
+    public static void optAttribute(Device d, String attr, int value) 
+        throws IOException {
+        if (value > 0) {
+            d.write( SPACE );
+            d.print( attr );
+            d.write( EQUALS_QUOT );
+            write(d, value);
+            d.write( QUOT );
+        }
     }
     
     /**
