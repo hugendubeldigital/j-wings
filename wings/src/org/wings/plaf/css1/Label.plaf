@@ -90,66 +90,69 @@ void writeText(Device device, SLabel label, AnchorProperties anchor)
       if (style != null) { %></span><% }
    }
    else {
+       int cols = 0;
        %><table cellspacing="0"<%
        %><%|class=style%><%
        %>><%
        // if we are on the top, create a top row
-       if (verticalTextPosition == TOP) {
+       if (horizontalTextPosition == CENTER && verticalTextPosition == TOP) {
 	       %><tr><td><%
-	       if (horizontalTextPosition == LEFT) { 
-                  writeText(device, component, anchor);
-	       }
-	       %></td><td><%
-	       if (horizontalTextPosition == CENTER) { 
-                  writeText(device, component, anchor);
-	       }
-	       %></td><td><%
-	       if (horizontalTextPosition == RIGHT) {
-                  writeText(device, component, anchor);
-	       }
+               writeText(device, component, anchor);
 	       %></td></tr><%
        }
 
-       // we always have a center row, since we have to write the icon
-       if (verticalTextPosition == CENTER) {
-	       %><tr><td><%
-	       if (horizontalTextPosition == LEFT) {
-                  writeText(device, component, anchor);
-	       }
-	       %></td><td align="center"><%
-	       if (horizontalTextPosition == CENTER) { 
-                  writeText(device, component, anchor);
-                  %><br/><%
-	       }
-	       // the rendered icon in the center
-	       writeIcon(device, icon, component, anchor);
-	       %></td><td><%
-	       if (horizontalTextPosition == RIGHT) { 
-                  writeText(device, component, anchor);
-	       }
-	       %></td></tr><%
-       } else {
-	       %><tr><td></td><td align="center"><%
-	       writeIcon(device, icon, component, anchor); 
-	       %></td><td></td></tr><%
+       %><tr><%
+
+       if (horizontalTextPosition == LEFT) {
+	   %><td<%
+	   if (verticalTextPosition == TOP) {
+	       %> valign="top"<%
+	   }
+	   else if (verticalTextPosition == BOTTOM) {
+	       %> valign="bottom"<%
+	   }
+	   %>><%
+           writeText(device, component, anchor);
+	   %></td><%
+       }
+       
+       %><td<%
+       /* move icon the opposite direction the text goes. But only
+        * if the horizonal text-position is not center, since this is
+        * renderered in another row, then.
+        */
+       if (horizontalTextPosition != CENTER) {
+	   if (verticalTextPosition == TOP) {
+	       %> valign="bottom"<%
+	   }
+	   else if (verticalTextPosition == BOTTOM) {
+	       %> valign="top"<%
+	   }
+       }
+       %>><%
+       writeIcon(device, icon, component, anchor); %></td><%
+
+       if (horizontalTextPosition == RIGHT) {
+	   %><td<%
+	   if (verticalTextPosition == TOP) {
+	       %> valign="top"<%
+	   }
+	   else if (verticalTextPosition == BOTTOM) {
+	       %> valign="bottom"<%
+	   }
+	   %>><%
+           writeText(device, component, anchor);
+	   %></td><%
        }
 
-       // bottom row only, if text is there ..
-       if (verticalTextPosition == BOTTOM) {
-               %><tr><td><%
-	       if (horizontalTextPosition == LEFT) {
-                  writeText(device, component, anchor);
-	       }
-	       %></td><td><%
-	       if (horizontalTextPosition == CENTER) { 
-                  writeText(device, component, anchor);
-	       }
-	       %></td><td><%
-	       if (horizontalTextPosition == RIGHT) {
-                  writeText(device, component, anchor);
-	       }
+       %></tr><%
+
+       // if we are on the top, create a top row
+       if (horizontalTextPosition == CENTER && verticalTextPosition==BOTTOM) {
+	       %><tr><td><%
+               writeText(device, component, anchor);
 	       %></td></tr><%
-       } 
+       }
        %></table><%
    }
 %></write>
