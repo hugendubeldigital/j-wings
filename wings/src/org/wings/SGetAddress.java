@@ -171,7 +171,7 @@ public class SGetAddress
      * @return
      */
     public String toString() {
-        StringBuffer erg = new StringBuffer(getRelativeAddress());
+        StringBuffer erg = new StringBuffer(getContextURL());
 
         if (parameters != null && parameters.length() > 0) {
             erg.append(hasQuestMark ? "&amp;" : "?");
