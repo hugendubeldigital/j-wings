@@ -73,6 +73,7 @@ public class SDefaultTableCellRenderer
         setLayout(null);
         contents = new SLabel();
         contents.setStyle(null);
+        contents.setEscapeSpecialChars(true);
         edit = new SLabel();
         add(contents);
         add(edit);
