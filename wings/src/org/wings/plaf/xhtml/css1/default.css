@@ -270,6 +270,7 @@ H3 {
 .anchortabbedpaneselection {
    display: inline;
    color: #000000;
+   background-color: #AAAAFF;
    font-family: sans-serif;
    font-size: 12px;
    border-top: black thin solid;
