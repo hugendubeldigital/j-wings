@@ -548,7 +548,7 @@ public class MultipartRequest
          */
         public int read() throws IOException {
             if ( pos>=maxLength )
-                throw new IOException("Size exceeds maxlength " + maxLength);
+                throw new IOException("Size (" + len + ") exceeds maxlength " + maxLength);
 
             if(pos >= len)
                 return -1;
@@ -575,7 +575,7 @@ public class MultipartRequest
             pos += num;
 
             if ( pos>=maxLength )
-                throw new IOException("Size exceeds maxlength " + maxLength);
+                throw new IOException("Size (" + len + ") exceeds maxlength " + maxLength);
 
             return num;
         }
@@ -598,7 +598,7 @@ public class MultipartRequest
             pos += num;
 
             if ( pos>=maxLength )
-                throw new IOException("Size exceeds maxlength " + maxLength);
+                throw new IOException("Size (" + len + ") exceeds maxlength " + maxLength);
 
             return num;
         }
