@@ -499,6 +499,7 @@ public abstract class SessionServlet
 
             try {
                 if (logger.isLoggable(Level.FINER)) {
+                    logger.finer("RequestURL: " + requestURL);
                     logger.finer("\nHEADER:");
                     for (Enumeration en = req.getHeaderNames(); en.hasMoreElements();) {
                         String header = (String)en.nextElement();
@@ -508,9 +509,6 @@ public abstract class SessionServlet
                 }
 
                 handleLocale(req);
-
-                //evtl. HttpUtils.getRequestURL(req).toString()
-                //getFrame().setRequestURL(requestURL);
             }
             finally {
                 prepareRequest(req, response);
@@ -588,7 +586,7 @@ public abstract class SessionServlet
                 logger.fine("pathInfo: " + pathInfo);
 
                 // no pathInfo .. getFrame()
-                if (pathInfo == null || pathInfo.length() == 0 || firstRequest) {
+                if (pathInfo == null || pathInfo.length() == 0 || "_".equals(pathInfo) || firstRequest) {
                     logger.fine("delivering default frame");
                     firstRequest = false;
 

@@ -152,6 +152,9 @@ public class RequestURL
         if (resource != null) {
             d.print(resource);
         }
+        else {
+            d.print("_");
+        }
 
         if ( baseParameters!=null ) {
             d.print(baseParameters);
@@ -183,6 +186,9 @@ public class RequestURL
 
         if ( resource!=null ) {
             erg.append(resource);
+        }
+        else {
+            erg.append("_");
         }
 
         if ( baseParameters!=null ) {
