@@ -124,7 +124,7 @@ public class SOptionPane
     /**
      * Die Message des OptionPanes wird hier rein getan.
      */
-    private final SContainer optionData = new SContainer();
+    private final SContainer optionData = new SContainer(new SFlowDownLayout());
 
     /**
      * Die Message des OptionPanes wird hier rein getan.
@@ -135,7 +135,7 @@ public class SOptionPane
      * TODO: documentation
      */
     protected final SContainer optionButtons =
-        new SContainer(new SFlowLayout(CENTER));
+        new SContainer(new SFlowLayout( RIGHT ));
 
     /**
      * TODO: documentation
@@ -165,20 +165,24 @@ public class SOptionPane
     /**
      * TODO: documentation
      */
-    protected static SLabel messageImage =
-        new SLabel(new ResourceImageIcon("org/wings/icons/Inform.gif"));
+    protected static final SIcon messageImage =
+        new ResourceImageIcon("org/wings/icons/Inform.gif");
 
     /**
      * TODO: documentation
      */
-    protected static SLabel questionImage =
-        new SLabel(new ResourceImageIcon("org/wings/icons/Question.gif"));
+    protected static final SIcon questionImage =
+        new ResourceImageIcon("org/wings/icons/Question.gif");
 
     /**
      * TODO: documentation
      */
-    protected static SLabel yesnoImage =
-        new SLabel(new ResourceImageIcon("org/wings/icons/Question.gif"));
+    protected static final SIcon yesnoImage =
+        new ResourceImageIcon("org/wings/icons/Question.gif");
+
+    protected final SLabel messageLabel  = new SLabel(messageImage);
+    protected final SLabel questionLabel = new SLabel(questionImage);
+    protected final SLabel yesnoLabel    = new SLabel(yesnoImage);
 
     /**
      * The chosen option
@@ -217,13 +221,13 @@ public class SOptionPane
         optionButtons.add(optionCancel);
         optionButtons.add(optionNo);
         optionButtons.add(optionReset);
-
-        images.add(messageImage);
-        messageImage.setToolTipText("info");
-        images.add(questionImage);
-        questionImage.setToolTipText("question");
-        images.add(yesnoImage);
-        yesnoImage.setToolTipText("question");
+        
+        images.add(messageLabel);
+        messageLabel.setToolTipText("info");
+        images.add(questionLabel);
+        questionLabel.setToolTipText("question");
+        images.add(yesnoLabel);
+        yesnoLabel.setToolTipText("question");
 
         contents.add(optionData, SBorderLayout.CENTER);
         contents.add(images, SBorderLayout.WEST);
@@ -270,10 +274,7 @@ public class SOptionPane
      * @param e
      */
     public void actionPerformed(ActionEvent e) {
-        if (root != null) {
-            root.popDialog();
-        }
-
+        hide();
         selected = e.getSource();
 
         if ( e.getSource()==optionOK ) {
@@ -291,8 +292,6 @@ public class SOptionPane
         else {
             fireActionPerformed(UNKNOWN_ACTION);
         }
-
-        removeAll();
     }
 
     /**
@@ -306,9 +305,9 @@ public class SOptionPane
         optionNo.setVisible(false);
         optionReset.setVisible(false);
 
-        messageImage.setVisible(false);
-        questionImage.setVisible(false);
-        yesnoImage.setVisible(false);
+        messageLabel.setVisible(false);
+        questionLabel.setVisible(false);
+        yesnoLabel.setVisible(false);
     }
 
     SContainer customButtons = null;
@@ -483,7 +482,7 @@ public class SOptionPane
         p.showPlainMessage(parent, message, title);
         p.addActionListener(al);
 
-        messageImage.setVisible(false);
+        p.messageLabel.setVisible(false);
     }
 
     /**
@@ -495,20 +494,32 @@ public class SOptionPane
 
         setOptionType(DEFAULT_OPTION);
 
-        messageImage.setVisible(true);
+        messageLabel.setVisible(true);
     }
 
 
     /**
      * TODO: documentation
      */
-    public void showPlainQuestionDialog(SComponent parent,
-                                        Object message, String title) {
+    public void showQuestion(SComponent parent,
+                              Object message, String title) {
         showOption(parent, title, message);
-
+        
         setOptionType(OK_CANCEL_OPTION);
 
-        questionImage.setVisible(true);
+        questionLabel.setVisible(true);
+    }
+
+    public void showInput(SComponent parent,
+                          Object message, 
+                          SComponent inputElement,
+                          String title) {
+        showOption(parent, title, message);
+        optionData.add(inputElement);
+        
+        setOptionType(OK_CANCEL_OPTION);
+
+        questionLabel.setVisible(true);
     }
 
     /**
@@ -522,6 +533,16 @@ public class SOptionPane
     // }
 
 
+    public static void showInputDialog(SComponent parent,
+                                       Object question, String title,
+                                       SComponent inputElement,
+                                       ActionListener al) {
+        SOptionPane p = new SOptionPane();
+
+        p.showInput(parent, question, inputElement, title);
+        p.addActionListener(al);
+    }
+
     /**
      * TODO: documentation
      */
@@ -530,7 +551,7 @@ public class SOptionPane
                                           ActionListener al) {
         SOptionPane p = new SOptionPane();
 
-        p.showPlainQuestionDialog(parent, question, title);
+        p.showQuestion(parent, question, title);
         p.addActionListener(al);
     }
 
@@ -542,10 +563,10 @@ public class SOptionPane
                                                ActionListener al) {
         SOptionPane p = new SOptionPane();
 
-        p.showPlainQuestionDialog(parent, question, title);
+        p.showQuestion(parent, question, title);
         p.addActionListener(al);
 
-        questionImage.setVisible(false);
+        p.questionLabel.setVisible(false);
     }
 
 
@@ -590,7 +611,7 @@ public class SOptionPane
         showOption(parent, title, question);
         setOptionType(YES_NO_OPTION);
 
-        yesnoImage.setVisible(true);
+        yesnoLabel.setVisible(true);
     }
 
     /**
