@@ -25,7 +25,7 @@ import org.wings.plaf.LinkCG;
  * @version $Revision$
  */
 /*
- * should this be a component ? Actually, it is used internally in
+ * Why is this a component ??? Actually, it is used internally in
  * the Frame, but is not very useful as standalone object .. or am I
  * missing someting ? (hen).
  */
