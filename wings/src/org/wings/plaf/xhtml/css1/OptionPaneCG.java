@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import org.wings.plaf.*;
 import org.wings.io.*;
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.util.CGUtil;
 
 public final class OptionPaneCG

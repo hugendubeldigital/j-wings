@@ -12,9 +12,10 @@
  * Please see COPYING for the complete licence.
  */
 
-package org.wings;
+package org.wings.border;
 
 import java.awt.Insets;
+import java.awt.Color;
 import java.io.*;
 
 import org.wings.io.Device;
@@ -51,14 +52,14 @@ public interface SBorder
      *
      * @return color
      */
-    java.awt.Color getColor();
+    Color getColor();
 
     /**
      * Get the color of this border.
      *
      * @param color the color
      */
-    void setColor(java.awt.Color color);
+    void setColor(Color color);
 
     /**
      * writes the border prefix

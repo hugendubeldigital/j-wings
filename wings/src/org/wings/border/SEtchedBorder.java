@@ -12,7 +12,7 @@
  * Please see COPYING for the complete licence.
  */
 
-package org.wings;
+package org.wings.border;
 
 import java.awt.Color;
 import java.awt.Insets;
@@ -21,59 +21,63 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * Draw a line border around a component.
- * <span style="border-style: solid; border-width: 3px;">LABEL</span>
+ * Draw a etched border around a component.
+ * <span style="border-style: ridge; border-width: 3px;">RAISED</span>
+ * <span style="border-style: groove; border-width: 3px;">LOWERED</span>
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
  * @version $Revision$
  */
-public class SLineBorder
+public class SEtchedBorder
     extends SAbstractBorder
 {
     /**
      * @see #getCGClassID
      */
-    private static final String cgClassID = "LineBorderCG";
-    
-    int thickness = 1;
+    private static final String cgClassID = "EtchedBorderCG";
+
+    public static final int RAISED = 0;
+    public static final int LOWERED = 1;
+
+    int etchedType = RAISED;
 
     /**
      * TODO: documentation
      *
      */
-    public SLineBorder() {}
+    public SEtchedBorder() {}
 
     /**
      * TODO: documentation
      *
-     * @param thickness
+     * @param etchedType
      */
-    public SLineBorder(int thickness) {
-        setThickness(thickness);
+    public SEtchedBorder(int etchedType) {
+        setEtchedType(etchedType);
     }
 
     /**
      * TODO: documentation
      *
-     * @param thickness
+     * @param etchedType
      * @param insets
      */
-    public SLineBorder(int thickness, Insets insets) {
-        setThickness(thickness);
+    public SEtchedBorder(int etchedType, Insets insets) {
+        setEtchedType(etchedType);
         setInsets(insets);
     }
 
     /**
      * TODO: documentation
      *
-     * @param thickness
+     * @param etchedType
      */
-    public void setThickness(int thickness) {
-        this.thickness = thickness;
+    public void setEtchedType(int etchedType) {
+        this.etchedType = etchedType;
     }
-    
-    public int getThickness() { return thickness; }
+
+    public int getEtchedType() { return etchedType; }
 
     public String getCGClassID() {
         return cgClassID;

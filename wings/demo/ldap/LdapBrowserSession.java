@@ -16,6 +16,7 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 
 import org.wings.*;
+import org.wings.border.*;
 import org.wings.io.Device;
 import org.wings.io.ServletDevice;
 import org.wings.servlet.*;

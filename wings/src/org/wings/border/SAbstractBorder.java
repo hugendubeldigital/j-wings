@@ -12,7 +12,7 @@
  * Please see COPYING for the complete licence.
  */
 
-package org.wings;
+package org.wings.border;
 
 import java.awt.Insets;
 import java.io.IOException;

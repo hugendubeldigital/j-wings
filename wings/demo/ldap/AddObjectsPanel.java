@@ -1,6 +1,7 @@
 package ldap;
 
 import org.wings.*;
+import org.wings.border.*;
 import java.awt.event.*; 
 import java.awt.Color;
 import java.util.Vector; 

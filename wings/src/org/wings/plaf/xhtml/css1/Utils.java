@@ -18,7 +18,8 @@ import java.io.IOException;
 
 import java.awt.Color;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
+import org.wings.border.*;
 import org.wings.style.*;
 import org.wings.io.Device;
 

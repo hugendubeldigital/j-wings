@@ -173,7 +173,8 @@ public class TemplateParser {
         }
         //out.println ("import java.io.*;");
         out.println ("import java.io.IOException;\n");
-        out.println ("import org.wings.*;");
+        out.println ("import org.wings.*; import org.wings.border.*;");
+        out.println ("import org.wings.border.*;");
         out.println ("import org.wings.style.*;");
         out.println ("import org.wings.io.Device;");
 

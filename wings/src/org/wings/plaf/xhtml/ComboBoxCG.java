@@ -20,7 +20,7 @@ import javax.swing.ComboBoxModel;
 
 import org.wings.plaf.*;
 import org.wings.io.*;
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 
 public class ComboBoxCG
     extends org.wings.plaf.AbstractComponentCG

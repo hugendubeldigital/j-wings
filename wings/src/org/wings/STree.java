@@ -678,27 +678,6 @@ public class STree
     /**
      * TODO: documentation
      *
-     * @param node
-     * @return
-     */
-    protected TreePath getTreePath(TreeNode node) {
-        ArrayList v = new ArrayList(2);
-
-        TreeNode n = node;
-        while ( n!=null ) {
-            v.add(n);
-            n = n.getParent();
-        }
-
-        Object path[] = new Object[v.size()];
-        v.toArray(path);
-
-        return new TreePath(path);
-    }
-
-    /**
-     * TODO: documentation
-     *
      * @param hash
      * @return
      */
@@ -1111,7 +1090,8 @@ public class STree
      * @param c the new background color
      */
     public void setSelectionBackground(Color color) {
-        boolean changed = selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, "background-color"));
+        boolean changed = 
+            selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, Style.BACKGROUND_COLOR));
         if (changed)
             reload(ReloadManager.RELOAD_STYLE);
     }
@@ -1129,7 +1109,8 @@ public class STree
      * @param color the foreground color of selected cells
      */
     public void setSelectionForeground(Color color) {
-        boolean changed = selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, "color"));
+        boolean changed = 
+            selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, Style.COLOR));
         if (changed)
             reload(ReloadManager.RELOAD_STYLE);
     }

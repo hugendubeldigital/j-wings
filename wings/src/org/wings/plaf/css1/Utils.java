@@ -16,7 +16,8 @@ package org.wings.plaf.css1;
 
 import java.io.IOException;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
+import org.wings.border.*;
 import org.wings.style.*;
 import org.wings.io.Device;
 
@@ -76,7 +77,7 @@ public final class Utils
     /**
      * Renders a border prefix
      */
-    static void renderBorderPrefix(Device d, org.wings.SBorder b)
+    static void renderBorderPrefix(Device d, SBorder b)
         throws IOException
     {
         if (b != null)
@@ -86,7 +87,7 @@ public final class Utils
     /**
      * Renders a border postfix
      */
-    static void renderBorderPostfix(Device d, org.wings.SBorder b)
+    static void renderBorderPostfix(Device d, SBorder b)
         throws IOException
     {
         if (b != null)

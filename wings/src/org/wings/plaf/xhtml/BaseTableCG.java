@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.*;
 import javax.swing.Icon;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.util.CGUtil;
 import org.wings.io.*;
 import org.wings.plaf.*;

@@ -95,7 +95,7 @@ public class CSSStyleSheet
 	 * If the vertical alignment is set to either superscirpt or
 	 * subscript we reduce the font size by 2 points.
 	 */
-	String vAlign = (String)a.getAttribute("vertical-align");
+	String vAlign = (String)a.getAttribute(Style.VERTICAL_ALIGN);
 
 	if (vAlign != null) {
 	    if ((vAlign.indexOf("sup") >= 0) ||
@@ -104,12 +104,12 @@ public class CSSStyleSheet
 	    }
 	}
 
-	String family = (String)a.getAttribute("font-family");
+	String family = (String)a.getAttribute(Style.FONT_FAMILY);
 	if (family == null)
 	    family = "sans-serif";
 
 	int style = Font.PLAIN;
-	String weight = (String)a.getAttribute("font-weight");
+	String weight = (String)a.getAttribute(Style.FONT_WEIGHT);
 	if (weight == null)
 	    ;
 	else if (weight.equals("bold")) {
@@ -125,8 +125,8 @@ public class CSSStyleSheet
 	    } catch (NumberFormatException nfe) {}
 	}
 
-	String styleValue = (String)a.getAttribute("font-style");
-	if ((styleValue != null) && (styleValue.indexOf("italic") >= 0))
+	String styleValue = (String)a.getAttribute(Style.FONT_STYLE);
+	if ((styleValue != null) && (styleValue.indexOf(Style.ITALIC) >= 0))
 	    style |= Font.ITALIC;
 
 	return new SFont(family, style, size);
@@ -135,7 +135,7 @@ public class CSSStyleSheet
     static int sizeMap[] = { 8, 10, 12, 14, 18, 24, 36 };
 
     public static int getFontSize(AttributeSet attr) {
-	String value = (String)attr.getAttribute("font-size");
+	String value = (String)attr.getAttribute(Style.FONT_SIZE);
 	if (value == null)
 	    return 12;
 	try {
@@ -200,7 +200,7 @@ public class CSSStyleSheet
      * @return the color
      */
     public static Color getForeground(AttributeSet a) {
-	Color c = getColor(a, "color");
+	Color c = getColor(a, Style.COLOR);
 	if (c == null) {
 	    return Color.black;
 	}
@@ -216,7 +216,7 @@ public class CSSStyleSheet
      * @return the color
      */
     public static  Color getBackground(AttributeSet a) {
-	return getColor(a, "background-color");
+	return getColor(a, Style.BACKGROUND_COLOR);
     }
 
     static Color getColor(AttributeSet a, String key) {
@@ -439,16 +439,16 @@ public class CSSStyleSheet
 	AttributeSet attributes = new SimpleAttributeSet();
 	if (font == null)
 	    return attributes;
-	attributes.putAttribute("font-family", font.getFace());
+	attributes.putAttribute(Style.FONT_FAMILY, font.getFace());
 
 	int style = Font.PLAIN;
 	if ((font.getStyle() & Font.ITALIC) > 0)
-	    attributes.putAttribute("font-style", "italic");
+	    attributes.putAttribute(Style.FONT_STYLE, "italic");
 
 	if ((font.getStyle() & Font.BOLD) > 0)
-	    attributes.putAttribute("font-weight", "bold");
+	    attributes.putAttribute(Style.FONT_WEIGHT, "bold");
 
-	attributes.putAttribute("font-size", font.getSize() + "pt");
+	attributes.putAttribute(Style.FONT_SIZE, font.getSize() + "pt");
 	return attributes;
     }
 

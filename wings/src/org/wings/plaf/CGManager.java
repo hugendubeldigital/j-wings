@@ -19,7 +19,8 @@ import java.io.*;
 import java.net.*;
 import java.util.logging.*;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
+import org.wings.border.*;
 import org.wings.session.*;
 import org.wings.style.*;
 

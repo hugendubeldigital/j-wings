@@ -33,6 +33,7 @@ import org.wings.style.*;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.util.*;
 import org.wings.script.ScriptListener;
+import org.wings.border.SBorder;
 
 /**
  * The basic component implementation for all components in this package.
@@ -476,7 +477,7 @@ public abstract class SComponent
      * @param c the new background color
      */
     public void setBackground(Color color) {
-        setAttribute("background-color", CSSStyleSheet.getAttribute(color));
+        setAttribute(Style.BACKGROUND_COLOR, CSSStyleSheet.getAttribute(color));
     }
 
     /**
@@ -492,7 +493,7 @@ public abstract class SComponent
      * @param c the new foreground color
      */
     public void setForeground(Color color) {
-        setAttribute("color", CSSStyleSheet.getAttribute(color));
+        setAttribute(Style.COLOR, CSSStyleSheet.getAttribute(color));
     }
 
     /**
@@ -609,59 +610,6 @@ public abstract class SComponent
         name = n;
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendPrefix(Device s) {
-        if ( getFont()!=null )
-            getFont().appendPrefix(s);
-        else if ( getForeground()!=null || getBackground()!=null )
-            s.append("<FONT");
-
-        if ( getForeground()!=null ) {
-            s.append(" COLOR=#").append(SUtil.toColorString(getForeground()));
-        }
-
-        // hab keine Idee, wie man das sonst machen kann !!!
-        // Mit Table wuerds funktionieren (siehe unten), aber...
-        if ( getBackground()!=null )
-            s.append(" STYLE=\"background-color:#").append(SUtil.toColorString(getBackground())).append(";\"");
-
-
-        if ( getFont()!=null )
-            getFont().appendBody(s);
-        else if ( getForeground()!=null || getBackground()!=null )
-            s.append(">");
-
-        //    if ( getBackground()!=null )
-        //      s.append("<TABLE BGCOLOR=#").append(SUtil.toColorString(getBackground())).append(">");
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendPostfix(Device s) {
-        //    if ( getBackground()!=null )
-        //      s.append("</TABLE>");
-        if ( getFont()!=null )
-            getFont().appendPostfix(s);
-        else if ( getForeground()!=null || getBackground()!=null )
-            s.append("</FONT>");
-
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendBody(Device s) {
-        //    s.append("&nbsp;");
-    }
 
     /**
      * Mark the component as subject to reload.

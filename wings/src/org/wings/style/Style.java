@@ -26,7 +26,7 @@ import org.wings.io.*;
  * @version $Revision$
  */
 public final class Style
-    extends SimpleAttributeSet
+    extends SimpleAttributeSet implements StyleConstants
 {
     private StyleSheet sheet;
     private String selector;

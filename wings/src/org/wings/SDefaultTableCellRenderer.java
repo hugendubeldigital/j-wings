@@ -58,7 +58,17 @@ public class SDefaultTableCellRenderer
             setText("&nbsp;");
         else if (value instanceof SIcon)
             setIcon((SIcon)value);
-        else
+        else if ( value instanceof SComponent ) {
+            SComponent result = (SComponent)value;
+
+            if ( selected && selectionStyle!=null ) {
+                result.setStyle(selectionStyle);
+            } else {
+                result.setStyle(nonSelectionStyle);
+            }
+            
+            return result;
+        } else 
             setText(value.toString());
 
 

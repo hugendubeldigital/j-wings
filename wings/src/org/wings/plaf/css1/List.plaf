@@ -1,6 +1,6 @@
 <template name="ListCG" for="org.wings.SList">
 
-<comp-property name="cellRenderer" type="SDefaultListCellRenderer">
+<comp-property name="cellRenderer" type="org.wings.SDefaultListCellRenderer">
    new org.wings.SDefaultListCellRenderer()
 </comp-property>
 

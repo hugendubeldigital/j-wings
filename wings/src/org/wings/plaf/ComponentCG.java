@@ -17,7 +17,7 @@ package org.wings.plaf;
 import java.io.IOException;
 import java.io.Serializable;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
 
 public interface ComponentCG

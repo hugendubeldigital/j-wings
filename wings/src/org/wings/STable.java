@@ -723,7 +723,7 @@ public class STable
      * @param c the new background color
      */
     public void setSelectionBackground(Color color) {
-        boolean changed = selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, "background-color"));
+        boolean changed = selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, Style.BACKGROUND_COLOR));
         if (changed)
             reload(ReloadManager.RELOAD_STYLE);
     }
@@ -741,7 +741,7 @@ public class STable
      * @param color the foreground color of selected cells
      */
     public void setSelectionForeground(Color color) {
-        boolean changed = selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, "color"));
+        boolean changed = selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, Style.COLOR));
         if (changed)
             reload(ReloadManager.RELOAD_STYLE);
     }

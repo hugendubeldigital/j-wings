@@ -14,10 +14,11 @@
 
 package org.wings.plaf;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Serializable;
 
-import org.wings.*;
-import org.wings.io.*;
+import org.wings.border.SBorder;
+import org.wings.io.Device;
 
 public interface BorderCG
     extends Serializable

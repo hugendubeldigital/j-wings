@@ -16,7 +16,7 @@ package org.wings.plaf;
 
 import java.io.*;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
 
 public interface LayoutCG

@@ -18,7 +18,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.*;
 import org.wings.util.CGUtil;

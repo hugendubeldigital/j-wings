@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import javax.swing.Icon;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.style.*;
 
 /**

@@ -19,6 +19,7 @@ import java.awt.event.*;
 import javax.swing.Icon;
 
 import org.wings.*;
+import org.wings.border.*;
 
 /**
  * TODO: documentation
