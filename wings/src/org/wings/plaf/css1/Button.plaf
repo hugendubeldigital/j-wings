@@ -1,4 +1,4 @@
-<template name="Button" for="org.wings.SButton">
+<template name="ButtonCG" for="org.wings.SButton">
 
 void writeAnchorText(final Device device, SButton component) 
      throws IOException {

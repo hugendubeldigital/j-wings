@@ -1,4 +1,4 @@
-<template name="Anchor" for="org.wings.SAnchor">
+<template name="AnchorCG" for="org.wings.SAnchor">
 
 <write>
 <%

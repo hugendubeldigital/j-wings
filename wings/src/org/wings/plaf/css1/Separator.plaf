@@ -1,4 +1,4 @@
-<template name="Separator" for="org.wings.SSeparator">
+<template name="SeparatorCG" for="org.wings.SSeparator">
 <write>
 <hr<% 
 Utils.printStyle(device, component.getStyle());

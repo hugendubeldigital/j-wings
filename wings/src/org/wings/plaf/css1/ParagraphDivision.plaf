@@ -1,6 +1,6 @@
 <!-- $Id$ -->
 <!-- the paragraph and division are very similar -->
-<template name="Paragraph" for="org.wings.SParagraph">
+<template name="ParagraphCG" for="org.wings.SParagraph">
 <write>
 <%
   SBorder border = component.getBorder();

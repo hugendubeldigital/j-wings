@@ -1,4 +1,4 @@
-<template name="Panel" for="org.wings.SPanel">
+<template name="PanelCG" for="org.wings.SPanel">
 
 <write>
 <%

@@ -1,4 +1,4 @@
-<template name="TextArea" for="org.wings.STextArea">
+<template name="TextAreaCG" for="org.wings.STextArea">
 <write>
 <textarea cols="<%?columns%>" rows="<%?rows%>"<%
   if (!component.isEditable()) { %> readonly="1"<% }

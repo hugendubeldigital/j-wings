@@ -1,4 +1,4 @@
-<template name="Container" for="org.wings.SContainer">
+<template name="ContainerCG" for="org.wings.SContainer">
 
 <write>
 <%

@@ -1,4 +1,4 @@
-<template name="Form" for="org.wings.SForm">
+<template name="FormCG" for="org.wings.SForm">
 <write>
 <%
   SBorder border = component.getBorder();
