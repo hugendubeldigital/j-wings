@@ -15,6 +15,7 @@
 package explorer;
 
 import java.io.*;
+import java.util.Enumeration;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -50,10 +51,26 @@ public class ExplorerSession
 
         String dir = config.getInitParameter("ExplorerBaseDir");
 
-	ExplorerPanel mainPanel = new ExplorerPanel(dir);
+	mainPanel = new ExplorerPanel(dir);
 
 	// übergeordneter SFrame (Browser-Fenster)
         getFrame().getContentPane().add(mainPanel);
+    }
+
+    protected void processRequest(HttpServletRequest req,
+                                  HttpServletResponse response)
+        throws ServletException, IOException {
+        
+        Enumeration en = req.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String)en.nextElement();
+
+            if ( "EXPLORERBASEDIR".equals(paramName.toUpperCase()) ) {
+                String[] values = req.getParameterValues(paramName);
+
+                mainPanel.setExplorerBaseDir(values[0]);
+            }
+        }            
     }
 
     /**

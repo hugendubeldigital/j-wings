@@ -80,14 +80,15 @@ public class DirTableModel
 
     public void setDirectory(File d, FilenameFilter f) {
         if ( d==null || !d.isDirectory() ) {
-            throw new IllegalArgumentException("no dir " + d);
+            directory = null;
+            filenames = new String[0];
+        } else {
+            if ( f!=null )
+                filenameFilter = f;
+            
+            directory = d;
+            filenames = directory.list(filenameFilter);
         }
-
-        if ( f!=null )
-            filenameFilter = f;
-
-        directory = d;
-        filenames = directory.list(filenameFilter);
 
         fireTableStructureChanged();
     }

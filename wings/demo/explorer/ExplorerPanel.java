@@ -39,6 +39,8 @@ public class ExplorerPanel
 
     private final STable dirTable = new STable(dirTableModel);
 
+    private final STree explorerTree = new STree();
+
     public ExplorerPanel(String dir) {
         try {
             java.net.URL templateURL = getClass()
@@ -51,10 +53,18 @@ public class ExplorerPanel
             setLayout(new SFlowLayout());
         }
 
-	add(createTree(dir), "DirTree");
+	add(createTree(), "DirTree");
 	add(createTable(), "FileTable");
 	add(createUpload(), "UploadForm");
 	add(createDeleteButton(), "DeleteButton");
+
+        setExplorerBaseDir(dir);
+    }
+
+    public void setExplorerBaseDir(String dir) {
+        explorerTree.setModel(createModel(dir));
+        if ( explorerTree.getRowCount()>0 )
+            explorerTree.setSelectionRow(0);
     }
 
     /**
@@ -133,9 +143,7 @@ public class ExplorerPanel
         }
     }
 
-    protected SComponent createTree(String dir) {
-
-        STree explorerTree = new STree(createModel(dir));
+    protected SComponent createTree() {
 
         // wenn ein Verzeichnis selektiert wird, wird die Tabelle
         // aktualisiert
@@ -143,10 +151,15 @@ public class ExplorerPanel
             public void valueChanged(TreeSelectionEvent e) {
 
                 TreePath tpath = e.getNewLeadSelectionPath();
-                DefaultMutableTreeNode selectedNode =
-                    (DefaultMutableTreeNode)tpath.getLastPathComponent();
 
-                dirTableModel.setDirectory((File)selectedNode.getUserObject());
+                if ( tpath!=null ) {
+                    DefaultMutableTreeNode selectedNode =
+                        (DefaultMutableTreeNode)tpath.getLastPathComponent();
+                    
+                    dirTableModel.setDirectory((File)selectedNode.getUserObject());
+                } else {
+                    dirTableModel.setDirectory(null);
+                }
             } 
         });
 
