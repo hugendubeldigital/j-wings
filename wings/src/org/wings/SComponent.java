@@ -11,7 +11,6 @@
  *
  * Please see COPYING for the complete licence.
  */
-
 package org.wings;
 
 
@@ -54,7 +53,6 @@ public abstract class SComponent
     public static final String OPAQUE_PROPERTY = "_Opaque_Property";
     public static final String BORDER_PROPERTY = "_Border_Property";
     public static final String NAME_PROPERTY = "_Name_Property";
-
 
     private final static Logger logger = Logger.getLogger("org.wings");
 
@@ -117,9 +115,6 @@ public abstract class SComponent
 
     /** Preferred size of component in pixel. */
     protected SDimension preferredSize;
-    
-    
-
 
 
     /**

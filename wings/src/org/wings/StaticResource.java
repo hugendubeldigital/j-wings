@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * TODO: documentation
@@ -188,6 +189,8 @@ public abstract class StaticResource extends Resource
                 }
             }
             else {
+                logger.log(Level.SEVERE, 
+                           "Resource returned empty stream: " + this);
                 buffer.setValid(false);
             }
         }
