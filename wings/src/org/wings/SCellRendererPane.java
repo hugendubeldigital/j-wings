@@ -67,10 +67,10 @@ public class SCellRendererPane
         throws IOException
     {
         if ( getParent() == null )
-            logger.warning("SCellRendererPane: parent == null!");
+            _wingsLogger.warning("SCellRendererPane: parent == null!");
 
         if ( getParentFrame() == null )
-            logger.warning("SCellRendererPane: parentFrame == null!");
+            _wingsLogger.warning("SCellRendererPane: parentFrame == null!");
 
         if ( c == null ) {
             return;

@@ -53,7 +53,7 @@ public abstract class SessionServlet
     extends HttpServlet
     implements HttpSessionBindingListener
 {
-    protected static Logger logger = Logger.getLogger("org.wings.servlet");
+    protected static Logger _wingsLogger = Logger.getLogger("org.wings.servlet");
 
     protected final TimeMeasure measure =
         new TimeMeasure(new MessageFormat("<b>{0}</b>: {1} <i>{2}</i><br />"));
@@ -142,7 +142,7 @@ public abstract class SessionServlet
             try {
                 setLocaleFromHeader(new Boolean(args[i]).booleanValue());
             } catch (Exception e) {
-                logger.throwing(SessionServlet.class.getName(), "setLocaleFromHeader", e);
+                _wingsLogger.throwing(SessionServlet.class.getName(), "setLocaleFromHeader", e);
             }
         }
     }
@@ -181,7 +181,7 @@ public abstract class SessionServlet
                 setLocale(getLocale(tokenizer.nextToken()));
                 return;
             } catch (IllegalArgumentException e) {
-                logger.throwing(SessionServlet.class.getName(), "setLocale", e);
+                _wingsLogger.throwing(SessionServlet.class.getName(), "setLocale", e);
             }
         }
     }
@@ -198,7 +198,7 @@ public abstract class SessionServlet
                 setLocale(locales[i]);
                 return;
             } catch (IllegalArgumentException e) {
-                logger.throwing(SessionServlet.class.getName(), "setLocale", e);
+                _wingsLogger.throwing(SessionServlet.class.getName(), "setLocale", e);
             }
         }
     }
@@ -233,7 +233,7 @@ public abstract class SessionServlet
              supportedLocales.length==0 ||
              ASUtil.inside(l, supportedLocales)) {
             session.setLocale(l);
-            logger.config("Set Locale " + l);
+            _wingsLogger.config("Set Locale " + l);
         } else
             throw new IllegalArgumentException("Locale " + l +" not supported");
     }
@@ -438,7 +438,7 @@ public abstract class SessionServlet
         if (query == null)
             return false;
         // hier noch get Parameter der Form parsen und dispatchen!!
-        logger.fine("Dispatch form GET parameter");
+        _wingsLogger.fine("Dispatch form GET parameter");
         String paramName = query.substring(0, query.indexOf("="));
         String value = query.substring(query.indexOf("=")+1);
         String[] values = {value};
@@ -493,14 +493,14 @@ public abstract class SessionServlet
             ((PropertyService)session).setProperty("request.url", requestURL);
 
             try {
-                if (logger.isLoggable(Level.FINER)) {
-                    logger.finer("RequestURL: " + requestURL);
-                    logger.finer("\nHEADER:");
+                if (_wingsLogger.isLoggable(Level.FINER)) {
+                    _wingsLogger.finer("RequestURL: " + requestURL);
+                    _wingsLogger.finer("\nHEADER:");
                     for (Enumeration en = req.getHeaderNames(); en.hasMoreElements();) {
                         String header = (String)en.nextElement();
-                        logger.finer("   " + header + ": " + req.getHeader(header));
+                        _wingsLogger.finer("   " + header + ": " + req.getHeader(header));
                     }
-                    logger.finer("");
+                    _wingsLogger.finer("");
                 }
 
                 handleLocale(req);
@@ -512,7 +512,7 @@ public abstract class SessionServlet
             try {
                 ServletRequest asreq = new ServletRequest(req);
 
-                if (logger.isLoggable(Level.FINER))
+                if (_wingsLogger.isLoggable(Level.FINER))
                     measure.start("time to dispatch");
 
                 // it's the dispatcher's resposibility to check the event's actuality
@@ -521,7 +521,7 @@ public abstract class SessionServlet
                 while (en.hasMoreElements()) {
                     String paramName = (String)en.nextElement();
                     String[] value = req.getParameterValues(paramName);
-                    logger.fine("dispatching " + paramName + " = " + value[0]);
+                    _wingsLogger.fine("dispatching " + paramName + " = " + value[0]);
 
                     // was soll das???
                     if (!getDispatcher().dispatch(paramName, value))
@@ -534,7 +534,7 @@ public abstract class SessionServlet
                     events = events || dispatchPostQuery(req.getQueryString());
                 }
 
-                if (logger.isLoggable(Level.FINER)) {
+                if (_wingsLogger.isLoggable(Level.FINER)) {
                     measure.stop();
                     measure.start("time to fire form events");
                 }
@@ -542,7 +542,7 @@ public abstract class SessionServlet
                 if (events)
                     SForm.fireEvents();
 
-                if (logger.isLoggable(Level.FINER)) {
+                if (_wingsLogger.isLoggable(Level.FINER)) {
                     measure.stop();
                     measure.start("time to process request");
                 }
@@ -578,11 +578,11 @@ public abstract class SessionServlet
                 // the externalizer is able to handle static and dynamic resources
                 ExternalizeManager extManager = getSession().getExternalizeManager();
                 String pathInfo = req.getPathInfo().substring(1);
-                logger.fine("pathInfo: " + pathInfo);
+                _wingsLogger.fine("pathInfo: " + pathInfo);
 
                 // no pathInfo .. getFrame()
                 if (pathInfo == null || pathInfo.length() == 0 || "_".equals(pathInfo) || firstRequest) {
-                    logger.fine("delivering default frame");
+                    _wingsLogger.fine("delivering default frame");
                     firstRequest = false;
 
                     DynamicResource resource
@@ -592,14 +592,14 @@ public abstract class SessionServlet
                 else
                     extManager.deliver(pathInfo, response);
 
-                if (logger.isLoggable(Level.FINER)) {
+                if (_wingsLogger.isLoggable(Level.FINER)) {
                     measure.stop();
-                    logger.finer(measure.print());
+                    _wingsLogger.finer(measure.print());
                     measure.reset();
                 }
             }
             catch (Throwable e) {
-                logger.log(Level.SEVERE, "exception: ", e);
+                _wingsLogger.log(Level.SEVERE, "exception: ", e);
                 e.printStackTrace(System.err);
                 handleException(req, response, e);
                 throw new ServletException(e);
@@ -725,7 +725,7 @@ public abstract class SessionServlet
      *
      */
     public void destroy() {
-        logger.info("destroy called");
+        _wingsLogger.info("destroy called");
 
         LookAndFeelFactory.unregisterSession(session);
 
@@ -737,21 +737,21 @@ public abstract class SessionServlet
             // remove all elements in ExternalizerCache ?
         }
         catch (Exception e) {
-            logger.throwing(SessionServlet.class.getName(), "destroy", e);
+            _wingsLogger.throwing(SessionServlet.class.getName(), "destroy", e);
         }
         finally {
             Runtime rt = Runtime.getRuntime();
-            if (logger.isLoggable(Level.FINE))
-                logger.fine("free mem before gc: " + rt.freeMemory());
+            if (_wingsLogger.isLoggable(Level.FINE))
+                _wingsLogger.fine("free mem before gc: " + rt.freeMemory());
             rt.gc();
-            if (logger.isLoggable(Level.FINE))
-                logger.fine("free mem after gc: " + rt.freeMemory());
+            if (_wingsLogger.isLoggable(Level.FINE))
+                _wingsLogger.fine("free mem after gc: " + rt.freeMemory());
         }
     }
 
 
     public static final void debug(String msg) {
-        logger.fine(msg);
+        _wingsLogger.fine(msg);
     }
 }
 

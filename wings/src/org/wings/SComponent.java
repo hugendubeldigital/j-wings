@@ -44,7 +44,7 @@ import org.wings.border.SBorder;
 public abstract class SComponent
     implements SConstants, Cloneable, Serializable
 {
-    protected static Logger logger = Logger.getLogger("org.wings");
+    protected static Logger _wingsLogger = Logger.getLogger("org.wings");
 
     /* */
     private transient String unifiedId = null;
@@ -634,7 +634,7 @@ public abstract class SComponent
         catch (Throwable t) {
             System.err.println(t.getMessage());
             t.printStackTrace(System.err);
-            logger.log(Level.SEVERE, "exception during code generation", t);
+            _wingsLogger.log(Level.SEVERE, "exception during code generation", t);
         }
     }
 
@@ -957,10 +957,10 @@ public abstract class SComponent
      */
     public void updateCG() {
         if (getSession() == null) {
-            logger.warning("no session yet.");
+            _wingsLogger.warning("no session yet.");
         }
         else if (getSession().getCGManager() == null) {
-            logger.warning("no CGManager");
+            _wingsLogger.warning("no CGManager");
         }
         else {
             setCG((ComponentCG)getSession().getCGManager().getCG(this));

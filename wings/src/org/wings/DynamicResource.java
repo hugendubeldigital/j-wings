@@ -81,7 +81,7 @@ public abstract class DynamicResource
         if (id == null) {
             ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
             id = ext.getId(ext.externalize(this));
-            logger.fine("new " + getClass().getName() + " with id " + id);
+            _wingsLogger.fine("new " + getClass().getName() + " with id " + id);
         }
         return id;
     }
@@ -93,10 +93,10 @@ public abstract class DynamicResource
      */
     public final void invalidate() {
         epochCache = StringUtil.toShortestAlphaNumericString(++epoch);
-        if (logger.isLoggable(Level.FINE)) {
+        if (_wingsLogger.isLoggable(Level.FINE)) {
             String name = getClass().getName();
             name = name.substring(name.lastIndexOf(".") + 1);
-            logger.fine("[" + name + "] " +
+            _wingsLogger.fine("[" + name + "] " +
                         "invalidate - epoch: " + epochCache);
         }
     }

@@ -56,7 +56,7 @@ public abstract class SRootContainer extends SContainer {
     public void pushDialog(SDialog dialog) {
         super.addComponent(dialog, null);
         int count = getComponentCount();
-        logger.info("pushDialog: " + count);
+        _wingsLogger.info("pushDialog: " + count);
         dialog.setFrame(this);
         reload(ReloadManager.RELOAD_CODE);
     }
@@ -74,7 +74,7 @@ public abstract class SRootContainer extends SContainer {
         SDialog dialog = (SDialog)getComponent(count - 1);
         super.removeComponent(dialog);
         dialog.setFrame((SFrame)null);
-        logger.info("popDialog: " + count);
+        _wingsLogger.info("popDialog: " + count);
 
         reload(ReloadManager.RELOAD_CODE);
         return dialog;

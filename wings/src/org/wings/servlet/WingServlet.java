@@ -55,7 +55,7 @@ public abstract class WingServlet extends HttpServlet
         */
     }
 
-    protected static Logger logger = Logger.getLogger("org.wings.servlet");
+    protected static Logger _wingsLogger = Logger.getLogger("org.wings.servlet");
 
     /**
      * TODO: documentation
@@ -124,11 +124,11 @@ public abstract class WingServlet extends HttpServlet
         if ( lookupName==null || lookupName.trim().length()==0 )
              lookupName = "SessionServlet:" + getClass().getName();
 
-        if (logger.isLoggable(Level.CONFIG)) {
-            logger.config("init-params:");
+        if (_wingsLogger.isLoggable(Level.CONFIG)) {
+            _wingsLogger.config("init-params:");
             for (Enumeration en = config.getInitParameterNames(); en.hasMoreElements();) {
                 String param = (String)en.nextElement();
-                logger.config(param + " = " + config.getInitParameter(param));
+                _wingsLogger.config(param + " = " + config.getInitParameter(param));
             }
         }
 
@@ -167,8 +167,8 @@ public abstract class WingServlet extends HttpServlet
     {
         SessionServlet sessionServlet = getSessionServlet(req, res);
 
-        if (logger.isLoggable(Level.FINE))
-            logger.fine((sessionServlet != null) ?
+        if (_wingsLogger.isLoggable(Level.FINE))
+            _wingsLogger.fine((sessionServlet != null) ?
                         "sessionServlet: " + sessionServlet.getClass().getName() :
                         "no session yet ..");
 
@@ -179,28 +179,28 @@ public abstract class WingServlet extends HttpServlet
             req = new MultipartRequest(req, maxContentLength * 1024);
         }
         catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
+            _wingsLogger.log(Level.SEVERE, null, e);
         }
 
-        if (logger.isLoggable(Level.FINER)) {
+        if (_wingsLogger.isLoggable(Level.FINER)) {
             if (req instanceof MultipartRequest) {
                 MultipartRequest multi = (MultipartRequest)req;
-                logger.finer("Files:");
+                _wingsLogger.finer("Files:");
                 Iterator files = multi.getFileNames();
                 while (files.hasNext()) {
                     String name = (String)files.next();
                     String filename = multi.getFileName(name);
                     String type = multi.getContentType(name);
                     File f = multi.getFile(name);
-                    logger.finer("name: " + name);
-                    logger.finer("filename: " + filename);
-                    logger.finer("type: " + type);
+                    _wingsLogger.finer("name: " + name);
+                    _wingsLogger.finer("filename: " + filename);
+                    _wingsLogger.finer("type: " + type);
                     if (f != null) {
-                        logger.finer("f.toString(): " + f.toString());
-                        logger.finer("f.getName(): " + f.getName());
-                        logger.finer("f.exists(): " + f.exists());
-                        logger.finer("f.length(): " + f.length());
-                        logger.finer("\n");
+                        _wingsLogger.finer("f.toString(): " + f.toString());
+                        _wingsLogger.finer("f.getName(): " + f.getName());
+                        _wingsLogger.finer("f.exists(): " + f.exists());
+                        _wingsLogger.finer("f.length(): " + f.length());
+                        _wingsLogger.finer("\n");
                     }
                 }
             }
@@ -214,7 +214,7 @@ public abstract class WingServlet extends HttpServlet
         throws ServletException
     {
         try {
-            logger.fine("new session");
+            _wingsLogger.fine("new session");
 
             HttpSession session = request.getSession(true);
 
@@ -227,7 +227,7 @@ public abstract class WingServlet extends HttpServlet
             return sessionServlet;
         }
         catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
+            _wingsLogger.log(Level.SEVERE, null, e);
             throw new ServletException(e);
         }
     }
@@ -315,7 +315,7 @@ public abstract class WingServlet extends HttpServlet
                     pathUrl.append('?').append(req.getQueryString());
                 }
 
-                logger.fine("redirect to " + pathUrl.toString());
+                _wingsLogger.fine("redirect to " + pathUrl.toString());
                 response.sendRedirect(pathUrl.toString());
                 return;
             }
@@ -327,18 +327,18 @@ public abstract class WingServlet extends HttpServlet
              */
             if (isSystemExternalizeRequest(req)) {
                 String identifier = pathInfo.substring(1);
-                logger.fine("system externalizer: " + identifier);
+                _wingsLogger.fine("system externalizer: " + identifier);
 
                 int pos = identifier.indexOf(".");
                 if (pos > -1)
                     identifier = identifier.substring(0, pos);
 
-                logger.fine("system externalizer " + identifier);
+                _wingsLogger.fine("system externalizer " + identifier);
                 SystemExternalizeManager.getSharedInstance().deliver(identifier, response);
                 return;
             }
 
-            logger.fine("session servlet");
+            _wingsLogger.fine("session servlet");
 
             SessionServlet sessionServlet = null;
             synchronized (initializer) {
@@ -359,13 +359,13 @@ public abstract class WingServlet extends HttpServlet
             sessionServlet.doGet(req, response);
         }
         catch (Throwable e) {
-            logger.log(Level.SEVERE, "doGet", e);
+            _wingsLogger.log(Level.SEVERE, "doGet", e);
             e.printStackTrace(System.err);
             throw new ServletException(e);
         }
         finally {
             m.stop();
-            logger.fine(m.print());
+            _wingsLogger.fine(m.print());
         }
     }
 }

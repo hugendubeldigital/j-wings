@@ -39,7 +39,7 @@ import org.wings.externalizer.ExternalizeManager;
 public abstract class Resource
     implements Serializable
 {
-    protected static Logger logger = Logger.getLogger("org.wings.externalizer");
+    protected static Logger _wingsLogger = Logger.getLogger("org.wings.externalizer");
 
     /**
      *

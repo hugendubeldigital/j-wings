@@ -381,7 +381,7 @@ public class SFileChooser
                 }
             }
             catch ( Exception e ) {
-                logger.log(Level.SEVERE, null, e);
+                _wingsLogger.log(Level.SEVERE, null, e);
             }
         }
     }

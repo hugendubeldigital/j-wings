@@ -112,7 +112,7 @@ public abstract class StaticResource
         if (id == null) {
             ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
             id = ext.getId(ext.externalize(this, externalizerFlags));
-            logger.fine("new " + getClass().getName() + " with id " + id);
+            _wingsLogger.fine("new " + getClass().getName() + " with id " + id);
         }
         return id;
     }

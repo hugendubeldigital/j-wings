@@ -303,13 +303,13 @@ public class SForm
 
     public SComponent addComponent(SComponent c, Object constraint) {
         if (c instanceof SForm)
-            logger.warning("WARNING: attempt to nest forms; won't work. ");
+            _wingsLogger.warning("WARNING: attempt to nest forms; won't work. ");
         return super.addComponent(c, constraint);
     }
 
     public SComponent addComponent(SComponent c, Object constraint, int index){
         if (c instanceof SForm)
-            logger.warning("WARNING: attempt to nest forms; won't work.");
+            _wingsLogger.warning("WARNING: attempt to nest forms; won't work.");
         return super.addComponent(c, constraint, index);
     }
 

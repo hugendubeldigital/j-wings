@@ -838,11 +838,11 @@ public class STree
         TreePath path = getPathForRow(getRow(value));
         if (path != null)
             if (model.isLeaf(path.getLastPathComponent()) || !handle) {
-                logger.finer("toggle selection " + getRow(value));
+                _wingsLogger.finer("toggle selection " + getRow(value));
                 togglePathSelection(path);
             }
             else {
-                logger.finer("toggle expansion " + getRow(value));
+                _wingsLogger.finer("toggle expansion " + getRow(value));
                 togglePathExpansion(path);
             }
     }
