@@ -19,11 +19,14 @@ Java SwingSet example.
 <table align=center bgcolor="white" width="50%">
 <tr>
    <td><object name="TimeLabel"></object></td>
+<!--
    <td colspan=2>control the style of
                 <a href="http://www.wings.to.com/">wingS</a></td></tr>
 <tr><td>&nbsp;</td>
     <td><input type=radio name="style" value="old"></td>
-    <td><input type=radio name="style" value="css1"></td></tr>
+    <td><input type=radio name="style" value="css1"></td>
+-->
+</tr>
 </table>
 </form>
 Generated with <a href="http://www.wings.to.com/">wingS</a>

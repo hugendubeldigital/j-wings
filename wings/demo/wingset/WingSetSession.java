@@ -98,6 +98,9 @@ public class WingSetSession
 
         contentPane.add(timeMeasure, "TimeLabel");
 
+        /*
+         * we don't have old working style. remember to change
+         * the templates/ExampleFrame.thtml on change.
         final SRadioButton old = new SRadioButton("xhtml/old");
         old.setSelected(false);
         final SRadioButton css1 = new SRadioButton("xhtml/css1");
@@ -123,6 +126,7 @@ public class WingSetSession
 
         contentPane.add(old,  "style=old");
         contentPane.add(css1, "style=css1");
+        */
     }
 
     /**

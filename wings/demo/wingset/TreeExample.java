@@ -15,6 +15,8 @@
 package wingset;
 
 import javax.swing.tree.*;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import org.wings.*;
@@ -29,33 +31,82 @@ public class TreeExample
     extends WingSetPane
 {
     private STree tree;
+    private static SIcon ARROW_DOWN = new ResourceImageIcon("org/wings/icons/ArrowDown.gif");
+    private static SIcon ARROW_RIGHT = new ResourceImageIcon("org/wings/icons/ArrowRight.gif");
 
+    private static SIcon PLUS = new ResourceImageIcon("org/wings/icons/plus.gif");
+    private static SIcon MINUS = new ResourceImageIcon("org/wings/icons/minus.gif");
+    
     public SComponent createExample() {
         SPanel p = new SPanel();
-        tree = new STree(new DefaultTreeModel(generateTree()));
-        p.add(createChangeWidthForm(tree));
+        // generating the tree:
+        tree = new STree(new DefaultTreeModel(generateTree())); // thats it.
+        
+        p.add(createControlForm(tree));
         p.add(new SSeparator());
         p.add(tree);
         return p;
     }
 
-    private SForm createChangeWidthForm(final STree tree) {
-        // modify the depth.
-        SForm widthForm = new SForm(new SGridLayout(3));
+    private SForm createControlForm(final STree tree) {
+        SForm controlForm = new SForm(new SGridLayout(6));
+
+        /*
+         * modify the displayed indentation depth.
+         */
+        controlForm.add(new SLabel("Choose indentation width: "));
         Object[] values = {new Integer(12), new Integer(24), new Integer(36), 
                            new Integer(48), new Integer(60)};
         final SComboBox comboBox = new SComboBox(values);
-        SButton submit = new SButton("OK");
-        submit.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
+        comboBox.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent e) {
                     tree.setNodeIndentDepth(((Integer) comboBox.getSelectedItem()).intValue());
-                } } );
-     
-        // assemble it.
-        widthForm.add(new SLabel("choose indentation width: "));
-        widthForm.add(comboBox);
-        widthForm.add(submit);
-        return widthForm;
+                }
+            });
+
+        controlForm.add(comboBox);
+        
+        /*
+         * change properties of running CG ..
+         */
+        if (tree.getCG() instanceof org.wings.plaf.css1.TreeCG) {
+            SButtonGroup group = new SButtonGroup();
+            controlForm.add(new SLabel(" Folding icons: "));
+            final SRadioButton plusButton = new SRadioButton("plus/minus");
+            plusButton.setToolTipText("use [+] and [-] as expansion controls");
+            
+            final SRadioButton arrowButton = new SRadioButton("arrows");
+            arrowButton.setToolTipText("use right-arrow and down-arrow as expansion controls");
+            
+            group.add(plusButton);
+            group.add(arrowButton);
+            
+            group.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // plaf might have changed.
+                        if(tree.getCG() instanceof org.wings.plaf.css1.TreeCG){
+                            org.wings.plaf.css1.TreeCG cg;
+                            cg = (org.wings.plaf.css1.TreeCG) tree.getCG();
+                            if (plusButton.isSelected()) {
+                                cg.setCollapseControlIcon( MINUS );
+                                cg.setExpandControlIcon( PLUS );
+                            }
+                            else {
+                                cg.setCollapseControlIcon( ARROW_DOWN );
+                                cg.setExpandControlIcon( ARROW_RIGHT );
+                            }
+                        }
+                    }
+                });
+                        
+            controlForm.add(plusButton);
+            controlForm.add(arrowButton);
+            plusButton.setSelected(true);
+        }
+        
+        SButton submit = new SButton("OK");
+        controlForm.add(submit);
+        return controlForm;
     }
 
     static TreeNode generateTree() {
