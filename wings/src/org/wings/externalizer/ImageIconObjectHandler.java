@@ -44,7 +44,7 @@ public class ImageIconObjectHandler
     public void write(Object obj, java.io.OutputStream out)
         throws java.io.IOException
     {
-        Image img = ((ImageIcon) obj).getImage();
+        Image img = ((ImageIcon)obj).getImage();
         GifEncoder encoder = new GifEncoder(img, out, true);
         encoder.encode();
     }

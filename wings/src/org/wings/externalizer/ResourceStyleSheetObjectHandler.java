@@ -42,11 +42,12 @@ public class ResourceStyleSheetObjectHandler
     public void write(Object obj, java.io.OutputStream out)
         throws java.io.IOException
     {
-        InputStream in = ((ResourceStyleSheet) obj).getInputStream();
+        InputStream in = ((ResourceStyleSheet)obj).getInputStream();
         byte[] buffer = new byte[2000];
         while ( in.available() > 0 ) {
-            int count = in.read( buffer );
-            out.write( buffer, 0, count );
+            int count = in.read(buffer);
+            if ( count > 0 )  // read sometimes returns -1 at the end...
+                out.write(buffer, 0, count);
         }
         in.close();
     }
