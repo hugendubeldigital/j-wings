@@ -81,7 +81,8 @@ public class TableExample
         final int ROWS = 5;
 
         SImage image =
-            new SImage(SUtil.makeIcon(SLabel.class, "icons/JavaCup.gif"));
+            new SImage(new ResourceImageIcon(SLabel.class,
+                                             "icons/JavaCup.gif"));
 
         Object[][] data = new Object[ROWS][COLS];
 

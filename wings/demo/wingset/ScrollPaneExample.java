@@ -74,7 +74,7 @@ public class ScrollPaneExample
         final int ROWS = 15;
 
         SImage image =
-            new SImage(SUtil.makeIcon(SLabel.class, "icons/JavaCup.gif"));
+            new SImage(new ResourceImageIcon(SLabel.class, "icons/JavaCup.gif"));
 
         Object[][] data = new Object[ROWS][COLS];
 

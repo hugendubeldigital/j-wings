@@ -55,7 +55,7 @@ public class BorderLayoutCG
             d.append(" border=\"").append(border).append("\"");
         if (container != null && container.getBackground() != null)
             d.append(" bgcolor=\"#").
-                append(SUtil.toColorString(container.getBackground())).append("\">");
+                append(Utils.toColorString(container.getBackground())).append("\">");
 	else
 	    d.append(">");
 

@@ -30,8 +30,9 @@ public class ButtonExample
     extends SPanel
 {
     SForm form = new SForm();
-    Icon icon = SUtil.makeIcon(SButton.class, "icons/Warn.gif");
-    Icon disabledIcon = SUtil.makeIcon(SButton.class, "icons/WarnDis.gif");
+    Icon icon = new ResourceImageIcon(SButton.class, "icons/Warn.gif");
+    Icon disabledIcon = new ResourceImageIcon(SButton.class,
+                                              "icons/WarnDis.gif");
 
     public ButtonExample() {
         super(new SGridLayout(2));

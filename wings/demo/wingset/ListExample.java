@@ -97,7 +97,8 @@ public class ListExample
     }
 
     public void addListElements(SList list) {
-        SImage img = new SImage(SUtil.makeIcon(SLabel.class, "icons/JavaCup.gif"));
+        SImage img = new SImage(new ResourceImageIcon(SLabel.class,
+                                                      "icons/JavaCup.gif"));
         SLabel color = new SLabel("");
         color.setForeground(Color.green);
         color.setText(Color.green.toString());
@@ -113,7 +114,8 @@ public class ListExample
     }
 
     public void addComboBoxElements(SComboBox comboBox) {
-        SImage img = new SImage(SUtil.makeIcon(SLabel.class, "icons/JavaCup.gif"));
+        SImage img = new SImage(new ResourceImageIcon(SLabel.class,
+                                                      "icons/JavaCup.gif"));
         SLabel color = new SLabel("");
         color.setForeground(Color.green);
         color.setText(Color.green.toString());
@@ -129,7 +131,9 @@ public class ListExample
     }
 
     public void addAnchorElements(SList list) {
-        final SImage img = new SImage(SUtil.makeIcon(SLabel.class, "icons/JavaCup.gif"));
+        final SImage img =
+            new SImage(new ResourceImageIcon(SLabel.class,
+                                             "icons/JavaCup.gif"));
 
         final SLabel color = new SLabel("");
         color.setForeground(Color.green);

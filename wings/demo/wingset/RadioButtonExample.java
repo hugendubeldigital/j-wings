@@ -81,10 +81,10 @@ public class RadioButtonExample
     SContainer createImageRadioButtonExample() {
         SButtonGroup group = new SButtonGroup();
 
-        Icon sel = SUtil.makeIcon(SRadioButton.class, "icons/radioSelected.gif");
-        Icon nsel = SUtil.makeIcon(SRadioButton.class, "icons/radio.gif");
-        Icon dissel = SUtil.makeIcon(SRadioButton.class, "icons/radioDisabledSelected.gif");
-        Icon disnsel = SUtil.makeIcon(SRadioButton.class, "icons/radioDisabled.gif");
+        Icon sel = new ResourceImageIcon(SRadioButton.class, "icons/radioSelected.gif");
+        Icon nsel = new ResourceImageIcon(SRadioButton.class, "icons/radio.gif");
+        Icon dissel = new ResourceImageIcon(SRadioButton.class, "icons/radioDisabledSelected.gif");
+        Icon disnsel = new ResourceImageIcon(SRadioButton.class, "icons/radioDisabled.gif");
 
         SRadioButton[] boxes = new SRadioButton[9];
         boxes[0] = new SRadioButton("testTL");

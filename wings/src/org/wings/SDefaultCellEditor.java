@@ -186,7 +186,8 @@ public class SDefaultCellEditor
      *
      */
     protected void createDefaultIcons() {
-        setCommitIcon(SUtil.makeIcon(this, "icons/TreeLeaf.gif"));
+        setCommitIcon(new ResourceImageIcon(SDefaultCellEditor.class,
+                                            "icons/TreeLeaf.gif"));
     }
 
 

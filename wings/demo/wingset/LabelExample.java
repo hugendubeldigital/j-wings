@@ -46,7 +46,7 @@ public class LabelExample
         layout.setBorder(1);
         p.setLayout(layout);
 
-        Icon icon = SUtil.makeIcon(SConstants.class, "icons/Wait.gif");
+        Icon icon = new ResourceImageIcon(SConstants.class, "icons/Wait.gif");
 
         SLabel testLabelTL = new SLabel("Text oben links");
         SLabel testLabelTC = new SLabel("Text oben mitte");

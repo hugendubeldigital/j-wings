@@ -46,7 +46,7 @@ public class BorderExample
         SGridLayout layout = new SGridLayout(2);
         p.setLayout(layout);
 
-        Icon icon = SUtil.makeIcon(SConstants.class, "icons/Wait.gif");
+        Icon icon = new ResourceImageIcon(SConstants.class, "icons/Wait.gif");
 
         SLabel raised = new SLabel("raised");
         raised.setBorder(new SBevelBorder(SBevelBorder.RAISED));
