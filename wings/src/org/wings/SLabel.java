@@ -56,11 +56,7 @@ public class SLabel
     private boolean noBreak = false;
     private boolean alignText = false;
 
-    // TODO: plaf has to escape the special chars...
-    // HEN: I think, this is not necessary here; The label's plaf should 
-    // _always_ escape the characters, otherwise the user feels tempted to
-    // output formatting information in Labels .. (s)he shouldn't!
-    private boolean escapeSpecialChars = false;
+    private boolean escapeSpecialChars = true;
 
     private final ThreadLocal eventURL = new ThreadLocal();
 
@@ -306,21 +302,31 @@ public class SLabel
     }
 
     /**
-     * TODO: documentation
+     * returns the setting of the escape character property
      *
-     * @return
+     * @see #setEscapeSpecialChars(boolean)
+     * @return 'true', if characters are quoted, 'false' if they
+     *         are passed raw to the backend Device.
      */
     public boolean isEscapeSpecialChars() {
 	return escapeSpecialChars;
     }
 
     /**
-     * TODO: documentation
+     * By default, all special characters are quoted in the
+     * output. This means for *ML like languages, that special 
+     * characters like &lt; &gt; or &amp; are replaced by their
+     * appropriate entities. Note, that the decision, what is
+     * quoted is done by the CG. If you set this to 'false', then
+     * they are not quoted - you might use this, if you want to
+     * sneak in HTML (XML, WML..PDF) formatting information in the
+     * raw String. Note, that in that case, your application might
+     * not be portable accross different backend CG's (think of
+     * WML).
      *
-     * @deprecated Never set this - characters are always escaped
-     *             in future and BTW, you shouldn't rely on an
-     *             HTML output, right ?
-     * @param escape
+     * @param escape boolean 'true', if characters are to be escaped
+     *               (the default), or 'false' if any character you
+     *               write here is passed 'raw' to the Device.
      */
     public void setEscapeSpecialChars(boolean escape) {
 	escapeSpecialChars = escape;

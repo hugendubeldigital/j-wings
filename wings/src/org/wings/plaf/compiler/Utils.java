@@ -51,7 +51,7 @@ public final class Utils implements SConstants {
      * '"', '<', '>', '&'  become '&quot;', '&lt;', '&gt;', '&amp;'
      */
     // not optimized yet
-    private static void quote(Device d, String s) throws IOException {
+    public static void quote(Device d, String s) throws IOException {
 	if (s == null) return;
 	int len = s.length();
 	char c;
@@ -72,8 +72,8 @@ public final class Utils implements SConstants {
      * returned.
      */
     public static void write(Device d, String s) throws IOException {
-	//d.print(s);
-	quote(d, s);
+	if (s != null) d.print(s);
+	//quote(d, s);
     }
 
     /**
