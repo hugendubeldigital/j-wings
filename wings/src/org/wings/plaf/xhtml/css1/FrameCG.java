@@ -40,14 +40,14 @@ public final class FrameCG
         frame.addDynamicResource(styleSheetResource);
         frame.addLink(new SLink("stylesheet", null, 
                                 "text/css", null, 
-                                styleSheetResource.getURL()));
+                                styleSheetResource));
 
         DynamicResource scriptResource = new DynamicScriptResource(frame);
         frame.addDynamicResource(scriptResource);
         frame.addLink(new SLink("javascript", null, 
                                 "application/x-javascript", null,
-                                scriptResource.getURL()));
-
+                                scriptResource));
+        
         CGManager cgManager = frame.getSession().getCGManager();
         StaticResource staticResource = (StaticResource)cgManager
             .getObject("lookandfeel.stylesheet",
@@ -55,7 +55,7 @@ public final class FrameCG
         staticResource.setMimeType("text/css");
         frame.addLink(new SLink("stylesheet", null, 
                                 "text/css", null, 
-                                staticResource.getURL()));
+                                staticResource));
     }
 
     protected void writeAdditionalHeaders(Device d, SFrame frame)
@@ -72,11 +72,16 @@ public final class FrameCG
         throws IOException
     {
         d.print("<body");
-        final String style = ((frame.getStyle() != null) 
+        String style = ((frame.getStyle() != null) 
                               ? frame.getStyle().getName() 
                               : null);
+        if ( style == null ) {
+            style = ((frame.getAttributes().size() > 0) 
+                     ? ("_" + frame.getUnifiedId()) 
+                     : null);
+        }
         if (style != null) {
-            d.print(" style=\"").print(style).print("\"");
+            d.print(" class=\"").print(style).print("\"");
         }
         //System.err.println("blubber");
         Iterator it = frame.getScriptListeners().iterator();
