@@ -47,11 +47,32 @@ public class SScrollPane
     
     protected static int horizontalScrollBarPolicy = HORIZONTAL_SCROLLBAR_AS_NEEDED;
     protected static int verticalScrollBarPolicy = VERTICAL_SCROLLBAR_AS_NEEDED;
+    
+    protected SScrollBar verticalScrollBar = null;
+    protected SScrollBar horizontalScrollBar = null;
 
     /**
      * Sets the new viewport of the scrollable
      */
     AdjustmentListener adjustmentListener;
+
+	
+
+    /**
+     * TODO: documentation
+     *
+     * @param c
+     */
+    public SScrollPane() {
+
+        setHorizontalScrollBar(new SScrollBar(SConstants.HORIZONTAL));
+        setVerticalScrollBar(new SScrollBar(SConstants.VERTICAL));
+        
+        verticalScrollBar.addAdjustmentListener(getAdjustmentListener());
+        horizontalScrollBar.addAdjustmentListener(getAdjustmentListener());
+        
+        // updateCG();
+    }
 
     /**
      * TODO: documentation
@@ -59,7 +80,15 @@ public class SScrollPane
      * @param c
      */
     public SScrollPane(SComponent c) {
+        this();
         add(c);
+        /*
+        horizontalScrollBar = new SScrollBar(SConstants.HORIZONTAL);
+        this.addComponent( horizontalScrollBar );
+
+        SScrollBar verticalScrollBar = new SScrollBar(SConstants.VERTICAL);
+        this.addComponent( verticalScrollBar );
+        */
     }
 
     public AdjustmentListener getAdjustmentListener() {
@@ -187,6 +216,30 @@ public class SScrollPane
     }
     
     /**
+      * Returns the horizontal scroll bar.
+      * @returns the scrollbar that controls the viewports horizontal view position
+      */
+	public SScrollBar getHorizontalScrollBar()
+     {
+		return horizontalScrollBar;
+     }
+
+    /**
+      * Set the horizontal scroll bar.
+      * @param sb the scrollbar that controls the viewports horizontal view position
+      */
+	public void setHorizontalScrollBar(SScrollBar sb)
+     {
+		if (horizontalScrollBar!=null) {
+        	horizontalScrollBar.removeAdjustmentListener(this.getAdjustmentListener());
+        	removeComponent(horizontalScrollBar);
+		}
+        horizontalScrollBar = sb;
+        addComponent(horizontalScrollBar);
+        horizontalScrollBar.addAdjustmentListener(this.getAdjustmentListener());
+     }
+
+    /**
       * Returns the horizontal scroll bar policy value.
       * @returns the horizontal scrollbar policy.
       * @see #setHorizontalScrollBarPolicy(int)
@@ -194,6 +247,30 @@ public class SScrollPane
 	public int getHorizontalScrollBarPolicy()
      {
 		return horizontalScrollBarPolicy;
+     }
+
+    /**
+      * Returns the vertical scroll bar.
+      * @returns the scrollbar that controls the viewports vertical view position
+      */
+	public SScrollBar getVerticalScrollBar()
+     {
+		return verticalScrollBar;
+     }
+     
+    /**
+      * Set the vertical scroll bar.
+      * @param sb the scrollbar that controls the viewports vertical view position
+      */
+	public void setVerticalScrollBar(SScrollBar sb)
+     {
+		if (verticalScrollBar!=null) {
+        	verticalScrollBar.removeAdjustmentListener(this.getAdjustmentListener());
+        	removeComponent(verticalScrollBar);
+		}
+        verticalScrollBar = sb;
+        addComponent(verticalScrollBar);
+        verticalScrollBar.addAdjustmentListener(this.getAdjustmentListener());
      }
 
     /**
@@ -229,6 +306,16 @@ public class SScrollPane
      {
      	verticalScrollBarPolicy = policy;
      }
+
+    /**
+      * Set the preferred size for this scrollpane and
+      * the scrollbars aswell.
+      */
+    public void setPreferredSize(SDimension dim) {
+        super.setPreferredSize(dim);
+        horizontalScrollBar.setPreferredSize(dim);
+        verticalScrollBar.setPreferredSize(dim);
+    }
 }
 
 /*

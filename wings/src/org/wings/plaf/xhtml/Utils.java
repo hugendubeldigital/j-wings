@@ -231,9 +231,10 @@ public final class Utils implements SConstants
         if (border != null)
             border.writeSpanAttributes(d);
 
-        if (dim != null)
-            d.append("width:").append(dim.width).
-                append(";height:").append(dim.height);
+        if (dim != null) {
+            if (dim.width != null) d.append("width:").append(dim.width).append(";");
+            if (dim.height != null) d.append("height:").append(dim.height).append(";");
+        }
      }
 }
 

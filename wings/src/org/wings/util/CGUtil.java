@@ -33,7 +33,7 @@ public class CGUtil
 	if (dim != null) {
 	    if (dim.width != null)
 		d.append(" width=\"").append(dim.width).append("\"");
-            if (dim.height != null)
+        if (dim.height != null)
 		d.append(" height=\"").append(dim.height).append("\"");
 	}
     }

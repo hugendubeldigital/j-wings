@@ -26,32 +26,19 @@ public class ScrollPaneCG
     implements org.wings.plaf.ScrollPaneCG
 {
     public void installCG(SComponent component) {
-        SScrollPane scrollPane = (SScrollPane)component;
-
-
-        SScrollBar horizontalScroller = new SScrollBar(SConstants.HORIZONTAL);
-        scrollPane.addComponent( horizontalScroller );
-
-        SScrollBar verticalScroller = new SScrollBar(SConstants.VERTICAL);
-        scrollPane.addComponent( verticalScroller );
-
-        horizontalScroller.addAdjustmentListener(scrollPane.getAdjustmentListener());
-        verticalScroller.addAdjustmentListener(scrollPane.getAdjustmentListener());
     }
 
     public void uninstallCG(SComponent component) {
-        SScrollPane scrollPane = (SScrollPane)component;
-        SScrollBar scrollbar;
-        scrollbar = (SScrollBar)scrollPane.removeComponentAt(2);
-        scrollbar.removeAdjustmentListener(scrollPane.getAdjustmentListener());
-        scrollbar = (SScrollBar)scrollPane.removeComponentAt(1);
-        scrollbar.removeAdjustmentListener(scrollPane.getAdjustmentListener());
     }
 
     public void write(Device d, SComponent c)
         throws IOException
     {
         SScrollPane scrollPane = (SScrollPane)c;
+        if (scrollPane.getPreferredSize() == null && 
+            ((SComponent)scrollPane.getScrollable()).getPreferredSize() != null
+            )
+            scrollPane.setPreferredSize(((SComponent)scrollPane.getScrollable()).getPreferredSize());
         updateScrollBars(scrollPane);
 		
         writePrefix(d, scrollPane);
@@ -60,8 +47,8 @@ public class ScrollPaneCG
     }
 
     protected void updateScrollBars(SScrollPane scrollPane) {
-        SScrollBar horizontalScroller = (SScrollBar)scrollPane.getComponentAt(1);
-        SScrollBar verticalScroller = (SScrollBar)scrollPane.getComponentAt(2);
+        SScrollBar horizontalScroller = scrollPane.getHorizontalScrollBar();
+        SScrollBar verticalScroller = scrollPane.getVerticalScrollBar();
         Scrollable scrollable = scrollPane.getScrollable();
         
         horizontalScroller.setBlockIncrement( scrollPane.getHorizontalExtent() - 1 );
@@ -110,12 +97,12 @@ public class ScrollPaneCG
         }
     }
 
-    protected void writePrefix(Device d, SContainer container)
+    protected void writePrefix(Device d, SScrollPane scrollPane)
         throws IOException
     {
-        SScrollBar horizontalScroller = (SScrollBar)container.getComponentAt(1);
-        SScrollBar verticalScroller = (SScrollBar)container.getComponentAt(2);
-        SBorder border = container.getBorder();
+        SScrollBar horizontalScroller = scrollPane.getHorizontalScrollBar();
+        SScrollBar verticalScroller = scrollPane.getVerticalScrollBar();
+        SBorder border = scrollPane.getBorder();
 
     	int cspan = ( horizontalScroller.isVisible() )? ((ScrollBarCG) horizontalScroller.getCG()).SCROLLBAR_STEPS + 2 : 1 ;
     	int rspan = ( verticalScroller.isVisible() )? ((ScrollBarCG) verticalScroller.getCG()).SCROLLBAR_STEPS + 2 : 1 ;
@@ -143,11 +130,11 @@ public class ScrollPaneCG
 		d.append(">");
     }
 
-    protected void writePostfix(Device d, SContainer container)
+    protected void writePostfix(Device d, SScrollPane scrollPane)
         throws IOException
     {
-        SScrollBar horizontalScroller = (SScrollBar)container.getComponentAt(1);
-        SScrollBar verticalScroller = (SScrollBar)container.getComponentAt(2);
+        SScrollBar horizontalScroller = scrollPane.getHorizontalScrollBar();
+        SScrollBar verticalScroller = scrollPane.getVerticalScrollBar();
 
 		d.append( "</td>" );
         verticalScroller.write( d );

@@ -69,7 +69,7 @@ public class SScrollBar
     // for access of the icons
     private static final int FORWARD = 0;
     private static final int BACKWARD = 1;
-
+	
     /**
      * All changes from the model are treated as though the user moved
      * the scrollbar knob.
@@ -791,6 +791,7 @@ public class SScrollBar
      {
 		return "SScrollBar[orientation=" + ((orientation == SComponent.HORIZONTAL)?"horizontal":"vertical") + "]";
      }
+
 }
 
 /*

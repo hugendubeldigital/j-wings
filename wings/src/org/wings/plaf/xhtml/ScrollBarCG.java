@@ -16,6 +16,7 @@ package org.wings.plaf.xhtml;
 
 import java.awt.*;
 import javax.swing.Icon;
+import java.util.*;
 import java.io.IOException;
 
 import org.wings.*;
@@ -123,6 +124,8 @@ public class ScrollBarCG
      }
     
     
+    private static final SDimension defaultDimensionVertical = new SDimension(7,200);
+    private static final SDimension defaultDimensionHorizontal = new SDimension(200,7);
     /**
      * Write the scrollbar background.
      */
@@ -130,27 +133,84 @@ public class ScrollBarCG
                                    String prefix, String postfix, String size )
     	throws IOException
     {
+        float scrollerWidth = 0f;
+        float scrollerHeight = 0f;
+        
+        SDimension sbDim = sb.getPreferredSize();
+        Dimension scrollerDim = getScrollerSize(sb);
+        if (sb.getOrientation() == SConstants.HORIZONTAL ) {
+            if (sbDim == null ) sbDim = defaultDimensionHorizontal;
+            scrollerWidth = ((float) sbDim.getIntWidth()-
+                scrollerDim.width) /
+                ((float) SCROLLBAR_STEPS);
+            scrollerHeight=(float)scrollerDim.height;
+        }
+        else {
+            if (sbDim == null ) sbDim = defaultDimensionVertical;
+            scrollerHeight = ((float) sbDim.getIntHeight()-
+                scrollerDim.height) /
+                ((float) SCROLLBAR_STEPS);
+            scrollerWidth=(float)scrollerDim.width;
+        }
+        
         int range = sb.getMaximum() - sb.getMinimum();
         int mark = (int) ( SCROLLBAR_STEPS * 
                            ((double)(sb.getValue() - sb.getMinimum()) / (double) range));
         int len   = (int) ( SCROLLBAR_STEPS * 
                             ((double) sb.getVisibleAmount() / (double) range));
+        int bordercorrection = 0;
 
         if ( mark < 0 ) mark = 0;
         if ( mark > ( SCROLLBAR_STEPS - 1 ) ) mark = SCROLLBAR_STEPS - 1;
         if ( len < 1) len = 1;
         for ( int i = 0; i < SCROLLBAR_STEPS; ++i ) {
             d.append( prefix );
-            if ( i >= mark && len-- > 0 )
-                d.append( "<td bgcolor=\"#000000\" " );
-            else
+            if ( i >= mark && len-- > 0 ) {
+                d.append( "<td style=\"border-width: 1px; border-style: outset;\" bgcolor=\"#CCCCCC\" " );
+                bordercorrection = 2;
+            }
+            else {
                 d.append( "<td bgcolor=\"#FFFFFF\" " );
+                bordercorrection = 0;
+            }
             d.append( size ).append("%");
             d.append( "\"><img src=\"").append(fillIcon)
-                .append("\" width=\"7\" height=\"7\"></td>" );
+                .append("\" width=\"")
+                .append((int) (scrollerWidth * (i+1)) - (int) (scrollerWidth * i) - bordercorrection)
+                .append("\" height=\"")
+                .append((int) (scrollerHeight * (i+1)) - (int) (scrollerHeight * i) - bordercorrection)
+                .append("\"></td>" );
             d.append( postfix );
         }
     }
+    
+    /**
+      * Get overall max width and height of scrollbar buttons.
+      */
+    protected Dimension getScrollerSize(SScrollBar sb) {
+        int width = 0;
+        int height = 0;
+        for ( int s = 0; s < 2; s++ ) {
+            SContainer scrollerp = (SContainer) sb.getComponentAt(s);
+            int c = scrollerp.getComponentCount();
+            if (sb.getOrientation() == SConstants.HORIZONTAL ) {
+                for (int i = 0; i < c; i++ ) {
+                    Icon icon = ((SButton) scrollerp.getComponentAt(i)).getIcon();
+                    width+=icon.getIconWidth();
+                    height=Math.max(icon.getIconHeight(), height);
+                }
+            }
+            else {
+                for (int i = 0; i < c; i++ ) {
+                    Icon icon = ((SButton) scrollerp.getComponentAt(i)).getIcon();
+                    width=Math.max(icon.getIconWidth(), width);
+                    height+=icon.getIconHeight();
+                }
+            }
+        }
+        
+        return new Dimension(width,height);
+     }
 }
 
 /*

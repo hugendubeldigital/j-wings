@@ -244,7 +244,7 @@ public abstract class SComponent
      * @see org.wings.SComponent#getPreferredSize
      * @see org.wings.SComponent#getPreferredPercentageSize
      */
-    public final void setPreferredSize(SDimension preferredSize) {
+    public void setPreferredSize(SDimension preferredSize) {
         this.preferredSize = preferredSize;
     }
 

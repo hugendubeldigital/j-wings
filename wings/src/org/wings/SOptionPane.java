@@ -172,19 +172,19 @@ public class SOptionPane
      * TODO: documentation
      */
     protected static SImage messageImage =
-        new SImage(new ResourceImageIcon("icons/Inform.gif"));
+        new SImage(new ResourceImageIcon("org/wings/icons/Inform.gif"));
 
     /**
      * TODO: documentation
      */
     protected static SImage questionImage =
-        new SImage(new ResourceImageIcon("icons/Question.gif"));
+        new SImage(new ResourceImageIcon("org/wings/icons/Question.gif"));
 
     /**
      * TODO: documentation
      */
     protected static SImage yesnoImage =
-        new SImage(new ResourceImageIcon("icons/Question.gif"));
+        new SImage(new ResourceImageIcon("org/wings/icons/Question.gif"));
 
     /**
      * The chosen option
