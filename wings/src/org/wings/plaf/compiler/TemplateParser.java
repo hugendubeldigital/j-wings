@@ -20,6 +20,7 @@ import java.io.Reader;
 import java.io.PrintWriter;
 import java.io.FileWriter;
 import java.util.Iterator;
+import java.util.Stack;
 
 /**
  * parses a template for a PlafCG. A Template has the
@@ -33,61 +34,106 @@ import java.util.Iterator;
  * <%@ import, include %> are supported.
  */
 public class TemplateParser {
+    private final static String INDENT       = "    ";
     private final static String VAR_PREFIX   = "__";
     private final static int    VAR_LEN      = 16;
+    
+    /*
+     * All tags, that are relevant for the parsing process. We are always
+     * considering all of them. If we encounter a tag, that is not expected,
+     * this is reported as an error. This is necessary, since the JSP like
+     * syntax is not very readable and it is likely, that the user will make
+     * mistakes .. thus we need to have much errorchecking.
+     *
+     * The tags must be ordered according to their length.
+     */
+    String stateTransitionTags[] = new String[] { "<%",           // 0 Start J.
+                                                  "%>",           // 1 End java
+                                                  "<write>",      // 2
+                                                  "</write>",     // 3
+                                                  "<include",     // 4
+                                                  "</template" }; // 5
 
-    // tags to look for.
-    private final static String END_TEMPLATE = "</template>";
-    private final static String START_WRITE  = "<write>";
-    private final static String END_WRITE    = "</write>";
-    private final static String START_JAVA   = "<%";
-    private final static String END_JAVA     = "%>";
-    private final static String INCLUDE      = "<include";
+    // the index for the tags. Yes: c-preprocessor and enumerations would be
+    // better.
+    private final static int START_JAVA   = 0;
+    private final static int END_JAVA     = 1;
+    private final static int START_WRITE  = 2;
+    private final static int END_WRITE    = 3;
+    private final static int INCLUDE      = 4;
+    private final static int END_TEMPLATE = 5;
 
     // state machine
     //private final static int IN_START_COMMON_JAVA = 0;
     private final static int IN_COMMON_JAVA = 1;
-    private final static int IN_COMMON_TMPL = 2;
-    private final static int IN_WRITE_JAVA  = 3;
-    private final static int IN_WRITE_TMPL  = 4;
+    private final static int IN_WRITE_JAVA  = 2;
+    // everything below JAVA_STATES are states within java code.
+    private final static int JAVA_STATES    = 10;
 
-    private String templateName;
-    private String pkg;
-    private String forClassName;
-    private StringBuffer writeJavaCode;
-    private StringBuffer classJavaCode;
+    private final static int IN_COMMON_TMPL = 11;
+    private final static int IN_WRITE_TMPL  = 12;
+
+    //-- instance variables.
+    private final String templateName;
+    private final String pkg;
+    private final String forClassName;
+    private final JavaBuffer writeJavaCode;
+    private final JavaBuffer classJavaCode;
+    private final File sourcefile;
+    private final File cwd;
+    private final StringPool stringPool;
+
+    private PlafReader in;
+    private boolean anyError;
     private int state;
-    private StringPool stringPool;
 
-    public TemplateParser(String name, String pkg, String forClass) {
+    /*
+     * simple java validation. Counts open/closed braces.
+     */
+    private final Stack openBraces;
+    private FilePosition closingBraceInTemplate;
+    private FilePosition openingBraceInTemplate;
+
+    public TemplateParser(String name, 
+                          File cwd, File sourcefile,
+                          String pkg, String forClass) {
 	this.templateName = name;
 	this.pkg = pkg;
 	this.forClassName = forClass;
-        writeJavaCode = new StringBuffer();
-        classJavaCode = new StringBuffer();
+        this.sourcefile = sourcefile;
+        this.cwd = cwd;
+        this.openBraces = new Stack();
+        this.anyError = false;
+        writeJavaCode = new JavaBuffer(2, INDENT);
+        classJavaCode = new JavaBuffer(1, INDENT);
         stringPool = new StringPool( VAR_PREFIX, VAR_LEN );
         state = IN_COMMON_JAVA;
     }
 
     /**
-     * generates the Java-class that describes this CG. This method can
-     * only be called after calling {@link #parse(IncludingReader)}
+     * generates the Java-class that implements this CG. This method can
+     * only be called after calling {@link #parse(PlafReader)}
      */
-    public void generate(File base) throws IOException {
-        File outFile = new File(base, templateName + ".java");
+    public void generate(File directory) throws IOException {
+        if (anyError)
+            return;
+        File outFile = new File(directory, templateName + ".java");
         PrintWriter out = new PrintWriter(new FileWriter(outFile));
         
-        out.println ("// DO NOT EDIT! Your changes will be lost: generated file.");
+        out.println ("// DO NOT EDIT! Your changes will be lost: generated from '" + sourcefile.getName() + "'");
         out.println ("package " + pkg + ";\n\n");
-        out.println ("import java.io.*;\n");
-        out.println ("public final class " + templateName + " {");
+        //out.println ("import java.io.*;");
+        out.println ("import org.wings.*;");
+        out.println ("import org.wings.io.Device;\n");
+        out.println ("public final class " + templateName 
+                     + " implements org.wings.SConstants {");
         
         // collected HTML snippets
         out.println ("\n//--- used template snippets.");
         Iterator n = stringPool.getNames();
         while (n.hasNext()) {
             String name = (String) n.next();
-            out.print ("\tprivate final static byte[] ");
+            out.print (INDENT + "private final static byte[] ");
             out.print (name);
             int fillNumber = VAR_LEN - name.length();
             for (int i=0; i < fillNumber; ++i) 
@@ -101,54 +147,46 @@ public class TemplateParser {
         if (classJavaCode.length() > 0) {
             out.println ("\n//--- code from common area in template.");
             out.print( classJavaCode.toString() );
+            out.println ("\n//--- end code from common area in template.");
         }
         
         // write function header.
-        out.print ("\n\n    public void write("
-                   + "final org.wings.io.Device device,"
-                   +" final org.wings.SComponent _c)\n"
-                   + "\tthrows java.io.IOException {\n");
-        out.println("\tfinal " + forClassName + " component = ("
+        out.print ("\n\n" + INDENT + "public void write("
+                   + "final org.wings.io.Device device,\n" + INDENT
+                   + "                  final org.wings.SComponent _c)\n"
+                   + INDENT + INDENT + "throws java.io.IOException {\n");
+        out.println(INDENT + INDENT
+                    + "final " + forClassName + " component = ("
                     + forClassName + ") _c;");
         
         out.println ("\n//--- code from write-template.");
         // collected write stuff.
         out.print ( writeJavaCode.toString());
 
-        out.println ("\n//--- end code from common area in template.");
-        out.println ("\n\t}  /*** end write() ***/ ");
+        out.println ("\n" + INDENT + "}  // -- end write() ");
         out.println ("}");
         out.close();
+    }
+
+    public void reportError(FilePosition pos, String msg) {
+        System.err.println(pos.toString(cwd) + ": " + msg);
+        anyError = true;
+    }
+
+    public void reportError(String msg) {
+        System.err.println(in.getFileStackTrace() + ": " + msg);
+        anyError = true;
     }
 
     /**
      * parses this template until &lt;/template&gt; is reached.
      *
-     * @param IncludingReader the Reader the source is read from.
+     * @param PlafReader the Reader the source is read from.
      */
-    public void parse(IncludingReader reader) throws IOException {
+    public void parse(PlafReader reader) throws IOException {
         StringBuffer tempBuffer = new StringBuffer();
-
+        in = reader; // we need this here and there.
         int trans;
-        String commonJavaTransitions[] = new String[] { END_JAVA,
-                                                        START_JAVA,      // err
-                                                        START_WRITE,
-                                                        END_WRITE,       // err
-                                                        INCLUDE,
-                                                        END_TEMPLATE };
-        String commonTmplTransitions[] = new String[] { START_JAVA,  
-                                                        START_WRITE,     // err
-                                                        INCLUDE,
-                                                        END_TEMPLATE };  // err
-        String writeTmplTransitions[]  = new String[] { START_JAVA, 
-                                                        END_WRITE,
-                                                        INCLUDE,
-                                                        END_TEMPLATE };  // err
-        String writeJavaTransitions[]  = new String[] { END_JAVA,
-                                                        START_JAVA,      // err
-                                                        END_WRITE,       // err
-                                                        INCLUDE,
-                                                        END_TEMPLATE };  // err
         skipWhitespace(reader);
         for (;;) {
             switch (state) {
@@ -157,56 +195,66 @@ public class TemplateParser {
                  */
             case IN_COMMON_JAVA:   // (initial Common)
                 trans = findTransitions(reader, tempBuffer, 
-                                        commonJavaTransitions);
+                                        stateTransitionTags);
                 classJavaCode.append(tempBuffer);
                 tempBuffer.setLength(0);                
                 switch (trans) {
-                case 0:  // %>
+                case END_JAVA:  // %>
                     state = IN_COMMON_TMPL;
                     break;
-                case 1:  // ERROR <%  errornous start java
-                    System.err.println(reader.getFileStackTrace() + ": " +
-                                       "opening scriptlet while in scriptlet");
+                case START_JAVA:  // ERROR <%  errornous start java
+                    reportError("opening scriptlet while in scriptlet");
                     break;
-                case 2:  // <write>
+                case START_WRITE:  // <write>
+                    if (!openBraces.empty()) {
+                        reportError("missing closed '{'.");
+                        reportError((FilePosition) openBraces.pop(),
+                                    ".. that has been opened here");
+                            if (closingBraceInTemplate != null) {
+                                reportError(closingBraceInTemplate,
+                                            " .. maybe this is the missing brace ? (it is in HTML code)");
+                                closingBraceInTemplate = null;
+                        }
+                        openBraces.clear();
+                    }
                     skipWhitespace(reader);
                     state = IN_WRITE_TMPL;         // --> WRITE
                     break;
-                case 3: // </write>
-                    System.err.println(reader.getFileStackTrace() + ": " +
-                                       "encountered </write> that has not been opened");
+                case END_WRITE: // </write>
+                    reportError("encountered </write> that has not been opened");
                     break;
-                case 4: // <include
+                case INCLUDE: // <include
                     handleIncludeTag(reader);
                     break;
-                case 5:
+                case END_TEMPLATE:
                     return; // </template> -> done.
+                default:
+                    reportError("unexpected tag.");
                 }
                 break;
 
             case IN_COMMON_TMPL: 
                 trans = findTransitions(reader, tempBuffer,
-                                        commonTmplTransitions);
-                flushTemplateTo(tempBuffer, classJavaCode);
+                                        stateTransitionTags);
+                generateTemplateWriteCalls(tempBuffer, classJavaCode);
                 switch (trans) {
-                case 0: // <%
+                case START_JAVA: // <%
                     state = IN_COMMON_JAVA;
                     break;
-                case 1: // ERROR <write>  .. errorhandling
-                    System.err.println(reader.getFileStackTrace() + ": "
-                                       + "<write> while still reading "
-                                       + "text-template; '<%' missing?!");
+                case START_WRITE: // ERROR <write>  .. errorhandling
+                    reportError("<write> while still reading "
+                                + "text-template; '<%' missing?!");
                     state = IN_WRITE_TMPL;       // --> WRITE
                     break;
-                case 2: // <include
+                case INCLUDE: // <include
                     handleIncludeTag(reader);
                     break;
-                case 3: // ERROR unecpected </template>
-                    System.err.println(reader.getFileStackTrace() + ": "
-                                       + "</template> while still reading "
-                                       + "text-template; '<%' missing?!");
-                    break;
-
+                case END_TEMPLATE: // ERROR unecpected </template>
+                    reportError("</template> while still reading "
+                                + "text-template; '<%' missing?!");
+                    return;
+                default:
+                    reportError("unexpected tag.");
                 }
                 break;
                 
@@ -215,59 +263,74 @@ public class TemplateParser {
                  */
             case IN_WRITE_TMPL:  // (initial Write)
                 trans = findTransitions(reader, tempBuffer,
-                                        writeTmplTransitions);
-                flushTemplateTo(tempBuffer, writeJavaCode);
+                                        stateTransitionTags);
+                generateTemplateWriteCalls(tempBuffer, writeJavaCode);
+                // we flush the template at the
                 switch (trans) {
-                case 0:  // start java '<%'
+                case START_JAVA:  // start java '<%'
                     state = IN_WRITE_JAVA; 
+                    skipWhitespace(reader);
                     break;
-                case 1:  // end write '</write>'
+                case END_JAVA: // end java '%>' // error
+                    reportError("closing java tag in HTML code. Missing '<%' somewhere?");
+                    break;
+                case END_WRITE:  // end write '</write>'
+                    if (!openBraces.empty()) {
+                        reportError("missing closed '{'.");
+                        reportError((FilePosition)openBraces.pop(),
+                                    ".. that has been opened here");
+                        if (closingBraceInTemplate != null) {
+                            reportError(closingBraceInTemplate,
+                                        ".. maybe this is the missing brace ? (it is in HTML code)");
+                            closingBraceInTemplate = null;
+                        }
+                        openBraces.clear();
+                    }
                     skipWhitespace(reader);
                     state = IN_COMMON_JAVA;      // --> COMMON
                     break;
-                case 2: // <include
+                case INCLUDE: // <include
                     handleIncludeTag(reader);
                     break;
-                case 3:  // ERROR errornous '</template>'
-                    System.err.println(reader.getFileStackTrace() + ": "
-                                       + "</template> occured; "
-                                       + "missing </write>");
+                case END_TEMPLATE:  // ERROR errornous '</template>'
+                    reportError("</template> occured; missing </write>");
                     return;
+                default:
+                    reportError("unexpected tag.");
                 }
                 break;
                 
             case IN_WRITE_JAVA:
                 trans = findTransitions(reader, tempBuffer,
-                                        writeJavaTransitions);
+                                        stateTransitionTags);
                 execJava(reader, tempBuffer, writeJavaCode);
                 switch (trans) {
-                case 0: // end java '%>'
+                case END_JAVA:    // end java '%>' -> start template
+                    writeJavaCode.removeTailNewline();
                     state = IN_WRITE_TMPL;
                     break;
-                case 1:  // ERROR <%  errornous start java
-                    System.err.println(reader.getFileStackTrace() + ": "
-                                       + "opening scriptlet while in scriptlet");
+                case START_JAVA: // ERROR <%  errornous start java
+                    reportError("opening scriptlet while in scriptlet");
                     break;
-                case 2: // errornous </write>
-                    System.err.println(reader.getFileStackTrace() + ": "
-                                       + "</write> while still reading "
-                                       + "java-code; '%>' missing?!");
-                    flushTemplateTo(tempBuffer, writeJavaCode);
+                case END_WRITE:  // errornous </write>
+                    reportError("</write> while still reading "
+                                + "java-code; '%>' missing?!");
+                    generateTemplateWriteCalls(tempBuffer, writeJavaCode);
                     state = IN_COMMON_JAVA;  // --> COMMON
-                case 3: // <include
+                case INCLUDE:   // <include
                     handleIncludeTag(reader);
                     break;
-                case 4: // ERROR </template>
-                    System.err.println(reader.getFileStackTrace() + ": "
-                                       + "</template> occured; "
-                                       + "missing </write>");
-                    return;                    
+                case END_TEMPLATE: // ERROR </template>
+                    reportError("</template> occured; missing </write>");
+                    return;
+                default:
+                    reportError("unexpected tag.");
                 }
             }
         }
     }
     
-    private void handleIncludeTag(IncludingReader reader) 
+    private void handleIncludeTag(PlafReader reader) 
         throws IOException {
         StringBuffer includeTag = new StringBuffer();
         consumeTextUntil(reader, includeTag, ">");
@@ -275,16 +338,16 @@ public class TemplateParser {
         openIncludeFile(reader, includeTag);
     }
 
-    private void flushTemplateTo(StringBuffer template, 
-                                 StringBuffer javaBuffer) {
+    private void generateTemplateWriteCalls(StringBuffer template, 
+                                            JavaBuffer javaBuffer) {
         if (template.length() == 0) return;
-        javaBuffer.append ("\tdevice.write(")
+        javaBuffer.append ("\ndevice.write(")
             .append(stringPool.getNameFor(template.toString()))
             .append(");\n");
         template.setLength(0);
     }
     
-    private void openIncludeFile(IncludingReader reader,
+    private void openIncludeFile(PlafReader reader,
                                  StringBuffer includeTag)
         throws IOException {
         AttributeParser p = new AttributeParser(includeTag.toString());
@@ -292,8 +355,7 @@ public class TemplateParser {
         if (filename != null && filename.length() > 0)
             reader.open(filename);
         else
-            System.err.println(reader.getFileStackTrace() + 
-                               ": cannot include file");
+            reportError("cannot include file without name; 'file' attribute not set ?");
     }
 
     /**
@@ -301,8 +363,8 @@ public class TemplateParser {
      * By default, it just outputs the given string as java, but there are 
      * some special modifiers like '!', '?', '@' that generates code 'around'.
      */
-    private void execJava(IncludingReader reader,
-                         StringBuffer input, StringBuffer output) 
+    private void execJava(PlafReader reader,
+                         StringBuffer input, JavaBuffer output) 
         throws IOException {
         char qualifier = input.charAt(0);
         switch (qualifier) {
@@ -334,7 +396,13 @@ public class TemplateParser {
         input.setLength(0);
     }
     
-    public int findTransitions(Reader in, StringBuffer buffer, 
+    /**
+     * reads from the reader until any of the given strings, given in
+     * the options array, occurs in the input stream. Store the text
+     * read up to that position in the StringBuffer 'buffer' and return
+     * the index in the options array of the found transition-tag.
+     */
+    public int findTransitions(PlafReader in, StringBuffer buffer, 
                                String[] options)
         throws IOException {
         char startChars[] = new char [ options.length ];
@@ -375,10 +443,11 @@ public class TemplateParser {
     }
     
     /**
-     * checks all possible transitions. If any of the given
-     * options matches, the reader is placed after that token.
-     * This method assumes, that the options given are given in the
-     * order of their length.
+     * checks all possible transitions, starting from a reader
+     * placed just at a possible match.
+     * If any of the given options matches, the reader is placed after 
+     * that token. This method assumes, that the options given are given 
+     * in the order of their length.
      * @param in the reader to read from
      * @param options an array of all expected options, sorted by
      *                length, smallest first. Options must not
@@ -427,11 +496,13 @@ public class TemplateParser {
     }
 
     /**
-     * consumes the text from the reader, until the two given
-     * characters occur consecutively.
-     * Place reader _before_ this character.
+     * consumes the text from the reader, until any of the given
+     * characters in 'stopChars' occurs. Append any text found up to
+     * this position in the 'consumed' StringBuffer.
+     * Place reader _before_ the found character.
      */
-    public StringBuffer consumeTextUntil(Reader r, StringBuffer consumed,
+    public StringBuffer consumeTextUntil(PlafReader r, 
+                                         StringBuffer consumed,
 					 String stopChars)
 	throws IOException {
 	int c;
@@ -455,10 +526,44 @@ public class TemplateParser {
 	    }
 	    else
 		consumed.append((char)c);
+            
+            /*
+             * do java validation. Count brace depth.
+             */
+            if (state < JAVA_STATES) {
+                if (c == '{') {
+                    openBraces.push(r.getFilePosition());
+                } 
+                else if (c == '}') {
+                    if (openBraces.empty()) {
+                        reportError("closing '}' that has not been opened.");
+                        if (openingBraceInTemplate != null) {
+                            reportError(openingBraceInTemplate,
+                                        ".. maybe this is the missing brace ? (it is in HTML code)");
+                            openingBraceInTemplate = null;
+                        }
+                    }
+                    else
+                        openBraces.pop();
+                }
+            }
+            /*
+             * ok, we are in template mode. If here are braces, this is
+             * probably errronous (braces in HTML code are rare).
+             * So save this location, just in case we find a missing brace:
+             * we can then report this position as a hint for the user.
+             */
+            else {
+                if (c == '{') {
+                    openingBraceInTemplate = r.getFilePosition();
+                } else if (c == '}') {
+                    closingBraceInTemplate = r.getFilePosition();
+                }
+            }
             r.mark(1);
 	}
 	return consumed;
-    }    
+    }
 }
 
 /*

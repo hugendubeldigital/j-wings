@@ -27,29 +27,35 @@ class PlafCompiler {
     final static String varPrefix = "__";
 
     public static void main(String argv[]) throws Exception {
+        File cwd = (new File(".")).getCanonicalFile();
 	if (argv.length == 0) {
 	    usage();
 	    return;
 	}
 	for (int arg=0; arg < argv.length; ++arg) {
-	    IncludingReader input = new IncludingReader(argv[arg]);
-	    TemplateParser parser;
-	    SGMLTag tag = new SGMLTag(input);
-	    while (!tag.finished()) {
-		String name = tag.getAttribute("NAME", null);
-		String forClass = tag.getAttribute("FOR", null);
-		if (name == null || forClass == null) {
-		    throw new IOException ("'name' and 'for' as template attributes expected");
-		}
-		System.err.println ("template for " + name);
-		parser = new TemplateParser(name,
-					    "org.wings.plaf.compiler",
-					    forClass);
-		parser.parse(input);
-		parser.generate(new File("."));
-
-		tag = new SGMLTag(input);
-	    }
+            try {
+                PlafReader input = new PlafReader(cwd, argv[arg]);
+                TemplateParser parser;
+                SGMLTag tag = new SGMLTag(input);
+                while (!tag.finished()) {
+                    String name = tag.getAttribute("NAME", null);
+                    String forClass = tag.getAttribute("FOR", null);
+                    if (name == null || forClass == null) {
+                        throw new IOException ("'name' and 'for' as template attributes expected");
+                    }
+                    System.err.println ("template for " + name);
+                    parser = new TemplateParser(name, cwd, new File(argv[arg]),
+                                                "org.wings.plaf.css1",
+                                                forClass);
+                    parser.parse(input);
+                    parser.generate(cwd);
+                    
+                    tag = new SGMLTag(input);
+                }
+            }
+            catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
 	}
     }
     

@@ -21,7 +21,9 @@ import java.util.Vector;
 
 /**
  * Stores a pool of strings and gives them unique identifiers
- * to be used in code generation.
+ * to be used in code generation. The StringPool tries to include
+ * as much as possible characters from the original String.
+ *
  * @author Henner Zeller
  */
 public class StringPool {
@@ -47,8 +49,11 @@ public class StringPool {
     /**
      * clears the pool.
      */
+    /*
     public void clear() {
+        stringToName
     }
+    */
 
     /**
      * add a String to the pool and retrieve its unique
@@ -77,7 +82,8 @@ public class StringPool {
     }
     
     /**
-     * returns all identifiers.
+     * returns all identifiers. These identifiers are returned in the
+     * sequence they have been added.
      * @return iterator of identifiers.
      */
     public Iterator getNames() {
@@ -93,11 +99,17 @@ public class StringPool {
     }
 
     /**
-     * generates a Java variable name with at most identLength characters
-     * (plus prefix).
+     * generates a Java variable name with at most identLength characters.
+     * The name starts with a prefix given in the parameter.
+     * @param prefix the prefix for the identifier. Note, that the first
+     *               character of this prefix must be a char
+     *               allowed by Character.isJavaIdentifierStart().
+     * @param s      the string to be java-identifier-ed
+     * 
      */
     private String generateName(String prefix, String s) {
 	StringBuffer buffer = new StringBuffer();
+        // we only want to have one underscore in a row.
 	boolean justUnderscore = (prefix.charAt(prefix.length()-1) == '_');
 	for (int i = 0; i < s.length() && buffer.length() < identLength; ++i) {
 	    if (Character.isJavaIdentifierPart(s.charAt(i))) {
@@ -109,11 +121,15 @@ public class StringPool {
 		justUnderscore = true;
 	    }
 	}
+        // remove any underscore at the end.
 	if (justUnderscore)
 	    buffer.setLength(buffer.length() > 0 ? buffer.length()-1 : 0 );
 	return prefix + buffer.toString();
     }
 
+    /*
+     * returns a string quoted to be included in a java program.
+     */
     private String javaStringQuote(String s) {
 	StringBuffer buffer = new StringBuffer();
 	for (int i = 0; i < s.length(); ++i) {
@@ -121,7 +137,8 @@ public class StringPool {
 	    case '\t': buffer.append ("\\t"); break;
 	    case '\r': buffer.append ("\\r"); break;
 	    case '\n': buffer.append ("\\n"); break;
-	    case '"': buffer.append ("\\\""); break;
+	    case '"' : buffer.append ("\\\""); break;
+            case '\\': buffer.append("\\\\"); break;
 	    default: buffer.append(s.charAt(i));
 	    }
 	}

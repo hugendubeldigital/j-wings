@@ -1,6 +1,6 @@
 /* -*- java -*-
  * $Id$
- * (c) Copyright 2000 wingS development team.
+ * (c) Copyright 2001 wingS development team.
  *
  * This file is part of wingS (http://wings.mercatis.de).
  *
@@ -13,90 +13,82 @@
  */
 package org.wings.plaf.compiler;
 
+import java.io.File;
+import java.io.Reader;
+import java.io.IOException;
+
 import java.util.Stack;
 import java.util.Map;
 import java.util.HashMap;
-import java.io.File;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.LineNumberReader;
-import java.io.FileReader;
-import java.io.Reader;
-import java.io.FilterReader;
 
-public class IncludingReader extends Reader {
-    /*
-     * we cannot use a filtered reader, since that one does not
-     * allow to change the value of 'in'. Especially, setting it to 'null'
-     * does not work.
-     */
-    Reader in;
-    String currentFile;
-    Stack  fileStack;  // Stack<filename>
-    Map    openFiles;  // Map<filename,open-reader>
+/**
+ * Input source for Plaf files with a java.io.Reader like
+ * interface.
+ */
+public class PlafReader extends Reader {
+    private ColumnReader in;
+    private File    currentFile;
+    private final File    cwd;
+    private final Stack  fileStack;  // Stack<File>
+    private final Map    openFiles;  // Map<File,ColumnReader>
 
-    public IncludingReader() {
+    public PlafReader(File cwd, String file) throws IOException {
         in = null;
         currentFile = null;
+        this.cwd = cwd;
 	fileStack = new Stack();
 	openFiles = new HashMap();
-    }
-
-    public IncludingReader(String file) throws IOException {
-	this();
 	open(file);
     }
 
+    /**
+     * open a new file. The following reading will be from the new
+     * file, until EOF is reached. Then, reading goes on at the position
+     * current before this open() call. This is to include files.
+     */
     public void open(String fileName) throws IOException {
 	File f = new File(fileName);
-        String newCanonicalName = f.getCanonicalPath();
-        if (openFiles.containsKey(newCanonicalName)) {
-            throw new IOException ("cannot recursively include files: '"
-                                   + fileName + "'\n\tincluded at " 
-                                   + getFileStackTrace());
+	// open relative files relative to the current file.
+	if (!f.isAbsolute() && currentFile != null) {
+	    f = new File(currentFile.getParent(), fileName);
+	}
+	f = f.getCanonicalFile();
+        if (openFiles.containsKey(f)) {
+            throw new IOException (getFileStackTrace() + 
+                                   ": cannot recursively include files: '"
+                                   + fileName + "'");
         }
         fileStack.push(currentFile);
-        currentFile = newCanonicalName;
-	in = new LineNumberReader(new BufferedReader(new FileReader(f)));
+        currentFile = f;
+	in = new ColumnReader(f);
         openFiles.put(currentFile, in);
     }
-    
+
     public void close() throws IOException {
 	if (in != null) {
 	    in.close();
             openFiles.remove(currentFile);
 	}
-        currentFile = (String) fileStack.pop();
-	in = (Reader) openFiles.get(currentFile);
+        currentFile = (File) fileStack.pop();
+	in = (ColumnReader) openFiles.get(currentFile);
     }
     
-    public String getFilePosition() {
-        if (in == null) return "";
-        return currentFile + ":" + getCurrentLineNumber();
-    }
-    
-    public String getCurrentFile() {
-        return currentFile;
+    public FilePosition getFilePosition() {
+        if (in == null) return null;
+        return in.getFilePosition();
     }
 
-    public int getCurrentLineNumber() {
-        // seems, that they count from '1'.
-        return ((LineNumberReader) in).getLineNumber() + 1;
-    }
-    
     /**
      * returns a Stack trace of current file positions.
      */
     public String getFileStackTrace() {
         StringBuffer result = new StringBuffer();
-        result.append(getFilePosition());
+        result.append(getFilePosition().toString(cwd));
         for (int pos = fileStack.size()-1; pos > 0; --pos) {
             result.append("\n\tincluded at ");
-            String filename = (String) fileStack.elementAt(pos);
-            LineNumberReader openReader 
-                = (LineNumberReader) openFiles.get(filename);
-            result.append(filename).append(':')
-                .append(openReader.getLineNumber() + 1);
+            File file = (File) fileStack.elementAt(pos);
+            ColumnReader openReader = (ColumnReader) openFiles.get(file);
+            result.append(openReader.getFilePosition().toString(cwd));
         }
         return result.toString();
     }
