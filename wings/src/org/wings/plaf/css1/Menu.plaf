@@ -4,6 +4,8 @@
 
 <import>org.wings.script.*</import>
 
+public static final SIcon RIGHT_ARROW = new ResourceImageIcon("org/wings/icons/ArrowRight.gif");
+
 public static final JavaScriptListener ENTER_ITEM =
 	new JavaScriptListener("onMouseOver", "enter_item(this)",
             "function enter_item(item) {\n" +
@@ -64,13 +66,18 @@ protected int getMenuLevel(SMenu menu) {
     boolean enabled = menu.isEnabled();
 
     if ( enabled ) {
-        %><div id="<%=menuId%>" class="menu" <%
+        %><div id="<%=menuId%>" class="menu"> <a href="#" <%
         %>onMouseDown="toggle_menu('<%=menuId%>', '<%=popupId%>', <%=level%>)"><%
     }
-    writeMenuItem(device, menu, false);
+
+    if ( menu.getParent()==null ) {	
+        writeMenuItem(device, menu, RIGHT_ARROW, false);
+    } else {
+        writeMenuItem(device, menu, null, false);
+    }
 
     if ( enabled ) {
-        %></div><%
+        %></a></div><%
         %><table id="<%=popupId%>" class="pdmenu" style="display:none"><tr><td><%
 
         for ( int i=0; i<menu.getMenuComponentCount(); i++ ) {
