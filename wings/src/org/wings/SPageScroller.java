@@ -147,6 +147,8 @@ public class SPageScroller
      */
     public SPageScroller(int orientation, int value, int extent, int min, int max) {
         super(new SPagingBoundedRangeModel(value, extent, min, max));
+        unitIncrement = extent;
+        blockIncrement = extent;
 
         for ( int i=0; i<clickables.length; i++ ) {
             clickables[i] = new SClickable();
@@ -471,6 +473,36 @@ public class SPageScroller
         return false;
     }
 
+    /**
+     * Set the visible amount of the scroller. This sets also the
+     * unitincrement and the blockIncrement!
+     * @param value the new extent
+     */
+    public void setExtent(int value) {
+        super.setExtent(value);
+        unitIncrement = value;
+        blockIncrement = value;
+    }
+
+    /**
+     * Set the visible amount of the scroller. This sets also the
+     * unitincrement and the blockIncrement!
+     * @param value the new extent
+     */
+    public void setVisibleAmount(int value) {
+        super.setVisibleAmount(value);
+        unitIncrement = value;
+        blockIncrement = value;
+    }
+
+    /**
+     * Set the current value of the scroller. The value will be
+     * adjusted to a multiple of the extent.
+     * @param value the new value
+     */
+    public void setValue(int value) {
+        super.setValue(value - (value % getExtent()));
+    }
 
 }
 
