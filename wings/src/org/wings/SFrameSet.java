@@ -34,82 +34,79 @@ import org.wings.session.SessionManager;
  * @version $Revision$
  */
 public class SFrameSet
-    extends SFrame
-{
+extends SFrame {
     public SFrameSet() {}
-
+    
     public SFrameSet(SFrameSetLayout layout) {
-	setLayout(layout);
+        setLayout(layout);
     }
-
+    
     public final SContainer getContentPane() {
         return null; // heck :-)
     }
-
+    
     /**
      * Only SFrameSets or SFrames are allowed.
      */
     public SComponent addComponent(SComponent c, Object constraint, int index) {
-	if (c == null)
-	    return null;
-
-	if (!(c instanceof SFrame))
-	    throw new IllegalArgumentException("Only SFrameSets or SFrames are allowed.");
-
-	if (layout != null)
-	    layout.addComponent(c, constraint, index);
-
-	getComponentList().add(index, c);
-	getConstraintList().add(index, constraint);
-	c.setParent(this);
-
+        if (c == null)
+            return null;
+        
+        if (!(c instanceof SFrame))
+            throw new IllegalArgumentException("Only SFrameSets or SFrames are allowed.");
+        
+        if (layout != null)
+            layout.addComponent(c, constraint, index);
+        
+        getComponentList().add(index, c);
+        getConstraintList().add(index, constraint);
+        c.setParent(this);
+        
         return c;
-	//return super.addComponent(c, constraint);
+        //return super.addComponent(c, constraint);
     }
-
+    
     /**
      * Only SFrameSets or SFrames are allowed.
      */
-    public boolean removeComponent(SComponent c) {
-        if (c == null)
-            return false;
-
-	if (!(c instanceof SFrame))
-	    throw new IllegalArgumentException("Only SFrameSets or SFrames are allowed.");
-
+    public void removeComponent(SComponent c) {
+        if (c == null) return;
+        
+        if (!(c instanceof SFrame))
+            throw new IllegalArgumentException("Only SFrameSets or SFrames are allowed.");
+        
         if (layout != null)
             layout.removeComponent(c);
-
+        
         c.setParent(null);
-
+        
         int index = getComponentList().indexOf(c);
-        boolean erg = getComponentList().remove(c);
-        if (erg) {
+        
+        if (getComponentList().remove(c)) {
             getConstraintList().remove(index);
         }
-        return erg;
-	//return super.removeComponent(c);
+        //return super.removeComponent(c);
     }
-
+    
     /**
      * Sets the parent frameset container.
      *
      * @param p the container
      */
     public void setParent(SContainer p) {
-	if (!(p instanceof SFrameSet))
-	    throw new IllegalArgumentException("SFrameSets can only be added to SFrameSets.");
-
+        if (!(p instanceof SFrameSet))
+            throw new IllegalArgumentException("SFrameSets can only be added to SFrameSets.");
+        
         parent = p;
     }
-
+    
     /**
      * There is no parent frame.
      *
      * @param f the frame
      */
     protected void setParentFrame(SFrame f) {}
-
+    
     /**
      * There is no parent frame.
      *
@@ -118,31 +115,31 @@ public class SFrameSet
     public SFrame getParentFrame() {
         return null;
     }
-
+    
     /**
      * Set the base target and propagate it to all frames
      */
     public void setBaseTarget(String baseTarget) {
         this.baseTarget = baseTarget;
-
-	// propagate it to all frame(set)s
-	Iterator iterator = getComponentList().iterator();
-	while (iterator.hasNext()) {
-	    Object object = iterator.next();
-	    if (object instanceof SFrame)
-		((SFrame)object).setBaseTarget(baseTarget);
-	}
+        
+        // propagate it to all frame(set)s
+        Iterator iterator = getComponentList().iterator();
+        while (iterator.hasNext()) {
+            Object object = iterator.next();
+            if (object instanceof SFrame)
+                ((SFrame)object).setBaseTarget(baseTarget);
+        }
     }
-
+    
     public void setLayout(SLayoutManager l) {
-	if (!(l instanceof SFrameSetLayout))
-	    throw new IllegalArgumentException("Only SFrameSetLayout is allowed.");
-
-	super.setLayout(l);
+        if (!(l instanceof SFrameSetLayout))
+            throw new IllegalArgumentException("Only SFrameSetLayout is allowed.");
+        
+        super.setLayout(l);
     }
-
+    
     public void write(Device s) throws IOException {
-	layout.write(s);
+        layout.write(s);
     }
 }
 

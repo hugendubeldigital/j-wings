@@ -169,14 +169,14 @@ public class SDialog extends SForm
     }
 
     public void setVisible(boolean visible) {
-      super.setVisible(visible);
       if (visible) {
         if (owner != null) show(owner);
       } else {
         if (isVisible()) hide();
       }
+      super.setVisible(visible);
     }
-    
+     
     /**
      * sets the root container in which this dialog is to be displayed.
      */

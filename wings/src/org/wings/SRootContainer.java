@@ -36,22 +36,22 @@ import org.wings.io.Device;
  */
 public abstract class SRootContainer extends SContainer {
     private final static Logger logger = Logger.getLogger("org.wings");
-
+    
     /**
      * The container for the contentPane.
      */
     protected final SContainer contentPane;
-
+    
     /**
      * default constructor initializes the stack layout system of this
      * SRootContainer.
      */
     public SRootContainer() {
         contentPane = new SPanel();
-	super.setLayout(new SRootLayout());
+        super.setLayout(new SRootLayout());
         super.addComponent(getContentPane(), null, getComponentCount());
     }
-
+    
     /**
      * Push a new dialog on top of the stack. If this RootContainer is
      * rendered, then only this dialog is shown.
@@ -64,7 +64,7 @@ public abstract class SRootContainer extends SContainer {
         dialog.setFrame(this);
         reload(ReloadManager.RELOAD_CODE);
     }
-
+    
     /**
      * remove the dialog, that is on top of the stack.
      *
@@ -74,48 +74,47 @@ public abstract class SRootContainer extends SContainer {
         int count = getComponentCount();
         if (count <= 1)
             throw new IllegalStateException("there's no dialog left!");
-
-		SDialog dialog = (SDialog)getComponent(count - 1);
+        
+        SDialog dialog = (SDialog)getComponent(count - 1);
         super.remove(dialog);
         dialog.setFrame((SFrame)null);
         logger.info("popDialog: " + count);
-
+        
         reload(ReloadManager.RELOAD_CODE);
         return dialog;
     }
-
-	public void removeDialog(SDialog dialog) {
+    
+    public void removeDialog(SDialog dialog) {
         super.remove(dialog);
         dialog.setFrame((SFrame)null);
-
         reload(ReloadManager.RELOAD_CODE);
-	}
-
+    }
     /**
      * @return the number of dialogs that are on the stack currently.
      */
     public int getDialogCount() {
         return getComponentCount() - 1;
     }
-
+    
     /**
      * returns the content pane of this RootContainer.
      */
     public SContainer getContentPane() {
         return contentPane;
     }
-
+    
     /**
      * Use getContentPane().addComponent(c) instead.
      */
     public SComponent addComponent(SComponent c, Object constraint, int index) {
         throw new IllegalArgumentException("use getContentPane().addComponent()");
     }
-
+    
     /**
      * Use getContentPane().removeComponent(c) instead.
+     * @deprecated use {@link #remove(int)} instead for swing conformity
      */
-    public boolean removeComponent(SComponent c) {
+    public void removeComponent(SComponent c) {
         throw new IllegalArgumentException("use getContentPane().removeComponent()");
     }
 }
