@@ -16,11 +16,9 @@ package org.wings.plaf.xhtml.old;
 
 import java.awt.Insets;
 import java.io.IOException;
-import javax.swing.Icon;
 
 import org.wings.*;
 import org.wings.io.*;
-import org.wings.externalizer.*;
 import org.wings.plaf.*;
 import org.wings.plaf.xhtml.*;
 import org.wings.session.*;
@@ -33,7 +31,7 @@ public final class BevelBorderCG
     private final static boolean WHITE = true;
     private final static Insets none = new Insets(0,0,0,0);
 
-    Icon transIcon;
+    SIcon transIcon;
 
     public BevelBorderCG() {
         transIcon = LookAndFeel.makeIcon(TabbedPaneCG.class, "/org/wings/icons/transdot.gif");
@@ -98,15 +96,8 @@ public final class BevelBorderCG
     public void writeIMG(Device d)
         throws IOException
     {
-        String transAdr = null;
-
-        ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
-        if (ext != null) {
-            transAdr = ext.externalize(transIcon);
-        }
-
         d.append("<img src=\"")
-            .append(transAdr)
+            .append(transIcon)
             .append("\" height=\"1\" width=\"1\">");
     }
 }

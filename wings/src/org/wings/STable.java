@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.util.EventObject;
 import java.util.HashMap;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.event.*;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableModel;
@@ -83,7 +81,7 @@ public class STable
     protected HashMap editors = new HashMap();
 
     /** Icon used for buttons that start editing in a cell. */
-    transient protected Icon editIcon = null;
+    transient protected SIcon editIcon = null;
 
     /**
      * TODO: documentation
@@ -868,15 +866,14 @@ public class STable
     /**
      * Sets the icon used for the buttons that start editing in a cell.
      */
-    public void setEditIcon(Icon newIcon) {
-        System.err.println("STable.setEditIcon(" + newIcon + ")");
+    public void setEditIcon(SIcon newIcon) {
         editIcon = newIcon;
     }
 
     /**
      * Returns the icon used for the buttons that start editing in a cell.
      */
-    public Icon getEditIcon() {
+    public SIcon getEditIcon() {
         return editIcon;
     }
 

@@ -18,7 +18,6 @@ import java.awt.AWTEvent;
 import java.awt.event.*;
 import java.lang.Boolean;
 import java.util.EventObject;
-import javax.swing.Icon;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import javax.swing.tree.*;
@@ -146,19 +145,19 @@ public class SDefaultCellEditor
     }
 
     /** Icon used for the commit button.*/
-    transient protected Icon commitIcon = null;
+    transient protected SIcon commitIcon = null;
 
     /**
      * Sets the icon used for the commit button.
      */
-    public void setCommitIcon(Icon newIcon) {
+    public void setCommitIcon(SIcon newIcon) {
         commitIcon = newIcon;
     }
 
     /**
      * Returns the icon used for the commit button.
      */
-    public Icon getCommitIcon() {
+    public SIcon getCommitIcon() {
         return commitIcon;
     }
 

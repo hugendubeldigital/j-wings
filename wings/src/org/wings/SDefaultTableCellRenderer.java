@@ -16,7 +16,6 @@ package org.wings;
 
 import java.awt.Color;
 import java.io.IOException;
-import javax.swing.Icon;
 
 import org.wings.io.Device;
 import org.wings.plaf.*;
@@ -52,7 +51,7 @@ public class SDefaultTableCellRenderer
     protected Style nonSelectionStyle = null;
 
     /** Icon used to render the edit button. */
-    transient protected Icon editIcon = null;
+    transient protected SIcon editIcon = null;
 
     /** Label to use for the content. */
     protected SLabel contents = null;
@@ -65,7 +64,7 @@ public class SDefaultTableCellRenderer
      */
     protected SGetAddress addr = null;
 
-    protected final static Icon DEFAULT_EDIT_ICON = 
+    protected final static SIcon DEFAULT_EDIT_ICON = 
         new ResourceImageIcon(SDefaultTableCellRenderer.class, 
                               "/org/wings/icons/Pencil.gif");
 
@@ -94,11 +93,11 @@ public class SDefaultTableCellRenderer
         addr.add(baseTable.getNamePrefix() + "=" + row + ":" + col);
 
         contents.setText(null);
-        contents.setIcon((Icon) null);
+        contents.setIcon(null);
         if (value == null)
             contents.setText("&nbsp;");
-        else if (value instanceof Icon)
-            contents.setIcon((Icon) value);
+        else if (value instanceof SIcon)
+            contents.setIcon((SIcon)value);
         else
             contents.setText(value.toString());
 
@@ -295,7 +294,7 @@ public class SDefaultTableCellRenderer
      *
      * @param newIcon
      */
-    public void setEditIcon(Icon newIcon) {
+    public void setEditIcon(SIcon newIcon) {
         System.err.println("SDefaultTableCellRenderer.setEditIcon(" + newIcon + ")");
         editIcon = newIcon;
         edit.setIcon(editIcon);
@@ -306,7 +305,7 @@ public class SDefaultTableCellRenderer
      *
      * @return
      */
-    public Icon getEditIcon() {
+    public SIcon getEditIcon() {
         return editIcon;
     }
 }

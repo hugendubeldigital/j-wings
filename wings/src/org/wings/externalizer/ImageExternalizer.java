@@ -35,6 +35,7 @@ public class ImageExternalizer
     private static final Class[] SUPPORTED_CLASSES = { Image.class };
 
     protected String format;
+
     protected final String[] supportedMimeTypes = new String[1];
 
     public ImageExternalizer() {
@@ -91,6 +92,9 @@ public class ImageExternalizer
             writeGIF(img, out);
     }
 
+    /**
+     * writes a image as gif to the OutputStream
+     */
     public void writeGIF(Image img, java.io.OutputStream out)
         throws java.io.IOException
     {
@@ -98,6 +102,9 @@ public class ImageExternalizer
         encoder.encode();
     }
 
+    /**
+     * writes a image as png to the OutputStream
+     */
     public void writePNG(Image img, java.io.OutputStream out)
         throws java.io.IOException
     {

@@ -19,9 +19,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
-import javax.swing.Icon;
 import javax.swing.SingleSelectionModel;
 import javax.swing.DefaultSingleSelectionModel;
+import javax.swing.GrayFilter;
+import javax.swing.ImageIcon;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -348,15 +349,15 @@ public class STabbedPane
      * @see #addTab
      * @see #removeTabAt
      */
-    public void insertTab(String title, Icon icon,
+    public void insertTab(String title, SIcon icon,
                           SComponent component, String tip,
                           int index) {
 
-        Icon disabledIcon = null;
+        SIcon disabledIcon = null;
 
-        // if (icon != null && icon instanceof ImageIcon) {
-        //    disabledIcon = new ImageIcon(GrayFilter.createDisabledImage(((ImageIcon)icon).getImage()));
-        // }
+        if (icon != null && icon instanceof SImageIcon) {
+            disabledIcon = new SImageIcon(new ImageIcon(GrayFilter.createDisabledImage(((SImageIcon)icon).getImage())));
+        }
 
         String t = (title != null) ? title : "";
 
@@ -384,7 +385,7 @@ public class STabbedPane
      * @see #insertTab
      * @see #removeTabAt
      */
-    public void addTab(String title, Icon icon, SComponent component, String tip) {
+    public void addTab(String title, SIcon icon, SComponent component, String tip) {
         insertTab(title, icon, component, tip, pages.size());
     }
 
@@ -399,7 +400,7 @@ public class STabbedPane
      * @see #insertTab
      * @see #removeTabAt
      */
-    public void addTab(String title, Icon icon, SComponent component) {
+    public void addTab(String title, SIcon icon, SComponent component) {
         insertTab(title, icon, component, null, pages.size());
     }
 
@@ -474,8 +475,8 @@ public class STabbedPane
         if (constraints instanceof String) {
             addTab((String)constraints, component);
         }
-        else if (constraints instanceof Icon) {
-            addTab(null, (Icon)constraints, component);
+        else if (constraints instanceof SIcon) {
+            addTab(null, (SIcon)constraints, component);
         }
         else {
             add(component);
@@ -495,8 +496,8 @@ public class STabbedPane
      * @see #removeTabAt
      */
     public void add(SComponent component, Object constraints, int index) {
-        Icon icon = constraints instanceof Icon? (Icon)constraints : null;
-        String title = constraints instanceof String? (String)constraints : null;
+        SIcon icon = constraints instanceof SIcon ? (SIcon)constraints : null;
+        String title = constraints instanceof String ? (String)constraints : null;
         insertTab(title, icon, component, null, index);
     }
 
@@ -580,7 +581,7 @@ public class STabbedPane
      *
      * @see #setIconAt
      */
-    public Icon getIconAt(int index) {
+    public SIcon getIconAt(int index) {
         return getPageAt(index).icon;
     }
 
@@ -589,7 +590,7 @@ public class STabbedPane
      *
      * @see #setDisabledIconAt
      */
-    public Icon getDisabledIconAt(int index) {
+    public SIcon getDisabledIconAt(int index) {
         return getPageAt(index).disabledIcon;
     }
 
@@ -659,7 +660,7 @@ public class STabbedPane
      *
      * @see #getIconAt
      */
-    public void setIconAt(int index, Icon icon) {
+    public void setIconAt(int index, SIcon icon) {
         getPageAt(index).icon = icon;
     }
 
@@ -671,7 +672,7 @@ public class STabbedPane
      *
      * @see #getDisabledIconAt
      */
-    public void setDisabledIconAt(int index, Icon disabledIcon) {
+    public void setDisabledIconAt(int index, SIcon disabledIcon) {
         getPageAt(index).disabledIcon = disabledIcon;
     }
 
@@ -767,7 +768,7 @@ public class STabbedPane
      * Returns -1 if no tab has this icon.
      * @param icon the icon for the tab
      */
-    public int indexOfTab(Icon icon) {
+    public int indexOfTab(SIcon icon) {
         for ( int i = 0; i < getTabCount(); i++ ) {
             if ( getIconAt(i).equals(icon) ) {
                 return i;
@@ -847,16 +848,16 @@ public class STabbedPane
         Color background;
         Color foreground;
         Style style;
-        Icon icon;
-        Icon disabledIcon;
+        SIcon icon;
+        SIcon disabledIcon;
         STabbedPane parent;
         SComponent component;
         SRadioButton button;
         String tip;
         boolean enabled = true;
 
-        public Page(STabbedPane parent, String title, Icon icon,
-                    Icon disabledIcon, SComponent component, String tip) {
+        public Page(STabbedPane parent, String title, SIcon icon,
+                    SIcon disabledIcon, SComponent component, String tip) {
             this.title = title;
             this.icon = icon;
             this.disabledIcon = disabledIcon;

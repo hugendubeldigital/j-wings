@@ -16,12 +16,9 @@ package org.wings.plaf.xhtml;
 
 import java.io.IOException;
 
-import javax.swing.Icon;
-
 import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
-import org.wings.externalizer.ExternalizeManager;
 
 
 public class HRefCG
@@ -48,13 +45,12 @@ public class HRefCG
     protected void writeAnchorButton(Device d, SHRef hRef)
         throws IOException
     {
-        Icon icon = hRef.getIcon();
+        SIcon icon = hRef.getIcon();
         String text = hRef.getText();
         int horizontalTextPosition = hRef.getHorizontalTextPosition();
         int verticalTextPosition = hRef.getVerticalTextPosition();
-        String iconAddress = hRef.getIconAddress();
 
-        if (icon == null && iconAddress == null)
+        if (icon == null )
             writeAnchorText(d, hRef);
         else if (text == null)
             writeAnchorIcon(d, hRef);
@@ -150,51 +146,27 @@ public class HRefCG
     protected void writeAnchorIcon(Device d, SHRef hRef, String align)
         throws IOException
     {
-        String text = hRef.getText();
-        String iconAddress = hRef.getIconAddress();
-        String disabledIconAddress = hRef.getDisabledIconAddress();
-        Icon icon = hRef.getIcon();
-        Icon disabledIcon = hRef.getDisabledIcon();
-        String tooltip = hRef.getToolTipText();
+        SIcon icon = hRef.isEnabled() ? hRef.getIcon() : hRef.getDisabledIcon();
 
-        String iAdr = null;
-        Icon ic = null;
-
-        if (!hRef.isEnabled()){
-            if (disabledIconAddress != null)
-                iAdr = disabledIconAddress;
-            else if (disabledIcon != null)
-                ic = disabledIcon;
-
-            if (ic == null)
-                if (iconAddress != null)
-                    iAdr = iconAddress;
-                else if (icon != null)
-                    ic = icon;
-        } else {
-            if (iconAddress != null)
-                iAdr = iconAddress.toString();
-            else if (icon != null)
-                ic = icon;
-        }
-
-        if (ic != null) {
-            ExternalizeManager ext = hRef.getExternalizeManager();
-            if (ext != null) {
-                iAdr = ext.externalize(ic);
-            }
-        }
-
-        if (iAdr != null) {
+        if ( icon != null ) {
             writeAnchorPrefix(d, hRef);
-            d.append("<img src=\"").append(iAdr).append("\"");
+            d.append("<img src=\"").
+                append(icon.getURL()).
+                append("\"");
             if (align != null)
                 d.append(" align=").append(align);
-            if (ic != null) {
-                d.append(" width=").append(ic.getIconWidth());
-                d.append(" height=").append(ic.getIconHeight());
-            }
+
+            if ( icon.getIconWidth() > 0)
+                d.append(" width=").append(icon.getIconWidth());
+
+            if ( icon.getIconHeight() > 0)
+                d.append(" height=").append(icon.getIconHeight());
+
             d.append(" border=0");
+
+            String text = hRef.getText();
+            String tooltip = hRef.getToolTipText();
+
 
             if (tooltip != null) {
                 d.append(" alt=\"").append(tooltip).append("\"");

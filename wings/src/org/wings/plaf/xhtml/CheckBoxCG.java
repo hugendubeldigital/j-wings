@@ -16,13 +16,10 @@ package org.wings.plaf.xhtml;
 
 import java.io.IOException;
 
-import javax.swing.Icon;
-
 import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.util.*;
-import org.wings.externalizer.ExternalizeManager;
 
 public class CheckBoxCG
     extends org.wings.plaf.AbstractComponentCG
@@ -66,21 +63,14 @@ public class CheckBoxCG
     protected void writeAnchorButton(Device d, SCheckBox checkBox)
         throws IOException
     {
-        Icon icon = null;
-        String iconAddress = null;
-        if (checkBox.isSelected()) {
-            icon = checkBox.getSelectedIcon();
-            iconAddress = checkBox.getSelectedIconAddress();
-        }
-        else {
-            icon = checkBox.getIcon();
-            iconAddress = checkBox.getIconAddress();
-        }
+        SIcon icon = checkBox.isSelected() ? checkBox.getSelectedIcon() :
+            checkBox.getIcon();
+
         String text = checkBox.getText();
         int horizontalTextPosition = checkBox.getHorizontalTextPosition();
         int verticalTextPosition = checkBox.getVerticalTextPosition();
 
-        if (icon == null && iconAddress == null)
+        if (icon == null )
             writeAnchorText(d, checkBox);
         else if (text == null)
             writeAnchorIcon(d, checkBox);
@@ -161,65 +151,45 @@ public class CheckBoxCG
     protected void writeAnchorIcon(Device d, SCheckBox checkBox, String align)
         throws IOException
     {
-        String iconAddress = null;
-        String disabledIconAddress = null;
-        Icon icon = null;
-        Icon disabledIcon = null;
+        SIcon icon = null;
+        SIcon disabledIcon = null;
         if (checkBox.isSelected()) {
             icon = checkBox.getSelectedIcon();
-            iconAddress = checkBox.getSelectedIconAddress();
             disabledIcon = checkBox.getDisabledSelectedIcon();
-            disabledIconAddress = checkBox.getDisabledSelectedIconAddress();
         }
         else {
             icon = checkBox.getIcon();
-            iconAddress = checkBox.getIconAddress();
             disabledIcon = checkBox.getDisabledIcon();
-            disabledIconAddress = checkBox.getDisabledIconAddress();
         }
 
-        String text = checkBox.getText();
-        String tooltip = checkBox.getToolTipText();
-
-        String iAdr = null;
-        Icon ic = null;
+        SIcon actualIcon = null;
 
         if (!checkBox.isEnabled()){
-            if (disabledIconAddress != null)
-                iAdr = disabledIconAddress;
-            else if (disabledIcon != null)
-                ic = disabledIcon;
-
-            if (ic == null)
-                if (iconAddress != null)
-                    iAdr = iconAddress;
-                else if (icon != null)
-                    ic = icon;
+            actualIcon = disabledIcon;
         } else {
-            if (iconAddress != null)
-                iAdr = iconAddress.toString();
-            else if (icon != null)
-                ic = icon;
+            actualIcon = icon;
         }
 
-        if (ic != null) {
-            ExternalizeManager ext = checkBox.getExternalizeManager();
-            if (ext != null) {
-                iAdr = ext.externalize(ic);
-            }
-        }
-
-        if (iAdr != null) {
+        if (icon != null) {
             writeAnchorPrefix(d, checkBox);
 
-            d.append("<img src=\"").append(iAdr).append("\"");
+            d.append("<img src=\"").
+                append(actualIcon.getURL()).
+                append("\"");
+
             if (align != null)
                 d.append(" align=\"").append(align).append("\"");
-            if (ic != null) {
-                d.append(" width=\"").append(ic.getIconWidth()).append("\"");
-                d.append(" height=\"").append(ic.getIconHeight()).append("\"");
-            }
+
+            if ( actualIcon.getIconWidth() > 0)
+                d.append(" width=\"").append(actualIcon.getIconWidth()).append("\"");
+
+            if ( actualIcon.getIconHeight() > 0)
+                d.append(" height=\"").append(actualIcon.getIconHeight()).append("\"");
+
             d.append(" border=\"0\"");
+
+            String tooltip = checkBox.getToolTipText();
+            String text = checkBox.getText();
 
             if (tooltip != null) {
                 d.append(" alt=\"").append(tooltip).append("\"");
@@ -282,28 +252,22 @@ public class CheckBoxCG
     protected void writeFormButton(Device d, SCheckBox checkBox)
         throws IOException
     {
-        Icon icon = null;
-        String iconAddress = null;
+        SIcon icon = null;
         if (checkBox.isSelected()) {
             icon = checkBox.getSelectedIcon();
-            iconAddress = checkBox.getSelectedIconAddress();
-        }
-        else {
+        } else {
             icon = checkBox.getIcon();
-            iconAddress = checkBox.getIconAddress();
         }
+
         String text = checkBox.getText();
         int horizontalTextPosition = checkBox.getHorizontalTextPosition();
         int verticalTextPosition = checkBox.getVerticalTextPosition();
 
-        if (icon == null && iconAddress == null) {
-            System.err.println("text only");
+        if (icon == null ) {
             writeFormText(d, checkBox);
-        }
-        else if (text == null) {
+        } else if (text == null) {
             writeFormIcon(d, checkBox);
-        }
-        else {
+        } else {
             // Hauptsache, es funktioniert !!!
             if (verticalTextPosition == NO_ALIGN || horizontalTextPosition == NO_ALIGN) {
                 writeFormIcon(d, checkBox);

@@ -19,9 +19,11 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 
 public class SImageIcon implements SIcon {
+
     private ImageIcon img;
+
     private URL url;
-    
+
     public SImageIcon(ImageIcon image) {
 	this.img = image;
     }
@@ -48,12 +50,19 @@ public class SImageIcon implements SIcon {
 		.getExternalizeManager()
 		.externalize(img);
 	    if (urlString != null)
-		url = new URL(urlString);
+                try {
+                    url = new URL(urlString);
+                } catch ( java.net.MalformedURLException e ) {
+                    // this could never happen...
+                }
 	}
 	return url;
     }
 
-    // java.awt.Image getImage() // get the image e.g. if you want to grey it out
+    // get the image e.g. if you want to grey it out
+    public java.awt.Image getImage() {
+        return img.getImage();
+    } 
 }
 
 /*

@@ -171,20 +171,20 @@ public class SOptionPane
     /**
      * TODO: documentation
      */
-    protected static SImage messageImage =
-        new SImage(new ResourceImageIcon("org/wings/icons/Inform.gif"));
+    protected static SLabel messageImage =
+        new SLabel(new ResourceImageIcon("org/wings/icons/Inform.gif"));
 
     /**
      * TODO: documentation
      */
-    protected static SImage questionImage =
-        new SImage(new ResourceImageIcon("org/wings/icons/Question.gif"));
+    protected static SLabel questionImage =
+        new SLabel(new ResourceImageIcon("org/wings/icons/Question.gif"));
 
     /**
      * TODO: documentation
      */
-    protected static SImage yesnoImage =
-        new SImage(new ResourceImageIcon("org/wings/icons/Question.gif"));
+    protected static SLabel yesnoImage =
+        new SLabel(new ResourceImageIcon("org/wings/icons/Question.gif"));
 
     /**
      * The chosen option
@@ -225,11 +225,11 @@ public class SOptionPane
         optionButtons.add(optionReset);
 
         images.add(messageImage);
-        messageImage.setAlternativeText("info");
+        messageImage.setToolTipText("info");
         images.add(questionImage);
-        questionImage.setAlternativeText("question");
+        questionImage.setToolTipText("question");
         images.add(yesnoImage);
-        yesnoImage.setAlternativeText("question");
+        yesnoImage.setToolTipText("question");
 
         add(optionTitle);
         contents.add(optionData, SBorderLayout.CENTER);

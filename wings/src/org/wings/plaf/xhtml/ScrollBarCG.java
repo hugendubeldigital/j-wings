@@ -15,14 +15,12 @@
 package org.wings.plaf.xhtml;
 
 import java.awt.*;
-import javax.swing.Icon;
 import java.util.*;
 import java.io.IOException;
 
 import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
-import org.wings.externalizer.*;
 
 public class ScrollBarCG
     extends org.wings.plaf.AbstractComponentCG
@@ -39,7 +37,7 @@ public class ScrollBarCG
     public static final String SCROLLER_BACKGROUND = "\"#FFFFFF\" ";
     public static final String BUTTON_BACKGROUND   = "\"#C6C6C6\" ";
 
-    Icon transIcon;
+    SIcon transIcon;
 
     public void installCG(SComponent component) {
         super.installCG(component);
@@ -84,12 +82,6 @@ public class ScrollBarCG
          String el_s;
          String fwalign;
          String bwalign;
-         String dummyIconAdr = null;
-         
-         ExternalizeManager ext = sb.getExternalizeManager();
-         if (ext != null &&  transIcon != null) {
-             dummyIconAdr = ext.externalize(transIcon);
-         }
          
          if ( sb.getOrientation() == SConstants.HORIZONTAL ) {
              el_pre    = "";
@@ -115,7 +107,8 @@ public class ScrollBarCG
          d.append( "</td>" );
          d.append( el_post );
          
-         writeSBBackground( d, sb, dummyIconAdr, el_pre, el_post, el_s + p );
+         writeSBBackground( d, sb, transIcon!=null ? transIcon.getURL().toString() : null,
+                            el_pre, el_post, el_s + p );
          
          // fw
          d.append( el_pre );
@@ -199,14 +192,14 @@ public class ScrollBarCG
             int c = scrollerp.getComponentCount();
             if (sb.getOrientation() == SConstants.HORIZONTAL ) {
                 for (int i = 0; i < c; i++ ) {
-                    Icon icon = ((SButton) scrollerp.getComponentAt(i)).getIcon();
+                    SIcon icon = ((SButton) scrollerp.getComponentAt(i)).getIcon();
                     width+=icon.getIconWidth();
                     height=Math.max(icon.getIconHeight(), height);
                 }
             }
             else {
                 for (int i = 0; i < c; i++ ) {
-                    Icon icon = ((SButton) scrollerp.getComponentAt(i)).getIcon();
+                    SIcon icon = ((SButton) scrollerp.getComponentAt(i)).getIcon();
                     width=Math.max(icon.getIconWidth(), width);
                     height+=icon.getIconHeight();
                 }

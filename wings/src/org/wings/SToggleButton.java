@@ -15,7 +15,6 @@
 package org.wings;
 
 import java.awt.Color;
-import javax.swing.Icon;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
@@ -59,10 +58,10 @@ public class SToggleButton
     public SToggleButton(String text) {
         super(text);
 
-        setIcon((Icon)null);
-        setDisabledIcon((Icon)null);
-        setSelectedIcon((Icon)null);
-        setDisabledSelectedIcon((Icon)null);
+        setIcon(null);
+        setDisabledIcon(null);
+        setSelectedIcon(null);
+        setDisabledSelectedIcon(null);
     }
 
     /**

@@ -14,6 +14,7 @@
 
 package org.wings.template;
 
+import org.wings.SURLIcon;
 import org.wings.SComponent;
 import org.wings.SLabel;
 
@@ -34,7 +35,7 @@ public class SLabelPropertyManager
     public void setProperty(SComponent comp, String name, String value) {
         SLabel c = (SLabel)comp;
         if ( name.equals("ICON") )
-            c.setIcon(value);
+            c.setIcon(new SURLIcon(value));
         else if ( name.equals("TEXT") )
             c.setText(value);
         else

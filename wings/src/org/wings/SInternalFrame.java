@@ -16,7 +16,6 @@ package org.wings;
 
 import java.io.*;
 
-import javax.swing.*;
 import javax.swing.event.*;
 
 import org.wings.*;
@@ -50,7 +49,7 @@ public class SInternalFrame
     /**
      * TODO: documentation
      */
-    protected Icon icon = null;
+    protected SIcon icon = null;
 
     /**
      * TODO: documentation
@@ -132,12 +131,11 @@ public class SInternalFrame
      *
      * @param i
      */
-    public void setIcon(Icon i) {
-        Icon oldIcon = icon;
-        icon = i;
-        if ((icon == null && oldIcon != null) ||
-            (icon != null && !icon.equals(oldIcon)))
+    public void setIcon(SIcon i) {
+        if ( i!=icon || i!=null && !i.equals(icon) ) {
+            icon = i;
             reload();
+        }
     }
 
     /**
@@ -145,7 +143,7 @@ public class SInternalFrame
      *
      * @return
      */
-    public Icon getIcon() {
+    public SIcon getIcon() {
         return icon;
     }
 

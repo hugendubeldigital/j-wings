@@ -38,16 +38,14 @@ public class LabelCG
     {
         SLabel label = (SLabel)component;
 
-        Icon icon = label.getIcon();
-        String text = label.getText();
         SBorder border = label.getBorder();
+        String text = label.getText();
         int horizontalTextPosition = label.getHorizontalTextPosition();
         int verticalTextPosition = label.getVerticalTextPosition();
-        String iconAddress = label.getIconAddress();
 
         Utils.writeBorderPrefix(d, border);
 
-        if (icon == null && iconAddress == null)
+        if (label.getIcon() == null )
             writeText(d, label);
         else if (text == null)
             writeIcon(d, label);
@@ -136,55 +134,24 @@ public class LabelCG
     protected void writeIcon(Device d, SLabel label, String align)
         throws IOException
     {
-        String text = label.getText();
-        String iconAddress = label.getIconAddress();
-        String disabledIconAddress = label.getDisabledIconAddress();
-        Icon icon = label.getIcon();
-        Icon disabledIcon = label.getDisabledIcon();
-        String tooltip = label.getToolTipText();
 
-        String iAdr = null;
-        Icon ic = null;
+        SIcon icon = label.isEnabled() ? label.getIcon() :
+            label.getDisabledIcon();
 
-        if (!label.isEnabled()){
-            if (disabledIconAddress != null)
-                iAdr = disabledIconAddress;
-            else if (disabledIcon != null)
-                ic = disabledIcon;
-
-            if (ic == null)
-                if (iconAddress != null)
-                    iAdr = iconAddress;
-                else if (icon != null)
-                    ic = icon;
-        } else {
-            if (iconAddress != null)
-                iAdr = iconAddress.toString();
-            else if (icon != null)
-                ic = icon;
-        }
-
-        if (ic != null) {
-            ExternalizeManager ext = label.getExternalizeManager();
-            if (ext != null) {
-                iAdr = ext.externalize(ic);
-            }
-        }
-
-        if (iAdr != null) {
-            d.append("<img src=\"").append(iAdr).append("\"");
+        if ( icon != null ) {
+            d.append("<img src=\"").
+                append(icon.getURL()).
+                append("\"");
             if (align != null)
                 d.append(" valign=\"").append(align).append("\"");
-            if (ic != null) {
-                int scale;
-                scale = ic.getIconWidth();
-                if (scale > 0)
-                    d.append(" width=\"").append(scale).append("\"");
-                scale = ic.getIconHeight();
-                if (scale > 0)
-                    d.append(" height=\"").append(scale).append("\"");
-            }
+            if ( icon.getIconWidth() > 0)
+                d.append(" width=\"").append(icon.getIconWidth()).append("\"");
+            if ( icon.getIconHeight() > 0)
+                d.append(" height=\"").append(icon.getIconHeight()).append("\"");
             d.append(" border=\"0\"");
+
+            String text = label.getText();
+            String tooltip = label.getToolTipText();
 
             if (tooltip != null) {
                 d.append(" alt=\"").append(tooltip).append("\"");

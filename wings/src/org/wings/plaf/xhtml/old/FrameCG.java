@@ -15,13 +15,11 @@
 package org.wings.plaf.xhtml.old;
 
 import java.io.IOException;
-import javax.swing.Icon;
 
 import java.awt.Color;
 import java.util.Iterator;
 
 import org.wings.*;
-import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.plaf.xhtml.*;
@@ -33,8 +31,7 @@ public final class FrameCG
     protected void writeBody(Device d, SFrame frame)
         throws IOException
     {
-        Icon backgroundImage = frame.getBackgroundImage();
-        String backgroundURL = frame.getBackgroundURL();
+        SIcon backgroundImage = frame.getBackgroundImage();
 
         Color backgroundcolor = frame.getBackground();
         Color textcolor = frame.getTextColor();
@@ -44,14 +41,9 @@ public final class FrameCG
 
         d.append("<body");
 
-        if (backgroundURL == null)
-            if (backgroundImage != null) {
-                ExternalizeManager ext = frame.getExternalizeManager();
-                backgroundURL = ext.externalize(backgroundImage);
-            }
-        if (backgroundURL != null) {
+        if (backgroundImage != null) {
             d.append(" background=\"");
-            d.append(backgroundURL);
+            d.append(backgroundImage.getURL());
             d.append("\"");
         }
         if (backgroundcolor != null) {

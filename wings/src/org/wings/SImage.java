@@ -39,8 +39,8 @@ public class SImage
     /**
      * TODO: documentation
      */
-    protected ImageIcon image = null;
-
+    protected SImageIcon image = null;
+    
     /**
      * TODO: documentation
      */
@@ -95,7 +95,7 @@ public class SImage
      *
      * @param img
      */
-    public SImage(ImageIcon img) {
+    public SImage(SImageIcon img) {
         setImage(img);
     }
 
@@ -136,7 +136,7 @@ public class SImage
      */
     public void setImage(Image img) {
         if ( img!=null)
-            setImage(new ImageIcon(img));
+            setImage(new SImageIcon(new ImageIcon(img)));
     }
 
     /**
@@ -144,7 +144,7 @@ public class SImage
      *
      * @param img
      */
-    public void setImage(ImageIcon img) {
+    public void setImage(SImageIcon img) {
         image = img;
     }
 

@@ -91,10 +91,6 @@ public class ExternalizeManager extends AbstractExternalizeManager
         }
     }
 
-    /**
-     * TODO: documentation
-     *
-     */
     protected final void storeExternalizedInfo(String identifier,
                                                ExternalizedInfo extInfo) {
         debug("store identifier " + identifier);
@@ -104,10 +100,6 @@ public class ExternalizeManager extends AbstractExternalizeManager
         externalized.put(identifier, extInfo);
     }
 
-    /**
-     * TODO: documentation
-     *
-     */
     public final ExternalizedInfo getExternalizedInfo(String identifier) {
         if ( identifier == null || identifier.length() < 1 )
             return null;
@@ -121,10 +113,6 @@ public class ExternalizeManager extends AbstractExternalizeManager
         return (ExternalizedInfo)externalized.get(identifier);
     }
 
-    /**
-     * TODO: documentation
-     *
-     */
     protected final void removeExternalizedInfo(String identifier) {
         externalized.remove(identifier);
     }
@@ -170,7 +158,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
         if ( externalizer == null ) {
             System.err.println("could not find externalizer for " +
                                obj.getClass().getName());
-            return notFoundIdentifier;
+            return NOT_FOUND_IDENTIFIER;
         }
 
         return externalize(obj, externalizer, flags);
@@ -224,7 +212,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
         if ( externalizer == null ) {
             System.err.println("could not find externalizer for " +
                                obj.getClass().getName());
-            return notFoundIdentifier;
+            return NOT_FOUND_IDENTIFIER;
         }
 
         return externalize(obj, externalizer, headers, flags);

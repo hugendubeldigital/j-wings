@@ -14,9 +14,7 @@
 
 package org.wings;
 
-import java.net.URL;
-
-import javax.swing.*;
+//import javax.swing.*;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
@@ -45,22 +43,12 @@ public class SLabel
     /**
      * The icon to be displayed
      */
-    protected Icon icon = null;
+    protected SIcon icon = null;
 
     /**
      * TODO: documentation
      */
-    protected String iconAddress = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected Icon disabledIcon = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected String disabledIconAddress = null;
+    protected SIcon disabledIcon = null;
 
     private int verticalTextPosition = CENTER;
     private int horizontalTextPosition = RIGHT;
@@ -98,7 +86,7 @@ public class SLabel
      *
      * @param icon The image to be displayed by the label.
      */
-    public SLabel(Icon icon) {
+    public SLabel(SIcon icon) {
         this(icon, LEFT);
     }
 
@@ -112,7 +100,7 @@ public class SLabel
      *        <code>LEFT</code>, <code>CENTER</code>, <code>RIGHT</code>.
      * @see SConstants
      */
-    public SLabel(Icon icon, int horizontalAlignment) {
+    public SLabel(SIcon icon, int horizontalAlignment) {
         this(null, icon, horizontalAlignment);
     }
 
@@ -123,7 +111,7 @@ public class SLabel
      * @param text The text to be displayed by the label.
      * @param icon The image to be displayed by the label.
      */
-    public SLabel(String text, Icon icon) {
+    public SLabel(String text, SIcon icon) {
         setText(text);
         setIcon(icon);
         setHorizontalAlignment(LEFT);
@@ -140,7 +128,7 @@ public class SLabel
      *        <code>LEFT</code>, <code>CENTER</code>, <code>RIGHT</code>.
      * @see SConstants
      */
-    public SLabel(String text, Icon icon, int horizontalAlignment) {
+    public SLabel(String text, SIcon icon, int horizontalAlignment) {
         setText(text);
         setIcon(icon);
         setHorizontalAlignment(horizontalAlignment);
@@ -256,35 +244,11 @@ public class SLabel
      *
      * @param i
      */
-    public void setIcon(Icon i) {
-        Icon oldIcon = icon;
-        icon = i;
-        if ((icon == null && oldIcon != null) ||
-            (icon != null && !icon.equals(oldIcon)))
+    public void setIcon(SIcon i) {
+        if ( i!=icon || i!=null && !i.equals(icon) ) {
+            icon = i;
             reload();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setIcon(URL i) {
-        if ( i!=null)
-            setIcon(i.toString());
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param url
-     */
-    public void setIcon(String url) {
-        String oldIconAddress = iconAddress;
-        iconAddress = url;
-        if ((iconAddress == null && oldIconAddress != null) ||
-            (iconAddress != null && !iconAddress.equals(oldIconAddress)))
-            reload();
+        }
     }
 
     /**
@@ -292,53 +256,20 @@ public class SLabel
      *
      * @return
      */
-    public Icon getIcon() {
+    public SIcon getIcon() {
         return icon;
     }
 
     /**
      * TODO: documentation
      *
-     * @return
-     */
-    public String getIconAddress() {
-        return iconAddress;
-    }
-
-    /**
-     * TODO: documentation
-     *
      * @param i
      */
-    public void setDisabledIcon(Icon i) {
-        Icon oldDisabledIcon = disabledIcon;
-        disabledIcon = i;
-        if ((disabledIcon == null && oldDisabledIcon != null) ||
-            (disabledIcon != null && !disabledIcon.equals(oldDisabledIcon)))
+    public void setDisabledIcon(SIcon i) {
+        if ( i!=icon || i!=null && !i.equals(disabledIcon) ) {
+            disabledIcon = i;
             reload();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setDisabledIcon(URL i) {
-        if ( i!=null)
-            setDisabledIcon(i.toString());
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param url
-     */
-    public void setDisabledIcon(String url) {
-        String oldDisabledIconAddress = disabledIconAddress;
-        disabledIconAddress = url;
-        if ((disabledIconAddress == null && oldDisabledIconAddress != null) ||
-            (disabledIconAddress != null && !disabledIconAddress.equals(oldDisabledIconAddress)))
-            reload();
+        }
     }
 
     /**
@@ -346,20 +277,8 @@ public class SLabel
      *
      * @return
      */
-    public Icon getDisabledIcon() {
-        if(disabledIcon == null)
-            if(icon != null && icon instanceof ImageIcon)
-                disabledIcon = new ImageIcon(GrayFilter.createDisabledImage(((ImageIcon)icon).getImage()));
+    public SIcon getDisabledIcon() {
         return disabledIcon;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getDisabledIconAddress() {
-        return disabledIconAddress;
     }
 
     /**
@@ -378,11 +297,10 @@ public class SLabel
      * @param t The new text
      */
     public void setText(String t) {
-        String oldText = text;
-        text = t;
-        if ((text == null && oldText != null) ||
-            (text != null && !text.equals(oldText)))
+        if ( t!=text || t!=null && !t.equals(text) ) {
+            text = t;
             reload();
+        }
     }
 
     /**

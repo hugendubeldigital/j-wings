@@ -14,13 +14,6 @@
 
 package org.wings;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.net.URL;
-
-import javax.swing.ImageIcon;
-import javax.swing.Icon;
-
 import org.wings.plaf.*;
 import org.wings.style.*;
 import org.wings.io.Device;
@@ -62,22 +55,12 @@ public class SCheckBox extends SButton
     /**
      * TODO: documentation
      */
-    protected Icon selectedIcon = DEFAULT_SELECTED_ICON;
+    protected SIcon selectedIcon = DEFAULT_SELECTED_ICON;
 
     /**
      * TODO: documentation
      */
-    protected String selectedIconAddress = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected Icon disabledSelectedIcon = DEFAULT_DISABLED_SELECTED_ICON;
-
-    /**
-     * TODO: documentation
-     */
-    protected String disabledSelectedIconAddress = null;
+    protected SIcon disabledSelectedIcon = DEFAULT_DISABLED_SELECTED_ICON;
 
     /**
      * TODO: documentation
@@ -92,7 +75,7 @@ public class SCheckBox extends SButton
     /**
      * TODO: documentation
      */
-    protected Icon backupIcon = null;
+    protected SIcon backupIcon = null;
 
     /**
      * TODO: documentation
@@ -102,12 +85,7 @@ public class SCheckBox extends SButton
     /**
      * TODO: documentation
      */
-    protected Icon backupDisabledIcon = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected String backupDisabledIconAdr = null;
+    protected SIcon backupDisabledIcon = null;
 
     /**
      * TODO: documentation
@@ -171,35 +149,11 @@ public class SCheckBox extends SButton
      *
      * @param i
      */
-    public void setSelectedIcon(Icon i) {
-        Icon oldSelectedIcon = selectedIcon;
-        selectedIcon = i;
-        if ((selectedIcon == null && oldSelectedIcon != null) ||
-            selectedIcon != null && !selectedIcon.equals(oldSelectedIcon))
+    public void setSelectedIcon(SIcon i) {
+        if ( i!=selectedIcon || i!=null && !i.equals(selectedIcon) ) {
+            selectedIcon = i;
             reload();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setSelectedIcon(URL i) {
-        if (i != null)
-            setSelectedIcon(i.toString());
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param url
-     */
-    public void setSelectedIcon(String url) {
-        String oldSelectedIconAddress = selectedIconAddress;
-        selectedIconAddress = url;
-        if ((selectedIconAddress == null && oldSelectedIconAddress != null) ||
-            selectedIconAddress != null && !selectedIconAddress.equals(oldSelectedIconAddress))
-            reload();
+        } 
     }
 
     /**
@@ -207,53 +161,21 @@ public class SCheckBox extends SButton
      *
      * @return
      */
-    public Icon getSelectedIcon() {
+    public SIcon getSelectedIcon() {
         return selectedIcon;
     }
 
     /**
      * TODO: documentation
      *
-     * @return
-     */
-    public String getSelectedIconAddress() {
-        return selectedIconAddress;
-    }
-
-    /**
-     * TODO: documentation
-     *
      * @param i
      */
-    public void setDisabledSelectedIcon(Icon i) {
-        Icon oldDisabledSelectedIcon = disabledSelectedIcon;
-        disabledSelectedIcon = i;
-        if ((disabledSelectedIcon == null && oldDisabledSelectedIcon != null) ||
-            disabledSelectedIcon != null && !disabledSelectedIcon.equals(oldDisabledSelectedIcon))
+    public void setDisabledSelectedIcon(SIcon i) {
+        if ( i!=disabledSelectedIcon || 
+             i!=null && !i.equals(disabledSelectedIcon) ) {
+            disabledSelectedIcon = i;
             reload();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setDisabledSelectedIcon(URL i) {
-        if ( i!=null)
-            setDisabledSelectedIcon(i.toString());
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param url
-     */
-    public void setDisabledSelectedIcon(String url) {
-        String oldDisabledSelectedIconAddress = disabledSelectedIconAddress;
-        disabledSelectedIconAddress = url;
-        if ((disabledSelectedIconAddress == null && oldDisabledSelectedIconAddress != null) ||
-            disabledSelectedIconAddress != null && !disabledSelectedIconAddress.equals(oldDisabledSelectedIconAddress))
-            reload();
+        } 
     }
 
     /**
@@ -261,17 +183,8 @@ public class SCheckBox extends SButton
      *
      * @return
      */
-    public Icon getDisabledSelectedIcon() {
+    public SIcon getDisabledSelectedIcon() {
         return disabledSelectedIcon;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getDisabledSelectedIconAddress() {
-        return disabledSelectedIconAddress;
     }
 
     /**
@@ -349,8 +262,6 @@ public class SCheckBox extends SButton
      *
      */
     public void backupIcons() {
-        backupDisabledIconAdr = getDisabledIconAddress();
-        backupIconAdr = getIconAddress();
         backupDisabledIcon = getDisabledIcon();
         backupIcon = getIcon();
     }
@@ -360,8 +271,6 @@ public class SCheckBox extends SButton
      *
      */
     public void restoreIcons() {
-        setDisabledIcon(backupDisabledIconAdr);
-        setIcon(backupIconAdr);
         setDisabledIcon(backupDisabledIcon);
         setIcon(backupIcon);
     }

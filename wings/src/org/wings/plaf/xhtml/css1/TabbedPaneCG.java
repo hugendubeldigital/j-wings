@@ -15,24 +15,22 @@
 package org.wings.plaf.xhtml.css1;
 
 import java.io.IOException;
-import javax.swing.Icon;
 
 import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.plaf.xhtml.*;
 import org.wings.style.Style;
-import org.wings.externalizer.ExternalizeManager;
 
 public final class TabbedPaneCG
     extends org.wings.plaf.xhtml.TabbedPaneCG
 {
-    Icon firstIcon;
-    Icon normalIcon;
-    Icon selectedIcon;
-    Icon lastIcon;
+    SIcon firstIcon;
+    SIcon normalIcon;
+    SIcon selectedIcon;
+    SIcon lastIcon;
 
-    Icon transIcon;
+    SIcon transIcon;
 
     public void installCG(SComponent component) {
         super.installCG(component);
@@ -53,27 +51,7 @@ public final class TabbedPaneCG
         SBorder border = c.getBorder();
         STabbedPane pane = (STabbedPane)c;
 
-        String firstAdr   = null;
-        String normalAdr  = null;
-        String selectAdr  = null;
-        String lastAdr    = null;
-        String transAdr   = null;
         int maxTabsPerLine = pane.getMaxTabsPerLine();
-
-        ExternalizeManager ext = c.getExternalizeManager();
-        if (ext != null && firstIcon != null) {
-            try {
-                firstAdr   = ext.externalize(firstIcon);
-                normalAdr = ext.externalize(normalIcon);
-                selectAdr = ext.externalize(selectedIcon);
-                lastAdr   = ext.externalize(lastIcon);
-                transAdr   = ext.externalize(transIcon);
-            }
-            catch (Exception e) {
-                System.err.println(e.getMessage());
-                e.printStackTrace(System.err);
-            }
-        }
 
         SContainer buttons;
         SContainer contents;
@@ -107,8 +85,8 @@ public final class TabbedPaneCG
         for (int i=0; i < buttons.getComponentCount(); i++) {
             d.append("<img src=\"")
                 .append(newLine 
-                        ? firstAdr 
-                        : (selected) ? selectAdr : normalAdr)
+                        ? firstIcon.getURL() 
+                        : (selected) ? selectedIcon.getURL() : normalIcon.getURL())
                 .append("\" />");
             newLine = false;
             SRadioButton button = (SRadioButton)buttons.getComponentAt(i);
@@ -125,14 +103,14 @@ public final class TabbedPaneCG
             button.write(d);
 
             if ( maxTabsPerLine > 0 && ((i+1) % maxTabsPerLine == 0) ) {
-                d.append("<img src=\"").append(lastAdr).append("\" />");
+                d.append("<img src=\"").append(lastIcon.getURL()).append("\" />");
                 d.append("<br />");
                 newLine = true;
             }
         }
         if (!newLine) {
             // closed tab if not already written..
-            d.append("<img src=\"").append(lastAdr).append("\" />");
+            d.append("<img src=\"").append(lastIcon.getURL()).append("\" />");
         }
 
         d.append("<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"1\"><tr><td>");

@@ -17,7 +17,6 @@ package org.wings.plaf;
 import java.awt.*;
 import java.io.*;
 import java.net.*;
-import javax.swing.*;
 
 import org.wings.*;
 import org.wings.session.*;
@@ -131,8 +130,8 @@ public class CGManager
      * is delegated to the laf's defaults table.
      * @param key the lookup key
      */
-    public Icon getIcon(String key) {
-        return (Icon)getDefaults().get(key, Icon.class);
+    public SIcon getIcon(String key) {
+        return (SIcon)getDefaults().get(key, SIcon.class);
     }
 
     private CGDefaults defaults = null;

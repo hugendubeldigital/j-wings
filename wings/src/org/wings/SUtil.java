@@ -15,8 +15,6 @@
 package org.wings;
 
 import java.awt.Color;
-import java.io.*;
-import javax.swing.*;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
@@ -210,7 +208,7 @@ public final class SUtil
      * TODO: documentation
      * @deprecated Use ResourceImageIcon
      */
-    public static ImageIcon makeIcon(Object o, String fileName) {
+    public static SIcon makeIcon(Object o, String fileName) {
         if ( o==null )
             return null;
 
@@ -225,36 +223,8 @@ public final class SUtil
      * @return image icon
      * @deprecated Use ResourceImageIcon
      */
-    public static ImageIcon makeIcon(Class baseClass, String fileName) {
+    public static SIcon makeIcon(Class baseClass, String fileName) {
         return new ResourceImageIcon(baseClass, fileName);
-        /*
-        InputStream resource = null;
-        try {
-            resource = baseClass.getResourceAsStream(fileName);
-            if (resource == null) // not found
-                return null;
-
-            byte[] buffer = new byte[resource.available()];
-            resource.read(buffer);
-
-            if (buffer.length <= 1) {  //workaround for windows
-                // System.err.println(fileName + " is empty");
-                return new ImageIcon(baseClass.getResource(fileName));
-            }
-            return new ImageIcon(buffer);
-        }
-        catch (IOException ioe) {
-            System.err.println(ioe.toString());
-            return null;
-        }
-        finally {
-            try {
-                resource.close();
-            }
-            catch(Exception e) { // ignore
-            }
-        }
-        */
     }
 }
 

@@ -31,7 +31,7 @@ public class TreeCG
 {
     private final static String propertyPrefix = "Tree";
     private final static String nodePropertyPrefix = "TreeNode";
-	private final SImage blindGif = new SImage( new ResourceImageIcon("org/wings/icons/blind.gif") );
+    private final SImage blindGif = new SImage( new ResourceImageIcon("org/wings/icons/blind.gif") );
     
     protected String getPropertyPrefix() {
         return propertyPrefix;
@@ -52,8 +52,8 @@ public class TreeCG
             count = viewport.height;
         }
 
-		blindGif.setWidth( tree.getNodeIndentDepth() );
-		blindGif.setHeight( 1 );
+        blindGif.setWidth( tree.getNodeIndentDepth() );
+        blindGif.setHeight( 1 );
 
         int depth = tree.getMaximumExpandedDepth(); // - ( ( tree.isRootVisible() )?0:1 );
         d.append("<table border=\"0\" cellpadding=\"0\"");

@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-import javax.swing.Icon;
-
 import org.wings.*;
 import org.wings.io.Device;
 import org.wings.io.StringBufferDevice;
@@ -89,7 +87,7 @@ public class SFrame
     private Color vLinkColor = null;
     private Color aLinkColor = null;
 
-    private Icon backgroundImage = null;
+    private SIcon backgroundImage = null;
     private String backgroundURL = null;
 
     /**
@@ -169,7 +167,7 @@ public class SFrame
     /**
      * Set the background image.
      */
-    public void setBackgroundImage(Icon icon) {
+    public void setBackgroundImage(SIcon icon) {
         backgroundImage = icon;
     }
 
@@ -178,7 +176,7 @@ public class SFrame
      *
      * @return
      */
-    public Icon getBackgroundImage() {
+    public SIcon getBackgroundImage() {
         return backgroundImage;
     }
 

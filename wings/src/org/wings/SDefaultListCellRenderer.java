@@ -83,13 +83,13 @@ public class SDefaultListCellRenderer
             setStyle(textNonSelectionStyle);
         }
         
-        if (value instanceof Icon) {
+        if (value instanceof SIcon) {
             setText(null);
-            setIcon((Icon)value);
+            setIcon((SIcon)value);
         }
         else {
             setText((value != null) ? value.toString() : "");
-            setIcon((Icon)null);
+            setIcon(null);
         }
         return this;
     }

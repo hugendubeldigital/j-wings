@@ -21,13 +21,21 @@ import java.util.Set;
 /**
  * Externalizer Interface
  *
+ * The {@link ExternalizeManager} uses a Externalizer to deliver a java object to a
+ * client over a http connection. A Externalizer must be 
+ * {@link ExternalizeManager.addExternalizer registered} at the
+ * {@link ExternalizeManager} of the actual 
+ * {@link org.wings.session.Session Session} to work seamless. 
+ *
  * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
+ * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public interface Externalizer
 {
     /**
-     * returns the file extension of the given object
+     * returns the file extension of the given object. Some (old) browsers use
+     * this information instead of the mime type
      */
     String getExtension( Object obj );
 
@@ -37,28 +45,33 @@ public interface Externalizer
     String getMimeType( Object obj );
 
     /**
-     * returns the externalized length of this Object
+     * returns the externalized length of this Object. This value is set as
+     * content length in the HttpServletResponse. If it return -1 no content
+     * length is set.
      */
     int getLength( Object obj );
 
     /**
-     * returns true if the object is stable, false if transient.
+     * returns true if the object is final, false if transient. It is used to
+     * control the caching in the browser. 
      */
     boolean isFinal( Object obj );
 
     /**
-     * writes the given object into the given stream
+     * writes the given object into the given stream. 
      */
     void write( Object obj, OutputStream out )
         throws IOException;
 
     /**
-     * returns the supported class
+     * returns the supported classes. The {@link ExternalizeManager} chooses the
+     * Externalizer (if not specified as parameter) by objects class.
      */
     Class[] getSupportedClasses();
 
     /**
-     * returns the supported class
+     * returns the supported mime types. The {@link ExternalizeManager} chooses the
+     * Externalizer by mime type (if specified as parameter)
      */
     String[] getSupportedMimeTypes();
     

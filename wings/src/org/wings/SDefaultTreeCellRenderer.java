@@ -14,13 +14,10 @@
 
 package org.wings;
 
-import java.awt.Image;
 import java.awt.Color;
 import java.io.IOException;
 
 import javax.swing.tree.*;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 
 import org.wings.io.Device;
 import org.wings.plaf.*;
@@ -56,13 +53,13 @@ public class SDefaultTreeCellRenderer
     protected Style textNonSelectionStyle = null;
 
     /** Icon used to show non-leaf nodes that aren't expanded. */
-    transient protected Icon closedIcon = null;
+    transient protected SIcon closedIcon = null;
 
     /** Icon used to show leaf nodes. */
-    transient protected Icon leafIcon = null;
+    transient protected SIcon leafIcon = null;
 
     /** Icon used to show non-leaf nodes that are expanded. */
-    transient protected Icon openIcon = null;
+    transient protected SIcon openIcon = null;
 
     /**
      * TODO: documentation
@@ -296,7 +293,7 @@ public class SDefaultTreeCellRenderer
      *
      * @param newIcon
      */
-    public void setOpenIcon(Icon newIcon) {
+    public void setOpenIcon(SIcon newIcon) {
         openIcon = newIcon;
     }
 
@@ -305,7 +302,7 @@ public class SDefaultTreeCellRenderer
      *
      * @return
      */
-    public Icon getOpenIcon() {
+    public SIcon getOpenIcon() {
         return openIcon;
     }
 
@@ -314,7 +311,7 @@ public class SDefaultTreeCellRenderer
      *
      * @param newIcon
      */
-    public void setClosedIcon(Icon newIcon) {
+    public void setClosedIcon(SIcon newIcon) {
         closedIcon = newIcon;
     }
 
@@ -324,7 +321,7 @@ public class SDefaultTreeCellRenderer
      *
      * @return
      */
-    public Icon getClosedIcon() {
+    public SIcon getClosedIcon() {
         return closedIcon;
     }
 
@@ -333,7 +330,7 @@ public class SDefaultTreeCellRenderer
      *
      * @param newIcon
      */
-    public void setLeafIcon(Icon newIcon) {
+    public void setLeafIcon(SIcon newIcon) {
         leafIcon = newIcon;
     }
 
@@ -342,7 +339,7 @@ public class SDefaultTreeCellRenderer
      *
      * @return
      */
-    public Icon getLeafIcon() {
+    public SIcon getLeafIcon() {
         return leafIcon;
     }
 }

@@ -14,6 +14,7 @@
 
 package org.wings.template;
 
+import org.wings.SURLIcon;
 import org.wings.SComponent;
 import org.wings.SButton;
 
@@ -34,7 +35,7 @@ public class SButtonPropertyManager
     public void setProperty(SComponent comp, String name, String value) {
         SButton c = (SButton) comp;
         if ( name.equals("ICON") )
-            c.setIcon(value);
+            c.setIcon(new SURLIcon(value));
         else if ( name.equals("TEXT") )
             c.setText(value);
         else if ( name.equals("TARGET") )

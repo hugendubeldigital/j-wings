@@ -148,7 +148,7 @@ public class LookAndFeel
      * @return a newly allocated Icon
      * @deprecated give the <code>classLoader</code> instead the <code>baseClass</code>
      */
-    public static Icon makeIcon(Class baseClass, String fileName) {
+    public static SIcon makeIcon(Class baseClass, String fileName) {
         return new ResourceImageIcon(baseClass, fileName);
     }
 
@@ -159,7 +159,7 @@ public class LookAndFeel
      * @param fileName of the image file
      * @return a newly allocated Icon
      */
-    public static Icon makeIcon(ClassLoader classLoader, String fileName) {
+    public static SIcon makeIcon(ClassLoader classLoader, String fileName) {
         return new ResourceImageIcon(classLoader, fileName);
     }
 
@@ -172,7 +172,7 @@ public class LookAndFeel
      * @param fileName of the image file
      * @return a newly allocated Icon
      */
-    public Icon makeIcon(String fileName) {
+    public SIcon makeIcon(String fileName) {
         return makeIcon(classLoader, fileName);
     }
 

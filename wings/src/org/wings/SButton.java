@@ -17,8 +17,7 @@ package org.wings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.*;
-import java.net.URL;
-import javax.swing.*;
+import javax.swing.Action;
 
 import java.util.ArrayList;
 
@@ -29,7 +28,6 @@ import org.wings.externalizer.ExternalizeManager;
 /**
  * TODO: documentation
  *
- * @author Dominik Bartenstein
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */

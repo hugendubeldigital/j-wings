@@ -55,7 +55,7 @@ public class ResourceImageIcon
     }
 
     public ResourceImageIcon(ClassLoader classLoader, String resourceFileName) {
-        super(getImageData(classLoader, resourceFileName));
+        super(getImage(classLoader, resourceFileName));
         this.classLoader = classLoader;
         this.resourceFileName = resourceFileName;
         extension = resourceFileName.substring(resourceFileName.lastIndexOf('.') + 1);
@@ -110,6 +110,10 @@ public class ResourceImageIcon
             fileName = fileName.substring(1);
         }
         return fileName;
+    }
+
+    private static ImageIcon getImage(ClassLoader classLoader, String resourceFileName) {
+        return new ImageIcon(getImageData(classLoader, resourceFileName));
     }
 
     private static byte[] getImageData(ClassLoader classLoader, String resourceFileName) {

@@ -16,10 +16,8 @@ package org.wings.plaf.xhtml.css1;
 
 import java.awt.Color;
 import java.io.IOException;
-import javax.swing.Icon;
 
 import org.wings.*;
-import org.wings.externalizer.*;
 import org.wings.event.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
@@ -31,7 +29,7 @@ import org.wings.util.CGUtil;
 public final class DialogCG
     extends org.wings.plaf.xhtml.DialogCG
 {
-    private Icon close;
+    private SIcon close;
 
     public void installCG(SComponent component) {
         super.installCG(component);
@@ -42,18 +40,11 @@ public final class DialogCG
         throws IOException
     {
         SDialog dialog = (SDialog)c;
-        String iconAdr = null;
-        String closeAdr = null;
         int cols = 0;
 
         String text = dialog.getTitle();
         if (text == null)
             text = "Dialog";
-
-        ExternalizeManager ext = c.getExternalizeManager();
-        if (ext != null) {
-            closeAdr = ext.externalize(close);
-        }
 
         SGetAddress addr;
 
@@ -68,7 +59,7 @@ public final class DialogCG
             .append("</b></td>");
         cols ++;
 
-        if (closeAdr != null) {
+        if (close != null) {
             SFrame frame = dialog.getParentFrame();
             addr = frame.getServerAddress();
             addr.add(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_CLOSED);
@@ -76,7 +67,7 @@ public final class DialogCG
             d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
                 .append(addr)
                 .append("\"><img src=\"")
-                .append(closeAdr)
+                .append(close.getURL())
                 .append("\" width=\"16\" height=\"16\" border=\"0\"></a></td>");
             cols ++;
         }

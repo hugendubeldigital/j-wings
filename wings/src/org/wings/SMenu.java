@@ -17,9 +17,6 @@ package org.wings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.*;
-import java.util.Vector;
-import java.net.URL;
-import javax.swing.*;
 
 import java.util.ArrayList;
 
@@ -31,7 +28,6 @@ import org.wings.externalizer.ExternalizeManager;
  * TODO: documentation
  *
  * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
- * @author Dominik Bartenstein
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
@@ -62,7 +58,7 @@ public class SMenu extends SButton
      *
      * @param i
      */
-    public SMenu(Icon i) {
+    public SMenu(SIcon i) {
         super(i);
         setIcon(i);
     }
@@ -100,7 +96,7 @@ public class SMenu extends SButton
     public void setParentFrame(SFrame f) {
         super.setParentFrame(f);
         for ( int i = 0; i < fItems.size(); i++ )
-            ((SComponent) fItems.elementAt( i )).setParentFrame( f );
+            ((SComponent) fItems.get( i )).setParentFrame( f );
     }
 
     /**
@@ -112,7 +108,7 @@ public class SMenu extends SButton
 
 
     public SComponent getMenuComponent(int pos) {
-        return (SComponent)fItems.elementAt(pos);
+        return (SComponent)fItems.get(pos);
     }
 
     /**
@@ -152,7 +148,7 @@ public class SMenu extends SButton
         private SMenu fMenu = null;
     }
 
-    protected Vector fItems = new Vector();
+    protected ArrayList fItems = new ArrayList();
 }
 
 /*

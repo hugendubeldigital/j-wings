@@ -16,13 +16,10 @@ package org.wings.plaf.xhtml;
 
 import java.io.IOException;
 
-import javax.swing.Icon;
-
 import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.util.*;
-import org.wings.externalizer.ExternalizeManager;
 
 public class MenuItemCG
     extends org.wings.plaf.AbstractComponentCG
@@ -53,13 +50,12 @@ public class MenuItemCG
     protected void writeAnchorButton(Device d, SButton button)
         throws IOException
     {
-        Icon icon = button.getIcon();
+        SIcon icon = button.getIcon();
         String text = button.getText();
         int horizontalTextPosition = button.getHorizontalTextPosition();
         int verticalTextPosition = button.getVerticalTextPosition();
-        String iconAddress = button.getIconAddress();
 
-        if (icon == null && iconAddress == null)
+        if (icon == null )
             writeAnchorText(d, button);
         else if (text == null)
             writeAnchorIcon(d, button);
@@ -137,55 +133,28 @@ public class MenuItemCG
     protected void writeAnchorIcon(Device d, SButton button, String align)
         throws IOException
     {
-        String text = button.getText();
-        String iconAddress = button.getIconAddress();
-        String disabledIconAddress = button.getDisabledIconAddress();
-        Icon icon = button.getIcon();
-        Icon disabledIcon = button.getDisabledIcon();
-        String tooltip = button.getToolTipText();
+        SIcon icon = button.isEnabled() ? button.getIcon() :
+            button.getDisabledIcon();
 
-        String iAdr = null;
-        Icon ic = null;
-
-        if (!button.isEnabled()){
-            if (disabledIconAddress != null)
-                iAdr = disabledIconAddress;
-            else if (disabledIcon != null)
-                ic = disabledIcon;
-
-			/*
-			*/
-            if (ic == null && iAdr == null)
-                if (iconAddress != null)
-                    iAdr = iconAddress;
-                else if (icon != null)
-                    ic = icon;
-        } else {
-            if (iconAddress != null)
-                iAdr = iconAddress.toString();
-            else if (icon != null)
-                ic = icon;
-        }
-
-        if (ic != null) {
-            ExternalizeManager ext = button.getExternalizeManager();
-            if (ext != null) {
-                iAdr = ext.externalize(ic);
-            }
-        }
-        else if(icon != null)
-            ic = icon;
-
-        if (iAdr != null) {
+        if (icon != null) {
             writeAnchorPrefix(d, button);
-            d.append("<img src=\"").append(iAdr).append("\"");
+            d.append("<img src=\"").append(icon.getURL()).append("\"");
             if (align != null)
                 d.append(" align=\"").append(align).append("\"");
-            if (ic != null) {
-                d.append(" width=\"").append(ic.getIconWidth()).append("\"");
-                d.append(" height=\"").append(ic.getIconHeight()).append("\"");
-            }
+
+            
+            if ( icon.getIconWidth() > 0)
+                d.append(" width=\"").append(icon.getIconWidth()).append("\"");
+
+            if ( icon.getIconHeight() > 0)
+                d.append(" height=\"").append(icon.getIconHeight()).append("\"");
+
             d.append(" border=\"0\"");
+
+
+            String text = button.getText();
+            String tooltip = button.getToolTipText();
+
 
             if (tooltip != null) {
                 d.append(" alt=\"").append(tooltip).append("\"");
@@ -248,13 +217,12 @@ public class MenuItemCG
     protected void writeFormButton(Device d, SButton button)
         throws IOException
     {
-        Icon icon = button.getIcon();
+        SIcon icon = button.getIcon();
         String text = button.getText();
         int horizontalTextPosition = button.getHorizontalTextPosition();
         int verticalTextPosition = button.getVerticalTextPosition();
-        String iconAddress = button.getIconAddress();
 
-        if (icon == null && iconAddress == null)
+        if (icon == null )
             writeFormText(d, button);
         else if (text == null)
             writeFormIcon(d, button);
@@ -338,51 +306,23 @@ public class MenuItemCG
     protected void writeFormIcon(Device d, SButton button)
         throws IOException
     {
-        String text = button.getText();
-        String iconAddress = button.getIconAddress();
-        String disabledIconAddress = button.getDisabledIconAddress();
-        Icon icon = button.getIcon();
-        Icon disabledIcon = button.getDisabledIcon();
-        String tooltip = button.getToolTipText();
+        SIcon icon = button.isEnabled() ? button.getIcon() :
+            button.getDisabledIcon();
 
-        String iAdr = null;
-        Icon ic = null;
-
-        if (!button.isEnabled()){
-            if (disabledIconAddress != null)
-                iAdr = disabledIconAddress;
-            else if (disabledIcon != null)
-                ic = disabledIcon;
-
-            if (ic == null)
-                if (iconAddress != null)
-                    iAdr = iconAddress;
-                else if (icon != null)
-                    ic = icon;
-        } else {
-            if (iconAddress != null)
-                iAdr = iconAddress;
-            else if (icon != null)
-                ic = icon;
-        }
-
-        if (ic != null) {
-            ExternalizeManager ext = button.getExternalizeManager();
-            if (ext != null) {
-                iAdr = ext.externalize(ic);
-            }
-        }
-        else if(icon != null)
-            ic = icon;
-
-        if (iAdr != null) {
+        if (icon != null) {
             d.append("<input type=\"image\"");
-            d.append(" src=\"").append(iAdr).append("\"");
-            if (ic != null) {
-                d.append(" width=\"").append(ic.getIconWidth()).append("\"");
-                d.append(" height=\"").append(ic.getIconHeight()).append("\"");
-            }
+            d.append(" src=\"").append(icon.getURL()).append("\"");
+            
+            if ( icon.getIconWidth() > 0)
+                d.append(" width=\"").append(icon.getIconWidth()).append("\"");
+
+            if ( icon.getIconHeight() > 0)
+                d.append(" height=\"").append(icon.getIconHeight()).append("\"");
+
             d.append(" border=\"0\"");
+
+            String text = button.getText();
+            String tooltip = button.getToolTipText();
 
             d.append(" name=\"").append(button.getNamePrefix()).append("\"");
             d.append(" value=\"").append(text).append("\"");

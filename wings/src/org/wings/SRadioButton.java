@@ -14,11 +14,7 @@
 
 package org.wings;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import javax.swing.ImageIcon;
 
-import org.wings.io.*;
 import org.wings.plaf.*;
 
 /**
@@ -37,16 +33,16 @@ public class SRadioButton
 {
     private static final String cgClassID = "RadioButtonCG";
 
-    private static ImageIcon DEFAULT_SELECTED_ICON =
+    private static ResourceImageIcon DEFAULT_SELECTED_ICON =
         new ResourceImageIcon(SRadioButton.class, "icons/SelectedRadioButton.gif");
 
-    private static ImageIcon DEFAULT_NOT_SELECTED_ICON =
+    private static ResourceImageIcon DEFAULT_NOT_SELECTED_ICON =
         new ResourceImageIcon(SRadioButton.class, "icons/NotSelectedRadioButton.gif");
 
-    private static ImageIcon DEFAULT_DISABLED_SELECTED_ICON =
+    private static ResourceImageIcon DEFAULT_DISABLED_SELECTED_ICON =
         new ResourceImageIcon(SRadioButton.class, "icons/DisabledSelectedRadioButton.gif");
 
-    private static ImageIcon DEFAULT_DISABLED_NOT_SELECTED_ICON =
+    private static ResourceImageIcon DEFAULT_DISABLED_NOT_SELECTED_ICON =
         new ResourceImageIcon(SRadioButton.class, "icons/DisabledNotSelectedRadioButton.gif");
 
     /**
