@@ -96,29 +96,25 @@ public class GridLayoutCG
 
             SComponent c = (SComponent)iter.next();
 
-            if (firstRow && header) {
-                d.print("<th");
-                Utils.printTableCellAlignment(d, c);
-                // Some containers (like SPanel) do not support background colors
-                // hence we support the background of them using the sourrounding gridlayout cell
-                if (c instanceof SContainer && c.isVisible()) {
-                   Utils.printTableCellColors(d, c);
-                }
-                d.print(">");                
-            }
-            else {
+            if (firstRow && header) 
+                d.print("<th");          
+            else 
                 d.print("<td");
-                Utils.printTableCellAlignment(d, c);
-                    d.print(" style=\"");
-                    Utils.writeAttributes(d,  c);
-                    d.print("\"");
-                // Some containers (like SPanel) do not support background colors
-                // hence we support the background of them using the sourrounding gridlayout cell
-                if (c instanceof SContainer && c.isVisible()) {
-                   Utils.printTableCellColors(d, c);
-                }
-                d.print(">");
+
+            Utils.printTableCellAlignment(d, c);
+            if (c instanceof SContainer && c.isVisible()) {
+               // Adapt inner styles (esp. width of containers)
+               // maybe better restrict to dimension styles only?
+               d.print(" style=\"");
+               Utils.writeAttributes(d,  c);
+               d.print("\"");                        
+                       
+               // Some containers (like SPanel) do not support 
+               // background colors, hence we render the background 
+               // of them using this surrounding gridlayout cell
+               Utils.printTableCellColors(d, c);
             }
+            d.print(">");            
 
             c.write(d);
 
