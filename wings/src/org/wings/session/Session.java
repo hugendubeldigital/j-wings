@@ -55,6 +55,8 @@ public class Session
     private int maxContentLength = 64;
 
     private final Set frames = new HashSet();
+    
+    private Browser browser;
 
     /**
      * listeners registered for {@link SRequestEvent}
@@ -105,7 +107,20 @@ public class Session
     private HttpServletRequest servletRequest;
     void setServletRequest(HttpServletRequest servletRequest) {
         this.servletRequest = servletRequest;
+        if (browser == null) {
+            try
+            {
+                browser = new Browser(servletRequest.getHeader("User-Agent"));
+            	logger.fine("User-Agent is "+browser);
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
     }
+    
+    
     public HttpServletRequest getServletRequest() {
         return servletRequest;
     }
@@ -157,6 +172,15 @@ public class Session
     void setExternalizeManager(ExternalizeManager em) {
         extManager = em;
     }
+
+	/**
+	 * Get the user agent (browser) used for
+	 * this session by the user.
+	 */
+	public Browser getUserAgent()
+	{
+	    return browser;
+	}
 
     /**
      * TODO: documentation
