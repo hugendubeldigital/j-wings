@@ -14,15 +14,10 @@
 
 package org.wings.template;
 
-import java.awt.Color;
-
-import java.util.StringTokenizer;
-
 import org.wings.SComponent;
-import org.wings.SFont;
-import org.wings.plaf.*;
-import org.wings.session.*;
-import org.wings.style.*;
+import org.wings.style.AttributeSet;
+
+import java.awt.*;
 
 /**
  * TODO: documentation
@@ -31,30 +26,30 @@ import org.wings.style.*;
  * @version $Revision$
  */
 public class SComponentPropertyManager
-    extends DefaultPropertyManager
-{
-    static final Class[] classes = { SComponent.class };
+        extends DefaultPropertyManager {
+    static final Class[] classes = {SComponent.class};
 
-    public SComponentPropertyManager() {}
+    public SComponentPropertyManager() {
+    }
 
     public void setProperty(SComponent comp, String name, String value) {
-        if ( "BACKGROUND".equals(name) )
+        if ("BACKGROUND".equals(name))
             comp.setBackground(Color.decode(value));
-        else if ( "FOREGROUND".equals(name) ) 
+        else if ("FOREGROUND".equals(name))
             comp.setForeground(Color.decode(value));
-        else if ( "FONT".equals(name) )
+        else if ("FONT".equals(name))
             comp.setFont(TemplateUtil.parseFont(value));
-        else if ( "TABINDEX".equals(name) )
+        else if ("TABINDEX".equals(name))
             comp.setFocusTraversalIndex(Integer.parseInt(value));
-        else if ( "STYLE".equals(name) ) {
+        else if ("STYLE".equals(name)) {
             PropertyValueConverter valueConverter = getValueConverter(AttributeSet.class);
-            comp.setAttributes((AttributeSet)valueConverter.convertPropertyValue(value, AttributeSet.class));
-        } else if ( "CLASS".equals(name) )
+            comp.setAttributes((AttributeSet) valueConverter.convertPropertyValue(value, AttributeSet.class));
+        } else if ("CLASS".equals(name)) {
             comp.setStyle(value);
-        else {
+        } else {
             super.setProperty(comp, name, value);
         } // end of else
-        
+
     }
 
     public Class[] getSupportedClasses() {
