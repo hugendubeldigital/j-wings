@@ -96,7 +96,7 @@ public final class CSS1LookAndFeel
 
         Object[] layoutCgDefaults = {
             // remove this later
-             "DefaultLayoutCG", "org.wings.plaf.xhtml." + "DefaultLayoutCG",
+            "DefaultLayoutCG", "org.wings.plaf.DefaultLayoutCG",
              "BorderLayoutCG", css1PackageName + "BorderLayoutCG",
                "CardLayoutCG", css1PackageName + "CardLayoutCG",
                "FlowLayoutCG", css1PackageName + "FlowLayoutCG",

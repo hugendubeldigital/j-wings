@@ -90,7 +90,7 @@ public final class OldLookAndFeel
         table.putDefaults(cgDefaults);
 
         Object[] layoutCgDefaults = {
-            "DefaultLayoutCG", "org.wings.plaf.xhtml." + "DefaultLayoutCG",
+            "DefaultLayoutCG", "org.wings.plaf.DefaultLayoutCG",
              "BorderLayoutCG", oldPackageName + "BorderLayoutCG",
                "CardLayoutCG", oldPackageName + "CardLayoutCG",
                "FlowLayoutCG", oldPackageName + "FlowLayoutCG",

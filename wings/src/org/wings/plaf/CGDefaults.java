@@ -24,7 +24,8 @@ import javax.swing.Icon;
 import org.wings.*;
 import org.wings.style.*;
 
-public class CGDefaults extends Hashtable
+public class CGDefaults
+    extends Hashtable
 {
     private PropertyChangeSupport changeSupport;
 

@@ -269,7 +269,7 @@ public class ButtonCG
         else {
             // Hauptsache, es funktioniert !!!
             if (verticalTextPosition == TOP && horizontalTextPosition == LEFT) {
-                d.append("<table><tr><TD valign=top>");
+                d.append("<table><tr><td valign=top>");
                 writeFormText(d, button);
                 d.append("</td><td>");
                 writeFormIcon(d, button);
@@ -281,7 +281,7 @@ public class ButtonCG
                 writeFormIcon(d, button);
                 d.append("</td></tr></table>\n");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == LEFT) {
-                d.append("<table><tr><TD valign=bottom>");
+                d.append("<table><tr><td valign=bottom>");
                 writeFormText(d, button);
                 d.append("</td><td>");
                 writeFormIcon(d, button);
@@ -305,21 +305,21 @@ public class ButtonCG
                 writeFormText(d, button);
                 d.append("</td></tr></table>\n");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == RIGHT) {
-                d.append("<table><tr><TD VALIGN=\"TOP\">");
+                d.append("<table><tr><td valign=\"top\">");
                 writeFormIcon(d, button);
-                d.append("</td><TD ALIGN=\"RIGHT\">");
+                d.append("</td><td align=\"right\">");
                 writeFormText(d, button);
                 d.append("</td></tr></table>\n");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == RIGHT) {
                 d.append("<table><tr><td>");
                 writeFormIcon(d, button);
-                d.append("</td><TD ALIGN=\"RIGHT\">");
+                d.append("</td><td align=\"right\">");
                 writeFormText(d, button);
                 d.append("</td></tr></table>\n");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == RIGHT) {
-                d.append("<table><tr><TD VALIGN=\"BOTTOM\">");
+                d.append("<table><tr><td valign=\"bottom\">");
                 writeFormIcon(d, button);
-                d.append("</td></tr><tr><TD ALIGN=\"RIGHT\">");
+                d.append("</td></tr><tr><td align=\"right\">");
                 writeFormText(d, button);
                 d.append("</td></tr></table>\n");
             } else {
