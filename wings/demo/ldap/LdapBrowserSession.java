@@ -65,7 +65,6 @@ public class LdapBrowserSession
     
     
     public void postInit(ServletConfig config) {
-	final LdapClient client = null;
 	SContainer contentPane = getFrame().getContentPane();
 
 	tabs = new STabbedPane();

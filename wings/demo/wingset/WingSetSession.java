@@ -87,15 +87,12 @@ public class WingSetSession
         SButtonGroup group = new SButtonGroup();
         group.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    try {
-                        if (css1.isSelected())
-                            getSession().getCGManager()
-                                .setLookAndFeel(new org.wings.plaf.xhtml.css1.CSS1LookAndFeel());
-                        else
-                            getSession().getCGManager()
-                                .setLookAndFeel(new org.wings.plaf.xhtml.old.OldLookAndFeel());
-                    }
-                    catch (UnsupportedLookAndFeelException ulafe) {}
+                    if (css1.isSelected())
+                        getSession().getCGManager()
+                            .setLookAndFeel(new org.wings.plaf.xhtml.css1.CSS1LookAndFeel());
+                    else
+                        getSession().getCGManager()
+                            .setLookAndFeel(new org.wings.plaf.xhtml.old.OldLookAndFeel());
                 }
             });
         group.add(old);
