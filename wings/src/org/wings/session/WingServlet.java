@@ -50,6 +50,18 @@ import org.wings.externalizer.ExternalizedResource;
 public final class WingServlet
     extends HttpServlet
 {
+    private static int REQUEST_COUNTER = 0;
+
+    private static final long BIRTHDAY = System.currentTimeMillis();
+
+    synchronized static final int getRequestCount() {
+        return REQUEST_COUNTER;
+    }
+
+    public static final long getUptime() {
+        return System.currentTimeMillis()-BIRTHDAY;
+    }
+
     static {
         /*
         try {
@@ -68,6 +80,8 @@ public final class WingServlet
     
     /** */
     private String lookupName = "SessionServlet";
+
+    private boolean collectStatistics = true;
 
     /**
      * TODO: documentation
@@ -158,7 +172,7 @@ public final class WingServlet
     public final void doPost(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException
     {
-        SessionServlet sessionServlet = getSessionServlet(req, res);
+        SessionServlet sessionServlet = getSessionServlet(req, res, true);
 
         if (logger.isLoggable(Level.FINE))
             logger.fine((sessionServlet != null) ?
@@ -244,7 +258,8 @@ public final class WingServlet
     }
 
     public final SessionServlet getSessionServlet(HttpServletRequest request,
-                                                               HttpServletResponse response)
+                                                  HttpServletResponse response,
+                                                  boolean createSessionServlet)
         throws ServletException 
     {
         HttpSession httpSession = request.getSession(true);
@@ -256,16 +271,13 @@ public final class WingServlet
             if (httpSession != null) {
                 sessionServlet = (SessionServlet)httpSession.getAttribute(lookupName);
             }
-            else if (response != null) {
-                logger.fine("no http session");
-            }
 
             /*
              * we are only interested in a new session, if the response is
              * not null. If it is null, then we just called getSessionServlet()
              * for lookup purposes and are satisfied, if we don't get anything.
              */
-            if (sessionServlet == null && response != null) {
+            if ( sessionServlet == null && createSessionServlet ) {
                 logger.info("no session servlet, create new one");
                 sessionServlet = newSession(request, response);
                 httpSession.setAttribute(lookupName, sessionServlet);
@@ -315,9 +327,9 @@ public final class WingServlet
             return SystemExternalizeManager.getSharedInstance();
         }
         else {
-            SessionServlet sessionServlet = getSessionServlet(req, null);
-            //if (sessionServlet == null)
-            //    return null;
+            SessionServlet sessionServlet = getSessionServlet(req, null, false);
+            if (sessionServlet == null)
+                return null;
             return sessionServlet.getSession().getExternalizeManager();
         }
     }
@@ -329,6 +341,13 @@ public final class WingServlet
                             HttpServletResponse response)
         throws ServletException, IOException
     {
+        if ( collectStatistics ) {
+            synchronized(WingServlet.class) {
+                REQUEST_COUNTER++;
+            }
+        } // end of if ()
+
+
         try {
             /* 
              * make sure, that our context ends with '/'. Otherwise redirect
@@ -379,7 +398,7 @@ public final class WingServlet
 
             logger.fine("session servlet");
 
-            SessionServlet sessionServlet = getSessionServlet(req, response);
+            SessionServlet sessionServlet = getSessionServlet(req, response, true);
 
             sessionServlet.doGet(req, response);
         }
