@@ -68,18 +68,21 @@ H1 {
    font-size: 18pt;
    font-weight: bold;
    font-family: sans-serif;
+   color: #000077;
 }
 
 H2 {
    font-size: 16pt;
    font-weight: bold;
    font-family: sans-serif;
+   color: #000077;
 }
 
 H3 { 
    font-size: 14pt;
    font-weight: bold;
    font-family: sans-serif
+   color: #000077;
 }
 
 .wings {
