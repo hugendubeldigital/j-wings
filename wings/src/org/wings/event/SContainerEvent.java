@@ -58,7 +58,7 @@ public class SContainerEvent extends SComponentEvent {
      * @param id     the integer ID describing the action; one of
      *               <code>COMPONENT_ADDED</code> 
      *               or <code>COMPONENT_REMOVED</code>.
-     * @param chilld the component that is affected by this event, i.e. that
+     * @param child the component that is affected by this event, i.e. that
      *               is added or removed.
      */
     public SContainerEvent(SContainer source, int id, SComponent child) {
