@@ -2,23 +2,23 @@ BODY {
    background: #dedede;
    padding: 0;
    margin: 10;
-   border-width: 0;
+   border-width: 0
 }
 
 P { 
    font-family: sans-serif;
    font-weight: normal;
    font-style: normal;
-   text-align: left 
+   text-align: left
 }
 
 B { 
-   font-weight: bold 
+   font-weight: bold
 }
 
 EM { 
    font-style: normal;
-   color: #990000 
+   color: #990000
 }
 
 STRONG { 
@@ -33,17 +33,17 @@ SMALL {
 
 A:link { 
    color: #000066;
-   text-decoration: none;
+   text-decoration: none
 }
 
 A:active { 
    color: #0000FF;
-   text-decoration: none;
+   text-decoration: none
 }
 
 A:visited { 
    color: #000066;
-   text-decoration: none;
+   text-decoration: none
 }
 
 HR { 
@@ -97,16 +97,14 @@ H3 {
    font-family: sans-serif;
    font-weight: normal;
    font-style: normal;
-   color: #000000;
+   color: #000000
 }
 
 .listselection {
-   background-color: #99cccc;
+   background-color: #99cccc
 }
 
 .tree {
-#   margin: 0;
-#   padding: 0;
    border-style: none;
    border-width: 0px;
    border-spacing: 2px;
@@ -114,20 +112,18 @@ H3 {
    font-family: sans-serif;
    font-weight: normal;
    font-style: normal;
-   color: #000000;
+   color: #000000
 }
 
 .treenodeselection {
-   background-color: #99cccc;
+   background-color: #99cccc
 }
 
 .treenodenonselection {
-   background-color: #dedede;
+   background-color: #dedede
 }
 
 .table {
-#   margin: 0;
-#   padding: 0;
    border-style: solid;
    border-width: 1px;
    border-color: black;
@@ -136,12 +132,12 @@ H3 {
    font-family: sans-serif;
    font-weight: normal;
    font-style: normal;
-   color: #000000;
+   color: #000000
 }
 
 .tableheader {
    font-weight: bold;
-   background-color: #dedede;
+   background-color: #dedede
 }
 
 .tableselection {
@@ -160,7 +156,7 @@ H3 {
    color: #000000;
    text-decoration: none;
    font-family: sans-serif;
-   font-weight: normal;
+   font-weight: normal
 }
 
 .tabselected {
@@ -170,10 +166,10 @@ H3 {
    font-family: sans-serif;
    font-size: 12px;
    border-top: black thin solid;
-   padding-top: 7px;
+   padding-top: 8px;
    padding-bottom: 0px;
    font-weight: bold;
-   white-space: nowrap;
+   white-space: nowrap
 }
 
 .tabnotselected {
@@ -182,10 +178,10 @@ H3 {
    font-family: sans-serif;
    font-size: 12px;
    border-top: black thin solid;
-   padding-top: 7px;
+   padding-top: 8px;
    padding-bottom: 0px;
    font-weight: normal;
-   white-space: nowrap;
+   white-space: nowrap
 }
 
 .topleft { 
@@ -195,7 +191,7 @@ H3 {
 
 .bottomleft {
    text-align: left;
-   vertical-align: bottom 
+   vertical-align: bottom
 }
 
 .topright { 

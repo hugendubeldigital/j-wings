@@ -41,14 +41,18 @@ void writeAnchorText(final Device device, SAbstractButton abstractButton, String
     }
     %><%|class=attr%>><%
 
-    if (noBreak) { %><nobr><% }
+    /*
+     * noBreak commented out, because it does not work together with
+     * styles and konqueror 3.0. (should be: white-space: nowrap)
+     */
+    /* if (noBreak) { %><nobr><% } */
     if (abstractButton.isEscapeSpecialChars()) {
         %><%=text%><%
     }
     else {
 	%><%#text%><% // write raw.
     }
-    if (noBreak) { %></nobr><% }
+    /* if (noBreak) { %></nobr><% } */
 
     if (abstractButton.isEnabled() 
         && (!(abstractButton instanceof SRadioButton) 
