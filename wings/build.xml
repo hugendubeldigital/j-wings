@@ -125,7 +125,8 @@
     <taskdef name="claf"
 	     classpath="${classes}"
 	     classname="org.wings.plaf.compiler.ClafTask"/>
-    <claf destdir="build/src">
+    <claf destdir="build/src"
+	  package="org.wings.plaf.css1">
       <fileset dir="src">
         <include name="org/wings/plaf/css1/*.plaf"/>
       </fileset>

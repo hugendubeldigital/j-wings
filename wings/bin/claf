@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ "$JAVA_HOME" == "" ]
+then
+  echo "please set \$JAVA_HOME"
+  exit
+fi
+
+export CLASSPATH=build/classes
+
+$JAVA_HOME/bin/java org.wings.plaf.compiler.PlafCompiler $@
