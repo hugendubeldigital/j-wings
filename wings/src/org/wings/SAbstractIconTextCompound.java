@@ -465,12 +465,9 @@ public abstract class SAbstractIconTextCompound
     public void setSelectionAttributes(AttributeSet newAttributes) {
         if (newAttributes == null)
             throw new IllegalArgumentException("null not allowed");
-
-        if (selectionAttributes == null 
-            || !newAttributes.equals(selectionAttributes)) {
-            this.selectionAttributes = newAttributes;
-            reload(ReloadManager.RELOAD_STYLE);
-        }
+        reloadIfChange(ReloadManager.RELOAD_STYLE, 
+                       selectionAttributes, newAttributes);
+        selectionAttributes = newAttributes;
     }
 
     /**
