@@ -26,6 +26,9 @@ import org.wings.*;
 import org.wings.plaf.*;
 import org.wings.session.*;
 import org.wings.util.*;
+import org.wings.event.SRequestListener;
+import org.wings.event.SRequestEvent;
+import java.util.Enumeration;
 
 /**
  * TODO: documentation
@@ -85,6 +88,7 @@ public class WingSet
         tab.add(new TableExample(), "Table");
         tab.add(new ListExample(), "List");
         tab.add(new ButtonExample(), "Button");
+        tab.add(new ToggleButtonExample(), "ToggleButton");
         tab.add(new CheckBoxExample(), "CheckBox");
         tab.add(new RadioButtonExample(), "RadioButton");
         tab.add(new Faces(), "Faces");
@@ -103,7 +107,35 @@ public class WingSet
 
         contentPane.add(timeMeasure, "TimeLabel");
 
+
         frame.show();
+
+        /*  for testing purpose, to get information what events are requested
+
+        final SLabel paramLabel = new SLabel();
+        contentPane.add(paramLabel, "ParamLabel");
+
+        SessionManager.getSession().addRequestListener(new SRequestListener() {
+                public void processRequest(SRequestEvent e) {
+                    if ( e.getType()==SRequestEvent.DISPATCH_START ) {
+                        StringBuffer label = new StringBuffer();
+
+                        HttpServletRequest req = 
+                            SessionManager.getSession().getServletRequest();
+                        
+                        for (Enumeration en = req.getParameterNames(); en.hasMoreElements();) {
+                            String paramName = (String)en.nextElement();
+                            String[] value = req.getParameterValues(paramName);
+
+                            label.append(paramName).append(": ").
+                                append(value[0]).append("<br>");
+                        }
+
+                        paramLabel.setText(label.toString());
+                    }
+                }
+            });
+        */
     }
 
     /*

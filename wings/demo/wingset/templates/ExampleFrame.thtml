@@ -19,5 +19,8 @@ Java SwingSet example.
 <tr>
    <td><object name="TimeLabel"></object></td>
 </tr>
+<tr>
+   <td><object name="ParamLabel"></object></td>
+</tr>
 </table-->
 Generated with <a href="http://wingS.mercatis.de/">wingS</a>
