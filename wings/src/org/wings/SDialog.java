@@ -164,7 +164,7 @@ public class SDialog extends SForm
      */
     public void hide() {
         if (owner != null) {
-            owner.popDialog();
+            owner.removeDialog(this);
         }
     }
 

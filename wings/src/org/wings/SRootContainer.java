@@ -75,7 +75,7 @@ public abstract class SRootContainer extends SContainer {
         if (count <= 1)
             throw new IllegalStateException("there's no dialog left!");
 
-        SDialog dialog = (SDialog)getComponentAt(count - 1);
+		SDialog dialog = (SDialog)getComponentAt(count - 1);
         super.removeComponent(dialog);
         dialog.setFrame((SFrame)null);
         logger.info("popDialog: " + count);
@@ -83,6 +83,13 @@ public abstract class SRootContainer extends SContainer {
         reload(ReloadManager.RELOAD_CODE);
         return dialog;
     }
+
+	public void removeDialog(SDialog dialog) {
+        super.removeComponent(dialog);
+        dialog.setFrame((SFrame)null);
+
+        reload(ReloadManager.RELOAD_CODE);
+	}
 
     /**
      * @return the number of dialogs that are on the stack currently.
