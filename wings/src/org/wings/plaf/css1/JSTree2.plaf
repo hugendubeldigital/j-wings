@@ -1,5 +1,5 @@
 <!-- -*- html -*- 
- $Id$ 
+ $Id$
 -->
 <template name="JSTree2CG" for="org.wings.STree">
 
@@ -30,6 +30,7 @@ public static String loadScript() {
         String line;
         while ((line = reader.readLine()) != null)
             buffer.append(line).append("\n");
+        in.close();
 
         return buffer.toString();
     }
@@ -50,14 +51,14 @@ public static String loadScript() {
 
 
 
-private void writeTreeNode(STree tree, Device device, Object[] path, int depth, 
+private void writeTreeNode(STree tree, Device device, Object[] path, int depth,
                            String nodeId, int row) throws IOException {
 
     final Object node = path[depth];
     final TreePath treePath = new MyTreePath(path,depth+1);
 
     final int nodeIndentDepth = tree.getNodeIndentDepth();
-        
+
     final STreeCellRenderer cellRenderer = tree.getCellRenderer();
 
     final boolean isLeaf = tree.getModel().isLeaf(node);
@@ -81,7 +82,7 @@ private void writeTreeNode(STree tree, Device device, Object[] path, int depth,
         AnchorRenderStack.push(selectionAddr, null);
         rendererPane.writeComponent(device, cellComp, tree);
         AnchorRenderStack.pop();
-    } 
+    }
     else {
         rendererPane.writeComponent(device, cellComp, tree);
     }
@@ -89,8 +90,8 @@ private void writeTreeNode(STree tree, Device device, Object[] path, int depth,
 }
 
 private void writeScriptNode(STree tree, Device device,
-                             Object[] path, String treeId, 
-                             int depth, ScriptResult result, 
+                             Object[] path, String treeId,
+                             int depth, ScriptResult result,
                              StringBufferDevice deviceBuffer) throws IOException {
 
     final String nodeId = treeId + Integer.toString(result.row);
@@ -99,9 +100,9 @@ private void writeScriptNode(STree tree, Device device,
     final String isExpanded = tree.isExpanded(new MyTreePath(path,depth+1)) ? "true" : "false";
 
     deviceBuffer.reset();
-    writeTreeNode(tree, deviceBuffer, path, 
-                  depth, 
-                  nodeId, 
+    writeTreeNode(tree, deviceBuffer, path,
+                  depth,
+                  nodeId,
                   result.row);
 
 

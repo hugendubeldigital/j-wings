@@ -35,29 +35,29 @@ public class ClafTask extends Task
 	    compiler.setDestinationDirectory(destdir);
 
 	    Iterator it = filesets.iterator();
-	    while (it.hasNext()) {
-                FileSet fs = (FileSet)it.next();
-                DirectoryScanner ds = fs.getDirectoryScanner(project);
-                File fromDir = fs.getDir(project);
-                String[] srcFiles = ds.getIncludedFiles();
+        while (it.hasNext()) {
+            FileSet fs = (FileSet)it.next();
+            DirectoryScanner ds = fs.getDirectoryScanner(project);
+            File fromDir = fs.getDir(project);
+            String[] srcFiles = ds.getIncludedFiles();
 
-		for (int i=0; i < srcFiles.length; i++)
-		    srcFiles[i] = new File(fromDir, srcFiles[i]).getCanonicalPath();
-		for (int i=0; i < srcFiles.length; i++)
-		    System.err.println("src: " + srcFiles[i]);
-		compiler.setFiles(srcFiles);
-		compiler.run();
-            }
+            for (int i=0; i < srcFiles.length; i++)
+                srcFiles[i] = new File(fromDir, srcFiles[i]).getCanonicalPath();
+            for (int i=0; i < srcFiles.length; i++)
+                System.err.println("src: " + srcFiles[i]);
+            compiler.setFiles(srcFiles);
+            compiler.run();
+        }
 
-	    if (file != null && file.exists()) {
-		compiler.setFiles(new String[] { file.getCanonicalPath() });
-		compiler.run();
-	    }
-	}
-	catch (Exception e) {
-	    System.err.println(e.getMessage());
-	    e.printStackTrace(System.err);
-	    throw new BuildException(e.getMessage());
+        if (file != null && file.exists()) {
+            compiler.setFiles(new String[] { file.getCanonicalPath() });
+            compiler.run();
+        }
+    }
+    catch (Exception e) {
+        System.err.println(e.getMessage());
+        e.printStackTrace(System.err);
+        throw new BuildException(e.getMessage());
 	}
     }
 

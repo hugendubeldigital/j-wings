@@ -1,5 +1,5 @@
 <!-- -*- html -*- 
- $Id$ 
+ $Id$
 -->
 <template name="JSTreeCG" for="org.wings.STree">
 
@@ -29,6 +29,7 @@ public static String loadScript() {
         String line;
         while ((line = reader.readLine()) != null)
             buffer.append(line).append("\n");
+        in.close();
 
         return buffer.toString();
     }
@@ -46,7 +47,7 @@ public static String loadScript() {
         component.removeScriptListener(SCRIPT_LOADER);
 </uninstall>
 
-private void writeTreeNode(STree tree, Device device, Object[] path, int depth, 
+private void writeTreeNode(STree tree, Device device, Object[] path, int depth,
                            String treeId, int maxDepth, int row) throws IOException {
 
     final String nodeId = treeId + Integer.toString(row);
@@ -54,7 +55,7 @@ private void writeTreeNode(STree tree, Device device, Object[] path, int depth,
     final TreePath treePath = new MyTreePath(path,depth+1);
 
     final int nodeIndentDepth = tree.getNodeIndentDepth();
-        
+
     final STreeCellRenderer cellRenderer = tree.getCellRenderer();
 
     final boolean isLeaf = tree.getModel().isLeaf(node);

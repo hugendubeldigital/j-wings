@@ -79,6 +79,7 @@ public class LookAndFeel
             throw new IOException("'default.properties' not found in toplevel package of classpath");
         }
         this.properties.load(in);
+        in.close();
 
         System.out.println("create LookAndFeel");
     }
@@ -290,6 +291,7 @@ public class LookAndFeel
             CSSStyleSheet styleSheet = new CSSStyleSheet();
             InputStream in = classLoader.getResourceAsStream(resourceName);
             styleSheet.read(in);
+            in.close();
             return styleSheet;
         }
         catch (Exception e) {

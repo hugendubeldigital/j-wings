@@ -80,7 +80,7 @@
                 writeHeaderCell(device, table, rendererPane, -1);
                 selectionWritten = true;
             }
-            writeHeaderCell(device, table, rendererPane, c);
+            writeHeaderCell(device, table, rendererPane, table.convertColumnIndexToModel(c));
         }
 
         if (!selectionWritten) {
@@ -116,7 +116,7 @@
                 writeRowSelection(device, table, rendererPane, r, c);
                 selectionWritten = true;
             }
-            writeCell(device, table, rendererPane, r, c);
+            writeCell(device, table, rendererPane, r, table.convertColumnIndexToModel(c));
         }
 
         if (!selectionWritten) {

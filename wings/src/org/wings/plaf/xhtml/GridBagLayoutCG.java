@@ -53,7 +53,7 @@ public class GridBagLayoutCG
         if ( Utils.hasSpanAttributes( container ) )
         {
             d.print("style=\"");
-            Utils.writeSpanAttributes( d, (SComponent) container );
+            Utils.writeSpanAttributes( d, container );
             d.print("\" ");
         }
         
@@ -132,7 +132,12 @@ public class GridBagLayoutCG
                                     (int) (100*c.weighty/grid.rowweight[col])+
                                     "%\"");
                         }
-                        
+
+                        if (comp.getBackground() != null) {
+                            d.print(" bgcolor=\"").
+                                print(Utils.toColorString(comp.getBackground())).print("\"");
+                        }
+
                         d.print(">");
                         comp.write(d);
                         

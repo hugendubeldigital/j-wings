@@ -14,7 +14,7 @@
 
 package org.wings.plaf.xhtml.css1;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 import org.wings.plaf.LookAndFeel;
 
@@ -25,7 +25,9 @@ public class CSS1LookAndFeel
 	super((Properties)null);
 	try {
 	    properties = new Properties();
-	    properties.load(getClass().getResourceAsStream("/org/wings/plaf/xhtml/css1/default.properties"));
+        InputStream in = getClass().getResourceAsStream("/org/wings/plaf/xhtml/css1/default.properties");
+        properties.load(in);
+        in.close();
 	}
 	catch (IOException e) {
 	    // assert false, e.getMessage();

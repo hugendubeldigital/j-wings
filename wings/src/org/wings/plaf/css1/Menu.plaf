@@ -18,6 +18,7 @@ public static String loadScript() {
         String line;
         while ((line = reader.readLine()) != null)
             buffer.append(line).append("\n");
+        in.close();
 
         return buffer.toString();
     }

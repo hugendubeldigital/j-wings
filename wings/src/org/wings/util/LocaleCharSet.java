@@ -37,10 +37,11 @@ public class LocaleCharSet
 		throws IOException
 	{
 	    fCharSet = new Properties();
-		fCharSet.load(
-			this.getClass().
-			getClassLoader().
-			getResourceAsStream("org/wings/util/charset.properties"));
+        InputStream in = this.getClass().
+                getClassLoader().
+                getResourceAsStream("org/wings/util/charset.properties");
+        fCharSet.load(in);
+        in.close();
 	}
 	
 	/**

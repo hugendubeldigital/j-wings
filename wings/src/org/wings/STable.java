@@ -300,6 +300,10 @@ public class STable
         model.setValueAt(v, row, column);
     }
 
+    public int convertColumnIndexToModel(int viewColumnIndex) {
+        return viewColumnIndex;
+    }
+
     /**
      * Adds the row from <i>index0</i> to <i>index0</i> inclusive to the current selection.
      */
