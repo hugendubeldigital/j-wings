@@ -25,6 +25,7 @@ import java.util.*;
 import org.wings.io.Device;
 import org.wings.io.StringBufferDevice;
 import org.wings.plaf.*;
+import org.wings.event.*;
 import org.wings.plaf.ComponentCG;
 import org.wings.session.Session;
 import org.wings.session.SessionManager;
@@ -159,6 +160,8 @@ public abstract class SComponent
       */
     protected Dimension preferredPercentageSize = null;
 
+    transient ArrayList componentListeners;
+
     /**
      * Default constructor.
      * The method updateCG is called to get a cg delegate installed.
@@ -250,6 +253,7 @@ public abstract class SComponent
 	public final void setPreferredSize( Dimension preferredSize )
      {
      	this.preferredSize = preferredSize;
+        fireComponentChangeEvent( new ComponentEvent( this, ComponentEvent.COMPONENT_RESIZED ) );
      }
 
 	/**
@@ -283,6 +287,7 @@ public abstract class SComponent
 			throw new IllegalArgumentException( "Dimension values have to be between 0 and 100");
                 
      	this.preferredPercentageSize = preferredPercentageSize;
+        fireComponentChangeEvent( new ComponentEvent( this, ComponentEvent.COMPONENT_RESIZED ) );
      }
 
 	/**
@@ -294,6 +299,96 @@ public abstract class SComponent
      {
      	return this.preferredPercentageSize;
      }
+
+    /**
+     * Adds the specified component listener to receive component events from
+     * this component.
+     * If l is null, no exception is thrown and no action is performed.
+     * @param    l   the component listener.
+     * @see      org.wings.event.ComponentEvent
+     * @see      org.wings.event.ComponentListener
+     * @see      org.wings.SComponent#removeComponentListener
+     */
+    public synchronized void addComponentListener(ComponentListener l) {
+	if (l == null) {
+	    return;
+	}
+    	if ( componentListeners == null ) componentListeners = new ArrayList();
+        componentListeners.add( l );
+    }
+
+    /**
+     * Removes the specified component listener so that it no longer
+     * receives component events from this component. This method performs 
+     * no function, nor does it throw an exception, if the listener 
+     * specified by the argument was not previously added to this component.
+     * If l is null, no exception is thrown and no action is performed.
+     * @param    l   the component listener.
+     * @see      org.wings.event.ComponentEvent
+     * @see      org.wings.event.ComponentListener
+     * @see      org.wings.SComponent#addComponentListener
+     */
+    public synchronized void removeComponentListener(ComponentListener l) {
+	if (l == null) {
+	    return;
+	}
+    	if ( componentListeners == null ) return;
+        
+    	int index = componentListeners.indexOf( l );
+        if ( index == -1 ) return;
+        componentListeners.remove( index );
+        return; 
+    }
+
+	/**
+      * Reports a component change.
+      * @param aEvent report this event to all listeners
+      * @see org.wings.event.ComponentListener
+      */
+	protected void fireComponentChangeEvent( ComponentEvent aEvent )
+     {
+     	if ( componentListeners == null ) return;
+		for ( ListIterator it = componentListeners.listIterator(); it.hasNext(); )
+        	processComponentEvent( (ComponentListener) it.next(), aEvent );
+     }
+
+    /**
+     * Processes component events occurring on this component by
+     * dispatching them to any registered
+     * <code>ComponentListener</code> objects.
+     * <p>
+     * This method is not called unless component events are
+     * enabled for this component. Component events are enabled
+     * when one of the following occurs:
+     * <p><ul>
+     * <li>A <code>ComponentListener</code> object is registered
+     * via <code>addComponentListener</code>.
+     * <li>Component events are enabled via <code>enableEvents</code>.
+     * </ul>
+     * @param       e the component event.
+     * @see         org.wings.event.ComponentEvent
+     * @see         org.wings.event.ComponentListener
+     * @see         org.wings.SComponent#addComponentListener
+     * @see         org.wings.SComponent#enableEvents
+     */
+    protected void processComponentEvent(ComponentListener listener, ComponentEvent e)
+    {
+		int id = e.getID();
+		switch(id) {
+			case ComponentEvent.COMPONENT_RESIZED:
+				listener.componentResized(e);
+				break;
+			case ComponentEvent.COMPONENT_MOVED:
+                listener.componentMoved(e);
+                break;
+			case ComponentEvent.COMPONENT_SHOWN:
+                listener.componentShown(e);
+                break;
+			case ComponentEvent.COMPONENT_HIDDEN:
+                listener.componentHidden(e);
+                break;
+        }
+    }
 
     /**
      * Return a jvm wide unique id.
@@ -498,7 +593,11 @@ public abstract class SComponent
         boolean old = visible;
         visible = v;
         if (old != visible)
+         {
             reload();
+        	fireComponentChangeEvent(new ComponentEvent( this, 
+        				v ? ComponentEvent.COMPONENT_SHOWN : ComponentEvent.COMPONENT_HIDDEN ) );
+		 }
     }
 
     /**
