@@ -35,7 +35,14 @@ public interface RequestListener
 
     String getName();
 
+    /**
+     * TODO: explain, what an intermediate event is
+     */
     void fireIntermediateEvents();
+
+    /**
+     * TODO: explain, what a final event is
+     */
     void fireFinalEvents();
 }
 
