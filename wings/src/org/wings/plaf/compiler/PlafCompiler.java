@@ -43,17 +43,15 @@ class PlafCompiler {
 	    Map nameToString = new HashMap();
 	    List names = new Vector();
 	    int codeType;
-	    int lastReportedLine = -1;
+	    String lastFilePos = null;
 
 	    while (input.ready()) {
 		String html = consumeTextUntil(input, '<', '%').toString();
-		/*
-		if (input.getLineNumber() != lastReportedLine) {
-		    output.append ("\n\n// ---------- " + argv[arg] + ":" + 
-				   input.getLineNumber() + " ----\n");
-		    lastReportedLine = input.getLineNumber();
+		if (!input.getFilePosition().equals(lastFilePos)) {
+		    lastFilePos = input.getFilePosition();
+		    output.append ("\n\n// ---------- " + lastFilePos +
+				   " ----\n");
 		}
-		*/
 		if (html.length() > 0) {
 		    if (!stringToName.containsKey(html)) {
 			String name = generateName(varPrefix, html);

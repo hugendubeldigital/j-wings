@@ -14,9 +14,12 @@
 package org.wings.plaf.compiler;
 
 import java.util.Stack;
+import java.util.Map;
+import java.util.HashMap;
 import java.io.File;
 import java.io.IOException;
 import java.io.BufferedReader;
+import java.io.LineNumberReader;
 import java.io.FileReader;
 import java.io.Reader;
 import java.io.FilterReader;
@@ -27,13 +30,15 @@ public class IncludingReader extends Reader {
      * allow to change the value..
      */
     Reader in;
-    Stack readers;
-    //Map   openFiles;  // avoid recursive inclusion.
+    String currentFile;
+    Stack  fileStack;  // Stack<filename>
+    Map    openFiles;  // Map<filename,open-reader>
 
     public IncludingReader() {
         in = null;
-	readers = new Stack();
-	//openFiles = new HashMap();
+        currentFile = null;
+	fileStack = new Stack();
+	openFiles = new HashMap();
     }
 
     public IncludingReader(String file) throws IOException {
@@ -43,19 +48,27 @@ public class IncludingReader extends Reader {
 
     public void open(String fileName) throws IOException {
 	File f = new File(fileName);
-	readers.push(in);vi
-	in = new BufferedReader(new FileReader(f));
+        fileStack.push(currentFile);
+        currentFile = f.getCanonicalPath();
+        if (openFiles.containsKey(currentFile))
+            throw new IOException ("cannot recursively include files: '"
+                                   + fileName + "' at " + getFilePosition());
+	in = new LineNumberReader(new BufferedReader(new FileReader(f)));
+        openFiles.put(currentFile, in);
     }
     
     public void close() throws IOException {
 	if (in != null) {
 	    in.close();
+            openFiles.remove(currentFile);
 	}
-	in = (Reader) readers.pop();
+        currentFile = (String) fileStack.pop();
+	in = (Reader) openFiles.get(currentFile);
     }
     
     public String getFilePosition() {
-	return "FILE:LINE";
+        if (in == null) return "";
+        return currentFile + ":" + ((LineNumberReader) in).getLineNumber();
     }
 
     public int read()  throws IOException {
