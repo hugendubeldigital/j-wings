@@ -5,9 +5,11 @@ import java.awt.Insets;
 import java.io.IOException;
 
 import org.wings.*;
+import org.wings.externalizer.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.plaf.xhtml.*;
+import org.wings.session.*;
 import org.wings.style.Style;
 
 public final class LineBorderCG
@@ -27,10 +29,10 @@ public final class LineBorderCG
 
 	d.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n<tr>");
 	writeTD(d, lineColor, 3);
-	writeIMG(d, thickness);
+	writeIMG(d, 1, thickness);
 	d.append("</td></tr>\n<tr>");
 	writeTD(d, lineColor, 1);
-	writeIMG(d, thickness);
+	writeIMG(d, thickness, 1);
 	d.append("</td>\n<td>");
 	if (insets != null && none.equals(insets))
 	    d.append("<table border=\"0\" cellpadding=\"")
@@ -51,10 +53,10 @@ public final class LineBorderCG
 
 	d.append("</td>\n");
 	writeTD(d, lineColor, 1);
-	writeIMG(d, thickness);
+	writeIMG(d, thickness, 1);
 	d.append("</td></tr>\n<tr>");
 	writeTD(d, lineColor, 3);
-	writeIMG(d, thickness);
+	writeIMG(d, 1, thickness);
 	d.append("</td></tr></table>\n");
     }
 
@@ -73,12 +75,13 @@ public final class LineBorderCG
 	    d.append(">");
     }
 
-    public void writeIMG(Device d, int thickness)
+    public void writeIMG(Device d, int width, int height)
 	throws IOException
     {
 	d.append("<img height=\"")
-	    .append(thickness)
+	    .append(height)
 	    .append("\" width=\"")
+	    .append(width)
 	    .append("\">");
     }
 }
