@@ -47,13 +47,7 @@ public class FileChooserExample
     public SComponent createExample() {
         SPanel p = new SPanel(new SBorderLayout());
 
-        SLabel maxContentLengthLabel = 
-            new SLabel("max content length: " + 
-                       getSession().getMaxContentLength()  + "k");
-        
-        maxContentLengthLabel.setForeground(Color.red);
-        
-        p.add(maxContentLengthLabel,
+        p.add(createControlForm(),
               SBorderLayout.NORTH);
 
 
@@ -63,6 +57,40 @@ public class FileChooserExample
 
         return p;
     }
+
+
+    private SForm createControlForm() {
+        SForm controlForm = new SForm();
+
+        /*
+         * modify the displayed indentation depth.
+         */
+        controlForm.add(new SLabel("choose maximum Content Length (in kB): "));
+        Object[] values = {new Integer(1), new Integer(2), new Integer(4), 
+                           new Integer(8), new Integer(16), new Integer(32), 
+                           new Integer(64)};
+
+        final SComboBox comboBox = new SComboBox(values);
+        comboBox.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent e) {
+                    getSession().setMaxContentLength(((Integer) comboBox.getSelectedItem()).intValue());
+                }
+            });
+
+        comboBox.setSelectedItem(new
+            Integer(getSession().getMaxContentLength()));
+        
+        controlForm.add(comboBox);
+
+        SButton submit = new SButton("OK");
+        controlForm.add(submit);
+
+        controlForm.setBorder(new SEmptyBorder(10, 10, 0, 0));
+
+        return controlForm;
+    }
+        
+
 
     protected String getText(File f) {
         try {
@@ -86,7 +114,7 @@ public class FileChooserExample
             if ( chooser.getFileType().startsWith("text/") ) {
                 textArea.setText(getText(chooser.getFile()));
                 contentSwitcher.show(textForm);
-            } else if ( "image/gif".equals(chooser.getFileType()) ) {
+            } else if ( chooser.getFileType().startsWith("image/") ) {
                 iconLabel.setIcon(new FileImageIcon(chooser.getFile()));
                 contentSwitcher.show(iconLabel);
             } else {
@@ -137,47 +165,70 @@ public class FileChooserExample
     }
 
     protected SComponent createUpload() {
-        SForm p = new SForm(new SFlowDownLayout());
-        p.setEncodingType("multipart/form-data");
+        SForm form = new SForm(new SFlowDownLayout());
+        form.setBorder(new SEmptyBorder(10, 5, 0, 0));
+        form.setEncodingType("multipart/form-data");
 
         chooser = new SFileChooser();
-        p.add(chooser);
+        form.add(chooser);
 
         SButton submit = new SButton("upload");
-        p.add(submit);
+        submit.setVerticalAlignment(RIGHT);
+        form.add(submit);
 
-        final SLabel message = new SLabel("message: ");
+        SPanel p = new SPanel(new SGridLayout(2));
+        p.setBorder(new SEmptyBorder(10, 5, 0, 0));
+        p.add(new SLabel("message:"));
+        final SLabel message = new SLabel("");
         p.add(message);
 
-        final SLabel filename = new SLabel("filename: ");
+        p.add(new SLabel("filename:"));
+        final SLabel filename = new SLabel("");
         p.add(filename);
-        final SLabel fileid = new SLabel("fileid: ");
+
+        p.add(new SLabel("fileid:"));
+        final SLabel fileid = new SLabel("");
         p.add(fileid);
-        final SLabel filetype = new SLabel("filetype: ");
+
+        p.add(new SLabel("filetype:"));
+        final SLabel filetype = new SLabel("");
         p.add(filetype);
 
+        p.add(new SLabel("size:"));
+        final SLabel size = new SLabel("");
+        p.add(size);
 
-        p.addActionListener(new ActionListener() {
+        form.add(p);
+
+
+        form.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    message.setText("message: OK");
-                    filename.setText("filename: " + chooser.getFileName());
-                    fileid.setText("fileid: " + chooser.getFileId());
-                    filetype.setText("filetype: " + chooser.getFileType());
-                    adaptPreview();
+
+                    if ( chooser.getFile()!=null ) {
+                        message.setText("OK");
+                        filename.setText(chooser.getFileName());
+                        fileid.setText(chooser.getFileId());
+                        filetype.setText(chooser.getFileType());
+                        size.setText(""+chooser.getFile().length());
+                        adaptPreview();
+                    } else {
+                        message.setText("No file chosen");
+                    }
                     chooser.reset();
                 } catch ( IOException ex ) {
-                    message.setText("message: " + ex.getMessage());
-                    filename.setText("filename: ");
-                    fileid.setText("fileid: ");
-                    filetype.setText("filetype: ");
+                    message.setText(ex.getMessage());
+                    filename.setText("");
+                    fileid.setText("");
+                    filetype.setText("");
+                    size.setText("");
                     contentSwitcher.show(unknownLabel);
                 }
             }});
 
-        p.setVerticalAlignment(TOP);
+        form.setVerticalAlignment(TOP);
 
-        return p;
+        return form;
     }
 }
 
