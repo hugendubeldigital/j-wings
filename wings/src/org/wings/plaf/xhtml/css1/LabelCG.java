@@ -15,7 +15,7 @@
 package org.wings.plaf.xhtml.css1;
 
 import java.io.IOException;
-
+import java.awt.Color;
 import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
@@ -29,11 +29,15 @@ public final class LabelCG
     {
         String text = label.getText();
         if (text != null && text.trim().length() > 0) {
-            boolean noBreak = label.isNoBreak();
-            boolean escape = label.isEscapeSpecialChars();
+            final boolean noBreak  = label.isNoBreak();
+            final boolean escape   = label.isEscapeSpecialChars();
+            final SFont font       = label.getFont();
+            final Color foreground = label.getForeground();
 
             Utils.writeSpanWithStyleAttributePrefix(d, label.getStyle());
 
+            // override additional settings
+            org.wings.plaf.xhtml.old.Utils.writeFontPrefix(d, font, foreground);
             if (noBreak)
                 d.append("<nobr>");
 
@@ -43,7 +47,7 @@ public final class LabelCG
 
             if (noBreak)
                 d.append("</nobr>");
-
+            org.wings.plaf.xhtml.old.Utils.writeFontPostfix(d, font, foreground);
             Utils.writeSpanWithStyleAttributePostfix(d, label.getStyle());
         }
     }

@@ -171,14 +171,14 @@ public class SDefaultTreeCellRenderer
     public void write(Device d)
         throws IOException
     {
-        d.append("<a href=\"").
-            append(handleAddr).
-            append("\">");
+        d.append("<a href=\"");
+        handleAddr.write(d);
+        d.append("\">");
         handle.write(d);
         d.append("</a> ");
-        d.append("<a href=\"").
-            append(bodyAddr).
-            append("\"> ");
+        d.append("<a href=\"");
+        bodyAddr.write(d);
+        d.append("\"> ");
         body.write(d);
         d.append("</a>");
     }

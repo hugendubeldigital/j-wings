@@ -63,6 +63,9 @@ public class SLabel
     private boolean alignText = false;
 
     // TODO: plaf has to escape the special chars...
+    // HEN: I think, this is not necessary here; The label's plaf should 
+    // _always_ escape the characters, otherwise the user feels tempted to
+    // output formatting information in Labels .. (s)he shouldn't!
     private boolean escapeSpecialChars = false;
 
 
@@ -329,6 +332,9 @@ public class SLabel
     /**
      * TODO: documentation
      *
+     * @deprecated Never set this - characters are always escaped
+     *             in future and BTW, you shouldn't rely on an
+     *             HTML output, right ?
      * @param escape
      */
     public void setEscapeSpecialChars(boolean escape) {

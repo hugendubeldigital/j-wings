@@ -109,6 +109,10 @@ public class SDefaultTableCellRenderer
         else
             contents.setText(value.toString());
 
+        /*
+         * TODO: create a Render Pipeline. The CellRenderer must not have any
+         * knowledege about the used plaf ..
+         */
         if (baseTable instanceof STable) {
             STable table = (STable)baseTable;
             if (selected) {
@@ -164,7 +168,7 @@ public class SDefaultTableCellRenderer
         d.append("</td>");
 
         d.append("<td align=\"right\"><a href=\"");
-        d.append(addr);
+        addr.write(d);
         d.append("\">");
         edit.write(d);
         d.append("</a></td></tr></table>");

@@ -30,7 +30,9 @@ public final class RadioButtonCG
         String tooltip = checkBox.getToolTipText();
 
         if (checkBox.isEnabled() && !checkBox.isSelected()) {
-            d.append("<a href=\"").append(generateAnchorAddress(checkBox)).append("\"");
+            d.append("<a href=\"");
+            writeAnchorAddress(d, checkBox);
+            d.append("\"");
 
             if (checkBox.getRealTarget() != null)
                 d.append(" target=\"").append(checkBox.getRealTarget()).append("\"");

@@ -86,6 +86,7 @@ public final class TabbedPaneCG
                 .append("\" />");
 
             buttons.getComponentAt(i).write(d);
+            d.append(" \n");
         }
         
         d.append("<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"1\"><tr><td>");

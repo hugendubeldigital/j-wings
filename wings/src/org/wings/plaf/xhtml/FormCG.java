@@ -66,8 +66,9 @@ public class FormCG
         if (encodingType != null)
             d.append(" enctype=\"").append(encodingType).append("\"");
 
-        d.append(" action=\"").append(form.getServerAddress()).
-            append("\">\n");
+        d.append(" action=\"");
+        form.getServerAddress().write(d);
+        d.append("\">\n");
 
         // the event for the form action
         Utils.writeHiddenComponent(d, form.getNamePrefix(),

@@ -30,7 +30,9 @@ public final class ButtonCG
         String tooltip = button.getToolTipText();
 
         if (button.isEnabled()) {
-            d.append("<a href=\"").append(generateAnchorAddress(button)).append("\"");
+            d.append("<a href=\"");
+            writeAnchorAddress(d, button);
+            d.append("\"");
 
             if (button.isSelected())
                 Utils.writeStyleAttribute(d, "anchor", button.getStyle(), "selection");

@@ -207,10 +207,11 @@ public class ButtonCG
         }
     }
 
-    protected String generateAnchorAddress(SButton button) {
+    protected void writeAnchorAddress(Device d, SButton button) 
+    throws IOException {
         SGetAddress addr = button.getServerAddress();
         addr.add(button.getNamePrefix() + "=" + button.getUnifiedIdString() + SConstants.UID_DIVIDER);
-        return addr.toString();
+        addr.write(d);
     }
 
     protected void writeAnchorPrefix(Device d, SButton button)
@@ -219,7 +220,9 @@ public class ButtonCG
         String tooltip = button.getToolTipText();
 
         if (button.isEnabled()) {
-            d.append("<a href=\"").append(generateAnchorAddress(button)).append("\"");
+            d.append("<a href=\"");
+            writeAnchorAddress(d, button);
+            d.append("\"");
 
             if (button.getRealTarget() != null)
                 d.append(" target=\"").append(button.getRealTarget()).append("\"");

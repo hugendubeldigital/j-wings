@@ -78,8 +78,8 @@ public class TextAreaCG
         d.append(">");
 
         String text = textArea.getText();
-        if (text != null)
-            d.append(text);
+        if (text != null) 
+            Utils.quote(d, text);
     }
 
     public void writePostfix(Device d, STextArea textArea)

@@ -30,7 +30,9 @@ public final class CheckBoxCG
         String tooltip = checkBox.getToolTipText();
 
         if (checkBox.isEnabled()) {
-            d.append("<a href=\"").append(generateAnchorAddress(checkBox)).append("\"");
+            d.append("<a href=\"");
+            writeAnchorAddress(d, checkBox);
+            d.append("\"");
 
             if (checkBox.isSelected())
                 Utils.writeStyleAttribute(d, "anchor", checkBox.getStyle(), "selection");

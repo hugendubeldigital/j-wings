@@ -54,13 +54,7 @@ public class TextFieldCG
         String text = textField.getText();
         if (text != null) {
             d.append(" value=\"");
-            int pos=-1, lastpos=0;
-            while ((pos = text.indexOf("\"", pos+1)) != -1) {
-                d.append(text.substring(lastpos, pos));
-                d.append("&quot;");
-                lastpos = pos+1;
-            }
-            d.append(text.substring(lastpos));
+            Utils.quote(d, text);
             d.append("\"");
         }
 

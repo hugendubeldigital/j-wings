@@ -245,10 +245,11 @@ public class CheckBoxCG
         }
     }
 
-    protected String generateAnchorAddress(SCheckBox checkBox) {
+    protected void writeAnchorAddress(Device d, SCheckBox checkBox) 
+    throws IOException {
         SGetAddress addr = checkBox.getServerAddress();
         addr.add(checkBox.getNamePrefix() + "=" + checkBox.getUnifiedIdString() + SConstants.UID_DIVIDER);
-        return addr.toString();
+        addr.write(d);
     }
 
     protected void writeAnchorPrefix(Device d, SCheckBox checkBox)
@@ -257,8 +258,10 @@ public class CheckBoxCG
         String tooltip = checkBox.getToolTipText();
 
         if (checkBox.isEnabled()) {
-            d.append("<a href=\"").append(generateAnchorAddress(checkBox)).append("\"");
-
+            d.append("<a href=\"");
+            writeAnchorAddress(d, checkBox);
+            d.append("\"");
+            
             if (checkBox.getRealTarget() != null)
                 d.append(" target=\"").append(checkBox.getRealTarget()).append("\"");
 

@@ -107,10 +107,11 @@ public class SDefaultListCellRenderer
     public void write(Device d)
         throws IOException
     {
-        if (addr != null)
-            d.append("<a href=\"").
-                append(addr).
-                append("\">");
+        if (addr != null) {
+            d.append("<a href=\"");
+            addr.write(d);
+            d.append("\">");
+        }
         super.write(d);
         if (addr != null)
             d.append("</a> ");

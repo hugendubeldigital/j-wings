@@ -79,19 +79,35 @@ public final class Utils implements SConstants
         StringBuffer escaped = new StringBuffer(text.length());
         for ( int i = 0; i < text.length(); i++ ) {
             char c = text.charAt(i);
-            if ( c == '<' )
-                escaped.append("&lt;");
-            else if ( c == '>' )
-                escaped.append("&gt;");
-            else if ( c == '\"' )
-                escaped.append("&quot;");
-            else if ( c == '\n' )
-                escaped.append("<br />");
-            else
-                escaped.append(c);
+            switch (c) {
+            case '&' : escaped.append("&amp;"); break;
+            case '<' : escaped.append("&lt;"); break;
+            case '>' : escaped.append("&gt;"); break;
+            case '"' : escaped.append("&quot;"); break;
+            case '\n': escaped.append("<br />"); break; // HTML formatting
+            default:   escaped.append(c);
+            }
         }
-
         return escaped.toString();
+    }
+
+    /**
+     * writes an {X|HT}ML quoted string according to RFC 1866.
+     * '"', '<', '>', '&'  become '&quot;', '&lt;', '&gt;', '&amp;'
+     */
+    // not optimized yet.
+    public static void quote(Device d, String s) throws IOException {
+	int len = s.length();
+	char c;
+	for (int pos = 0; pos < len; ++pos) {
+	    switch ((c = s.charAt(pos))) {
+	    case '&': d.print("&amp;"); break;
+	    case '"': d.print("&quot;");break;
+	    case '<': d.print("&lt;");  break;
+	    case '>': d.print("&gt;");  break;
+	    default: d.print(c);
+	    }
+	}
     }
 
     public static String toColorString(int rgb) {

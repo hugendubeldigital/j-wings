@@ -27,8 +27,6 @@ import org.wings.style.Style;
 public final class TextFieldCG
     extends org.wings.plaf.xhtml.TextFieldCG
 {
-    private StringBuffer buffer = new StringBuffer();
-
     public void write(Device d, SComponent c)
         throws IOException
     {
@@ -46,19 +44,9 @@ public final class TextFieldCG
 
         String text = textField.getText();
         if (text != null) {
-            int pos=-1, lastpos=0;
-            buffer.setLength(0);
-            while ((pos = text.indexOf("\"", pos+1)) != -1) {
-                buffer.append(text.substring(lastpos, pos));
-                buffer.append("&quot;");
-                lastpos = pos+1;
-            }
-            if (buffer.length() > 0) {
-                buffer.append(text.substring(lastpos));
-                text = buffer.toString();
-            }
-
-            d.append(" value=\"").append(text).append("\"");
+            d.append(" value=\"");
+            org.wings.plaf.xhtml.Utils.quote(d, text);
+            d.append("\"");
         }
 
         if (textField.isEnabled()) {

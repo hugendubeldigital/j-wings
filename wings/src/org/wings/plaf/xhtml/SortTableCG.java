@@ -193,10 +193,10 @@ public class SortTableCG
                 rendererPane.writeComponent(d, comp, sortTable);
                 d.append("</th><th>");
 
-                d.append("<a href=\"").
-                    append(sortTable.getServerAddress()
-                           .add(sortTable.getNamePrefix()+"=u"+c)).
-                    append("\">");
+                d.append("<a href=\"");
+                sortTable.getServerAddress()
+                    .add(sortTable.getNamePrefix()+"=u"+c).write(d);
+                d.append("\">");
                 try {
                     if (SSortTable.DEFAULT_SORT_UP != null) {
                         ExternalizeManager ext = sortTable.getExternalizeManager();
@@ -210,10 +210,10 @@ public class SortTableCG
                 }
                 d.append("</a>");
 
-                d.append("<a href=\"").
-                    append(sortTable.getServerAddress()
-                           .add(sortTable.getNamePrefix()+"=d"+c)).
-                    append("\">");
+                d.append("<a href=\"");
+                sortTable.getServerAddress()
+                    .add(sortTable.getNamePrefix()+"=d"+c).write(d);
+                d.append("\">");
                 try {
                     if (SSortTable.DEFAULT_SORT_DOWN != null) {
                         ExternalizeManager ext = sortTable.getExternalizeManager();
