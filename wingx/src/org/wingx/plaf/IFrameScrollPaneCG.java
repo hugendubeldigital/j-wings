@@ -16,110 +16,118 @@ package org.wingx.plaf;
 
 import java.awt.Rectangle;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.wings.*;
-import org.wings.externalizer.*;
-import org.wings.io.*;
-import org.wings.plaf.*;
-import org.wings.style.*;
+import org.wings.RequestURL;
+import org.wings.SComponent;
+import org.wings.SFrame;
+import org.wings.SScrollPane;
+import org.wings.Scrollable;
+import org.wings.externalizer.ExternalizeManager;
+import org.wings.io.Device;
+import org.wings.io.StringBufferDevice;
+import org.wings.plaf.xhtml.FrameCG;
+import org.wings.session.SessionManager;
+import org.wings.style.StyleSheet;
 
 public final class IFrameScrollPaneCG
     implements org.wings.plaf.ScrollPaneCG
 {
     public void installCG(SComponent component) {}
     public void uninstallCG(SComponent component) {}
+	Logger fLogger = Logger.getLogger("org.wingx.plaf.IFrameScrollPaneCG");
 
-    public void write(Device d, SComponent c)
-        throws IOException
+    public void write(Device d, SComponent c) throws IOException
     {
-        SScrollPane scrollPane = (SScrollPane)c;
+        SScrollPane scrollPane = (SScrollPane) c;
 
-	// write the contents to another device
-	SComponent contents = (SComponent)scrollPane.getScrollable();
-        Scrollable scrollable = (Scrollable)contents;
+        // write the contents to another device
+        SComponent contents = (SComponent) scrollPane.getScrollable();
+        Scrollable scrollable = (Scrollable) contents;
         Rectangle rect = scrollable.getViewportSize();
-        rect.setSize(scrollable.getScrollableViewportSize());
+        // rect.setSize(scrollable.getScrollableViewportSize());
 
-	if (contents != null) {
-	    Device document = new StringBufferDevice();
+        if (contents != null)
+        {
+            Device document = new StringBufferDevice();
             SFrame frame = c.getParentFrame();
-	    writeDocumentPrefix(document, frame);
-	    contents.write(document);
-	    writeDocumentPostfix(document);
+            writeDocumentPrefix(document, frame);
+            contents.write(document);
+            writeDocumentPostfix(document);
 
-	    ExternalizeManager ext = c.getExternalizeManager();
-	    if (ext != null) {
-		try {
-                    String url = frame.getServerAddress().getAbsoluteAddress();
-                    url = url.substring(0, url.lastIndexOf('/') + 1);
-		    url += ext.externalize(document);
-		    d.append("<iframe frameborder=\"0\" src=\"");
-                    d.append(url);
-                    d.append("\" width=\"");
-                    d.append(scrollPane.getHorizontalExtent());
-                    d.append("\" height=\"");
-                    d.append(scrollPane.getVerticalExtent());
-                    d.append("\"></iframe>");
-		}
-		catch (java.io.IOException e) {
-                    d.append("sorry: something went wrong");
-		    // dann eben nicht !!
-		    e.printStackTrace(System.err);
-		}
-	    }
-	}
+            ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
+            if (ext != null)
+            {
+                try
+                {
+                    d.print("<iframe frameborder=\"0\" src=\"");
+                    d.print(ext.externalize(document));
+                    d.print("\" width=\"");
+                    d.print(scrollPane.getHorizontalExtent());
+                    d.print("\" height=\"");
+                    d.print(scrollPane.getVerticalExtent());
+                    d.print("\"></iframe>");
+                }
+                catch (java.io.IOException e)
+                {
+                    d.print("sorry: something went wrong");
+                    // dann eben nicht !!
+                    e.printStackTrace(System.err);
+                    fLogger.log(Level.ALL, e.toString());
+                }
+            }
+        }
     }
 
-    protected void writeDocumentPrefix(Device d, SFrame frame) {
+    protected void writeDocumentPrefix(Device d, SFrame frame)
+    	throws IOException
+    {
         String language = "en"; // TODO: ???
 
-        d.append("<?xml version=\"1.0\" encoding=\"");
-        d.append(frame.getSession().getCharSet());
-        d.append("\"?>\n");
-        d.append("<!DOCTYPE html\n");
-	d.append("   PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n");
-        d.append("   \"DTD/xhtml1-transitional.dtd\">\n");
-        d.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"");
-        d.append(language);
-        d.append("\" lang=\"");
-        d.append(language);
-        d.append("\">\n");
-        d.append("<head>");
-        d.append("<meta http-equiv=\"Content-type\" content='text/html; charset=\"");
-        d.append(frame.getSession().getCharSet());
-        d.append("\"' />\n");
-        d.append("<meta http-equiv=\"expires\" content=\"0\" />\n");
-        d.append("<meta http-equiv=\"pragma\" content=\"no-cache\" />\n");
-        d.append("<base target=\"_top\">\n");
-        d.append("</head>\n");
+        d.print("<?xml version=\"1.0\" encoding=\"");
+        d.print(FrameCG.charSetFor(frame.getSession().getLocale()));
+        d.print("\"?>\n");
+        d.print("<!DOCTYPE html\n");
+		d.print("   PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n");
+        d.print("   \"DTD/xhtml1-transitional.dtd\">\n");
+        d.print("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"");
+        d.print(language);
+        d.print("\" lang=\"");
+        d.print(language);
+        d.print("\">\n");
+        d.print("<head>");
+        d.print("<meta http-equiv=\"Content-type\" content='text/html; charset=\"");
+        d.print(FrameCG.charSetFor(frame.getSession().getLocale()));
+        d.print("\"' />\n");
+        d.print("<meta http-equiv=\"expires\" content=\"0\" />\n");
+        d.print("<meta http-equiv=\"pragma\" content=\"no-cache\" />\n");
+        d.print("<base target=\"_top\">\n");
+        d.print("</head>\n");
 	
         StyleSheet styleSheet = frame.getStyleSheet();
         if (styleSheet != null) {
-            ExternalizeManager ext = frame.getExternalizeManager();
+            ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
             String link = null;
 
             if (ext != null) {
-                try {
-                    link = ext.externalize(styleSheet);
-                }
-                catch (java.io.IOException e) {
-                    // dann eben nicht !!
-                    e.printStackTrace(System.err);
-                }
+				link = ext.externalize(styleSheet);
             }
             if (link != null) {
-                d.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
-                d.append(link);
-                d.append("\" />");
+                d.print("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+                d.print(link);
+                d.print("\" />");
             }
         }
         else {
-            System.err.println("Frame.styleSheet == null!");
+            fLogger.log(Level.WARNING, "Frame.styleSheet == null!");
         }
     }
 
-    protected void writeDocumentPostfix(Device d) {
-	d.append("</body></html>");
+    protected void writeDocumentPostfix(Device d)
+    	throws IOException
+    {
+		d.print("</body></html>");
     }
 }
 

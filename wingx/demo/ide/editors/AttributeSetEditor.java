@@ -1,9 +1,11 @@
 package ide.editors;
 
-import java.util.*;
-import org.wings.style.*;
+import java.util.StringTokenizer;
 
+import org.wings.style.AttributeSet;
+import org.wings.style.SimpleAttributeSet;
 import org.wingx.beans.SPropertyEditorSupport;
+
 
 public class AttributeSetEditor extends SPropertyEditorSupport
 {
@@ -32,7 +34,7 @@ public class AttributeSetEditor extends SPropertyEditorSupport
 		    continue;
 		String name = token.substring(0, pos);
 		String value = token.substring(pos + 1);
-		set.putAttribute(name, value);
+		set.put(name, value);
 	    }
 	}
 	setValue(set);

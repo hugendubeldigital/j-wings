@@ -14,6 +14,7 @@ public class LogPanel
     extends SForm
 {
     STextArea log;
+    private Logger logger = Logger.getLogger("ide.LogPanel");
 
     public LogPanel() {
 	log = new STextArea();

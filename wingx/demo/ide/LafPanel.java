@@ -1,25 +1,48 @@
 package ide;
 
-import java.awt.event.*;
-import java.beans.BeanInfo;
-import java.beans.BeanDescriptor;
-import java.io.*;
-import java.lang.reflect.*;
-import java.net.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringBufferInputStream;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.logging.Logger;
 
-import javax.swing.ImageIcon;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.tree.*;
-import javax.xml.parsers.*;
-
-import org.apache.tools.ant.*;
-import org.wings.*;
-import org.wings.event.*;
-import org.wings.plaf.*;
-import org.wings.script.*;
-import org.wings.session.*;
-import org.w3c.dom.*;
+import org.wings.DynamicCodeResource;
+import org.wings.LowLevelEventListener;
+import org.wings.SBorderLayout;
+import org.wings.SButton;
+import org.wings.SButtonGroup;
+import org.wings.SComponent;
+import org.wings.SFileChooser;
+import org.wings.SForm;
+import org.wings.SFrame;
+import org.wings.SGridLayout;
+import org.wings.SLabel;
+import org.wings.SPanel;
+import org.wings.SRadioButton;
+import org.wings.STextArea;
+import org.wings.STextField;
+import org.wings.plaf.ComponentCG;
+import org.wings.script.JavaScriptListener;
+import org.wings.script.ScriptListener;
+import org.wings.session.PropertyService;
+import sun.security.krb5.internal.i;
+import sun.security.krb5.internal.crypto.e;
 
 public class LafPanel
     extends SForm
@@ -27,7 +50,7 @@ public class LafPanel
     private static String EDITOR_SOURCE = "editor";
     private static String FILE_SOURCE = "file";
     private static String NAME_SOURCE = "name";
-
+	protected final Logger logger = Logger.getLogger("ide.LafPanel");
     Map modules;
 
     STextArea editor;
@@ -323,7 +346,7 @@ public class LafPanel
 	}
 
 	DynamicCodeResource codeResource = (DynamicCodeResource)testFrame.getDynamicResource(DynamicCodeResource.class);
-	String url = codeResource.getURL();
+	String url = codeResource.getURL().toString();
 	if (url.indexOf("?") > -1)
 	    url = url + "&clear=X";
 	else
@@ -335,16 +358,25 @@ public class LafPanel
 
 	if (firstTime) {
 	    // register a request listener, that handles the named event "clear"
-	    getSession().getDispatcher().register(new RequestListener() {
-		    public void processRequest(String name, String[] values) {
+	    getSession().getDispatcher().register(new LowLevelEventListener() {
+		    public void processLowLevelEvent(String name, String[] values) {
 			logger.info("remove java script");
 			frame.removeScriptListener(script);
 		    }
 		    
+		    public String getLowLevelEventId() {
+            		return getComponentId();
+		    }
+		    public final String getEncodedLowLevelEventId() {
+		        return getEncodedLowLevelEventId();
+		    }
+
+
 		    public String getName() { return "clear"; }
 		    public String getNamePrefix() { return ""; }
 		    public void fireIntermediateEvents() {}
 		    public void fireFinalEvents() {}
+		    
 		});
 	}
 	return testFrame;

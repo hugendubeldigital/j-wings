@@ -10,7 +10,7 @@ import org.wings.externalizer.*;
 import org.wings.io.StringBufferDevice;
 
 public class DeviceObjectHandler
-    implements ObjectHandler
+    extends TextExternalizer
 {
 
     String extension = null;
@@ -43,7 +43,7 @@ public class DeviceObjectHandler
 	return mimeType;
     }
 
-    public boolean isStable(Object obj) {
+    public boolean isFinal(Object obj) {
 	return false;
     }
 

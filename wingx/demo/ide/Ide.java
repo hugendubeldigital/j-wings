@@ -39,8 +39,7 @@ import org.wings.event.SContainerEvent;
  * @author <a href="mailto:haaf@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class IdeSession
-    extends SessionServlet
+public class Ide
     implements SConstants
 {
     Map modules = new HashMap();
@@ -52,14 +51,16 @@ public class IdeSession
     LafPanel lafPanel;
     LogPanel logPanel;
     SPanel builderPanel;
+    Logger fLogger = Logger.getLogger("ide.Ide");
 
-    public IdeSession(Session session) {
-        super(session);
-        logger.info("new IdeSession");
+    public Ide() {
+        SFrame frame = new SFrame("Ide");
+        fLogger.info("new Ide");
+        init(frame);
     }
 
-    public void postInit(ServletConfig config) {
-        SContainer contentPane = getFrame().getContentPane();
+    protected void init(SFrame aFrame) {
+        SContainer contentPane = aFrame.getContentPane();
 
         SMenuBar menuBar = createMenu();
         contentPane.add(menuBar);
@@ -178,6 +179,7 @@ public class IdeSession
                             frame.setMaximized(true);
                         }
                     }
+                    public void visit(SContainer c) {}
                 });
         }
         catch (Exception e) {
@@ -245,6 +247,7 @@ public class IdeSession
                                             frame.setMaximized(true);
                                         }
                                     }
+                                    public void visit(SContainer c) {}
                                 });
                         }
                         catch (Exception e) {

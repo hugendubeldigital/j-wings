@@ -31,7 +31,8 @@
 
 
   <!-- ==================== Build wingX Demos ================ -->
-  <target name="build" depends="beaneditor,ide"/>
+  <!-- <target name="build" depends="beaneditor,ide"/> -->
+  <target name="build" depends="ide"/>
 
   <target name="menupane" depends="prepare">
     <javac srcdir="menupane" destdir="${build.class}"
@@ -53,7 +54,7 @@
   </target>
 
   <target name="compile" depends="prepare">
-    <javac srcdir="src" destdir="${build.class}"
+    <javac srcdir="." destdir="${build.class}"
 	   debug="${build.debug}"
 	   deprecation="${build.deprecation}">
       <classpath refid="build.classpath"/>
@@ -84,7 +85,7 @@
 
   <target name="ide" depends="compile">
     <war warfile="${dist.deploy}/ide.war"
-	 webxml="src/ide/web.xml">
+	 webxml="ide/web.xml">
       <lib dir="../dist/lib">
         <include name="wings.jar"/>
         <include name="wingx.jar"/>
@@ -93,25 +94,26 @@
       <classes dir="${build.class}">
         <include name="ide/**"/>
       </classes>
-      <fileset dir="src/ide">
+      <fileset dir="ide">
         <include name="index.html"/>
       </fileset>
-      <fileset dir="src/ide">
+      <fileset dir="ide">
         <include name="*.java"/>
       </fileset>
       <fileset dir="../dist/lib">
         <include name="css1.jar"/>
       </fileset>
-      <fileset dir="src/ide">
+      <fileset dir="ide">
         <include name="cg-build.xml"/>
       </fileset>
     </war>
   </target>
 
   <target name="tomcat" depends="build" if="tomcat.home">
-    <mkdir dir="${tomcat.home}/webapps/beaneditor"/>
+    <!-- <mkdir dir="${tomcat.home}/webapps/beaneditor"/>
     <unwar src="${dist.deploy}/beaneditor.war" dest="${tomcat.home}/webapps/beaneditor"/>
     <touch file="${tomcat.home}/webapps/beaneditor/WEB-INF/web.xml"/>
+    -->
 
     <mkdir dir="${tomcat.home}/webapps/ide"/>
     <unwar src="${dist.deploy}/ide.war" dest="${tomcat.home}/webapps/ide"/>

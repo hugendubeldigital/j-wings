@@ -1,16 +1,25 @@
+/**
+ */
 package ide;
 
-import java.beans.BeanInfo;
 import java.beans.BeanDescriptor;
-
-import java.util.*;
+import java.beans.BeanInfo;
+import java.util.Hashtable;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.event.TreeModelEvent;
-import javax.swing.tree.*;
-
-import org.wings.*;
-import org.wings.event.*;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+import org.wings.SComponent;
+import org.wings.SContainer;
+import org.wings.SIcon;
+import org.wings.SImageIcon;
+import org.wings.SScrollPane;
+import org.wings.STree;
+import org.wings.event.SContainerEvent;
+import org.wings.event.SContainerListener;
+import org.wings.tree.SDefaultTreeCellRenderer;
 
 
 /**
@@ -21,6 +30,7 @@ public class TreePanel extends SScrollPane {
 
     private STree tree;
     private ContainerTreeModel treeModel;
+    private Logger logger = Logger.getLogger("ide.TreePanel");
 
     /**
      * Creates a tree panel with the tree model

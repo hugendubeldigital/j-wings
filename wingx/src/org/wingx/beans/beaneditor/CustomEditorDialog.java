@@ -1,16 +1,21 @@
 package org.wingx.beans.beaneditor;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.lang.reflect.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.table.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import org.wings.*;
-import org.wingx.beans.*;
-import org.wingx.beans.editors.*;
+import org.wings.ResourceImageIcon;
+import org.wings.SBorderLayout;
+import org.wings.SButton;
+import org.wings.SComponent;
+import org.wings.SDialog;
+import org.wings.SFlowLayout;
+import org.wings.SFont;
+import org.wings.SIcon;
+import org.wings.SLabel;
+import org.wings.SPanel;
+import org.wings.SResetButton;
+import org.wings.SSeparator;
+import org.wings.border.SBevelBorder;
 
 /*
  * @author Holger Engels
@@ -38,18 +43,19 @@ public class CustomEditorDialog
         titleLabel.setText(TITLE_PREFIX);
         titleLabel.setFont(titleLabelFont);
 
-        SHorizontalRule hrule = new SHorizontalRule();
+        SSeparator hrule = new SSeparator();
         //hrule.setShade(false);
 
-        SImage spacer = new SImage(new ResourceImageIcon(this.getClass(), "../../ui/resources/nothing.gif"));
-        spacer.setWidth(600);
-        spacer.setHeight(1);
-        spacer.setStyle(null);
+        // SImageIcon spacer = new ResourceImageIcon(this.getClass(), "../../ui/resources/nothing.gif");
+        SIcon spacer = new ResourceImageIcon("org/wings/icons/transdot.gif");
+        //spacer.setWidth(600);
+        //spacer.setHeight(1);
+        //spacer.setStyle(null);
 
         SPanel headerPanel = new SPanel();
         headerPanel.add(titleLabel);
         headerPanel.add(hrule);
-        headerPanel.add(spacer);
+        headerPanel.add(new SLabel(spacer));
 
         closeButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent evt) {
@@ -62,7 +68,7 @@ public class CustomEditorDialog
         buttonPanel.setLayout(new SFlowLayout());
         buttonPanel.setHorizontalAlignment(CENTER);
         buttonPanel.add(closeButton);
-        buttonPanel.add(new SSpacer(10));
+        // buttonPanel.add(new SSpacer(10));
         buttonPanel.add(resetButton);
 
         add(headerPanel, SBorderLayout.NORTH);
