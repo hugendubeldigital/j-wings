@@ -1,8 +1,12 @@
 <template name="TextAreaCG" for="org.wings.STextArea">
 <write>
 <%
-    String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
-    final String attr = (component.getAttributes().size() > 0) ? ("_" + component.getUnifiedId()) : null;
+    String style = ((component.getStyle() != null) 
+		    ? component.getStyle().getName() 
+		    : null);
+    final String attr = ((component.getAttributes().size() > 0) 
+			 ? ("_" + component.getUnifiedId()) 
+			 : null);
 
     if (style != null && attr != null) {
         %><span class="<%=style%>"><%

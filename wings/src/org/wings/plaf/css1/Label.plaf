@@ -58,8 +58,12 @@ void writeText(Device device, SLabel label, AnchorProperties anchor)
    final int horizontalTextPosition = component.getHorizontalTextPosition();
    final int verticalTextPosition   = component.getVerticalTextPosition();
    final boolean noBreak = component.isNoBreak();
-   final String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
-   final String attr = (component.getAttributes().size() > 0) ? ("_" + component.getUnifiedId()) : null;
+   final String style = ((component.getStyle() != null) 
+			 ? component.getStyle().getName() 
+			 : null);
+   final String attr = ((component.getAttributes().size() > 0) 
+			? ("_" + component.getUnifiedId()) 
+			: null);
    final AnchorProperties anchor = AnchorRenderStack.get();
 
    /*
@@ -87,7 +91,7 @@ void writeText(Device device, SLabel label, AnchorProperties anchor)
       if (spans == 1) { %></span><% }
       if (spans == 2) { %></span></span><% }
    }
-   else if (text == null) {
+   else if (text == null || text.length() == 0) {
       int spans = 0;
       if (style != null) {
           %><span class="<%=style%>"><%

@@ -1,4 +1,5 @@
 <template name="AnchorCG" for="org.wings.SAnchor">
+  <comp-property type="Style" name="style">anchor</comp-property>
 
 void writeStartAnchor(Device device, SAnchor anchor, String style) 
    throws IOException {
@@ -22,8 +23,22 @@ void writeEndAnchor(Device device, Style style)
 
 <write>
 <%
-   final String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
-//writeStartAnchor(device, component, style);
+   final String style = ((component.getStyle() != null) 
+			 ? component.getStyle().getName() 
+			 : null);
+   final String attr = ((component.getAttributes().size() > 0) 
+			? ("_" + component.getUnifiedId()) 
+			: null);
+   int spans = 0;
+   if (style != null) {
+       %><span class="<%=style%>"><%
+          spans++;
+    }
+    if (attr != null) {
+        %><span class="<%=attr%>"><%
+        spans++;
+    }
+
    try {
       AnchorRenderStack.push(component.getURL(), component.getTarget());
       Utils.renderContainer(device, component);
@@ -31,7 +46,9 @@ void writeEndAnchor(Device device, Style style)
    finally {
       AnchorRenderStack.pop();
    }
-// writeEndAnchor(device, style);
+
+   if (spans == 1) { %></span><% }
+   if (spans == 2) { %></span></span><% }
 %>
 </write>
 </template>
