@@ -22,6 +22,15 @@ import org.wings.io.Device;
 import org.wings.util.StringUtil;
 import org.wings.session.SessionManager;
 
+/**
+ * Dynamic Resources are web resources representing rendered components 
+ * and are individually loaded by Browsers as different 'files'. 
+ * Dynamic Resources include therefore frames, cascading stylesheets or 
+ * script files.
+ * The resources may change in the consequence of some internal change of
+ * the components. This invalidation process yields a new 'version', called
+ * epoch here.
+ */
 public abstract class DynamicResource
 {
     /**
@@ -45,9 +54,9 @@ public abstract class DynamicResource
     private String epochCache = StringUtil.toShortestAlphaNumericString(epoch);
 
     /**
-     *
+     * The frame this DynamicResource belongs to.
      */
-    private SFrame frame;
+    private final SFrame frame;
 
     /**
      *
@@ -55,9 +64,9 @@ public abstract class DynamicResource
     private RequestURL requestURL;
 
     /**
-     *
+     * The externalized ID of the frame.
      */
-    private String id;
+    private final String id;
 
     /**
      *
@@ -77,7 +86,6 @@ public abstract class DynamicResource
         // nur Id, ohne session Encoding!
         id = frame.getExternalizeManager().getId(frame.getExternalizeManager().externalize(this));
         System.err.println("Externalize DynamicResource " + id);
-
     }
 
     /**
@@ -88,7 +96,9 @@ public abstract class DynamicResource
     }
 
     /**
-     *
+     * Mark this dynamic resource as to be re-rendered. This method is
+     * called, whenever any change took place in the frame, so that this
+     * dynamic resource is to be externalized with a new version-number.
      */
     public final void invalidate() {
         epochCache = StringUtil.toShortestAlphaNumericString(++epoch);
