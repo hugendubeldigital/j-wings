@@ -16,7 +16,7 @@ package org.wings.externalizer;
 
 import java.io.InputStream;
 
-import org.wings.ResourceImageIcon;
+import org.wings.Resource;
 
 /**
  * TODO: documentation
@@ -25,22 +25,28 @@ import org.wings.ResourceImageIcon;
  * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
  * @version $Revision$
  */
-public class ResourceImageIconExternalizer
+public class ResourceExternalizer
     implements Externalizer
 {
-    private static final Class[] SUPPORTED_CLASSES = { ResourceImageIcon.class };
+    private static final Class[] SUPPORTED_CLASSES = { Resource.class };
 
     public String getExtension(Object obj) {
-        return ((ResourceImageIcon)obj).getExtension();
+        if ( obj!=null )
+            return ((Resource)obj).getExtension();
+        else 
+            return "";
     }
 
     public String getMimeType(Object obj) {
-        if (obj == null)
-            return null;
-        return "image/" + getExtension(obj);
+        if ( obj!=null )
+            return ((Resource)obj).getMimeType();
+        else 
+            return "unknown";
     }
 
     public int getLength(Object obj) {
+        if ( obj!=null )
+            return ((Resource)obj).getLength();
         return -1;
     }
 
@@ -51,14 +57,7 @@ public class ResourceImageIconExternalizer
     public void write(Object obj, java.io.OutputStream out)
         throws java.io.IOException
     {
-        InputStream in = ((ResourceImageIcon)obj).getInputStream();
-        byte[] buffer = new byte[2000];
-        while ( in.available() > 0 ) {
-            int count = in.read(buffer);
-            if ( count > 0 )  // read sometimes returns -1 at the end...
-                out.write(buffer, 0, count);
-        }
-        in.close();
+        ((Resource)obj).write(out);
     }
 
     public Class[] getSupportedClasses() {

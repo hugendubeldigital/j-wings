@@ -31,7 +31,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.wings.*;
 import org.wings.util.*;
 import org.wings.session.Session;
+import org.wings.externalizer.SystemExternalizeManager;
 import org.wings.externalizer.ExternalizeManager;
+import org.wings.externalizer.AbstractExternalizeManager;
 import org.wings.externalizer.ExternalizedInfo;
 
 /**
@@ -267,6 +269,34 @@ public abstract class WingServlet extends HttpServlet
         String pathInfo = request.getPathInfo();
         return (pathInfo != null && pathInfo.length() >=2);
     }
+
+    /**
+     * returns, whether this request is to serve an externalize request.
+     */
+    protected boolean isSystemExternalizeRequest(HttpServletRequest request) {
+        String pathInfo = request.getPathInfo();
+        return (pathInfo != null && pathInfo.length() >=2 && pathInfo.charAt(1)=='-');
+    }
+
+    /**
+     *
+     */
+    protected AbstractExternalizeManager getExternalizeManager(HttpServletRequest req) 
+        throws ServletException 
+    {
+        
+        AbstractExternalizeManager extManager = null;
+        if ( isSystemExternalizeRequest(req) )
+            return SystemExternalizeManager.getSharedInstance();
+        else {
+            SessionServlet sessionServlet = null;
+            synchronized (initializer) {
+                sessionServlet = getSessionServlet(req, null);
+            }
+            
+            return sessionServlet.getSession().getExternalizeManager();
+        }
+    }
     
     /**
      * returns the last modification of an externalized resource to allow the
@@ -275,26 +305,19 @@ public abstract class WingServlet extends HttpServlet
      * request.
      */
     protected long getLastModified(HttpServletRequest req) {
-        if (isExternalizeRequest(req)) {
-
-            try {
-                SessionServlet sessionServlet = null;
-                synchronized (initializer) {
-                    sessionServlet = getSessionServlet(req, null);
-                }
-                
-                Session session = sessionServlet.getSession();
-                
-                ExternalizedInfo info = 
-                    session.getExternalizeManager().getExternalizedInfo(req.getPathInfo().substring(1));
+        try {
+            if ( isExternalizeRequest(req) ) {
+                ExternalizedInfo info = getExternalizeManager(req).
+                    getExternalizedInfo(req.getPathInfo().substring(1));
                 
                 if (info == null) {
                     debug ("info is null!");
                     return -1;
                 }
                 return info.getLastModified();
-            } catch ( Exception e ) {
             }
+        } catch ( Exception e ) {
+            e.printStackTrace();
         }
         return -1;
     }
@@ -334,11 +357,6 @@ public abstract class WingServlet extends HttpServlet
             response.sendRedirect(pathUrl.toString());
             return;
         }
-        
-        SessionServlet sessionServlet = null;
-        synchronized (initializer) {
-            sessionServlet = getSessionServlet(req, response);
-        }
 
         /*
          * we either have a request for externalization
@@ -346,11 +364,14 @@ public abstract class WingServlet extends HttpServlet
          * request to this servlet.
          */
         if (isExternalizeRequest(req)) {
-            sessionServlet.getSession().getExternalizeManager().deliver(pathInfo.substring(1), response);
+            getExternalizeManager(req).deliver(pathInfo.substring(1), response);
             return;
         }
-
-
+        
+        SessionServlet sessionServlet = null;
+        synchronized (initializer) {
+            sessionServlet = getSessionServlet(req, response);
+        }
 
         if (DEBUG) {
             if (req.getParameterValues("exit")!=null) {

@@ -277,9 +277,8 @@ public abstract class AbstractExternalizeManager
                                                         mimeType, headers, flags);
 
         if ( (flags & GLOBAL) > 0 ) {
-            // session encoding is not available in SysExtMan, so add it here
-            return SystemExternalizeManager.getSharedInstance().externalize(extInfo) + 
-                sessionEncoding;
+            // session encoding is not necessary here
+            return SystemExternalizeManager.getSharedInstance().externalize(extInfo);
         } else {
             return externalize(extInfo);
         }

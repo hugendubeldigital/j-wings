@@ -15,9 +15,12 @@
 package org.wings;
 
 import java.awt.Image;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
-import javax.swing.ImageIcon;
+import org.wings.session.SessionManager;
+import org.wings.externalizer.ExternalizeManager;
 
 /*
  * Diese Klasse ist nur ein Wrapper, um Eingabestroeme von Grafiken mit dem
@@ -33,14 +36,8 @@ import javax.swing.ImageIcon;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class ResourceImageIcon
-    extends SImageIcon
+public class ResourceImageIcon extends Resource implements SIcon
 {
-    protected ClassLoader classLoader;
-    
-    protected String resourceFileName;
-    protected String extension; 
-
     /**
      * TODO: documentation
      *
@@ -55,98 +52,23 @@ public class ResourceImageIcon
     }
 
     public ResourceImageIcon(ClassLoader classLoader, String resourceFileName) {
-        super(getImage(classLoader, resourceFileName));
-        this.classLoader = classLoader;
-        this.resourceFileName = resourceFileName;
-        extension = resourceFileName.substring(resourceFileName.lastIndexOf('.') + 1);
-        if (extension == null || extension.length() == 0)
-            extension = "png";
-        if (extension.equals("jpg"))
-            extension = "jpeg";
+        super(classLoader, resourceFileName);
+
+        if (extension == null || extension.length() == 0) {
+            extension = "";
+            mimeType = "image/png";
+        } else  if (extension.toUpperCase().equals("JPG"))
+            mimeType = "image/jpeg";
+        else
+            mimeType = "image/" + extension;
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public InputStream getInputStream() {
-        return classLoader.getResourceAsStream(resourceFileName);
+    public int getIconWidth() {
+        return -1;
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getExtension() {
-        return extension;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String toString() {
-        return resourceFileName;
-    }
-
-    private static String resolveName(Class baseClass, String fileName) {
-        if (fileName == null) {
-            return fileName;
-        }
-        if (!fileName.startsWith("/")) {
-            while (baseClass.isArray()) {
-                baseClass = baseClass.getComponentType();
-            }
-            String baseName = baseClass.getName();
-            int index = baseName.lastIndexOf('.');
-            if (index != -1) {
-                fileName = baseName.substring(0, index).replace('.', '/')
-                    + "/" + fileName;
-            }
-        } else {
-            fileName = fileName.substring(1);
-        }
-        return fileName;
-    }
-
-    private static ImageIcon getImage(ClassLoader classLoader, String resourceFileName) {
-        return new ImageIcon(getImageData(classLoader, resourceFileName));
-    }
-
-    private static byte[] getImageData(ClassLoader classLoader, String resourceFileName) {
-        InputStream resource = null;
-        try {
-            resource = classLoader.getResourceAsStream(resourceFileName);
-            if (resource == null) {
-                // not found
-                System.err.println("resource not found: " + resourceFileName);
-                return new byte[0];
-            }
-
-            byte[] buffer = new byte[resource.available()];
-            resource.read(buffer);
-
-            if ( buffer==null )
-                buffer = new byte[0];
-
-            return buffer;
-        }
-        catch (java.io.IOException ioe) {
-            System.err.println(ioe.toString());
-            return new byte[0];
-        }
-        finally {
-            try {
-                if (resource != null)
-                    resource.close();
-            }
-            catch(Exception e) {
-                System.err.println("Cannot close " + resourceFileName);
-            } // ignore
-        }
+    public int getIconHeight() {
+        return -1;
     }
 }
 
@@ -156,3 +78,4 @@ public class ResourceImageIcon
  * indent-tabs-mode: nil
  * End:
  */
+

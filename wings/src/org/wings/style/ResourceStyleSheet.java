@@ -18,17 +18,17 @@ import java.io.*;
 import java.net.*;
 import java.util.Set;
 
+import org.wings.Resource;
+
 /**
  * TODO: documentation
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class ResourceStyleSheet
+public class ResourceStyleSheet extends Resource
     implements StyleSheet
 {
-    ClassLoader classLoader = null;
-    String fileName = null;
 
     /**
      * TODO: documentation
@@ -38,8 +38,7 @@ public class ResourceStyleSheet
      * @throws IOException
      */
     public ResourceStyleSheet(ClassLoader classLoader, String fileName) {
-        this.fileName = fileName;
-        this.classLoader = classLoader;
+        super(classLoader, fileName);
     }
 
     /**
@@ -57,55 +56,18 @@ public class ResourceStyleSheet
      * TODO: documentation
      *
      * @return
-     * @throws IOException
-     */
-    public InputStream getInputStream() throws IOException {
-        InputStream is = classLoader.getResourceAsStream(fileName);
-        if ( is == null )
-          throw new java.io.IOException( "Can not find StyleSheet " + fileName );
-        return is;
-    }
-
-    public boolean isFinal() {
-        return true;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
      */
     public Set styleSet() {
         throw new UnsupportedOperationException();
     }
 
-    private static String resolveName(Class baseClass, String fileName) {
-        if (fileName == null) {
-            return fileName;
-        }
-        if (!fileName.startsWith("/")) {
-            while (baseClass.isArray()) {
-                baseClass = baseClass.getComponentType();
-            }
-            String baseName = baseClass.getName();
-            int index = baseName.lastIndexOf('.');
-            if (index != -1) {
-                fileName = baseName.substring(0, index).replace('.', '/')
-                    + "/" + fileName;
-            }
-        } else {
-            fileName = fileName.substring(1);
-        }
-        return fileName;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String toString() {
-        return fileName;
+    
+    public boolean isFinal() {
+        return true;
+    } 
+    
+    public InputStream getInputStream() {
+        return getResourceStream();
     }
 }
 

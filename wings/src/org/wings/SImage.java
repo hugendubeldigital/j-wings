@@ -16,6 +16,7 @@ package org.wings;
 
 import java.awt.Image;
 import java.net.URL;
+import java.net.MalformedURLException;
 
 import javax.swing.ImageIcon;
 
@@ -39,7 +40,7 @@ public class SImage
     /**
      * TODO: documentation
      */
-    protected SImageIcon image = null;
+    protected SIcon image = null;
     
     /**
      * TODO: documentation
@@ -77,7 +78,7 @@ public class SImage
      *
      * @param img
      */
-    public SImage(String img) {
+    public SImage(String img) throws MalformedURLException {
         setImage(img);
     }
 
@@ -95,7 +96,7 @@ public class SImage
      *
      * @param img
      */
-    public SImage(SImageIcon img) {
+    public SImage(SIcon img) {
         setImage(img);
     }
 
@@ -114,9 +115,8 @@ public class SImage
      *
      * @param img
      */
-    public void setImage(String img) {
-        if ( img!=null)
-            imagePath = img;
+    public void setImage(String img) throws MalformedURLException {
+        setImage(new URL(img));
     }
 
     /**
@@ -125,8 +125,7 @@ public class SImage
      * @param img
      */
     public void setImage(URL img) {
-        if ( img!=null)
-            setImage(img.toString());
+        image = new SURLIcon(img);
     }
 
     /**
@@ -144,7 +143,7 @@ public class SImage
      *
      * @param img
      */
-    public void setImage(SImageIcon img) {
+    public void setImage(SIcon img) {
         image = img;
     }
 

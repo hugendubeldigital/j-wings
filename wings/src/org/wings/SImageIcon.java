@@ -15,14 +15,13 @@ package org.wings;
 
 import org.wings.session.SessionManager;
 
-import java.net.URL;
 import javax.swing.ImageIcon;
 
 public class SImageIcon implements SIcon {
 
     private ImageIcon img;
 
-    private URL url;
+    private String url;
 
     public SImageIcon(ImageIcon image) {
 	this.img = image;
@@ -44,17 +43,11 @@ public class SImageIcon implements SIcon {
      * returns the URL, the icon can be fetched from. This URL may
      * be relative, usually if generated from the externalizer.
      */
-    public URL getURL() {
+    public String getURL() {
 	if (url == null) {
-	    String urlString = SessionManager.getSession()
+	    url = SessionManager.getSession()
 		.getExternalizeManager()
 		.externalize(img);
-	    if (urlString != null)
-                try {
-                    url = new URL(urlString);
-                } catch ( java.net.MalformedURLException e ) {
-                    // this could never happen...
-                }
 	}
 	return url;
     }

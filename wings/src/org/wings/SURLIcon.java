@@ -50,8 +50,8 @@ public class SURLIcon implements SIcon {
     return -1;
   }
   
-  public URL getURL() {
-    return url;
+  public String getURL() {
+    return url.toString();
   }
 
 }// SURLIcon

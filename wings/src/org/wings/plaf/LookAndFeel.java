@@ -19,8 +19,6 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 import javax.servlet.ServletOutputStream;
-import javax.swing.Icon;
-import javax.swing.Icon;
 
 import org.wings.*;
 import org.wings.io.*;
@@ -309,7 +307,7 @@ public class LookAndFeel
                 value = makeCG(property);
             else if (BorderCG.class.isAssignableFrom(type))
                 value = makeCG(property);
-            else if (Icon.class.isAssignableFrom(type))
+            else if (SIcon.class.isAssignableFrom(type))
                 value = makeIcon(property);
             else if (SFont.class.isAssignableFrom(type))
                 value = makeFont(property);

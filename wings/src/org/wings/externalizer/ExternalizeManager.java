@@ -42,7 +42,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
         new ImageExternalizer(ImageExternalizer.FORMAT_GIF),
         new ImageIconExternalizer(ImageExternalizer.FORMAT_PNG),
         new ImageIconExternalizer(ImageExternalizer.FORMAT_GIF),
-        new ResourceImageIconExternalizer(),
+        new ResourceExternalizer(),
         new TextExternalizer(),
         new StyleSheetExternalizer(),
     };
@@ -93,7 +93,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
 
     protected final void storeExternalizedInfo(String identifier,
                                                ExternalizedInfo extInfo) {
-        debug("store identifier " + identifier);
+        debug("store identifier " + identifier + " " + extInfo.getObject().getClass());
         debug("flags " + extInfo.getFlags());
 
 
@@ -161,7 +161,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
             return NOT_FOUND_IDENTIFIER;
         }
 
-        return externalize(obj, externalizer, flags);
+        return externalize(obj, externalizer, headers, flags);
     }
 
     /**

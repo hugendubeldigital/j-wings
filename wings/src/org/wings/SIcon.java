@@ -35,7 +35,7 @@ public interface SIcon {
      * returns the URL, the icon can be fetched from. This URL may
      * be relative, usually if generated from the externalizer.
      */
-    URL getURL();
+    String getURL();
 }
 
 /*
