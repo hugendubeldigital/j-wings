@@ -50,8 +50,7 @@ public class TabbedPaneExample extends WingSetPane
     /**
      * Constructor for TabbedPaneExample.
      */
-    protected SComponent createExample()
-    {
+    protected SComponent createExample() {
         SForm c = new SForm(new SBorderLayout());
 
         final STabbedPane tpane = new STabbedPane();
@@ -63,39 +62,39 @@ public class TabbedPaneExample extends WingSetPane
         SPanel choice = new SPanel(new SFlowLayout());
         choice.add(new SLabel("Tab Placement: "));
         Object[] btns = {
-	    "Top",		new Integer(SConstants.TOP),
-	    "Left",		new Integer(SConstants.LEFT),
+	    "Top",	new Integer(SConstants.TOP),
+	    "Left",	new Integer(SConstants.LEFT),
 	    "Bottom",	new Integer(SConstants.BOTTOM),
 	    "Right",	new Integer(SConstants.RIGHT),
 	};
 
-        for (int i = 0; i < btns.length; i += 2)
-	    {
-		SRadioButton btn = new SRadioButton(btns[i].toString());
-		btn.setActionCommand(btns[i + 1].toString());
-		btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-			    tpane.setTabPlacement(new Integer(ae.getActionCommand()).intValue());
-			}
-		    });
-		btn.setShowAsFormComponent(false);
-		grp.add(btn);
-		if (i == 0)
-		    grp.setSelected(btn, true);
-		choice.add(btn);
-	    }
+        for (int i = 0; i < btns.length; i += 2) {
+            SRadioButton btn = new SRadioButton(btns[i].toString());
+            btn.setActionCommand(btns[i + 1].toString());
+            btn.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        tpane.setTabPlacement(Integer.parseInt(ae.getActionCommand()));
+                    }
+                });
+            btn.setShowAsFormComponent(false);
+            grp.add(btn);
+            if (i == 0) {
+                grp.setSelected(btn, true);
+            }
+            choice.add(btn);
+        }
+
         choice.setHorizontalAlignment(SConstants.CENTER);
         c.add(choice, "North");
 
         final STextArea text = new STextArea();
         text.setPreferredSize(new SDimension(400, 200));
-        for (int i = 0; i < 12; ++i)
-	    {
-		SPanel p = new SPanel(new SBorderLayout());
-		p.add(new SLabel("Tab # " + i), "North");
-		p.add(text);
-		tpane.add("Tab " + i, p);
-	    }
+        for (int i = 0; i < 12; ++i) {
+            SPanel p = new SPanel(new SBorderLayout());
+            p.add(new SLabel("Tab # " + i), "North");
+            p.add(text);
+            tpane.add("Tab " + i, p);
+        }
 	tpane.setIconAt(3, JAVA_CUP_ICON);
 	tpane.setIconAt(8, SMALL_COW_ICON);
 	tpane.setEnabledAt(1, false);
@@ -119,25 +118,24 @@ public class TabbedPaneExample extends WingSetPane
 	    "Lightgray",	Color.lightGray,
 	    "Orange",		new Color(255, 153, 0)};
 
-        for (int i = 0; i < clrs.length; i += 2)
-	    {
-		SRadioButton btn = new SRadioButton(clrs[i].toString());
-		btn.setActionCommand("" + i);
-		btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-			    tpane.setBackground(
-						(Color) clrs[new Integer(ae.getActionCommand()).intValue() + 1]);
-			}
-		    });
-		btn.setShowAsFormComponent(false);
-		grp.add(btn);
-		if (i == 0)
-		    grp.setSelected(btn, true);
-		choice.add(btn);
-	    }
+        for (int i = 0; i < clrs.length; i += 2) {
+            SRadioButton btn = new SRadioButton(clrs[i].toString());
+            btn.setActionCommand("" + i);
+            btn.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                       tpane.setBackground((Color) clrs[Integer.parseInt(ae.getActionCommand()) + 1]);
+                    }
+                });
+            btn.setShowAsFormComponent(false);
+            grp.add(btn);
+            if (i == 0) {
+                grp.setSelected(btn, true);
+            }
+            choice.add(btn);
+        }
         choice.setHorizontalAlignment(SConstants.CENTER);
         c.add(choice, "West");
-
+        
         return c;
     }
 }
