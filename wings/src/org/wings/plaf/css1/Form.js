@@ -32,7 +32,7 @@ function submitForm(event, eventName, eventValue) {
 
 function getParentByTagName(element, tag) {
   while (element != null) {
-    if (tag == element.tagName)
+    if (tag.toUpperCase() == element.tagName.toUpperCase())
       return element;
     element = element.parentNode;
   }
