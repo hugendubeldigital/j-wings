@@ -152,18 +152,23 @@ public class STable
      */
     protected Rectangle viewport = null;
 
-	/**
-	 * icon for selected row.
-	 * Default: none.
-	 */
-	protected SIcon fSelectedIcon;
-	
-	/**
-	 * icon for deselected row.
-	 * Default: none.
-	 */
-	protected SIcon fDeselectedIcon;
-	
+    /**
+     * indicates if this component - if it is inside a {@link SForm} -  renders
+     * itself as form component or not.
+     */
+    private boolean showAsFormComponent = true;
+
+    /**
+     * icon for selected row.
+     * Default: none.
+     */
+    protected SIcon fSelectedIcon;
+    
+    /**
+     * icon for deselected row.
+     * Default: none.
+     */
+    protected SIcon fDeselectedIcon;
 
     public STable() {
         
@@ -237,6 +242,23 @@ public class STable
      */
     public Class getColumnClass(int col) {
         return model.getColumnClass(col);
+    }
+
+    /**
+     * indicates if this component - if it is inside a {@link SForm} -  renders
+     * itself as form component or not.
+     */
+    public void setShowAsFormComponent(boolean showAsFormComponent) {
+        this.showAsFormComponent = showAsFormComponent;
+    }
+
+    /**
+     * is this component rendered as form component. 
+     * @return true, if the component resides in a {@link SForm} and 
+     * {@link #setShowAsFormComponent} is set to true (the default)
+     */
+    public boolean getShowAsFormComponent() {
+        return showAsFormComponent && getResidesInForm();
     }
 
     /**

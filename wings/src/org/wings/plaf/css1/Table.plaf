@@ -204,7 +204,7 @@
         STableCellRenderer rowSelectionRenderer = table.getRowSelectionRenderer();
 
         if (rowSelectionRenderer == null) {
-            if (table.getResidesInForm()) {
+            if (table.getShowAsFormComponent()) {
                 writeDefaultFormRowSelection(device, table, rendererPane, row);
                 return;
             }
