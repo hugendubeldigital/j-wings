@@ -2,7 +2,7 @@
  * $Id$
  * (c) Copyright 2000 wingS development team.
  *
- * This file is part of wingS (http://wings.mercatis.de).
+ * This file is part of wingS (http://j-wings.org).
  *
  * wingS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License

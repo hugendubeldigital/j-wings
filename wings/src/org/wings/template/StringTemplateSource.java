@@ -2,7 +2,7 @@
  * $Id$
  * (c) Copyright 2000 wingS development team.
  *
- * This file is part of the wingS demo (http://wings.mercatis.de).
+ * This file is part of the wingS demo (http://j-wings.org).
  *
  * The wingS demo is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -82,6 +82,9 @@ public class StringTemplateSource  implements TemplateSource {
 
 /*
    $Log$
+   Revision 1.2  2005/01/16 01:01:20  oliverscheck
+   Project URL modified to reflect new domain j-wings.org.
+
    Revision 1.1  2002/10/26 11:59:43  ahaaf
    o initial
 

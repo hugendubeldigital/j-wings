@@ -2,7 +2,7 @@
  * $Id$
  * (c) Copyright 2000 wingS development team.
  *
- * This file is part of wingS (http://wings.mercatis.de).
+ * This file is part of wingS (http://j-wings.org).
  *
  * wingS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
@@ -391,6 +391,9 @@ public class SPagingBoundedRangeModel implements SBoundedRangeModel {
 
 /*
    $Log$
+   Revision 1.3  2005/01/16 01:01:04  oliverscheck
+   Project URL modified to reflect new domain j-wings.org.
+
    Revision 1.2  2004/03/09 15:01:23  arminhaaf
    o fix bug setting maximum smaller then current value
    o fix javadoc

@@ -2,7 +2,7 @@
  * $Id$
  * (c) Copyright 2002 wingS development team.
  * 
- * This file is part of wingS (http://wings.mercatis.de).
+ * This file is part of wingS (http://j-wings.org).
  * 
  * wingS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
@@ -33,6 +33,9 @@ public interface ProgressBarCG extends ComponentCG  {
 
 /*
    $Log$
+   Revision 1.2  2005/01/16 01:01:06  oliverscheck
+   Project URL modified to reflect new domain j-wings.org.
+
    Revision 1.1  2002/10/28 20:00:34  ahaaf
    o add ProgressBar component
 

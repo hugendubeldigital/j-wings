@@ -2,7 +2,7 @@
  * $Id$
  * (c) Copyright 2002 wingS development team.
  *
- * This file is part of wingS (http://wings.mercatis.de).
+ * This file is part of wingS (http://j-wings.org).
  *
  * wingS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
@@ -221,6 +221,9 @@ public class SDateChooser extends SComponent implements LowLevelEventListener {
 
 /*
    $Log$
+   Revision 1.5  2005/01/16 01:00:46  oliverscheck
+   Project URL modified to reflect new domain j-wings.org.
+
    Revision 1.4  2004/10/08 08:43:30  blueshift
    BATCH UPDATE
    - Switched logging to commons logging
