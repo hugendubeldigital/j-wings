@@ -31,7 +31,7 @@ import org.wings.event.SContainerEvent;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SContainer extends SComponent
+public class SContainer extends SComponent implements ClickableRenderComponent
 {
     /**
      * @see #getCGClassID
@@ -467,24 +467,32 @@ public class SContainer extends SComponent
     public void setCG(ContainerCG cg) {
         super.setCG(cg);
     }
+    
+    /**
+     * Calls the visitor on each SComponent this container has. You might
+     * want to call this in your visitor.
+     *
+     * @param visitor an implementation of the {@link ComponentVisitor}
+     *                interface.
+     */
+    public void inviteEachComponent(ComponentVisitor visitor) 
+        throws Exception {
+	Iterator iterator = getComponentList().iterator();
+	while (iterator.hasNext()) {
+	    ((SComponent)iterator.next()).invite(visitor);
+        }
+    }
 
     /**
      * Invite a ComponentVisitor.
-     * This visitor is called with the container itself and all
-     * components, that this container has. Use this, if you want to
-     * iterate through all elements.
      *
-     * @param visitor an implementation of the {@linke ComponentVisitor}
+     * @param visitor an implementation of the {@link ComponentVisitor}
      *                interface.
      */
     public void invite(ComponentVisitor visitor)
         throws Exception
     {
-        visitor.visit(this); // FIXME: explain: why visit ourself ?
-
-	Iterator iterator = getComponentList().iterator();
-	while (iterator.hasNext())
-	    ((SComponent)iterator.next()).invite(visitor);
+        visitor.visit(this);
     }
 }
 

@@ -27,10 +27,18 @@ import org.wings.*;
 public interface ComponentVisitor
 {
     /**
-     * Visit a SComponent
+     * Visit a SComponent.
      * @param component the component to be visited
      */
     void visit(SComponent component) throws Exception;
+
+    /**
+     * Visit a SContainer. A container contains multiple
+     * elements. If you are interested in these components,
+     * invite yourself.
+     * @param container the component to be visited
+     */
+    void visit(SContainer container) throws Exception;
 }
 
 /*
