@@ -33,6 +33,13 @@ import org.wings.util.ComponentVisitor;
 public class DynamicStyleSheetResource
     extends DynamicResource
 {
+    /*
+     * watchout: names beginning with underscore don't work on
+     * MS-IE.
+     */
+    public static final String NORMAL_ATTR_PREFIX = "n__";
+    public static final String SELECT_ATTR_PREFIX = "s__";
+
     public DynamicStyleSheetResource(SFrame frame) {
         super(frame, "css", "text/css");
     }
@@ -68,13 +75,15 @@ public class DynamicStyleSheetResource
             {
                 AttributeSet attributes = component.getAttributes();
                 if (attributes.size() > 0)
-                    writeAttributes("._" + component.getComponentId(), attributes);
+                    writeAttributes("." + NORMAL_ATTR_PREFIX 
+                                    + component.getComponentId(), attributes);
             }
 
             if (component instanceof SSelectionComponent) {
                 AttributeSet attributes = ((SSelectionComponent)component).getSelectionAttributes();
                 if (attributes.size() > 0)
-                    writeAttributes(".__" + component.getComponentId(), attributes);
+                    writeAttributes("." + SELECT_ATTR_PREFIX 
+                                    + component.getComponentId(), attributes);
             }
         }
         

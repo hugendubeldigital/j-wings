@@ -81,7 +81,8 @@ public final class Utils
 
     static String style(SComponent component) {
         if (component.getAttributes().size() > 0)
-            return "_" + component.getComponentId();
+            return (DynamicStyleSheetResource.NORMAL_ATTR_PREFIX 
+                    + component.getComponentId());
         else if (component.getStyle() != null)
             return component.getStyle();
         return null;
@@ -90,7 +91,8 @@ public final class Utils
     static String selectionStyle(SComponent component) {
         SSelectionComponent sel = (SSelectionComponent)component;
         if (sel.getSelectionAttributes().size() > 0)
-            return "__" + component.getComponentId();
+            return (DynamicStyleSheetResource.SELECT_ATTR_PREFIX 
+                    + component.getComponentId());
         else if (sel.getSelectionStyle() != null)
             return sel.getSelectionStyle();
         return null;
