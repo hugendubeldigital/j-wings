@@ -759,8 +759,6 @@ public class SList
      * Selects the specified object.
      *
      * @param anObject      the Object to be selected     
-     * @param shouldScroll  true if the list should scroll to display
-     *                      the selected object
      */
     public void setSelectedValue(Object anObject) {
         if(anObject == null)
@@ -771,9 +769,6 @@ public class SList
             for(i=0,c=dm.getSize();i<c;i++)
                 if(anObject.equals(dm.getElementAt(i))){
                     setSelectedIndex(i);
-
-                    //if(shouldScroll)
-                    //    ensureIndexIsVisible(i);
                     return;
                 }
             setSelectedIndex(-1);
