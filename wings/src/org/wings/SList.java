@@ -1056,6 +1056,7 @@ public class SList
         SForm.addArmedComponent(this);
     }
 
+    //-- Scrollable interface
     /**
      * Return the scrollable viewport size.
      *
@@ -1086,7 +1087,7 @@ public class SList
     public Dimension getPreferredExtent() {
         return new Dimension(1, Math.min(getVisibleRowCount(), getModel().getSize()));
     }
-
+    //--- /Scrollable Interface
 
     public void setParent(SContainer p) {
         super.setParent(p);
