@@ -230,7 +230,7 @@ public class SComboBox
 
         for (i=0, c=dataModel.getSize(); i<c; i++) {
             obj = dataModel.getElementAt(i);
-            if (obj.equals(selected))
+            if ((obj == null && selected == null) || (obj != null &&obj.equals(selected)))
                 return i;
         }
         return -1;
