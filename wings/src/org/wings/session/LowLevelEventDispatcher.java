@@ -17,8 +17,8 @@ package org.wings.session;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.logging.Logger;
-import java.util.logging.Level;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.wings.LowLevelEventListener;
 import org.wings.SConstants;
@@ -34,7 +34,7 @@ public final class LowLevelEventDispatcher
     implements java.io.Serializable
 {
     // not the package name but event dispatcher subsystem:
-    private final static Logger logger = Logger.getLogger("org.wings.event");
+    private final static Log logger = LogFactory.getLog("org.wings.event");
 
     private final HashMap listener = new HashMap();
 
@@ -81,13 +81,13 @@ public final class LowLevelEventDispatcher
 
         String key = gl.getLowLevelEventId();
 
-        logger.finer("dispatcher: register '" + key + "' type: " + gl.getClass());
+        logger.debug("dispatcher: register '" + key + "' type: " + gl.getClass());
         addLowLevelEventListener(gl, key);
 
         if (namedEvents) {
             key = gl.getName();
             if ( key!=null && key.trim().length()>0 ) {
-                logger.finer("dispatcher: register named '" + key +"'");
+                logger.debug("dispatcher: register named '" + key +"'");
                 addLowLevelEventListener(gl, key);
             }
         }
@@ -108,12 +108,12 @@ public final class LowLevelEventDispatcher
 
         String key = gl.getLowLevelEventId();
 
-        logger.finer("unregister '" + key + "'");
+        logger.debug("unregister '" + key + "'");
         removeLowLevelEventListener(gl, key);
 
         key = gl.getName();
         if ( key!=null && key.trim().length()>0 ) {
-            logger.finer("unregister named '" + key + "'");
+            logger.debug("unregister named '" + key + "'");
             removeLowLevelEventListener(gl, key);
         }
 
@@ -139,14 +139,14 @@ public final class LowLevelEventDispatcher
             epoch = name.substring(0, dividerIndex);
             name = name.substring(dividerIndex + 1);
 
-            if (logger.isLoggable(Level.FINER)) {
+            if (logger.isTraceEnabled()) {
                 StringBuffer buffer = new StringBuffer("dispatch ");
                 buffer.append(epoch);
                 buffer.append(SConstants.UID_DIVIDER);
                 buffer.append(name);
                 buffer.append(": ");
                 buffer.append(StringUtil.delimitedString(values));
-                logger.finer(buffer.toString());
+                logger.debug(buffer.toString());
             }
         }
 
@@ -157,7 +157,7 @@ public final class LowLevelEventDispatcher
         }
         else if (name.endsWith(".y") || name.endsWith(".Y")) {
             // .. but don't process the same event twice.
-            logger.finer("discard '.y' part of image event");
+            logger.debug("discard '.y' part of image event");
             return false;
         }
         
@@ -174,12 +174,12 @@ public final class LowLevelEventDispatcher
         
         List l = (List)listener.get(name);
         if (l != null && l.size() > 0 ) {
-            logger.fine("process event '" + epoch + "_" + name + "'");
+            logger.debug("process event '" + epoch + "_" + name + "'");
             for (int i=0; i < l.size(); ++i) {
                 LowLevelEventListener gl = (LowLevelEventListener)l.get(i);
                 if ( gl.isEnabled() ) {
                     if ( checkEpoch(epoch, name, gl) ) {
-                        logger.fine("process event '" + name + "' by " +
+                        logger.debug("process event '" + name + "' by " +
                                     gl.getClass() + "(" + gl.getLowLevelEventId() +
                                     ")" );
                         gl.processLowLevelEvent(name, values);
@@ -194,22 +194,23 @@ public final class LowLevelEventDispatcher
     protected boolean checkEpoch(String epoch, String name, 
                                  LowLevelEventListener gl){
         if (epoch != null) {
-            SFrame frame = ((SComponent)gl).getParentFrame();
+            SFrame frame = ((SComponent)gl).getParentFrame();            
             if ( frame==null ) {
-                if (logger.isLoggable(Level.FINE))
-                    logger.fine("request for dangling component '" + epoch +
+                if (logger.isDebugEnabled())
+                    logger.debug("request for dangling component '" + epoch +
                                 "_" + name);
                 unregister(gl);
                 return false;
             } 
             if (!epoch.equals(frame.getEventEpoch())) {
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("### got outdated event '" + epoch + "_" + name
+                if (logger.isDebugEnabled()) {
+                    logger.debug("### got outdated event '" + epoch + "_" + name
                                 + "' from frame '"
                                 + frame.getComponentId() 
                                 + "'; expected epoch: " 
                                 + frame.getEventEpoch());
                 }
+                frame.fireInvalidLowLevelEventListener(gl);
                 return false;
             }
         }

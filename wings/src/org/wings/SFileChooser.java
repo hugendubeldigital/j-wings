@@ -20,8 +20,8 @@ import java.io.File;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.util.Hashtable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 /**
  * A filechooser shows a textfield with a browse-button to enter a file.
@@ -82,7 +82,7 @@ public class SFileChooser
         extends SComponent
         implements LowLevelEventListener {
     private static final String cgClassID = "FileChooserCG";
-    private final static Logger logger = Logger.getLogger("org.wings");
+    private final static Log logger = LogFactory.getLog("org.wings");
 
     /**
      * maximum visible amount of characters in the file chooser.
@@ -96,6 +96,9 @@ public class SFileChooser
     protected String fileName = null;
     protected String fileId = null;
     protected String fileType = null;
+
+    /** @see LowLevelEventListener#isEpochChecking() */
+    protected boolean epochChecking = true;
 
     /**
      * the temporary file created on upload. This file is automatically
@@ -404,7 +407,7 @@ public class SFileChooser
                     currentFile = new TempFile(fileDir, fileId);
                 }
             } catch (Exception e) {
-                logger.log(Level.SEVERE, null, e);
+                logger.fatal( null, e);
             }
         }
     }
@@ -415,10 +418,16 @@ public class SFileChooser
     public void fireFinalEvents() {
     }
 
-    public boolean checkEpoch() {
-        return true;
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public boolean isEpochChecking() {
+        return epochChecking;
     }
-
+  
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public void setEpochChecking(boolean epochChecking) {
+        this.epochChecking = epochChecking;
+    }
+    
     /**
      * A temporary file. This file removes its representation in the
      * filesysten, when there are no references to it (i.e. it is garbage
@@ -458,7 +467,7 @@ public class SFileChooser
          */
         protected void finalize() throws Throwable {
             super.finalize();
-            if (isTemp) logger.fine("garbage collect file " + getName());
+            if (isTemp) logger.debug("garbage collect file " + getName());
             cleanup();
         }
     }

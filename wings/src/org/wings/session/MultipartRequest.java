@@ -14,13 +14,28 @@
 
 package org.wings.session;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
-import java.util.logging.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wings.UploadFilterManager;
 import org.wings.util.LocaleCharSet;
 
@@ -53,7 +68,7 @@ public class MultipartRequest
     extends DelegatingHttpServletRequest
     implements HttpServletRequest
 {
-    private final static Logger logger = Logger.getLogger("org.wings");
+    private final static Log logger = LogFactory.getLog("org.wings");
 
     private static final int DEFAULT_MAX_POST_SIZE = 1024 * 1024;  // 1 Meg
 
@@ -384,7 +399,7 @@ public class MultipartRequest
                                                            "tmp");
                         }
                         catch (IOException e) {
-                            logger.log(Level.SEVERE,
+                            logger.fatal(
                                        "couldn't create temp file in '"
                                        + System.getProperty("java.io.tmpdir") 
                                        + "' (CATALINA_TMPDIR set correctly?)",
@@ -452,7 +467,7 @@ public class MultipartRequest
         }
         catch (IOException ex) {
             // cleanup and store the exception for notification of SFileChooser
-            logger.log(Level.WARNING, "upload", ex);
+            logger.warn( "upload", ex);
             if (uploadFile != null) uploadFile.delete();
             setException(currentParam, ex);
         } finally {
@@ -465,7 +480,7 @@ public class MultipartRequest
     {
         public byte charAt(int index) {
             if (count + index < 0) {
-                logger.log(Level.WARNING, "count: " + count + ", index: " + index + ", buffer: " + new String(buf));
+                logger.warn( "count: " + count + ", index: " + index + ", buffer: " + new String(buf));
                 return -1;
             }
             if (index < 0)
@@ -781,7 +796,7 @@ public class MultipartRequest
                 return buffer.toString();
             }
             catch (UnsupportedEncodingException e) {
-                logger.throwing(getClass().getName(), "toString()", e);
+                logger.error(getClass().getName() + " toString()", e);
                 return null;
             }
         }

@@ -84,7 +84,7 @@ static final SResourceIcon ICON = new SResourceIcon("org/wings/icons/ArrowDown.g
                                      "text/css", null,
                                      staticResource);
 
-        component.headers().add(0, staticCgSytles);
+        component.getHeaders().add(0, staticCgSytles);
 
         /* component.addScriptListener(DATE_CHOOSER_SCRIPT_LOADER); */
         component.addScriptListener(FORM_SCRIPT_LOADER);
@@ -110,7 +110,7 @@ static final SResourceIcon ICON = new SResourceIcon("org/wings/icons/ArrowDown.g
     try {
         String language = SessionManager.getSession().getLocale().getLanguage();
         String title = frame.getTitle();
-        List headers = frame.headers();
+        List headers = frame.getHeaders();
         String encoding = SessionManager.getSession().getCharacterEncoding();
 
 
@@ -135,6 +135,11 @@ static final SResourceIcon ICON = new SResourceIcon("org/wings/icons/ArrowDown.g
         if (title != null) {
             %><title><%=title%></title>
 <%
+        }
+        
+        if (frame.isNoCaching()) { 
+           %><meta http-equiv="cache-control" content="no-cache"/><%
+           %><meta http-equiv="expires" content="0"/><%
         }
 
         if (frame.getBaseTarget() != null) {

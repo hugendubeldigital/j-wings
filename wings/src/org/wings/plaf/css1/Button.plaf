@@ -29,9 +29,6 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
     boolean enabled = abstractButton.isEnabled() &&
 	(abstractButton.getGroup()==null || !abstractButton.isSelected());
 
-
-    //    boolean noBreak = abstractButton.isNoBreak();
-
     final AnchorProperties anchorProperties = AnchorRenderStack.get();
 
     if ( enabled )
@@ -39,6 +36,11 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
         %><a href="<%
         writeAnchorAddress(device, abstractButton);
         %>"<%
+        // If possible, send link as submit request. Otherwise other fields
+        // entered inside a form get lost if pressed on a text link
+        if (abstractButton.getParentForm() != null) {
+             %> onclick="return submitForm(event, '<%=abstractButton.getEncodedLowLevelEventId()%>','<%=abstractButton.getToggleSelectionParameter()%>')" <%
+        }
 	    Utils.writeEvents(device, abstractButton);
         %><%|title=abstractButton.getToolTipText()%><%
         %><%|accesskey=abstractButton.getMnemonic()%><%
@@ -136,6 +138,12 @@ protected void writeAnchorIcon(final Device device, SAbstractButton abstractButt
     if ( enabled ) {
         %><a href="<%
         writeAnchorAddress(device, abstractButton);
+        %>"<%
+        // If possible, send link as submit request. Otherwise other fields
+        // entered inside a form get lost if pressed on a text link
+        if (abstractButton.getParentForm() != null) {
+             %> onclick="return submitForm(event, '<%=abstractButton.getEncodedLowLevelEventId()%>','<%=abstractButton.getToggleSelectionParameter()%>')" <%
+        }               
         %>"<%|title=abstractButton.getToolTipText()%><%
         %><%|accesskey=abstractButton.getMnemonic()%><%
         %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%

@@ -14,9 +14,11 @@
 
 package org.wings;
 
-import java.io.*;
-import java.text.*;
-import java.util.logging.*;
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.ParsePosition;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * TODO: parse units
@@ -24,7 +26,7 @@ import java.util.logging.*;
 public class SDimension
     implements Serializable
 {
-    private final static Logger logger = Logger.getLogger("org.wings");
+    private final static Log logger = LogFactory.getLog("org.wings");
 
     public String width = null;
     public String height = null;
@@ -96,7 +98,7 @@ public class SDimension
             return new DecimalFormat().parse(size,new ParsePosition(0)).intValue();
         }
         catch(Exception e) {
-            logger.log(Level.WARNING, "Can not parse [" + size + "]", e);
+            logger.warn( "Can not parse [" + size + "]", e);
             return -1;
         }
     }

@@ -1,12 +1,27 @@
 /* $Id$ */
 package org.wings.recorder;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.Filter;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author hengels
@@ -14,7 +29,7 @@ import java.util.logging.*;
 public class Recorder
     implements Filter
 {
-    private static Logger logger = Logger.getLogger(Recorder.class.getPackage().getName());
+    private static Log logger = LogFactory.getLog(Recorder.class.getPackage().getName());
     public static final String RECORDER_START = "recorder_start";
     public static final String RECORDER_STOP = "recorder_stop";
     public static final String RECORDER_SCRIPT = "recorder_script";
@@ -34,8 +49,8 @@ public class Recorder
             lookupName = "SessionServlet:" + filterConfig.getInitParameter("wings.mainclass");
         }
 
-        logger.config("wings.servlet.lookupname " + lookupName);
-        logger.config("wings.servlet.recorder.script " + scriptName);
+        logger.info("wings.servlet.lookupname " + lookupName);
+        logger.info("wings.servlet.recorder.script " + scriptName);
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
@@ -64,7 +79,7 @@ public class Recorder
                 }
                 else if (list != null) {
                     String resource = httpServletRequest.getPathInfo();
-                    logger.finer("PATH_INFO: " + resource);
+                    logger.debug("PATH_INFO: " + resource);
 
                     Request record;
                     if ("GET".equalsIgnoreCase(httpServletRequest.getMethod()))

@@ -14,22 +14,13 @@
 
 package org.wings;
 
-import java.awt.Color;
-import java.beans.*;
 import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-import java.util.logging.*;
-
-import javax.swing.Icon;
-
-import org.wings.*;
-import org.wings.externalizer.*;
+import java.util.Iterator;
+import java.util.Set;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.Device;
-import org.wings.plaf.*;
-import org.wings.style.StyleSheet;
-import org.wings.session.Session;
-import org.wings.session.SessionManager;
 
 /**
  * An invisible frame, that executes a javascript function <code>onload</code>,
@@ -40,7 +31,7 @@ import org.wings.session.SessionManager;
  */
 public class ReloadManagerFrame
 extends SFrame {
-    private final static Logger logger = Logger.getLogger("org.wings");
+    private final static Log logger = LogFactory.getLog("org.wings");
     
     
     public ReloadManagerFrame() {}
@@ -137,8 +128,8 @@ extends SFrame {
                 d.print(toplevel.getURL());
                 d.print("';\n");
                 
-                if (logger.isLoggable(Level.FINER))
-                    logger.finer("parent.location.href='" + toplevel.getURL() + "';\n");
+                if (logger.isTraceEnabled())
+                    logger.debug("parent.location.href='" + toplevel.getURL() + "';\n");
                 
                 // invalidate resources
                 Iterator it = dirtyResources.iterator();
@@ -161,8 +152,8 @@ extends SFrame {
                     d.print(resource.getURL());
                     d.print("';\n");
                     
-                    if (logger.isLoggable(Level.FINER))
-                        logger.finer("parent.frame" +
+                    if (logger.isTraceEnabled())
+                        logger.debug("parent.frame" +
                         resource.getFrame().getComponentId() +
                         ".location.href='" +
                         resource.getURL() +

@@ -14,10 +14,10 @@
 
 package org.wings;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wings.plaf.DialogCG;
 import org.wings.session.SessionManager;
-
-import java.util.logging.Logger;
 
 /**
  * As opposed to Swing, wingS dialogs are non modal. However, the dismission of
@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  * @version $Revision$
  */
 public class SDialog extends SForm {
-    private final static Logger logger = Logger.getLogger("org.wings");
+    private final static Log logger = LogFactory.getLog("org.wings");
 
     /**
      * @see #getCGClassID
@@ -179,7 +179,7 @@ public class SDialog extends SForm {
      * Remove this dialog from its frame.
      */
     public void hide() {
-        logger.fine("hide dialog");
+        logger.debug("hide dialog");
         if (owner != null) {
             owner.popDialog();
         }
@@ -212,7 +212,7 @@ public class SDialog extends SForm {
      * @param c
      */
     public void show(SComponent c) {
-        logger.fine("show dialog");
+        logger.debug("show dialog");
         if (c == null)
             c = SessionManager.getSession().getRootFrame();
 

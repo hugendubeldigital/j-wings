@@ -140,7 +140,7 @@ public class StringUtil
      * use it.
      * @param minDigits returns a string with a least minDigits digits
      */
-    public static String toString(long i, int radix, int minDigits) {
+    private static String toString(long i, int radix, int minDigits) {
         char[] buf = new char[65];
 
         radix = Math.min(Math.abs(radix), MAX_RADIX);
@@ -171,7 +171,7 @@ public class StringUtil
         
         return new String(buf, charPos, buf.length-charPos);
     }
-
+    
     /**
      * creates a shortest possible string representation of the given
      * long number that qualifies as an identifier in common programming
@@ -197,7 +197,45 @@ public class StringUtil
         }
         return new String(buf, 0, i);
     }
+    
+    private static long toLong(String encodedLong) throws NumberFormatException {
+        boolean negative = false;
+        long result = 0;
+        int start = 0;
+        if (encodedLong.startsWith("_")) {
+            negative = true;
+            start++;
+        }        
+        for (int i = encodedLong.length()-1; i > start; i--) {            
+            result *= DIGITS.length;
+            result += charDigitValue(encodedLong.charAt(i));
+        }
+        result *= ALPHAS.length;
+        result += charAlphaValue(encodedLong.charAt(start));
+        if (negative)
+            result = -result-1;
+        return result;
+    }    
 
+    /** Lookup value of char in DIGITS. */
+    public static int charDigitValue(char c) throws NumberFormatException {
+        for (int i = 0; i < DIGITS.length; i++) {
+            if (c == DIGITS[i])
+                return i;
+        }
+        throw new NumberFormatException("Unknown char '"+c+"'");
+    }
+
+    /** Lookup value of char in DIGITS. */
+    public static int charAlphaValue(char c) throws NumberFormatException {
+        for (int i = 0; i < ALPHAS.length; i++) {
+            if (c == ALPHAS[i])
+                return i;
+        }
+        throw new NumberFormatException("Unknown char '"+c+"'");
+    }
+
+    
     /**
      * generates a shortest representation as string for the given long.
      * This is used to generate session or resource IDs.
@@ -232,30 +270,19 @@ public class StringUtil
         return buffer.toString();
     }
 
-    /*
+    
     public static void main(String args[]) {
-        System.out.println(StringUtil.toString(9124, 10, 0));
-
-        System.out.println(StringUtil.toShortestAlphaNumericString(9124));
-        System.out.println(StringUtil.toShortestAlphaNumericString(-9124));
-
-        System.out.println(StringUtil.toString(1, MAX_RADIX, 4));
-
-        System.out.println(StringUtil.toString(9124, MAX_RADIX, 1));
-        System.out.println(StringUtil.toString(9124, MAX_RADIX, 4));
-        System.out.println(StringUtil.toString(9124, MAX_RADIX, 5));
-
-        System.out.println(StringUtil.toString(-1, MAX_RADIX, 64));
-
-        System.out.println("\"" + StringUtil.toShortestAlphaNumericString(3843,
-                                                                          2));
-        for (int i=-10; i < 300; ++i) {
-            System.out.println(toIdentifierString(i));
+        for (int i=-100; i < 300; ++i) {
+            String s = toIdentifierString(i);
+            long i2 = toLong(s);
+            System.out.println(i+ " = "+s+" = "+i2);
+            if (i2 != i)
+                throw new RuntimeException();
         }
-        System.out.println(toIdentifierString(Long.MIN_VALUE));
-        System.out.println(toIdentifierString(Long.MAX_VALUE));
+        System.out.println(Long.MAX_VALUE-1);
+        System.out.println(toLong(toIdentifierString(Long.MAX_VALUE-1)));           
     }
-    */
+    
 }
 
 /*

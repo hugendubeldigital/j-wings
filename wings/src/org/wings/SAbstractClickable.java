@@ -98,7 +98,7 @@ public abstract class SAbstractClickable
         this(text, null, horizontalAlignment);
     }
 
-    public abstract boolean checkEpoch();
+    public abstract boolean isEpochChecking();
 
     public abstract SimpleURL getURL();
 

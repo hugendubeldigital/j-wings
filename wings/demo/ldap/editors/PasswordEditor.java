@@ -12,7 +12,7 @@ import org.wings.session.*;
 public class PasswordEditor
     implements Editor
 {
-    private final static Logger logger = Logger.getLogger("ldap.editors");
+    private final static Log logger = LogFactory.getLog("ldap.editors");
 
     public SComponent createComponent(Attributes attributes) {
 
@@ -31,7 +31,7 @@ public class PasswordEditor
 	    }
 	}
 	catch (NamingException e) {
-            logger.log(Level.WARNING, "attributes " + attributes, e);
+            logger.warn( "attributes " + attributes, e);
 	}
 
 	SPanel panel = new SPanel(new SFlowDownLayout());

@@ -15,17 +15,16 @@
 package org.wings;
 
 import java.awt.Insets;
-import java.util.Locale;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
-import java.util.logging.*;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
+import java.awt.event.ActionListener;
+import java.util.Locale;
+import java.util.StringTokenizer;
 import javax.swing.JOptionPane;
-
-import org.wings.border.*;
-import org.wings.plaf.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.border.SBorder;
+import org.wings.border.SEmptyBorder;
+import org.wings.plaf.OptionPaneCG;
 
 /**
  * TODO: documentation
@@ -36,7 +35,7 @@ import org.wings.plaf.*;
 public class SOptionPane
     extends SDialog
     implements ActionListener {
-    private final static Logger logger = Logger.getLogger("org.wings");
+    private final static Log logger = LogFactory.getLog("org.wings");
 
 
     /**
@@ -463,7 +462,7 @@ public class SOptionPane
      * @param e
      */
     public void actionPerformed(ActionEvent e) {
-        logger.fine("action " + e);
+        logger.debug("action " + e);
         hide();
         selected = e.getSource();
 

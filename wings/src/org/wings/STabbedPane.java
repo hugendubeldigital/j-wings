@@ -15,26 +15,22 @@
 package org.wings;
 
 import java.awt.Color;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.SingleSelectionModel;
 import javax.swing.DefaultSingleSelectionModel;
 import javax.swing.GrayFilter;
 import javax.swing.ImageIcon;
+import javax.swing.SingleSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import org.wings.plaf.*;
-import org.wings.session.SessionManager;
-import org.wings.style.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.plaf.ComponentCG;
+import org.wings.plaf.TabbedPaneCG;
+import org.wings.style.AttributeSet;
+import org.wings.style.CSSStyleSheet;
+import org.wings.style.SimpleAttributeSet;
 
 // fixme: refactorize.
 /**
@@ -87,8 +83,11 @@ public class STabbedPane
 
     /** used form tabs or links */
     protected boolean showAsFormComponent = false;
+    
+    /** @see LowLevelEventListener#isEpochChecking() */
+    protected boolean epochChecking = true;       
 
-    private Logger fLogger = Logger.getLogger("org.wings.STabbedPane");
+    private Log fLogger = LogFactory.getLog("org.wings.STabbedPane");
 
     private DynamicResource fStyleSheet = null;
     
@@ -915,7 +914,7 @@ public class STabbedPane
         contents.setParentFrame(f);
         ComponentCG cg = this.getCG();
         if (f != null && cg instanceof org.wings.plaf.TabbedPaneCG) {
-            fLogger.log(Level.FINEST, "STabbedPane.setParentFrame, Installing stylesheet ...");
+            fLogger.trace("STabbedPane.setParentFrame, Installing stylesheet ...");
             fStyleSheet = ((org.wings.plaf.TabbedPaneCG) cg).installStyleSheet(this);
         }
     }
@@ -976,8 +975,14 @@ public class STabbedPane
         lleChangedIndex = -1;
     }
 
-    public boolean checkEpoch() {
-        return true;
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public boolean isEpochChecking() {
+        return epochChecking;
+    }
+  
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public void setEpochChecking(boolean epochChecking) {
+        this.epochChecking = epochChecking;
     }
 
     /**

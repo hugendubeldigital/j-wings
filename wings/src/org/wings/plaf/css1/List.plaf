@@ -9,7 +9,7 @@
 <comp-property type="String" name="style">list</comp-property>
 <comp-property type="String" name="selectionStyle">listselection</comp-property>
 
-private static final JavaScriptListener selectListener = new JavaScriptListener(JavaScriptEvent.ON_CHANGE, "submit()");
+private static final JavaScriptListener selectListener = new JavaScriptListener(JavaScriptEvent.ON_CHANGE, "commandlessSubmitForm(event)");
 
 protected void writeFormList(Device device, SList list) throws IOException {
     %><select<%

@@ -17,7 +17,7 @@ import ldap.editors.*;
 public class AttributesEditor
     extends SPanel
 {
-    private final static Logger logger = Logger.getLogger("ldap");
+    private final static Log logger = LogFactory.getLog("ldap");
 
     private List rows = new LinkedList();
     private Comparator comparator = new RowComparator();

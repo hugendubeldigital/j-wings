@@ -81,6 +81,9 @@ public abstract class SAbstractAdjustable
      * @see #setBlockIncrement
      */
     protected int orientation;
+    
+    /** @see LowLevelEventListener#isEpochChecking() */
+    protected boolean epochChecking = true;
 
     /**
      * Creates a scrollbar with the specified orientation,
@@ -487,11 +490,14 @@ public abstract class SAbstractAdjustable
         getModel().fireDelayedFinalEvents();
     }
 
-    public boolean checkEpoch() {
-        return true;
+    public boolean isEpochChecking() {
+        return epochChecking;
     }
 
-
+    public void setEpochChecking(boolean epochChecking) {
+        this.epochChecking = epochChecking;
+    }
+    
     /**
      * Adds an AdjustmentListener.  Adjustment listeners are notified
      * each time the scrollbar's model changes.  Adjustment events are

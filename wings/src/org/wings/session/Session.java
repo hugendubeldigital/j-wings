@@ -50,8 +50,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 /**
  * TODO: documentation
@@ -62,7 +62,7 @@ import java.util.logging.Logger;
 public final class Session
     implements PropertyService, Serializable {
 
-    private final static Logger logger = Logger.getLogger("org.wings.session");
+    private final static Log logger = LogFactory.getLog("org.wings.session");
 
     /**
      * The property name of the locale
@@ -230,7 +230,7 @@ public final class Session
         try {
             getCGManager().setLookAndFeel(LookAndFeelFactory.createLookAndFeel());
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "could not load look and feel: " +
+            logger.fatal( "could not load look and feel: " +
                                      config.getInitParameter("wings.lookandfeel.factory"), ex);
             throw new ServletException(ex);
         }
@@ -248,7 +248,7 @@ public final class Session
             try {
                 maxContentLength = Integer.parseInt(maxCL);
             } catch (NumberFormatException e) {
-                logger.log(Level.WARNING, "invalid content.maxlength: " + maxCL, e);
+                logger.warn( "invalid content.maxlength: " + maxCL, e);
             }
         }
     }
@@ -357,9 +357,9 @@ public final class Session
     public void setUserAgentFromRequest(HttpServletRequest request) {
         try {
             browser = new Browser(request.getHeader("User-Agent"));
-            logger.fine("User-Agent is " + browser);
+            logger.debug("User-Agent is " + browser);
         } catch (Exception ex) {
-            logger.log(Level.WARNING, "Cannot get User-Agent from request", ex);
+            logger.warn( "Cannot get User-Agent from request", ex);
         }
     }
 
@@ -391,11 +391,9 @@ public final class Session
     }
 
     /**
-     * Describe <code>frames</code> method here.
-     *
-     * @return a <code>Set</code> value
+     * @return The currently shown and used frames of this wings session.
      */
-    public Set frames() {
+    public Set getFrames() {
         return frames;
     }
 
@@ -540,7 +538,7 @@ public final class Session
             Arrays.asList(supportedLocales).contains(l)) {
             locale = l;
             propertyChangeSupport.firePropertyChange(LOCALE_PROPERTY, locale, l);
-            logger.config("Set Locale " + l);
+            logger.info("Set Locale " + l);
         } else
             throw new IllegalArgumentException("Locale " + l + " not supported");
     }

@@ -65,7 +65,7 @@ public class FrameCG
     {
         String language = "en"; // TODO: ???
         String title = frame.getTitle();
-        List headers = frame.headers();
+        List headers = frame.getHeaders();
 
         d.print("<?xml version=\"1.0\" encoding=\"");
         //d.print("<!DOCTYPE html\n");

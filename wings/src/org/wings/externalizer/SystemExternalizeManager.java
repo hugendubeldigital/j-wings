@@ -68,9 +68,9 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
 
     protected void storeExternalizedResource(String identifier, 
                                              ExternalizedResource extInfo) {
-        if (logger.isLoggable(Level.FINER)) {
-            logger.finer("store identifier " + identifier + " " + extInfo.getObject().getClass());
-            logger.finer("flags " + extInfo.getFlags());
+        if (logger.isTraceEnabled()) {
+            logger.debug("store identifier " + identifier + " " + extInfo.getObject().getClass());
+            logger.debug("flags " + extInfo.getFlags());
         }
 
         externalized.put(identifier, extInfo);
@@ -80,14 +80,14 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
         if ( identifier == null || identifier.length() < 1 )
             return null;
         
-        logger.fine("system externalizer: " + identifier);
+        logger.debug("system externalizer: " + identifier);
         
         int pos = identifier.indexOf(".");
         if (pos > -1) {
             identifier = identifier.substring(0, pos);
         }
 
-        logger.fine("system externalizer " + identifier);
+        logger.debug("system externalizer " + identifier);
         return (ExternalizedResource)externalized.get(identifier);
     }
 

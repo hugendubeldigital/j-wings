@@ -162,6 +162,8 @@ public class SPageScroller
 
         setLayout(new SBorderLayout());
 
+        setEpochChecking(false); // By default support click on (old elements)
+        
         initScrollers();
     }
 
@@ -467,10 +469,6 @@ public class SPageScroller
             }
 
         }
-    }
-
-    public boolean checkEpoch() {
-        return false;
     }
 
     /**

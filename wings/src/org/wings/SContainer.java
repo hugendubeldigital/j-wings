@@ -71,11 +71,10 @@ public class SContainer extends SComponent implements ClickableRenderComponent
     }
 
     /**
-     * creates a new container with no layout manager, i.e. the components
+     * Creates a new container with no layout manager, i.e. the components
      * are simply written in the same order they were added.
      */
     public SContainer() {}
-
 
     public void updateCG() {
         super.updateCG();

@@ -272,7 +272,7 @@ public class Editor
                     public void fireIntermediateEvents() {}
                     public void fireFinalEvents() {}
   		            public boolean isEnabled() { return true; }
-                    public boolean checkEpoch() { return true; }
+                    public boolean isEpochChecking() { return true; }
                 });
 
         }
@@ -358,7 +358,7 @@ public class Editor
                 Map headers = new HashMap();
                 headers.put("Content-Disposition", "attachment; filename=blub");
                 id = ext.getId(ext.externalize(this, headers.entrySet(), AbstractExternalizeManager.REQUEST));
-                //logger.fine("new " + this.getClass().getName() + " with id " + id);
+                //logger.debug("new " + this.getClass().getName() + " with id " + id);
             }
             return id;
         }

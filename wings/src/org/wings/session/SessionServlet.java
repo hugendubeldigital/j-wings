@@ -15,7 +15,27 @@
 package org.wings.session;
 
 
-import org.wings.*;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Locale;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.DynamicCodeResource;
+import org.wings.RequestURL;
+import org.wings.Resource;
+import org.wings.SForm;
+import org.wings.SFrame;
+import org.wings.SLabel;
+import org.wings.STemplateLayout;
 import org.wings.event.ExitVetoException;
 import org.wings.event.SRequestEvent;
 import org.wings.externalizer.ExternalizeManager;
@@ -24,17 +44,6 @@ import org.wings.io.Device;
 import org.wings.io.DeviceFactory;
 import org.wings.io.ServletDevice;
 import org.wings.util.DebugUtil;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.*;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The servlet engine creates for each user a new HttpSession. This
@@ -56,7 +65,7 @@ import java.util.logging.Logger;
 final class SessionServlet
         extends HttpServlet
         implements HttpSessionBindingListener {
-    private static Logger logger = Logger.getLogger("org.wings.session");
+    private static Log logger = LogFactory.getLog("org.wings.session");
 
     /**
      * The parent WingsServlet
@@ -106,7 +115,7 @@ final class SessionServlet
             try {
                 getSession().setLocaleFromHeader(Boolean.valueOf(args[i]).booleanValue());
             } catch (Exception e) {
-                logger.throwing(SessionServlet.class.getName(), "setLocaleFromHeader", e);
+                logger.error(SessionServlet.class.getName() + " setLocaleFromHeader", e);
             }
         }
     }
@@ -129,7 +138,7 @@ final class SessionServlet
                     getSession().setLocale(locale);
                     return;
                 } catch (Exception ex) {
-                    logger.warning("locale not supported " + locale);
+                    logger.warn("locale not supported " + locale);
                 } // end of try-catch
             } // end of for ()
         }
@@ -267,7 +276,7 @@ final class SessionServlet
                 }
                 Object main = mainClass.newInstance();
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, "could not load wings.mainclass: " +
+                logger.fatal( "could not load wings.mainclass: " +
                                          config.getInitParameter("wings.mainclass"), ex);
                 throw new ServletException(ex);
             }
@@ -358,14 +367,14 @@ final class SessionServlet
                                                         requestURL);
             }
 
-            if (logger.isLoggable(Level.FINER)) {
-                logger.finer("RequestURL: " + requestURL);
-                logger.finer("\nHEADER:");
+            if (logger.isTraceEnabled()) {
+                logger.debug("RequestURL: " + requestURL);
+                logger.debug("HEADER:");
                 for (Enumeration en = req.getHeaderNames(); en.hasMoreElements();) {
                     String header = (String) en.nextElement();
-                    logger.finer("   " + header + ": " + req.getHeader(header));
+                    logger.debug("   " + header + ": " + req.getHeader(header));
                 }
-                logger.finer("");
+                logger.debug("");
             }
 
             handleLocale(req);
@@ -381,7 +390,7 @@ final class SessionServlet
                     String paramName = (String) en.nextElement();
                     String[] value = req.getParameterValues(paramName);
 
-                    logger.fine("dispatching " + paramName + " = " + value[0]);
+                    logger.debug("dispatching " + paramName + " = " + value[0]);
 
                     session.getDispatcher().dispatch(paramName, value);
                 }
@@ -444,7 +453,7 @@ final class SessionServlet
             // externalizer is able to handle static and dynamic resources
             ExternalizeManager extManager = getSession().getExternalizeManager();
             String pathInfo = req.getPathInfo().substring(1);
-            logger.fine("pathInfo: " + pathInfo);
+            logger.debug("pathInfo: " + pathInfo);
 
             /*
              * if we have no path info, or the special '_' path info
@@ -456,16 +465,16 @@ final class SessionServlet
                 || pathInfo.length() == 0
                 || "_".equals(pathInfo)
                 || firstRequest) {
-                logger.fine("delivering default frame");
+                logger.debug("delivering default frame");
 
-                if (session.frames().size() == 0)
+                if (session.getFrames().size() == 0)
                     throw new ServletException("no frame visible");
                 
                 // get the first frame from the set and walk up the hierarchy.
                 // this should work in most cases. if there are more than one
                 // toplevel frames, the developer has to care about the resource
                 // ids anyway ..
-                SFrame defaultFrame = (SFrame) session.frames().iterator().next();
+                SFrame defaultFrame = (SFrame) session.getFrames().iterator().next();
                 while (defaultFrame.getParent() != null)
                     defaultFrame = (SFrame) defaultFrame.getParent();
 
@@ -494,7 +503,7 @@ final class SessionServlet
             }
 
         } catch (Throwable e) {
-            logger.log(Level.SEVERE, "exception: ", e);
+            logger.fatal( "exception: ", e);
             handleException(req, response, e);
         } finally {
             if (session != null) {
@@ -588,7 +597,7 @@ final class SessionServlet
             errorMessageLabel.setText(e.getMessage());
             errorFrame.write(new ServletDevice(out));
         } catch (Exception ex) {
-            logger.throwing(SessionServlet.class.getName(), "handleException", ex);
+            logger.error(SessionServlet.class.getName()+ " handleException", ex);
         }
     }
 
@@ -655,7 +664,7 @@ final class SessionServlet
             errorStackTraceLabel = null;
             errorMessageLabel = null;
         } catch (Exception ex) {
-            logger.throwing(SessionServlet.class.getName(), "destroy", ex);
+            logger.error(SessionServlet.class.getName() + " destroy", ex);
         } finally {
             SessionManager.removeSession();
         }

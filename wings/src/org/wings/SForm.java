@@ -14,6 +14,9 @@
 
 package org.wings;
 
+import org.wings.event.InvalidLowLevelEvent;
+import org.wings.event.SInvalidLowLevelEventListener;
+import org.wings.event.SRenderListener;
 import org.wings.plaf.FormCG;
 
 import javax.swing.event.EventListenerList;
@@ -24,17 +27,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-/*
- * Ein Form Container. In HTML ist die einzige Moeglichkeit
- * Benutzerinteraktion zu haben durch Forms gegeben. Alle
- * HTML Komponenten, die auf Benutzerinteraktion angewiesen sind
- * muessen in einen Form Container eingebettet sein.
- */
 
 /**
- * TODO: documentation
+ * A Form Container. In HTML you need to wrap input fields (i.e. <code>STextField</code>) 
+ * in a SForm object to work correctly. The browser uses this object/tag to identify
+ * how (POST or GET) and where to send an request originating from any input
+ * inside this form.
+ * 
+ * <p><b>Note:</b>Please be aware, that some components render differently if 
+ * places inside a <code>SForm</code> or not. Mostly can  be changed individually
+ * by using the methods noted in {@link FormComponent}
  *
  * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -42,15 +47,12 @@ import java.util.logging.Logger;
 public class SForm
         extends SContainer
         implements LowLevelEventListener {
-    private final static Logger logger = Logger.getLogger("org.wings");
 
+    private final static Log logger = LogFactory.getLog("org.wings");
     /**
      * @see #getCGClassID
      */
     private static final String cgClassID = "FormCG";
-
-    public static final String MULTIPART_ENCODING = "multipart/form-data";
-    public static final String URL_ENCODING = "application/x-www-form-urlencoded";
 
     /**
      * Use method POST for submission of the data.
@@ -69,16 +71,6 @@ public class SForm
     private URL action;
 
     /**
-     * TODO: documentation
-     */
-    protected final EventListenerList listenerList = new EventListenerList();
-
-    /**
-     * TODO: documentation
-     */
-    protected String actionCommand;
-    
-    /**
      * the button, that is activated, if no other button is pressed in this
      * form.
      */
@@ -95,57 +87,88 @@ public class SForm
             return new ArrayList(2);
         }
     };
+    
+    /** @see LowLevelEventListener#isEpochChecking() */
+    protected boolean epochChecking = true; 
+    
+    /**
+     * Event listener on this form
+     */
+    protected final EventListenerList listenerList = new EventListenerList();
 
     /**
-     * TODO: documentation
+     * @see #setActionCommand(String)
+     */
+    protected String actionCommand;
+    
+    protected static final String MULTIPART_ENCODING = "multipart/form-data";
+    protected static final String URL_ENCODING = "application/x-www-form-urlencoded";    
+    
+    /**
+     * Create a standard form component.
+     */
+    public SForm() {
+    }
+    
+    /**
+     * Create a standard form component but redirects the request to the passed
+     * URL. Use this i.e. to address other servlets.
      *
-     * @param action
+     * @param action The target URL.
      */
     public SForm(URL action) {
         setAction(action);
     }
+    
 
     /**
-     * TODO: documentation
-     */
-    public SForm() {
-    }
-
-    /**
-     * TODO: documentation
+     * Create a standard form component.
      *
-     * @param layout
+     * @param layout The layout to apply to this container.
+     * @see SContainer
      */
     public SForm(SLayoutManager layout) {
         super(layout);
     }
 
     /**
-     * TODO: documentation
+     * A SForm fires an event each time it was triggered (i.e. pressing asubmit button inside) 
      *
-     * @param ac
+     * @param The action command to place insiside the {@link ActionEvent}
      */
     public void setActionCommand(String ac) {
         actionCommand = ac;
     }
 
     /**
-     * TODO: documentation
-     *
-     * @return
+     * @see #setActionCommand(String)
      */
     public String getActionCommand() {
         return actionCommand;
     }
 
     /**
-     * Set the default button. The button is triggered whenever the form is
-     * triggered but no other button has been activated.
+     * Set the default button activated upon <b>enter</b>. 
+     * The button is triggered if you press <b>enter</b> inside a form to submit it. 
+     * @param defaultButton A button which will be rendered <b>invisible</b>. 
+     * If <code>null</code> enter key pressed will be catched by the wings framework.
      */
     public void setDefaultButton(SButton defaultButton) {
+        // unregister existing default buttons from dispatcher
+        if (this.defaultButton != null && getDispatcher() != null) {
+            getDispatcher().unregister((LowLevelEventListener)this.defaultButton);
+        }        
         this.defaultButton = defaultButton;
+        // manually register new default buttons at dispatcher.
+        // As default button is not added into a container this must be done manually
+        if (defaultButton != null && getDispatcher() != null) {
+            getDispatcher().register((LowLevelEventListener)defaultButton);
+        }        
     }
 
+    /**
+     * @see #setDefaultButton(SButton)
+     */
     public SButton getDefaultButton() {
         return this.defaultButton;
     }
@@ -160,7 +183,7 @@ public class SForm
      * <li> If a form contains a single text input, then many browsers
      * submit the form, if the user presses RETURN in that field. In that
      * case, the submit button will <em>not</em> receive any event but
-     * only the form.
+     * only the form. See also {@link #setDefaultButton(SButton)}
      * <li> The {@link SFileChooser} will trigger a form event, if the file
      * size exceeded the allowed size. In that case, even if the submit
      * button has been pressed, no submit-button event will be triggered.
@@ -206,11 +229,10 @@ public class SForm
         }
     }
 
-    /*
-     * fixme: the following static function should go in some global
+    /**
+     * FIXME: the following static function should go in some global
      * class.
      */
-
     public final static void addArmedComponent(LowLevelEventListener component) {
         List armedComponents = (List) threadArmedComponents.get();
         armedComponents.add(component);
@@ -281,23 +303,6 @@ public class SForm
                 }
             }
 
-            /*
-             * no buttons in forms pressed ? Then consider the default-Button.
-             */
-            if (buttonEvents == null && formEvents != null) {
-                Iterator fit = formEvents.iterator();
-                while (fit.hasNext()) {
-                    SForm form = (SForm) fit.next();
-                    SButton defaultButton = form.getDefaultButton();
-                    if (defaultButton != null) {
-                        if (buttonEvents == null) {
-                            buttonEvents = new LinkedList();
-                        }
-                        buttonEvents.add(defaultButton);
-                    }
-                }
-            }
-
             if (buttonEvents != null) {
                 iterator = buttonEvents.iterator();
                 while (iterator.hasNext()) {
@@ -350,14 +355,17 @@ public class SForm
      * @param postMethod
      */
     public void setPostMethod(boolean postMethod) {
+        reloadIfChange(ReloadManager.RELOAD_CODE, this.postMethod, postMethod);
         this.postMethod = postMethod;
     }
 
     /**
      * Returns, whether this form is transmitted via <code>POST</code> (true)
-     * or <code>GET</code> (false).
+     * or <code>GET</code> (false). <p>
+     * <b>Default</b> is <code>true</code>.
      *
-     * @return
+     * @return <code>true</code> if form postedt via <code>POST</code>, 
+     * <code>false</code> if via <code>GET</code> (false).
      */
     public boolean isPostMethod() {
         return postMethod;
@@ -379,6 +387,7 @@ public class SForm
      *             <code>application/x-www-form-urlencoded</code> or null to detect encoding.
      */
     public void setEncodingType(String type) {
+        reloadIfChange(ReloadManager.RELOAD_CODE, this.encType, type);       
         encType = type;
     }
 
@@ -399,46 +408,28 @@ public class SForm
         }
     }
 
-    protected String detectEncodingType(SContainer pContainer) {
-        for (int i = 0; i < pContainer.getComponentCount(); i++) {
-            SComponent tComponent = pContainer.getComponent(i);
-
-            if (tComponent instanceof SFileChooser) {
-                return MULTIPART_ENCODING;
-            } else if (tComponent instanceof SContainer) {
-                String tContainerEncoding = detectEncodingType((SContainer) tComponent);
-
-                if (tContainerEncoding != null) {
-                    return tContainerEncoding;
-                }
-            }
-        }
-
-        return null;
-    }
-
     /**
-     * TODO: documentation
+     * Overwrite the request URL to which this form should target.
+     * Can be used i.e. to send form request to other servlets than the current wings servlet. 
      *
-     * @param action
+     * @param action The target URL
      */
     public void setAction(URL action) {
+        reloadIfChange(ReloadManager.RELOAD_CODE, this.action, action);
         this.action = action;
     }
 
     /**
-     * TODO: documentation
-     *
-     * @return
+     * @see #setAction(URL)
      */
     public URL getAction() {
         return action;
     }
 
     /**
-     * TODO: documentation
+     * The URL to which this form should post its content/requests.
      *
-     * @return
+     * @return The URL to which this form should post its content/requests.
      */
     public RequestURL getRequestURL() {
         RequestURL addr = super.getRequestURL();
@@ -461,13 +452,19 @@ public class SForm
         fireActionPerformed(getActionCommand());
     }
 
-    public boolean checkEpoch() {
-        return true;
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public boolean isEpochChecking() {
+        return epochChecking;
+    }
+  
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public void setEpochChecking(boolean epochChecking) {
+        this.epochChecking = epochChecking;
     }
 
     public SComponent addComponent(SComponent c, Object constraint, int index) {
         if (c instanceof SForm)
-            logger.warning("WARNING: attempt to nest forms; won't work.");
+            logger.warn("WARNING: attempt to nest forms; won't work.");
         return super.addComponent(c, constraint, index);
     }
 
@@ -475,15 +472,35 @@ public class SForm
         return cgClassID;
     }
 
+    /**  @see SComponent#setCG(ComponentCG) */
     public void setCG(FormCG cg) {
         super.setCG(cg);
     }
 
+    /** Interface for all components that behave differently if inside a form or not (?). @see STable */
     public static interface FormComponent {
         public boolean getShowAsFormComponent();
 
         public void setShowAsFormComponent(boolean b);
     }
+    
+    protected String detectEncodingType(SContainer pContainer) {
+        for (int i = 0; i < pContainer.getComponentCount(); i++) {
+            SComponent tComponent = pContainer.getComponent(i);
+
+            if (tComponent instanceof SFileChooser) {
+                return MULTIPART_ENCODING;
+            } else if (tComponent instanceof SContainer) {
+                String tContainerEncoding = detectEncodingType((SContainer) tComponent);
+
+                if (tContainerEncoding != null) {
+                    return tContainerEncoding;
+                }
+            }
+        }
+
+        return null;
+    }       
 }
 
 /*

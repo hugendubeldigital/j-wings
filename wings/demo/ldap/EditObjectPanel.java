@@ -14,7 +14,7 @@ import org.wings.session.*;
 public class EditObjectPanel
     extends SForm
 {
-    private final static Logger logger = Logger.getLogger("ldap");
+    private final static Log logger = LogFactory.getLog("ldap");
 
     Properties attributeOrdering;
     Attributes backedAttributes;
@@ -40,7 +40,7 @@ public class EditObjectPanel
             attributeOrdering.load(in);
         }
         catch (Exception e) {
-	    logger.log(Level.WARNING, "no attribute ordering", e);
+	    logger.warn( "no attribute ordering", e);
         }
 
         dnLabel = new SLabel();
@@ -108,7 +108,7 @@ public class EditObjectPanel
             attributes = editor.getData();
         }
 	catch (NamingException e) {
-	    logger.log(Level.WARNING, "modify failed", e);
+	    logger.warn( "modify failed", e);
             return;
 	}
 
@@ -141,7 +141,7 @@ public class EditObjectPanel
 	    }
 	}
 	catch (AttributeModificationException e) {
-	    logger.log(Level.WARNING, "modify failed", e);
+	    logger.warn( "modify failed", e);
 
 	    ModificationItem[] items = e.getUnexecutedModifications();
 	    if (items != null)
@@ -149,10 +149,10 @@ public class EditObjectPanel
 		    editor.addMessage(items[i].getAttribute().getID(), "schema violation");
 	}
 	catch (NamingException e) {
-	    logger.log(Level.WARNING, "modify failed", e);
+	    logger.warn( "modify failed", e);
 	}
         catch (Exception e) {
-	    logger.log(Level.WARNING, "modify failed", e);
+	    logger.warn( "modify failed", e);
         }
     }
 
@@ -177,7 +177,7 @@ public class EditObjectPanel
                 System.out.println("bitte child auswaehlen");
 	}
 	catch (NamingException e) {
-	    logger.log(Level.WARNING, "remove failed", e);
+	    logger.warn( "remove failed", e);
 	}
     }
 

@@ -12,7 +12,7 @@ import org.wings.session.*;
 public class SingleLineTextEditor
     implements Editor
 {
-  private final static Logger logger = Logger.getLogger("ldap.editors");
+  private final static Log logger = LogFactory.getLog("ldap.editors");
   
   private final String DELIM = "$";
   
@@ -33,7 +33,7 @@ public class SingleLineTextEditor
 	    }
 	}
 	catch (NamingException e) {
-            logger.log(Level.WARNING, "attributes " + attributes, e);
+            logger.warn( "attributes " + attributes, e);
 	}
 
 	c.setMaxColumns(cols);

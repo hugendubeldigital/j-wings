@@ -150,7 +150,7 @@ public class SNumberFormatter extends SAbstractFormatter{
         field.addScriptListener( SCRIPT_SAVEOLD );
         
         if(b){
-            String funct = "if (numberFormatter(" + numberFormat.getMinimumIntegerDigits() + "," + numberFormat.getMaximumIntegerDigits() + "," + numberFormat.getMinimumFractionDigits() + "," + numberFormat.getMaximumFractionDigits() + "," + minVal + "," + maxVal + "," + numberFormat.isGroupingUsed() + "," + numberFormat.isParseIntegerOnly() + ",'"+this.getDecimalSeparator()+"','"+this.getGroupingSeparator()+"',this)) submit();";
+            String funct = "if (numberFormatter(" + numberFormat.getMinimumIntegerDigits() + "," + numberFormat.getMaximumIntegerDigits() + "," + numberFormat.getMinimumFractionDigits() + "," + numberFormat.getMaximumFractionDigits() + "," + minVal + "," + maxVal + "," + numberFormat.isGroupingUsed() + "," + numberFormat.isParseIntegerOnly() + ",'"+this.getDecimalSeparator()+"','"+this.getGroupingSeparator()+"',this)) commandlessSubmitForm(event);";
             javaScriptListener = new JavaScriptListener("onchange", funct );
         }
         else{

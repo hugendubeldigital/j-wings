@@ -66,7 +66,7 @@ protected void writeFormIcon(final Device device, SAbstractButton abstractButton
 
     %><input type="hidden"<%
     %> name="<%=Utils.event(abstractButton)%>"<%
-    %> value="hidden_reset" /><%
+    %> value="hr" /><%
     
     %><input type="checkbox"<%
     %> name="<%=Utils.event(abstractButton)%>"<%

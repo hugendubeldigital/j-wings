@@ -33,8 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 /**
  * A Look-and-Feel consists of a bunch of CGs and resource properties.
@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  */
 public class LookAndFeel
 {
-    private final static Logger logger = Logger.getLogger("org.wings.plaf");
+    private final static Log logger = LogFactory.getLog("org.wings.plaf");
 
     private static Map wrappers = new HashMap();
     static {
@@ -91,7 +91,7 @@ public class LookAndFeel
         this.properties.load(in);
         in.close();
 
-        logger.fine("create LookAndFeel");
+        logger.debug("create LookAndFeel");
     }
 
     /**
@@ -162,7 +162,7 @@ public class LookAndFeel
             return cgClass.newInstance();
         }
         catch ( Exception ex ) {
-            logger.log(Level.SEVERE, null, ex);
+            logger.fatal( null, ex);
         }
         return null;
     }
@@ -305,7 +305,7 @@ public class LookAndFeel
             return styleSheet;
         }
         catch (Exception e) {
-            logger.log(Level.WARNING, null, e);
+            logger.warn( null, e);
             return null;
         }
     }
@@ -336,12 +336,12 @@ public class LookAndFeel
             }
         }
         catch (NoSuchMethodException e) {
-            logger.log(Level.SEVERE, value + " : " + clazz.getName() 
+            logger.fatal( value + " : " + clazz.getName() 
                        + " doesn't have a single String arg constructor", e);
             return null;
         }
         catch (Exception e) {
-            logger.log(Level.SEVERE, 
+            logger.fatal( 
                        e.getClass().getName() + " : " + value, e);
             return null;
         }

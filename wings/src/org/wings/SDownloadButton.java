@@ -7,7 +7,7 @@ package org.wings;
  */
 public class SDownloadButton extends SAbstractClickable {
 
-    Resource resource;
+    private Resource resource;
 
     public SDownloadButton(Resource pResource) {
         resource = pResource;
@@ -24,7 +24,7 @@ public class SDownloadButton extends SAbstractClickable {
     }
 
 
-    public boolean checkEpoch() {
+    public boolean isEpochChecking() {
         return false;
     }
 

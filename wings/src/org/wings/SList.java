@@ -130,6 +130,9 @@ public class SList
 
     /** The dynamic attributes of selected cells */
     protected AttributeSet selectionAttributes = new SimpleAttributeSet();
+    
+    /** @see LowLevelEventListener#isEpochChecking() */
+    protected boolean epochChecking = true;     
 
     /**
      * Construct a SList that displays the elements in the specified model.
@@ -984,8 +987,14 @@ public class SList
         getSelectionModel().fireDelayedFinalEvents();
     }
 
-    public boolean checkEpoch() {
-        return true;
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public boolean isEpochChecking() {
+        return epochChecking;
+    }
+  
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public void setEpochChecking(boolean epochChecking) {
+        this.epochChecking = epochChecking;
     }
 
     /*

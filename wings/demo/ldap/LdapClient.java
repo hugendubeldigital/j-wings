@@ -44,7 +44,7 @@ public class LdapClient
     implements SConstants, 
 	       TreeSelectionListener 
 {  
-    private final static Logger logger = Logger.getLogger("ldap");
+    private final static Log logger = LogFactory.getLog("ldap");
 
     SFrame frame;
 
@@ -128,7 +128,7 @@ public class LdapClient
             mainPanel.setLayout(new STemplateLayout(getClass().getResource("ldapclientlayout.html")));
         }
         catch(Exception e) {
-	    logger.log(Level.WARNING, "no template", e);
+	    logger.warn( "no template", e);
             mainPanel.setLayout(new SFlowLayout());
         }
 
@@ -187,7 +187,7 @@ public class LdapClient
 		    }
                     catch (NamingException e) {
                         passwordTextField.setText(null);
-                        logger.log(Level.WARNING, "no initial context", e);
+                        logger.warn( "no initial context", e);
 		    }
 		}
 	    });
@@ -226,14 +226,14 @@ public class LdapClient
 
     private void setDN(String dn) {
 	this.dn = dn;
-        logger.fine("dn: " + dn);
+        logger.debug("dn: " + dn);
 
         try {
             editPanel.setDn(dn);
             addPanel.setParent(dn);
         }
 	catch (NamingException e) {
-	    logger.log(Level.SEVERE, "selection failed", e);
+	    logger.fatal( "selection failed", e);
 	}
     }
     public String getDN() { return dn; }

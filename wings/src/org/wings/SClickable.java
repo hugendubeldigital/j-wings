@@ -122,8 +122,8 @@ public class SClickable
         this(text, null, horizontalAlignment);
     }
 
-    public boolean checkEpoch() {
-        return requestTarget == null ? true : requestTarget.checkEpoch();
+    public boolean isEpochChecking() {
+        return requestTarget == null ? true : requestTarget.isEpochChecking();
     }
 
     /**
@@ -175,7 +175,7 @@ public class SClickable
     public SimpleURL getURL() {
         if (getEvent() != null && getEventTarget() != null) {
             RequestURL u = getRequestURL();
-            if (!checkEpoch()) {
+            if (!isEpochChecking()) {
                 u.setEpoch(null);
                 u.setResource(null);
             }

@@ -16,8 +16,8 @@ package org.wings.template;
 import java.awt.Color;
 import java.io.InputStream;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.wings.ClasspathResource;
 import org.wings.Resource;
 import org.wings.SDimension;
@@ -51,7 +51,7 @@ public class DefaultPropertyValueConverter  implements PropertyValueConverter  {
     public static final DefaultPropertyValueConverter INSTANCE =
 	new DefaultPropertyValueConverter();
 
-    private final static Logger logger = Logger.getLogger("org.wings.template");
+    private final static Log logger = LogFactory.getLog("org.wings.template");
     
     /**
      * 
@@ -154,6 +154,16 @@ public class DefaultPropertyValueConverter  implements PropertyValueConverter  {
 
 /*
    $Log$
+   Revision 1.4  2004/10/08 08:43:27  blueshift
+   BATCH UPDATE
+   - Switched logging to commons logging
+   - Correct handling of default button
+   - Implemented outdated request feature
+   - Implemented an 'approximation' back button
+   - More usage of FORM Submit via updated javascript
+   - Modified javscript to distinguish jsSubmit from submits by enter-key
+   - JavaDoc
+
    Revision 1.3  2002/11/19 15:36:40  ahaaf
    o use LookAndFeel methods
 

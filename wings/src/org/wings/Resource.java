@@ -14,13 +14,13 @@
 
 package org.wings;
 
-import org.wings.session.Session;
-import org.wings.session.SessionManager;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.session.Session;
+import org.wings.session.SessionManager;
 
 /*
  * Diese Klasse ist nur ein Wrapper, um Eingabestroeme von Grafiken mit dem
@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * @version $Revision$
  */
 public abstract class Resource implements Serializable, URLResource, Renderable {
-    private final static Logger logger = Logger.getLogger("org.wings");
+    private final static Log logger = LogFactory.getLog("org.wings");
 
     /**
      *

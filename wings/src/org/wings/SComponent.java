@@ -17,25 +17,39 @@ package org.wings;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Rectangle;
-import java.beans.*;
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.logging.*;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.net.SocketException;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import javax.swing.event.EventListenerList;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wings.border.SBorder;
-import org.wings.event.*;
+import org.wings.event.SComponentEvent;
+import org.wings.event.SComponentListener;
+import org.wings.event.SRenderEvent;
+import org.wings.event.SRenderListener;
 import org.wings.io.Device;
-import org.wings.plaf.*;
 import org.wings.plaf.ComponentCG;
 import org.wings.script.ScriptListener;
 import org.wings.session.LowLevelEventDispatcher;
 import org.wings.session.Session;
 import org.wings.session.SessionManager;
-import org.wings.style.*;
-import org.wings.util.*;
-import org.wings.script.JavaScriptListener;
+import org.wings.style.AttributeSet;
+import org.wings.style.CSSStyleSheet;
+import org.wings.style.SimpleAttributeSet;
+import org.wings.style.Style;
+import org.wings.util.ComponentVisitor;
 
 /**
  * The basic component implementation for all components in this package.
@@ -54,7 +68,7 @@ public abstract class SComponent
     public static final String BORDER_PROPERTY = "_Border_Property";
     public static final String NAME_PROPERTY = "_Name_Property";
 
-    private final static Logger logger = Logger.getLogger("org.wings");
+    private final static Log logger = LogFactory.getLog("org.wings");
 
     /* */
     private transient String componentId;
@@ -115,6 +129,13 @@ public abstract class SComponent
 
     /** Preferred size of component in pixel. */
     protected SDimension preferredSize;
+    
+    private transient SRenderEvent renderEvent;
+
+    /**
+     * for performance reasons
+     */
+    private boolean fireRenderEvents = false;    
 
 
     /**
@@ -128,6 +149,7 @@ public abstract class SComponent
     private boolean fireComponentChangeEvents = false;
 
     private EventListenerList listeners;
+    
     private Boolean useNamedEvents;
 
     /**
@@ -388,7 +410,7 @@ public abstract class SComponent
         return getSession().getLocale();
     }
 
-    /*
+    /**
      * If a subclass implements the {@link LowLevelEventListener} interface,
      * it will be unregistered at the associated dispatcher.
      */
@@ -398,7 +420,7 @@ public abstract class SComponent
         }
     }
 
-    /*
+    /**
      * If a subclass implements the {@link LowLevelEventListener} interface,
      * it will be registered at the associated dispatcher.
      */
@@ -864,8 +886,14 @@ public abstract class SComponent
                 cg.write(s, this);
             }
         }
+        catch (SocketException se) {
+            // Typical double-clicks. Not severe
+            logger.info( "Exception during code generation for " +
+                    getClass().getName(), se);
+            
+        }
         catch (Throwable t) {
-            logger.log(Level.SEVERE, "exception during code generation for " +
+            logger.fatal( "Exception during code generation for " +
                                      getClass().getName(), t);
         }
     }
@@ -924,7 +952,7 @@ public abstract class SComponent
     private String encodeLowLevelEventId(String lowLevelEventId) {
         if (getParentFrame() != null)
             if (!(this instanceof LowLevelEventListener) ||
-                ((LowLevelEventListener)this).checkEpoch()) {
+                ((LowLevelEventListener)this).isEpochChecking()) {
                 return ( getParentFrame().getEventEpoch()
                     + SConstants.UID_DIVIDER
                     + lowLevelEventId);
@@ -1211,9 +1239,9 @@ public abstract class SComponent
      */
     public void updateCG() {
         if (getSession() == null) {
-            logger.warning("no session yet.");
+            logger.warn("no session yet.");
         } else if (getSession().getCGManager() == null) {
-            logger.warning("no CGManager");
+            logger.warn("no CGManager");
         } else {
             setCG(getSession().getCGManager().getCG(this));
         }
@@ -1590,15 +1618,6 @@ public abstract class SComponent
         }
 
     }
-
-
-    private transient SRenderEvent renderEvent;
-
-    /**
-     * for performance reasons
-     *
-     */
-    private boolean fireRenderEvents = false;
 
     public static final int START_RENDERING = 1;
     public static final int DONE_RENDERING = 2;

@@ -1,14 +1,14 @@
 package org.wings.io;
 
-import java.io.*;
-import java.util.logging.*;
-
-import org.wings.session.*;
-import org.wings.externalizer.*;
+import java.io.IOException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.externalizer.ExternalizedResource;
+import org.wings.session.SessionManager;
 
 public abstract class DeviceFactory
 {
-    private static Logger logger = Logger.getLogger("org.wings.io");
+    private static Log logger = LogFactory.getLog("org.wings.io");
 
     private static String DEFAULT_DEVICE_FACTORY = "org.wings.io.DeviceFactory$Default";
 
@@ -40,7 +40,7 @@ public abstract class DeviceFactory
 			factory = (DeviceFactory)factoryClass.newInstance();
 		    }
 		    catch (Exception e) {
-			logger.log(Level.SEVERE, "could not load wings.device.factory: " +
+			logger.fatal( "could not load wings.device.factory: " +
 				   className, e);
 			throw new RuntimeException("could not load wings.device.factory: " +
 				   className + "(" + e.getMessage() +")");

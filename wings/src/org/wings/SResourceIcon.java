@@ -18,8 +18,8 @@ import org.wings.util.ImageInfo;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 /*
  * Diese Klasse ist nur ein Wrapper, um Eingabestroeme von Grafiken mit dem
@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  */
 public class SResourceIcon extends ClasspathResource implements SIcon {
 
-    private final static Logger LOGGER = Logger.getLogger("org.wings");
+    private final static Log logger = LogFactory.getLog("org.wings");
 
     /**
      * Width of icon, <code>-1</code> if not set.
@@ -68,7 +68,7 @@ public class SResourceIcon extends ClasspathResource implements SIcon {
         try {
             bufferResource();
         } catch (Throwable e) {
-            LOGGER.log(Level.SEVERE, "Can not buffer resource " + resourceFileName);
+            logger.fatal( "Can not buffer resource " + resourceFileName);
         }
 
         if (buffer != null && buffer.isValid()) {

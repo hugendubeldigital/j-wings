@@ -14,18 +14,20 @@
 
 package org.wings.plaf;
 
-import java.beans.*;
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.logging.*;
-import java.io.*;
-import javax.swing.*;
-
-import org.wings.*; import org.wings.border.*;
-import org.wings.io.*;
-import org.wings.plaf.*;
-import org.wings.session.*;
-import org.wings.style.*;
+import java.beans.Introspector;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.SComponent;
+import org.wings.SConstants;
+import org.wings.session.SessionManager;
 
 /**
  * Partial CG implementation that is common to all ComponentCGs.
@@ -35,7 +37,7 @@ import org.wings.style.*;
 public abstract class AbstractComponentCG
     implements ComponentCG, SConstants, Serializable
 {
-    protected final static Logger logger = Logger.getLogger("org.wings.plaf");
+    protected final static Log logger = LogFactory.getLog("org.wings.plaf");
 
     protected static final Map cache = new HashMap();
 
@@ -46,7 +48,7 @@ public abstract class AbstractComponentCG
         long start = System.currentTimeMillis();
         configure(this, name, manager);
 
-        logger.fine("configure CG done in " 
+        logger.debug("configure CG done in " 
                     + (System.currentTimeMillis()-start) + " ms");
     }
     
@@ -61,7 +63,7 @@ public abstract class AbstractComponentCG
         className = className.substring(className.lastIndexOf(".") + 1);
 
         configure(component, className, manager);
-        logger.fine("install CG done in " + (System.currentTimeMillis()-start) + " ms");
+        logger.debug("install CG done in " + (System.currentTimeMillis()-start) + " ms");
     }
 
     /**
@@ -82,7 +84,7 @@ public abstract class AbstractComponentCG
                     }
                 }
             }
-            logger.finer(objectClass.getName() + " introspection_time " +
+            logger.debug(objectClass.getName() + " introspection_time " +
                           (System.currentTimeMillis()-introspection_time) + " ms");
 
             long configuration_time = System.currentTimeMillis();
@@ -96,7 +98,7 @@ public abstract class AbstractComponentCG
                 value = manager.getObject(lookupName, propertyType);
                 boolean configurable = !propertyType.isPrimitive();
 
-                logger.finest(lookupName + "=" + value);
+                logger.debug(lookupName + "=" + value);
 
                 if (value != null) {
                     setters[i].invoke(object, new Object[] { value });
@@ -105,11 +107,11 @@ public abstract class AbstractComponentCG
                     }
                 }
             }
-            logger.finer(objectClass.getName() + " configuration_time " +
+            logger.debug(objectClass.getName() + " configuration_time " +
                            (System.currentTimeMillis()-configuration_time) + " ms");
         }
         catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
+            logger.fatal( null, e);
         }
     }
 

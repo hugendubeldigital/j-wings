@@ -14,7 +14,7 @@ import org.wings.session.*;
 public class AddObjectPanel
     extends SForm
 {
-    private final static Logger logger = Logger.getLogger("ldap");
+    private final static Log logger = LogFactory.getLog("ldap");
 
     Properties dn;
     
@@ -121,7 +121,7 @@ public class AddObjectPanel
             objectClassLabel.setText(" [" + objectClass + "]");
         }
 	catch (NamingException e) {
-            logger.log(Level.SEVERE, "objectClass: " + objectClass, e);
+            logger.fatal( "objectClass: " + objectClass, e);
 	}
     }
 
@@ -142,7 +142,7 @@ public class AddObjectPanel
             e.printStackTrace();
         }
         catch (IOException e) {
-            logger.log(Level.SEVERE, null, e);
+            logger.fatal( null, e);
 	}
         
         try {
@@ -227,7 +227,7 @@ public class AddObjectPanel
 	    }
 	}
 	catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
+            logger.fatal( null, e);
 	}
     }
 
@@ -242,7 +242,7 @@ public class AddObjectPanel
             editor.setData(emptyAttributes);
         }
 	catch (NamingException e) {
-            logger.log(Level.WARNING, "ignorable", e);
+            logger.warn( "ignorable", e);
 	}
     }
 

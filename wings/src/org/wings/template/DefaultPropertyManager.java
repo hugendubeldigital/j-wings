@@ -1,11 +1,10 @@
 package org.wings.template;
 
 import bsh.Interpreter;
-
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.logging.*;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wings.SComponent;
 import org.wings.session.SessionManager;
 
@@ -21,7 +20,7 @@ import org.wings.session.SessionManager;
  */
 public class DefaultPropertyManager implements PropertyManager {
 
-    private static final Logger logger = Logger.getLogger("org.wings.template");
+    private static final Log logger = LogFactory.getLog("org.wings.template");
     static final Class[] classes = {SComponent.class};
 
     public final HashMap propertyValueConverters = new HashMap();
@@ -47,7 +46,7 @@ public class DefaultPropertyManager implements PropertyManager {
             Interpreter interpreter = createInterpreter();
 
             try {
-                logger.finer("eval script " + value);
+                logger.debug("eval script " + value);
 
                 interpreter.set("component", comp);
                 interpreter.set("session", SessionManager.getSession());
@@ -118,6 +117,16 @@ public class DefaultPropertyManager implements PropertyManager {
 
 /*
    $Log$
+   Revision 1.7  2004/10/08 08:43:26  blueshift
+   BATCH UPDATE
+   - Switched logging to commons logging
+   - Correct handling of default button
+   - Implemented outdated request feature
+   - Implemented an 'approximation' back button
+   - More usage of FORM Submit via updated javascript
+   - Modified javscript to distinguish jsSubmit from submits by enter-key
+   - JavaDoc
+
    Revision 1.6  2003/10/31 10:15:38  hengels
    o java logging instead of system.out / system.err
    o patches from doug porter

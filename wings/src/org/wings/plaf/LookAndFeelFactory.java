@@ -14,17 +14,17 @@
 
 package org.wings.plaf;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.logging.*;
-
-import org.wings.plaf.*;
-import org.wings.session.*;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.session.Session;
+import org.wings.session.SessionManager;
 
 public abstract class LookAndFeelFactory
 {
-    private static Logger logger = Logger.getLogger("org.wings.plaf");
+    private static Log logger = LogFactory.getLog("org.wings.plaf");
 
     private static String DEFAULT_LOOKANDFEEL_FACTORY = "org.wings.plaf.LookAndFeelFactory$Default";
 
@@ -56,7 +56,7 @@ public abstract class LookAndFeelFactory
 			factory = (LookAndFeelFactory)factoryClass.newInstance();
 		    }
 		    catch (Exception e) {
-			logger.log(Level.SEVERE, "could not load wings.lookandfeel.factory: " +
+			logger.fatal( "could not load wings.lookandfeel.factory: " +
 				   className, e);
 			throw new RuntimeException("could not load" + 
                                                    " wings.lookandfeel.factory: " +

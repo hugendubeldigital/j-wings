@@ -9,7 +9,7 @@ import java.util.logging.*;
 public class LdapTreeNode
     implements MutableTreeNode 
 {
-    private final static Logger logger = Logger.getLogger("ldap");
+    private final static Log logger = LogFactory.getLog("ldap");
 
     private static String[] RETURNING_ATTRIBUTES = new String [] { "objectclass" };
     private static String SEARCH_FILTER = "(objectclass=*)";
@@ -123,11 +123,11 @@ public class LdapTreeNode
             }
         }
         catch (CommunicationException e) {
-            logger.log(Level.WARNING, (String)environment.get(Context.PROVIDER_URL), e);
+            logger.warn( (String)environment.get(Context.PROVIDER_URL), e);
             context = null;
         }
         catch (NamingException e) {
-            logger.log(Level.SEVERE, "get children failed", e);
+            logger.fatal( "get children failed", e);
         }
     }
 

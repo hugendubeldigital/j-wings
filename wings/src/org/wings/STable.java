@@ -195,6 +195,9 @@ public class STable
      * <p>Default is none.</p>
      **/
     protected SIcon fDeselectedIcon;
+    
+    /** @see LowLevelEventListener#isEpochChecking() */
+    protected boolean epochChecking = true;       
 
     /**
      * <p>Creates a new <code>STable</code>.</p>
@@ -973,9 +976,15 @@ public class STable
         getSelectionModel().fireDelayedFinalEvents();
     }
 
-    public boolean checkEpoch() {
-        return true;
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public boolean isEpochChecking() {
+        return epochChecking;
     }
+  
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public void setEpochChecking(boolean epochChecking) {
+        this.epochChecking = epochChecking;
+    } 
 
     /**
      * TODO: documentation

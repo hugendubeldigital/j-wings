@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * TODO: documentation
@@ -84,9 +84,9 @@ public class ExternalizeManager extends AbstractExternalizeManager {
 
     protected final void storeExternalizedResource(String identifier,
                                                    ExternalizedResource extInfo) {
-        if (logger.isLoggable(Level.FINER)) {
-            logger.finer("store identifier " + identifier + " " + extInfo.getObject().getClass());
-            logger.finer("flags " + extInfo.getFlags());
+        if (logger.isTraceEnabled()) {
+            logger.debug("store identifier " + identifier + " " + extInfo.getObject().getClass());
+            logger.debug("flags " + extInfo.getFlags());
         }
         externalized.put(identifier, extInfo);
     }
@@ -181,7 +181,7 @@ public class ExternalizeManager extends AbstractExternalizeManager {
 
         Externalizer externalizer = getExternalizer(obj.getClass());
         if (externalizer == null) {
-            logger.warning("could not find externalizer for " +
+            logger.warn("could not find externalizer for " +
                            obj.getClass().getName());
             return NOT_FOUND_IDENTIFIER;
         }

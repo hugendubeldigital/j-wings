@@ -2,7 +2,7 @@
 
 <template name="TextFieldCG" for="org.wings.STextField">
 <import>org.wings.script.*</import>
-    private static final JavaScriptListener submitListener = new JavaScriptListener(JavaScriptEvent.ON_CHANGE, "submit()");
+    private static final JavaScriptListener submitListener = new JavaScriptListener(JavaScriptEvent.ON_CHANGE, "commandlessSubmitForm(event)");
 
 <write>
 <%

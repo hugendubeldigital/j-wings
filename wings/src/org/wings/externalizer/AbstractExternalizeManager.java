@@ -20,15 +20,15 @@ import org.wings.util.StringUtil;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 /**
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public abstract class AbstractExternalizeManager {
-    protected final static Logger logger = Logger.getLogger("org.wings.externalizer");
+    protected final static Log logger = LogFactory.getLog("org.wings.externalizer");
 
     /**
      * The identifier generated, if the {@link ExternalizeManager} did not find
@@ -380,7 +380,7 @@ public abstract class AbstractExternalizeManager {
         ExternalizedResource extInfo = getExternalizedResource(identifier);
 
         if (extInfo == null) {
-            logger.warning("identifier " + identifier + " not found");
+            logger.warn("identifier " + identifier + " not found");
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
@@ -407,7 +407,7 @@ public abstract class AbstractExternalizeManager {
             int resourceLen = extInfo
                     .getExternalizer().getLength(extInfo.getObject());
             if (resourceLen > 0) {
-                logger.log(Level.FINER, extInfo.getMimeType() + ": " + resourceLen);
+                logger.trace( extInfo.getMimeType() + ": " + resourceLen);
                 response.setContentLength(resourceLen);
             }
         }

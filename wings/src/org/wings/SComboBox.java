@@ -88,7 +88,11 @@ public class SComboBox
     private boolean selectingItem = false;
 
     private boolean delayEvent = false;
+
     private boolean delayedEvent = false;
+    
+    /** @see LowLevelEventListener#isEpochChecking() */
+    protected boolean epochChecking = true;    
 
     /**
      * Creates a SComboBox that takes its items from an existing ComboBoxModel.
@@ -650,10 +654,6 @@ public class SComboBox
 
     }
 
-    public boolean checkEpoch() {
-        return true;
-    }
-
     /**
      * TODO: documentation
      *
@@ -673,6 +673,16 @@ public class SComboBox
 
     public String getSelectionParameter(int index) {
         return Integer.toString(index);
+    }
+    
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public boolean isEpochChecking() {
+        return epochChecking;
+    }
+  
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public void setEpochChecking(boolean epochChecking) {
+        this.epochChecking = epochChecking;
     }
 }
 

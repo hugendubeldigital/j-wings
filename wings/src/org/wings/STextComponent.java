@@ -31,6 +31,9 @@ public abstract class STextComponent
     extends SComponent
     implements LowLevelEventListener, SDocumentListener
 {
+    /** @see LowLevelEventListener#isEpochChecking() */
+    protected boolean epochChecking = true;   
+    
     private boolean editable = true;
 
     private SDocument document;
@@ -194,8 +197,14 @@ public abstract class STextComponent
 
     public void fireFinalEvents() {}
 
-    public boolean checkEpoch() {
-        return true;
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public boolean isEpochChecking() {
+        return epochChecking;
+    }
+  
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public void setEpochChecking(boolean epochChecking) {
+        this.epochChecking = epochChecking;
     }
 
     //-- implement SDocumentListener to notify TextListeners

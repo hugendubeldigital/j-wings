@@ -65,6 +65,9 @@ public abstract class SAbstractButton
      */
     private boolean showAsFormComponent = true;
 
+    /** @see LowLevelEventListener#isEpochChecking() */
+    protected boolean epochChecking = true;
+    
     /**
      *
      */
@@ -394,10 +397,6 @@ public abstract class SAbstractButton
         }
     }
 
-    public boolean checkEpoch() {
-        return true;
-    }
-
     /**
      * @deprecated use {@link #getEventTarget}
      */
@@ -573,7 +572,15 @@ public abstract class SAbstractButton
     public String getMnemonic() {
         return mnemonic;
     }
+    
+    
 
+    public boolean isEpochChecking() {
+        return epochChecking;
+    }
+    public void setEpochChecking(boolean epochChecking) {
+        this.epochChecking = epochChecking;
+    }
 }
 
 /*

@@ -12,7 +12,7 @@ import org.wings.session.*;
 
 public class EditorFactory
 {
-    private final static Logger logger = Logger.getLogger("ldap.editors");
+    private final static Log logger = LogFactory.getLog("ldap.editors");
 
     static final Map editorsByName = new HashMap();
     static final Map editorsBySyntax = new HashMap();
@@ -37,7 +37,7 @@ public class EditorFactory
 	}
 
 	// fallback
-	logger.log(Level.INFO, "no editor for: " + attributes);
+	logger.info( "no editor for: " + attributes);
 	return singleLineTextEditor;
     }
 
@@ -53,7 +53,7 @@ public class EditorFactory
 		syntaxes.load(in);
 	    }
 	    catch (Exception e) {
-		logger.log(Level.WARNING, "name.properties", e);
+		logger.warn( "name.properties", e);
 	    }
 	}
 
@@ -68,7 +68,7 @@ public class EditorFactory
 	    return editor;
 	}
 	catch (Exception e) {
-            logger.log(Level.WARNING, "class: " + className, e);
+            logger.warn( "class: " + className, e);
 	}
 
 	return null;
@@ -86,7 +86,7 @@ public class EditorFactory
 		names.load(in);
 	    }
 	    catch (Exception e) {
-		logger.log(Level.WARNING, "name.properties", e);
+		logger.warn( "name.properties", e);
 	    }
 	}
 
@@ -101,7 +101,7 @@ public class EditorFactory
 	    return editor;
 	}
 	catch (Exception e) {
-            logger.log(Level.WARNING, "class: " + className, e);
+            logger.warn( "class: " + className, e);
 	}
 
 	return null;

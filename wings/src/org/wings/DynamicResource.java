@@ -14,16 +14,14 @@
 
 package org.wings;
 
-import java.io.IOException;
-import java.util.Set;
-import java.util.logging.*;
-
-import org.wings.SFrame;
-import org.wings.externalizer.ExternalizeManager;
-import org.wings.io.Device;
-import org.wings.util.StringUtil;
-import org.wings.session.*;
 import java.util.Collection;
+import java.util.Set;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.externalizer.ExternalizeManager;
+import org.wings.session.PropertyService;
+import org.wings.session.SessionManager;
+import org.wings.util.StringUtil;
 
 /**
  * Dynamic Resources are web resources representing rendered components 
@@ -37,7 +35,7 @@ import java.util.Collection;
 public abstract class DynamicResource
     extends Resource
 {
-    private final static Logger logger = Logger.getLogger("org.wings");
+    private final static Log logger = LogFactory.getLog("org.wings");
 
     /**
      * The epoch of this resource. With each invalidation, this counter
@@ -88,7 +86,7 @@ public abstract class DynamicResource
         if (id == null) {
             ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
             id = ext.getId(ext.externalize(this));
-            logger.fine("new " + getClass().getName() + " with id " + id);
+            logger.debug("new " + getClass().getName() + " with id " + id);
         }
         return id;
     }
@@ -100,10 +98,10 @@ public abstract class DynamicResource
      */
     public final void invalidate() {
         epochCache = "W" + StringUtil.toShortestAlphaNumericString(++epoch);
-        if (logger.isLoggable(Level.FINE)) {
+        if (logger.isDebugEnabled()) {
             String name = getClass().getName();
             name = name.substring(name.lastIndexOf(".") + 1);
-            logger.fine("[" + name + "] " +
+            logger.debug("[" + name + "] " +
                         "invalidate - epoch: " + epochCache);
         }
         

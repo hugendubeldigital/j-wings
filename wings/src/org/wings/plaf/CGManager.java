@@ -14,15 +14,17 @@
 
 package org.wings.plaf;
 
-import java.awt.*;
-import java.io.*;
-import java.net.*;
-import java.util.logging.*;
-
-import org.wings.*;
-import org.wings.border.*;
-import org.wings.session.*;
-import org.wings.style.*;
+import java.io.Serializable;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wings.SComponent;
+import org.wings.SIcon;
+import org.wings.SLayoutManager;
+import org.wings.border.SBorder;
+import org.wings.session.PropertyService;
+import org.wings.session.SessionManager;
+import org.wings.style.Style;
+import org.wings.style.StyleSheet;
 
 /**
  * The CGManager holds a reference to the current laf.
@@ -31,7 +33,7 @@ import org.wings.style.*;
  */
 public class CGManager implements Serializable
 {
-    private final static Logger logger = Logger.getLogger("org.wings.plaf");
+    private final static Log logger = LogFactory.getLog("org.wings.plaf");
 
     private LookAndFeel lookAndFeel;
     private CGDefaults defaults = null;
@@ -141,7 +143,7 @@ public class CGManager implements Serializable
      */
     public CGDefaults getDefaults() {
         if (defaults == null) {
-            logger.warning("defaults == null");
+            logger.warn("defaults == null");
         }
         return defaults;
     }
@@ -170,7 +172,7 @@ public class CGManager implements Serializable
             setDefaults(new CGDefaults(newLookAndFeel.createDefaults()));
         }
         else {
-            logger.warning("lookandfeel == null");
+            logger.warn("lookandfeel == null");
             setDefaults(null);
         }
 

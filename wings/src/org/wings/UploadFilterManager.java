@@ -14,10 +14,12 @@
 
 package org.wings;
 
-import java.io.*;
+import java.io.FilterOutputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
-import java.lang.reflect.*;
-import java.util.logging.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * TODO: documentation
@@ -27,7 +29,7 @@ import java.util.logging.*;
  */
 public class UploadFilterManager
 {
-    private final static Logger logger = Logger.getLogger("org.wings.servlet");
+    private final static Log logger = LogFactory.getLog("org.wings.servlet");
 
     private static HashMap filterMappings = new HashMap();
 
@@ -80,7 +82,7 @@ public class UploadFilterManager
             }
         }
         catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
+            logger.fatal( null, e);
         }
         return filter;
     }
@@ -95,7 +97,7 @@ public class UploadFilterManager
             return filterInstance;
         }
         catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
+            logger.fatal( null, e);
             return null;
         }
     }

@@ -46,6 +46,9 @@ public class SDateChooser extends SComponent implements LowLevelEventListener {
     private DateParseException parseException;
 
     private boolean isNull = true;
+    
+    /** @see LowLevelEventListener#isEpochChecking() */
+    protected boolean epochChecking = true;
 
     /**
      *
@@ -187,11 +190,17 @@ public class SDateChooser extends SComponent implements LowLevelEventListener {
         fireActionPerformed("date changed");
     }
 
-    public boolean checkEpoch() {
-        return true;
+    
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public boolean isEpochChecking() {
+        return epochChecking;
     }
-
-
+  
+    /** @see LowLevelEventListener#isEpochChecking() */
+    public void setEpochChecking(boolean epochChecking) {
+        this.epochChecking = epochChecking;
+    }
+    
     public static class DateParseException extends Exception {
 
         public DateParseException(String pDate, ParseException pCause) {
@@ -212,6 +221,16 @@ public class SDateChooser extends SComponent implements LowLevelEventListener {
 
 /*
    $Log$
+   Revision 1.4  2004/10/08 08:43:30  blueshift
+   BATCH UPDATE
+   - Switched logging to commons logging
+   - Correct handling of default button
+   - Implemented outdated request feature
+   - Implemented an 'approximation' back button
+   - More usage of FORM Submit via updated javascript
+   - Modified javscript to distinguish jsSubmit from submits by enter-key
+   - JavaDoc
+
    Revision 1.3  2003/12/22 08:59:56  arminhaaf
    o add support for null date
 

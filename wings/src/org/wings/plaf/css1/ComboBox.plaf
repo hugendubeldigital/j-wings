@@ -9,7 +9,7 @@
   
 </install>
 
-private static final JavaScriptListener submitListener = new JavaScriptListener(JavaScriptEvent.ON_CHANGE, "submit()");
+private static final JavaScriptListener submitListener = new JavaScriptListener(JavaScriptEvent.ON_CHANGE, "commandlessSubmitForm(event)");
 
 protected void writeFormComboBox(Device device, SComboBox comboBox) throws IOException {
     %><select size="1"<%

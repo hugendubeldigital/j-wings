@@ -1,18 +1,28 @@
 /* $Id$ */
 package org.wings.session;
 
-import org.wings.recorder.*;
-import org.apache.commons.collections.BeanMap;
-
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.CharBuffer;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.Filter;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.*;
-import java.util.*;
-import java.util.regex.*;
-import java.util.logging.*;
-import java.nio.channels.*;
-import java.nio.*;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author hengels
@@ -20,7 +30,7 @@ import java.nio.*;
 public class SmartURLsFilter
     implements Filter
 {
-    private static Logger logger = Logger.getLogger(SmartURLsFilter.class.getPackage().getName());
+    private static Log logger = LogFactory.getLog(SmartURLsFilter.class.getPackage().getName());
     private String parameterSeparator = ";";
     private String nameValueSeparator = ",";
     private Pattern encodePattern;
@@ -33,8 +43,8 @@ public class SmartURLsFilter
         if (filterConfig.getInitParameter("wings.servlet.smarturls.nameValueSeparator") != null)
             nameValueSeparator = filterConfig.getInitParameter("wings.servlet.smarturls.nameValueSeparator");
 
-        logger.config("wings.servlet.smarturls.parameterSeparator " + parameterSeparator);
-        logger.config("wings.servlet.smarturls.nameValueSeparator " + nameValueSeparator);
+        logger.info("wings.servlet.smarturls.parameterSeparator " + parameterSeparator);
+        logger.info("wings.servlet.smarturls.nameValueSeparator " + nameValueSeparator);
 
         encodePattern = Pattern.compile("(" + "\\?|&" + ")([a-zA-Z0-9%+.-[*]_]*)" +
                         "(" + "=" + ")([a-zA-Z0-9%+.-[*]_=/:]*)");
@@ -57,10 +67,10 @@ public class SmartURLsFilter
                 if ("get".equalsIgnoreCase(httpServletRequest.getMethod()))
                     request = requestWrapper;
 
-                logger.finer("wrap " + requestWrapper.getPathInfo());
+                logger.debug("wrap " + requestWrapper.getPathInfo());
             }
             else
-                logger.finer("don't wrap " + requestWrapper.getPathInfo());
+                logger.debug("don't wrap " + requestWrapper.getPathInfo());
         }
         filterChain.doFilter(request, response);
     }
@@ -99,9 +109,9 @@ public class SmartURLsFilter
             pathInfo = httpServletRequest.getPathInfo();
             queryString = httpServletRequest.getQueryString();
             parameterMap = httpServletRequest.getParameterMap();
-            logger.finer("pathInfo = " + pathInfo);
-            logger.finer("queryString = " + queryString);
-            logger.finer("parameterMap = " + parameterMap);
+            logger.debug("pathInfo = " + pathInfo);
+            logger.debug("queryString = " + queryString);
+            logger.debug("parameterMap = " + parameterMap);
 
             if (pathInfo == null)
                 return;
@@ -121,9 +131,9 @@ public class SmartURLsFilter
                     matcher.appendReplacement(buffer, "&$2=$4");
                 }
                 queryString = buffer.substring(1);
-                logger.finer("modified pathInfo = " + pathInfo);
-                logger.finer("modified queryString = " + queryString);
-                logger.finer("modified parameterMap = " + parameterMap);
+                logger.debug("modified pathInfo = " + pathInfo);
+                logger.debug("modified queryString = " + queryString);
+                logger.debug("modified parameterMap = " + parameterMap);
             }
         }
 

@@ -121,7 +121,7 @@ public interface LowLevelEventListener
      * @return <code>true</code> if epoch checking should be perfomed, <code>false</code> 
      * if all request for this component should be processed.
      */
-    boolean checkEpoch();
+    boolean isEpochChecking();
 }
 
 /*

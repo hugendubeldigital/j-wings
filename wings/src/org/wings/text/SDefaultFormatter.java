@@ -36,7 +36,7 @@ public class SDefaultFormatter extends SAbstractFormatter{
      */
     public JavaScriptListener generateJavaScript(SFormattedTextField field,boolean actionListener) {
         if(actionListener){
-            JavaScriptListener javaScriptListener = new JavaScriptListener("onchange","submit()");
+            JavaScriptListener javaScriptListener = new JavaScriptListener("onchange","commandlessSubmitForm(event)");
             return javaScriptListener;
         }
         else{
