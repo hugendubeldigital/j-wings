@@ -31,7 +31,7 @@ import org.wings.style.*;
  * @version $Revision$
  */
 public class SComponentPropertyManager
-    implements PropertyManager
+    extends DefaultPropertyManager
 {
     static final Class[] classes = { SComponent.class };
 
@@ -43,38 +43,23 @@ public class SComponentPropertyManager
         else if ( "FOREGROUND".equals(name) )
             comp.setForeground(Color.decode(value));
         else if ( "FONT".equals(name) )
-            comp.setFont(parseFont(value));
+            comp.setFont(TemplateUtil.parseFont(value));
         else if ( "TABINDEX".equals(name) )
             comp.setFocusTraversalIndex(Integer.parseInt(value));
         else if ( "STYLE".equals(name) ) {
             LookAndFeel laf = SessionManager.getSession().getCGManager().getLookAndFeel();
             comp.setAttributes(laf.makeAttributeSet(value));
-        }
-        else if ( "CLASS".equals(name) )
+            System.out.println("attrs " + comp.getAttributes());
+        } else if ( "CLASS".equals(name) )
             comp.setStyle(value);
+        else {
+            super.setProperty(comp, name, value);
+        } // end of else
+        
     }
 
     public Class[] getSupportedClasses() {
         return classes;
-    }
-
-    protected final SFont parseFont(String value) {
-        StringTokenizer s = new StringTokenizer(value, ",");
-        String fontName = s.nextToken();
-        String tmpFontType = s.nextToken().toUpperCase().trim();
-        int fontType = SFont.PLAIN;
-        if ( tmpFontType.startsWith("B") )
-            fontType = SFont.BOLD;
-        else if ( tmpFontType.startsWith("I") )
-            fontType = SFont.ITALIC;
-
-        int fontSize = 12;
-        try {
-            fontSize = Integer.parseInt(s.nextToken());
-        }
-        catch (Exception e) {}
-
-        return new SFont(fontName, fontType, fontSize);
     }
 }
 
