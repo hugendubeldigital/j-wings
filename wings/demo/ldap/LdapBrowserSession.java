@@ -43,11 +43,11 @@ public class LdapBrowserSession
     private LdapWorker worker = null;
 
     private SPanel tableForm;
-    final private String server = "192.168.230.131:389";
-    final private String baseDN = "dc=tiscon,dc=de";
-    private String bindDN = "cn=admin,dc=tiscon,dc=de";
-    private String password = "secret";
-    private String peopleName = "cn";
+    private String server;
+    private String baseDN;
+    private String bindDN ;
+    private String password ;
+    private String peopleName;
     ArrayList selList = new ArrayList();
     int count = 0;
     SButton submit;
@@ -64,6 +64,15 @@ public class LdapBrowserSession
 	
 	super(session);
         System.out.println("I`m starting now");
+	
+    }
+
+    public void postInit(ServletConfig config) {
+        initGUI();
+    }
+
+    void initGUI() {
+
 	viewAttributes = new Hashtable();
 	viewAttributes.put("cn","Name");
 	viewAttributes.put("title","Titel");
@@ -72,11 +81,12 @@ public class LdapBrowserSession
 	viewAttributes.put("telephoneNumber","Telefon");
 	viewAttributes.put("l","Standort");
 	//connection ohne dialog
-	//server = ((PropertyService)getSession()).getProperty("ldap.server.host");
-	//baseDN = ((PropertyService)getSession()).getProperty("ldap.server.basedn");
-	//bindDN = ((PropertyService)getSession()).getProperty("ldap.server.binddn");
-	//pasword = ((PropertyService)getSession()).getProperty("ldap.server.password");
-	//peopleName = ((PropertyService)getSession()).getProperty("ldap.server.peoplename");
+	System.out.println("host" + ((PropertyService)getSession()).getProperty("ldap.server.host"));
+	this.server = ((PropertyService)getSession()).getProperty("ldap.server.host");
+	this.baseDN = ((PropertyService)getSession()).getProperty("ldap.server.basedn");
+	this.bindDN = ((PropertyService)getSession()).getProperty("ldap.server.binddn");
+	this.password = ((PropertyService)getSession()).getProperty("ldap.server.password");
+	this.peopleName = ((PropertyService)getSession()).getProperty("ldap.server.peoplename");
        
 		
 	worker = new LdapWorker(server,
@@ -91,13 +101,7 @@ public class LdapBrowserSession
 	else {
 	    setLdapWorker(worker);
 	}
-    }
 
-    public void postInit(ServletConfig config) {
-        initGUI();
-    }
-
-    void initGUI() {
 	getFrame().getContentPane().setLayout(new SFlowDownLayout());
 	
 		

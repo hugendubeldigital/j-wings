@@ -92,8 +92,9 @@ public class AddObjectsPanel
     private void fillTisconPanel () {
 	attrForm.removeAll();
 	attrForm.setLayout(new SGridLayout(0,2));
-	SLabel dnLabel = new SLabel();
+	SLabel dnLabel = new SLabel("dn");
 	dnText = new STextField("");
+	dnText.setColumns(35);
 	STextField val;
 	String tval;
 
@@ -200,6 +201,11 @@ public class AddObjectsPanel
 	    int i = 0;
 	    while (obj!=null && i< obj.size()) {
 		System.out.println(obj.get(i));
+		String o = (String)obj.get(i);
+		
+		int index = o.indexOf("TOP");
+		if (index > 0)
+		    obj.set(i,o.substring(0,index));
 		i++;
 	}
 	    

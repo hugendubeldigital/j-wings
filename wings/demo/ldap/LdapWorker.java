@@ -131,12 +131,6 @@ public class LdapWorker
 		//ab da
 		NamingEnumeration ne = attr.getAll();
 		ol = getObjNames(ne);
-		int i=0;
-		while (i<ol.size()) {
-		    System.out.println(ol.get(i));
-		    //getObjectDefinition((String)ol.get(i));
-		    i++;
-		}
 	    }
 	    // Close the context when we're done
 	    schema.close();
@@ -147,11 +141,12 @@ public class LdapWorker
 	return ol;
     }
     
-
+    
     public ArrayList getObjNames(NamingEnumeration ne) {
 	ArrayList objArray = new ArrayList();
 
-	try {while (ne!=null && ne.hasMore()) {
+	try {
+	    while (ne!=null && ne.hasMore()) {
 	    String oString = ne.next().toString();
 	    System.out.println(oString);
 	    StringTokenizer sto = new StringTokenizer(oString,new String("'"));
@@ -350,7 +345,6 @@ public class LdapWorker
 	matchAttrs.put(new BasicAttribute("cn"));
          
          // Search for objects that have those matching attributes
-	//NamingEnumeration enum = ctx.search("", matchAttrs);
 	NamingEnumeration enum = ctx.search(getBaseDN(), matchAttrs);
 
      
@@ -369,40 +363,14 @@ public class LdapWorker
 	return peopleDNMap;
     }
 
-    /*public ArrayList getFilteredAttributes(String dn, String filter, String attr) {
-	String [] attribs = {attr};
-	ArrayList l = new ArrayList();
-	try {
-	    NamingEnumeration en = search("dc=tiscon,dc=de",filter,attribs,2);
-	    while (en!=null && en.hasMoreElements()) {
-		SearchResult sr = (SearchResult)en.next();
-		System.out.println(">>>" + sr.getName());
-		BasicAttributes as = (BasicAttributes)sr.getAttributes();
-		BasicAttribute a  = (BasicAttribute)ba.get(attr);
-		if (a!=null) {
-		    l.add(a.get());
-		}
-		else l.add("");	   
-	    }
-	}
-	catch(NamingException ex) {
-	}
-	return l;
-	
-	}*/
-    
     public ArrayList getFilteredAllDN(String baseDN,String f) {
 	String filter = f;
 	String [] attribs = {"cn"};
-	System.out.println("im worker" + filter);
 	ArrayList l = new ArrayList();
 	try {
 	    NamingEnumeration en = search(getBaseDN(),f,attribs,2);
 	    while (en!=null && en.hasMoreElements()) {
 		SearchResult sr = (SearchResult)en.next();
-		System.out.println(">>>" + sr.getName());
-		//BasicAttributes as = (BasicAttributes)sr.getAttributes();
-		//BasicAttribute a  = (BasicAttribute)ba.get(attr);
 		l.add(sr.getName());
 	    }
 	}
@@ -415,11 +383,6 @@ public class LdapWorker
     private NamingEnumeration search(String dn, String filter, String []attribs,
 				     int type) 
 	throws NamingException {
-	System.out.println(dn);
-	System.out.println(filter);
-	//System.out.println(attribs[0]);
-	System.out.println(type);
-	
 	/* specify search constraints to search subtree */
 	SearchControls constraints = new SearchControls();
 	
@@ -548,7 +511,6 @@ public class LdapWorker
 	try {
 	System.out.println("ein neues Entry");
 	Attributes attrs = getAttributes(vals);
-	System.out.println(dn);
 	ctx.createSubcontext(dn,attrs);
 	}
 	catch (NamingException e){
@@ -562,7 +524,6 @@ public class LdapWorker
 	while (e!=null && e.hasMoreElements()) {
 	    Object key = e.nextElement();
 	    Attribute attr = new BasicAttribute((String)key);
-	    System.out.println("attribut" + (String)key + "values:");
 	    String values = (String)vals.get(key);
 	    StringTokenizer parser = new StringTokenizer(values, ",");
 	    while (parser.hasMoreTokens()) {

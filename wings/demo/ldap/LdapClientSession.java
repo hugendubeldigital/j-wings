@@ -103,7 +103,8 @@ public class LdapClientSession
 	settingsForm.add(baseDN);
 
 	SLabel descBindDN = new SLabel("bind DN");
-	final STextField bindDN= new STextField("cn=admin,dC=tiscon,dc=de");
+	final STextField bindDN= new STextField();
+	bindDN.setText(((PropertyService)getSession()).getProperty("ldap.server.binddn"));
 	bindDN.setColumns(30);
 	settingsForm.add(descBindDN);
 	settingsForm.add(bindDN);
@@ -127,20 +128,14 @@ public class LdapClientSession
 	createTree();
 	mainPanel.add(tree);
 
-	//editorPanel = new SPanel();
-	//mainPanel.add(editorPanel);
-
 	attrPanel = new SForm();
 	attrPanel.setLayout(new SGridLayout(2));
-	//editorPanel.add(attrPanel);
-
 
 	mainPanel.add(attrPanel);
 
 	commitButton = new SButton("Commit");
 	commitButton.addActionListener(this);
-	//attrPanel.add(commitButton);
-
+	
 	addPanel = new AddObjectsPanel();
 	tabbedPane.add(addPanel, "Add new Object");
 
@@ -150,7 +145,7 @@ public class LdapClientSession
 					    baseDN.getText(),
 					    bindDN.getText(),
 					    bindDNPassword.getText());
-
+		    
 		    boolean success = worker.getSuccess();
 		    if (success) {
 			connectButton.setVisible(false);
@@ -327,15 +322,6 @@ public class LdapClientSession
 		    System.out.println("binary");
 		}
 	    }
-	    //SLabel attrLabel = new SLabel(label);
-	    //STextField attrField = new STextField((String)values);
-	    //componentTable.put(attrLabel,attrField);
-	    //textHashtable.put(attrLabel,values);
-	    //System.out.println("cT*" + label +"*");
-	    //System.out.println(values);
-
-	    
-	    
 	    }
 	    Vector objectAttributes = worker.getObjectAttributes(getDN());
 	    Enumeration enum = componentTable.keys();
