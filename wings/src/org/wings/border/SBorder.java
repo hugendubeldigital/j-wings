@@ -42,7 +42,7 @@ public interface SBorder extends Serializable
      * Returns the insets of this border.
      *
      * @return Insets specification of the border.
-     * @see #setInsets()
+     * @see #setInsets
      */
     Insets getInsets();
 

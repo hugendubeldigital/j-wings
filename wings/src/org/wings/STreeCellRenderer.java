@@ -17,9 +17,10 @@ package org.wings;
 import javax.swing.tree.*;
 
 /**
- * TODO: documentation
+ * Cell Renderer for {@link STree}. This is similar (almost the same) to the renderer 
+ * approach in swing. 
  *
- * @author
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public interface STreeCellRenderer

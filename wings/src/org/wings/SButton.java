@@ -21,7 +21,7 @@ import org.wings.plaf.*;
 /**
  * TODO: documentation
  *
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class SButton extends SAbstractButton

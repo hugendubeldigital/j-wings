@@ -118,7 +118,7 @@ public class RequestURL extends SimpleURL
     }
 
     /**
-     * clear all additional paramters given in the {@link #addParameter()} call.
+     * clear all additional paramters given in the {@link #addParameter(String)} call.
      */
     public void clear() {
         if (parameters != null) {

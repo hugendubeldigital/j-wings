@@ -44,7 +44,7 @@ import org.wings.UploadFilterManager;
  * available at <a href="http://ds.internic.net/rfc/rfc1867.txt">
  * http://ds.internic.net/rfc/rfc1867.txt</a>.
  *
- * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
+ * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
 public class MultipartRequest

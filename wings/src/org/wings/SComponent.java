@@ -179,7 +179,6 @@ public abstract class SComponent
      * If <i>width</i> or <i>height</i> is zero, it is ignored and the browser
      * defines the size.
      * @see org.wings.SComponent#getPreferredSize
-     * @see org.wings.SComponent#getPreferredPercentageSize
      */
     public void setPreferredSize(SDimension preferredSize) {
         this.preferredSize = preferredSize;
@@ -188,7 +187,6 @@ public abstract class SComponent
     /**
      * Get the preferred size of this component.
      * @see SComponent#setPreferredSize
-     * @see org.wings.SComponent#setPreferredPercentageSize
      */
     public final SDimension getPreferredSize() {
         return preferredSize;

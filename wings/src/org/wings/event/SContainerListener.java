@@ -17,8 +17,8 @@ package org.wings.event;
  * This listener is called on modifications on a Container. It can
  * be registered on an SContainer.
  *
- * @see   {@link org.wings.SContainer#addContainerListener(SContainerListener)}
- * @autor <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
+ * @see   org.wings.SContainer#addContainerListener(SContainerListener)
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  */
 public interface SContainerListener {
     /**

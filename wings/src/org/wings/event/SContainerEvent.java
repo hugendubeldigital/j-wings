@@ -20,8 +20,8 @@ import org.wings.SComponent;
  * A container event, that is issued, whenever a 
  * component is added or removed from an container.
  *
- * @see   {@link org.wings.SContainer#addContainerListener(SContainerListener)}
- * @autor <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
+ * @see org.wings.SContainer#addContainerListener(SContainerListener)
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  */
 public class SContainerEvent extends SComponentEvent {
     /**

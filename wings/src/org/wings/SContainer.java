@@ -144,7 +144,6 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * following occurs:
      * a) A ContainerListener object is registered via addContainerListener()
      * b) Container events are enabled via enableEvents()
-     * @see SComponent#enableEvents
      * @param e the container event
      */
     protected void processContainerEvent(SContainerEvent e) {
@@ -212,7 +211,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @param i position
      * @return component at given pos
-     * @deprecated use {@link getComponentAt}
+     * @deprecated use {@link #getComponentAt}
      */
     public final SComponent getComponent(int i) {
         return getComponentAt(i);
@@ -290,8 +289,8 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * Removes the component at the given position from the container.
      *
      * @param i
-     * @see #removeComponent(int)
-     * @deprecated use {@link removeComponentAt()}
+     * @see #removeComponentAt
+     * @deprecated use {@link #removeComponentAt(int)}
      */
     public final void remove(int i) {
         removeComponentAt(i);

@@ -594,9 +594,13 @@ public class STable
     /**
      * Sets the selection mode. Use one of the following values:
      * <UL>
-     * <LI> {@link ListSelectionModel#NO_SELECTION}
-     * <LI> {@link ListSelectionModel#SINGLE_SELECTION}
-     * <LI> {@link ListSelectionModel#MULTIPLE_SELECTION}
+     * <LI> {@link SConstants#NO_SELECTION}
+     * <LI> {@link ListSelectionModel#SINGLE_SELECTION} or 
+     *      {@link SConstants#SINGLE_SELECTION}
+     * <LI> {@link ListSelectionModel#SINGLE_INTERVAL_SELECTION} or 
+     *      {@link SConstants#SINGLE_INTERVAL_SELECTION}
+     * <LI> {@link ListSelectionModel#MULTIPLE_INTERVAL_SELECTION} or 
+     *      {@link SConstants#MULTIPLE_SELECTION}
      * </UL>
      */
     public void setSelectionMode(int s) {
@@ -607,9 +611,13 @@ public class STable
      * TODO: documentation
      * @return
      * <UL>
-     * <LI> {@link ListSelectionModel#NO_SELECTION}
-     * <LI> {@link ListSelectionModel#SINGLE_SELECTION}
-     * <LI> {@link ListSelectionModel#MULTIPLE_SELECTION}
+     * <LI> {@link SConstants#NO_SELECTION}
+     * <LI> {@link ListSelectionModel#SINGLE_SELECTION} or 
+     *      {@link SConstants#SINGLE_SELECTION}
+     * <LI> {@link ListSelectionModel#SINGLE_INTERVAL_SELECTION} or 
+     *      {@link SConstants#SINGLE_INTERVAL_SELECTION}
+     * <LI> {@link ListSelectionModel#MULTIPLE_INTERVAL_SELECTION} or 
+     *      {@link SConstants#MULTIPLE_SELECTION}
      * </UL>
      */
     public int getSelectionMode() {

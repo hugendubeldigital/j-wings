@@ -441,7 +441,7 @@ public class SComboBox
     /** 
      * Returns an array containing the selected item.
      *
-     * @returns an array of Objects containing the selected item
+     * @return an array of Objects containing the selected item
      */
     public Object[] getSelectedObjects() {
         Object selectedObject = getSelectedItem();

@@ -29,7 +29,7 @@ import org.wings.style.Style;
  * This is the base class for all components which have a button
  * functionality. This class handles ActionListener notification.
  *
- * @author
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public abstract class SAbstractButton
@@ -248,10 +248,10 @@ public abstract class SAbstractButton
     /**
      * Sets the button type. Use one of the following types:
      * <UL>
-     * <LI> {@link SConstants#SUBMIT_BUTTON}
-     * <LI> {@link SConstants#RESET_BUTTON}
-     * <LI> {@link SConstants#CHECKBOX}
-     * <LI> {@link SConstants#RADIOBUTTON}
+     * <LI> {@link #SUBMIT_BUTTON}
+     * <LI> {@link #RESET_BUTTON}
+     * <LI> {@link #CHECKBOX}
+     * <LI> {@link #RADIOBUTTON}
      * </UL>
      *
      * @param t
@@ -297,7 +297,7 @@ public abstract class SAbstractButton
 
     /**
      *  store here the state after process request. The request will then be set
-     * in {@link fireIntermediateEvents}
+     * in {@link #fireIntermediateEvents}
      */
     private boolean requestSelection;
 
@@ -374,14 +374,14 @@ public abstract class SAbstractButton
     }
 
     /**
-     * @deprecated use {@link getEventTarget}
+     * @deprecated use {@link #getEventTarget}
      */
     public final String getRealTarget() {
         return getEventTarget();
     }
 
     /**
-     * @deprecated use {@link setEventTarget}
+     * @deprecated use {@link #setEventTarget}
      */
     public final void setRealTarget(String t) {
         setEventTarget(t);

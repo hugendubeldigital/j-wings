@@ -181,7 +181,7 @@ public class SButtonGroup
     /**
      * TODO: documentation
      *
-     * @deprecated use {@link iterator}
+     * @deprecated use {@link #iterator}
      * @return
      */
     public Iterator getIterator() {

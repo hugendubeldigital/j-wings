@@ -22,7 +22,7 @@ import java.util.logging.*;
 /**
  * TODO: documentation
  *
- * @author
+ * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
 public class UploadFilterManager

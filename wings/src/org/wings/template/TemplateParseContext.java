@@ -28,7 +28,7 @@ import org.wings.template.parser.*;
 /**
  * TODO: documentation
  *
- * @author
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
 public final class TemplateParseContext implements ParseContext

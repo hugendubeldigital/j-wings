@@ -51,10 +51,10 @@ public class SScrollBar
     /**
      * Access to the default Icons for buttons
      */
-    private static final int FORWARD = 0;
-    private static final int BACKWARD = 1;
-    private static final int FORWARD_BLOCK = 2;
-    private static final int BACKWARD_BLOCK = 3;
+    public static final int FORWARD = 0;
+    public static final int BACKWARD = 1;
+    public static final int FORWARD_BLOCK = 2;
+    public static final int BACKWARD_BLOCK = 3;
     public static final int FIRST = 4;
     public static final int LAST = 5;
 
@@ -189,13 +189,13 @@ public class SScrollBar
 
     /**
      * to set your favorite icons and text of the clickable. Icons will be
-     * reset to default, if you change the layout mode {@link #setLayoutMode}
-     * @see FORWARD
-     * @see BACKWARD
-     * @see FORWARD_BLOCK
-     * @see BACKWARD+BLOCK
-     * @see FIRST
-     * @see LAST
+     * reset to default, if you change the orientation {@link #setOrientation}
+     * @see #FORWARD
+     * @see #BACKWARD
+     * @see #FORWARD_BLOCK
+     * @see #BACKWARD_BLOCK
+     * @see #FIRST
+     * @see #LAST
      **/
     public SClickable getClickable(int clickable) {
         return clickables[clickable];
@@ -203,8 +203,8 @@ public class SScrollBar
 
     /**
      * Are margin buttons visible
-     * @see FIRST
-     * @see LAST
+     * @see #FIRST
+     * @see #LAST
      **/
     public final boolean isMarginVisible() {
         return clickables[FIRST].isVisible()  ||
@@ -213,8 +213,8 @@ public class SScrollBar
 
     /**
      * Are margin buttons visible
-     * @see FIRST
-     * @see LAST
+     * @see #FIRST
+     * @see #LAST
      **/
     public final void setMarginVisible(boolean b) {
         clickables[FIRST].setVisible(b);
@@ -224,8 +224,8 @@ public class SScrollBar
 
     /**
      * Are step buttons visible
-     * @see FORWARD
-     * @see BACKWARD
+     * @see #FORWARD
+     * @see #BACKWARD
      **/
     public final boolean isStepVisible() {
         return clickables[BACKWARD].isVisible()  ||
@@ -235,8 +235,8 @@ public class SScrollBar
 
     /**
      * Are step buttons visible
-     * @see FORWARD
-     * @see BACKWARD
+     * @see #FORWARD
+     * @see #BACKWARD
      **/
     public final void setStepVisible(boolean b) {
         clickables[FORWARD].setVisible(b);
@@ -245,8 +245,8 @@ public class SScrollBar
 
     /**
      * Are block buttons visible
-     * @see FORWARD_BLOCK
-     * @see BACKWARD_BLOCK
+     * @see #FORWARD_BLOCK
+     * @see #BACKWARD_BLOCK
      **/
     public final void setBlockVisible(boolean b) {
         clickables[FORWARD_BLOCK].setVisible(b);
@@ -255,8 +255,8 @@ public class SScrollBar
 
     /**
      * Are block buttons visible
-     * @see FORWARD_BLOCK
-     * @see BACKWARD_BLOCK
+     * @see #FORWARD_BLOCK
+     * @see #BACKWARD_BLOCK
      **/
     public final boolean isBlockVisible() {
         return clickables[BACKWARD_BLOCK].isVisible()  ||

@@ -15,9 +15,10 @@
 package org.wings;
 
 /**
- * TODO: documentation
+ * Cell Renderer for {@link STable}. This is similar (almost the same) to the renderer 
+ * approach in swing. 
  *
- * @author
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public interface STableCellRenderer

@@ -121,7 +121,7 @@ public class StringUtil
 
     /**
      * Codes number up to radix 62.
-     * @parameter minDigits returns a string with a least minDigits digits
+     * @param minDigits returns a string with a least minDigits digits
      */
     public static String toString(long i, int radix, int minDigits) {
         char[] buf = new char[65];

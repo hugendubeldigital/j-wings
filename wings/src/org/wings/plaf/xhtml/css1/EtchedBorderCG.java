@@ -24,7 +24,7 @@ import org.wings.io.Device;
  * Write a etched border
  * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
- * @see #writeBorderStyle(Device,SBorder)
+ * @see DefaultBorderCG#writeBorderStyle
  */
 public class EtchedBorderCG
     extends DefaultBorderCG

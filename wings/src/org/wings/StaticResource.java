@@ -125,12 +125,12 @@ public abstract class StaticResource
     /**
      * Reads the resource into an LimitedBuffer and returns it. If the
      * size of the resource is larger than 
-     * {@link LimitedBuffer#MAX_SIZE_BUFFER}, then the returned Buffer
+     * {@link LimitedBuffer#MAX_SIZE_TO_BUFFER}, then the returned Buffer
      * is empty and does not contain the Resource's content (and the
      * isValid() flag is false).
      *
      * @return buffered resource as LimitedBuffer, that may be invalid,
-     *         if the size of the resource is beyond MAX_SIZE_BUFFER. It is
+     *         if the size of the resource is beyond MAX_SIZE_TO_BUFFER. It is
      *         null, if the Resource returned an invalid stream.
      */
     protected LimitedBuffer bufferResource() throws IOException {
@@ -152,7 +152,7 @@ public abstract class StaticResource
 
     /**
      * writes the Resource to the given Stream. If the resource
-     * is not larger than {@link LimitedBuffer#MAX_SIZE_BUFFER}, then
+     * is not larger than {@link LimitedBuffer#MAX_SIZE_TO_BUFFER}, then
      * an internal buffer caches the content the first time, so that it
      * is delivered as fast as possible at any subsequent calls.
      *

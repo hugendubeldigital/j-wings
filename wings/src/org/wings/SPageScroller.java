@@ -113,7 +113,7 @@ public class SPageScroller
     /**
      * Actual amount of page clickables; depends on the number of elemnts in the
      * model and on the models extent.
-     * @see setDirectPages()
+     * @see #setDirectPages
      */
     protected int directPages = DEFAULT_DIRECT_PAGES;
 
@@ -191,10 +191,10 @@ public class SPageScroller
     /**
      * to set your favorite icons and text of the clickable. Icons will be
      * reset to default, if you change the layout mode {@link #setLayoutMode}
-     * @see FORWARD
-     * @see BACKWARD
-     * @see FIRST
-     * @see LAST
+     * @see #FORWARD
+     * @see #BACKWARD
+     * @see #FIRST
+     * @see #LAST
      **/
     public SClickable getClickable(int clickable) {
         return clickables[clickable];
@@ -202,8 +202,8 @@ public class SPageScroller
 
     /**
      * Are margin buttons visible
-     * @see FIRST
-     * @see LAST
+     * @see #FIRST
+     * @see #LAST
      **/
     public final boolean isMarginVisible() {
         return clickables[FIRST].isVisible()  ||
@@ -212,8 +212,8 @@ public class SPageScroller
 
     /**
      * Are margin buttons visible
-     * @see FIRST
-     * @see LAST
+     * @see #FIRST
+     * @see #LAST
      **/
     public final void setMarginVisible(boolean b) {
         clickables[FIRST].setVisible(b);
@@ -222,8 +222,8 @@ public class SPageScroller
 
     /**
      * Are step buttons visible
-     * @see FORWARD
-     * @see BACKWARD
+     * @see #FORWARD
+     * @see #BACKWARD
      **/
     public final boolean isStepVisible() {
         return clickables[BACKWARD].isVisible()  ||
@@ -232,8 +232,8 @@ public class SPageScroller
 
     /**
      * Are step buttons visible
-     * @see FORWARD
-     * @see BACKWARD
+     * @see #FORWARD
+     * @see #BACKWARD
      **/
     public final void setStepVisible(boolean b) {
         clickables[FORWARD].setVisible(b);
@@ -242,7 +242,7 @@ public class SPageScroller
 
     /**
      * set how to layout components
-     * {@link VERTICAL} or {@link HORIZONTAL}
+     * {@link #VERTICAL} or {@link #HORIZONTAL}
      **/
     public void setLayoutMode(int orientation) {
         switch (orientation) {

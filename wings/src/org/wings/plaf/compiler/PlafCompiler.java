@@ -101,7 +101,7 @@ public class PlafCompiler {
 
     /**
      * returns the current working diretory.
-     * @see #setBaseDir(String)
+     * @see #setBaseDir
      */
     public File getBaseDir() { return baseDir; }
     

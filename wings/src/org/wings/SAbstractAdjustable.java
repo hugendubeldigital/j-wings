@@ -183,7 +183,6 @@ public abstract class SAbstractAdjustable
      * @return the value of the unitIncrement property
      * @see #setUnitIncrement
      * @see #setValue
-     * @see Scrollable#getScrollableUnitIncrement
      */
     public int getUnitIncrement(int direction) {
         return unitIncrement;
@@ -220,7 +219,6 @@ public abstract class SAbstractAdjustable
      * @return the value of the blockIncrement property
      * @see #setBlockIncrement
      * @see #setValue
-     * @see Scrollable#getScrollableBlockIncrement
      */
     public int getBlockIncrement(int direction) {
         return blockIncrement;
