@@ -150,7 +150,7 @@ public class BeanEditor
     public Object getBean() { return bean; }
 
 
-    private void initComponents() {
+    protected void initComponents() {
         editorPanel.removeAll();
 
         PropertyDescriptor[] descriptors = getPropertyDescriptors();
@@ -182,24 +182,20 @@ public class BeanEditor
 	    editorAdapter.setEditor(propertyEditor);
             editorAdapter.init(descriptor);
 
-	    SComponent nameLabel = new SLabel(descriptor.getDisplayName());
-            editorPanel.add(nameLabel);
-
+            SComponent nameLabel = new SLabel(descriptor.getDisplayName());
             Boolean mayBeNull = (Boolean)descriptor.getValue(MAYBENULL);
-            if (mayBeNull == null || !mayBeNull.booleanValue()) {
-                SLabel editorMark = new SLabel(" * ");
-                editorMark.setForeground(Color.red);
-
-                SPanel innerPanel = new SPanel();
-                innerPanel.setLayout(new SBorderLayout());
-                innerPanel.add(editorAdapter.getComponent(), "Center");
-                innerPanel.add(editorMark, "East");
-
-                editorPanel.add(innerPanel);
+            if (mayBeNull != null && !mayBeNull.booleanValue()) {
+                SPanel inner = new SPanel();
+                SLabel mark = new SLabel(" *");
+                mark.setForeground(Color.red);
+                inner.add(nameLabel);
+                inner.add(mark);
+                editorPanel.add(inner);
             }
-            else {
-                editorPanel.add(editorAdapter.getComponent());
-            }
+            else
+                editorPanel.add(nameLabel);
+
+            editorPanel.add(editorAdapter.getComponent());
 
 	    properties.put(name, new Property(descriptor, propertyEditor, editorAdapter));
         }
@@ -351,22 +347,22 @@ public class BeanEditor
         implements Comparator
     {
         public int compare(Object obj1, Object obj2) {
-            int pos1 = 0;
-            int pos2 = 0;
+            int prio1 = 0;
+            int prio2 = 0;
 
-            Integer posI1 = (Integer)((PropertyDescriptor)obj1).
-                getValue(BeanEditorConstants.POSITION);
-            if (posI1 != null)
-                pos1 = posI1.intValue();
+            Integer prioInteger1 = (Integer)((PropertyDescriptor)obj1).
+                getValue(BeanEditorConstants.PRIORITY);
+            if (prioInteger1 != null)
+                prio1 = prioInteger1.intValue();
 
-            Integer posI2 = (Integer)((PropertyDescriptor)obj2).
-                getValue(BeanEditorConstants.POSITION);
-            if (posI2 != null)
-                pos2 = posI2.intValue();
+            Integer prioInteger2 = (Integer)((PropertyDescriptor)obj2).
+                getValue(BeanEditorConstants.PRIORITY);
+            if (prioInteger2 != null)
+                prio2 = prioInteger2.intValue();
 
-            if (pos1 < pos2)
+            if (prio1 < prio2)
                 return -1;
-            else if (pos1 == pos2)
+            else if (prio1 == prio2)
                 return 0;
             else
                 return 1;

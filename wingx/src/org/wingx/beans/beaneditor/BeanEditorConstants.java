@@ -13,8 +13,5 @@ public interface BeanEditorConstants
     String VALIDATOR = "validator";
 
     String EDITOR_ADAPTER   = "editor_adapter";
-    String PROPERTY_WRAPPER = "property_wrapper";
-    String POSITION         = "position";
-    
-    Class COMPONENT_CLASS_TEXTAREA = org.wings.STextArea.class;
+    String PRIORITY         = "priority";
 }

@@ -3,7 +3,7 @@
 
 JAVA_HOME=/usr/local/jdk1.3
 JSDK_HOME=/home/httpd/classes
-WINGS_HOME=/home/holger/wings
+WINGS_HOME=/home/hengels/wings
 
 DEVEL_HOME=`pwd`
 
