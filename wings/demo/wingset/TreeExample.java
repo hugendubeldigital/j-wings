@@ -15,7 +15,8 @@
 package wingset;
 
 import javax.swing.tree.*;
-
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import org.wings.*;
 
 /**
@@ -27,8 +28,34 @@ import org.wings.*;
 public class TreeExample
     extends WingSetPane
 {
+    private STree tree;
+
     public SComponent createExample() {
-        return new STree(new DefaultTreeModel(generateTree()));
+        SPanel p = new SPanel();
+        tree = new STree(new DefaultTreeModel(generateTree()));
+        p.add(createChangeWidthForm(tree));
+        p.add(new SSeparator());
+        p.add(tree);
+        return p;
+    }
+
+    private SForm createChangeWidthForm(final STree tree) {
+        // modify the depth.
+        SForm widthForm = new SForm(new SGridLayout(3));
+        Object[] values = {new Integer(12), new Integer(24), new Integer(36), 
+                           new Integer(48), new Integer(60)};
+        final SComboBox comboBox = new SComboBox(values);
+        SButton submit = new SButton("OK");
+        submit.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    tree.setNodeIndentDepth(((Integer) comboBox.getSelectedItem()).intValue());
+                } } );
+     
+        // assemble it.
+        widthForm.add(new SLabel("choose indentation width: "));
+        widthForm.add(comboBox);
+        widthForm.add(submit);
+        return widthForm;
     }
 
     static TreeNode generateTree() {
