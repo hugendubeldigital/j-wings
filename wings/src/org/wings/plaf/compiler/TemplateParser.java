@@ -166,10 +166,11 @@ public class TemplateParser {
         this.stringPool    = new StringPool( VAR_PREFIX, VAR_LEN );
         /*
          * should we write the border automatically ?. Currently, we
-         * always generate code to write the border, unless we extend 
+         * always generate code to write the border, unless we extend
          * some class.
+         * FIX: write the border always
          */
-        this.writeBorder  = (extendsClass == null);
+        this.writeBorder  = true;//(extendsClass == null);
     }
 
     /**
