@@ -112,13 +112,22 @@ public abstract class WingServlet extends HttpServlet
      *          files ar stored temporarily</dd>
      * </dl>
      *
+     * <dt>wings.servlet.lookupname</dt><dd> - The name the wings sessions of
+     * this servlet instance are stored in the servlet session hashtable</dd>
+     * </dl>
+     *
      * @param config
      * @throws ServletException
      */
     public final void init(ServletConfig config) throws ServletException {
         preInit(config);
         super.init(config);
-        lookupName = "SessionServlet:" + getClass().getName();
+
+        // with specified lookupname it is possible to handle different sessions
+        // for servlet aliases/mappings
+        lookupName = config.getInitParameter("wings.servlet.lookupname");
+        if ( lookupName==null || lookupName.trim().length()==0 )
+             lookupName = "SessionServlet:" + getClass().getName();
 
         if (logger.isLoggable(Level.CONFIG)) {
             logger.config("init-params:");
