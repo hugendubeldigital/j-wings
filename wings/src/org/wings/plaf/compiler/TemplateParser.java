@@ -647,13 +647,11 @@ public class TemplateParser {
         if ((findTransitions(defaultVal, stateTransitionTags)) != endTag) {
             seriousError("unexpected tag in <property> area");
         }
-        if (p != null) {
-            p.setValue(defaultVal.toString());
-            if (endTag == END_PROP)
-                cgProperties.add(p);
-            else
-                compProperties.add(p);
-        }
+        p.setValue(defaultVal.toString());
+        if (endTag == END_PROP)
+           cgProperties.add(p);
+        else
+           compProperties.add(p);
     }
 
     /**
