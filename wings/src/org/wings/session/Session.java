@@ -89,7 +89,7 @@ public interface Session
     /**
      * create a id unique to the session
      */
-    public String createUniqueId();
+    String createUniqueId();
 
     /**
      * The maximal length of data that is accepted in one POST request in
@@ -97,10 +97,24 @@ public interface Session
      * Data can be this big, if your application provides a capability
      * to upload a file (SFileChooser). This constant limits the maximum
      * size that is accepted to avoid denial of service attacks.
+     *
+     * @return the maximum content length that is accepted by a POST
+     *         request in this session in <em>kilobytes</em>
      */
     int getMaxContentLength();
 
-    void setMaxContentLength(int l);
+    /**
+     * Set the maximum content length, that is handled by a POST request.
+     * Usual posted content is not that big, but file-contents may be huge,
+     * so limitation is necessary. This limits the maximum size of the
+     * content to be posted (Note, that this is not equal the maximum
+     * file size, since the posted content contains as well headers and other
+     * data; so the maximum filesize to be transmitted is usually smaller
+     * than the limit given here).
+     * 
+     * @param cLength the maximum content lengh in <em>kilobytes</em>
+     */
+    void setMaxContentLength(int cLength);
 }
 
 /*
