@@ -34,7 +34,12 @@ import org.wings.externalizer.ExternalizeManager;
  * object, its associated {@link org.wings.SMenu} is displayed, allowing the
  * user to select one of the {@link org.wings.SMenuItem}s on it.
  * <p>
+ * Component are rendered in the order of the container. If a component is right
+ * aligned, every following components are also right aligned. So you have to
+ * sort the components in the order you want and have to take care that te
+ * components are sorted by their horizontal alignment
  * @author <a href="mailto:andre@lison.de">Andre Lison</a>
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @see SMenu
  * @see SMenuItem
  */
@@ -53,11 +58,6 @@ public class SMenuBar extends SContainer
 
     private boolean paintBorder           = true;
     private Insets     margin             = null;
-
-    /**
-     * SMenu's
-     */
-    protected final ArrayList fComponents = new ArrayList();
 
     /**
      * Creates a new menu bar.
@@ -99,13 +99,7 @@ public class SMenuBar extends SContainer
      * @param c the SMenu component to add
      */
     public SMenuItem add(SMenuItem c) {
-        super.add( c );
-        
-        if ( c instanceof SMenu ) {
-            c.addActionListener( new MenuAction( this ) );
-        }
-        c.setShowAsFormComponent( false );
-    	fComponents.add(c);
+        super.add(c);
         return c;
     }
 
@@ -117,7 +111,7 @@ public class SMenuBar extends SContainer
      * @return the SMenu at that position
      */
     public SMenuItem getMenuItem(int index) {
-        SComponent c = (SComponent) fComponents.get(index);
+        SComponent c = (SComponent)super.getComponent(index);
         if (c instanceof SMenuItem) 
             return (SMenuItem) c;
         return null;
@@ -129,29 +123,36 @@ public class SMenuBar extends SContainer
      * @return the number of items in the menu bar
      */
     public int getMenuCount() {
-        return fComponents.size();
+        return getComponentCount();
     }
 
     /**
      * Returns the component at the specified index.
-     * This method is obsolete, please use <code>getComponent(int i)</code> instead.
      *
-     * @param i an int specifying the position, where 0 = first
-     * @return the SComponent at the position, or null for an
-     *         invalid index
+     * @param i an integer specifying the position, where 0 is first
+     * @return the <code>Component</code> at the position,
+     *		or <code>null</code> for an invalid index
+     * @deprecated replaced by <code>getComponent(int i)</code>
      */
     public SComponent getComponentAtIndex(int i) {	
-	return (SComponent) fComponents.get(i);
+	return getComponent(i);
     }
 
     /**
      * Returns the index of the specified component.
      *
-     * @param c  the SComponent to find
-     * @return an int giving the component's position, where 0 = first
+     * @param c  the <code>SComponent</code> to find
+     * @return an integer giving the component's position, where 0 is first;
+     *		or -1 if it can't be found
      */
     public int getComponentIndex(SComponent c) {
-        return fComponents.indexOf(c);
+        int ncomponents = this.getComponentCount();
+        for (int i = 0 ; i < ncomponents ; i++) {
+            SComponent comp = getComponent(i);
+            if (comp == c) 
+                return i;
+        }
+        return -1;
     }
 
     /**
@@ -307,27 +308,6 @@ public class SMenuBar extends SContainer
                 ((SMenu) fComponents.get(i)).setActive( false );
             }
             }*/
-    }
-
-    /**
-     * Handle open and close of menus
-     */
-    class MenuAction implements ActionListener
-    {
-        private SMenuBar fMenuBar = null;
-
-        public MenuAction( SMenuBar mbar )
-        {
-            fMenuBar = mbar;
-        }
-
-        public void actionPerformed( ActionEvent e )
-        {
-            SMenu menu = (SMenu) e.getSource();
-            //            boolean active = menu.isActive();
-            //            fMenuBar.closeAllMenus();
-            //menu.setActive( ! active );
-        }
     }
 
 }
