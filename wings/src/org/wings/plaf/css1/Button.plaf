@@ -1,18 +1,18 @@
 <template name="ButtonCG" for="org.wings.SAbstractButton">
 
-void writeText(final Device device, SAbstractButton abstractButton, String attr)
+protected void writeText(final Device device, SAbstractButton abstractButton, String attr)
     throws IOException
 {
-    if (abstractButton.getShowAsFormComponent() && abstractButton.isEnabled())
+    if (abstractButton.getShowAsFormComponent() )
         writeFormText(device, abstractButton, attr);
     else
         writeAnchorText(device, abstractButton, attr);
 }
 
-void writeIcon(final Device device, SAbstractButton abstractButton, String attr)
+protected void writeIcon(final Device device, SAbstractButton abstractButton, String attr)
     throws IOException
 {
-    if (abstractButton.getShowAsFormComponent() && abstractButton.isEnabled())
+    if (abstractButton.getShowAsFormComponent() )
         writeFormIcon(device, abstractButton, attr);
     else
         writeAnchorIcon(device, abstractButton, attr);
@@ -26,16 +26,20 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
 	return;
     }
 
-    boolean noBreak = abstractButton.isNoBreak();
+    boolean enabled = abstractButton.isEnabled() &&
+	(abstractButton.getGroup()==null || !abstractButton.isSelected());
+	
 
-    if (abstractButton.isEnabled() 
-        && (!(abstractButton instanceof SRadioButton) 
-            || !abstractButton.isSelected())) 
+    //    boolean noBreak = abstractButton.isNoBreak();
+
+    if ( enabled ) 
     {
         %><a href="<%
         writeAnchorAddress(device, abstractButton);
         %>"<%
 	Utils.writeEvents(device, abstractButton);
+        %><%|title=abstractButton.getToolTipText()%><%
+	
     }
     else {
         %><span<%
@@ -55,9 +59,7 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
     }
     /* if (noBreak) { %></nobr><% } */
 
-    if (abstractButton.isEnabled() 
-        && (!(abstractButton instanceof SRadioButton) 
-            || !abstractButton.isSelected())) 
+    if ( enabled ) 
     {
         %></a><%
     }
@@ -66,7 +68,7 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
     }
 }
 
-SIcon getIcon(SAbstractButton abstractButton) {
+protected SIcon getIcon(SAbstractButton abstractButton) {
     if ( abstractButton.isSelected() ) {
         return abstractButton.isEnabled() 
 	        ? abstractButton.getSelectedIcon()
@@ -78,64 +80,71 @@ SIcon getIcon(SAbstractButton abstractButton) {
     }
 }
 
-void writeAnchorIcon(final Device device, SAbstractButton abstractButton, String attr)
+protected void writeDynamicIcons(final Device device, SAbstractButton abstractButton, SIcon origIcon,
+				 String iconName, boolean renderNameAttribute)
      throws IOException
 {
-    SIcon icon = getIcon(abstractButton);
-    if (icon == null) return;
-
-    if (abstractButton.isEnabled() 
-        && (!(abstractButton instanceof SRadioButton) 
-            || !abstractButton.isSelected())) {
-        %><a href="<%
-        writeAnchorAddress(device, abstractButton);
-        %>"<%
-    }
-    else {
-        %><span<%
-    }
-    %><%|class=attr%>><%
-
-    String tooltip = abstractButton.getToolTipText();
-    if (tooltip == null)
-        tooltip = abstractButton.getText();
-
-    %><img border="0" src="<%
-    %><%=icon.getURL()%>"<%
-    if ( abstractButton.isEnabled() ) {
+    if ( abstractButton.isEnabled() &&
+	(abstractButton.getGroup()==null || !abstractButton.isSelected()) ) {
        // render rollover
        SIcon rolloverIcon = abstractButton.getRolloverIcon();
        SIcon pressedIcon = abstractButton.getPressedIcon();
 
        if ( rolloverIcon!=null || pressedIcon!=null ) {
-           String iconName = "Icon_" + abstractButton.getComponentId();
-
-           %> name="<%=iconName%>"<%
+	   if ( renderNameAttribute) {
+	       %> name="<%=iconName%>"<%
+	   } // end of if ()
+	   
    
            if ( rolloverIcon!=null ) {
                %> onMouseover="if(document.images){document.<%=iconName
                %>.src='<%=rolloverIcon.getURL()
-               %>';}" onMouseout="if(document.images){document.<%=iconName
-               %>.src='<%=icon.getURL()
+               %>';}" onmouseout="if(document.images){document.<%=iconName
+               %>.src='<%=origIcon.getURL()
                %>';}"<%
            }
 
            if ( pressedIcon!=null ) {
                %> onMousedown="if(document.images){document.<%=iconName
                %>.src='<%=pressedIcon.getURL()
-               %>';}" onMouseUp="if(document.images){document.<%=iconName
-               %>.src='<%=rolloverIcon!=null ? rolloverIcon.getURL() : icon.getURL()
+               %>';}" onmouseup="if(document.images){document.<%=iconName
+               %>.src='<%=rolloverIcon!=null ? rolloverIcon.getURL() : origIcon.getURL()
                %>';}"<%
            }
         }
     }
 
+}
+
+protected void writeAnchorIcon(final Device device, SAbstractButton abstractButton, String attr)
+     throws IOException
+{
+    SIcon icon = getIcon(abstractButton);
+    if (icon == null) return;
+
+    boolean enabled = abstractButton.isEnabled() &&
+	(abstractButton.getGroup()==null || !abstractButton.isSelected());
+
+    if ( enabled ) {
+        %><a href="<%
+        writeAnchorAddress(device, abstractButton);
+        %>"<%|title=abstractButton.getToolTipText()%><%
+
+    }
+    else {
+        %><span<%
+    }
+    %><%|class=attr%>><%
+
+    %><img border="0" src="<%
+    %><%=icon.getURL()%>"<%
+    writeDynamicIcons(device, abstractButton, icon, "Icon_" + abstractButton.getComponentId(),true);
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
     Utils.writeEvents(device, abstractButton);
-    %><%|alt=tooltip%> /><%
+    %><%|alt=abstractButton.getToolTipText()%> /><%
 
-    if (abstractButton.isEnabled() && (!(abstractButton instanceof SRadioButton) || !abstractButton.isSelected())) {
+    if ( enabled ) {
         %></a><%
     }
     else {
@@ -152,41 +161,47 @@ protected void writeAnchorAddress(Device d, SAbstractButton abstractButton)
     addr.write(d);
 }
 
-void writeFormText(final Device device, SAbstractButton abstractButton, String attr)
+protected void writeFormText(final Device device, SAbstractButton abstractButton, String attr)
     throws IOException
 {
     String text = abstractButton.getText();
-    if ( (text == null || text.length() == 0) &&
-	  ( abstractButton instanceof SButton ||
-	    abstractButton instanceof SToggleButton )) {
+    if ( text == null || text.length() == 0 ) {
 	return;
     }
-
+    
+    if ( getIcon(abstractButton)!=null ) {
+    %><label for="<%=abstractButton.getComponentId()%>"<%
+    %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
+    %><%|class=attr%><%
+    Utils.writeEvents(device, abstractButton);
+    %>><%
+    if (abstractButton.isEscapeSpecialChars()) {
+        %><%=text%><%
+    }
+    else {
+        %><%#text%><% // write raw.
+    }
+    %></label><%
+    } else {
+	 
     %><input type="<%=abstractButton.getType()%>"<%
     %> name="<%=abstractButton.getEncodedLowLevelEventId()%>"<%
     %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
     %><%|class=attr%><%
-	%><%|style=abstractButton.getPreferredSize()%><%
     Utils.writeEvents(device, abstractButton);
-    if ( abstractButton instanceof SButton || 
-  	 abstractButton instanceof SToggleButton ) {
-        %> value="<%
-        if (abstractButton.isEscapeSpecialChars()) {
-          %><%=text%><%
-        }
-        else {
-          %><%#text%><% // write raw.
-        }
-        %>"<%
-    }
-    else {  // some checkbox thing.
-        %><%|value=abstractButton.getSelectionParameter()%><%
-    }
-    if (abstractButton.isSelected()) {
-        %> checked="1" /><%
+    %> value="<%
+    if (abstractButton.isEscapeSpecialChars()) {
+        %><%=text%><%
     }
     else {
-        %> /><%
+        %><%#text%><% // write raw.
+    }
+    %>"<%
+    if ( !abstractButton.isEnabled() ||
+	 abstractButton.getGroup()!=null && abstractButton.isSelected() ) {
+	%> disabled<%
+    }
+    %>/><%
     }
 }
 
@@ -196,24 +211,33 @@ protected void writeFormIcon(final Device device, SAbstractButton abstractButton
     SIcon icon = getIcon(abstractButton);
     if (icon == null) return;
 
-    String tooltip = abstractButton.getToolTipText();
-    if (tooltip == null)
-        tooltip = abstractButton.getText();
-
     %><input type="image" border="0" src="<%
     %><%=icon.getURL()%>"<%
     %><%|class=attr%><%
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
     %><%|name=abstractButton.getEncodedLowLevelEventId()%><%
-    %><%|alt=tooltip%><%
+    %><%|id=abstractButton.getComponentId()%><%
+    writeDynamicIcons(device, abstractButton, icon, abstractButton.getComponentId(),
+		      false);
+    %><%|alt=abstractButton.getToolTipText()%><%
+    %><%|title=abstractButton.getToolTipText()%><%
     // writeEvents();
-    %><%|text=tooltip%>/><%
+    %><%|text=abstractButton.getToolTipText()%><%
+    if ( !abstractButton.isEnabled() ||
+	 abstractButton.getGroup()!=null && abstractButton.isSelected() ) {
+	%> disabled<%
+    }
+    %>/><%
+}
+
+protected boolean renderLayoutWithoutIcon() {
+    return false;
 }
 
 <write>
 <%
-    String style = Utils.style(component);
+    String style = component.isSelected() ? Utils.selectionStyle(component) : Utils.style(component);
 
     SIcon icon = getIcon(component);
 
@@ -226,7 +250,7 @@ protected void writeFormIcon(final Device device, SAbstractButton abstractButton
     if (verticalTextPosition == NO_ALIGN)
 	verticalTextPosition = CENTER;
 
-    if (icon == null) {
+    if (icon == null && !renderLayoutWithoutIcon()) {
          // fixme: this handles only one source of attributes
          writeText(device, component, style);
     } else if (text == null || text.length() == 0) {

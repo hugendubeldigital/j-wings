@@ -41,7 +41,7 @@ public class SCheckBox extends SAbstractButton
     /**
      * TODO: documentation
      *
-     */
+     */ 
     public SCheckBox() {
         this(false);
     }
@@ -70,6 +70,12 @@ public class SCheckBox extends SAbstractButton
         super.setType(CHECKBOX);
     }
 
+    protected void setGroup(SButtonGroup g) {
+        if ( g!=null ) {
+            throw new IllegalArgumentException("SCheckBox don`t support button groups, use SRadioButton");
+        } // end of if ()
+    }
+
     /**
      * TODO: documentation
      *
@@ -90,15 +96,55 @@ public class SCheckBox extends SAbstractButton
         super.setCG(cg);
     }
 
-	public void processLowLevelEvent(String action, String[] values) {
-	    boolean toggleSelection = 
-	    	isEnabled() && 
-	    	getShowAsFormComponent() && 
-	    	((isSelected() ? getSelectedIcon() : getIcon()) != null);
-	    super.processLowLevelEvent(action, values);
-	    if (toggleSelection)
-	    	this.setSelected(!this.isSelected());
-	}
+    /**
+     * Indicates, if this component is rendered as a "native" from input
+     * element, or as a image form element.
+     *
+     * @return a <code>boolean</code> value
+     */
+    protected boolean isRenderedAsFormInput() {
+        return getShowAsFormComponent() &&
+            getIcon()==null;
+    }
+
+    public void processLowLevelEvent(String action, String[] values) {
+        boolean origSelected = isSelected();
+
+        if ( isRenderedAsFormInput() ) {
+            // one hidden and one checked event from the form says select
+            // it, else deselect it (typically only the hidden event)
+            setSelected(values.length==2);
+        } else {
+            setSelected(parseSelectionToggle(values[0]));
+        }        
+ 
+        if ( isSelected()!=origSelected ) {
+            // got an event, that is a select...
+            SForm.addArmedComponent(this);
+        } // end of if ()
+    }
+
+    /**
+     * in form components the parameter value of an button is the button
+     * text. So just toggle selection, in process request, if it is a request
+     * for me.
+     */
+    protected boolean parseSelectionToggle(String toggleParameter) {
+	// a button/image in a form has no value, so just toggle selection...
+	if ( getShowAsFormComponent() ) {
+	    return !isSelected();
+	} // end of if ()
+
+	if ( "1".equals(toggleParameter) )
+	    return true;
+	else if ( "0".equals(toggleParameter) )
+	    return false;
+	
+	
+	// don't change...
+	return isSelected();
+    }
+
 }
 
 /*

@@ -60,6 +60,14 @@ public class SRadioButton
         setSelected(selected);
     }
 
+    public String getLowLevelEventId() {
+        if ( getGroup()!=null && isRenderedAsFormInput() ) {
+            return getGroup().getComponentId();
+        } else {
+            return super.getLowLevelEventId();
+        } // end of if ()
+    }
+
     /**
      * TODO: documentation
      *
@@ -79,6 +87,101 @@ public class SRadioButton
     public void setCG(RadioButtonCG cg) {
         super.setCG(cg);
     }
+
+    protected boolean isRenderedAsFormInput() {
+        return getShowAsFormComponent() &&
+            getIcon()==null;
+    }
+
+    public void processLowLevelEvent(String action, String[] values) {
+        System.out.println("got command " + action);
+
+        for (int i=0; i<values.length; i++) {
+            System.out.println("got event " + i + " " + values[i] + 
+                               " parsed " + parseSelectionToggle(values[i])); 
+        } // end of for (int i=0; i<; i++)
+        
+
+
+
+        boolean origSelected = isSelected();
+
+        if ( isRenderedAsFormInput() ) {
+            System.out.println("rendered as form input");
+
+            if ( getGroup()==null ) {
+                // one hidden and one checked event from the form says select
+                // it, else deselect it (typically only the hidden event)
+                setSelected(values.length==2);
+            } else {
+                int eventCount = 0;
+                for ( int i=0; i<values.length; i++) {
+                    // check the count of events, which are for me - with a
+                    // button group, the value is my component id, if a event is
+                    // for me   
+                    if ( getComponentId().equals(values[i]) ) {
+                        eventCount++;
+                    } // end of if ()
+                } // end of for (int i=0; i<; i++)
+                // one hidden and one checked event from the form says select
+                // it, else deselect it (typically only the hidden event)
+                setSelected(eventCount==2);
+            } // end of if ()
+            System.out.println("set selection to " + isSelected());
+        } else {
+            if ( getGroup()!=null ) {
+                getGroup().setDelayEvents(true);
+                setSelected(parseSelectionToggle(values[0]));
+                getGroup().setDelayEvents(false);
+            } else {
+                setSelected(parseSelectionToggle(values[0]));
+            } // end of else
+        }        
+ 
+        if ( isSelected()!=origSelected ) {
+            // got an event, that is a select...
+            SForm.addArmedComponent(this);
+        } // end of if ()
+    }
+
+    /**
+     * in form components the parameter value of an button is the button
+     * text. So just toggle selection, in process request, if it is a request
+     * for me.
+     */
+    protected boolean parseSelectionToggle(String toggleParameter) {
+	// a button/image in a form has no value, so just toggle selection...
+	if ( getShowAsFormComponent() ) {
+            System.out.println("form component");
+	    return !isSelected();
+	} // end of if ()
+
+	if ( "1".equals(toggleParameter) )
+	    return true;
+	else if ( "0".equals(toggleParameter) )
+	    return false;
+	
+	
+	// don't change...
+	return isSelected();
+    }
+
+    public String getSelectionParameter() {
+        if ( getGroup()!=null && isRenderedAsFormInput() ) {
+            return getComponentId();
+        } else {
+            return "1";
+        } 
+    }
+  
+    public String getDeselectionParameter() {
+        if ( getGroup()!=null && isRenderedAsFormInput() ) {
+            return getComponentId();
+        } else {
+            return "0";
+        } 
+    }
+
 
 }
 

@@ -315,3 +315,7 @@ FORM {
 	font-size: 1px;
 	border-width: 0px;
 }
+
+.selection {
+   background-color: #AAAAFF;
+}

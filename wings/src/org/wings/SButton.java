@@ -79,32 +79,21 @@ public class SButton extends SAbstractButton {
         super(text);
         setIcon(i);
     }
-  
-    /**
-     * in form components the parameter value of an button is the button
-     * text. So just toggle selection, in process request, if it is a request
-     * for me.
-     */
-    protected boolean parseSelectionToggle(String toggleParameter) {
-        return true;
-    }
 
+    protected void setGroup(SButtonGroup g) {
+        if ( g!=null ) {
+            throw new IllegalArgumentException("SButton don`t support button groups, use SToggleButton");
+        } // end of if ()
+    }
+  
     public boolean isSelected() {
         return false;
     }
-  
-    public String getSelectionParameter() {
-        return getActionCommand()!=null ? getActionCommand() : "1";
-    }
-  
-    /*    public void processLowLevelEvent(String action, String[] values) {
-    
-        // a button can have only one event per request...
-        if ( values.length>0 ) {
-            SForm.addArmedComponent(this);
-        }
-        }*/
-  
+
+    public void processLowLevelEvent(String action, String[] values) {
+        // got an event, that is a select...
+        SForm.addArmedComponent(this);
+    }        
 }
 
 /*

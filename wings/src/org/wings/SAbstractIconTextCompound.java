@@ -14,8 +14,8 @@
 
 package org.wings;
 
-import java.util.ArrayList;
-import java.util.ListIterator;
+
+
 import java.awt.Color;
 import java.awt.ItemSelectable;
 import java.awt.event.ActionEvent;
@@ -23,14 +23,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.*;
-
+import java.util.ArrayList;
+import java.util.ListIterator;
+import javax.swing.Action;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
-import javax.swing.Action;
-
-import org.wings.plaf.*;
 import org.wings.io.Device;
+import org.wings.style.*;
+import org.wings.plaf.*;
 
 /**
  * An abstract class, which compounds icon and text. It is the base class for 
@@ -41,7 +42,7 @@ import org.wings.io.Device;
  * @version $Revision$
  */
 public abstract class SAbstractIconTextCompound
-    extends SComponent implements ItemSelectable
+    extends SComponent implements ItemSelectable, SSelectionComponent
 {
 
     public static final int ICON_COUNT = 7;
@@ -58,6 +59,14 @@ public abstract class SAbstractIconTextCompound
 
     /** selection state */
     private boolean selected = false;
+
+    /**
+     * TODO: documentation
+     */
+    private String selectionStyle;
+
+    /** The dynamic attributes of selected cells */
+    protected AttributeSet selectionAttributes = new SimpleAttributeSet();
 
     /**
      * The icon to be displayed
@@ -93,11 +102,6 @@ public abstract class SAbstractIconTextCompound
      * TODO: documentation
      */
     private SIcon rolloverSelectedIcon;
-
-    /**
-     * TODO: documentation
-     */
-    private String selectionStyle;
 
 
     /**
@@ -375,6 +379,7 @@ public abstract class SAbstractIconTextCompound
      * @param b
      */
     public void setNoBreak(boolean b) {
+        
         noBreak = b;
     }
 
@@ -400,6 +405,64 @@ public abstract class SAbstractIconTextCompound
     public final String getSelectionStyle() { 
         return selectionStyle; 
     }
+
+    /**
+     * Set the selectionAttributes.
+     * @param selectionAttributes the selectionAttributes
+     */
+    public void setSelectionAttributes(AttributeSet selectionAttributes) {
+        if (selectionAttributes == null)
+            throw new IllegalArgumentException("null not allowed");
+
+        if (!this.selectionAttributes.equals(selectionAttributes)) {
+            this.selectionAttributes = selectionAttributes;
+            reload(ReloadManager.RELOAD_STYLE);
+        }
+    }
+
+    /**
+     * @return the current selectionAttributes
+     */
+    public AttributeSet getSelectionAttributes() {
+        return selectionAttributes;
+    }
+
+    /**
+     * Set the background color.
+     * @param c the new background color
+     */
+    public void setSelectionBackground(Color color) {
+        boolean changed = selectionAttributes.putAll(CSSStyleSheet.getAttributes(color, Style.BACKGROUND_COLOR));
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * Return the background color.
+     * @return the background color
+     */
+    public Color getSelectionBackground() {
+        return CSSStyleSheet.getBackground(selectionAttributes);
+    }
+
+    /**
+     * Set the foreground color.
+     * @param color the foreground color of selected cells
+     */
+    public void setSelectionForeground(Color color) {
+        boolean changed = selectionAttributes.putAll(CSSStyleSheet.getAttributes(color, Style.COLOR));
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * Return the foreground color.
+     * @return the foreground color
+     */
+    public Color getSelectionForeground() {
+        return CSSStyleSheet.getForeground(selectionAttributes);
+    }
+
     /**
      * Sets the label of the button.
      *

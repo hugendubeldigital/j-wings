@@ -54,13 +54,43 @@ public class SToggleButton
         super.setCG(cg);
     }
 
+    public void processLowLevelEvent(String action, String[] values) {
+	boolean origSelected = isSelected();
+
+        if ( getGroup()!=null ) {
+            getGroup().setDelayEvents(true);
+            setSelected(parseSelectionToggle(values[0]));
+            getGroup().setDelayEvents(false);
+        } else {
+	    setSelected(parseSelectionToggle(values[0]));
+	} // end of else
+	
+
+	if ( isSelected()!=origSelected ) {
+	    // got an event, that is a select...
+	    SForm.addArmedComponent(this);
+	} // end of if ()
+    }        
+
     /**
      * in form components the parameter value of an button is the button
      * text. So just toggle selection, in process request, if it is a request
      * for me.
      */
     protected boolean parseSelectionToggle(String toggleParameter) {
-        return true;
+	// a button/image in a form has no value, so just toggle selection...
+	if ( getShowAsFormComponent() ) {
+	    return !isSelected();
+	} // end of if ()
+
+	if ( "1".equals(toggleParameter) )
+	    return true;
+	else if ( "0".equals(toggleParameter) )
+	    return false;
+	
+	
+	// don't change...
+	return isSelected();
     }
 
 }

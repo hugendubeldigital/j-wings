@@ -1,250 +1,78 @@
-<template name="RadioButtonCG" for="org.wings.SRadioButton">
+<template name="RadioButtonCG" 
+          for="org.wings.SRadioButton"
+          extends="org.wings.plaf.css1.ButtonCG">
 
-<comp-property type="SIcon" name="selectedIcon">org/wings/icons/SelectedRadioButton.gif</comp-property>
-<comp-property type="SIcon" name="icon">org/wings/icons/NotSelectedRadioButton.gif</comp-property>
-<comp-property type="SIcon" name="disabledIcon">org/wings/icons/DisabledNotSelectedRadioButton.gif</comp-property>
-<comp-property type="SIcon" name="disabledSelectedIcon">org/wings/icons/DisabledSelectedRadioButton.gif</comp-property>
+private static final SIcon EMPTY_ICON = new SURLIcon("");
 
-void writeText(final Device device, SRadioButton radioButton, String attr)
-    throws IOException
-{
-    if (radioButton.getShowAsFormComponent() && radioButton.isEnabled())
-        writeFormText(device, radioButton, attr);
-    else
-        writeAnchorText(device, radioButton, attr);
-}
+protected SIcon getIcon(SAbstractButton abstractButton) {
+    SIcon icon = super.getIcon(abstractButton);
 
-void writeIcon(final Device device, SRadioButton radioButton, String attr)
-    throws IOException
-{
-    if (radioButton.getShowAsFormComponent() && radioButton.isEnabled())
-        writeFormIcon(device, radioButton, attr);
-    else
-        writeAnchorIcon(device, radioButton, attr);
-}
-
-void writeAnchorText(final Device device, SRadioButton radioButton, String attr)
-    throws IOException
-{
-    boolean noBreak = radioButton.isNoBreak();
-    String text = radioButton.getText();
-    if (text == null || text.length() == 0) {
-	return;
-    }
-
-    if (radioButton.isEnabled() && !radioButton.isSelected()) {
-        %><a href="<%
-        writeAnchorAddress(device, radioButton);
-        %>"<%
-        Utils.writeEvents(device, radioButton);
-    }
-    else {
-        %><span<%
-        Utils.writeEvents(device, radioButton);
-    }
-    %><%|class=attr%>><%
-
-    if (noBreak) { %><nobr><% }
-    %><%=radioButton.getText()%><%
-    if (noBreak) { %></nobr><% }
-
-    if (radioButton.isEnabled() && !radioButton.isSelected()) {
-        %></a><%
-    }
-    else {
-        %></span><%
-    }
-}
-
-void writeAnchorIcon(final Device device, SRadioButton radioButton, String attr)
-     throws IOException
-{
-    SIcon icon = null;
-    if (radioButton.isEnabled())
-        icon = radioButton.isSelected() ? radioButton.getSelectedIcon() : radioButton.getIcon();
-    else
-        icon = radioButton.isSelected() ? radioButton.getDisabledSelectedIcon() : radioButton.getDisabledIcon();
-
-    if (radioButton.isEnabled() && !radioButton.isSelected()) {
-        %><a href="<%
-        writeAnchorAddress(device, radioButton);
-        %>"<%
-    }
-    else {
-        %><span<%
-    }
-    %><%|class=attr%>><%
-
-    String tooltip = radioButton.getToolTipText();
-    if (tooltip == null)
-        tooltip = radioButton.getText();
-
-    %><img border="0" src="<%
-    %><%=icon.getURL()%>"<%
-
-    if (radioButton.isEnabled() && !radioButton.isSelected()) {
-       // render rollover
-       SIcon rolloverIcon = radioButton.isSelected() ? radioButton.getRolloverSelectedIcon() : radioButton.getRolloverIcon();
-       SIcon pressedIcon = radioButton.getPressedIcon();
-
-       if ( rolloverIcon!=null || pressedIcon!=null ) {
-           String iconName = "Icon_" + radioButton.getComponentId();
-
-           %> name="<%=iconName%>"<%
-   
-           if ( rolloverIcon!=null ) {
-               %> onMouseover="if(document.images){document.<%=iconName
-               %>.src='<%=rolloverIcon.getURL()
-               %>';}" onMouseout="if(document.images){document.<%=iconName
-               %>.src='<%=icon.getURL()
-               %>';}"<%
-           }
-
-           if ( pressedIcon!=null ) {
-               %> onMousedown="if(document.images){document.<%=iconName
-               %>.src='<%=pressedIcon.getURL()
-               %>';}" onMouseUp="if(document.images){document.<%=iconName
-               %>.src='<%=rolloverIcon!=null ? rolloverIcon.getURL() : icon.getURL()
-               %>';}"<%
-           }
+    if ( icon==null && 
+	 !abstractButton.getShowAsFormComponent() ) {
+	org.wings.plaf.CGManager manager = abstractButton.getSession().getCGManager();
+	// use default icons from CG
+        if ( abstractButton.isSelected() ) {
+            return abstractButton.isEnabled() 
+                   ? (SIcon)manager.getObject("SRadioButton.selectedIcon", SIcon.class)
+                   : (SIcon)manager.getObject("SRadioButton.disabledSelectedIcon", SIcon.class);
+        } else {
+            return abstractButton.isEnabled() 
+                   ? (SIcon)manager.getObject("SRadioButton.icon", SIcon.class)
+                   : (SIcon)manager.getObject("SRadioButton.disabledIcon", SIcon.class);
         }
     }
 
-    %><%|width=icon.getIconWidth()%><%
-    %><%|height=icon.getIconHeight()%><%
-    Utils.writeEvents(device, radioButton);
-    %><%|alt=tooltip%> /><%
+    // fake icon, to force button plaf to render "label for"
+    if ( icon==null )
+	return EMPTY_ICON;
 
-    if (radioButton.isEnabled() && !radioButton.isSelected()) {
-        %></a><%
-    }
-    else {
-        %></span><%
-    }
+    return icon;		
 }
 
-protected void writeAnchorAddress(Device d, SRadioButton radioButton) 
-    throws IOException
-{
-    RequestURL addr = radioButton.getRequestURL();
-    addr.addParameter(radioButton.getNamePrefix(),
-                      radioButton.getToggleSelectionParameter());
-    addr.write(d);
-}
-
-void writeFormText(final Device device, SRadioButton radioButton, String attr)
-    throws IOException
-{
-    %><label for="<%=radioButton.getComponentId()%>"<%
-    %><%|class=attr%>><%
-    %><%=radioButton.getText()%><%
-    %></label><%
-}
-
-void writeFormIcon(final Device device, SRadioButton radioButton, String attr)
+protected void writeFormIcon(final Device device, SAbstractButton abstractButton, String attr)
      throws IOException
 {
-    %><input type="<%=radioButton.getType()%>" name="<%
-    %><%=radioButton.getNamePrefix()%>"<%
-    %><%|tabindex=radioButton.getFocusTraversalIndex()%><%
+    SIcon icon = getIcon(abstractButton);
+    if (icon != EMPTY_ICON)  {
+        super.writeFormIcon(device, abstractButton, attr);
+     	return;
+    }
+
+    // no icon, so render a input component. This is a special case, where we
+    // have to render also a hidden element to indicate a unselect, which is not
+    // transfered in a form. This special case must also be special handeled in
+    // the components event handler code
+
+    %><input type="hidden"<%
+    %> name="<%=abstractButton.getEncodedLowLevelEventId()%>"<%
+    %> value="<%=abstractButton.getDeselectionParameter()%>" /><%
+    
+    %><input type="radio"<%
+    %> name="<%=abstractButton.getEncodedLowLevelEventId()%>"<%
+    %> value="<%=abstractButton.getToggleSelectionParameter()%>"<%
+    %><%|id=abstractButton.getComponentId()%><%
+    %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
     %><%|class=attr%><%
-    // writeEvents();
-    %><%|id=radioButton.getComponentId()%><%
-    %><%|value=radioButton.getSelectionParameter()%><%
-    if (radioButton.isSelected()) {
-        %> checked="1" /><%
+    Utils.writeEvents(device, abstractButton);
+
+    if ( abstractButton.isSelected() ) {
+	%> checked<%
     }
-    else {
-        %> /><%
+
+    if ( !abstractButton.isEnabled() ) {
+	%> disabled<%
     }
+    %>/><%
+}
+
+
+protected boolean renderLayoutWithoutIcon() {
+    return true;
 }
 
 <write>
 <%
-    SRadioButton radioButton = (SRadioButton)component;
-
-    SIcon icon = radioButton.isSelected() ? radioButton.getSelectedIcon() : radioButton.getIcon();
-    String  text = component.getText();
-    String style = Utils.style(component);
-    int horizontalTextPosition = component.getHorizontalTextPosition();
-    int verticalTextPosition   = component.getVerticalTextPosition();
-
-    if (horizontalTextPosition == NO_ALIGN)
-	horizontalTextPosition = RIGHT;
-    if (verticalTextPosition == NO_ALIGN)
-	verticalTextPosition = CENTER;
-
-    if (icon == null && !component.getShowAsFormComponent()) {
-        writeText(device, component, style);
-    } else if (text == null || text.length() == 0) {
-        writeIcon(device, component, style);
-    } else {
-        %><table><%
-        // if we are on the top, create a top row
-        if (verticalTextPosition == TOP) {
-            %><tr><td><% 
-            if (horizontalTextPosition == LEFT) { 
-                writeText(device, component, style);
-            }
-            %></td><td><%
-            if (horizontalTextPosition == CENTER) { 
-                writeText(device, component, style);
-            }
-            %></td><td><%
-            if (horizontalTextPosition == RIGHT) {
-                writeText(device, component, style);
-            }
-            %></td></tr><%
-        }
-
-        // we always have a center row, since we have to write the icon
-        if (verticalTextPosition == CENTER) {
-            %><tr><td><%
-            if (horizontalTextPosition == LEFT) { 
-                writeText(device, component, style);
-            }
-            %></td><td><% 
-            if (horizontalTextPosition == CENTER) { 
-               writeText(device, component, style);
-            }
-            // the rendered icon in the center
-            writeIcon(device, component, style); 
-            %></td><td><% 
-            if (horizontalTextPosition == RIGHT) { 
-               writeText(device, component, style);
-            }
-            %></td></tr><%
-        } else {
-            %><tr><td></td><td><%
-            writeIcon(device, component, style);
-            %></td><td></td></tr><%
-        }
-
-        // ..
-        if (verticalTextPosition == BOTTOM) {
-            %><tr><td><% 
-            if (horizontalTextPosition == LEFT) {
-              writeText(device, component, style);
-            }
-            %></td><td><% 
-            if (horizontalTextPosition == CENTER) {
-              writeText(device, component, style);
-            }
-            %></td><td><%
-            if (horizontalTextPosition == RIGHT) {
-               writeText(device, component, style);
-            }
-            %></td></tr><%
-        }
-        %></table><%
-    }
-
-   if (component.isEnabled() && component.getShowAsFormComponent()) {
-       // could be a util method
-       %><input type="hidden"<%
-       %><%|name=component.getNamePrefix()%><%
-       %><%|value=radioButton.getDeselectionParameter()%><%
-       %>/><%
-   }
+    super.write(device, component);
 %></write>
+
 </template>

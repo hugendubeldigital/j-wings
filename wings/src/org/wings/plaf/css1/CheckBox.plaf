@@ -1,267 +1,78 @@
-<template name="CheckBoxCG" for="org.wings.SCheckBox">
+<template name="CheckBoxCG" 
+          for="org.wings.SCheckBox"
+          extends="org.wings.plaf.css1.ButtonCG">
 
-<comp-property type="SIcon" name="selectedIcon">org/wings/icons/SelectedCheckBox.gif</comp-property>
-<comp-property type="SIcon" name="icon">org/wings/icons/NotSelectedCheckBox.gif</comp-property>
-<comp-property type="SIcon" name="disabledIcon">org/wings/icons/DisabledNotSelectedCheckBox.gif</comp-property>
-<comp-property type="SIcon" name="disabledSelectedIcon">org/wings/icons/DisabledSelectedCheckBox.gif</comp-property>
+private static final SIcon EMPTY_ICON = new SURLIcon("");
 
-void writeText(final Device device, SCheckBox checkBox, String attr)
-    throws IOException
-{
-    if (checkBox.getShowAsFormComponent() && checkBox.isEnabled())
-        writeFormText(device, checkBox, attr);
-    else
-        writeAnchorText(device, checkBox, attr);
-}
+protected SIcon getIcon(SAbstractButton abstractButton) {
+    SIcon icon = super.getIcon(abstractButton);
 
-void writeIcon(final Device device, SCheckBox checkBox, String attr)
-    throws IOException
-{
-    if (checkBox.getShowAsFormComponent() && checkBox.isEnabled())
-        writeFormIcon(device, checkBox, attr);
-    else
-        writeAnchorIcon(device, checkBox, attr);
-}
-
-void writeAnchorText(final Device device, SCheckBox checkBox, String attr)
-    throws IOException
-{
-    boolean noBreak = checkBox.isNoBreak();
-    String text = checkBox.getText();
-    if (text == null || text.length() == 0) {
-	return;
-    }
-
-    if (checkBox.isEnabled()) {
-        %><a href="<%
-        writeAnchorAddress(device, checkBox);
-        %>"<%
-        Utils.writeEvents(device, checkBox);
-    }
-    else {
-        %><span<%
-    }
-    %><%|class=attr%>><%
-
-    if (noBreak) { %><nobr><% }
-    %><%=checkBox.getText()%><%
-    if (noBreak) { %></nobr><% }
-
-    if (checkBox.isEnabled()) {
-        %></a><%
-    }
-    else {
-        %></span><%
-    }
-}
-
-void writeAnchorIcon(final Device device, SCheckBox checkBox, String attr)
-     throws IOException
-{
-    SIcon icon = null;
-    if (checkBox.isEnabled())
-        icon = checkBox.isSelected() ? checkBox.getSelectedIcon() : checkBox.getIcon();
-    else
-        icon = checkBox.isSelected() ? checkBox.getDisabledSelectedIcon() : checkBox.getDisabledIcon();
-
-    if (checkBox.isEnabled()) {
-        %><a href="<%
-        writeAnchorAddress(device, checkBox);
-        %>"<%
-    }
-    else {
-        %><span<%
-    }
-    %><%|class=attr%>><%
-
-    String tooltip = checkBox.getToolTipText();
-    if (tooltip == null)
-        tooltip = checkBox.getText();
-
-    %><img border="0" src="<%
-    %><%=icon.getURL()%>"<%
-
-    if (checkBox.isEnabled()) {
-       // render rollover
-       SIcon rolloverIcon = checkBox.isSelected() ? checkBox.getRolloverSelectedIcon() : checkBox.getRolloverIcon();
-       SIcon pressedIcon = checkBox.getPressedIcon();
-
-       if ( rolloverIcon!=null || pressedIcon!=null ) {
-           String iconName = "Icon_" + checkBox.getComponentId();
-
-           %> name="<%=iconName%>"<%
-   
-           if ( rolloverIcon!=null ) {
-               %> onMouseover="if(document.images){document.<%=iconName
-               %>.src='<%=rolloverIcon.getURL()
-               %>';}" onMouseout="if(document.images){document.<%=iconName
-               %>.src='<%=icon.getURL()
-               %>';}"<%
-           }
-
-           if ( pressedIcon!=null ) {
-               %> onMousedown="if(document.images){document.<%=iconName
-               %>.src='<%=pressedIcon.getURL()
-               %>';}" onMouseUp="if(document.images){document.<%=iconName
-               %>.src='<%=rolloverIcon!=null ? rolloverIcon.getURL() : icon.getURL()
-               %>';}"<%
-           }
+    if ( icon==null && 
+	 !abstractButton.getShowAsFormComponent() ) {
+	org.wings.plaf.CGManager manager = abstractButton.getSession().getCGManager();
+	// use default icons from CG
+        if ( abstractButton.isSelected() ) {
+            return abstractButton.isEnabled() 
+                   ? (SIcon)manager.getObject("SCheckBox.selectedIcon", SIcon.class)
+                   : (SIcon)manager.getObject("SCheckBox.disabledSelectedIcon", SIcon.class);
+        } else {
+            return abstractButton.isEnabled() 
+                   ? (SIcon)manager.getObject("SCheckBox.icon", SIcon.class)
+                   : (SIcon)manager.getObject("SCheckBox.disabledIcon", SIcon.class);
         }
     }
 
-    %><%|width=icon.getIconWidth()%><%
-    %><%|height=icon.getIconHeight()%><%
-    Utils.writeEvents(device, checkBox);
-    %><%|alt=tooltip%> /><%
+    // fake icon, to force button plaf to render "label for"
+    if ( icon==null )
+	return EMPTY_ICON;
 
-    if (checkBox.isEnabled()) {
-        %></a><%
-    }
-    else {
-        %></span><%
-    }
+    return icon;		
 }
 
-protected void writeAnchorAddress(Device d, SCheckBox checkBox) 
-    throws IOException
-{
-    RequestURL addr = checkBox.getRequestURL();
-    addr.addParameter(checkBox.getNamePrefix(), 
-                      checkBox.getToggleSelectionParameter());
-    addr.write(d);
-}
-
-void writeFormText(final Device device, SCheckBox checkBox, String attr)
-    throws IOException
-{
-    %><label for="<%=checkBox.getComponentId()%>"<%
-    %><%|class=attr%>><%
-    %><%=checkBox.getText()%><%
-    %></label><%
-}
-
-void writeFormIcon(final Device device, SCheckBox checkBox, String attr)
+protected void writeFormIcon(final Device device, SAbstractButton abstractButton, String attr)
      throws IOException
 {
-    org.wings.SIcon icon = null;
-    if (checkBox.isEnabled())
-        icon = checkBox.isSelected() ? checkBox.getSelectedIcon() : checkBox.getIcon();
+    SIcon icon = getIcon(abstractButton);
+    if (icon != EMPTY_ICON)  {
+        super.writeFormIcon(device, abstractButton, attr);
+     	return;
+    }
 
-	SimpleURL src=null;
-	String type = checkBox.getType();
-	String value=checkBox.getSelectionParameter();
-	if (icon != null) {
-		src = icon.getURL();
-		type=SAbstractButton.IMAGE_BUTTON;
-		value=checkBox.getToggleSelectionParameter();
-	}
+    // no icon, so render a input component. This is a special case, where we
+    // have to render also a hidden element to indicate a unselect, which is not
+    // transfered in a form. This special case must also be special handeled in
+    // the components event handler code
 
-    %><input type="<%=type%>" name="<%
-    %><%=checkBox.getNamePrefix()%>"<%
-    %><%|tabindex=checkBox.getFocusTraversalIndex()%><%
+    %><input type="hidden"<%
+    %> name="<%=abstractButton.getEncodedLowLevelEventId()%>"<%
+    %> value="hidden_reset" /><%
+    
+    %><input type="checkbox"<%
+    %> name="<%=abstractButton.getEncodedLowLevelEventId()%>"<%
+    %><%|id=abstractButton.getComponentId()%><%
+    %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
     %><%|class=attr%><%
-    %><%|src=src%><%
-    if (icon != null) {
-        %><%|width=icon.getIconWidth()%><%
-        %><%|height=icon.getIconHeight()%><%
+    Utils.writeEvents(device, abstractButton);
+
+    if ( abstractButton.isSelected() ) {
+	%> checked<%
     }
-    Utils.writeEvents(device, checkBox);
-    %><%|id=checkBox.getComponentId()%><%
-    %><%|value=value%><%
-    if (checkBox.isSelected() && icon==null) {
-        %> checked="1" /><%
+
+    if ( !abstractButton.isEnabled() ) {
+	%> disabled<%
     }
-    else {
-        %> /><%
-    }
+    %>/><%
+}
+
+
+protected boolean renderLayoutWithoutIcon() {
+    return true;
 }
 
 <write>
 <%
-    SCheckBox checkBox = (SCheckBox)component;
-
-    String style = Utils.style(component);
-    SIcon icon = checkBox.isSelected() ? checkBox.getSelectedIcon() : checkBox.getIcon();
-    String  text = component.getText();
-    int horizontalTextPosition = component.getHorizontalTextPosition();
-    int verticalTextPosition   = component.getVerticalTextPosition();
-
-    if (horizontalTextPosition == NO_ALIGN)
-	horizontalTextPosition = RIGHT;
-    if (verticalTextPosition == NO_ALIGN)
-	verticalTextPosition = CENTER;
-
-    if (icon == null && !component.getShowAsFormComponent()) {
-        writeText(device, component, Utils.style(component));
-    } else if (text == null || text.length() == 0) {
-        writeIcon(device, component, Utils.style(component));
-    } else {
-        %><table><%
-        // if we are on the top, create a top row
-        if (verticalTextPosition == TOP) {
-            %><tr><td><% 
-            if (horizontalTextPosition == LEFT) { 
-                writeText(device, component, style);
-            }
-            %></td><td><%
-            if (horizontalTextPosition == CENTER) { 
-                writeText(device, component, style);
-            }
-            %></td><td><%
-            if (horizontalTextPosition == RIGHT) {
-                writeText(device, component, style);
-            }
-            %></td></tr><%
-        }
-
-        // we always have a center row, since we have to write the icon
-        if (verticalTextPosition == CENTER) {
-            %><tr><td><%
-            if (horizontalTextPosition == LEFT) { 
-                writeText(device, component, style);
-            }
-            %></td><td><% 
-            if (horizontalTextPosition == CENTER) { 
-               writeText(device, component, style);
-            }
-            // the rendered icon in the center
-            writeIcon(device, component, style); 
-            %></td><td><% 
-            if (horizontalTextPosition == RIGHT) { 
-               writeText(device, component, style);
-            }
-            %></td></tr><%
-        } else {
-            %><tr><td></td><td><%
-            writeIcon(device, component, style);
-            %></td><td></td></tr><%
-        }
-
-        // ..
-        if (verticalTextPosition == BOTTOM) {
-            %><tr><td><% 
-            if (horizontalTextPosition == LEFT) {
-              writeText(device, component, style);
-            }
-            %></td><td><% 
-            if (horizontalTextPosition == CENTER) {
-              writeText(device, component, style);
-            }
-            %></td><td><%
-            if (horizontalTextPosition == RIGHT) {
-               writeText(device, component, style);
-            }
-            %></td></tr><%
-        }
-        %></table><%
-    }
-    if (component.isEnabled() && component.getShowAsFormComponent() && 
-    	(checkBox.isSelected() ? checkBox.getSelectedIcon() : checkBox.getIcon()) == null) {
-        // could be a util method
-        %><input type="hidden"<%
-        %><%|name=component.getNamePrefix()%><%
-        %><%|value=checkBox.getDeselectionParameter()%><%
-        %>/><%
-    }
+    super.write(device, component);
 %></write>
+
 </template>
+
