@@ -489,16 +489,17 @@ final class SessionServlet
              *      not have sent anything to the output stream).
              */
             if (session.getExitAddress() != null) {
-                req.getSession().invalidate(); // calls destroy implicitly
+                String redirectAddress;
                 if (session.getExitAddress().length() > 0) {
                     // redirect to user requested URL.
-                    response.sendRedirect(session.getExitAddress());
+                    redirectAddress = session.getExitAddress();
                 }
                 else {
                     // redirect to a fresh session.
-                    response.sendRedirect(HttpUtils.getRequestURL(req)
-                                          .toString());
+                    redirectAddress = HttpUtils.getRequestURL(req).toString();
                 }
+                req.getSession().invalidate(); // calls destroy implicitly
+                response.sendRedirect(redirectAddress);
                 return;
             }
 
@@ -578,16 +579,19 @@ final class SessionServlet
             if (outputDevice != null) {
                 try { outputDevice.close(); } catch (Exception e) {}
             }
-
-            getSession().getReloadManager().clear();
+            
+            /*
+             * the session might be null due to destroy().
+             */
+            if (session != null) {
+                session.getReloadManager().clear();
+                session.setServletRequest(null);
+                session.setServletResponse(null);
+            }
 
             // make sure that the session association to the thread is removed
             // from the SessionManager
             SessionManager.removeSession();
-
-            session.setServletRequest(null);
-            session.setServletResponse(null);
-
             SForm.clearArmedComponents();
         }
     }
