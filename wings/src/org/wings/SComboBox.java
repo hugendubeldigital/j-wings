@@ -217,11 +217,11 @@ public class SComboBox
 
 	    // Must toggle the state of this flag since this method
 	    // call may result in ListDataEvents being fired.
-	    selectingItem = true;
-	    dataModel.setSelectedItem(object);
-	    selectingItem = false;
 
             if ( !delayEvent ) {
+              selectingItem = true;
+              dataModel.setSelectedItem(object);
+              selectingItem = false;
 
          //       if (isDifferent(selectedItemReminder , dataModel.getSelectedItem())) {
                     // in case a users implementation of ComboBoxModel
@@ -235,6 +235,7 @@ public class SComboBox
                 delayedEvent = false;
             } else {
                 delayedEvent = true;
+                selectedItemReminder = object;
             }
 
             reload(ReloadManager.RELOAD_CODE);
@@ -634,7 +635,10 @@ public class SComboBox
                 // in case a users implementation of ComboBoxModel
                 // doesn't fire a ListDataEvent when the selection
                 // changes.
-                selectedItemChanged();
+              selectingItem = true;
+              dataModel.setSelectedItem(selectedItemReminder);
+              selectingItem = false;
+               selectedItemChanged();
                 fireActionEvent();
             }
             
