@@ -32,6 +32,7 @@
 *.tif   -k 'b' -m 'COPY'
 *.tiff  -k 'b' -m 'COPY'
 *.ico   -k 'b' -m 'COPY'
+
 *.dsk   -k 'b' -m 'COPY'
 *.prj   -k 'b' -m 'COPY'
 *.lib   -k 'b' -m 'COPY'
