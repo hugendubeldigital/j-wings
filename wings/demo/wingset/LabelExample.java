@@ -99,7 +99,7 @@ public class LabelExample
         g.add(se);
 
         final SRadioButton cc = new SRadioButton();
-        se.setToolTipText("Center");
+        cc.setToolTipText("Center");
         b.add(cc, "p=cc");
         g.add(cc);
 
