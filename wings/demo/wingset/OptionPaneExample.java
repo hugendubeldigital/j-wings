@@ -51,7 +51,7 @@ public class OptionPaneExample
 
         question.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SOptionPane.showQuestionDialog(frame, "Do you want to go on?",
+                SOptionPane.showQuestionDialog(frame, "Continue this this example?",
                                                "A Question", comment);
             }});
         add(question);
@@ -61,7 +61,7 @@ public class OptionPaneExample
             public void actionPerformed(ActionEvent e) {
                 if ( e.getActionCommand()==SOptionPane.NO_ACTION ) {
                     SPanel p = new SPanel(new SFlowDownLayout());
-                    p.add(new SLabel("That's poor !"));
+                    p.add(new SLabel("That's sad !"));
                     p.add(new SSpacer(1, VERTICAL));
                     SHRef sendMail =  new SHRef("Please send me why");
                     sendMail.setReference("mailto:ahaaf@mercatis.de");
@@ -69,7 +69,7 @@ public class OptionPaneExample
                     SOptionPane.showMessageDialog(frame, p);
                 }
                 else
-                    SOptionPane.showMessageDialog(frame, "Fine, we too !");
+                    SOptionPane.showMessageDialog(frame, "Fine, so do we!");
             }
         };
 
