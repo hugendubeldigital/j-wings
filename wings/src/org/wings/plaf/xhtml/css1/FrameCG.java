@@ -29,9 +29,26 @@ import org.wings.externalizer.ExternalizeManager;
 public final class FrameCG
     extends org.wings.plaf.xhtml.FrameCG
 {
+    public void installCG(SComponent component) {
+        super.installCG(component);
+
+        SFrame frame = (SFrame)component;
+
+        DynamicResource dynamicResource = new DynamicStyleSheetResource(frame);
+        frame.addDynamicResource(dynamicResource);
+        frame.addLink(new SLink("stylesheet", null, "text/css", null, dynamicResource));
+
+        CGManager cgManager = frame.getSession().getCGManager();
+        String resourceName = (String)cgManager.getObject("lookandfeel.stylesheet", String.class);
+        System.err.println("lookandfeel.stylesheet: " + resourceName);
+        StaticResource staticResource = new StaticResource(getClass().getClassLoader(), resourceName);
+        frame.addLink(new SLink("stylesheet", null, "text/css", null, staticResource));
+    }
+
     protected void writeAdditionalHeaders(Device d, SFrame frame)
         throws IOException
     {
+        /*
         StyleSheet styleSheet = frame.getStyleSheet();
 
         if (styleSheet != null) {
@@ -50,6 +67,7 @@ public final class FrameCG
         else {
             System.err.println("Frame.styleSheet == null!");
         }
+        */
 
         Iterator iterator = frame.links().iterator();
         while (iterator.hasNext()) {

@@ -589,7 +589,7 @@ public abstract class SComponent
      * The component will be registered with the ReloadManager.
      */
     public final void reload(int aspect) {
-        cg.reload(this, aspect);
+        getSession().getReloadManager().reload(this, aspect);
     }
 
     /**
@@ -659,6 +659,8 @@ public abstract class SComponent
      * @return a unique name prefix
      */
     public String getNamePrefix() {
+        if (getParentFrame() != null)
+            return getParentFrame().getEventEpoch() + SConstants.UID_DIVIDER + getUnifiedId();
         return getUnifiedId();
     }
 

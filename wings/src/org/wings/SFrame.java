@@ -68,17 +68,17 @@ public class SFrame
     /**
      * A List containing meta tags for the html header.
      */
-    protected final ArrayList metas = new ArrayList(2);
+    protected ArrayList metas;
 
     /**
      * A List containing additional tags for the html header.
      */
-    protected final ArrayList headers = new ArrayList(2);
+    protected ArrayList headers;
 
     /**
      * A List containing links for the html header.
      */
-    protected final ArrayList links = new ArrayList(2);
+    protected ArrayList links;
 
 
     private Color textColor = null;
@@ -228,30 +228,13 @@ public class SFrame
         return session;
     }
 
-    private int uniquePrefix = 0;
-
-    private String uniquePrefixString = "0";
-
-    /**
-     * TODO: documentation
-     *
-     */
-    public void dispatchDone() {
-        System.err.println("frame " + getTitle() + " dispatch done");
-        uniquePrefix++;
-        if (uniquePrefix < 0)
-            uniquePrefix = 0;
-
-        uniquePrefixString = StringUtil.toShortestAlphaNumericString(uniquePrefix);
-    }
-
     /**
      * TODO: documentation
      *
      * @return
      */
-    public String getUniquePrefix() {
-        return uniquePrefixString;
+    public String getEventEpoch() {
+        return getDynamicResource(DynamicCodeResource.class).getEpoch();
     }
 
     /**
@@ -329,7 +312,7 @@ public class SFrame
      * @param m
      */
     public void addMeta(String m) {
-        metas.add(m);
+        metas().add(m);
     }
 
     /**
@@ -337,7 +320,7 @@ public class SFrame
      *
      */
     public void clearMetas() {
-        metas.clear();
+        metas().clear();
     }
 
     /**
@@ -346,30 +329,36 @@ public class SFrame
      * @return
      */
     public List metas() {
+        if (metas == null)
+            metas = new ArrayList(2);
         return metas;
     }
 
     public void addHeader(String m) {
-	headers.add(m);
+	headers().add(m);
     }
 
     public void clearHeaders() {
-	headers.clear();
+	headers().clear();
     }
     
     public List headers() {
+        if (headers == null)
+            headers = new ArrayList(2);
 	return headers;
     }
 
     public void addLink(SLink link) {
-	links.add(link);
+	links().add(link);
     }
 
     public void clearLinks() {
-	links.clear();
+	links().clear();
     }
     
     public List links() {
+        if (links == null)
+            links = new ArrayList(2);
 	return links;
     }
 

@@ -51,8 +51,7 @@ public class SComponentBeanInfo extends SimpleBeanInfo
  
 	    PropertyDescriptor rv[] = {
 		style,
-		visible, enabled,
-		name, toolTipText
+                toolTipText
 	    };
 	    return rv;
 	}

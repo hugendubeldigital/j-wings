@@ -37,17 +37,17 @@ import org.wings.externalizer.ExternalizeManager;
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
-public class Resource
+public abstract class Resource
 {
     /**
-     * TODO: documentation
+     *
      */
-    protected ClassLoader classLoader;
+    private String id;
 
     /**
-     * TODO: documentation
+     *
      */
-    protected String resourceFileName;
+    protected RequestURL requestURL;
 
     /**
      * TODO: documentation
@@ -59,168 +59,25 @@ public class Resource
      */
     protected String mimeType; 
 
-    /**
-     * TODO: documentation
-     */
-    protected String url; 
 
-    /**
-     * TODO: documentation
-     */
-    protected int externalizerFlags = ExternalizeManager.GLOBAL | ExternalizeManager.FINAL; 
+    protected Resource(String extension, String mimeType) {
+        this.extension = extension;
+        this.mimeType = mimeType;
 
-    /**
-     * TODO: documentation
-     */
-    protected LimitedBuffer buffer;
-    
-    /**
-     * An ByteArrayOutputStream that buffers up to the limit
-     * MAX_SIZE_TO_BUFFER.
-     */
-    protected final static class LimitedBuffer extends ByteArrayOutputStream {
-        public static final int MAX_SIZE_TO_BUFFER = 8 * 1024; // 8KByte
-        private boolean withinLimit;
+        ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
+        this.id = ext.getId(ext.externalize(this));
+        System.err.println("new " + getClass().getName() + " with id " + id);
 
-        /**
-         * creates a new buffer
-         */
-        LimitedBuffer() { 
-            /*
-             * don't waste too much memory; most resources (like icons)
-             * are tiny, so we should start with a small initial size.
-             */
-            super(64);
-            withinLimit = true;
-        }
-        
-        /**
-         * write to the stream. If the output size exceeds the limit,
-         * then set the stream to error state.
-         */
-        public void write(byte[] b, int off, int len) {
-            if (!withinLimit) return;
-            withinLimit = (count + len < MAX_SIZE_TO_BUFFER);
-            if (withinLimit) 
-                super.write(b, off, len);
-            else
-                reset(); // discard all input so far: it would become too large
-        }
-
-        // Don't use write(int b)! It does not check the size.
-
-        /**
-         * returns, whether the filled buffer is within the limits,
-         * and thus, its content is valid and can be used.
-         */
-        public boolean isValid() { return withinLimit; }
-        
-        /**
-         * returns the <em>raw</em> buffer. This means, that the buffer 
-         * may be larger than size() reports.
-         */
-        public byte[] getBytes() {
-            return buf;
-        }
+        requestURL = new RequestURL();
     }
 
     /**
      * TODO: documentation
      *
-     * @param resourceFileName
+     * @return
      */
-    public Resource(String resourceFileName) {
-        this(Resource.class.getClassLoader(), resourceFileName);
-    }
-
-    public Resource(Class baseClass, String resourceFileName) {
-        this(baseClass.getClassLoader(), resolveName(baseClass, resourceFileName));
-    }
-
-    public Resource(ClassLoader classLoader, String resourceFileName) {
-        this.classLoader = classLoader;
-        this.resourceFileName = resourceFileName;
-
-        int dotIndex = resourceFileName.lastIndexOf('.');
-        if ( dotIndex >= 0 )
-            extension = resourceFileName.substring(dotIndex + 1);
-
-        mimeType = "unknown";
-    }
-
-    /**
-     * returns the URL, the icon can be fetched from. This URL may
-     * be relative, usually if generated from the externalizer.
-     */
-    public final String getURL() {
-	if (url == null) {
-	    url = SessionManager.getSession()
-		.getExternalizeManager()
-		.externalize(this, externalizerFlags);
-	}
-	return url;
-    }
-
-    /**
-     * Reads the resource into an LimitedBuffer and returns it. If the
-     * size of the resource is larger than 
-     * {@link LimitedBuffer#MAX_SIZE_BUFFER}, then the returned Buffer
-     * is empty and does not contain the Resource's content (and the
-     * isValid() flag is false).
-     *
-     * @return buffered resource as LimitedBuffer, that may be invalid,
-     *         if the size of the resource is beyond MAX_SIZE_BUFFER. It is
-     *         null, if the Resource returned an invalid stream.
-     */
-    protected LimitedBuffer bufferResource() throws IOException {
-        if ( buffer==null ) {
-            InputStream resource = getResourceStream();
-            if ( resource!=null ) {
-                byte[] copyBuffer = new byte[1024];
-                buffer = new LimitedBuffer();
-                int read;
-                while (buffer.isValid()
-                       && (read = resource.read(copyBuffer)) > 0) {
-                    buffer.write(copyBuffer, 0, read);
-                }
-                resource.close();
-            }
-        }
-        return buffer;
-    }
-
-    /**
-     * writes the Resource to the given Stream. If the resource
-     * is not larger than {@link LimitedBuffer#MAX_SIZE_BUFFER}, then
-     * an internal buffer caches the content the first time, so that it
-     * is delivered as fast as possible at any subsequent calls.
-     *
-     * @param OutputStream the stream, the content of the resource should
-     *                     be written to.
-     */
-    public final void write(OutputStream out) throws IOException {
-        if ( buffer == null ) {
-            bufferResource();
-            if ( buffer == null )     // no valid bufferable resource available
-                return;
-        }
-        
-        if ( buffer.isValid() ) {     // buffered and small enough. buffer->out
-            buffer.writeTo(out);
-        }
-        else {                        // too large to be buffered. res->out
-            InputStream resource = getResourceStream();
-            if ( resource!=null ) {
-                byte[] copyBuffer = new byte[1024];
-                int read;
-                while ((read = resource.read(copyBuffer)) > 0) {
-                    out.write(copyBuffer, 0, read);
-                }
-                resource.close();
-            }
-        }
-        
-        out.flush();
+    public int getLength() {
+        return -1;
     }
 
     /**
@@ -237,20 +94,34 @@ public class Resource
      *
      * @return
      */
-    public final int getLength() {
-        if ( buffer!=null && buffer.isValid())
-            return buffer.size();
-        else 
-            return -1;
+    public final String getMimeType() {
+        return mimeType;
     }
 
     /**
-     * TODO: documentation
      *
-     * @return
      */
-    public final String getMimeType() {
-        return mimeType;
+    public final String getId() {
+        return id;
+    }
+
+    /**
+     *
+     */
+    public void setRequestURL(RequestURL r) {
+        requestURL = r;
+    }
+
+    /**
+     *
+     */
+    public RequestURL getRequestURL() {
+        RequestURL result =  (RequestURL)requestURL.clone();
+        if (extension != null)
+            result.setResource(id + "." + extension);
+        else
+            result.setResource(id);
+        return result;
     }
 
     /**
@@ -259,31 +130,7 @@ public class Resource
      * @return
      */
     public String toString() {
-        return resourceFileName;
-    }
-
-    protected static String resolveName(Class baseClass, String fileName) {
-        if (fileName == null) {
-            return fileName;
-        }
-        if (!fileName.startsWith("/")) {
-            while (baseClass.isArray()) {
-                baseClass = baseClass.getComponentType();
-            }
-            String baseName = baseClass.getName();
-            int index = baseName.lastIndexOf('.');
-            if (index != -1) {
-                fileName = baseName.substring(0, index).replace('.', '/')
-                    + "/" + fileName;
-            }
-        } else {
-            fileName = fileName.substring(1);
-        }
-        return fileName;
-    }
-
-    protected final InputStream getResourceStream() {
-        return classLoader.getResourceAsStream(resourceFileName);
+        return getId();
     }
 }
 

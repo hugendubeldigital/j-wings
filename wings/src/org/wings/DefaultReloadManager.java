@@ -14,9 +14,8 @@
 
 package org.wings;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import org.wings.style.DynamicStyleSheetResource;
 
 /**
  * This is the default implementation of the reload manager.
@@ -27,37 +26,61 @@ import java.util.Set;
 public class DefaultReloadManager
     implements ReloadManager
 {
+    protected final Set dirtyResources = new HashSet();
 
-    protected final HashMap dirtyResources = new HashMap();
+    public void reload(SComponent component, int aspect) {
+        SFrame parent = component.getParentFrame();
 
-    public void markDirty(DynamicResource d) {
-        if ( d==null )
+        if (parent == null)
             return;
 
-        HashSet resources = (HashSet)dirtyResources.get(d.getClass());
-
-        if ( resources==null ) {
-            resources = new HashSet();
-            dirtyResources.put(d.getClass(), resources);
+        switch (aspect) {
+        case SConstants.RELOAD_CODE: 
+            markDirty(parent.getDynamicResource(DynamicCodeResource.class));
+            break;
+        case SConstants.RELOAD_STYLE: 
+            markDirty(parent.getDynamicResource(DynamicStyleSheetResource.class));
+            break;
+        case SConstants.RELOAD_SCRIPT: 
+            // TODO
+            //            reloadManager.markDirty(parent.getDynamicResource(DynamicScriptResource.class));
+            break;
+            
         }
-
-        resources.add(d);
     }
 
-    public Set getDirtyResources(Class resourceType) {
-        return (HashSet)dirtyResources.get(resourceType);
+    public synchronized void markDirty(DynamicResource d) {
+        //new Exception().printStackTrace(System.err);
+        dirtyResources.add(d);
     }
 
-    public void clear(Class resourceType) {
-        Set s = getDirtyResources(resourceType);
-        if ( s!=null )
-            s.clear();
+    public Set getDirtyResources() {
+        return dirtyResources;
     }
 
-    public void clear() {
+    public synchronized void clear() {
         dirtyResources.clear();
     }
 
+    public synchronized void invalidateResources() {
+        //new Exception().printStackTrace(System.err);
+
+        //Set frames = new HashSet();
+        Iterator it = dirtyResources.iterator();
+        while (it.hasNext()) {
+            DynamicResource resource = (DynamicResource)it.next();
+            resource.invalidate();
+            it.remove();
+            //frames.add(resource.getFrame());
+        }
+        /*
+        it = frames.iterator();
+        while (it.hasNext()) {
+            SFrame frame = (SFrame)it.next();
+            frame.invalidate();
+        }
+        */
+    }
 }
 
 /*

@@ -18,7 +18,6 @@ import java.io.IOException;
 import org.wings.io.Device;
 
 /**
- * PENDING (dynamic resources) support for pathinfo
  * This class handles a HTTP GET Address that can be updated
  * with additional GET parameters.
  *
@@ -38,8 +37,6 @@ public class RequestURL
 
     private boolean hasQuestMark;
 
-    private String context;
-
     private String epoch;
 
     private String resource;
@@ -50,13 +47,6 @@ public class RequestURL
      * 
      */
     public RequestURL() { 
-    }
-
-    /**
-     * 
-     */
-    public RequestURL(String pathInfo) { 
-        System.out.println("pathInfo " + pathInfo);
     }
 
     /**
@@ -78,20 +68,6 @@ public class RequestURL
      */
     public String getEpoch() {
         return epoch;
-    }
-
-    /**
-     *
-     */
-    public void setContext(String c) {
-        context = c;
-    }
-
-    /**
-     *
-     */
-    public String getContext() {
-        return context;
     }
 
     /**
@@ -151,7 +127,6 @@ public class RequestURL
             parameters.setLength(0);
         }
         setEpoch(null);
-        setContext(null);
         setResource(null);
     }
 
@@ -169,12 +144,9 @@ public class RequestURL
             d.print(baseURL);
         }
 
-        if ( context!=null ) {
-            d.print(context).write(_delimiter);
-        }
-
         if ( epoch!=null ) {
-            d.print(epoch).write(_delimiter);
+            d.print(epoch);
+            d.write(_delimiter);
         }
 
         if ( resource!=null ) {
@@ -204,12 +176,9 @@ public class RequestURL
             erg.append(baseURL);
         }
 
-        if ( context!=null ) {
-            erg.append(context).append("_");
-        }
-
         if ( epoch!=null ) {
-            erg.append(epoch).append("_");
+            erg.append(epoch);
+            erg.append("_");
         }
 
         if ( resource!=null ) {

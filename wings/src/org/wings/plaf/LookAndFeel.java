@@ -252,7 +252,7 @@ public class LookAndFeel
      */
     public static Object makeObject(ClassLoader classLoader, String value, Class clazz) {
         try {
-            System.err.println("makeObject of type " + clazz.getName() + " with " + value);
+            //System.err.println("makeObject of type " + clazz.getName() + " with " + value);
             if (value.startsWith("new ")) {
                 int bracket = value.indexOf("(");
                 String name = value.substring("new ".length(), bracket);
@@ -305,10 +305,12 @@ public class LookAndFeel
                 return value;
 
             String property = properties.getProperty(id);
-            if (property == null)
+            if (property == null) {
+                //System.err.println("no property for id " + id);
                 return null;
+            }
 
-            System.err.print("make " + type);
+            //System.err.print("make " + type.getName() + " for id " + id);
             long millis = System.currentTimeMillis();
             if (ComponentCG.class.isAssignableFrom(type))
                 value = makeCG(property);
@@ -326,7 +328,7 @@ public class LookAndFeel
                 value = makeAttributeSet(property);
             else
                 value = makeObject(property, type);
-            System.err.println(System.currentTimeMillis() - millis);
+            //System.err.println(" " + (System.currentTimeMillis() - millis));
 
             //            put(id, value);
             return value;

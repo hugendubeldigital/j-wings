@@ -16,9 +16,7 @@ package org.wings.servlet;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -507,6 +505,8 @@ public abstract class SessionServlet
         SessionManager.setSession(session);
 
         try {
+            RequestURL requestURL = new RequestURL("", response.encodeURL(""));
+
             try {
                 if (DEBUG) {
                     log("\nHEADER:");
@@ -520,7 +520,7 @@ public abstract class SessionServlet
                 handleLocale(req);
 
                 //evtl. HttpUtils.getRequestURL(req).toString()
-                getFrame().setRequestURL(new RequestURL("", response.encodeURL("")));
+                getFrame().setRequestURL(requestURL);
             }
             finally {
                 prepareRequest(req, response);
@@ -529,51 +529,40 @@ public abstract class SessionServlet
             try {
                 ServletRequest asreq = new ServletRequest(req);
 
-                ExternalizeManager extManager = getSession().getExternalizeManager();
-
                 if (DEBUG)
                     measure.start("time to dispatch");
 
-                // check actuality
-                RequestURL request = new RequestURL(req.getPathInfo());
+                // it's the dispatcher's resposibility to check the event's actuality
+                boolean events = false;
+                Enumeration en = req.getParameterNames();
+                while (en.hasMoreElements()) {
+                    String paramName = (String)en.nextElement();
+                    String[] value = req.getParameterValues(paramName);
+                    System.err.println("dispatching " + paramName + " = " + value[0]);
 
-                debug("request " + request);
-                
-                DynamicResource context = null;
-                if ( request.getContext()==null && request.getEpoch()!=null )
-                    context = getFrame().getDynamicResource(DynamicCodeResource.class);
-                else 
-                    context = 
-                        (DynamicResource)extManager.getExternalizedObject(request.getContext());
-                
-                if ( request.getEpoch()==null || 
-                     context.getEpoch().equals(request.getEpoch()) ) {
-
-                    debug("dispatching");
-
-                    Enumeration en = null;
-                    en = req.getParameterNames();
-                    while (en.hasMoreElements()) {
-                        String paramName = (String)en.nextElement();
-                        String[] value = req.getParameterValues(paramName);
-                        if (!getDispatcher().dispatch(paramName, value))
-                            asreq.addParam(paramName,value);
-                    }
-                    
-                    if (req.getMethod().toUpperCase().equals("POST")) {
-                        dispatchPostQuery(req.getQueryString());
-                    }
-                    
-                    if (DEBUG) {
-                        measure.stop();
-                        measure.start("time to fire form events");
-                    }
-                    
-                    SForm.fireEvents();
+                    // was soll das???
+                    if (!getDispatcher().dispatch(paramName, value))
+                        asreq.addParam(paramName, value);
+                    else
+                        events = true;
                 }
-                    
+
+                if (req.getMethod().toUpperCase().equals("POST")) {
+                    events = events || dispatchPostQuery(req.getQueryString());
+                }
+
+                if (DEBUG) {
+                    measure.stop();
+                    measure.start("time to fire form events");
+                }
+
+                if (events)
+                    SForm.fireEvents();
+
                 // if the user chose to exit the session as an reaction on an
                 // event, we got an URL to redirect after the session.
+                /*
+// where is the right place?
                 if (afterSessionURL != null) {
                     req.getSession().invalidate(); // calls destroy implicitly
                     if (afterSessionURL.length() > 0)
@@ -583,30 +572,42 @@ public abstract class SessionServlet
                                               .toString());
                     return;
                 }
+                */
 
                 if (DEBUG) {
                     measure.stop();
                     measure.start("time to process request");
                 }
-                    
-                processRequest(asreq, response);
 
+                if (events)
+                    processRequest(asreq, response);
 
-                //                externalizeManager schreibt Resource
-                DynamicResource resource = 
-                    (DynamicResource)extManager.getExternalizedObject(request.getResource());
+                // invalidate frames and resources
+                if (events)
+                    getSession().getReloadManager().invalidateResources();
 
-                if ( resource==null ) 
-                    resource = getFrame().getDynamicResource(DynamicCodeResource.class);
-                    
-                extManager.deliver(resource.getId(), response);
+                // deliver resource
+                // the externalizer is able to handle static and dynamic resources
+                ExternalizeManager extManager = getSession().getExternalizeManager();
+                String pathInfo = req.getPathInfo().substring(1);
+                System.err.println("pathInfo: " + pathInfo);
+
+                // no pathInfo .. getFrame()
+                if (pathInfo == null || pathInfo.length() == 0){
+                    debug("delivering default frame");
+
+                    DynamicResource resource
+                        = (DynamicResource)getFrame().getDynamicResource(DynamicCodeResource.class);
+                    extManager.deliver(resource.getId(), response);
+                }
+                else
+                    extManager.deliver(pathInfo, response);
 
                 if (DEBUG) {
                     measure.stop();
                     debug(measure.print());
                     measure.reset();
                 }
-
             }
             catch (Exception e) {
                 handleException(req, response, e);
@@ -621,18 +622,12 @@ public abstract class SessionServlet
         }
     }
 
-    protected void prepareRequest(HttpServletRequest req,
-                                  HttpServletResponse response) {
-    }
+    protected void prepareRequest(HttpServletRequest req, HttpServletResponse response) {}
 
-    protected void processRequest(HttpServletRequest req,
-                                  HttpServletResponse response)
-        throws ServletException, IOException {
-    }
+    protected void processRequest(HttpServletRequest req, HttpServletResponse response)
+        throws ServletException, IOException {}
 
-    protected void finalizeRequest(HttpServletRequest req,
-                                   HttpServletResponse response) {
-    }
+    protected void finalizeRequest(HttpServletRequest req, HttpServletResponse response) {}
 
     // Exception Handling
 
@@ -642,10 +637,7 @@ public abstract class SessionServlet
 
     private SLabel errorMessageLabel;
 
-    protected void handleException(HttpServletRequest req,
-                                   HttpServletResponse res,
-                                   Exception e)
-    {
+    protected void handleException(HttpServletRequest req, HttpServletResponse res, Exception e) {
         try {
             if (errorFrame == null) {
                 errorFrame = new SFrame();
@@ -768,7 +760,7 @@ public abstract class SessionServlet
     }
 
 
-    private static final void debug(String msg) {
+    public static final void debug(String msg) {
         if (DEBUG) {
             DebugUtil.printDebugMessage(SessionServlet.class, msg);
         }

@@ -50,7 +50,7 @@ public class CSSStyleSheet
 	Iterator iterator = map.entrySet().iterator();
 	while (iterator.hasNext()) {
 	    Map.Entry entry = (Map.Entry)iterator.next();
-	    writer.write((String)entry.getValue());
+	    writer.write((String)entry.getKey());
 	    writer.write(" { ");
 	    writer.write(entry.getValue().toString());
 	    writer.write(" }");

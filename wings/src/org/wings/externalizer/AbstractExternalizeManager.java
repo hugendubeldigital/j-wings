@@ -349,19 +349,18 @@ public abstract class AbstractExternalizeManager
      *
      * @return a URL for accessing the externalized object relative to the base URL.
      */
-    public String externalize(ExternalizedInfo extInfo)
-    {
+    public String externalize(ExternalizedInfo extInfo) {
         String identifier = (String)reverseExternalized.get(extInfo);
-        
-        if ( identifier==null ) {
+
+        if (identifier == null) {
             identifier = createIdentifier();
-            
-            String extension = extInfo.getExtension();
-            if ( extension!=null )
-                identifier += "." + extension;
             
             storeExternalizedInfo(identifier, extInfo);
             reverseExternalized.put(extInfo, identifier);
+
+            String extension = extInfo.getExtension();
+            if (extension != null)
+                identifier += ("." + extension);
         }
 
         return identifier + sessionEncoding;
@@ -375,7 +374,11 @@ public abstract class AbstractExternalizeManager
      */
     public String getId(String url)
     {
-        return url.substring(0, url.length()-sessionEncoding.length());
+        String result = url.substring(0, url.length()-sessionEncoding.length());
+        int pos = result.lastIndexOf(".");
+        if (pos >= 0)
+            result = result.substring(0, pos);
+        return result;
     }
 
 

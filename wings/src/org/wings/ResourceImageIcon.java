@@ -38,7 +38,9 @@ import org.wings.externalizer.ExternalizeManager;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class ResourceImageIcon extends Resource implements SIcon
+public class ResourceImageIcon
+    extends StaticResource
+    implements SIcon
 {
     /**
      * TODO: documentation
@@ -69,7 +71,8 @@ public class ResourceImageIcon extends Resource implements SIcon
         if (extension == null || extension.length() == 0) {
             extension = "";
             mimeType = "image/png";
-        } else  if (extension.toUpperCase().equals("JPG"))
+        }
+        else if (extension.toUpperCase().equals("JPG"))
             mimeType = "image/jpeg";
         else
             mimeType = "image/" + extension;
@@ -102,6 +105,10 @@ public class ResourceImageIcon extends Resource implements SIcon
 
     public int getIconHeight() {
         return height;
+    }
+
+    public String getURL() {
+        return getRequestURL().toString();
     }
 }
 

@@ -265,13 +265,6 @@ public abstract class WingServlet extends HttpServlet
     /**
      * returns, whether this request is to serve an externalize request.
      */
-    protected boolean isExternalizeRequest(HttpServletRequest request) {
-        return isSystemExternalizeRequest(request);
-    }
-
-    /**
-     * returns, whether this request is to serve an externalize request.
-     */
     protected boolean isSystemExternalizeRequest(HttpServletRequest request) {
         String pathInfo = request.getPathInfo();
 
@@ -298,29 +291,6 @@ public abstract class WingServlet extends HttpServlet
         }
     }
     
-    /**
-     * returns the last modification of an externalized resource to allow the
-     * browser to cache it. The 'normal' output of this servlet cannot be
-     * cached, so this method returns '-1' if this is not an externalize
-     * request.
-     */
-    protected long getLastModified(HttpServletRequest req) {
-        try {
-            if ( isExternalizeRequest(req) ) {
-                ExternalizedInfo info = getExternalizeManager(req).
-                    getExternalizedInfo(req.getPathInfo().substring(1));
-                
-                if (info == null) {
-                    debug ("info is null!");
-                    return -1;
-                }
-                return info.getLastModified();
-            }
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
     
     /**
      * TODO: documentation
@@ -359,15 +329,19 @@ public abstract class WingServlet extends HttpServlet
             }
 
             /*
-             * we either have a request for externalization
-             * (if there is something in the path info) or just a normal
-             * request to this servlet.
+             * we either have a request for the system externalizer
+             * (if there is something in the path info, that starts with '-')
+             * or just a normal request to this servlet.
              */
-            if (isExternalizeRequest(req)) {
-                getExternalizeManager(req).deliver(pathInfo.substring(1), response);
+            if (isSystemExternalizeRequest(req)) {
+                System.err.println("system externalizer");
+                SystemExternalizeManager.getSharedInstance().deliver(pathInfo.substring(1), response);
                 return;
             }
-        
+
+            if (DEBUG)
+                log("session servlet");
+            
             SessionServlet sessionServlet = null;
             synchronized (initializer) {
                 sessionServlet = getSessionServlet(req, response);

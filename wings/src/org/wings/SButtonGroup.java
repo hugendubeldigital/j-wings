@@ -183,8 +183,8 @@ public class SButtonGroup
         if ( buttons!=null && buttons.size()>0 ) {
             SCheckBox b = (SCheckBox)buttons.get(0);
             if (b.getParentFrame() != null)
-                return b.getParentFrame().getUniquePrefix() + SConstants.UID_DIVIDER
-                    + unifiedId + SConstants.UID_DIVIDER;
+                return b.getParentFrame().getEventEpoch() + SConstants.UID_DIVIDER +
+                    getUnifiedId(); // + SConstants.UID_DIVIDER;
         }
         return unifiedId + SConstants.UID_DIVIDER;
     }

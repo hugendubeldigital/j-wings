@@ -31,7 +31,7 @@ import org.wings.session.SessionManager;
  */
 public final class SRequestDispatcher
 {
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     private final HashMap listener = new HashMap();
 
@@ -78,7 +78,7 @@ public final class SRequestDispatcher
             return;
 
         String key = gl.getNamePrefix();
-        key = key.substring(key.indexOf(SConstants.UID_DIVIDER)+1);
+        key = key.substring(key.indexOf(SConstants.UID_DIVIDER) + 1);
 
         debug("register " + key);
         addRequestListener(gl, key);
@@ -123,21 +123,21 @@ public final class SRequestDispatcher
         boolean erg = false;
 
         int dividerIndex = name.indexOf(SConstants.UID_DIVIDER);
-        String prefix = null;
+        String epoch = null;
 
         // kein Alias
         if (dividerIndex > 0) {
-            prefix = name.substring(0, dividerIndex);
-            name = name.substring(dividerIndex+1);
+            epoch = name.substring(0, dividerIndex);
+            name = name.substring(dividerIndex + 1);
 
             // make ImageButtons work in Forms ..
-            if (name.endsWith(".x") || name.endsWith(".X"))
-                name = name.substring(0, name.length()-2);
+            if (epoch.endsWith(".x") || epoch.endsWith(".X"))
+                epoch = epoch.substring(0, epoch.length()-2);
 
             if ( DEBUG ) {
-                System.out.print("dispatch " + prefix +
+                System.out.print("dispatch " + epoch +
                                  SConstants.UID_DIVIDER + name + " : ");
-                System.out.print("prefix " + prefix + " , ");
+                System.out.print("epoch " + epoch + " , ");
                 System.out.print("name " + name + " , ");
                 for ( int i=0; i<values.length; i++ )
                     System.out.print(values[i] + " , ");
@@ -149,14 +149,16 @@ public final class SRequestDispatcher
         if (l != null) {
             RequestListener gl = (RequestListener)l.get(0);
             SFrame frame = ((SComponent)gl).getParentFrame();
-            if (prefix != null && !prefix.equals(frame.getUniquePrefix())) {
-                debug("parameter '" + name + "' is out of date");
+            if (epoch != null && !epoch.equals(frame.getEventEpoch())) {
                 // do not fire those outdated events but enforce immediate reload of the frame
-                System.err.println("outdated events from frame " + frame.getTitle());
-                //                SessionManager.getSession().getReloadManager().markDirty(frame);
-                // hack! We claim, that we have fired events although we haven't, because we want
-                // send the reload manager frame, not the frameset
-                return true;
+                debug("got outdated event '" + epoch + "_" + name + "' from frame '" +
+                      frame.getTitle() + "' (" + frame.getUnifiedId() + ") " + frame.getEventEpoch());
+
+                // make sure, the outdated frame is reloaded
+                // this hack should not be required anymore, since the externalizer supports
+                // dynamic resources now
+                // SessionManager.getSession().getReloadManager().markDirty(frame.getDynamicResource(DynamicCodeResource.class));
+                return false;
             }
 
             for (int i=0; i<l.size(); i++) {

@@ -42,7 +42,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
         new ImageExternalizer(ImageExternalizer.FORMAT_GIF),
         new ImageIconExternalizer(ImageExternalizer.FORMAT_PNG),
         new ImageIconExternalizer(ImageExternalizer.FORMAT_GIF),
-        new ResourceExternalizer(),
+        new StaticResourceExternalizer(),
         new TextExternalizer(),
         new TextExternalizer("text/html", "html"),
         new StyleSheetExternalizer(),
@@ -112,7 +112,15 @@ public class ExternalizeManager extends AbstractExternalizeManager
     public final ExternalizedInfo getExternalizedInfo(String identifier) {
         if ( identifier == null || identifier.length() < 1 )
             return null;
-        
+
+        int pos = identifier.indexOf(org.wings.SConstants.UID_DIVIDER);
+        if (pos > -1)
+            identifier = identifier.substring(pos + 1);
+
+        pos = identifier.indexOf(".");
+        if (pos > -1)
+            identifier = identifier.substring(0, pos);
+
         // SystemExternalizeManager hat negative Identifier
         if ( identifier.charAt(0) == '-' ) {
             return SystemExternalizeManager.getSharedInstance().

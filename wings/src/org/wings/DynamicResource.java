@@ -32,17 +32,8 @@ import org.wings.session.SessionManager;
  * epoch here.
  */
 public abstract class DynamicResource
+    extends Resource
 {
-    /**
-     *
-     */
-    protected String extension;
-
-    /**
-     *
-     */
-    protected String mimeType;
-
     /**
      *
      */
@@ -54,38 +45,25 @@ public abstract class DynamicResource
     private String epochCache = StringUtil.toShortestAlphaNumericString(epoch);
 
     /**
-     * The frame this DynamicResource belongs to.
-     */
-    private final SFrame frame;
-
-    /**
      *
      */
-    private RequestURL requestURL;
-
-    /**
-     * The externalized ID of the frame.
-     */
-    private final String id;
+    private SFrame frame;
 
     /**
      *
      */
     public DynamicResource(SFrame frame) {
       this(frame, "", "");
-    } 
+    }
 
     /**
      *
      */
     public DynamicResource(SFrame frame, String extension, String mimeType) {
+        super(extension, mimeType);
         this.frame = frame;
-        this.extension = extension;
-        this.mimeType = mimeType;
 
-        // nur Id, ohne session Encoding!
-        id = frame.getExternalizeManager().getId(frame.getExternalizeManager().externalize(this));
-        System.err.println("Externalize DynamicResource " + id);
+        System.err.println("Externalize DynamicResource " + getId());
     }
 
     /**
@@ -102,28 +80,12 @@ public abstract class DynamicResource
      */
     public final void invalidate() {
         epochCache = StringUtil.toShortestAlphaNumericString(++epoch);
-    }
-    
-    /**
-     *
-     */
-    public final String getId() {
-        return id;
-    }
-
-    /**
-     * returns the file extension of the given object. Some (old) browsers use
-     * this information instead of the mime type
-     */
-    public final String getExtension() {
-        return extension;
-    }
-
-    /**
-     * returns the mime type of the given object
-     */
-    public final String getMimeType() {
-        return mimeType;
+        if (org.wings.servlet.SessionServlet.DEBUG) {
+            String name = getClass().getName();
+            name = name.substring(name.lastIndexOf(".") + 1);
+            System.err.println("[" + name + "] " +
+                               "invalidate - epoch: " + epochCache);
+        }
     }
 
     /**
@@ -139,7 +101,7 @@ public abstract class DynamicResource
      * @return
      */
     public String toString() {
-        return mimeType + " " + getEpoch();
+        return getId() + " " + getEpoch();
     }
 
 
@@ -166,18 +128,9 @@ public abstract class DynamicResource
     /**
      *
      */
-    public void setRequestURL(RequestURL r) {
-        requestURL = r;
-    }
-
-    /**
-     *
-     */
     public RequestURL getRequestURL() {
-        RequestURL result =  (RequestURL)requestURL.clone();
+        RequestURL result = super.getRequestURL();
         result.setEpoch(getEpoch());
-        result.setContext(getId());
-        
         return result;
     }
 
@@ -185,7 +138,6 @@ public abstract class DynamicResource
      *
      */
     public abstract void write(Device out) throws IOException;
-    
 }
 
 /*

@@ -18,7 +18,7 @@ import java.io.*;
 import java.net.*;
 import java.util.Set;
 
-import org.wings.Resource;
+import org.wings.*;
 
 /**
  * TODO: documentation
@@ -26,7 +26,8 @@ import org.wings.Resource;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class ResourceStyleSheet extends Resource
+public class ResourceStyleSheet
+    extends StaticResource
 {
 
     /**

@@ -16,7 +16,7 @@ package org.wings.externalizer;
 
 import java.io.InputStream;
 
-import org.wings.Resource;
+import org.wings.StaticResource;
 
 /**
  * TODO: documentation
@@ -25,28 +25,28 @@ import org.wings.Resource;
  * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
  * @version $Revision$
  */
-public class ResourceExternalizer
+public class StaticResourceExternalizer
     implements Externalizer
 {
-    private static final Class[] SUPPORTED_CLASSES = { Resource.class };
+    private static final Class[] SUPPORTED_CLASSES = { StaticResource.class };
 
     public String getExtension(Object obj) {
         if ( obj!=null )
-            return ((Resource)obj).getExtension();
+            return ((StaticResource)obj).getExtension();
         else 
             return "";
     }
 
     public String getMimeType(Object obj) {
         if ( obj!=null )
-            return ((Resource)obj).getMimeType();
+            return ((StaticResource)obj).getMimeType();
         else 
             return "unknown";
     }
 
     public int getLength(Object obj) {
         if ( obj!=null )
-            return ((Resource)obj).getLength();
+            return ((StaticResource)obj).getLength();
         return -1;
     }
 
@@ -57,7 +57,7 @@ public class ResourceExternalizer
     public void write(Object obj, java.io.OutputStream out)
         throws java.io.IOException
     {
-        ((Resource)obj).write(out);
+        ((StaticResource)obj).write(out);
     }
 
     public Class[] getSupportedClasses() {
@@ -76,6 +76,5 @@ public class ResourceExternalizer
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
- * compile-command: "ant -emacs -find build.xml"
  * End:
  */

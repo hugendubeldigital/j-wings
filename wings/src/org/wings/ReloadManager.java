@@ -38,6 +38,7 @@ import org.wings.externalizer.ExternalizeManager;
  */
 public interface ReloadManager
 {
+    void reload(SComponent component, int aspect);
 
     /**
      * Mark a <code>component</code> dirty.
@@ -50,17 +51,14 @@ public interface ReloadManager
      * Return an array of all dirty components.
      * @return an array of all dirty components
      */
-    Set getDirtyResources(Class resourceType);
-
-    /**
-     * Clear dirts components list.
-     */
-    void clear(Class resourceType);
+    Set getDirtyResources();
 
     /**
      * Clear dirts components list.
      */
     void clear();
+
+    void invalidateResources();
 }
 
 /*

@@ -27,13 +27,17 @@ public class SLink
     extends SComponent
 {
     protected String rel = null;
+    protected String rev = null;
     protected String type = null;
-    protected String hRef = null;
+    protected String target = null;
+    protected Object href = null;
 
-    public SLink(String rel, String type, String hRef) {
+    public SLink(String rel, String rev, String type, String target, Object href) {
 	this.rel = rel;
+	this.rev = rev;
 	this.type = type;
-	this.hRef = hRef;
+	this.target = target;
+	this.href = href;
     }
 
     public void setRel(String rel) {
@@ -41,31 +45,67 @@ public class SLink
     }
     public String getRel() { return rel; }
 
+    public void setRev(String rev) {
+	this.rev = rev;
+    }
+    public String getRev() { return rev; }
+
     public void setType(String type) {
 	this.type = type;
     }
     public String getType() { return type; }
 
-    public void setHRef(String hRef) {
-	this.hRef = hRef;
+    public void setHref(Object href) {
+	this.href = href;
     }
-    public String getHRef() { return hRef; }
+    public Object getHref() { return href; }
+
+    public void setTarget(String target) {
+	this.target = target;
+    }
+    public String getTarget() { return target; }
 
     /**
-     * Write the link tag to the device.
+     * Write the a/link tag to the device.
      *
      * @param s the Device to write into
      * @throws IOException thrown when the connection to the client gets broken,
      *         for example when the user stops loading
      */
     public void write(Device d) throws IOException {
-	d.append("<link rel=\"");
-	d.append(rel);
-	d.append("\" type=\"");
-	d.append(type);
-	d.append("\" href=\"");
-	d.append(hRef);
-	d.append("\"/>\n");
+	d.append("<link");
+        if (rel != null)
+            d.append(" rel=\"")
+                .append(rel)
+                .append("\"");
+
+        if (rev != null)
+            d.append(" rev=\"")
+                .append(rev)
+                .append("\"");
+
+        if (type != null)
+            d.append(" type=\"")
+                .append(type)
+                .append("\"");
+
+        if (href != null) {
+            d.append(" href=\"");
+
+            if (href instanceof Resource)
+                ((Resource)href).getRequestURL().write(d);
+            else if (href instanceof String)
+                d.append((String)href);
+
+            d.append("\"");
+        }
+
+        if (target != null)
+            d.append(" target=\"")
+                .append(target)
+                .append("\"");
+
+	d.append("/>\n");
     }
 }
 

@@ -14,13 +14,11 @@ public class SFrameBeanInfo extends SimpleBeanInfo
     public PropertyDescriptor[] getPropertyDescriptors() {
 	try {
 	    PropertyDescriptor resizable       = new PropertyDescriptor("resizable", beanClass);
-	    PropertyDescriptor backgroundURL  = new PropertyDescriptor("backgroundURL", beanClass);
-	    PropertyDescriptor backgroundImage  = new PropertyDescriptor("backgroundImage", beanClass);
 	    PropertyDescriptor styleSheet     = new PropertyDescriptor("styleSheet", beanClass);
 	    PropertyDescriptor statusLine     = new PropertyDescriptor("statusLine", beanClass);
 
 	    PropertyDescriptor rv[] = {
-		resizable, backgroundURL, backgroundImage,
+		resizable,
 		styleSheet, statusLine
 	    };
 	    return rv;

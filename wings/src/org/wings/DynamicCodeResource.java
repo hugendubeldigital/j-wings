@@ -28,12 +28,11 @@ import org.wings.util.StringUtil;
  */
 public class DynamicCodeResource extends DynamicResource
 {
-
     /**
      *
      */
     public DynamicCodeResource(SFrame f) {
-        super(f, "html", "text/html");
+        super(f, null, "text/html");
     }
 
     /**
@@ -42,7 +41,6 @@ public class DynamicCodeResource extends DynamicResource
     public void write(Device out) throws IOException {
         getFrame().write(out);
     }
-
 }
 
 /*

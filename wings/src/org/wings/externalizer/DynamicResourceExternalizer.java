@@ -21,12 +21,7 @@ import java.io.*;
 import java.util.Set;
 
 /**
- * Externalizes DynamicResources. Dynamic Resources are web resources
- * related to rendered components and are individually
- * be loaded by Browsers as different 'files'. Dynamic Resources include 
- * frames, cascading stylesheets or script files.
- * The resources may change in the consequence of some internal change of
- * the components.
+ * TODO: documentation
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
@@ -51,18 +46,16 @@ public class DynamicResourceExternalizer
     }
 
     public int getLength(Object obj) {
-        return -1; // dunno.
+        return -1;
     }
 
     public boolean isFinal(Object obj) {
         return true;
     }
 
-   /*  do we need this here ?
     public String getEpoch(Object obj) {
         return ((DynamicResource)obj).getEpoch();
     }
-    */
 
     public void write(Object obj, OutputStream out)
         throws IOException
@@ -85,6 +78,5 @@ public class DynamicResourceExternalizer
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
- * compile-command: "ant -emacs -find build.xml"
  * End:
  */
