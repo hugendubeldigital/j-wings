@@ -14,7 +14,10 @@
 
 package org.wings;
 
+import java.io.*;
+
 import org.wings.*;
+import org.wings.io.*;
 import org.wings.plaf.*;
 
 /**
@@ -36,94 +39,50 @@ public class SInternalFrame
      */
     protected SContainer contentPane = new SContainer();
 
-    /*
-     * Der Container fuer einen OptionPane, falls vorhanden.
-     */
-    /**
-     * TODO: documentation
-     */
-    protected final SContainer optionPaneContainer =
-        new SContainer();
-
-    /*
-     * der aktuell aktive OptionPane
-     */
-    /**
-     * TODO: documentation
-     */
-    protected SDialog optionPane = null;
-
-    /*
-     * Das Layout des Frames.
-     */
-    /**
-     * TODO: documentation
-     */
-    protected final SCardLayout card = new SCardLayout();
-
-    /*
-     * Key fuer das SCardLayout. um den OptionPane sichtbar zu machen
-     */
-    /**
-     * TODO: documentation
-     */
-    protected final String OPTION_PANEL = "option";
-
-    /*
-     * Key fuer das SCardLayout. um den ContentPane sichtbar zu machen
-     */
-    /**
-     * TODO: documentation
-     */
-    protected final String CONTENT_PANEL = "content";
-
     /**
      * TODO: documentation
      *
      */
     public SInternalFrame() {
-        super();
-        setLayout(card);
+        setLayout(new SStackLayout());
+        super.addComponent(getContentPane(), null);
+    }
 
-        super.addComponent(getContentPane(), CONTENT_PANEL);
-        super.addComponent(optionPaneContainer, OPTION_PANEL);
-        card.show(this, CONTENT_PANEL);
+
+    /**
+     * Use getContentPane().addComponent(c) instead.
+     */
+    public final SComponent addComponent(SComponent c, Object constraint) {
+        throw new IllegalArgumentException("use getContentPane().addComponent()");
     }
 
     /**
-     * Macht den OptionPane sichtbar.
+     * Use getContentPane().removeComponent(c) instead.
      */
-    public final void showOptionPane() {
-        if ( optionPane!=null ) {
-            card.show(this, OPTION_PANEL);
-            optionPane.setFrame(this);
-        }
+    public final boolean removeComponent(SComponent c) {
+        throw new IllegalArgumentException("use getContentPane().removeComponent()");
     }
 
-    /*
-     * Macht den ContentPane sichtbar.
-     */
     /**
      * TODO: documentation
      */
-    public final void showContentPane() {
-        card.show(this, CONTENT_PANEL);
-        if ( optionPane!=null )
-            optionPane.setFrame((SFrame)null);
+    public final void pushDialog(SDialog dialog) {
+        super.addComponent(dialog, null);
+        dialog.setFrame(this);
     }
 
-    /*
-     * Setzt den OptionPane neu.
-     */
     /**
      * TODO: documentation
      */
-    public final void setOptionPane(SDialog c) {
-        optionPane = c;
-        if ( optionPane!=null ) {
-            optionPaneContainer.removeAll();
-            optionPaneContainer.add(optionPane);
-        }
+    public final SDialog popDialog() {
+        int count = getComponentCount();
+        if (count <= 1)
+            throw new IllegalStateException("there's no dialog left!");
+
+        SDialog dialog = (SDialog)getComponent(count - 1);
+        super.removeComponent(dialog);
+        dialog.setFrame((SFrame)null);
+        return dialog;
     }
 
     /**
@@ -132,8 +91,6 @@ public class SInternalFrame
      * @return
      */
     public SContainer getContentPane() {
-        if ( contentPane==null )
-            contentPane = new SContainer();
         return contentPane;
     }
 
@@ -188,6 +145,39 @@ public class SInternalFrame
      */
     public String getCGClassID() {
         return cgClassID;
+    }
+
+    private class SStackLayout extends SAbstractLayoutManager
+    {
+        private SContainer container = null;
+
+        public SStackLayout() {}
+
+        public void updateCG() {}
+        public void addComponent(SComponent c, Object constraint) {}
+        public void removeComponent(SComponent c) {}
+
+        public SComponent getComponentAt(int i) {
+            return (SComponent)getComponent(i);
+        }
+
+        public void setContainer(SContainer c) {
+            container = c;
+        }
+
+        /**
+         * Allways write code for the topmost component.
+         *
+         * @param s
+         * @throws IOException
+         */
+        public void write(Device s)
+            throws IOException
+        {
+            int topmost = getComponentCount() - 1;
+            SComponent comp = (SComponent)getComponent(topmost);
+            comp.write(s);
+        }
     }
 }
 

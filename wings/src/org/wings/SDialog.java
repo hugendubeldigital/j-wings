@@ -83,29 +83,6 @@ public class SDialog
         setBorder(new SLineBorder());
     }
 
-    /*
-    public void addActionListener(ActionListener listener) {
-        listenerList.add(ActionListener.class, listener);
-    }
-
-    public void removeActionListener(ActionListener listener) {
-        listenerList.remove(ActionListener.class, listener);
-    }
-
-    protected void fireActionPerformed(ActionEvent e) {
-        // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i] == ActionListener.class) {
-                ((ActionListener)listeners[i+1]).actionPerformed(e);
-            }
-        }
-
-        listenerList = new EventListenerList();
-    }
-    */
     protected void fireActionPerformed(String state) {
         setActionCommand(state);
         //ActionEvent e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, state);
@@ -127,14 +104,10 @@ public class SDialog
      */
     public void hide() {
         if (frame != null) {
-            if (frame instanceof SFrame) {
-                ((SFrame)frame).setOptionPane(null);
-                ((SFrame)frame).showContentPane();
-            }
-            else {
-                ((SInternalFrame)frame).setOptionPane(null);
-                ((SInternalFrame)frame).showContentPane();
-            }
+            if (frame instanceof SFrame)
+                ((SFrame)frame).popDialog();
+            else
+                ((SInternalFrame)frame).popDialog();
         }
     }
 
@@ -167,17 +140,13 @@ public class SDialog
             frame = frame.getParent();
 
         if (frame == null) {
-            throw new IllegalArgumentException("No parent Frame");
+            throw new IllegalArgumentException("Component has no parent frame");
         }
 
-        if (frame instanceof SFrame) {
-            ((SFrame)frame).setOptionPane(this);
-            ((SFrame)frame).showOptionPane();
-        }
-        else {
-            ((SInternalFrame)frame).setOptionPane(this);
-            ((SInternalFrame)frame).showOptionPane();
-        }
+        if (frame instanceof SFrame)
+            ((SFrame)frame).pushDialog(this);
+        else
+            ((SInternalFrame)frame).pushDialog(this);
     }
 
     public void getPerformed(String name, String value) {}

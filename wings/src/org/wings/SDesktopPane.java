@@ -196,54 +196,20 @@ public class SDesktopPane
     {
         private SContainer container = null;
 
-        /**
-         * TODO: documentation
-         *
-         */
-        public SStackLayout() {
-        }
+        public SStackLayout() {}
 
         public void updateCG() {}
-
-        /**
-         * TODO: documentation
-         *
-         */
-        public void addComponent(SComponent c, Object constraint) {
-        }
-
-        /**
-         * TODO: documentation
-         *
-         * @param c
-         */
+        public void addComponent(SComponent c, Object constraint) {}
         public void removeComponent(SComponent c) {}
 
-        /**
-         * TODO: documentation
-         *
-         * @param i
-         * @return
-         */
         public SComponent getComponentAt(int i) {
             return (SComponent)getComponent(i);
         }
 
-        /**
-         * TODO: documentation
-         *
-         * @param c
-         */
         public void setContainer(SContainer c) {
             container = c;
         }
 
-        /**
-         * TODO: documentation
-         *
-         * @param s
-         * @throws IOException
-         */
         public void write(Device s)
             throws IOException
         {

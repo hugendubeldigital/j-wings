@@ -32,19 +32,15 @@ import org.wings.session.Session;
 import org.wings.session.SessionManager;
 
 /*
- * Die Frame Implementierung. Anders als in der Swing Implementierung
- * gibt es keinen Layered Pane (macht in HTML wenig Sinn), aber das
- * Vorgehen ist aehnlich. Es gibt einen ContentPane und einen
- * optionPane. Der normale Inhalt eines Frames wird in den Content
- * Pane gestellt, Nachrichten Dialoge (OptionPanes) in den
- * OptionPane. Je nachdem, was gerade aktiv ist wird das verwaltende
- * {@link SCardLayout} geflippt.
- */
-
-/**
- * TODO: documentation
+ * The frame is the root component in every component hierarchie.
+ * A SessionServlet requires an instance of SFrame to render the page.
+ * SFrame consists of some header informaton (metas, headers, style sheet)
+ * and a stack of components. The bottommost component of the stack is always
+ * the contentPane. When dialogs are to be shown, they are stacked on top of
+ * it.
  *
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>,
+ *         <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class SFrame
@@ -68,45 +64,20 @@ public class SFrame
      */
     protected final SContainer contentPane = new SContainer();
 
-    /**
-     * The container for the optionPane, if present.
-     */
-    protected final SContainer optionPaneContainer = new SContainer();
-
-    /**
-     * The currently active optionPane.
-     */
-    protected SDialog optionPane = null;
-
-    /**
-     * The layout.
-     */
-    protected final SCardLayout card = new SCardLayout();
-
-    /**
-     * Key in the SCardLayout that references the optionPane
-     */
-    protected final String OPTION_PANEL = "option";
-
-    /**
-     * Key in the SCardLayout that references the contentPane
-     */
-    protected final String CONTENT_PANEL = "content";
-
     SGetAddress serverAddress = new SGetAddress();
 
     /**
-     * TODO: documentation
+     * A List containing meta tags for the html header.
      */
     protected final ArrayList metas = new ArrayList(2);
 
     /**
-     * TODO: documentation
+     * A List containing additional tags for the html header.
      */
     protected final ArrayList headers = new ArrayList(2);
 
     /**
-     * TODO: documentation
+     * A List containing JavaScript code snippets to be included in the html header.
      */
     protected final ArrayList javaScript = new ArrayList(2);
 
@@ -129,7 +100,7 @@ public class SFrame
     protected boolean resizable = true;
 
     /** the style sheet used in certain look and feels. */
-    protected StyleSheet styleSheet;   // = null removed!! Do NOT add!
+    protected StyleSheet styleSheet;  // IMPORTANT: initialization with null causes severe errors
 
     /**
      * TODO: documentation
@@ -151,13 +122,8 @@ public class SFrame
      *
      */
     public SFrame() {
-        super();
-
-        setLayout(card);
-        super.addComponent(getContentPane(), CONTENT_PANEL);
-        super.addComponent(getOptionPaneContainer(), OPTION_PANEL);
-        card.show(this, CONTENT_PANEL);
-
+        super.setLayout(new SStackLayout());
+        super.addComponent(getContentPane(), null);
         getSession().addPropertyChangeListener("lookAndFeel", this);
     }
 
@@ -222,14 +188,14 @@ public class SFrame
     }
 
     /**
-     * TODO: documentation
+     * Use getContentPane().addComponent(c) instead.
      */
     public final SComponent addComponent(SComponent c, Object constraint) {
         throw new IllegalArgumentException("use getContentPane().addComponent()");
     }
 
     /**
-     * TODO: documentation
+     * Use getContentPane().removeComponent(c) instead.
      */
     public final boolean removeComponent(SComponent c) {
         throw new IllegalArgumentException("use getContentPane().removeComponent()");
@@ -279,31 +245,23 @@ public class SFrame
     /**
      * TODO: documentation
      */
-    public final void showOptionPane() {
-        if ( optionPane!=null ) {
-            card.show(this, OPTION_PANEL);
-            optionPane.setFrame(this);
-        }
+    public final void pushDialog(SDialog dialog) {
+        super.addComponent(dialog, null);
+        dialog.setFrame(this);
     }
 
     /**
      * TODO: documentation
      */
-    public final void showContentPane() {
-        card.show(this, CONTENT_PANEL);
-        if ( optionPane!=null )
-            optionPane.setFrame((SFrame)null);
-    }
+    public final SDialog popDialog() {
+        int count = getComponentCount();
+        if (count <= 1)
+            throw new IllegalStateException("there's no dialog left!");
 
-    /**
-     * TODO: documentation
-     */
-    public final void setOptionPane(SDialog c) {
-        optionPane = c;
-        if ( optionPane!=null ) {
-            optionPaneContainer.removeAll();
-            optionPaneContainer.add(optionPane);
-        }
+        SDialog dialog = (SDialog)getComponent(count - 1);
+        super.removeComponent(dialog);
+        dialog.setFrame((SFrame)null);
+        return dialog;
     }
 
     /**
@@ -311,10 +269,6 @@ public class SFrame
      */
     public final SContainer getContentPane() {
         return contentPane;
-    }
-
-    public final SContainer getOptionPaneContainer() {
-        return optionPaneContainer;
     }
 
     /**
@@ -575,6 +529,39 @@ public class SFrame
      */
     public String getCGClassID() {
         return cgClassID;
+    }
+
+    private class SStackLayout extends SAbstractLayoutManager
+    {
+        private SContainer container = null;
+
+        public SStackLayout() {}
+
+        public void updateCG() {}
+        public void addComponent(SComponent c, Object constraint) {}
+        public void removeComponent(SComponent c) {}
+
+        public SComponent getComponentAt(int i) {
+            return (SComponent)container.getComponent(i);
+        }
+
+        public void setContainer(SContainer c) {
+            container = c;
+        }
+
+        /**
+         * Allways write code for the topmost component.
+         *
+         * @param s
+         * @throws IOException
+         */
+        public void write(Device s)
+            throws IOException
+        {
+            int topmost = container.getComponentCount() - 1;
+            SComponent comp = (SComponent)container.getComponent(topmost);
+            comp.write(s);
+        }
     }
 }
 

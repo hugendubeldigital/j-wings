@@ -274,14 +274,10 @@ public class SOptionPane
      */
     public void actionPerformed(ActionEvent e) {
         if (frame != null) {
-            if (frame instanceof SFrame) {
-                ((SFrame)frame).setOptionPane(null);
-                ((SFrame)frame).showContentPane();
-            }
-            else {
-                ((SInternalFrame)frame).setOptionPane(null);
-                ((SInternalFrame)frame).showContentPane();
-            }
+            if (frame instanceof SFrame)
+                ((SFrame)frame).popDialog();
+            else
+                ((SInternalFrame)frame).popDialog();
         }
 
         selected = e.getSource();
@@ -417,14 +413,10 @@ public class SOptionPane
             throw new IllegalArgumentException("No parent Frame");
         }
 
-        if (frame instanceof SFrame) {
-            ((SFrame)frame).setOptionPane(this);
-            ((SFrame)frame).showOptionPane();
-        }
-        else {
-            ((SInternalFrame)frame).setOptionPane(this);
-            ((SInternalFrame)frame).showOptionPane();
-        }
+        if (frame instanceof SFrame)
+            ((SFrame)frame).pushDialog(this);
+        else
+            ((SInternalFrame)frame).pushDialog(this);
 
         optionTitle.setText(title);
 
