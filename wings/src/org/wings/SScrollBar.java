@@ -40,6 +40,7 @@ import org.wings.io.Device;
  */
 public class SScrollBar
     extends SAbstractAdjustable
+    implements RequestListener
 {
     /**
      * @see #getCGClassID
@@ -52,56 +53,68 @@ public class SScrollBar
      */
     private static final int FORWARD = 0;
     private static final int BACKWARD = 1;
+    private static final int FORWARD_BLOCK = 2;
+    private static final int BACKWARD_BLOCK = 3;
+    public static final int FIRST = 4;
+    public static final int LAST = 5;
 
-    // Jeweils 3 Buttons fuer jede Richtung (FORWARD und BACKWARD)
-    transient protected SAbstractButton[][] buttons = new SAbstractButton[3][2];
+    /** contains the clickables forward, backward, blockforward, blockbackward, 
+        first, last */
+    protected SClickable[] clickables = new SClickable[6];
 
-    // 2 Orientierungen, 3 Typen (Unit, Block, Margin), 2 Richtungen (FORWARD,
-    // BACKWARD) und jeweils enabled und disabled.
-    private final static SIcon[][][][] DEFAULT_ICONS =
-        new SIcon[2][3][2][SAbstractButton.ICON_COUNT];
+    // 2 orientations, 6 directions (FORWARD, BACKWARD,...) 
+    // and the Icons
+    private final static SIcon[][][] DEFAULT_ICONS =
+        new SIcon[2][6][SClickable.ICON_COUNT];
 
     // Initialisiert (laedt) die Default Images
     static {
-        String[] prefixes = {"", "Block", "Margin"};
-        String[] postfixes = new String[2];
+        String[] postfixes = new String[6];
+        String[] prefixes = new String[6];
         for ( int orientation=0; orientation<2; orientation++ ) {
-            for ( int style=0; style<prefixes.length; style++ ) {
-                if ( orientation==SConstants.VERTICAL ) {
-                    postfixes[BACKWARD] = "Up";
-                    postfixes[FORWARD] = "Down";
-                }
-                else {
-                    postfixes[BACKWARD] = "Left";
-                    postfixes[FORWARD] = "Right";
-                }
+            prefixes[BACKWARD] = "";
+            prefixes[FORWARD] = "";
+            prefixes[FIRST] = "Margin";
+            prefixes[LAST] = "Margin";
+            prefixes[FORWARD_BLOCK] = "Block";
+            prefixes[BACKWARD_BLOCK] = "Block";
+            if ( orientation==SConstants.VERTICAL ) {
+                postfixes[BACKWARD] = "Up";
+                postfixes[FORWARD] = "Down";
+                postfixes[FIRST] = "Up";
+                postfixes[LAST] = "Down";
+                postfixes[BACKWARD_BLOCK] = "Up";
+                postfixes[FORWARD_BLOCK] = "Down";
+            } else {
+                postfixes[BACKWARD] = "Left";
+                postfixes[FORWARD] = "Right";
+                postfixes[FIRST] = "Left";
+                postfixes[LAST] = "Right";
+                postfixes[BACKWARD_BLOCK] = "Left";
+                postfixes[FORWARD_BLOCK] = "Right";
+            }
 
-                for ( int direction=0; direction<postfixes.length; direction++ ) {
-                    DEFAULT_ICONS[orientation][style][direction][SAbstractButton.ENABLED_ICON] =
-                        new ResourceImageIcon("org/wings/icons/" 
-                                              + prefixes[style] + "Scroll"
-                                              + postfixes[direction] + ".gif");
-
-                    DEFAULT_ICONS[orientation][style][direction][SAbstractButton.DISABLED_ICON] =
-                        new ResourceImageIcon("org/wings/icons/Disabled" 
-                                              + prefixes[style] + "Scroll"
-                                              + postfixes[direction] + ".gif");
-
-                    DEFAULT_ICONS[orientation][style][direction][SAbstractButton.PRESSED_ICON] =
-                        new ResourceImageIcon("org/wings/icons/Pressed" 
-                                              + prefixes[style] + "Scroll"
-                                              + postfixes[direction] + ".gif");
-
-                    DEFAULT_ICONS[orientation][style][direction][SAbstractButton.ROLLOVER_ICON] =
-                        new ResourceImageIcon("org/wings/icons/Rollover" 
-                                              + prefixes[style] + "Scroll"
-                                              + postfixes[direction] + ".gif");
-
-                    DEFAULT_ICONS[orientation][style][direction][SAbstractButton.ROLLOVER_SELECTED_ICON] =
-                        new ResourceImageIcon("org/wings/icons/RolloverSelected" 
-                                              + prefixes[style] + "Scroll"
-                                              + postfixes[direction] + ".gif");
-                }
+            for ( int direction=0; direction<postfixes.length; direction++ ) {
+                DEFAULT_ICONS[orientation][direction][SClickable.ENABLED_ICON] =
+                    new ResourceImageIcon("org/wings/icons/"
+                                          + prefixes[direction]
+                                          + "Scroll"
+                                          + postfixes[direction] + ".gif");
+                DEFAULT_ICONS[orientation][direction][SClickable.DISABLED_ICON] =
+                    new ResourceImageIcon("org/wings/icons/Disabled" 
+                                          + prefixes[direction]
+                                          + "Scroll"
+                                          + postfixes[direction] + ".gif");
+                DEFAULT_ICONS[orientation][direction][SClickable.PRESSED_ICON] =
+                    new ResourceImageIcon("org/wings/icons/Pressed"
+                                          + prefixes[direction]
+                                          + "Scroll"
+                                          + postfixes[direction] + ".gif");
+                DEFAULT_ICONS[orientation][direction][SClickable.ROLLOVER_ICON] =
+                    new ResourceImageIcon("org/wings/icons/Rollover"
+                                          + prefixes[direction]
+                                          + "Scroll"
+                                          + postfixes[direction] + ".gif");
             }
         }
     }
@@ -128,7 +141,10 @@ public class SScrollBar
     public SScrollBar(int orientation, int value, int extent, int min, int max) {
         super(value, extent, min, max);
 
-        initScrollers();
+        for ( int i=0; i<clickables.length; i++ ) {
+            clickables[i] = new SClickable();
+            clickables[i].setRequestTarget(this);
+        }
 
         setOrientation(orientation);
     }
@@ -166,32 +182,85 @@ public class SScrollBar
      *
      */
     public void resetIcons() {
-        for ( int style=0; style<DEFAULT_ICONS[orientation].length; style++ ) {
-            for ( int direction=0; direction<DEFAULT_ICONS[orientation][style].length;
-                  direction++ ) {
-                buttons[style][direction].setIcons(DEFAULT_ICONS[orientation][style][direction]);
-            }
-        }
+        for ( int i=0; i<clickables.length; i++ ) {
+            clickables[i].setIcons(DEFAULT_ICONS[orientation][i]);
+        } 
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param style
-     */
-    public void addStyle(int style) {
-        for ( int i=0; i<buttons[style].length; i++ )
-            buttons[style][i].setVisible(true);
+     * to set your favorite icons and text of the clickable. Icons will be
+     * reset to default, if you change the layout mode {@link #setLayoutMode}
+     * @see FORWARD
+     * @see BACKWARD
+     * @see FORWARD_BLOCK
+     * @see BACKWARD+BLOCK
+     * @see FIRST
+     * @see LAST
+     **/
+    public SClickable getClickable(int clickable) {
+        return clickables[clickable];
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param style
-     */
-    public void removeStyle(int style) {
-        for ( int i=0; i<buttons[style].length; i++ )
-            buttons[style][i].setVisible(false);
+     * Are margin buttons visible
+     * @see FIRST
+     * @see LAST
+     **/
+    public final boolean isMarginVisible() {
+        return clickables[FIRST].isVisible()  ||
+            clickables[LAST].isVisible();
+    }
+
+    /**
+     * Are margin buttons visible
+     * @see FIRST
+     * @see LAST
+     **/
+    public final void setMarginVisible(boolean b) {
+        clickables[FIRST].setVisible(b);
+        clickables[LAST].setVisible(b);
+    }
+
+
+    /**
+     * Are step buttons visible
+     * @see FORWARD
+     * @see BACKWARD
+     **/
+    public final boolean isStepVisible() {
+        return clickables[BACKWARD].isVisible()  ||
+            clickables[FORWARD].isVisible();
+    }
+
+
+    /**
+     * Are step buttons visible
+     * @see FORWARD
+     * @see BACKWARD
+     **/
+    public final void setStepVisible(boolean b) {
+        clickables[FORWARD].setVisible(b);
+        clickables[BACKWARD].setVisible(b);
+    }
+
+    /**
+     * Are block buttons visible
+     * @see FORWARD_BLOCK
+     * @see BACKWARD_BLOCK
+     **/
+    public final void setBlockVisible(boolean b) {
+        clickables[FORWARD_BLOCK].setVisible(b);
+        clickables[BACKWARD_BLOCK].setVisible(b);
+    }
+
+    /**
+     * Are block buttons visible
+     * @see FORWARD_BLOCK
+     * @see BACKWARD_BLOCK
+     **/
+    public final boolean isBlockVisible() {
+        return clickables[BACKWARD_BLOCK].isVisible()  ||
+            clickables[FORWARD_BLOCK].isVisible();
     }
 
     public void setOrientation(int orientation) {
@@ -202,106 +271,36 @@ public class SScrollBar
 
     /**
      * TODO: documentation
-     */
-    protected final ActionListener scrollerAction = new ActionListener() {
-        /**
-         * TODO: documentation
-         *
-         * @param e
-         */
-        public void actionPerformed(ActionEvent e) {
-            model.setValueIsAdjusting(true);
-            int change = 0;
-            if ( e.getSource() == buttons[UNIT][FORWARD] ) {
-                change = unitIncrement;
-            }
-            else if ( e.getSource() == buttons[BLOCK][FORWARD] ) {
-                change = blockIncrement;
-            }
-            else if ( e.getSource() == buttons[MARGIN][FORWARD] ) {
-                model.setValue(model.getMaximum()-model.getExtent());
-            }
-            else if ( e.getSource() == buttons[UNIT][BACKWARD] ) {
-                change = -unitIncrement;
-            }
-            else if ( e.getSource() == buttons[BLOCK][BACKWARD] ) {
-                change = -blockIncrement;
-            }
-            else if ( e.getSource() == buttons[MARGIN][BACKWARD] ) {
-                model.setValue(model.getMinimum());
-            }
-
-            model.setValue(model.getValue()+change);
-            model.setValueIsAdjusting(false);
-        }
-    };
-
-    /**
-     * TODO: documentation
-     *
-     */
-    protected void initScrollers() {
-        for ( int i=0; i<buttons.length; i++ ) {
-            buttons[i][FORWARD] = new SButton();
-            buttons[i][FORWARD].addActionListener(scrollerAction);
-            buttons[i][BACKWARD] = new SButton();
-            buttons[i][BACKWARD].addActionListener(scrollerAction);
-        }
-    }
-
-    /**
-     * TODO: documentation
      *
      */
     protected void initLayout()
     {
-    /*
-	*/
         removeAllComponents();
+
+
         SPanel backward = null;
         SPanel forward = null;
         if ( orientation == SConstants.VERTICAL) {
             backward = new SPanel(new SFlowDownLayout() );
             add( backward );
-
+            
             forward = new SPanel(new SFlowDownLayout() );
             add( forward );
-        }
-        else {
+        } else {
             backward = new SPanel(new SFlowLayout() );
             add( backward );
-
+            
             forward = new SPanel(new SFlowLayout() );
             add( forward );
         }
 
-        for ( int i=0; i<buttons.length; i++ )
-        {
-            forward.add(buttons[i][FORWARD]);
-            backward.add(buttons[buttons.length-i-1][BACKWARD]);
-        }
-    }
+        backward.add(clickables[FIRST]);
+        backward.add(clickables[BACKWARD_BLOCK]);
+        backward.add(clickables[BACKWARD]);
 
-    /**
-     * TODO: documentation
-     *
-     */
-    protected void setScrollButtonStatus() {
-        for ( int i=0; i<buttons.length; i++ ) {
-            if ( model.getValue() == model.getMinimum() ) {
-                buttons[i][BACKWARD].setEnabled(false);
-            }
-            else {
-                buttons[i][BACKWARD].setEnabled(true);
-            }
-
-            if ( model.getValue()+model.getExtent() == model.getMaximum() ) {
-                buttons[i][FORWARD].setEnabled(false);
-            }
-            else {
-                buttons[i][FORWARD].setEnabled(true);
-            }
-        }
+        forward.add(clickables[FORWARD]);
+        forward.add(clickables[FORWARD_BLOCK]);
+        forward.add(clickables[LAST]);
     }
 
     /**
@@ -309,8 +308,52 @@ public class SScrollBar
      *
      */
     protected void refreshComponents() {
-        setScrollButtonStatus();
+        // lower bound
+        clickables[BACKWARD].setEnabled(getValue() > getMinimum());
+        clickables[FIRST].setEnabled(clickables[BACKWARD].isEnabled());
+        clickables[BACKWARD_BLOCK].setEnabled(clickables[BACKWARD].isEnabled());
+
+        if ( clickables[BACKWARD].isEnabled() ) {
+            clickables[BACKWARD].setEvent(getEventParameter(getValue()-1));
+            int first = getMinimum();
+            clickables[FIRST].setEvent(getEventParameter(first));
+            int blockValue = Math.min(first,
+                                      getValue()-getBlockIncrement());
+            clickables[BACKWARD_BLOCK].setEvent(getEventParameter(blockValue));
+        }
+
+        // upper bound: maximum - extent
+        clickables[FORWARD].setEnabled(getValue() < getMaximum()-getExtent());
+        clickables[LAST].setEnabled(clickables[FORWARD].isEnabled());
+        clickables[FORWARD_BLOCK].setEnabled(clickables[FORWARD].isEnabled());
+
+        if ( clickables[FORWARD].isEnabled() ) {
+            clickables[FORWARD].setEvent(getEventParameter(getValue()+1));
+            int last = getMaximum()-getExtent();
+            clickables[LAST].setEvent(getEventParameter(last));
+            int blockValue = Math.min(last,
+                                      getValue()+getBlockIncrement());
+            clickables[FORWARD_BLOCK].setEvent(getEventParameter(blockValue));
+        }
     }
+
+    protected String getEventParameter(int value) {
+        return Integer.toString(value);
+    }
+
+    public void processRequest(String name, String[] values) {
+        for ( int i=0; i<values.length; i++ ) {
+            try {
+                setValue(Integer.parseInt(values[i]));
+            } catch ( NumberFormatException ex ) {
+                // ignore
+            }
+        }
+    }
+
+    public void fireIntermediateEvents() {}
+    
+    public void fireFinalEvents() {}
 
     /**
      * Enables the component so that the knob position can be changed.

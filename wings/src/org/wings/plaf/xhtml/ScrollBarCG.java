@@ -194,14 +194,14 @@ public class ScrollBarCG
             int c = scrollerp.getComponentCount();
             if (sb.getOrientation() == SConstants.HORIZONTAL ) {
                 for (int i = 0; i < c; i++ ) {
-                    SIcon icon = ((SButton) scrollerp.getComponentAt(i)).getIcon();
+                    SIcon icon = ((SClickable) scrollerp.getComponentAt(i)).getIcon();
                     width+=icon.getIconWidth();
                     height=Math.max(icon.getIconHeight(), height);
                 }
             }
             else {
                 for (int i = 0; i < c; i++ ) {
-                    SIcon icon = ((SButton) scrollerp.getComponentAt(i)).getIcon();
+                    SIcon icon = ((SClickable) scrollerp.getComponentAt(i)).getIcon();
                     width=Math.max(icon.getIconWidth(), width);
                     height+=icon.getIconHeight();
                 }

@@ -40,6 +40,8 @@ public class ScrollPaneExample
         SBaseTable table = new SBaseTable(new MyTableModel());
         table.setDefaultRenderer(new TableExample.MyCellRenderer());
         SScrollPane scroller = new SScrollPane(table);
+        scroller.getHorizontalScrollBar().setBlockIncrement(3);
+        scroller.getVerticalScrollBar().setBlockIncrement(3);
         p.add(scroller);
         return p;
     }
