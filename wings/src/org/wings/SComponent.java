@@ -204,12 +204,17 @@ public abstract class SComponent
      *
      * @param f the frame
      */
-    protected void setParentFrame(SFrame f) {
-        if (f != parentFrame) {
-            unregister();
-            parentFrame = f;
-            register();
-        }
+    protected void setParentFrame(SFrame parentFrame) {
+        if (this.parentFrame != parentFrame) {
+           if (this.parentFrame != null) {
+              unregister();
+           }
+           this.parentFrame=parentFrame;
+        
+           if (this.parentFrame != null) {
+              register();
+           }
+       }
     }
 
     public RequestURL getRequestURL() {
