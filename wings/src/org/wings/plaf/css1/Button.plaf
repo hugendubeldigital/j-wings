@@ -39,6 +39,7 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
         %>"<%
 	Utils.writeEvents(device, abstractButton);
         %><%|title=abstractButton.getToolTipText()%><%
+        %><%|accesskey=abstractButton.getMnemonic()%><%
 	
     }
     else {
@@ -130,6 +131,7 @@ protected void writeAnchorIcon(final Device device, SAbstractButton abstractButt
         writeAnchorAddress(device, abstractButton);
         %>"<%|title=abstractButton.getToolTipText()%><%
         %><%|accesskey=abstractButton.getMnemonic()%><%
+        %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
 
     }
     else {
@@ -203,7 +205,7 @@ protected void writeFormText(final Device device, SAbstractButton abstractButton
 	 abstractButton.getGroup()!=null && abstractButton.isSelected() ) {
 	%> disabled<%
     }
-    %>/><%
+    %>><%
     }
 }
 
@@ -221,6 +223,7 @@ protected void writeFormIcon(final Device device, SAbstractButton abstractButton
     %><%|name=abstractButton.getEncodedLowLevelEventId()%><%
     %><%|id=abstractButton.getComponentId()%><%
     %><%|accesskey=abstractButton.getMnemonic()%><%
+    %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
     writeDynamicIcons(device, abstractButton, icon, abstractButton.getComponentId(),
 		      false);
     %><%|alt=abstractButton.getToolTipText()%><%
@@ -231,7 +234,7 @@ protected void writeFormIcon(final Device device, SAbstractButton abstractButton
 	 abstractButton.getGroup()!=null && abstractButton.isSelected() ) {
 	%> disabled<%
     }
-    %>/><%
+    %>><%
 }
 
 protected boolean renderLayoutWithoutIcon() {
