@@ -52,13 +52,28 @@ public final class Utils
     static void writeEvents(Device d, SComponent c)
         throws IOException
     {
+        Map eventScripts = new HashMap();
         Iterator it = c.getScriptListeners().iterator();
         while (it.hasNext()) {
             ScriptListener script = (ScriptListener)it.next();
+            String eventScriptCode = script.getCode();
+            String event = script.getEvent();
+            if (eventScripts.containsKey(event)) {
+                String savedEventScriptCode = (String) eventScripts.get(event);
+                eventScriptCode = savedEventScriptCode
+                    + (savedEventScriptCode.trim().endsWith(";") ? "" : ";")
+                    + eventScriptCode;
+            }
+            eventScripts.put(event,  eventScriptCode);
+        }
+        it = eventScripts.keySet().iterator();
+        while (it.hasNext()) {
+            String event = (String) it.next();
+            String code = (String) eventScripts.get(event);
             d.print(" ");
-            d.print(script.getEvent());
+            d.print(event);
             d.print("=\"");
-            d.print(script.getCode());
+            d.print(code);
             d.print("\"");
         }
     }

@@ -148,7 +148,7 @@ How do I create a new servlet using <span class="wings">wingS</span>?
  </pre>
 
  That's all. To integrate it in a servlet container you need to build a web
- archive (war file). How to do this, please look at the documentation of your
+ archive (war file). To learn how to do this, please look at the documentation of your
  servlet container. You must provide a web.xml file with similar content:
  <br/>
  <pre>
@@ -191,9 +191,9 @@ How do I create a new servlet using <span class="wings">wingS</span>?
 &lt;/web-app&gt;
  </pre>
 
-For more information please look at the 
+For more information please look at the
 <a href="http://wingsdemo.mercatis.de/hellowings/WingSTutorial/" target="_blank">online tutorial</a>,
-which is a part of <span class="wings">wingS</span> (in the docs/tutorial dir) 
+which is a part of <span class="wings">wingS</span> (in the docs/tutorial dir)
 and implemented with <span class="wings">wingS</span>.
 </div>
 <br />
@@ -221,11 +221,11 @@ in most applications.
 What is a plaf?
 </div>
 <div class="answer">
-<span class="wings">wingS</span> supports some kind of pluggable look and feel. 
+<span class="wings">wingS</span> supports some kind of pluggable look and feel.
 Each SComponent
 delegates it's codegeneration to a special ComponentCG. There are different
 CGs for each SComponent derivate and each plaf. For now, there exists only one plaf, that
-is suitable for the most common browsers. Feel free to implement additional plafs like wap 
+is suitable for the most common browsers. Feel free to implement additional plafs like wap
 or xml/xsl ;-)
 </div>
 <br />
@@ -306,7 +306,7 @@ from <a href="http://www.sun.com/">Sun Microsystems</a> ;-)
 
 <li>
 <div class="question">
-Filechooser upload isn't working: 
+Filechooser upload isn't working:
   java.io.IOException: Datei oder Verzeichnis nicht gefunden
 </div>
 <div class="answer">
@@ -340,7 +340,7 @@ How to use SOptionPane?
 <div class="answer">
 SOptionPane does not block on show... methods. However, you can pass an ActionListener, that is
 notified on dismission of the dialog.
-Example: 
+Example:
 <pre>
 SOptionPane.showYesNoDialog(null, "do you catch it?", "Question?",
   new  ActionListener() {
@@ -359,15 +359,15 @@ SOptionPane.showYesNoDialog(null, "do you catch it?", "Question?",
 
 <li>
 <div class="question">
-How can I access the session object from another thread. 
+How can I access the session object from another thread.
 </div>
 <div class="answer">
-If you start a thread, add this thread to the SessionManager with 
+If you start a thread, add this thread to the SessionManager with
 <pre>
    org.wing.session.SessionManager.setSession(session);
 </pre>
 where session is the session of the parent thread.
-After that have access to the session in the new thread with 
+After that have access to the session in the new thread with
 <pre>
    org.wing.session.SessionManager.getSession();
 </pre>

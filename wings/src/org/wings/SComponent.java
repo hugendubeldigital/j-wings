@@ -108,7 +108,7 @@ public abstract class SComponent
     protected ArrayList componentListeners;
     
     /** */
-    protected Map scriptListeners;
+    protected List scriptListeners;
 
     /**
      * Default constructor.cript
@@ -302,12 +302,12 @@ public abstract class SComponent
         if (listener == null)
             return;
 
-        // lazyly create HashMap
-        if ( scriptListeners==null ) {
-            scriptListeners = new HashMap();
+        // lazyly create List
+        if (scriptListeners == null) {
+            scriptListeners = new ArrayList();
         }
 
-        scriptListeners.put(listener.getEvent(), listener);
+        scriptListeners.add(listener);
         if (listener.getScript() != null) {
             reload(ReloadManager.RELOAD_SCRIPT);
         }
@@ -328,20 +328,21 @@ public abstract class SComponent
         if (listener == null)
             return;
 
-        if ( scriptListeners != null
-             && scriptListeners.remove(listener.getEvent()) != null
-             && listener.getScript() != null ) {
+        if (scriptListeners != null
+            && scriptListeners.remove(listener)
+            && listener.getScript() != null) {
             reload(ReloadManager.RELOAD_SCRIPT);
         }
     }
 
-    public Collection getScriptListeners() { 
+    public Collection getScriptListeners() {
         if ( scriptListeners!=null ) {
-            return scriptListeners.values(); 
+            return scriptListeners;
         } else {
             return Collections.EMPTY_LIST;
         }
     }
+
 
     /**
      * Return a jvm wide unique id.
