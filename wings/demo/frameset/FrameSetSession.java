@@ -129,7 +129,7 @@ public class FrameSetSession
 
 class TimestampLabel extends SLabel {
     private final static SimpleDateFormat dateFormat = 
-        new SimpleDateFormat("'rendered&nbsp;at&nbsp;'HH.mm.ss'&nbsp;'SSS");
+        new SimpleDateFormat("'rendered&nbsp;at&nbsp;'HH:mm:ss.SSS");
     
     TimestampLabel() {
         setHorizontalAlignment(RIGHT);
