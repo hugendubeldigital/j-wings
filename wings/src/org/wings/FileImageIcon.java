@@ -109,7 +109,7 @@ public class FileImageIcon
                 BufferedImage image = 
                     ImageIO.read(new ByteArrayInputStream(buffer.getBytes()));
                 width = image.getWidth();
-                width = image.getHeight();
+                height = image.getHeight();
             }
         } catch ( Throwable e ) {
             // is not possible to calc Dimensions
