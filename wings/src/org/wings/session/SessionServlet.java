@@ -645,6 +645,7 @@ final class SessionServlet
                                                 "EXCEPTION_MESSAGE");
             }
 
+            res.setContentType("text/html; charset=ISO-8859-4");
             ServletOutputStream out = res.getOutputStream();
             errorStackTraceLabel.setText(DebugUtil.getStackTraceString(e));
             errorMessageLabel.setText(e.getMessage());
