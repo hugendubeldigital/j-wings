@@ -506,7 +506,7 @@ public final class Session
         props.clear();
 
         Object[] listeners = listenerList.getListenerList(); 
-        for (int i=0; i<listeners.length; i++) {
+        for ( int i = listeners.length-2; i>=0; i -= 2 ) {
             listenerList.remove(listeners[i].getClass(), (EventListener)listeners[i+1]);
         } // end of for (int i=0; i<; i++)
     }
