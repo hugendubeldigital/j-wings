@@ -24,6 +24,12 @@
     </fileset>
   </path>
 
+  <fileset dir="../dist/lib" id="wings.jar">
+     <include name="wings.jar"/>
+  </fileset>
+  <fileset dir="../lib" id="regexp.jar">
+     <include name="jakarta-regexp-*.jar"/>
+  </fileset>     
 
   <!-- ==================== Preparations ==================== -->
 
@@ -50,9 +56,8 @@
   <target name="wingset" depends="compile">
     <war warfile="${dist.deploy}/wingset.war"
 	 webxml="wingset/wingset.xml">
-      <lib dir="../dist/lib">
-        <include name="wings.jar"/>
-      </lib>
+      <lib refid="wings.jar"/>
+      <lib refid="regexp.jar"/>
       <classes dir="${build.class}">
         <include name="wingset/**"/>
       </classes>
@@ -83,9 +88,8 @@
 
     <war warfile="${dist.deploy}/ldap.war"
 	 webxml="${build.etc}/ldap.xml">
-      <lib dir="../dist/lib">
-        <include name="wings.jar"/>
-      </lib>
+      <lib refid="wings.jar"/>
+      <lib refid="regexp.jar"/>
       <classes dir="${build.class}">
         <include name="ldap/**"/>
       </classes>
@@ -112,9 +116,8 @@
   <target name="explorer" depends="compile">
     <war warfile="${dist.deploy}/explorer.war"
 	 webxml="explorer/explorer.xml">
-      <lib dir="../dist/lib">
-        <include name="wings.jar"/>
-      </lib>
+      <lib refid="wings.jar"/>
+      <lib refid="regexp.jar"/>
       <classes dir="${build.class}">
         <include name="explorer/**"/>
       </classes>
@@ -138,9 +141,8 @@
   <target name="frameset" depends="compile">
     <war warfile="${dist.deploy}/frameset.war"
 	 webxml="frameset/frameset.xml">
-      <lib dir="../dist/lib">
-        <include name="wings.jar"/>
-      </lib>
+      <lib refid="wings.jar"/>
+      <lib refid="regexp.jar"/>
       <classes dir="${build.class}">
         <include name="frameset/**"/>
       </classes>
@@ -160,9 +162,8 @@
   <target name="desktop" depends="compile">
     <war warfile="${dist.deploy}/desktop.war"
 	 webxml="desktop/desktop.xml">
-      <lib dir="../dist/lib">
-        <include name="wings.jar"/>
-      </lib>
+      <lib refid="wings.jar"/>
+      <lib refid="regexp.jar"/>
       <classes dir="${build.class}">
         <include name="desktop/**"/>
       </classes>
