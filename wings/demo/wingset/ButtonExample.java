@@ -106,14 +106,15 @@ public class ButtonExample
         System.err.println("###########################");
         System.err.println("icon.getURL()" + icon);
         for ( int i=0; i<buttons.length; i++ ) {
-            buttons[i].setIcon(icon);
-            buttons[i].setDisabledIcon(disabledIcon);
-            buttons[i].setRolloverIcon(rolloverIcon);
-            buttons[i].setPressedIcon(pressedIcon);
-            buttons[i].setToolTipText("Button " + i);
+            if ( i!=4 ) {
+                buttons[i].setIcon(icon);
+                buttons[i].setDisabledIcon(disabledIcon);
+                buttons[i].setRolloverIcon(rolloverIcon);
+                buttons[i].setPressedIcon(pressedIcon);
+                buttons[i].setToolTipText("Button " + i);
+            }
         }
 
-        buttons[4].setIcon(null);
 
         buttons[0].setVerticalTextPosition(SConstants.TOP);
         buttons[0].setHorizontalTextPosition(SConstants.LEFT);
