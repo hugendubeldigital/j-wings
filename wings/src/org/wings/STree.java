@@ -130,10 +130,10 @@ public class STree
     /** used to forward the selection to the selection Listeners of the tree */
     private final TreeSelectionListener forwardSelectionEvent = 
         new TreeSelectionListener() {
-                public void valueChanged(TreeSelectionEvent e) {
-                    fireTreeSelectionEvent(e);
-                }
-            };
+            public void valueChanged(TreeSelectionEvent e) {
+                fireTreeSelectionEvent(e);
+            }
+        };
 
     /**
      * TODO: documentation
@@ -219,30 +219,30 @@ public class STree
      *		expanded
      * @see EventListenerList
      */
-     public void fireTreeWillExpand(TreePath path, boolean expand) 
-         throws ExpandVetoException {
+    public void fireTreeWillExpand(TreePath path, boolean expand) 
+        throws ExpandVetoException {
 
-         // Guaranteed to return a non-null array
-         Object[] listeners = getListenerList();
-         TreeExpansionEvent e = null;
-         // Process the listeners last to first, notifying
-         // those that are interested in this event
-         for (int i = listeners.length-2; i>=0; i-=2) {
-             if (listeners[i]==TreeWillExpandListener.class) {
-                 // Lazily create the event:
-                 if (e == null)
-                     e = new TreeExpansionEvent(this, path);
+        // Guaranteed to return a non-null array
+        Object[] listeners = getListenerList();
+        TreeExpansionEvent e = null;
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==TreeWillExpandListener.class) {
+                // Lazily create the event:
+                if (e == null)
+                    e = new TreeExpansionEvent(this, path);
 
-                 if ( expand ) {
-                     ((TreeWillExpandListener)listeners[i+1]).
-                         treeWillExpand(e);
-                 } else {
-                     ((TreeWillExpandListener)listeners[i+1]).
-                         treeWillCollapse(e);
-                 }
-             }          
-         }
-     }   
+                if ( expand ) {
+                    ((TreeWillExpandListener)listeners[i+1]).
+                        treeWillExpand(e);
+                } else {
+                    ((TreeWillExpandListener)listeners[i+1]).
+                        treeWillCollapse(e);
+                }
+            }          
+        }
+    }   
 
     /**
      * TODO: documentation
@@ -320,10 +320,10 @@ public class STree
             // those that are interested in this event
             for (int i = listeners.length-2; i>=0; i-=2) {
                 if (listeners[i] == TreeExpansionListener.class) {
-                if ( expansion ) 
-                    ((TreeExpansionListener)listeners[i+1]).treeExpanded(e);
-                else
-                    ((TreeExpansionListener)listeners[i+1]).treeCollapsed(e);
+                    if ( expansion ) 
+                        ((TreeExpansionListener)listeners[i+1]).treeExpanded(e);
+                    else
+                        ((TreeExpansionListener)listeners[i+1]).treeCollapsed(e);
                 }
             }
         }
@@ -437,6 +437,33 @@ public class STree
      */
     public TreePath getPathForRow(int row) {
         return treeState.getPathForRow(row);
+    }
+
+    protected int fillPathForAbsoluteRow(int row, Object node, ArrayList path) {
+        path.add(node);
+
+        if ( row==0 ) {
+            return 0; 
+        } // end of if ()
+
+        row--;
+
+        for ( int i=0; i<model.getChildCount(node); i++ ) {
+            row = fillPathForAbsoluteRow(row, model.getChild(node, i), path);
+            if ( row==0 ) {
+                return 0; 
+            } // end of if ()
+        }
+            
+        path.remove(path.size()-1);
+
+        return row;
+    }
+
+    public TreePath getPathForAbsoluteRow(int row) {
+        ArrayList path = new ArrayList(10);
+        fillPathForAbsoluteRow(row, model.getRoot(), path);
+        return new TreePath(path.toArray());
     }
 
     /**
@@ -785,30 +812,6 @@ public class STree
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param hash
-     * @return
-     */
-    protected int getRow(String hash) {
-        try {
-            int hashCode = Integer.parseInt(hash);
-
-            for ( int i=0; i<getRowCount(); i++ ) {
-                TreePath p = getPathForRow(i);
-                // System.out.println("path " + p);
-                Object node = p.getLastPathComponent();
-                if ( node.hashCode() == hashCode )
-                    return i;
-            }
-        }
-        catch (Exception e) {
-        }
-
-        return -1;
-    }
-
-    /**
      * Expand this tree row.
      * If tree is inside a {@link SScrollPane} try to
      * adjust pane, so that as much as possible new 
@@ -818,15 +821,15 @@ public class STree
     public void expandRow(TreePath p) {
         treeState.setExpandedState(p, true);
         /*
-        if ( viewport != null )
-         {
-			int ccount = model.getChildCount( p.getLastPathComponent() );
-            if ( ccount + 1 <= viewport.height )
-				viewport.y += ccount;
-			else
-            	viewport.y = treeState.getRowForPath( p );
+          if ( viewport != null )
+          {
+          int ccount = model.getChildCount( p.getLastPathComponent() );
+          if ( ccount + 1 <= viewport.height )
+          viewport.y += ccount;
+          else
+          viewport.y = treeState.getRowForPath( p );
 			
-         }
+          }
         */
         fireTreeExpanded(p);
         reload(ReloadManager.RELOAD_CODE);
@@ -932,8 +935,8 @@ public class STree
      * With this parameter the tree expands the given node 
      * ({@link #processRequest})
      */
-    public String getExpansionParameter(Object node) {
-        return "h" + node.hashCode();
+    public String getExpansionParameter(int row, boolean absolute) {
+        return (absolute ? "j" : "h") + row;
     } 
 
     /**
@@ -941,29 +944,43 @@ public class STree
      * With this parameter the tree selects the given node 
      * ({@link #processLowLevelEvent})
      */
-    public String getSelectionParameter(Object node) {
-        return "b" + node.hashCode();
+    public String getSelectionParameter(int row, boolean absolute) {
+        return (absolute ? "a" : "b") + row;
     } 
+
 
     public void processLowLevelEvent(String action, String[] values) {
         getSelectionModel().setDelayEvents(true);
         for ( int i=0; i<values.length; i++ ) {
             if ( values[i].length()<2 ) continue; // incorrect format
 
-            String nodeHash = values[i].substring(1);
-            int row = getRow(nodeHash);
+            int row = Integer.parseInt(values[i].substring(1));
 
             if ( row<0 ) continue; // row not found...
 
-            TreePath path = getPathForRow(row);
-
-            if (path != null) {
-                if ( values[i].charAt(0)=='b' ) {
-                    //selection
+            if ( values[i].charAt(0)=='b' ) {
+                TreePath path = getPathForRow(row);
+                //selection
+                if (path != null) {
                     togglePathSelection(path);
-                } else if ( values[i].charAt(0)=='h' ) {
+                }
+            } else if ( values[i].charAt(0)=='h' ) {
+                TreePath path = getPathForRow(row);
+                //selection
+                if (path != null) {
                     requestedExpansionPaths.add(path);
-                    //                    togglePathExpansion(path);
+                }
+            } else if ( values[i].charAt(0)=='a' ) {
+                TreePath path = getPathForAbsoluteRow(row);
+                //selection
+                if (path != null) {
+                    togglePathSelection(path);
+                }
+            } else if ( values[i].charAt(0)=='j' ) {
+                TreePath path = getPathForAbsoluteRow(row);
+                //selection
+                if (path != null) {
+                    requestedExpansionPaths.add(path);
                 }
             }
         }

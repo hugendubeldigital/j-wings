@@ -1154,7 +1154,7 @@ public abstract class SComponent
      *        bound: true
      *  description: The component's look and feel delegate
      */
-    protected void setCG(ComponentCG newCG) {
+    public void setCG(ComponentCG newCG) {
         /* We do not check that the CG instance is different
          * before allowing the switch in order to enable the
          * same CG instance *with different default settings*

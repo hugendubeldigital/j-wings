@@ -146,7 +146,7 @@
 		// the tree generates the URL that it can handle in its RequestListener
                 RequestURL expansionAddr = component.getRequestURL();
                 expansionAddr.addParameter(component,
-                                           component.getExpansionParameter(node));
+                                           component.getExpansionParameter(row, false));
 		%><a href="<%
                 %><%=expansionAddr.toString()%><%
                 %>"><%
@@ -177,7 +177,7 @@
 	    // ask the tree for the URL it has for expansion events
             RequestURL selectionAddr = component.getRequestURL();
             selectionAddr.addParameter(component.getNamePrefix(),
-	                               component.getSelectionParameter(node));
+	                               component.getSelectionParameter(row, false));
             
             if ( cellComp instanceof ClickableRenderComponent ) {
                 AnchorRenderStack.push(selectionAddr, null);

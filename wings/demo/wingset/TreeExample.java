@@ -46,7 +46,6 @@ public class TreeExample
         // generating the tree:
         tree = new STree(new DefaultTreeModel(ROOT_NODE)); // thats it.
 
-
         /* test code
         p.add(createEventView(tree));
         p.add(new SSeparator());
@@ -117,15 +116,6 @@ public class TreeExample
                 }
             });
 
-        final SCheckBox showDetails=new SCheckBox("show event details");
-        showDetails.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    form.setVisible(showDetails.isSelected());
-                }
-            });
-        showDetails.setSelected(false);
-        form.setVisible(false);
-        panel.add(showDetails);
         panel.add(form);
         return panel;
     }
@@ -214,9 +204,19 @@ public class TreeExample
                                        
             });
 
+
+        final SCheckBox jsTree=new SCheckBox("client side tree");
+        jsTree.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    tree.setCG(getSession().getCGManager().getCG(jsTree.isSelected() ? "JSTreeCG" : "TreeCG"));
+                }
+            });
+        jsTree.setSelected(false);
+        controlForm.add(jsTree);
         
         SButton submit = new SButton("OK");
         controlForm.add(submit);
+
         return controlForm;
     }
 

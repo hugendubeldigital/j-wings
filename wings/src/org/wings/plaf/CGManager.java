@@ -68,6 +68,16 @@ public class CGManager implements Serializable
     }
 
     /**
+     * Get a ComponentCG from the defaults table.
+     * If the there's no value associated to the <code>target</code>'s cgClassID, the request
+     * is delegated to the laf's defaults table.
+     * @param target the SComponent
+     */
+    public ComponentCG getCG(String cgClassID) {
+        return (ComponentCG)getDefaults().get(cgClassID, ComponentCG.class);
+    }
+
+    /**
      * Get a LayoutManagerCG from the defaults table.
      * If the there's no value associated to the <code>target</code>'s cgClassID, the request
      * is delegated to the laf's defaults table.
