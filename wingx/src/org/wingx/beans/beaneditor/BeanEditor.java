@@ -211,11 +211,7 @@ public class BeanEditor
                 PropertyDescriptor descriptor = descriptors[i];
                 Method getter = descriptor.getReadMethod();
                 if (getter != null) {
-                    Object bean = descriptor.getValue(BeanEditorConstants.INSTANCE);
-                    if (bean == null)
-                        bean = getBean();
-
-                    Object value = getter.invoke(bean, null);
+                    Object value = getter.invoke(getBean(), null);
 
 		    Property property = (Property)properties.get(descriptor.getName());
 		    if (property == null)
@@ -280,10 +276,6 @@ public class BeanEditor
                 PropertyDescriptor descriptor = descriptors[i];
                 Method setter = descriptor.getWriteMethod();
                 if (setter != null) {
-                    Object bean = descriptor.getValue(BeanEditorConstants.INSTANCE);
-                    if (bean == null)
-                        bean = getBean();
-
 		    Property property = (Property)properties.get(descriptor.getName());
 		    if (property == null)
 			continue;
@@ -291,7 +283,7 @@ public class BeanEditor
 
                     if (editor != null) {
                         Object value = editor.getValue();
-                        setter.invoke(bean, new Object[] { value });
+                        setter.invoke(getBean(), new Object[] { value });
                     }
                 }
             }
