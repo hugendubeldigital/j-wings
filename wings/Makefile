@@ -68,10 +68,10 @@ dist: distclean fun javadoc jar demojar
 	tar -hcvf ${WINGS_DEVEL_DIR}.tar ${WINGS_DEVEL_DIR}
 	tar -hcvf ${WINGS_DIR}.tar ${WINGS_DIR}
 	tar --delete -v -f ${WINGS_DIR}.tar ${WINGS_DIR}/src
-	rm ${WINGS_DIR} ${WINGS_DEVEL_DIR}
+	rm -rf ${WINGS_DIR} ${WINGS_DEVEL_DIR}
 	gzip ${WINGS_DIR}.tar ${WINGS_DEVEL_DIR}.tar
 
 distclean:
 	rm -rf dist
-	rm ${WINGS_DIR}.tar.gz ${WINGS_DEVEL_DIR}.tar.gz
+	rm -f ${WINGS_DIR}.tar.gz ${WINGS_DEVEL_DIR}.tar.gz
 
