@@ -43,19 +43,18 @@ SMALL {
 }
 
 A:link {
-   color: #000099;
-   text-decoration: none;
-   font-weight: bold
+   color: #0000FF;
+   font-weight: bold;
 }
 
 A:active {
-   color: #0000FF;
-   text-decoration: none
+   color: #FF0000;
+   font-weight: bold;
 }
 
 A:visited {
    color: #000077;
-   text-decoration: none
+   font-weight: bold;
 }
 
 HR {
