@@ -221,15 +221,13 @@
 	    <include name="COPYING" />
 	    <include name="CREDITS" />
 	    <include name="INSTALL" />
-	    <include name="TODO" />
+	    <include name="README" />
 	    <include name="build.*" />
 	    <include name="src/" />
 	    <include name="demo/" />
 	    <include name="doc/" />
 	    <exclude name="demo/build" />
 	    <exclude name="**/CVS" />
-	    <!-- transition to a Makefile free world .. -->
-	    <exclude name="**/Makefile" />
          </fileset>
       </copy>
       <tar tarfile="${distname}.tar" basedir="." includes="${distname}/" />
