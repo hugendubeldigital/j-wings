@@ -4,8 +4,8 @@
 <write>
 <hr<% 
 printStyle(component.getStyle());
-printOptAttr(component.getWidth());
-printOptAttr(component.getSize());
+printOptAttr("width", component.getWidth());
+printOptAttr("size", component.getSize());
 switch (component.getAlignment()) {
    case SSeparator.RIGHT_ALIGN : %> align="right"<%; break;
    case SSeparator.CENTER_ALIGN: %> align="center"<%; break;

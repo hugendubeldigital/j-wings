@@ -5,7 +5,9 @@
  * it is left out
  */
 void printOptAttr(String attr, String value) {
-    if (value != null && value.length > 0) %> <%=attr%>="<%=value%>"<%;
+    if (value != null && value.length > 0) {
+        %> <%=attr%>="<%=value%>"<%
+    }
 }
 
 /**
@@ -13,15 +15,48 @@ void printOptAttr(String attr, String value) {
  * the attrib is added otherwise it is left out
  */
 void printOptAttr(String attr, int value) {
-    if (value > 0) %> <%=attr%>="<%=value%>"<%!;
+    if (value > 0) {
+        %> <%=attr%>="<%=value%>"<%
+    }
 }
 
 /**
  * Prints the given style (if it does exist)
  */
-void printStyle(Style style) {
+void printStyle(org.wings.Style.Style style) {
     String value = null;
     if (style != null) value = style.getID();
     printOptAttr("class", value);
+}
+
+/**
+ * Renders a border prefix
+ */
+void renderBorderPrefix(org.wings.SBorder b) {
+    if (b != null)
+        b.writePrefix(device);
+}
+
+/**
+ * Renders a border postfix
+ */
+void renderBorderPostfix(org.wings.SBorder b) {
+    if (b != null)
+        b.writePostfix(device);
+}
+
+/**
+ * Renders a container
+ */
+void renderContainer(org.wings.SContainer c) {
+    org.wings.SLayoutManager layout = c.getLayout();
+
+    if (layout != null) {
+        layout.write(device);
+    }
+    else {
+       for (int i=0; i < c.getComponentCount(); i++)
+           c.getComponentAt(i).write(device);
+    }
 }
 %>
