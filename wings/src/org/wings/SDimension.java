@@ -149,6 +149,11 @@ public class SDimension
         setWidth(width);
         setHeight(height);
     }
+    
+    public String toString()
+    {
+        return "width: " + width + "; height: " + height;
+    }
 }
 
 /*
