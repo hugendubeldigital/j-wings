@@ -1,5 +1,5 @@
 <table width="100%">
-<tr height="1%"><td colspan=2><object name="controlForm"></object><hr/></td></tr>
+<tr height="20"><td colspan=2><object name="controlForm"></object><hr/></td></tr>
 <tr bgcolor="#5555ff">
    <th width="20%">Upload</th>
    <th width="80%">Preview</th>

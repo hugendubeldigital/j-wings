@@ -45,7 +45,9 @@ public class TableExample
         table.setSelectionMode(MULTIPLE_SELECTION);
         table.setDefaultRenderer(new MyCellRenderer());
         // table.setShowGrid(false);
-        p.add(table);
+        SAnchor anchor = new SAnchor("http://wings.mercatis.de/", "blub");
+        anchor.add(table);
+        p.add(anchor);
 
         SForm form = new SForm();
         STable formTable = new STable(new MyTableModel());

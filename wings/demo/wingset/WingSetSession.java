@@ -53,6 +53,7 @@ public class WingSetSession
         initGUI();
     }
 
+
     void initGUI() {
         timeMeasure = new SLabel();
         timeMeasure.setEscapeSpecialChars(false);
@@ -80,7 +81,7 @@ public class WingSetSession
         tab.add(new LabelExample(), "Label");
         tab.add(new BorderExample(), "Border");
         tab.add(new TextComponentExample(), "Text Component");
-        // a Tab with icon..
+         // a Tab with icon..
         tab.addTab("Tree", new ResourceImageIcon("org/wings/icons/JavaCup.gif"), 
                    new TreeExample(), "Tree Tool Tip");
         tab.add(new OptionPaneExample(getFrame()), "OptionPane");

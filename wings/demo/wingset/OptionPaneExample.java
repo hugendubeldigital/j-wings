@@ -61,8 +61,8 @@ public class OptionPaneExample
                 if ( e.getActionCommand()==SOptionPane.NO_ACTION ) {
                     SPanel p = new SPanel(new SFlowDownLayout());
                     p.add(new SLabel("That's sad !"));
-                    SHRef sendMail =  new SHRef("Please send me why");
-                    sendMail.setReference("mailto:ahaaf@mercatis.de");
+                    SAnchor sendMail = new SAnchor("mailto:ahaaf@mercatis.de");
+                    sendMail.add(new SLabel("Please send my why!")); 
                     p.add(sendMail);
                     SOptionPane.showMessageDialog(frame, p);
                 }
@@ -79,12 +79,6 @@ public class OptionPaneExample
             }});
 
         add(yesno);
-        add(new SSeparator());
-
-        SHRef href =  new SHRef("View Source Code");
-        href.setReference("/demo/wingset/" +
-                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
-        add(href);
     }
 }
 

@@ -51,7 +51,7 @@ public class TreeExample
 
     private SForm createControlForm(final STree tree) {
         SForm controlForm = new SForm(new SGridLayout(6));
-
+        
         /*
          * modify the displayed indentation depth.
          */

@@ -127,7 +127,8 @@ public class DesktopSession
         desktop.add(frame);
         try {
             desktop.invite(new ComponentVisitor() {
-                    public void visit(SComponent c) {
+                    public void visit(SComponent c) { /* ign */ }
+                    public void visit(SContainer c) {
                         if (! (c instanceof SInternalFrame))
                             return;
                         SInternalFrame ff = (SInternalFrame) c;
@@ -223,7 +224,8 @@ public class DesktopSession
                          */
                         try {
                             d.invite(new ComponentVisitor() {
-                                    public void visit(SComponent c) {
+                                    public void visit(SComponent c) { /*ign*/ }
+                                    public void visit(SContainer c) {
                                         if (! (c instanceof SInternalFrame))
                                             return;
                                         SInternalFrame ff = (SInternalFrame) c;

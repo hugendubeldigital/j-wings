@@ -24,9 +24,10 @@ import org.wings.*;
  * @version $Revision$
  */
 public class TemplateExample
-    extends SPanel
+    extends WingSetPane
     implements SConstants
 {
+    /*
     public TemplateExample () {
         add(createTemplateExample());
 
@@ -37,8 +38,9 @@ public class TemplateExample
                           getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
         add(href);
     }
+    */
 
-    SForm createTemplateExample() {
+    protected SComponent createExample() {
         SForm c = new SForm();
         
         try {
