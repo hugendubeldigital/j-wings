@@ -763,7 +763,10 @@ public class STable
      * @param e
      */
     public void tableChanged(TableModelEvent e) {
-        switch (e.getType()) {
+        // kill active editors
+        editingCanceled(null);
+
+        switch ( e.getType() ) {
         case e.INSERT:
             if (e.getFirstRow() >= 0)
                 addSelectables(e.getFirstRow(), e.getLastRow());
