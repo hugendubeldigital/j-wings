@@ -25,9 +25,8 @@ import org.wings.io.Device;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SToggleButton
-    extends SAbstractButton
-{
+public class SToggleButton extends SAbstractButton {
+
     private static final String cgClassID = "ToggleButtonCG";
 
     /**
@@ -55,22 +54,22 @@ public class SToggleButton
     }
 
     public void processLowLevelEvent(String action, String[] values) {
-	boolean origSelected = isSelected();
+        boolean origSelected = isSelected();
 
-        if ( getGroup()!=null ) {
+        if (getGroup() != null) {
             getGroup().setDelayEvents(true);
             setSelected(parseSelectionToggle(values[0]));
             getGroup().setDelayEvents(false);
         } else {
-	    setSelected(parseSelectionToggle(values[0]));
-	} // end of else
-	
+            setSelected(parseSelectionToggle(values[0]));
+        } // end of else
 
-	if ( isSelected()!=origSelected ) {
-	    // got an event, that is a select...
-	    SForm.addArmedComponent(this);
-	} // end of if ()
-    }        
+
+        if (isSelected() != origSelected) {
+            // got an event, that is a select...
+            SForm.addArmedComponent(this);
+        } // end of if ()
+    }
 
     /**
      * in form components the parameter value of an button is the button
@@ -78,19 +77,19 @@ public class SToggleButton
      * for me.
      */
     protected boolean parseSelectionToggle(String toggleParameter) {
-	// a button/image in a form has no value, so just toggle selection...
-	if ( getShowAsFormComponent() ) {
-	    return !isSelected();
-	} // end of if ()
+        // a button/image in a form has no value, so just toggle selection...
+        if (getShowAsFormComponent()) {
+            return !isSelected();
+        } // end of if ()
 
-	if ( "1".equals(toggleParameter) )
-	    return true;
-	else if ( "0".equals(toggleParameter) )
-	    return false;
-	
-	
-	// don't change...
-	return isSelected();
+        if ("1".equals(toggleParameter))
+            return true;
+        else if ("0".equals(toggleParameter))
+            return false;
+
+
+        // don't change...
+        return isSelected();
     }
 
 }
