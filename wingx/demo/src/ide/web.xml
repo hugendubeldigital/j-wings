@@ -17,6 +17,11 @@
       <param-name>build.dir</param-name>
       <param-value>/home/hengels/wingx/test</param-value>
     </init-param>
+
+    <init-param>
+      <param-name>plaf.source</param-name>
+      <param-value>name</param-value>
+    </init-param>
   </servlet>
 
 <!-- url mapping -->

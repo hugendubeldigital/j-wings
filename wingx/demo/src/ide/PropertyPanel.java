@@ -13,13 +13,14 @@ public class PropertyPanel
     extends SPanel
 {
     BeanEditor editor;
+    SButton button;
 
     public PropertyPanel() {
         SForm form = new SForm();
         editor = new BeanEditor();
         form.add(editor);
 
-        SButton button = new SButton("apply");
+        button = new SButton("apply");
         button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
 		    apply();
@@ -38,4 +39,8 @@ public class PropertyPanel
     }
 
     public void apply() {}
+
+    public void addActionListener(ActionListener listener) {
+	button.addActionListener(listener);
+    }
 }

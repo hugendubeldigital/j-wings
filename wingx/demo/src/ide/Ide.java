@@ -40,6 +40,7 @@ public class Ide
     static {
         SPropertyEditorManager.registerEditor(Style.class, ide.editors.StyleEditor.class);
         SPropertyEditorManager.registerEditor(AttributeSet.class, ide.editors.AttributeSetEditor.class);
+        SPropertyEditorManager.registerEditor(SIcon.class, ide.editors.SIconEditor.class);
     }
     public SessionServlet generateSessionServlet(HttpServletRequest req)
         throws Exception

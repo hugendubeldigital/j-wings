@@ -17,105 +17,43 @@ import org.apache.tools.ant.*;
 import org.wings.*;
 import org.wings.event.*;
 import org.wings.plaf.*;
+import org.wings.script.*;
 import org.wings.session.*;
 import org.w3c.dom.*;
 
 public class LafPanel
     extends SForm
 {
-    private static Class[] components = new Class[] {
-	SAbstractButton.class,
-	SAlert.class,
-	SAnchor.class,
-	SBaseTable.class,
-	SBevelBorder.class,
-	SBorderLayout.class,
-	SBoxLayout.class,
-	SButton.class,
-	SCardLayout.class,
-	SCellRendererPane.class,
-	SCheckBox.class,
-	SComboBox.class,
-	SContainer.class,
-	SDefaultComboBoxModel.class,
-	SDefaultListCellRenderer.class,
-	SDefaultListModel.class,
-	SDefaultTableCellRenderer.class,
-	SDefaultTreeCellRenderer.class,
-	SDesktopPane.class,
-	SDialog.class,
-	SDivision.class,
-	SDummy.class,
-	SEmptyBorder.class,
-	SEtchedBorder.class,
-	SFileChooser.class,
-	SFlowDownLayout.class,
-	SFlowLayout.class,
-	SForm.class,
-	SFrame.class,
-	SFrameSet.class,
-	SFrameSetLayout.class,
-	SFullScreenLayout.class,
-	SGridLayout.class,
-	SHorizontalRule.class,
-	SHRef.class,
-	SImage.class,
-	SInternalFrame.class,
-	SLabel.class,
-	SLineBorder.class,
-	SLineBreak.class,
-	SLink.class,
-	SList.class,
-	SListLayout.class,
-	SMenuBar.class,
-	SMenuItem.class,
-	SMenu.class,
-	SOptionPane.class,
-	SPageScroller.class,
-	SPanel.class,
-	SParagraph.class,
-	SPasswordField.class,
-	SRadioButton.class,
-	SResetButton.class,
-	SRootContainer.class,
-	SScrollBar.class,
-	SScrollPane.class,
-	SSeparator.class,
-	SSpacer.class,
-	STabbedPane.class,
-	STableCellEditor.class,
-	STable.class,
-	StaticResource.class,
-	STemplateLayout.class,
-	STextArea.class,
-	STextComponent.class,
-	STextField.class,
-	SToggleButton.class,
-	SToolbar.class,
-	STree.class
-    };
+    private static String EDITOR_SOURCE = "editor";
+    private static String FILE_SOURCE = "file";
+    private static String NAME_SOURCE = "name";
 
     Map modules;
 
     STextArea editor;
     STextField name;
     SFileChooser chooser;
-    SComboBox component;
+    TestFrame testFrame;
+    Class componentClass;
+    SComponent component;
     Properties props;
 
     public LafPanel(Map modules) {
 	super(new SBorderLayout());
 	this.modules = modules;
+	String source = (String)((PropertyService)getSession()).getProperty("plaf.source");
+	if (source == null || source.length() == 0 || "editorfilename".indexOf(source) == -1)
+	    source = "editor";
 
 	setEncodingType("multipart/form-data");
 
 	SLabel sourceFrom = new SLabel("source from ..");
 	final SRadioButton editorSource = new SRadioButton("editor");
-	editorSource.setSelected(true);
+	editorSource.setSelected(EDITOR_SOURCE.equals(source));
 	final SRadioButton fileSource = new SRadioButton("file");
-	fileSource.setSelected(false);
+	fileSource.setSelected(FILE_SOURCE.equals(source));
 	final SRadioButton nameSource = new SRadioButton("name");
-	nameSource.setSelected(false);
+	nameSource.setSelected(NAME_SOURCE.equals(source));
 
         SButtonGroup group = new SButtonGroup();
         group.addActionListener(new ActionListener() {
@@ -141,23 +79,21 @@ public class LafPanel
 
 	name = new STextField();
 	name.setColumns(80);
-	name.setVisible(false);
+	name.setVisible(NAME_SOURCE.equals(source));
 
 	editor = new STextArea();
 	editor.setColumns(80);
 	editor.setRows(24);
+	editor.setVisible(EDITOR_SOURCE.equals(source));
 
 	chooser = new SFileChooser();
 	chooser.setFileNameFilter("*.plaf");
-	chooser.setVisible(false);
-
-	component = new SComboBox(components);
+	chooser.setVisible(FILE_SOURCE.equals(source));
 
 	SPanel center = new SPanel(new SGridLayout(1));
 	center.add(editor);
 	center.add(chooser);
 	center.add(name);
-	center.add(component);
 	add(center, "Center");
 
 
@@ -165,14 +101,14 @@ public class LafPanel
 	compile.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
 		    System.out.println("compile");
-		    compile();
-		    test();
+		    if (compile())
+			test();
 		}
 	    });
 	add(compile, "South");
     }
 
-    public void compile() {
+    public boolean compile() {
 	ByteArrayOutputStream log = new ByteArrayOutputStream();
 	try {
 	    if (((PropertyService)getSession()).getProperty("build.dir") == null)
@@ -245,9 +181,10 @@ public class LafPanel
 	catch (Exception e) {
 	    LogPanel logPanel = (LogPanel)modules.get("log");
 	    logPanel.appendText(e.getMessage());
-	    ByteArrayOutputStream log = new ByteArrayOutputStream();
-	    e.printStackTrace(new PrintStream(log));
-	    logPanel.appendText("" + log);
+	    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+	    e.printStackTrace(new PrintStream(buffer));
+	    logPanel.appendText(log + "\n" + buffer);
+	    return false;
 	}
 	finally {
 	    System.out.println("LOG");
@@ -256,6 +193,7 @@ public class LafPanel
 	    logPanel.clearText();
 	    logPanel.appendText("" + log);
 	}
+	return true;
     }
 
     public Properties scanPlaf(InputStream in) {
@@ -308,8 +246,7 @@ public class LafPanel
 
     private void selectComponent(String name) {
 	try {
-	    Class clazz = Class.forName(name);
-	    component.setSelectedItem(clazz);
+	    componentClass = Class.forName(name);
 	}
 	catch (ClassNotFoundException e) {
 	    System.err.println(e.getMessage());
@@ -323,11 +260,11 @@ public class LafPanel
 	SPanel builderPanel = (SPanel)modules.get("builder");
 	PropertyPanel propertyPanel = (PropertyPanel)modules.get("properties");
 
-	Class componentClass = (Class)component.getSelectedItem();
 	try {
-	    SComponent test = (SComponent)componentClass.newInstance();
-	    builderPanel.removeAll();
-	    builderPanel.add(test);
+	    if (component == null || !component.getClass().equals(componentClass))
+		component = (SComponent)componentClass.newInstance();
+	    showTestFrame();
+	    testFrame.setComponent(component);
 
 	    String url = "file:" + (String)((PropertyService)getSession()).getProperty("build.dir")
 		+ "/dist/plaf/" + "plaf" + "-plaf.jar";
@@ -338,8 +275,8 @@ public class LafPanel
 	    ComponentCG cg = (ComponentCG)cgClass.newInstance();
 	    
 	    Method cgSetter = findCGSetter(componentClass);
-	    cgSetter.invoke(test, new Object[] { cg });
-	    propertyPanel.setComponent(test);
+	    cgSetter.invoke(component, new Object[] { cg });
+	    propertyPanel.setComponent(component);
 	}
 	catch (Exception e) {
 	    LogPanel logPanel = (LogPanel)modules.get("log");
@@ -360,5 +297,50 @@ public class LafPanel
 		return methods[i];
 	}
 	return null;
+    }
+
+    TestFrame showTestFrame() {
+	if (testFrame == null) {
+	    testFrame = new TestFrame("test");
+	    testFrame.setRequestURL(getParentFrame().getRequestURL());
+	    DynamicCodeResource codeResource = new DynamicCodeResource(testFrame);
+	    testFrame.addDynamicResource(codeResource);
+
+	    PropertyPanel propertyPanel = (PropertyPanel)modules.get("properties");
+	    // eigentlich sollte man einen property change listener bei der test component
+	    // registrieren!
+	    propertyPanel.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent event) {
+			test();
+		    }
+		});
+	}
+	
+	DynamicCodeResource codeResource = (DynamicCodeResource)testFrame.getDynamicResource(DynamicCodeResource.class);
+	String url = codeResource.getURL();
+	if (url.indexOf("?") > -1)
+	    url = url + "&clear=X";
+	else
+	    url = url + "?clear=X";
+	logger.fine("TEST FRAME URL: " + url);
+
+	final ScriptListener script = new JavaScriptListener("onload", "test=window.open('" + url + "', 'test','toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=400,height=300,left=20,top=20');test.focus()");
+	final SFrame frame = getParentFrame();
+	frame.addScriptListener(script);
+
+	// register a request listener, that handles the named event "clear"
+	getSession().getDispatcher().register(new RequestListener() {
+                public void processRequest(String name, String[] values) {
+                    logger.info("remove java script");
+                    frame.removeScriptListener(script);
+                }
+
+                public String getName() { return "clear"; }
+                public String getNamePrefix() { return ""; }
+                public void fireIntermediateEvents() {}
+                public void fireFinalEvents() {}
+            });
+
+	return testFrame;
     }
 }
