@@ -77,6 +77,17 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
     }
 
     public ExternalizedInfo getExternalizedInfo(String identifier) {
+        if ( identifier == null || identifier.length() < 1 )
+            return null;
+        
+        logger.fine("system externalizer: " + identifier);
+        
+        int pos = identifier.indexOf(".");
+        if (pos > -1) {
+            identifier = identifier.substring(0, pos);
+        }
+
+        logger.fine("system externalizer " + identifier);
         return (ExternalizedInfo)externalized.get(identifier);
     }
 

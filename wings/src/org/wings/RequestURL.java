@@ -24,13 +24,12 @@ import org.wings.io.Device;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class RequestURL extends SimpleURL implements Cloneable
+public class RequestURL extends SimpleURL
 {
     private static final byte[] _delimiter = "_".getBytes();
     private static final byte[] _ampStr    = "&amp;".getBytes();
     private static final byte[] _questMark = "?".getBytes();
-
-    private String baseURL;
+    private static final String DEFAULT_RESOURCE_NAME = "_";
 
     private String baseParameters;
 
@@ -150,7 +149,12 @@ public class RequestURL extends SimpleURL implements Cloneable
             d.print(resource);
         }
         else {
-            d.print("_");
+            /*
+             * The default resource name. Work around a bug in some
+             * browsers that fail to assemble URLs.
+             * (TODO: verify and give better explanation here).
+             */
+            d.print( DEFAULT_RESOURCE_NAME );
         }
 
         if ( baseParameters!=null ) {
@@ -185,7 +189,7 @@ public class RequestURL extends SimpleURL implements Cloneable
             erg.append(resource);
         }
         else {
-            erg.append("_");
+            erg.append( DEFAULT_RESOURCE_NAME );
         }
 
         if ( baseParameters!=null ) {
@@ -200,9 +204,28 @@ public class RequestURL extends SimpleURL implements Cloneable
         return erg.toString();
     }
 
+    private final boolean eq(Object a, Object b) {
+        return (a == b) || (a != null && a.equals(b));
+    }
+
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        if (!super.equals(o)) return false;
+        RequestURL other = (RequestURL) o;
+        return (hasQuestMark == other.hasQuestMark
+                && eq(baseParameters, other.baseParameters)
+                && eq(epoch, other.epoch)
+                && eq(resource, other.resource)
+                && eq(parameters, other.parameters));
+    }
+
     /**
      * Deep copy.
      * @return object with cloned contents
+     */
+    /*
+     * this should actually pass references to readily calculated
+     * caches. But seems, that this is currently disabled.
      */
     public Object clone()
     {

@@ -3,16 +3,13 @@
 <link<%
   %><%|rel=component.getRel()%><%
   %><%|rev=component.getRev()%><%
-  Object href = component.getHref();
-  if (href != null) {
-    if (href instanceof Resource) {
-       %><%|href=((Resource)href).getURL()%><%
-    }
-    else {
-       %><%|href=href.toString()%><%
-    }
+  SimpleURL url = component.getURL();
+  if ( url != null) {
+    %> href="<%
+    url.write(device);
+    %>"<%
   }
   %><%|target=component.getTarget()%><%
-  %>><%
-%></write>
+  %> />
+</write>
 </template>

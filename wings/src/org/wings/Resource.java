@@ -36,8 +36,7 @@ import org.wings.externalizer.ExternalizeManager;
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
-public abstract class Resource
-    implements Serializable
+public abstract class Resource implements Serializable, URLResource
 {
     private final static Logger logger = Logger.getLogger("org.wings");
 
@@ -107,7 +106,7 @@ public abstract class Resource
      */
     public abstract String getId();
 
-    public abstract String getURL();
+    public abstract SimpleURL getURL();
 
     /**
      * TODO: documentation

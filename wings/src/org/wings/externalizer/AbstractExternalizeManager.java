@@ -136,8 +136,8 @@ public abstract class AbstractExternalizeManager
     /**
      * To support Session local externalizing, the {@link ExternalizeManager}
      * needs to encode the session identifier of the servlet container in the
-     * URL of the externalized object. This is set in the constructor and should
-     * work (I hope so) with all servlet containers.
+     * URL of the externalized object. This is set in the constructor 
+     * and should work (I hope so) with all servlet containers.
      */
     protected String sessionEncoding = "";
 
@@ -152,8 +152,9 @@ public abstract class AbstractExternalizeManager
 
     public void setResponse(HttpServletResponse response) {
         this.response = response;
-        if (response != null)
+        if (response != null) {
             sessionEncoding = response.encodeURL("");
+        }
     }
 
     public String encodeURL(String url) {

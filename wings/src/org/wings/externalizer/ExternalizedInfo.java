@@ -99,10 +99,10 @@ public class ExternalizedInfo
      * @return
      */
     public final boolean isFinal() {
-        return ( (flags & AbstractExternalizeManager.FINAL) > 0 ||
-                 externalizer.isFinal(extObject) ) &&
-            // if flags is request only, then object is not final!!
-            (flags & AbstractExternalizeManager.REQUEST) == 0;
+        return (( (flags & AbstractExternalizeManager.FINAL) > 0 
+                  || externalizer.isFinal(extObject) ) 
+                // if flags is request only, then object is not final!!
+                && (flags & AbstractExternalizeManager.REQUEST) == 0);
     }
 
     /**

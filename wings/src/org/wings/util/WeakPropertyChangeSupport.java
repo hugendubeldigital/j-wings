@@ -124,7 +124,7 @@ public class WeakPropertyChangeSupport
      * @param newValue  The new value of the property.
      */
     public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-        if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
+        if (oldValue != null && newValue != null && oldValue.equals(newValue)){
             return;
         }
 

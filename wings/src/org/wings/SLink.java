@@ -24,8 +24,12 @@ import org.wings.plaf.LinkCG;
  * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class SLink
-    extends SComponent
+/*
+ * should this be a component ? Actually, it is used internally in
+ * the Frame, but is not very useful as standalone object .. or am I
+ * missing someting ? (hen).
+ */
+public class SLink extends SComponent
 {
     private static final String cgClassID = "LinkCG";
 
@@ -33,16 +37,16 @@ public class SLink
     protected String rev = null;
     protected String type = null;
     protected String target = null;
-    protected Object href = null;
+    protected SimpleURL url = null;
 
     public SLink(String rel, String rev, String type, 
-                 String target, Object href) 
+                 String target, SimpleURL url) 
     {
 	this.rel = rel;
 	this.rev = rev;
 	this.type = type;
 	this.target = target;
-	this.href = href;
+	this.url = url;
     }
 
     public void setRel(String rel) {
@@ -60,11 +64,11 @@ public class SLink
     }
     public String getType() { return type; }
 
-    public void setHref(Object href) {
-	this.href = href;
+    public void setURL(SimpleURL url) {
+        this.url = url;
     }
-    public Object getHref() { return href; }
-
+    public SimpleURL getURL() { return url; }
+    
     public void setTarget(String target) {
 	this.target = target;
     }

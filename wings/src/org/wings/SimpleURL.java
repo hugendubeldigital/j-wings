@@ -22,7 +22,7 @@ import org.wings.io.Device;
  *
  * @version $Revision$
  */
-public class SimpleURL implements Serializable, Renderable
+public class SimpleURL implements Cloneable, Serializable, Renderable
 {
     protected String baseURL;
     

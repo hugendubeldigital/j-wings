@@ -61,7 +61,7 @@ public class ResourceImageIcon
         this(ResourceImageIcon.class.getClassLoader(), resourceFileName);
     }
 
-    public ResourceImageIcon(ClassLoader classLoader, String resourceFileName) {
+    public ResourceImageIcon(ClassLoader classLoader, String resourceFileName){
         super(classLoader, resourceFileName);
 
         if (extension == null || extension.length() == 0) {

@@ -196,7 +196,7 @@ public abstract class StaticResource
             return -1;
     }
 
-    public String getURL() {
+    public SimpleURL getURL() {
         String name = null;
         if (extension != null)
             name = getId() + "." + extension;
@@ -204,12 +204,14 @@ public abstract class StaticResource
             name = getId();
 
         // append the sessionid, if not global
-        if ((externalizerFlags & ExternalizeManager.GLOBAL) > 0)
-            return name;
+        if ((externalizerFlags & ExternalizeManager.GLOBAL) > 0) {
+            return new SimpleURL(name);
+        }
         else {
             RequestURL requestURL = (RequestURL)getPropertyService().getProperty("request.url");
+            requestURL = (RequestURL) requestURL.clone();
             requestURL.setResource(name);
-            return requestURL.toString();
+            return requestURL;
         }
     }
 

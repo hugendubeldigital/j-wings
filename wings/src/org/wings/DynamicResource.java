@@ -110,8 +110,9 @@ public abstract class DynamicResource
         return epochCache;
     }
 
-    public String getURL() {
+    public SimpleURL getURL() {
         RequestURL requestURL = (RequestURL)getPropertyService().getProperty("request.url");
+        requestURL = (RequestURL) requestURL.clone();
         requestURL.setEpoch(getEpoch());
 
         if (extension != null)
@@ -119,7 +120,7 @@ public abstract class DynamicResource
         else
             requestURL.setResource(getId());
 
-        return requestURL.toString();
+        return requestURL;
     }
 
     private PropertyService propertyService;

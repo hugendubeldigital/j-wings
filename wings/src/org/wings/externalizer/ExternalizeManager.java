@@ -105,14 +105,18 @@ public class ExternalizeManager extends AbstractExternalizeManager
             return null;
 
         int pos = identifier.indexOf(org.wings.SConstants.UID_DIVIDER);
-        if (pos > -1)
+        if (pos > -1) {
             identifier = identifier.substring(pos + 1);
-
+        }
         pos = identifier.indexOf(".");
-        if (pos > -1)
+        if (pos > -1) {
             identifier = identifier.substring(0, pos);
-
-        // SystemExternalizeManager hat negative Identifier
+        }
+        
+        if (identifier.length() < 1) {
+            return null;
+        }
+        // SystemExternalizeManager hat Minus as prefix.
         if ( identifier.charAt(0) == '-' ) {
             return SystemExternalizeManager.getSharedInstance().
                 getExternalizedInfo(identifier);

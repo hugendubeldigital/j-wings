@@ -19,16 +19,18 @@ import javax.swing.ImageIcon;
 
 public class SImageIcon implements SIcon {
 
-    private ImageIcon img;
-
-    private String url;
+    private final ImageIcon img;
+    private final SimpleURL url;
 
     public SImageIcon(ImageIcon image) {
 	this.img = image;
+        url = new SimpleURL(SessionManager.getSession()
+                            .getExternalizeManager()
+                            .externalize(img));
     }
 
     public SImageIcon(String name) {
-        this.img = new ImageIcon(name);
+        this(new ImageIcon(name));
     }
 
     public int getIconWidth() {
@@ -43,10 +45,8 @@ public class SImageIcon implements SIcon {
      * returns the URL, the icon can be fetched from. This URL may
      * be relative, usually if generated from the externalizer.
      */
-    public String getURL() {
-        return SessionManager.getSession()
-            .getExternalizeManager()
-            .externalize(img);
+    public SimpleURL getURL() {
+        return url;
     }
 
     // get the image e.g. if you want to grey it out

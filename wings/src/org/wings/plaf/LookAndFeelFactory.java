@@ -25,7 +25,7 @@ import org.wings.session.*;
 public class LookAndFeelFactory
 {
     private static Map lafs = new HashMap();
-    private static List sessions = new LinkedList();
+    private static Set sessions = new HashSet();
 
     public static void deploy(URL classpath)
 	throws IOException

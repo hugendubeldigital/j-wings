@@ -27,6 +27,7 @@ import org.wings.plaf.*;
 import org.wings.style.StyleSheet;
 import org.wings.session.Session;
 import org.wings.session.SessionManager;
+import org.wings.session.PropertyService;
 import org.wings.util.*;
 
 /**
@@ -104,7 +105,7 @@ public class SFrame
      */
     private transient SRequestDispatcher dispatcher = null;
 
-    private RequestURL requestURL = new RequestURL();
+    private RequestURL requestURL = null;
     private String targetResource;
 
     private HashMap dynamicResources;
@@ -224,9 +225,17 @@ public class SFrame
      * TODO: documentation
      */
     public final RequestURL getRequestURL() {
-        RequestURL result = (RequestURL)requestURL.clone();
-        // maybe null
-        result.setResource(targetResource);
+        RequestURL result = null;
+        // first time we are called, and we didn't get any change yet
+        if (requestURL == null) {
+            PropertyService propertyService;
+            propertyService = (PropertyService)SessionManager.getSession();
+            requestURL =(RequestURL)propertyService.getProperty("request.url");
+        }
+        if (requestURL != null) {
+            result = (RequestURL)requestURL.clone();
+            result.setResource(targetResource);
+        }
         return result;
     }
 

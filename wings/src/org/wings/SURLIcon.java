@@ -31,17 +31,18 @@ public class SURLIcon
     implements SIcon
 {
 
-    URL url;
+    SimpleURL url;
 
     public SURLIcon (URL u) {
+        this(u.toString());
+    }
+
+    public SURLIcon (SimpleURL u) {
         url = u;
     }
 
     public SURLIcon (String u) {
-        try {
-            url = new URL(u);
-        } catch ( MalformedURLException e ) {
-        }
+        this(new SimpleURL(u));
     }
 
     public int getIconWidth() {
@@ -52,8 +53,8 @@ public class SURLIcon
         return -1;
     }
   
-    public String getURL() {
-        return url.toString();
+    public SimpleURL getURL() {
+        return url;
     }
 
 }// SURLIcon

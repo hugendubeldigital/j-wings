@@ -189,9 +189,9 @@ public final class Utils implements SConstants
         if ( icon==null )
             return;
 
-        d.print("<img src=\"").
-            print(icon.getURL()).
-            print("\"");
+        d.print("<img src=\"");
+        icon.getURL().write(d);
+        d.print("\"");
         if (align != null)
             d.print(" valign=\"").print(align).print("\"");
         if ( icon.getIconWidth() > 0)

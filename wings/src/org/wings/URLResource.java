@@ -14,24 +14,17 @@
 package org.wings;
 
 import java.io.Serializable;
-import java.net.URL;
 
 /**
- * A small fixed size picture, typically used to decorate components. 
- * This icon can be accessed via an URL; this URL is passed to a browser
- * that fetches it from there.
+ * Some element, that can be accessed via an URL.
  */
-public interface SIcon extends URLResource
+public interface URLResource extends Serializable
 {
     /**
-     * @return the width of the icon, or -1 if unknown.
+     * returns the URL, this resource can be fetched from. This URL may
+     * be relative, usually if generated from the externalizer.
      */
-    int getIconWidth();
-
-    /**
-     * @return the height of the icon, or -1 if unknown.
-     */
-    int getIconHeight();
+    SimpleURL getURL();
 }
 
 /*

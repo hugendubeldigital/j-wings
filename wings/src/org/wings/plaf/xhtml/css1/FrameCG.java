@@ -38,17 +38,24 @@ public final class FrameCG
 
         DynamicResource styleSheetResource = new DynamicStyleSheetResource(frame);
         frame.addDynamicResource(styleSheetResource);
-        frame.addLink(new SLink("stylesheet", null, "text/css", null, styleSheetResource));
+        frame.addLink(new SLink("stylesheet", null, 
+                                "text/css", null, 
+                                styleSheetResource.getURL()));
 
         DynamicResource scriptResource = new DynamicScriptResource(frame);
         frame.addDynamicResource(scriptResource);
-        frame.addLink(new SLink("javascript", null, "application/x-javascript", null, scriptResource));
+        frame.addLink(new SLink("javascript", null, 
+                                "application/x-javascript", null,
+                                scriptResource.getURL()));
 
         CGManager cgManager = frame.getSession().getCGManager();
-        StaticResource staticResource = (StaticResource)cgManager.getObject("lookandfeel.stylesheet",
-                                                                            Resource.class);
+        StaticResource staticResource = (StaticResource)cgManager
+            .getObject("lookandfeel.stylesheet",
+                       Resource.class);
         staticResource.setMimeType("text/css");
-        frame.addLink(new SLink("stylesheet", null, "text/css", null, staticResource));
+        frame.addLink(new SLink("stylesheet", null, 
+                                "text/css", null, 
+                                staticResource.getURL()));
     }
 
     protected void writeAdditionalHeaders(Device d, SFrame frame)
