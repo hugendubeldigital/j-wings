@@ -46,6 +46,49 @@ extends SFrame {
     }
     
     /**
+     * Removes the given component from the container.
+     *
+     * @param c the component to remove
+     * @see #removeComponent(org.wings.SComponent)
+     */
+    public void remove(SComponent c) {
+        if ( c==null )  return;
+
+        if ( layout!=null )
+            layout.removeComponent(c);
+
+        int index = getComponentList().indexOf(c);
+        if ( getComponentList().remove(c) ) {
+            getConstraintList().remove(index);
+//
+//            fireContainerEvent(org.wings.event.SContainerEvent.COMPONENT_REMOVED, c);
+
+            c.setParent(null);
+            reload(ReloadManager.RELOAD_CODE);
+        }
+    }
+
+    /**
+     * Removes the component at the given position from the container.
+     *
+     * @param index remove the component at position <i>index</i>
+     * 	from this container
+     */
+    public void remove(int index) {
+        SComponent c = getComponent(index);
+        remove(c);
+    }
+
+    /**
+     * Removes all components from the container.
+     */
+    public void removeAll() {
+        while ( getComponentCount() > 0 ) {
+            remove(0);
+        }
+    }    
+    
+    /**
      * Only SFrameSets or SFrames are allowed.
      */
     public SComponent addComponent(SComponent c, Object constraint, int index) {
