@@ -26,23 +26,33 @@ import org.wings.io.Device;
  * @version $Revision$
  */
 public interface SBorder {
+    /**
+     * Sets the insets of this border. Insets describe the amount
+     * of space 'around' the bordered component.
+     * @see #getInsets()
+     */
     void setInsets(Insets insets);
+
+    /**
+     * @return Insets specification of the border.
+     * @see #setInsets()
+     */
     Insets getInsets();
     
     /**
-      * Get the color of the border.
-      */
+     * Get the color of the border.
+     */
     java.awt.Color getColor();
 
     /**
-      * Get the color of this border.
-      */
+     * Get the color of this border.
+     */
     void setColor( java.awt.Color color );
-
+    
     void writePrefix(Device d) throws IOException;
     void writePostfix(Device d) throws IOException;
     void writeSpanAttributes( Device d ) throws IOException;
-
+    
     String getCGClassID();
     void updateCG();
 

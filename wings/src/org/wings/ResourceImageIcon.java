@@ -34,10 +34,10 @@ import javax.swing.ImageIcon;
  * @version $Revision$
  */
 public class ResourceImageIcon
-    extends ImageIcon
+    extends SImageIcon
 {
     protected ClassLoader classLoader;
-
+    
     protected String resourceFileName;
     protected String extension; 
 

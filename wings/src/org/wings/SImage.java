@@ -179,7 +179,7 @@ public class SImage
         if ( w>0 )
             width = w;
     }
-
+    
     /**
      * TODO: documentation
      *
@@ -212,7 +212,7 @@ public class SImage
         int outWidth  = (width  > 0 || image == null) 
             ? width 
             : image.getIconWidth();
-
+        
         int outHeight = (height > 0 || image == null) 
             ? height 
             : image.getIconHeight();
@@ -229,7 +229,7 @@ public class SImage
         
         if ( outWidth > 0 )
             s.append(" width=\"").append(outWidth).append("\"");
-
+        
         if ( outHeight > 0 )
             s.append(" height=\"").append(outHeight).append("\"");
         

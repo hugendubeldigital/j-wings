@@ -40,22 +40,12 @@ public class SButton extends SAbstractButton
     /**
      * TODO: documentation
      */
-    protected Icon icon = null;
+    protected SIcon icon = null;
 
     /**
      * TODO: documentation
      */
-    protected String iconAddress = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected Icon disabledIcon = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected String disabledIconAddress = null;
+    protected SIcon disabledIcon = null;
 
     /**
      * TODO: documentation
@@ -93,12 +83,12 @@ public class SButton extends SAbstractButton
      *
      * @param i
      */
-    public SButton(Icon i) {
+    public SButton(SIcon i) {
         super(null);
         setIcon(i);
     }
 
-    public SButton(String text, Icon i) {
+    public SButton(String text, SIcon i) {
         super(text);
         setIcon(i);
     }
@@ -162,8 +152,8 @@ public class SButton extends SAbstractButton
      *
      * @param i
      */
-    public void setIcon(Icon i) {
-        Icon oldIcon = icon;
+    public void setIcon(SIcon i) {
+        SIcon oldIcon = icon;
         icon = i;
         if ((icon == null && oldIcon != null) ||
             icon != null && !icon.equals(oldIcon))
@@ -173,51 +163,19 @@ public class SButton extends SAbstractButton
     /**
      * TODO: documentation
      *
-     * @param i
-     */
-    public void setIcon(URL i) {
-        if ( i!=null)
-            setIcon(i.toString());
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param url
-     */
-    public void setIcon(String url) {
-        String oldIconAddress = iconAddress;
-        iconAddress = url;
-        if ((iconAddress == null && oldIconAddress != null) ||
-            iconAddress != null && !iconAddress.equals(oldIconAddress))
-            reload();
-    }
-
-    /**
-     * TODO: documentation
-     *
      * @return
      */
-    public Icon getIcon() {
+    public SIcon getIcon() {
         return icon;
     }
 
     /**
      * TODO: documentation
      *
-     * @return
-     */
-    public String getIconAddress() {
-        return iconAddress;
-    }
-
-    /**
-     * TODO: documentation
-     *
      * @param i
      */
-    public void setDisabledIcon(Icon i) {
-        Icon oldDisabledIcon = disabledIcon;
+    public void setDisabledIcon(SIcon i) {
+        SIcon oldDisabledIcon = disabledIcon;
         disabledIcon = i;
         if ((disabledIcon == null && oldDisabledIcon != null) ||
             disabledIcon != null && !disabledIcon.equals(oldDisabledIcon))
@@ -227,60 +185,21 @@ public class SButton extends SAbstractButton
     /**
      * TODO: documentation
      *
-     * @param i
-     */
-    public void setDisabledIcon(URL i) {
-        if ( i!=null)
-            setDisabledIcon(i.toString());
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param url
-     */
-    public void setDisabledIcon(String url) {
-        String oldDisabledIconAddress = disabledIconAddress;
-        disabledIconAddress = url;
-        if ((disabledIconAddress == null && oldDisabledIconAddress != null) ||
-            disabledIconAddress != null && !disabledIconAddress.equals(oldDisabledIconAddress))
-            reload();
-    }
-
-    /**
-     * TODO: documentation
-     *
      * @return
      */
-    public Icon getDisabledIcon() {
-        if(disabledIcon == null)
-            if(icon != null && icon instanceof ImageIcon)
-                disabledIcon = new ImageIcon(GrayFilter.createDisabledImage(((ImageIcon)icon).getImage()));
+    public SIcon getDisabledIcon() {
+        if(disabledIcon == null) {
+            /**** TODO
+                  if(icon != null && icon instanceof ImageIcon)
+                  disabledIcon = new ImageIcon(GrayFilter.createDisabledImage(((ImageIcon)icon).getImage()));
+            ***/
+        }
         return disabledIcon;
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getDisabledIconAddress() {
-        return disabledIconAddress;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    protected boolean showIcon() {
-        return ( icon!=null || iconAddress!=null );
-    }
-
-
     private Action action;
     private PropertyChangeListener actionPropertyChangeListener;
-
+    
     public void setAction(Action a) {
 	Action oldValue = getAction();
 	if (action == null || !action.equals(a)) {
@@ -325,7 +244,7 @@ public class SButton extends SAbstractButton
         //                  ? (String)a.getValue(Action.ACTION_COMMAND_KEY) 
         //                  : null));
 	setText((a != null ? (String)a.getValue(Action.NAME) : null));
-	setIcon((a != null ? (Icon)a.getValue(Action.SMALL_ICON) : null));
+	setIcon((a != null ? (SIcon)a.getValue(Action.SMALL_ICON) : null));
 	setEnabled((a != null ? a.isEnabled() : true));
  	setToolTipText((a != null ? (String)a.getValue(Action.SHORT_DESCRIPTION) : null));	
     }
@@ -362,7 +281,7 @@ public class SButton extends SAbstractButton
                     button.setEnabled(enabled.booleanValue());
                 }
                 else if (e.getPropertyName().equals(Action.SMALL_ICON)) {
-                    Icon icon = (Icon)e.getNewValue();
+                    SIcon icon = (SIcon) e.getNewValue();
                     button.setIcon(icon);
                 }
                 // uncomment if compiled against jdk < 1.3
