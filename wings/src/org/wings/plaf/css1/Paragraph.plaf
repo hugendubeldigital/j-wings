@@ -1,0 +1,19 @@
+<template name="Paragraph" for="org.wings.SParagraph">
+
+<write>
+<%
+SBorder border = component.getBorder();
+Utils.renderBorderPrefix(device, border);
+%>
+<p<% 
+Utils.printStyle(device, component.getStyle());
+%>>
+<%
+Utils.renderContainer(device, component);
+%>
+</p>
+<%
+Utils.renderBorderPostfix(device, border);
+%>
+</write>
+</template>

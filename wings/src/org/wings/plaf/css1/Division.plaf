@@ -1,0 +1,19 @@
+<template name="Division" for="org.wings.SDivision">
+
+<write>
+<%
+SBorder border = component.getBorder();
+Utils.renderBorderPrefix(device, border);
+%>
+<div<% 
+Utils.printStyle(device, component.getStyle());
+%>>
+<%
+Utils.renderContainer(device, component);
+%>
+</div>
+<%
+Utils.renderBorderPostfix(device, border);
+%>
+</write>
+</template>
