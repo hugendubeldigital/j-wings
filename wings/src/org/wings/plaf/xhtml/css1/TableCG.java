@@ -211,6 +211,9 @@ public final class TableCG
         }
 
         rendererPane.writeComponent(d, comp, table);
+        if ( comp instanceof ClickableRenderComponent ) {
+            ((ClickableRenderComponent)comp).setEventParam(null);
+        }
         d.print("</td>");
     }
 
