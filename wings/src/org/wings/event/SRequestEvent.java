@@ -47,6 +47,11 @@ public class SRequestEvent extends AWTEvent
     public static final int DISPATCH_DONE = DELIVER_START+3;
 
     /**
+     * 
+     */
+    public static final int PROCESS_REQUEST = DELIVER_START+4;
+
+    /**
      * if type is {@link DELIVER_START} or {@link DELIVER_DONE} this field is
      * filled with info about the resource actually delivered, otherwise it is
      * null. 
