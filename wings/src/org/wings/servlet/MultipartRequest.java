@@ -246,9 +246,18 @@ public class MultipartRequest
             throw new IOException("Posted content length of " + length +
                                   " exceeds limit of " + maxSize);
         }
-
+        
         String boundary = extractBoundary(type);
         if (boundary == null) {
+            /*
+             * this could happen due to a bug in Tomcat 3.2.2 in combination with Opera.
+             * Opera sends the boundary on a separate line, which is perfectly correct
+             * regarding the way header may be constructed (multiline headers). Alas, Tomcat
+             * fails to read the header in the content type line and thus we cannot
+             * read it.. haven't checked later versions of Tomcat, but upgrading is
+             * definitly needed, since we cannot do anything about it here.
+             * (JServ works fine, BTW.) (Henner)
+             */
             throw new IOException("Separation boundary was not specified");
         }
 
@@ -406,20 +415,44 @@ public class MultipartRequest
 
     private Hashtable parseHeader(String header)
     {
-        int index = 0;
+        int lastHeader = -1;
         String[] headerLines;
         Hashtable nameValuePairs = new Hashtable();
 
-        StringTokenizer stLines = new StringTokenizer(header, "\n", false);
+        StringTokenizer stLines = new StringTokenizer(header, "\r\n", false);
         headerLines = new String[stLines.countTokens()];
 
         // Get all the header lines
-        while ( stLines.hasMoreTokens() )
-            headerLines[ index++ ] = stLines.nextToken();
+        while ( stLines.hasMoreTokens() ) {
+            String hLine = stLines.nextToken();
+            if (hLine.length() == 0) continue;
+            /* if the first character is a space, then
+             * this line is a header continuation.
+             * (opera sends multiline headers..)
+             */
+            if (lastHeader >= 0 && Character.isWhitespace(hLine.charAt(0)))
+                headerLines[ lastHeader ]  += hLine;
+            else
+                headerLines[ ++lastHeader ] = hLine;
+        }
 
-        for (int i = 0 ; i < headerLines.length ; ){
-            StringTokenizer stTokens = new StringTokenizer(headerLines[i++], ";", false);
+        for (int i = 0 ; i <= lastHeader ; ++i){
+            String currentHeader = headerLines[i];
+            if (currentHeader.startsWith("Content-Type")) {
+                String contentType = currentHeader
+                    .substring(currentHeader.indexOf(':')+1);
+                int semiColonPos = contentType.indexOf(';');
+                if (semiColonPos != -1)
+                    contentType = contentType.substring(0, semiColonPos);
+                nameValuePairs.put("content-type", contentType.trim());
+                continue;
+            }
 
+            if (!currentHeader.startsWith("Content-Disposition"))
+                continue;
+
+            StringTokenizer stTokens = new StringTokenizer(currentHeader, ";", false);
+            
             // Get all the tokens from each line
             if ( stTokens.countTokens() > 1 ){
                 stTokens.nextToken();    // Skip fist Token Content-Disposition: form-data
@@ -436,7 +469,7 @@ public class MultipartRequest
                     if ( filePath.indexOf(":") != -1 )
                         filePath = filePath.substring( (filePath.indexOf(":")+1) );
 
-                    //Get rid of PATH
+                    // get rid of PATH
                     filePath = filePath.substring(filePath.lastIndexOf(File.separator) + 1);
                     nameValuePairs.put(formType, filePath);
                 }
@@ -564,7 +597,6 @@ public class MultipartRequest
             return null;
         }
         String boundary = line.substring(index + 9);  // 9 for "boundary="
-
         // The real boundary is always preceeded by an extra "--"
         //boundary = "--" + boundary;
 
