@@ -15,11 +15,11 @@
 package org.wings.template;
 
 import java.awt.Color;
-import java.awt.Font;
 
 import java.util.StringTokenizer;
 
 import org.wings.SComponent;
+import org.wings.SFont;
 
 /**
  * TODO: documentation
@@ -50,15 +50,15 @@ public class SComponentPropertyManager
     }
 
 
-    protected final Font parseFont(String value) {
+    protected final SFont parseFont(String value) {
         StringTokenizer s = new StringTokenizer(value, ",");
         String fontName = s.nextToken();
         String tmpFontType = s.nextToken().toUpperCase().trim();
-        int fontType = Font.PLAIN;
+        int fontType = SFont.PLAIN;
         if ( tmpFontType.startsWith("B") )
-            fontType = Font.BOLD;
+            fontType = SFont.BOLD;
         else if ( tmpFontType.startsWith("I") )
-            fontType = Font.ITALIC;
+            fontType = SFont.ITALIC;
 
         int fontSize = 12;
         try {
@@ -66,7 +66,7 @@ public class SComponentPropertyManager
         }
         catch (Exception e) {}
 
-        return new Font(fontName, fontType, fontSize);
+        return new SFont(fontName, fontType, fontSize);
     }
 }
 
