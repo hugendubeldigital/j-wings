@@ -106,6 +106,8 @@ public interface LowLevelEventListener
      * (considering user interaction) state.
      */
     void fireFinalEvents();
+
+    boolean isEnabled();
 }
 
 /*
