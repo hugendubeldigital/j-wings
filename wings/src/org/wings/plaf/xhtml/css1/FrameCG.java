@@ -63,7 +63,7 @@ public final class FrameCG
         throws IOException
     {
         d.append("<body");
-        System.err.println("blubber");
+        //System.err.println("blubber");
         Iterator it = frame.getScriptListeners().iterator();
         while (it.hasNext()) {
             ScriptListener script = (ScriptListener)it.next();
