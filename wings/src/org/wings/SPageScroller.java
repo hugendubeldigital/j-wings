@@ -304,11 +304,23 @@ public class SPageScroller
         // avoid division by zero
         if ( getExtent()==0 )
             return 0;
-
-        return ((getMaximum()+1)+(getExtent()-1)-getMinimum())/getExtent();
+        return (getMaximum()+(getExtent()-1)-getMinimum()) / getExtent();
     }
 
+    /**
+     * @deprecated use {@link #getCurrentPage()} instead. ActualPage is a
+     *             german-english misnomer.
+     */
     public final int getActualPage() {
+        return getCurrentPage();
+    }
+
+    /**
+     * gets the current page number according to the Position we are
+     * in.
+     * @return the current page number
+     */
+    public final int getCurrentPage() {
         // avoid division by zero
         if ( getExtent()==0 )
             return 0;
@@ -420,10 +432,10 @@ public class SPageScroller
 
         setPageCountText(pages);
 
-        int actualPage = getActualPage();
+        int currentPage = getCurrentPage();
 
         // prefer forward
-        int firstDirectPage = actualPage - (directPages-1)/2;
+        int firstDirectPage = currentPage - (directPages-1)/2;
         firstDirectPage = Math.min(firstDirectPage, pages-directPages);
         firstDirectPage = Math.max(firstDirectPage, 0);
 
@@ -443,10 +455,11 @@ public class SPageScroller
 
             directPageClickables[i].setEvent(getEventParameter(page*getExtent()));
 
-            if ( page==actualPage ) {
+            if ( page == currentPage ) {
                 directPageClickables[i].setEnabled(false);
                 directPageClickables[i].setSelected(true);
-            } else {
+            } 
+            else {
                 directPageClickables[i].setEnabled(true);
                 directPageClickables[i].setSelected(false);
             }
