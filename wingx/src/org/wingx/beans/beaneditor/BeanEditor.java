@@ -28,8 +28,8 @@ import org.wingx.beans.editors.*;
  *   by providing a custom set of PropertyDescriptors:
  *   <code>
  *    BeanEditor editor = new BeanEditor(); <br>
- *    editor.setBean(bean); <br>
  *    editor.setPropertyDescriptors(PropertyDescriptor[]); <br>
+ *    editor.setBean(bean); <br>
  *   </code>
  *  </li>
  * </ul>
@@ -48,6 +48,7 @@ public class BeanEditor
     protected Class beanClass = null;
     protected Object bean = null;
     protected PropertyDescriptor[] propertyDescriptors = noPropertyDescriptors;
+    protected boolean customPropertyDescriptors = false;
 
     protected Map properties = new HashMap();
     protected int size = 0;
@@ -61,6 +62,7 @@ public class BeanEditor
 
     public void setPropertyDescriptors(PropertyDescriptor[] descriptors) {
         propertyDescriptors = descriptors;
+        customPropertyDescriptors = true;
 
         if (propertyDescriptors == null)
             propertyDescriptors = noPropertyDescriptors;
@@ -142,7 +144,9 @@ public class BeanEditor
 
     public void setBean(Object bean) {
         this.bean = bean;
-        setBeanClass(bean.getClass());
+        if (!customPropertyDescriptors)
+            setBeanClass(bean.getClass());
+
         if (bean != null)
             readBean();
     }
@@ -156,7 +160,7 @@ public class BeanEditor
         PropertyDescriptor[] descriptors = getPropertyDescriptors();
         for (int i = 0; i < descriptors.length; i++) {
             PropertyDescriptor descriptor = descriptors[i];
-	    String name = descriptor.getDisplayName();
+	    String name = descriptor.getName();
 	    Class type = descriptor.getPropertyType();
 	    Method getter = descriptor.getReadMethod();
 	    Method setter = descriptor.getWriteMethod();
@@ -213,19 +217,19 @@ public class BeanEditor
                 PropertyDescriptor descriptor = descriptors[i];
                 Method getter = descriptor.getReadMethod();
                 if (getter != null) {
-                    Object value = getter.invoke(getBean(), null);
-
 		    Property property = (Property)properties.get(descriptor.getName());
 		    if (property == null)
 			continue;
                     EditorAdapter editor = property.editorAdapter;
 
+                    Object value = getter.invoke(getBean(), null);
 		    if (value == property.value || (value != null && value.equals(property.value))) {
 			// The property is equal to its old value.
 			continue;
 		    }
 
 		    if (value != null) {
+                        // check for equality of primitive type arrays
 			Class comp = value.getClass().getComponentType();
 			if (comp != null && comp.isPrimitive()) {
 			    /*
@@ -314,12 +318,18 @@ public class BeanEditor
 		Property property = (Property)iterator.next();
 		if (editor == property.propertyEditor) {
 		    Object value = editor.getValue();
+
+		    if (value == property.value || (value != null && value.equals(property.value))) {
+			// The property is equal to its old value.
+			continue;
+		    }
+                    property.value = value;
+
 		    Method setter = property.propertyDescriptor.getWriteMethod();
 		    try {
 			if (setter != null)
 			    setter.invoke(bean, new Object[] { value });
 
-			property.value = value;
 		    }
 		    catch (InvocationTargetException ex) {
 			if (ex.getTargetException() instanceof PropertyVetoException) {
