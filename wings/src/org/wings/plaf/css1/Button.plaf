@@ -98,18 +98,14 @@ protected void writeDynamicIcons(final Device device, SAbstractButton abstractBu
 
 
            if ( rolloverIcon!=null ) {
-               %> onMouseover="if(document.images){document.<%=iconName
-               %>.src='<%=rolloverIcon.getURL()
-               %>';}" onmouseout="if(document.images){document.<%=iconName
-               %>.src='<%=origIcon.getURL()
+               %> onMouseover="if(document.images){this.src='<%=rolloverIcon.getURL()
+               %>';}" onmouseout="if(document.images){this.src='<%=origIcon.getURL()
                %>';}"<%
            }
 
            if ( pressedIcon!=null ) {
-               %> onMousedown="if(document.images){document.<%=iconName
-               %>.src='<%=pressedIcon.getURL()
-               %>';}" onmouseup="if(document.images){document.<%=iconName
-               %>.src='<%=rolloverIcon!=null ? rolloverIcon.getURL() : origIcon.getURL()
+               %> onMousedown="if(document.images){this.src='<%=pressedIcon.getURL()
+               %>';}" onmouseup="if(document.images){this.src='<%=rolloverIcon!=null ? rolloverIcon.getURL() : origIcon.getURL()
                %>';}"<%
            }
         }
