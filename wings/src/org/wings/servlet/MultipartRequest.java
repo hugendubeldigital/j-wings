@@ -624,7 +624,7 @@ public class MultipartRequest
          */
         public String getDir() {
             if ( uploadedFile!=null )
-                return uploadedFile.getPath();
+                return uploadedFile.getParentFile().getPath();
             else
                 return null;
         }
