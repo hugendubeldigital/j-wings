@@ -49,7 +49,7 @@ public class DynamicStyleSheetResource
             throw e;
         }
         catch (Exception e) {
-            throw new UndeclaredThrowableException(e);
+            throw new IOException(e.getMessage()); // UndeclaredThrowable
         }
     }
 
