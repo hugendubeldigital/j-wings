@@ -94,7 +94,7 @@ public class SFrame
     protected boolean resizable = true;
 
     /** the style sheet used in certain look and feels. */
-    protected StyleSheet styleSheet;  // IMPORTANT: initialization with null causes errors
+    protected StyleSheet styleSheet;  // IMPORTANT: initialization with null causes errors; what errors ?
 
     /**
      * TODO: documentation
