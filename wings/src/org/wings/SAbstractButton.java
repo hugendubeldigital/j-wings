@@ -42,6 +42,16 @@ public abstract class SAbstractButton
     public static final String CHECKBOX       = "checkbox";
     public static final String RADIOBUTTON    = "radio";
 
+
+    public static final int ICON_COUNT = 7;
+    public static final int DISABLED_ICON = 0;
+    public static final int DISABLED_SELECTED_ICON = 1;
+    public static final int ENABLED_ICON = 2;
+    public static final int SELECTED_ICON = 3;
+    public static final int ROLLOVER_ICON = 4;
+    public static final int ROLLOVER_SELECTED_ICON = 5;
+    public static final int PRESSED_ICON = 6;
+
     /** the text the button is showing */
     private String text;
 
@@ -877,6 +887,19 @@ public abstract class SAbstractButton
                     }*/
             }
         }
+    }
+
+    /**
+     * Sets the proper icons for buttonstatus enabled resp. disabled.
+     */
+    public void setIcons(SIcon[] icons) {
+        setIcon(icons[ENABLED_ICON]);
+        setDisabledIcon(icons[DISABLED_ICON]);
+        setDisabledSelectedIcon(icons[DISABLED_SELECTED_ICON]);
+        setRolloverIcon(icons[ROLLOVER_ICON]);
+        setRolloverSelectedIcon(icons[ROLLOVER_SELECTED_ICON]);
+        setPressedIcon(icons[PRESSED_ICON]);
+        setSelectedIcon(icons[SELECTED_ICON]);
     }
 
 }
