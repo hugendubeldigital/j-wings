@@ -34,11 +34,6 @@ public class SSeparator
     public SSeparator() {
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
     public String getCGClassID() {
         return cgClassID;
     }

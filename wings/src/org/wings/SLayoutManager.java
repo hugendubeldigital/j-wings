@@ -58,7 +58,21 @@ public interface SLayoutManager
      */
     void write(Device s) throws IOException;
 
+    /**
+     * Returns the name of the CGFactory class that generates the
+     * look and feel for this component.
+     *
+     * @return content of private static final cgClassID attribute
+     * @see SLayoutManager#getCGClassID
+     * @see org.wings.plaf.CGDefaults#getCG
+     */
     String getCGClassID();
+
+    /**
+     * Notification from the CGFactory that the L&F has changed.
+     *
+     * @see SLayoutManager#updateCG
+     */
     void updateCG();
 }
 

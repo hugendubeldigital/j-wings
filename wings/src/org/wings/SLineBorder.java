@@ -75,14 +75,6 @@ public class SLineBorder
     
     public int getThickness() { return thickness; }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this border.
-     *
-     * @return "LineBorderCG"
-     * @see SBorder#getCGClassID
-     * @see org.wings.plaf.CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }

@@ -79,14 +79,6 @@ public class SEtchedBorder
 
     public int getEtchedType() { return etchedType; }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this border.
-     *
-     * @return "EtchedBorderCG"
-     * @see SBorder#getCGClassID
-     * @see org.wings.plaf.CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }

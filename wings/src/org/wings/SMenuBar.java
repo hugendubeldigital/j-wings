@@ -208,14 +208,14 @@ public class SMenuBar extends SContainer
      * @see SComponent#paint
      * @see SComponent#setBorder
      */
-	/*
-    protected void paintBorder(Graphics g) {    
+    /*
+    protected void paintBorder(Graphics g) {
         if (isBorderPainted()) {
             super.paintBorder(g);
         }
     }
-	*/
-    
+    */
+
     /**
      * Sets the margin between the menubar's border and
      * its menus. Setting to null will cause the menubar to
@@ -256,14 +256,14 @@ public class SMenuBar extends SContainer
     }
 
 
-	/** 
+    /**
      * Implemented to be a MenuElement -- does nothing.
      *
      * @see #getSubElements
      */
     public void menuSelectionChanged(boolean isIncluded) {
     }
-    
+
     /**
      * Returns a string representation of this SMenuBar. This method 
      * is intended to be used only for debugging purposes, and the 
@@ -284,14 +284,6 @@ public class SMenuBar extends SContainer
 	",paintBorder=" + paintBorderString;
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "MenuBarCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -299,39 +291,42 @@ public class SMenuBar extends SContainer
     public void setCG(MenuBarCG cg) {
         super.setCG(cg);
     }
-	
-	/**
-	  * Close all currently open menus.
-	  */
-	public void closeAllMenus()
-	 {
-		for ( int i = 0; i < fComponents.size(); i++ )
-			((SMenu) fComponents.elementAt(i)).setActive( false );
-	 }
 
-	/**
-	  * Handle open and close of menus
-	  */
-	class MenuAction
-		implements ActionListener
-	 {
-	 
-	 	private SMenuBar fMenuBar = null;
-		
-		public MenuAction( SMenuBar mbar )
-		 {
-			fMenuBar = mbar;
-		 }
+    /**
+     * Close all currently open menus.
+     */
+    public void closeAllMenus()
+    {
+        for ( int i = 0; i < fComponents.size(); i++ )
+            ((SMenu) fComponents.elementAt(i)).setActive( false );
+    }
 
-		public void actionPerformed( ActionEvent e )
-		 {
-			SMenu menu = (SMenu) e.getSource();
-			boolean active = menu.isActive();
-			fMenuBar.closeAllMenus();
-			menu.setActive( ! active );
-		 }
-	 }
+    /**
+     * Handle open and close of menus
+     */
+    class MenuAction implements ActionListener
+    {
+        private SMenuBar fMenuBar = null;
 
+        public MenuAction( SMenuBar mbar )
+        {
+            fMenuBar = mbar;
+        }
+
+        public void actionPerformed( ActionEvent e )
+        {
+            SMenu menu = (SMenu) e.getSource();
+            boolean active = menu.isActive();
+            fMenuBar.closeAllMenus();
+            menu.setActive( ! active );
+        }
+    }
 
 }
 
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

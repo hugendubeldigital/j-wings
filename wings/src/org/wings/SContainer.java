@@ -23,7 +23,7 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * This is a container which can hold several other <code>SComponents</code>.
  *
  * @see SLayoutManager
  * @see SComponent
@@ -39,24 +39,27 @@ public class SContainer
     private static final String cgClassID = "ContainerCG";
 
     /**
-     * The constraints for the components.
+     * The constraints for the component.
      */
     protected ArrayList containerListener;
 
-    SLayoutManager layout;
+    /**
+     * The layout for the component.
+     */
+    protected SLayoutManager layout;
 
     /**
-     * TODO: documentation
+     * creates a new container with the given layout
      *
-     * @param l
+     * @param l the layout for this container
      */
     public SContainer(SLayoutManager l) {
         setLayout(l);
     }
 
     /**
-     * TODO: documentation
-     *
+     * creates a new container with no layout manager, i.e. the components
+     * are simply written in the same order they were added.
      */
     public SContainer() {}
 
@@ -69,9 +72,9 @@ public class SContainer
     }
 
     /**
-     * TODO: documentation
+     * Sets a new layout manager.
      *
-     * @param l
+     * @param l new layout manager
      */
     public void setLayout(SLayoutManager l) {
         if (layout != null) {
@@ -92,9 +95,9 @@ public class SContainer
     }
 
     /**
-     * TODO: documentation
+     * Returns the current layout
      *
-     * @return
+     * @return current layout
      */
     public SLayoutManager getLayout() {
         return layout;
@@ -190,29 +193,29 @@ public class SContainer
 
 
     /**
-     * TODO: documentation
+     * returns the number of components in this container
      *
-     * @return
+     * @return number of components
      */
     public int getComponentCount() {
         return getComponentList().size();
     }
 
     /**
-     * TODO: documentation
+     * returns the component at the given position
      *
-     * @param i
-     * @return
+     * @param i position
+     * @return component at given pos
      */
     public SComponent getComponentAt(int i) {
         return (SComponent)getComponentList().get(i);
     }
 
     /**
-     * TODO: documentation
+     * returns the component at the given position
      *
-     * @param i
-     * @return
+     * @param i position
+     * @return component at given pos
      */
     public SComponent getComponent(int i) {
         return getComponentAt(i);
@@ -225,10 +228,10 @@ public class SContainer
 
 
     /**
-     * TODO: documentation
+     * returns the constraint for the given component position
      *
-     * @param i
-     * @return
+     * @param i position
+     * @return constraint for component at given position
      */
     public Object getConstraintAt(int i) {
         return getConstraintList().get(i);
@@ -236,15 +239,13 @@ public class SContainer
 
 
 
-    /*
-     * Entfernt die Komponente gleichzeitig aus dem LayoutManager,
-     * aus dem internen ArrayList und vom Dispatcher.
-     */
     /**
-     * TODO: documentation
+     * Removes the given component from the container. This includes removing
+     * it from the LayoutManager (if set), the internal list and
+     * the dispatcher.
      *
-     * @param c
-     * @return
+     * @param c the component to remove
+     * @return true if the component was found and removed; false otherwise.
      */
     public boolean removeComponent(SComponent c) {
         if ( c==null )
@@ -267,10 +268,11 @@ public class SContainer
     }
 
     /**
-     * TODO: documentation
+     * Removes the component at the given position from the container.
      *
-     * @param i
-     * @return
+     * @param i the position of the component to remove
+     * @return the removed component
+     * @see #removeComponent(org.wings.SComponent)
      */
     public SComponent removeComponentAt(int i) {
         SComponent c = getComponentAt(i);
@@ -279,34 +281,34 @@ public class SContainer
     }
 
     /**
-     * TODO: documentation
+     * Removes the component at the given position from the container.
      *
      * @param c
+     * @see #removeComponent(org.wings.SComponent)
      */
     public void remove(SComponent c) {
         removeComponent(c);
     }
 
     /**
-     * TODO: documentation
+     * Removes the component at the given position from the container.
      *
      * @param i
+     * @see #removeComponent(int)
      */
     public void remove(int i) {
         removeComponentAt(i);
     }
 
     /**
-     * TODO: documentation
-     *
+     * Removes all components from the container.
      */
     public void removeAllComponents() {
         removeAll();
     }
 
     /**
-     * TODO: documentation
-     *
+     * Removes all components from the container.
      */
     public void removeAll() {
         while ( getComponentCount() > 0 )
@@ -315,37 +317,71 @@ public class SContainer
 
 
     /**
-     * TODO: documentation
+     * Adds a component to the container with null constraint at the end
+     * of the internal list.
      *
-     * @param c
-     * @return
+     * @param c the component to add
+     * @return the added component
      */
     public SComponent add(SComponent c) {
         return addComponent(c, null);
     }
 
+    /**
+     * Adds a component to the container with the given constraint at the end
+     * of the internal list.
+     *
+     * @param c the component to add
+     * @param constraint the constraint for this component
+     * @return the added component
+     */
     public void add(SComponent c, Object constraint) {
         addComponent(c, constraint);
     }
 
+    /**
+     * Adds a component to the container with null constraint at the given
+     * index.
+     *
+     * @param c the component to add
+     * @param index the index of the component
+     * @return the added component
+     */
     public SComponent add(SComponent c, int index) {
         return addComponent(c, null, index);
     }
 
+    /**
+     * Adds a component to the container with the given constraint at
+     * the given index.
+     *
+     * @param c the component to add
+     * @param index the index of the component
+     * @return the added component
+     */
     public void add(SComponent c, Object constraint, int index) {
         addComponent(c, constraint, index);
     }
 
     /**
-     * TODO: documentation
+     * Adds a component to the container with null constraint at the end
+     * of the internal list.
      *
-     * @param c
-     * @return
+     * @param c the component to add
+     * @return the added component
      */
     public SComponent addComponent(SComponent c) {
         return addComponent(c, null);
     }
 
+    /**
+     * Adds a component to the container with the given constraint at the end
+     * of the internal list.
+     *
+     * @param c the component to add
+     * @param constraint the constraint for this component
+     * @return the added component
+     */
     public SComponent addComponent(SComponent c, Object constraint) {
         if (c != null) {
             if (layout != null)
@@ -362,10 +398,26 @@ public class SContainer
         return c;
     }
 
+    /**
+     * Adds a component to the container with the given constraint at
+     * the given index.
+     *
+     * @param c the component to add
+     * @param index the index of the component
+     * @return the added component
+     */
     public SComponent addComponent(SComponent c, int index) {
         return addComponent(c, null, index);
     }
 
+    /**
+     * Adds a component to the container with the given constraint at
+     * the given index.
+     *
+     * @param c the component to add
+     * @param index the index of the component
+     * @return the added component
+     */
     public SComponent addComponent(SComponent c, Object constraint, int index){
         if (c != null) {
             if (layout != null)
@@ -383,9 +435,9 @@ public class SContainer
     }
 
     /**
-     * TODO: documentation
+     * Sets the parent frame
      *
-     * @param f
+     * @param f parent frame
      */
     protected void setParentFrame(SFrame f) {
         if ( f!=parentFrame ) {
@@ -396,11 +448,6 @@ public class SContainer
         }
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
     public Object clone() {
         try {
             SContainer erg = (SContainer)super.clone();
@@ -419,14 +466,6 @@ public class SContainer
         }
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "ContainerCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }

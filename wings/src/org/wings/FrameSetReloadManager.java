@@ -73,3 +73,10 @@ public class FrameSetReloadManager
 	return "frame" + ((ReloadManagerFrame)getManagerComponent()).getUnifiedIdString();
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

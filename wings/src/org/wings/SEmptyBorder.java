@@ -43,14 +43,6 @@ public class SEmptyBorder
         setInsets(insets);
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this border.
-     *
-     * @return "EmptyBorderCG"
-     * @see SBorder#getCGClassID
-     * @see org.wings.plaf.CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }

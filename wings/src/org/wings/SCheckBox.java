@@ -424,14 +424,6 @@ public class SCheckBox extends SButton
 
     public void fireFinalEvents() {}
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "CheckBoxCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }

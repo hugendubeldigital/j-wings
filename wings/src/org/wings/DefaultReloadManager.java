@@ -63,3 +63,10 @@ public class DefaultReloadManager
 	return null;
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

@@ -112,16 +112,11 @@ public class SBorderLayout
     public void setBorder(int pixel) {
         border = pixel;
     }
-    public int getBorder() { return border; }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this layout.
-     *
-     * @return "BorderLayoutCG"
-     * @see SLayoutManager#getCGClassID
-     * @see org.wings.plaf.CGDefaults#getCG
-     */
+    public int getBorder() {
+        return border;
+    }
+
     public String getCGClassID() {
         return cgClassID;
     }

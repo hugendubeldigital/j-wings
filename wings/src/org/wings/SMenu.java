@@ -68,106 +68,91 @@ public class SMenu extends SButton
     }
 
 
-	/**
-      * Set this menu opened or not.
-      */
-	public void setActive( boolean active )
-     {
-		fActive = active;
-     }
-     
-	/**
-      * Is this menu opened or not
-      */
-	public boolean isActive( )
-     {
-		return fActive;
-     }
-	 
-	/**
-	  * Add a menu item to this menu.
-	  */
-	public void add( SMenuItem menuitem )
-	 {
-		menuitem.addActionListener( new MenuItemAction( this ) );
-		fItems.add( menuitem );
-	 }
+    /**
+     * Set this menu opened or not.
+     */
+    public void setActive(boolean active) {
+        fActive = active;
+    }
 
-	/**
-	  * Add a menu item to this menu.
-	  */
-	public void add( SComponent menuitem )
-	 {
-		fItems.add( menuitem );
-	 }
+    /**
+     * Is this menu opened or not
+     */
+    public boolean isActive() {
+        return fActive;
+    }
 
-	public void setParentFrame( SFrame f )
-	 {
-		super.setParentFrame( f );
-		for ( int i = 0; i < fItems.size(); i++ )
-			((SComponent) fItems.elementAt( i )).setParentFrame( f );
-	 }
+    /**
+     * Add a menu item to this menu.
+     */
+    public void add(SMenuItem menuitem) {
+        menuitem.addActionListener(new MenuItemAction(this));
+        fItems.add(menuitem);
+    }
 
-	/**
-	  * Add a menu item to this menu.
-	  */
-	public void add( String menuitem )
-	 {
-		this.add( new SMenuItem( menuitem ) );
-	 }
+    /**
+     * Add a menu item to this menu.
+     */
+    public void add(SComponent menuitem) {
+        fItems.add(menuitem);
+    }
+
+    public void setParentFrame(SFrame f) {
+        super.setParentFrame(f);
+        for ( int i = 0; i < fItems.size(); i++ )
+            ((SComponent) fItems.elementAt( i )).setParentFrame( f );
+    }
+
+    /**
+     * Add a menu item to this menu.
+     */
+    public void add(String menuitem) {
+        this.add(new SMenuItem(menuitem));
+    }
 
 
-	public SComponent getMenuComponent( int pos )
-	 {
-		return (SComponent) fItems.elementAt( pos );
-	 }
+    public SComponent getMenuComponent(int pos) {
+        return (SComponent)fItems.elementAt(pos);
+    }
 
-	/**
-	  * Return the number of items on the menu, including separators.
-	  */
-	public int getMenuComponentCount()
-	 {
-		return fItems.size();
-	 }
+    /**
+     * Return the number of items on the menu, including separators.
+     */
+    public int getMenuComponentCount() {
+        return fItems.size();
+    }
 
-	/**
-      * Remove all {@link SMenuItem} from this menu.
-      */
-	public void removeAll( )
-     {
-		fItems.clear();
-     }
+    /**
+     * Remove all {@link SMenuItem} from this menu.
+     */
+    public void removeAll() {
+        fItems.clear();
+    }
 
-	/**
-	  * Removes the menu item at specified index from the menu.
-	  */	 
-	public void remove( int pos )
-	 {
-		fItems.remove( pos );
-	 }
+    /**
+     * Removes the menu item at specified index from the menu.
+     */
+    public void remove(int pos) {
+        fItems.remove(pos);
+    }
 
-	/**
-	  * Close menu when an item was klicked.
-	  */
-	class MenuItemAction
-		implements ActionListener
-	 {
-	 
-		public MenuItemAction( SMenu menu )
-		 {
-		 	fMenu = menu;
-		 }
-		 
-		public void actionPerformed( ActionEvent e )
-		 {
-			SMenuItem menuitem = (SMenuItem) e.getSource();
-			fMenu.setActive( false );
-		 }
-		 
-		private SMenu fMenu = null;
-	 }
-	 
-	protected Vector fItems = new Vector();
+    /**
+     * Close menu when an item was klicked.
+     */
+    class MenuItemAction implements ActionListener {
+        public MenuItemAction(SMenu menu) {
+            fMenu = menu;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            SMenuItem menuitem = (SMenuItem)e.getSource();
+            fMenu.setActive(false);
+        }
+
+        private SMenu fMenu = null;
+    }
+
+    protected Vector fItems = new Vector();
 }
 
 /*

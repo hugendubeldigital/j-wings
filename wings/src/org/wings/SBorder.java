@@ -45,19 +45,20 @@ public interface SBorder {
 
     String getCGClassID();
     void updateCG();
-    /**
-      * Get the thickness in pixel for this border.
-      * @return thickness
-      * @see #setThickness(int)
-      */
-	public int getThickness();
 
     /**
-      * Set the thickness in pixel for this border.
-      * @param thickness
-      * @see #getThickness()
-      */
-	public void setThickness( int thickness );
+     * Get the thickness in pixel for this border.
+     * @return thickness
+     * @see #setThickness(int)
+     */
+    public int getThickness();
+
+    /**
+     * Set the thickness in pixel for this border.
+     * @param thickness
+     * @see #getThickness()
+     */
+    public void setThickness( int thickness );
 }
 
 /*

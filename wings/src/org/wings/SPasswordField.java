@@ -29,20 +29,14 @@ public class SPasswordField
     private static final String cgClassID = "PasswordFieldCG";
 
     /**
-     * TODO: documentation
+     * Creates a new password field. This is basicly a textfield, but
+     * the input from the user is not displayed; instead stars (*) are shown.
      *
+     * @see org.wings.STextField
      */
     public SPasswordField() {
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "PasswordFieldCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }

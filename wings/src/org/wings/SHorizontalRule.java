@@ -129,15 +129,9 @@ public class SHorizontalRule
         return shade;
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
     public String getCGClassID() {
         return cgClassID;
     }
-
 
     public void setCG(HorizontalRuleCG cg) {
         super.setCG(cg);

@@ -215,14 +215,6 @@ public class SFileChooser
         return UploadFilterManager.getFilterInstance(getNamePrefix());
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "FileChooserCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }

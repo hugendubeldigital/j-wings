@@ -67,11 +67,6 @@ public class SLineBreak
         return clear;
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
     public String getCGClassID() {
         return cgClassID;
     }

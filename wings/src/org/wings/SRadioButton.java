@@ -101,14 +101,6 @@ public class SRadioButton
         super.setType(SConstants.RADIOBUTTON);
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "RadioButtonCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }

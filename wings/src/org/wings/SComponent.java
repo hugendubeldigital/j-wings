@@ -43,39 +43,29 @@ public abstract class SComponent
     private static final boolean DEBUG = false;
 
     /*
-     * Hieraus wird die eindeutige Id einer jeden Komponente pro VM
-     * generiert. Diese wird benoetigt um eindeutige Form Namen erzeugen
-     * zu koennen.
+     * This is used to generate a unique id (per JVM) for every component. It is required
+     * to be able to generate unique names for forms.
      */
     private static int UNIFIED_ID = 0;
 
     /*
-     * Hieraus wird die eindeutige Id einer jeden Komponente pro VM
-     * generiert. Diese wird benoetigt um cache Probleme zu umgehen.
-     * TO CHANGE: Um reload Probleme zu umgehen, sollte immer nur eine
-     * Menge von Prefixen Gueltigkeit haben, so dass vorneweg schon
-     * gefiltert werden kann.
+     * This is used to generate a unique id (per JVM) for every component. It is required
+     * to be able to handle caching problems.
+     * TO CHANGE: To handle reload problems, only s subset of prefixes should be valid.
+     * This way we can filter invalid stuff.
      */
     private static int UNIFIED_PREFIX = 0;
 
-    /*
-     * Die eindeutige Id der Komponente.
-     */
+    /* unique id */
     private transient final int unifiedId = createUnifiedId();
 
-    /*
-     * Performance!!!
-     */
+    /* Performance!!! */
     private transient String unifiedIdString = null;
 
-    /**
-     * @see #getCGClassID
-     */
+    /** @see #getCGClassID */
     private static final String cgClassID = "ComponentCG";
 
-    /**
-     *
-     */
+    /** the session */
     private transient Session session = null;
 
     /**
@@ -112,46 +102,30 @@ public abstract class SComponent
     /** The font */
     protected SFont font;
 
-    /**
-     * Visibility.
-     */
+    /** Visibility. */
     protected boolean visible = true;
 
-    /**
-     * Enabled / disabled.
-     */
+    /** Enabled / disabled. */
     protected boolean enabled = true;
 
-    /**
-     * The container, this component resides in.
-     */
+    /** The container, this component resides in. */
     protected SContainer parent = null;
 
-    /**
-     * The frame, this component resides in.
-     */
+    /** The frame, this component resides in. */
     protected SFrame parentFrame = null;
 
-    /**
-     * The name of the component.
-     */
+    /** The name of the component. */
     protected String name = null;
 
-    /**
-     * The border for the component.
-     */
+    /** The border for the component. */
     protected SBorder border = null;
 
-    /**
-     * The tooltip for this component.
-     */
+    /** The tooltip for this component. */
     protected String tooltip = null;
 
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
-    /**
-     * Preferred size of component in pixel.
-     */
+    /** Preferred size of component in pixel. */
     protected SDimension preferredSize = null;
 
     transient ArrayList componentListeners;
@@ -230,6 +204,7 @@ public abstract class SComponent
 
     /**
      * Create a unique id.
+     * @return unique id
      */
     public static final synchronized int createUnifiedId() {
         return UNIFIED_ID++;
@@ -253,7 +228,9 @@ public abstract class SComponent
      * @see SComponent#setPreferredSize
      * @see org.wings.SComponent#setPreferredPercentageSize
      */
-    public final SDimension getPreferredSize() { return preferredSize; }
+    public final SDimension getPreferredSize() {
+        return preferredSize;
+    }
 
 
     /**
@@ -275,8 +252,8 @@ public abstract class SComponent
 
     /**
      * Removes the specified component listener so that it no longer
-     * receives component events from this component. This method performs 
-     * no function, nor does it throw an exception, if the listener 
+     * receives component events from this component. This method performs
+     * no function, nor does it throw an exception, if the listener
      * specified by the argument was not previously added to this component.
      * If l is null, no exception is thrown and no action is performed.
      * @param    l   the component listener.
@@ -285,28 +262,28 @@ public abstract class SComponent
      * @see      org.wings.SComponent#addComponentListener
      */
     public synchronized void removeComponentListener(SComponentListener l) {
-	if (l == null) {
-	    return;
-	}
-    	if ( componentListeners == null ) return;
-        
-    	int index = componentListeners.indexOf( l );
+        if (l == null) {
+            return;
+        }
+        if ( componentListeners == null ) return;
+
+        int index = componentListeners.indexOf( l );
         if ( index == -1 ) return;
         componentListeners.remove( index );
-        return; 
+        return;
     }
 
-	/**
-      * Reports a component change.
-      * @param aEvent report this event to all listeners
-      * @see org.wings.event.SComponentListener
-      */
-	protected void fireComponentChangeEvent( SComponentEvent aEvent )
-     {
-     	if ( componentListeners == null ) return;
-		for ( ListIterator it = componentListeners.listIterator(); it.hasNext(); )
-        	processComponentEvent( (SComponentListener) it.next(), aEvent );
-     }
+    /**
+     * Reports a component change.
+     * @param aEvent report this event to all listeners
+     * @see org.wings.event.SComponentListener
+     */
+    protected void fireComponentChangeEvent( SComponentEvent aEvent )
+    {
+        if ( componentListeners == null ) return;
+        for ( ListIterator it = componentListeners.listIterator(); it.hasNext(); )
+            processComponentEvent( (SComponentListener) it.next(), aEvent );
+    }
 
     /**
      * Processes component events occurring on this component by
@@ -329,25 +306,24 @@ public abstract class SComponent
      */
     protected void processComponentEvent(SComponentListener listener, SComponentEvent e)
     {
-		int id = e.getID();
-		switch(id) {
-			case SComponentEvent.COMPONENT_RESIZED:
-				listener.componentResized(e);
-				break;
-			case SComponentEvent.COMPONENT_MOVED:
-                listener.componentMoved(e);
-                break;
-			case SComponentEvent.COMPONENT_SHOWN:
-                listener.componentShown(e);
-                break;
-			case SComponentEvent.COMPONENT_HIDDEN:
-                listener.componentHidden(e);
-                break;
+        int id = e.getID();
+        switch(id) {
+        case SComponentEvent.COMPONENT_RESIZED:
+            listener.componentResized(e);
+            break;
+        case SComponentEvent.COMPONENT_MOVED:
+            listener.componentMoved(e);
+            break;
+        case SComponentEvent.COMPONENT_SHOWN:
+            listener.componentShown(e);
+            break;
+        case SComponentEvent.COMPONENT_HIDDEN:
+            listener.componentHidden(e);
+            break;
         }
     }
 
     /**
->>>>>>> 1.14
      * Return a jvm wide unique id.
      * @return an id
      */
@@ -550,11 +526,13 @@ public abstract class SComponent
         boolean old = visible;
         visible = v;
         if (old != visible)
-         {
+        {
             reload();
-        	fireComponentChangeEvent(new SComponentEvent( this, 
-        				v ? SComponentEvent.COMPONENT_SHOWN : SComponentEvent.COMPONENT_HIDDEN ) );
-		 }
+            SComponentEvent evt =
+                new SComponentEvent(this,
+                                    v ? SComponentEvent.COMPONENT_SHOWN : SComponentEvent.COMPONENT_HIDDEN);
+            fireComponentChangeEvent(evt);
+        }
     }
 
     /**
@@ -614,7 +592,6 @@ public abstract class SComponent
     public void setName(String n) {
         name = n;
     }
-
 
 
     /**
@@ -705,6 +682,9 @@ public abstract class SComponent
             cg.write(s, this);
     }
 
+    /**
+     * renders the component into a string
+     */
     public String toString() {
         Device d = new StringBufferDevice();
         try {
@@ -1075,7 +1055,7 @@ public abstract class SComponent
      * Returns the name of the CGFactory class that generates the
      * look and feel for this component.
      *
-     * @return "ComponentCG"
+     * @return content of private static final cgClassID attribute
      * @see SComponent#getCGClassID
      * @see org.wings.plaf.CGDefaults#getCG
      */

@@ -53,7 +53,7 @@ import org.wings.io.Device;
  * @author
  * @version $Revision$
  */
-public class SAbstractButton
+public abstract class SAbstractButton
     extends SComponent
     implements Selectable, RequestListener //SGetListener
 {

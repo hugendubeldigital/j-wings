@@ -771,14 +771,6 @@ public class SScrollBar
             cg.write(d, this);
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "ContainerCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -787,11 +779,11 @@ public class SScrollBar
         super.setCG(cg);
     }
 
-	public String toString()
-     {
-		return "SScrollBar[orientation=" + ((orientation == SComponent.HORIZONTAL)?"horizontal":"vertical") + "]";
-     }
-
+    public String toString()
+    {
+        return "SScrollBar[orientation=" +
+            ((orientation == SComponent.HORIZONTAL)?"horizontal":"vertical") + "]";
+    }
 }
 
 /*

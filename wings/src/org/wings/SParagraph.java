@@ -58,11 +58,6 @@ public class SParagraph
         return alignment;
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
     public String getCGClassID() {
         return cgClassID;
     }

@@ -128,16 +128,11 @@ public class SBoxLayout
     public void setAlignment(int a) {
         align = a;
     }
-    public int getAlignment() { return align; }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this layout.
-     *
-     * @return "FlowLayoutCG"
-     * @see SLayoutManager#getCGClassID
-     * @see org.wings.plaf.CGDefaults#getCG
-     */
+    public int getAlignment() {
+        return align;
+    }
+
     public String getCGClassID() {
         return cgClassID;
     }
