@@ -35,6 +35,8 @@ public class SButtonPropertyManager
         SButton c = (SButton) comp;
         if ( name.equals("ICON") )
             c.setIcon(value);
+        else if ( name.equals("SRC") )
+            c.setIcon(value);
         else if ( name.equals("TEXT") )
             c.setText(value);
         else if ( name.equals("TARGET") )

@@ -20,6 +20,7 @@ import java.util.StringTokenizer;
 
 import org.wings.SComponent;
 import org.wings.SFont;
+import org.wings.style.Style;
 
 /**
  * TODO: documentation
@@ -42,6 +43,8 @@ public class SComponentPropertyManager
             comp.setForeground(Color.decode(value));
         else if ( name.equals("FONT") )
             comp.setFont(parseFont(value));
+        else if ( name.equals("CLASS") )
+            comp.setStyle(new Style(value));
     }
 
     public Class[] getSupportedClasses() {
