@@ -41,6 +41,11 @@ public class SOptionPane
     implements ActionListener
 {
     /**
+     * @see #getCGClassID
+     */
+    private static final String cgClassID = "OptionPaneCG";
+
+    /**
      * TODO: documentation
      */
     public static final String OK_ACTION = "OK";
@@ -629,6 +634,18 @@ public class SOptionPane
         p.addActionListener(al);
 
         p.showYesNo(parent, question, title);
+    }
+
+    /**
+     * Returns the name of the CGFactory class that generates the
+     * look and feel for this component.
+     *
+     * @return "OptionPaneCG"
+     * @see SComponent#getCGClassID
+     * @see CGDefaults#getCG
+     */
+    public String getCGClassID() {
+        return cgClassID;
     }
 }
 

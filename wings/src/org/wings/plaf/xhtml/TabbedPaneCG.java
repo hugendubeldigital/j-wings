@@ -32,7 +32,7 @@ public class TabbedPaneCG
 
         Utils.writeBorderPrefix(d, border);
         writePrefix(d, pane);
-        Utils.writeContainerContent(d, pane);
+        Utils.writeContainerContents(d, pane);
         writePostfix(d, pane);
         Utils.writeBorderPostfix(d, border);
     }

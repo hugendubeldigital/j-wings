@@ -26,6 +26,11 @@ import org.wings.plaf.*;
 public class SInternalFrame extends SContainer
 {
     /**
+     * @see #getCGClassID
+     */
+    private static final String cgClassID = "InternalFrameCG";
+
+    /**
      * TODO: documentation
      */
     protected SContainer contentPane = new SContainer();
@@ -168,6 +173,18 @@ public class SInternalFrame extends SContainer
      */
     public void hide() {
         super.setVisible(false);
+    }
+
+    /**
+     * Returns the name of the CGFactory class that generates the
+     * look and feel for this component.
+     *
+     * @return "InternalFrameCG"
+     * @see SComponent#getCGClassID
+     * @see CGDefaults#getCG
+     */
+    public String getCGClassID() {
+        return cgClassID;
     }
 }
 

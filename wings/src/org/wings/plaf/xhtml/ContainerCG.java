@@ -10,7 +10,7 @@ import org.wings.plaf.*;
 public class ContainerCG
     implements org.wings.plaf.ContainerCG
 {
-    private final static String propertyPrefix = "Container" + ".";
+    private final static String propertyPrefix = "Container";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
@@ -18,7 +18,7 @@ public class ContainerCG
 
     public void installCG(SComponent component) {
         component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + "style"));
+                           getStyle(getPropertyPrefix() + ".style"));
     }
 
     public void uninstallCG(SComponent c) {
@@ -32,7 +32,7 @@ public class ContainerCG
 
         Utils.writeBorderPrefix(d, border);
         writePrefix(d, container);
-        Utils.writeContainerContent(d, container);
+        Utils.writeContainerContents(d, container);
         writePostfix(d, container);
         Utils.writeBorderPostfix(d, border);
     }

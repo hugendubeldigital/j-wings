@@ -70,7 +70,9 @@ public final class CSS1LookAndFeel
 	      "FileChooserCG", css1PackageName + "FileChooserCG",
 		"ContainerCG", css1PackageName + "ContainerCG",
 	            "PanelCG", css1PackageName + "PanelCG",
+		 "DivisionCG", css1PackageName + "DivisionCG",
 	             "FormCG", css1PackageName + "FormCG",
+		   "DialogCG", css1PackageName + "DialogCG",
 	   "HorizontalRuleCG", css1PackageName + "HorizontalRuleCG",
                 "LineBreakCG", css1PackageName + "LineBreakCG",
                 "ParagraphCG", css1PackageName + "ParagraphCG",
@@ -135,7 +137,9 @@ public final class CSS1LookAndFeel
 	      "FileChooser.style", new Style("filechooser"),
 	        "Container.style", new Style("container"),
 	            "Panel.style", new Style("panel"),
+	         "Division.style", new Style("division"),
 	             "Form.style", new Style("form"),
+	           "Dialog.style", new Style("dialog"),
 	};
 	table.putDefaults(styleDefaults);
 	

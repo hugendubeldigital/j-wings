@@ -35,7 +35,7 @@ public class SDialog
     /**
      * @see #getCGClassID
      */
-    private static final String cgClassID = "FormCG";
+    private static final String cgClassID = "DialogCG";
 
     /*
      * Alle die es interessiert, wann der OptionPane fertig ist. Z.B. um

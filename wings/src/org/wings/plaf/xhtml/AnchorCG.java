@@ -32,7 +32,7 @@ public class AnchorCG
 
         Utils.writeBorderPrefix(d, border);
         writePrefix(d, anchor);
-        Utils.writeContainerContent(d, anchor);
+        Utils.writeContainerContents(d, anchor);
         writePostfix(d, anchor);
         Utils.writeBorderPostfix(d, border);
     }

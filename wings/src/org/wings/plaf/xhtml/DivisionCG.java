@@ -1,16 +1,16 @@
 package org.wings.plaf.xhtml;
 
+import java.awt.Color;
 import java.io.IOException;
 
-import java.awt.Color;
-import org.wings.plaf.*;
-import org.wings.io.*;
 import org.wings.*;
+import org.wings.io.*;
+import org.wings.plaf.*;
 
-public class PanelCG
-    implements org.wings.plaf.PanelCG
+public class DivisionCG
+    implements org.wings.plaf.DivisionCG
 {
-    private final static String propertyPrefix = "Panel" + ".";
+    private final static String propertyPrefix = "Division";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
@@ -18,7 +18,7 @@ public class PanelCG
 
     public void installCG(SComponent component) {
         component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + "style"));
+                           getStyle(getPropertyPrefix() + ".style"));
     }
 
     public void uninstallCG(SComponent c) {
@@ -28,22 +28,24 @@ public class PanelCG
         throws IOException
     {
         SBorder border = c.getBorder();
-        SPanel panel = (SPanel)c;
+        SDivision division = (SDivision)c;
 
         Utils.writeBorderPrefix(d, border);
-        writePrefix(d, panel);
-        Utils.writeContainerContents(d, panel);
-        writePostfix(d, panel);
+        writePrefix(d, division);
+        Utils.writeContainerContents(d, division);
+        writePostfix(d, division);
         Utils.writeBorderPostfix(d, border);
     }
 
-    protected void writePrefix(Device d, SPanel panel)
+    protected void writePrefix(Device d, SDivision division)
         throws IOException
     {
+	d.append("\n<div>\n");
     }
 
-    protected void writePostfix(Device d, SPanel panel)
+    protected void writePostfix(Device d, SDivision division)
         throws IOException
     {
+	d.append("\n</div>\n");
     }
 }

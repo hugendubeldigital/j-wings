@@ -27,6 +27,11 @@ public class SDivision
     extends SContainer
 {
     /**
+     * @see #getCGClassID
+     */
+    private static final String cgClassID = "DivisionCG";
+
+    /**
      * TODO: documentation
      */
     protected int alignment = SConstants.NO_ALIGN;
@@ -71,6 +76,18 @@ public class SDivision
      */
     public void appendPostfix(Device s) {
         s.append("</DIV>");
+    }
+
+    /**
+     * Returns the name of the CGFactory class that generates the
+     * look and feel for this component.
+     *
+     * @return "DivisionCG"
+     * @see SComponent#getCGClassID
+     * @see CGDefaults#getCG
+     */
+    public String getCGClassID() {
+        return cgClassID;
     }
 }
 

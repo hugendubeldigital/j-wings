@@ -1,16 +1,16 @@
 package org.wings.plaf.xhtml;
 
+import java.awt.Color;
 import java.io.IOException;
 
-import java.awt.Color;
-import org.wings.plaf.*;
-import org.wings.io.*;
 import org.wings.*;
+import org.wings.io.*;
+import org.wings.plaf.*;
 
-public class PanelCG
-    implements org.wings.plaf.PanelCG
+public class DesktopPaneCG
+    implements org.wings.plaf.DesktopPaneCG
 {
-    private final static String propertyPrefix = "Panel" + ".";
+    private final static String propertyPrefix = "DesktopPane";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
@@ -18,7 +18,7 @@ public class PanelCG
 
     public void installCG(SComponent component) {
         component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + "style"));
+                           getStyle(getPropertyPrefix() + ".style"));
     }
 
     public void uninstallCG(SComponent c) {
@@ -28,22 +28,20 @@ public class PanelCG
         throws IOException
     {
         SBorder border = c.getBorder();
-        SPanel panel = (SPanel)c;
+        SDesktopPane desktopPane = (SDesktopPane)c;
 
         Utils.writeBorderPrefix(d, border);
-        writePrefix(d, panel);
-        Utils.writeContainerContents(d, panel);
-        writePostfix(d, panel);
+        writePrefix(d, desktopPane);
+        Utils.writeContainerContents(d, desktopPane);
+        writePostfix(d, desktopPane);
         Utils.writeBorderPostfix(d, border);
     }
 
-    protected void writePrefix(Device d, SPanel panel)
+    protected void writePrefix(Device d, SDesktopPane desktopPane)
         throws IOException
-    {
-    }
+    {}
 
-    protected void writePostfix(Device d, SPanel panel)
+    protected void writePostfix(Device d, SDesktopPane desktopPane)
         throws IOException
-    {
-    }
+    {}
 }

@@ -7,10 +7,10 @@ import org.wings.plaf.*;
 import org.wings.io.*;
 import org.wings.*;
 
-public class FormCG
-    implements org.wings.plaf.FormCG
+public class DialogCG
+    implements org.wings.plaf.DialogCG
 {
-    private final static String propertyPrefix = "Form" + ".";
+    private final static String propertyPrefix = "Dialog";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
@@ -18,32 +18,31 @@ public class FormCG
 
     public void installCG(SComponent component) {
         component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + "style"));
+                           getStyle(getPropertyPrefix() + ".style"));
     }
 
-    public void uninstallCG(SComponent c) {
-    }
+    public void uninstallCG(SComponent c) {}
 
     public void write(Device d, SComponent c)
         throws IOException
     {
         SBorder border = c.getBorder();
-        SForm form = (SForm)c;
+        SDialog dialog = (SDialog)c;
 
         Utils.writeBorderPrefix(d, border);
-        writePrefix(d, form);
-        Utils.writeContainerContents(d, form);
-        writePostfix(d, form);
+        writePrefix(d, dialog);
+        Utils.writeContainerContents(d, dialog);
+        writePostfix(d, dialog);
         Utils.writeBorderPostfix(d, border);
     }
 
-    protected void writePrefix(Device d, SForm form)
+    protected void writePrefix(Device d, SDialog dialog)
 	throws IOException
     {
-        String encodingType = form.getEncodingType();
+        String encodingType = dialog.getEncodingType();
 
         d.append("<form method=\"");
-        if (form.getMethod())
+        if (dialog.getMethod())
             d.append("post");
         else
             d.append("get");
@@ -52,11 +51,11 @@ public class FormCG
         if (encodingType != null)
             d.append(" enctype=\"").append(encodingType).append("\"");
 
-        d.append(" action=\"").append(form.getServerAddress()).
+        d.append(" action=\"").append(dialog.getServerAddress()).
             append("\">\n");
     }
 
-    protected void writePostfix(Device d, SForm form)
+    protected void writePostfix(Device d, SDialog dialog)
         throws IOException
     {
         d.append("</form>");

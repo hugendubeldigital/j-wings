@@ -16,7 +16,7 @@ public final class ContainerCG
     {
 	d.append("\n<span");
 	Utils.writeStyleAttribute(d, c.getStyle());
-	d.append(">\n");
+	d.append(">");
     }
 
     protected void writePostfix(Device d, SContainer c)

@@ -33,7 +33,8 @@ public class SFlowDownLayout
      * TODO: documentation
      */
     public SFlowDownLayout() {
-        super(SConstants.VERTICAL);
+        super();
+        setOrientation(SConstants.VERTICAL);
     }
 }
 

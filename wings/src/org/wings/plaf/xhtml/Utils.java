@@ -33,7 +33,7 @@ final class Utils implements SConstants
             border.appendPostfix(d);
     }
 
-    static void writeContainerContent(Device d, SContainer c)
+    static void writeContainerContents(Device d, SContainer c)
         throws IOException
     {
         SLayoutManager layout = c.getLayout();

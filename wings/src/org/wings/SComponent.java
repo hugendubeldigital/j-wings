@@ -575,6 +575,16 @@ public abstract class SComponent
             cg.write(s, this);
     }
 
+    public String toString() {
+        Device d = new StringBufferDevice();
+        try {
+            write(d);
+        }
+        catch (IOException e) {}
+
+        return d.toString();
+    }
+
     /**
      * Generic implementation for generating a string that represents the components
      * configuration.

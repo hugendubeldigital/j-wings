@@ -36,6 +36,11 @@ public class SDesktopPane
     extends SContainer
     implements SConstants
 {
+    /**
+     * @see #getCGClassID
+     */
+    private static final String cgClassID = "DesktopPaneCG";
+
     SStackLayout stack = new SStackLayout();
 
     /**
@@ -252,6 +257,18 @@ public class SDesktopPane
                 }
             }
         }
+    }
+
+    /**
+     * Returns the name of the CGFactory class that generates the
+     * look and feel for this component.
+     *
+     * @return "DesktopPaneCG"
+     * @see SComponent#getCGClassID
+     * @see CGDefaults#getCG
+     */
+    public String getCGClassID() {
+        return cgClassID;
     }
 }
 

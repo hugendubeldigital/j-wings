@@ -32,7 +32,7 @@ public class ParagraphCG
 
         Utils.writeBorderPrefix(d, border);
         writePrefix(d, paragraph);
-        Utils.writeContainerContent(d, paragraph);
+        Utils.writeContainerContents(d, paragraph);
         writePostfix(d, paragraph);
         Utils.writeBorderPostfix(d, border);
     }

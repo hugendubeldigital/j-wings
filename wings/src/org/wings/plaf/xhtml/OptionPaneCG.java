@@ -7,10 +7,10 @@ import org.wings.plaf.*;
 import org.wings.io.*;
 import org.wings.*;
 
-public class FormCG
-    implements org.wings.plaf.FormCG
+public class OptionPaneCG
+    implements org.wings.plaf.OptionPaneCG
 {
-    private final static String propertyPrefix = "Form" + ".";
+    private final static String propertyPrefix = "OptionPane";
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
@@ -18,32 +18,31 @@ public class FormCG
 
     public void installCG(SComponent component) {
         component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + "style"));
+                           getStyle(getPropertyPrefix() + ".style"));
     }
 
-    public void uninstallCG(SComponent c) {
-    }
+    public void uninstallCG(SComponent c) {}
 
     public void write(Device d, SComponent c)
         throws IOException
     {
         SBorder border = c.getBorder();
-        SForm form = (SForm)c;
+        SOptionPane optionPane = (SOptionPane)c;
 
         Utils.writeBorderPrefix(d, border);
-        writePrefix(d, form);
-        Utils.writeContainerContents(d, form);
-        writePostfix(d, form);
+        writePrefix(d, optionPane);
+        Utils.writeContainerContents(d, optionPane);
+        writePostfix(d, optionPane);
         Utils.writeBorderPostfix(d, border);
     }
 
-    protected void writePrefix(Device d, SForm form)
+    protected void writePrefix(Device d, SOptionPane optionPane)
 	throws IOException
     {
-        String encodingType = form.getEncodingType();
+        String encodingType = optionPane.getEncodingType();
 
         d.append("<form method=\"");
-        if (form.getMethod())
+        if (optionPane.getMethod())
             d.append("post");
         else
             d.append("get");
@@ -52,11 +51,11 @@ public class FormCG
         if (encodingType != null)
             d.append(" enctype=\"").append(encodingType).append("\"");
 
-        d.append(" action=\"").append(form.getServerAddress()).
+        d.append(" action=\"").append(optionPane.getServerAddress()).
             append("\">\n");
     }
 
-    protected void writePostfix(Device d, SForm form)
+    protected void writePostfix(Device d, SOptionPane optionPane)
         throws IOException
     {
         d.append("</form>");
