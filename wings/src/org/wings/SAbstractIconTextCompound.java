@@ -42,7 +42,7 @@ import org.wings.plaf.*;
  * @version $Revision$
  */
 public abstract class SAbstractIconTextCompound
-    extends SComponent implements ItemSelectable, SSelectionComponent
+    extends SComponent implements SSelectionComponent
 {
 
     public static final int ICON_COUNT = 7;
@@ -54,11 +54,11 @@ public abstract class SAbstractIconTextCompound
     public static final int ROLLOVER_SELECTED_ICON = 5;
     public static final int PRESSED_ICON = 6;
 
+    private SButtonModel model;
+
     /** the text the button is showing */
     private String text;
 
-    /** selection state */
-    private boolean selected = false;
 
     /**
      * TODO: documentation
@@ -151,6 +151,7 @@ public abstract class SAbstractIconTextCompound
      */
     public SAbstractIconTextCompound(String text) {
         setText(text);
+        model = new SDefaultButtonModel();
     }
 
     /**
@@ -158,6 +159,23 @@ public abstract class SAbstractIconTextCompound
      */
     public SAbstractIconTextCompound() {
         this("");
+    }
+
+    public SButtonModel getModel() {
+        return model;
+    }
+    
+    public void setModel(SButtonModel model) {
+        if (model == null)
+            throw new IllegalArgumentException("null not allowed");
+        this.model = model;
+    }
+
+    /**
+     * Returns the selected items or null if no items are selected.
+     */
+    public Object[] getSelectedObjects() {
+        return model.isSelected() ? new Object[] { this } : null;
     }
 
     /**
@@ -169,19 +187,20 @@ public abstract class SAbstractIconTextCompound
     }
 
     /**
-     * Returns the selected items or null if no items are selected.
-     */
-    public Object[] getSelectedObjects() {
-        return selected?new Object[] {this}:null;
-    }
-
-    /**
      * Remove the given itemListener from list of
      * item listeners.
      * @see #addItemListener(ItemListener)
      */
     public void removeItemListener(ItemListener il) {
         removeEventListener(ItemListener.class, il);
+    }
+
+    public void addChangeListener(ChangeListener listener) {
+        model.addChangeListener(listener);
+    }
+
+    public void removeChangeListener(ChangeListener listener) {
+        model.removeChangeListener(listener);
     }
 
     /**
@@ -434,7 +453,7 @@ public abstract class SAbstractIconTextCompound
 
     /**
      * Set the background color.
-     * @param c the new background color
+     * @param color the new background color
      */
     public void setSelectionBackground(Color color) {
         boolean changed = selectionAttributes.putAll(CSSStyleSheet.getAttributes(color, Style.BACKGROUND_COLOR));
@@ -493,7 +512,7 @@ public abstract class SAbstractIconTextCompound
      * @return
      */
     public boolean isSelected() {
-        return selected;
+        return model.isSelected();
     }
 
     /**
@@ -501,41 +520,20 @@ public abstract class SAbstractIconTextCompound
      * is different to the old selection 
      * an {@link ItemEvent} is raised.
      */
-    public void setSelected(boolean b) {
-        if (b != selected) {
-            selected = b;
-            fireItemStateChanged(new ItemEvent(this,
-                                               ItemEvent.ITEM_STATE_CHANGED,
-                                               this, 
-                                               ((b)
-                                                ? ItemEvent.SELECTED
-                                                : ItemEvent.DESELECTED)));
-            // this leads to problems, don't know why...
-            //        reload(ReloadManager.RELOAD_CODE |
-            //        ReloadManager.RELOAD_STYLE);
-            // Answer: I think this was due to a bug in DefaultReloadManager
-            // once (it used a switch/case instead of '&')
+    public void setSelected(boolean selected) {
+        if (model.isSelected() != selected) {
+            model.setSelected(selected);
             reload(ReloadManager.RELOAD_CODE | ReloadManager.RELOAD_STYLE);
         }
     }
 
-    /**
-     *
-     * @param t
-     */
     public void setImageAbsBottom(boolean t) {
         imageAbsBottom = t;
     }
 
-    /**
-     *
-     * @param t
-     */
     public boolean isImageAbsBottom() {
         return imageAbsBottom;
     }
-
-
 
     /**
      * Sets the proper icons for buttonstatus enabled resp. disabled.
@@ -600,7 +598,6 @@ public abstract class SAbstractIconTextCompound
     public void fireFinalEvents() {
         delayEvents = false;
     }
-
 }
 
 /*

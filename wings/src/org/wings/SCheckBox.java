@@ -83,7 +83,7 @@ public class SCheckBox extends SAbstractButton
      */
     public final void setType(String t) {
         if ( !CHECKBOX.equals(t) )
-            throw new IllegalArgumentException("type change not supported, type is fix: radiobutton");
+            throw new IllegalArgumentException("type change not supported, type is fix: checkbox");
         
         super.setType(t);
     }

@@ -16,10 +16,10 @@ package org.wings;
 
 import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
-import javax.swing.event.EventListenerList;
+import javax.swing.text.BadLocationException;
 
-import org.wings.plaf.*;
-import org.wings.io.Device;
+import org.wings.text.*;
+import org.wings.event.*;
 
 /**
  * TODO: documentation
@@ -29,43 +29,58 @@ import org.wings.io.Device;
  */
 public abstract class STextComponent
     extends SComponent
-    implements LowLevelEventListener
+    implements LowLevelEventListener, SDocumentListener
 {
     private boolean editable = true;
 
-    /**
-     * TODO: documentation
-     */
-    protected String text = null;
+    private SDocument document;
 
     /**
      * TODO: documentation
      *
      */
     public STextComponent() {
-        this(null, true);
+        this(new DefaultDocument(), true);
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param text
-     */
     public STextComponent(String text) {
-        this(text, true);
+        this(new DefaultDocument(text), true);
+    }
+    /**
+     * TODO: documentation
+     *
+     * @param document
+     */
+    public STextComponent(SDocument document) {
+        this(document, true);
     }
 
     /**
      * TODO: documentation
      *
-     * @param text
+     * @param document
      * @param editable
      */
-    public STextComponent(String text, boolean editable) {
-        setText(text);
+    public STextComponent(SDocument document, boolean editable) {
+        setDocument(document);
         setEditable(editable);
     }
 
+    public SDocument getDocument() {
+        return document;
+    }
+
+    public void setDocument(SDocument document) {
+        if (document == null)
+            throw new IllegalArgumentException("null");
+
+        SDocument oldDocument = this.document;
+        this.document = document;
+        if (oldDocument != null)
+            oldDocument.removeDocumentListener(this);
+        document.addDocumentListener(this);
+        reloadIfChange(ReloadManager.RELOAD_CODE, oldDocument, document);
+    }
 
     /**
      * TODO: documentation
@@ -92,14 +107,10 @@ public abstract class STextComponent
     /**
      * TODO: documentation
      *
-     * @param t
+     * @param text
      */
-    public void setText(String t) {
-        String oldText = text;
-        text = t;
-        if ((text == null && oldText != null) ||
-            (text != null && !text.equals(oldText)))
-            reload(ReloadManager.RELOAD_CODE);
+    public void setText(String text) {
+        document.setText(text);
     }
 
     /**
@@ -108,22 +119,20 @@ public abstract class STextComponent
      * @return
      */
     public String getText() {
-        return text;
+        return document.getText();
     }
 
     /**
      * Appends the given text to the end of the document. Does nothing 
      * if the string is null or empty.
      *
-     * @param str the text to append.
+     * @param text the text to append.
      */
-    public void append(String str) {
-        if (str == null) return;
-        StringBuffer buf = new StringBuffer();
-        if (text != null) buf.append(text);
-        buf.append(str);
-        text = buf.toString();
-        reload(ReloadManager.RELOAD_CODE);
+    public void append(String text) {
+        try {
+            document.insert(document.getLength(), text);
+        }
+        catch (BadLocationException e) {}
     }
 
     public void processLowLevelEvent(String action, String[] values) {
@@ -139,21 +148,25 @@ public abstract class STextComponent
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param al
+     * @deprecated use DocumentListener instead
      */
     public void addTextListener(TextListener listener) {
         addEventListener(TextListener.class, listener);
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param al
+     * @deprecated use DocumentListener instead
      */
     public void removeTextListener(TextListener listener) {
         removeEventListener(TextListener.class, listener);
+    }
+
+    public void addDocumentListener(SDocumentListener listener) {
+        getDocument().addDocumentListener(listener);
+    }
+
+    public void removeDocumentListener(SDocumentListener listener) {
+        getDocument().removeDocumentListener(listener);
     }
 
     /**
@@ -170,7 +183,6 @@ public abstract class STextComponent
                 if ( event==null ) {
                     event = new TextEvent(this, TextEvent.TEXT_VALUE_CHANGED);
                 } // end of if ()
-                
                 ((TextListener)listeners[i+1]).textValueChanged(event);
             }
         }
@@ -181,6 +193,21 @@ public abstract class STextComponent
     }
 
     public void fireFinalEvents() {}
+
+    public void insertUpdate(SDocumentEvent e) {
+        fireTextValueChanged();
+        reload(ReloadManager.RELOAD_CODE);
+    }
+
+    public void removeUpdate(SDocumentEvent e) {
+        fireTextValueChanged();
+        reload(ReloadManager.RELOAD_CODE);
+    }
+
+    public void changedUpdate(SDocumentEvent e) {
+        fireTextValueChanged();
+        reload(ReloadManager.RELOAD_CODE);
+    }
 }
 
 /*
