@@ -1,34 +1,78 @@
 <template name="MenuBarCG" for="org.wings.SMenuBar">
-
 <import>org.wings.script.*</import>
-<install>
-        component.addScriptListener(new JavaScriptListener("dummy1", "dummy",
+
+private static final JavaScriptListener ENTER_ITEM =
+	new JavaScriptListener("dummy1", "dummy",
             "function enter_item(item) {\n" +
             "    item.setAttribute('class', 'amenuitem');\n" +
-            "}\n"));
-        component.addScriptListener(new JavaScriptListener("dummy2", "dummy",
+            "}\n");
+
+private static final JavaScriptListener EXIT_ITEM =
+	new JavaScriptListener("dummy2", "dummy",
             "function exit_item(item) {\n" +
             "    item.setAttribute('class', 'menuitem');\n" +
-            "}\n"));
-        component.addScriptListener(new JavaScriptListener("dummy3", "dummy",
-            "{var active_popup = null;\n" +
+            "}\n");
 
-            "function toggle_menu(popup) {\n" +
+private static final JavaScriptListener TOGGLE_MENU =
+	new JavaScriptListener("dummy3", "dummy",
+            "{var active_popups = new Array();\n" +
+            "function toggle_menu(popup,depth) {\n" +
             "    var show = (popup.style.display == 'none');\n" +
-
-            "    if (active_popup != null) {\n" +
-            "        active_popup.parentNode.setAttribute('class', 'menu');\n" +
-            "        active_popup.style.display = 'none'\n" +
-            "        active_popup = null;\n" +
+            "    for ( var i=depth; i<active_popups.length; i++ ) {\n" +
+            "        if (active_popups[i] != null) {\n" +
+            "            active_popups[i].parentNode.setAttribute('class', 'menu');\n" +
+            "            active_popups[i].style.display = 'none'\n" +
+            "            active_popups[i] = null;\n" +
+            "        }\n" +
             "    }\n" +
-
             "    if (show == true) {\n" +
             "        popup.parentNode.setAttribute('class', 'amenu');\n" +
             "        popup.style.display = 'inline'\n" +
-            "        active_popup = popup;\n" +
+            "        active_popups[depth] = popup;\n" +
             "    }\n" +
-            "}\n}"));
+            "}}\n");
+
+
+<install>
+        component.addScriptListener(ENTER_ITEM);
+        component.addScriptListener(EXIT_ITEM);
+        component.addScriptListener(TOGGLE_MENU);
 </install>
+
+protected void writeMenu(final Device device, SMenu menu, int depth) 
+    throws IOException
+{
+    String menuClass = menu.isActive() ? "amenu" : "menu";
+    String id = "pop_" + menu.getComponentId();
+
+    %><div class="<%=menuClass%>"<%
+    %> onMouseDown="toggle_menu(document.getElementById('<%=id%>'),<%=depth%>)"><%
+    %>&nbsp;&nbsp;<a href="#"><%=menu.getText()%></a>&nbsp;&nbsp;</div><table><tr><td><%
+    %><div id="<%=id%>" class="pdmenu" style="display:none"><%
+
+    for ( int i=0; i<menu.getMenuComponentCount(); i++ ) {
+        SComponent menuComponent = menu.getMenuComponent(i);
+
+        if ( menuComponent instanceof SMenu ) {
+            writeMenu(device, (SMenu)menuComponent, depth+1);
+        } else {
+            writeMenuItem(device, (SMenuItem)menuComponent);
+        }
+    }
+
+    %></div></td></tr></table><%
+}
+
+protected void writeMenuItem(final Device device, SMenuItem menuItem) 
+    throws IOException
+{
+    %><div class="menuitem" onMouseOver="enter_item(this)"<%
+    %> onMouseOut="exit_item(this)">&nbsp;&nbsp;<%
+    menuItem.write(device);
+    %>&nbsp;&nbsp;</div><%
+}
+
+
 
 <write>
 <%
@@ -48,31 +92,14 @@
         if(!"Opera".equals(mbar.getSession().getUserAgent().getBrowserName())) {
 
             for (int i = 0; i < mcount; i++) {
-                SMenu menu = (SMenu)mbar.getComponentAtIndex(i);
-                String menuClass = menu.isActive() ? "amenu" : "menu";
-                String id = "pop_" + menu.getComponentId();
-
-                %><td><div class="<%=menuClass%>"<%
-                %> onmousedown="toggle_menu(document.getElementById('<%=id%>'))"><%
-                %>&nbsp;&nbsp;<a href="#"><%=menu.getText()%></a>&nbsp;&nbsp;</div><%
-                %><div id="<%=id%>" class="pdmenu" style="display:none"><%
-
-                int micount = menu.getMenuComponentCount();
-                for (int mi = 0; mi < micount; mi++) {
-                    SComponent menuitem = menu.getMenuComponent(mi);
-                    if (menuitem instanceof SSeparator) {
-                        %><br><img src="" class="menuseparator" width="<%
-                        %><%=((SSeparator)menuitem).getWidth()%><%
-                        %>" height="1"><br><%
-                    }
-                    else {
-                        %><div class="menuitem" onmouseover="enter_item(this)"<%
-                        %> onmouseout="exit_item(this)">&nbsp;&nbsp;<%
-                        menuitem.write(device);
-                        %>&nbsp;&nbsp;</div><%
-                    }
+                %><td><%
+                SMenuItem menuItem = mbar.getMenuItem(i);
+                if ( menuItem instanceof SMenu ) {
+                    writeMenu(device, (SMenu)menuItem, 0);
+                } else {
+                    writeMenuItem(device, menuItem);
                 }
-                %></div></td><%
+                %></td><%
             }
         } else {
             for (int i = 0; i < mcount; i++) {

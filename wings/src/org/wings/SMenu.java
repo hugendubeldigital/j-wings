@@ -31,11 +31,12 @@ import org.wings.externalizer.ExternalizeManager;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SMenu extends SButton
-{
+public class SMenu extends SMenuItem {
     private static final String cgClassID = "MenuCG";
+
     private boolean fActive = false;
-	private boolean fKeepOpen = false;
+
+    private boolean fKeepOpen = false;
 
     /**
      * TODO: documentation
@@ -61,7 +62,10 @@ public class SMenu extends SButton
      */
     public SMenu(SIcon i) {
         super(i);
-        setIcon(i);
+    }
+
+    public SMenu(String text, SIcon icon) {
+        super(text, icon);
     }
 
 
@@ -145,15 +149,15 @@ public class SMenu extends SButton
         fItems.remove(comp);
     }
 
-	/**
-	 * Define, if Menu should left open or not, after user
-	 * clicked menuitem. Normal behaviour is false, that means
-	 * that the menu closes, after user selected a menuitem.
-	 */
-	public void setKeepOpen(boolean keepOpen)
-	{
-	    this.fKeepOpen = keepOpen;
-	}
+    /**
+     * Define, if Menu should left open or not, after user
+     * clicked menuitem. Normal behaviour is false, that means
+     * that the menu closes, after user selected a menuitem.
+     */
+    public void setKeepOpen(boolean keepOpen)
+    {
+        this.fKeepOpen = keepOpen;
+    }
 
     /**
      * Close menu when an item was klicked.
@@ -172,7 +176,7 @@ public class SMenu extends SButton
         private SMenu fMenu = null;
     }
 
-    protected ArrayList fItems = new ArrayList();
+    protected final ArrayList fItems = new ArrayList();
 }
 
 /*

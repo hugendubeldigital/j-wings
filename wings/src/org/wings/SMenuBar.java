@@ -98,9 +98,12 @@ public class SMenuBar extends SContainer
      *
      * @param c the SMenu component to add
      */
-    public SMenu add(SMenu c) {
+    public SMenuItem add(SMenuItem c) {
         super.add( c );
-        c.addActionListener( new MenuAction( this ) );
+        
+        if ( c instanceof SMenu ) {
+            c.addActionListener( new MenuAction( this ) );
+        }
         c.setShowAsFormComponent( false );
     	fComponents.add(c);
         return c;
@@ -113,10 +116,10 @@ public class SMenuBar extends SContainer
      *               0 is the first position
      * @return the SMenu at that position
      */
-    public SMenu getMenu(int index) {
+    public SMenuItem getMenuItem(int index) {
         SComponent c = (SComponent) fComponents.get(index);
-        if (c instanceof SMenu) 
-            return (SMenu) c;
+        if (c instanceof SMenuItem) 
+            return (SMenuItem) c;
         return null;
     }
 
@@ -299,8 +302,11 @@ public class SMenuBar extends SContainer
      */
     public void closeAllMenus()
     {
-        for ( int i = 0; i < fComponents.size(); i++ )
-            ((SMenu) fComponents.get(i)).setActive( false );
+        for ( int i = 0; i < fComponents.size(); i++ ) {
+            if ( fComponents.get(i) instanceof SMenu ) {
+                ((SMenu) fComponents.get(i)).setActive( false );
+            }
+        }
     }
 
     /**

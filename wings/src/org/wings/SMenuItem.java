@@ -43,10 +43,8 @@ public class SMenuItem extends SButton
      * @see org.wings.SAbstractButton#setNoBreak(boolean)
      * @param text is display this text ( as href )
      */
-    public SMenuItem( String text )
-    {
+    public SMenuItem( String text ) {
         super( text );
-        setNoBreak( true );
     }
 
     /**
@@ -54,9 +52,17 @@ public class SMenuItem extends SButton
      * <i>noBreak</i> is set to true
      * @see org.wings.SAbstractButton#setNoBreak(boolean)
      */
-    public SMenuItem( )
-    {
-        super( "Button" );
+    public SMenuItem() {
+        setNoBreak( true );
+    }
+
+
+    public SMenuItem(SIcon icon) {
+        super(icon);
+    }
+
+    public SMenuItem(String text, SIcon icon) {
+        super(text, icon);
         setNoBreak( true );
     }
 }
