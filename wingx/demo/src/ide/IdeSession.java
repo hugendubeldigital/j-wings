@@ -50,6 +50,7 @@ public class IdeSession
     TreePanel treePanel;
     PropertyPanel propertyPanel;
     LafPanel lafPanel;
+    LogPanel logPanel;
     SPanel builderPanel;
 
     public IdeSession(Session session) {
@@ -58,7 +59,6 @@ public class IdeSession
     }
 
     public void postInit(ServletConfig config) {
-        try {
         SContainer contentPane = getFrame().getContentPane();
 
         SMenuBar menuBar = createMenu();
@@ -124,15 +124,19 @@ public class IdeSession
         lafFrame.getContentPane().add(lafPanel);
         modules.put("laf", lafPanel);
 
+        // Log
+        SInternalFrame logFrame = new SInternalFrame();
+        logFrame.setTitle("log");
+        addNewFrame(logFrame);
+
+        logPanel = new LogPanel();
+        logFrame.getContentPane().add(logPanel);
+        modules.put("log", logPanel);
+
 	treeFrame.setClosed(true);
 	builderFrame.setClosed(true);
 	propertyFrame.setClosed(true);
-
-        }
-        catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
-        }
+	logFrame.setClosed(true);
     }
 
     void list(Object o, String indent) {

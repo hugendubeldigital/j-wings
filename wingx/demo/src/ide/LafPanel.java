@@ -191,6 +191,10 @@ public class LafPanel
 		new StreamPumper(in, out).run();
 	    }
 
+	    // build tree
+	    Build build = new Build(buildFile);
+	    build.executeTarget("prepare");
+
 	    // make sure, all necessary libraries are in place
 	    File wingsJar = new File(buildDir, "lib/wings.jar");
 	    if (!wingsJar.exists()) {
@@ -198,10 +202,6 @@ public class LafPanel
 		OutputStream out = new FileOutputStream(wingsJar);
 		new StreamPumper(in, out).run();
 	    }
-
-	    // build tree
-	    Build build = new Build(buildFile);
-	    build.executeTarget("prepare");
 
 	    PrintStream out = new PrintStream(log);
 	    build.getLogger().setOutputPrintStream(out);
@@ -243,12 +243,18 @@ public class LafPanel
 	    build.executeTargets(targets);
 	}
 	catch (Exception e) {
-	    System.err.println(e.getMessage());
-	    e.printStackTrace(System.err);
+	    LogPanel logPanel = (LogPanel)modules.get("log");
+	    logPanel.appendText(e.getMessage());
+	    ByteArrayOutputStream log = new ByteArrayOutputStream();
+	    e.printStackTrace(new PrintStream(log));
+	    logPanel.appendText("" + log);
 	}
 	finally {
 	    System.out.println("LOG");
 	    System.out.println("" + log);
+	    LogPanel logPanel = (LogPanel)modules.get("log");
+	    logPanel.clearText();
+	    logPanel.appendText("" + log);
 	}
     }
 
@@ -336,8 +342,11 @@ public class LafPanel
 	    propertyPanel.setComponent(test);
 	}
 	catch (Exception e) {
-	    System.err.println(e.getMessage());
-	    e.printStackTrace(System.err);
+	    LogPanel logPanel = (LogPanel)modules.get("log");
+	    logPanel.appendText(e.getMessage());
+	    ByteArrayOutputStream log = new ByteArrayOutputStream();
+	    e.printStackTrace(new PrintStream(log));
+	    logPanel.appendText("" + log);
 	}
     }
 
