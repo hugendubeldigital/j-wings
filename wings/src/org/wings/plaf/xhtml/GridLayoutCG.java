@@ -109,6 +109,9 @@ public class GridLayoutCG
             else {
                 d.print("<td");
                 Utils.printTableCellAlignment(d, c);
+                    d.print(" style=\"");
+                    Utils.writeAttributes(d,  c);
+                    d.print("\"");
                 // Some containers (like SPanel) do not support background colors
                 // hence we support the background of them using the sourrounding gridlayout cell
                 if (c instanceof SContainer && c.isVisible()) {
