@@ -9,3 +9,5 @@ fun:
 % :
 	make -C explorer $@
 	make -C wingset $@
+	make -C ldap $@
+	make -C jfc $@
