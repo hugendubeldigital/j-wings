@@ -34,7 +34,7 @@ import org.wings.externalizer.ExternalizeManager;
  * object, its associated {@link org.wings.SMenu} is displayed, allowing the
  * user to select one of the {@link org.wings.SMenuItem}s on it.
  * <p>
- * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @see SMenu
  * @see SMenuItem
  */

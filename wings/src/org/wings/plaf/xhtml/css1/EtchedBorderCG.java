@@ -22,7 +22,7 @@ import org.wings.io.Device;
 
 /**
  * Write a etched border
- * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @see DefaultBorderCG#writeBorderStyle
  */

@@ -28,7 +28,7 @@ import org.wings.io.Device;
  * The {@link SContainer} has a fixed position at 0x0 (upper left corner), so
  * it should only be used to set Layout for <tt>org.wings.SFrame.getContentPane()</tt>!
  *
- * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @version $Revision$
  */
 public class SFullScreenLayout

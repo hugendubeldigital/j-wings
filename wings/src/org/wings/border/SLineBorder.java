@@ -25,7 +25,7 @@ import org.wings.io.Device;
  * <span style="border-style: solid; border-width: 3px;">LABEL</span>
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
- * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @version $Revision$
  */
 public class SLineBorder

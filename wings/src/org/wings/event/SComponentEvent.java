@@ -44,7 +44,7 @@ import org.wings.SDimension;
  *
  * @see org.wings.event.SComponentAdapter
  * @see org.wings.event.SComponentListener
- * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @version $Revision$, $Date$
  */
 public class SComponentEvent

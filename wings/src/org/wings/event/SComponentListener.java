@@ -33,7 +33,7 @@ import java.awt.event.*;
  * internally so that GUI layout works properly regardless of
  * whether a program registers a ComponentListener or not.
  *
- * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @version $Revision$, $Date$
  * @see org.wings.event.SComponentAdapter
  * @see org.wings.event.SComponentEvent

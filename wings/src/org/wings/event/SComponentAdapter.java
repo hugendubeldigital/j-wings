@@ -30,7 +30,7 @@ package org.wings.event;
  * changes, the relevant method in the listener object is invoked,
  * and the ComponentEvent is passed to it.
  *
- * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @version $Revision$, $Date$
  * @see org.wings.event.SComponentEvent
  * @see org.wings.event.SComponentListener

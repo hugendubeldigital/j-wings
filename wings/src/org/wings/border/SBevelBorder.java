@@ -26,7 +26,7 @@ import org.wings.io.Device;
  * <span style="border-style: inset; border-width: 3px;">LOWERED</span>
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
- * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @version $Revision$
  */
 public class SBevelBorder

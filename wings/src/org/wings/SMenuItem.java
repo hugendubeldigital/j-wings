@@ -29,7 +29,7 @@ import org.wings.externalizer.ExternalizeManager;
 /**
  * TODO: documentation
  *
- * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */

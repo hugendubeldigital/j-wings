@@ -23,7 +23,7 @@ import org.wings.plaf.*;
 
 /**
  * CG for <a href="../../SFullScreenLayout.html">SFullScreenLayout</a>.
- * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @version $Revision$
  */
 public class FullScreenLayoutCG

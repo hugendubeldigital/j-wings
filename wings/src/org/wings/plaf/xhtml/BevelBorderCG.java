@@ -23,7 +23,7 @@ import org.wings.plaf.*;
 /**
   * This handles border style for BevelBorderCG and EtchedBorderCG
   * because html-syntax is the same except the border-style
-  * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+  * @author <a href="mailto:andre@lison.de">Andre Lison</a>
   * @see org.wings.plaf.xhtml.css1.EtchedBorderCG
   * @see #writeBorderStyle(Device,SBorder)
   */
