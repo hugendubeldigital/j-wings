@@ -39,11 +39,8 @@ public class WingSet
     {
         // create new default session and set plaf
         DefaultSession session = new DefaultSession();
-        session.getCGManager().setLookAndFeel(new URL(new URL(HttpUtils.getRequestURL(req).toString()),
-                                                      "../css1.jar"));
-        //Properties properties = new Properties();
-        //properties.load(getClass().getResourceAsStream("/org/wings/plaf/xhtml/css1/default.properties"));
-        //session.getCGManager().setLookAndFeel(new org.wings.plaf.LookAndFeel(properties));
+        URL url = getServletConfig().getServletContext().getResource("/css1.jar");
+        session.getCGManager().setLookAndFeel(url);
 
         // return a new wingset session
         return new WingSetSession(session);
