@@ -16,7 +16,7 @@ package org.wings;
 
 import java.io.*;
 
-import javax.swing.event.*;
+import javax.swing.event.EventListenerList;
 
 import org.wings.*;
 import org.wings.event.*;
@@ -100,25 +100,31 @@ public class SInternalFrame
     public boolean isClosable() { return closable; }
 
     public void setIconified(boolean v) {
+        v &= isIconifyable();
         boolean old = iconified;
         iconified = v;
-        if (old != iconified)
+        if (old != iconified) {
             reload(ReloadManager.RELOAD_CODE);
+            if (iconified)
+                setMaximized(false);
+        }
     }
     public boolean isIconified() { return iconified; }
 
     public void setMaximized(boolean v) {
+        v &= isMaximizable();
         boolean old = maximized;
         maximized = v;
-        if (old != maximized)
+        if (old != maximized) {
             reload(ReloadManager.RELOAD_CODE);
-
-        if (maximized)
-            setIconified(false);
+            if (maximized)
+                setIconified(false);
+        }
     }
     public boolean isMaximized() { return maximized; }
 
     public void setClosed(boolean v) {
+        v &= isClosable();
         boolean old = closed;
         closed = v;
         if (old != closed)
@@ -282,6 +288,7 @@ public class SInternalFrame
 
     private SInternalFrameEvent event;
 
+    // RequestListener interface. Handle own events.
     public void processRequest(String name, String[] values) {
         switch (new Integer(values[0]).intValue()) {
         case SInternalFrameEvent.INTERNAL_FRAME_CLOSED:
@@ -309,6 +316,7 @@ public class SInternalFrame
         }
 
         event = new SInternalFrameEvent(this, new Integer(values[0]).intValue());
+        SForm.addArmedComponent(this); // trigger later invocation of fire*()
     }
 
     public void fireIntermediateEvents() {}
@@ -319,26 +327,28 @@ public class SInternalFrame
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i] == InternalFrameListener.class) {
+            if (listeners[i] == SInternalFrameListener.class) {
+                SInternalFrameListener listener;
+                listener = (SInternalFrameListener) listeners[i+1];
                 switch (event.getID()) {
                 case SInternalFrameEvent.INTERNAL_FRAME_CLOSED:
-                    ((SInternalFrameListener)listeners[i+1]).internalFrameClosed(event);
+                    listener.internalFrameClosed(event);
                     break;
                     
                 case SInternalFrameEvent.INTERNAL_FRAME_ICONIFIED:
-                    ((SInternalFrameListener)listeners[i+1]).internalFrameIconified(event);
+                    listener.internalFrameIconified(event);
                     break;
                     
                 case SInternalFrameEvent.INTERNAL_FRAME_DEICONIFIED:
-                    ((SInternalFrameListener)listeners[i+1]).internalFrameDeiconified(event);
+                    listener.internalFrameDeiconified(event);
                     break;
                     
                 case SInternalFrameEvent.INTERNAL_FRAME_MAXIMIZED:
-                    ((SInternalFrameListener)listeners[i+1]).internalFrameMaximized(event);
+                    listener.internalFrameMaximized(event);
                     break;
                     
                 case SInternalFrameEvent.INTERNAL_FRAME_UNMAXIMIZED:
-                    ((SInternalFrameListener)listeners[i+1]).internalFrameUnmaximized(event);
+                    listener.internalFrameUnmaximized(event);
                     break;
                 }
             }
