@@ -32,6 +32,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 
 import org.wings.*;
@@ -47,7 +49,8 @@ public class LdapClientSession
     implements SConstants, 
 	       TreeSelectionListener, 
 	       ActionListener,
-	       ListSelectionListener
+	       ListSelectionListener,
+	       ChangeListener
 {
     private final static String NOT_CONNECTED = "not connected";
     private final int columns = 35;
@@ -64,7 +67,6 @@ public class LdapClientSession
 
     private SDesktopPane cards;
     private SList otherAttrsL;
-    private SForm attrPanel;
     private SForm existentAttrsF;
     private SForm otherAttrsF;
     private SButton addAttribute;
@@ -89,7 +91,11 @@ public class LdapClientSession
     private ArrayList obj = new ArrayList();
     private Vector objectAttributes;
     private SFileChooser chooser = null;
-    private SPasswordField userPassword = null;
+    private SPasswordField uPw = null;
+    private STextField server;
+    private STextField baseDN;
+    private STextField bindDN;
+    private STextField bindDNPassword;
 
 
     public LdapClientSession(Session session) {
@@ -100,48 +106,48 @@ public class LdapClientSession
     public void postInit(ServletConfig config) {
         initGUI();
     }
-
+    
     void initGUI() {
         tabbedPane = new STabbedPane();
         getFrame().getContentPane().setLayout(new SFlowLayout());
         getFrame().getContentPane().add(tabbedPane);
-
+	
         settingsForm = new SForm(new SGridLayout(2));
         tabbedPane.add(settingsForm, "Connection Settings");
-
+	
         SLabel descServer = new SLabel("sever:port");
-        final STextField server = new STextField("");
+        server = new STextField("");
         server.setColumns(30);
         server.setText(((PropertyService)getSession()).getProperty("ldap.server.host"));
         settingsForm.add(descServer);
         settingsForm.add(server);
-
+	
         SLabel descBaseDN = new SLabel("base DN");
-        final STextField baseDN = new STextField();
+        baseDN = new STextField();
         baseDN.setColumns(30);
         baseDN.setText(((PropertyService)getSession()).getProperty("ldap.server.basedn"));
         settingsForm.add(descBaseDN);
         settingsForm.add(baseDN);
-
+	
         SLabel descBindDN = new SLabel("bind DN");
-        final STextField bindDN= new STextField();
+        bindDN= new STextField();
         bindDN.setText(((PropertyService)getSession()).getProperty("ldap.server.binddn"));
         bindDN.setColumns(30);
         settingsForm.add(descBindDN);
         settingsForm.add(bindDN);
-
+	
         SLabel descBindDNPassword = new SLabel("password");
-        final SPasswordField bindDNPassword= new SPasswordField();
+        bindDNPassword= new SPasswordField();
         bindDNPassword.setColumns(30);
         settingsForm.add(descBindDNPassword);
         settingsForm.add(bindDNPassword);
-
+	
         final SButton connectButton = new SButton("connect");
-        //final SButton disconnectButton = new SButton("disconnect");
-        //disconnectButton.setVisible(false);
+        final SButton disconnectButton = new SButton("disconnect");
+        disconnectButton.setVisible(false);
         settingsForm.add(connectButton);
-        //settingsForm.add(disconnectButton);
-
+        settingsForm.add(disconnectButton);
+	
         try {
             mainPanel = new SForm(new STemplateLayout(getClass().getResource("ldapclientlayout.html")));
 	    mainPanel.setEncodingType("multipart/form-data");
@@ -149,65 +155,66 @@ public class LdapClientSession
         catch(Exception e) {
             System.err.println("LdapClientSession::initGUI() -> " + e);
         }
-
+	
         //mainPanel.setEncodingType("multipart/form-data");
-
+	
 	Image img = Toolkit.getDefaultToolkit().createImage(getClass().getResource("images/LDAPworm.gif"));
         mainPanel.add(new SImage( img ) ,"BOTTOMIMAGE");
-
+	
         tabbedPane.add(mainPanel, "Browser");
-
+	
         createTreeModel(null);
         createTree();
 	
         mainPanel.add(tree,"TREE");
-	
-	//attrPanel.setLayout(new SGridLayout(2));
         
         existentAttrsF = new SForm(new SGridLayout(2));
         existentAttrsF.setEncodingType("multipart/form-data");
         otherAttrsF = new SForm(new SFlowDownLayout());
-
+	
         addAttribute = new SButton("add Attribute");
         addAttribute.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int i = 0;
-                ArrayList remElements = new ArrayList();
-                while (obj!=null && i< obj.size()) {
-                System.out.println(obj.get(i));
-                String o = (String)obj.get(i);
-                
-		remElements.add(o);
-		SComponent attrField;
-		if (!((String)o).equals("jpegPhoto")) {
-		    attrField = new STextField("");
-		    ((STextField)attrField).setColumns(columns);
-		    textHashtable.put(o,"uu");
-		}
-		else {
-		    attrField = new SLabel("");
+		public void actionPerformed(ActionEvent e) {
+		    int i = 0;
+		    ArrayList remElements = new ArrayList();
+		    while (obj!=null && i< obj.size()) {
+			//System.out.println(obj.get(i));
+			String o = (String)obj.get(i);
+			remElements.add(o);
+			SComponent attrField;
+			if (!((String)o).equals("jpegPhoto")) {
+			    if (((String)o).equals("userPassword")) {
+				attrField = new SPasswordField();
+				((SPasswordField)attrField).setColumns(columns);
+				((SPasswordField)attrField).setText("");
+				textHashtable.put(o,"");
+			    }
+			    else {
+				attrField = new STextField("");
+				((STextField)attrField).setColumns(columns);
+				textHashtable.put(o,"");
+			    }
+			}
+			else {
+			    attrField = new SLabel("");
+			}
+			componentTable.put(o,attrField);
+			i++;
+		    }
+		    existentAttrsF.removeAll();
+		    Enumeration compEnum;
+		    compEnum = componentTable.keys();
+		    
+		    addEditableComponents(componentTable);
+		    
+		    for (int l = 0;l<remElements.size();l++) {
+			int j = obj.indexOf(remElements.get(l));
+			objectAttributes.remove(j);
+		    }
+		    otherAttrsL.setListData(objectAttributes);
 		}
 		
-		componentTable.put(o,attrField);
-		i++;
-                }
-                existentAttrsF.removeAll();
-                Enumeration compEnum;
-                compEnum = componentTable.keys();
-
-                addEditableComponents(componentTable);
-
-                System.out.println("groesse  " + remElements.size());
-
-                for (int l = 0;l<remElements.size();l++) {
-                int j = obj.indexOf(remElements.get(l));
-                System.out.println("ausgesucht  " + remElements.get(l));
-                objectAttributes.remove(j);
-                }
-                otherAttrsL.setListData(objectAttributes);
-            }
-
-        });
+	    });
 	
         mainPanel.add(existentAttrsF,"OBJECTATTRIBUTES");
         mainPanel.add(otherAttrsF,"ATTRIBUTELIST");
@@ -217,18 +224,10 @@ public class LdapClientSession
 	
 	removeButton = new SButton("Remove entry");
 	removeButton.addActionListener(this);
-
+	
         addPanel = new AddObjectsPanel();
         tabbedPane.add(addPanel, "Add new Object");
-
-	disconnectButton = new SButton();
-	tabbedPane.add(disconnectButton,"Disconnect");
-	disconnectButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    tabbedPane.setSelectedIndex(1);
-		    System.out.println("disconnect");
-		}
-	    });
+	
 	
         connectButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -239,18 +238,23 @@ public class LdapClientSession
 		    
 		    boolean success = worker.getSuccess();
 		    if (success) {
-			System.out.println("visible false");
+			connectButton.setVisible(false);
+			server.setVisible(false);
+			baseDN.setVisible(false);
+			bindDN.setVisible(false);
+			bindDNPassword.setVisible(false);
 			
-			settingsForm.setVisible(false);
-			settingsForm.removeAll();
-			//connectButton.setVisible(false);
-			
-			//disconnectButton.setVisible(true);
+			disconnectButton.setVisible(true);
 			tabbedPane.setSelectedIndex(1);
+			if (existentAttrsF!=null)
+			    existentAttrsF.removeAll();
+			if (otherAttrsF!=null)
+			    otherAttrsF.removeAll();
+			
 		    }
 		    else {
 			connectButton.setVisible(true);
-			//disconnectButton.setVisible(false);
+			disconnectButton.setVisible(false);
 		    }
 		    
 		    if (success) {
@@ -263,20 +267,29 @@ public class LdapClientSession
 		}
 	    });
 	
-        /*disconnectButton.addActionListener(new ActionListener() {
+        disconnectButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		    createTreeModel(null);
 		    tree.setModel(treeModel);
-		    //attrPanel.removeAll();
-		
-                bindDNPassword.setText("");
-		
-                disconnectButton.setVisible(false);
-		connectButton.setVisible(true);
+		    if (existentAttrsF!= null)
+			existentAttrsF.removeAll();
+		    if (otherAttrsF!= null)
+			otherAttrsF.removeAll();
+		    bindDNPassword.setText("");
+		    disconnectButton.setVisible(false);
+		    connectButton.setVisible(true);
+		    server.setVisible(true);
+		    bindDN.setVisible(true);
+		    bindDNPassword.setVisible(true);
+		    baseDN.setVisible(true);
+		    server.setText("");
+		    bindDN.setText("");
+		    bindDNPassword.setText("");
+		    baseDN.setText("");
 		}
-		});*/
+	    });
     }
-
+    
     
     
     private LdapWorker getLdapWorker() {
@@ -332,34 +345,25 @@ public class LdapClientSession
 		System.out.println("old value " +oldValue);
 		
 		if (oldValue!=null) {
-		    //boolean uP = false;
 		    if (!oldValue.equals(newValue)) {
 			boolean uP = false;
 			BasicAttribute attr = new BasicAttribute((String)key);
 			if (((String)key).toLowerCase().trim().equals("userpassword")) 
 			{ 
-			    System.out.println("userPasssssssssssssssword") ;
-			    uP = true;
+			    if (uPw.getText().equals(newValue))
+				attr.add(newValue);
+			    else 
+				System.out.println("nicht gleiches Passwort");
 			}
-			StringTokenizer st = new StringTokenizer(newValue,",");
-			String atV;
-			boolean b = ((st !=null) && (st.hasMoreTokens()));
-			System.out.println("b is " + b);
-			if (b)
-			    while (st !=null && st.hasMoreTokens())
-				{System.out.println("o je");
-				attr.add(st.nextToken());}
 			else {
-			    System.out.println("oho");
-			    if (uP) {
-				System.out.println("nun geht's auch um Passw");
-				System.out.println("das Feld " + userPassword.getText());
-				if (userPassword.getText().equals(newValue))
-				    attr.add(newValue);
-				else 
-				    System.out.println("nicht gleiches Passwort");
-			    }
-			    else attr.add(newValue);
+			    StringTokenizer st = new StringTokenizer(newValue,",");
+			    String atV;
+			    boolean b = ((st !=null) && (st.hasMoreTokens()));
+			    System.out.println("b is " + b);
+			    if (b)
+				while (st !=null && st.hasMoreTokens())
+				    {System.out.println("o je");
+				    attr.add(st.nextToken());}
 			}
 			attributes.put(attr);
 		    }
@@ -438,6 +442,9 @@ public class LdapClientSession
 	this.node =node;
     }
 
+    public void stateChanged (ChangeEvent ch) {
+	System.out.println("anderes tab");
+    }
 
     public void valueChanged(TreeSelectionEvent e) {
 	TreeNode node = (TreeNode)tree.getLastSelectedPathComponent();
@@ -447,10 +454,10 @@ public class LdapClientSession
 	}
 	setDN(((LdapTreeNode)node).getDN());
 	setNode((LdapTreeNode)node);
-
+	
 	componentTable.clear();
 	textHashtable.clear();
-
+	
 	existentAttrsF.removeAll();
 
 	LdapWorker worker = getLdapWorker();
@@ -561,8 +568,9 @@ public class LdapClientSession
 	    existentAttrsF.add((SComponent)comp.get(key));
 	    if (((String)key).equals("userPassword")) {
 		existentAttrsF.add(new SLabel((String)key));
-		userPassword = (SPasswordField)comp.get(key);
-		existentAttrsF.add(userPassword);
+		uPw = new SPasswordField();
+		uPw.setText(((SPasswordField)comp.get(key)).getText());
+		existentAttrsF.add(uPw);
 	    }
 	    if (((String)key).equals("jpegPhoto")) {
 		SLabel label = new SLabel("Select jpegPhoto...");

@@ -129,7 +129,7 @@ public class LdapWorker
 	return ol;
     }
     
-    //parst die Objektklassen und gibt nur die NAmen zurueck
+    //parst die Objektklassen und gibt nur die Namen zurueck
     private ArrayList getObjNames(NamingEnumeration ne) {
 	ArrayList objArray = new ArrayList();
 	
@@ -144,28 +144,28 @@ public class LdapWorker
 		String rest = null;
 		String sup = null;
 		if (index > 4)
-		    rest = oString.substring(index);
-		if (rest!=null) { 
-		    StringTokenizer suptok = new StringTokenizer(rest," ");
-		    sup = suptok.nextToken();
-		}
-		if (sup!=null && !sup.equals("top")) {
-		    obj = obj + " SUP " +"(" + sup + ")";
-		    System.out.println("obj is" + obj );
-		}
+  		    rest = oString.substring(index);
+  		if (rest!=null) { 
+  		    StringTokenizer suptok = new StringTokenizer(rest," ");
+  		    sup = suptok.nextToken();
+  		}
+  		if (sup!=null && !sup.equals("top")) {
+  		    obj = obj + " SUP " +"(" + sup + ")";
+  		    System.out.println("obj is" + obj );
+  		}
 		
-		objArray.add(obj);
-	    }
-	}
-	catch (NamingException nex) {
-	    System.out.println(nex);
-	}
-	return objArray;
-    }
+  		objArray.add(obj);
+  	    }
+  	}
+  	catch (NamingException nex) {
+  	    System.out.println(nex);
+  	}
+  	return objArray;
+      }
     
     
-    //gibt die attribute eines entry's zurueck
-    public Attributes getDNAttributes(String dn)
+      //gibt die attribute eines entry's zurueck
+      public Attributes getDNAttributes(String dn)
     {
 	System.out.println("bei dn "  +dn);
 	ArrayList attrList = new ArrayList();
@@ -193,14 +193,12 @@ public class LdapWorker
 		SearchResult si = (SearchResult)enum.next(); 
 		Attributes ocAttrs = si.getAttributes();
 		Attribute name = ocAttrs.get("NAME");
-		//System.out.println("NAME of oc is " + name);
 		Attribute must = ocAttrs.get("MUST");
 		
 		if (must!=null) {
 		    NamingEnumeration mt = must.getAll();
 		    while (mt!= null && mt.hasMore()) {
 			myNames.addElement((String)mt.next());
-			//System.out.println("must" + myNames);
 		    }
 		}
 		Attribute may = ocAttrs.get("MAY");
@@ -209,7 +207,6 @@ public class LdapWorker
 		    NamingEnumeration my = may.getAll();
 		    while (my !=null && my.hasMoreElements()) {
 			myNames.addElement((String)my.next());
-			//System.out.println("may" + myNames);
 		    }
 		}
 	}
@@ -276,16 +273,17 @@ public class LdapWorker
 	    matchAttrs.put(new BasicAttribute(attribute));
 	    
 	    // Search for objects that have those matching attributes
-	    NamingEnumeration enum = ctx.search(getBaseDN(), matchAttrs);
-	    
-	    
+	    //NamingEnumeration enum = ctx.search(getBaseDN(), matchAttrs);
+	    SearchControls cons = new SearchControls();
+	    cons.setSearchScope(SearchControls.SUBTREE_SCOPE);
+	    NamingEnumeration enum = ctx.search(getBaseDN(), "(cn=*)",cons);
+	    	   
 	    while (enum.hasMore()) {
 		SearchResult sr = (SearchResult)enum.next();
 		BasicAttributes ba = (BasicAttributes)sr.getAttributes();
 		BasicAttribute cn = (BasicAttribute)ba.get("cn");
 		attrList.add(cn.get());
 		peopleDNMap.put(cn.get(),sr.getName());
-		System.out.println("dn ist "+ sr.toString());
 	    }
 	}
 	catch(NamingException u) {
@@ -360,15 +358,9 @@ public class LdapWorker
 		String name = (String)(attrNames[0].elementAt(i));
 		Attributes attrSchema = 
 		sch.getAttributes("AttributeDefinition/" + name);
-		//Attribute syntax = attrSchema.get("SYNTAX");
-		
-		//die must attribute haben noch ein sternchen
+				//die must attribute haben noch ein sternchen
 		String msg;
-		//if (syntax != null) {
-		//    msg = "*" + name + "(" + syntax.get() + ")";
-		//} else {
 		msg = "*" + name;
-		    //}
 		attrValues  = new ArrayList();
  		attributes.put(msg,attrValues);
 	    }
@@ -377,14 +369,9 @@ public class LdapWorker
 		String name = (String)(attrNames[1].elementAt(i));
 		Attributes attrSchema = 
 		sch.getAttributes("AttributeDefinition/" + name);
-		//Attribute syntax = attrSchema.get("SYNTAX");
-		
+				
 		String msg;
-		//if (syntax != null) {
-		//  msg = name + "(" + syntax.get() + ")";
-		//} else {
 		msg = name;
-		    //}
 		attrValues  = new ArrayList();
  		attributes.put(msg,attrValues);
 	    }
@@ -444,7 +431,6 @@ public class LdapWorker
 	}
 	catch (NamingException e){
 	    e.printStackTrace();
-	    //System.out.println("neuer Eintrag einfuegen gescheitert");
 	}
     }
     

@@ -58,6 +58,7 @@ public class LdapBrowserSession
     SLabel searchLabel;
     SButton searchButton;
     String filter = "(cn=*)";
+    SButton back;
 
     public LdapBrowserSession(Session session) {
 	
@@ -84,8 +85,7 @@ public class LdapBrowserSession
 	this.server = ((PropertyService)getSession()).getProperty("ldap.server.host");
 	this.baseDN = ((PropertyService)getSession()).getProperty("ldap.server.basedn");
 	this.bindDN = ((PropertyService)getSession()).getProperty("ldap.server.binddn");
-	//this.password = ((PropertyService)getSession()).getProperty("ldap.server.password");
-	this.password = "";
+	this.password = ((PropertyService)getSession()).getProperty("ldap.server.password");
 	this.peopleName = ((PropertyService)getSession()).getProperty("ldap.server.peoplename");
        
 		
@@ -111,6 +111,10 @@ public class LdapBrowserSession
 		
 	submit = new SButton("submit");
 	submit.addActionListener(this);
+
+	back = new SButton("back");
+	back.setVisible(false);
+	back.addActionListener(this);
 	
 	viewPanel = new SPanel(new SGridLayout(2));
 	
@@ -124,6 +128,8 @@ public class LdapBrowserSession
 	searchForm.add(searchLabel);
 	searchForm.add(searchField);
 	searchForm.add(searchButton);
+
+	tableForm.add(back);
 	
 	getFrame().getContentPane().add(searchForm);
 	getFrame().getContentPane().add(tableForm);	
@@ -133,31 +139,38 @@ public class LdapBrowserSession
     
     public void actionPerformed(ActionEvent evt) {
 	System.out.println ("source ist " + evt.getSource().toString());
+	
+	if((SButton)evt.getSource() == back) {
+	    back.setVisible(false);
+	    peopleTable.setVisible(true);
+	    searchForm.setVisible(true);
+	    viewPanel.removeAll();
+	}
 		
 	if ((SButton)evt.getSource() == searchButton) {
 	    System.out.println("filter is... " + filter);
 	    setFilter("(cn=" + searchField.getText() + "*)");
-	    tableForm.removeAll();
+	    tableForm.remove(peopleTable);
+	    viewPanel.removeAll();
 	    peopleTable = new STable(new LdapTableModel());
 	    peopleTable.setBorderLines(new Insets(2,2,2,2));
-	    //peopleTable.addSelectionListener(this);
-        //[REMARK]
-	    //peopleTable.setSelectionMode(SINGLE_SELECTION);
+	    //[REMARK]
 	    SelectableTableCellRenderer renderer = new SelectableTableCellRenderer();
 	    renderer.setSelectableColumns(new int[] {0});
 	    renderer.addCellSelectionListener(new CellSelectionListener() {
 		    public void cellSelected(CellSelectionEvent e) {
-			//viewPanel.removeAll();
 			System.out.println("Cell at position x="+e.getXPosition()+" y="+e.getYPosition());
 			
 			peopleDN = getLdapWorker().getAttributeDNValues(peopleName,baseDN);
-			//if (e.getSource() == peopleTable) {
-			//int row = peopleTable.getSelectedRow();
+			
 			LdapTableModel model = (LdapTableModel)peopleTable.getModel();
 			String value = (String)model.getValueAt(e.getXPosition(),0);
 			System.out.println("value is" + value);
 			String dn = (String)peopleDN.get(value);
 			viewPanel.removeAll();
+			peopleTable.setVisible(false);
+			searchForm.setVisible(false);
+			back.setVisible(true);
 			
 			BasicAttributes attrs = (BasicAttributes)getLdapWorker().getDNAttributes(dn + "," + baseDN);
 			try {
@@ -184,7 +197,6 @@ public class LdapBrowserSession
 						if (label.equals("jpegPhoto")) {
 						    viewPanel.add(new SLabel((String)viewAttributes.get(label)));
 						    viewPanel.add(new SLabel(new ImageIcon((byte [])i)));
-						    System.out.println("auch ein photoooooooooooooooooooooo");
 						}
 						if (label.equals("userPassword")) {
 						    SLabel attrLabel = new SLabel((String)viewAttributes.get(label));
@@ -205,10 +217,7 @@ public class LdapBrowserSession
 		    }
 		});
 	    peopleTable.setDefaultRenderer(renderer);
-	    //
 	    tableForm.add(peopleTable);
-	    //viewPanel.removeAll();
-	    
 	}
     }
 
@@ -244,7 +253,6 @@ public class LdapBrowserSession
 	LdapTableModel() {
 	    dnList = getLdapWorker().getFilteredAllDN(baseDN,getFilter());
 	    ROWS = dnList.size();
-	    System.out.println("im textFeld" + getFilter());
 	    int i = 0 ;
 	    data = new Object[ROWS][COLS];
 	    if (ROWS > 0) {
