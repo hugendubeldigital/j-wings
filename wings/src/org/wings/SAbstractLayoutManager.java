@@ -55,7 +55,7 @@ public abstract class SAbstractLayoutManager
      * Preferred size of component in pixel.
      */
     protected SDimension preferredSize = null;
-    
+
 
     protected SAbstractLayoutManager() {
 	updateCG();

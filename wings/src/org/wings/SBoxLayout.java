@@ -21,7 +21,7 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * This is a box layout.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
@@ -52,15 +52,15 @@ public class SBoxLayout
     protected int align = SConstants.LEFT_ALIGN;
 
     /**
-     * TODO: documentation
-     *
+     * creates a new box layout with horizontal orientation and
+     * left alignment
      */
     public SBoxLayout() {}
 
     /**
-     * TODO: documentation
+     * creates a new box layout with the given alignment
      *
-     * @param alignment
+     * @param alignment alignment
      */
     public SBoxLayout(int alignment) {
         setAlignment(alignment);
@@ -70,65 +70,61 @@ public class SBoxLayout
         components.add(c);
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
     public void removeComponent(SComponent c) {
         components.remove(c);
     }
 
     /**
-     * TODO: documentation
-     *
-     * @return
+     * returns a list of all components
+     * @return all components
      */
     public List getComponents() {
         return components;
     }
 
     /**
-     * TODO: documentation
+     * returns the component at the given position
      *
-     * @param i
-     * @return
+     * @param i position
+     * @return component
      */
     public SComponent getComponentAt(int i) {
         return (SComponent)components.get(i);
     }
 
-    /*
-     * Sets the orientation. Use one of the following types:
-     * <UL>
-     * <LI> {@link SConstants#HORIZONTAL}
-     * <LI> {@link SConstants#VERTICAL}
-     * </UL>
-     */
     /**
-     * TODO: documentation
+     * Sets the orientation. Use one of the following types:
      *
-     * @param o
+     * @param o One of the following constants:
+     *          {@link <code>SConstants#HORIZONTAL</code>} or
+     *          {@link <code>SConstants#VERTICAL</code>}
      */
     public void setOrientation(int o) {
         orientation = o;
     }
+
+    /**
+     * returns the orientation
+     * @return orientation
+     */
     public int getOrientation() { return orientation; }
 
-    /*
+    /**
      * Sets the alignment. Use one of the following types:
-     * <UL>
-     * <LI> {@link SConstants#LEFT_ALIGN}
-     * <LI> {@link SConstants#CENTER_ALIGN}
-     * <LI> {@link SConstants#RIGHT_ALIGN}
-     * </UL>
      *
-     * @param a
+     * @param a One of the following constants:
+     *          {@link <code>SConstants#LEFT_ALIGN</code>},
+     *          {@link <code>SConstants#CENTER_ALIGN</code>} or
+     *          {@link <code>SConstants#RIGHT_ALIGN</code>}
      */
     public void setAlignment(int a) {
         align = a;
     }
 
+    /**
+     * returns the alignment
+     * @return alignment
+     */
     public int getAlignment() {
         return align;
     }

@@ -251,11 +251,6 @@ public class STemplateLayout
         components.put(constraint.toString(), c);
     }
     
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
     public void removeComponent(SComponent c) {
         // TODO: remove value from Hashtable
     }

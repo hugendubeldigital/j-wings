@@ -22,7 +22,7 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * This is a card layout
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -41,8 +41,7 @@ public class SCardLayout
     protected HashMap tab = new HashMap();
 
     /**
-     * TODO: documentation
-     *
+     * Creates a new card layout
      */
     public SCardLayout() {
     }
@@ -53,11 +52,6 @@ public class SCardLayout
         tab.put(constraint, c);
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
     public void removeComponent(SComponent c) {
         for (Iterator e = tab.keySet().iterator() ; e.hasNext() ; ) {
             Object key = e.next();

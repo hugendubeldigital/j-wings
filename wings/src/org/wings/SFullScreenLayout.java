@@ -48,14 +48,10 @@ public class SFullScreenLayout
         setPreferredSize(fDim);
     }
 
-    /**
-      * Add a component to this layout.
-      * Aligments are set if component has no aligment.
-      */
     public void addComponent(SComponent c, Object constraint) {
         if (constraint == null)
             constraint = CENTER;
-		
+
         if (c.getHorizontalAlignment() == SConstants.NO_ALIGN) {
             if (constraint == WEST)
                 c.setHorizontalAlignment(SConstants.LEFT);
@@ -79,10 +75,10 @@ public class SFullScreenLayout
                     else
                         c.setVerticalAlignment(SConstants.CENTER);
         }
-         
+
         super.addComponent(c, constraint);
         setPreferredSize(fDim);
-     }
+    }
 
     public String getCGClassID() {
         return _cgClassID;

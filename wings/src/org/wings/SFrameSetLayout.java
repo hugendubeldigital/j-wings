@@ -90,11 +90,6 @@ public class SFrameSetLayout
 	constraints.add(constraint);
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
     public void removeComponent(SComponent c) {
         if (c == null)
             return;

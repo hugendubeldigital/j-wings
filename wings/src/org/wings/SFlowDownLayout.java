@@ -21,7 +21,8 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * This is a flow down layout. This is a flow layout
+ * with vertical orientation and left alignment.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -30,7 +31,7 @@ public class SFlowDownLayout
     extends SFlowLayout
 {
     /**
-     * TODO: documentation
+     * creates a new flow down layouts
      */
     public SFlowDownLayout() {
         super();

@@ -22,7 +22,10 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * This is a border layout. You can add up to 5 components to a
+ * container with this layout at the following positions:
+ * <code>NORTH</code>, <code>SOUTH</code>, <code>EAST</code>,
+ * <code>WEST</code> and <code>CENTER</code>.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -37,39 +40,20 @@ public class SBorderLayout
 
     private static final boolean DEBUG = true;
 
-    /**
-     * TODO: documentation
-     */
     protected final int id = SComponent.createUnifiedId();
 
     Map components = new HashMap(5);
 
-    /**
-     * TODO: documentation
-     */
     public static final String NORTH = "North";
-    /**
-     * TODO: documentation
-     */
     public static final String SOUTH = "South";
-    /**
-     * TODO: documentation
-     */
     public static final String EAST = "East";
-    /**
-     * TODO: documentation
-     */
     public static final String WEST = "West";
-    /**
-     * TODO: documentation
-     */
     public static final String CENTER = "Center";
 
     int border = 0;
 
     /**
-     * TODO: documentation
-     *
+     * creates a new border layout
      */
     public SBorderLayout() {}
 
@@ -80,11 +64,6 @@ public class SBorderLayout
         components.put(constraint, c);
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
     public void removeComponent(SComponent c) {
         if (c == null)
             return;
@@ -113,6 +92,11 @@ public class SBorderLayout
         border = pixel;
     }
 
+    /**
+     * Returns the thickness of the border.
+     *
+     * @return thickness of the border
+     */
     public int getBorder() {
         return border;
     }

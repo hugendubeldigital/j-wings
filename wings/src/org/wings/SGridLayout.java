@@ -22,7 +22,7 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * This is a grid layout
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -63,57 +63,68 @@ public class SGridLayout
     private SContainer container = null;
 
     /**
-     * TODO: documentation
+     * creats a new grid layout with the given number of columns
      *
-     * @param cols
+     * @param cols number of columns
      */
     public SGridLayout(int cols) {
         setColumns(cols);
     }
 
+    /**
+     * creats a new grid layout with the given number of columns and rows
+     *
+     * @param rows number of rows
+     * @param cols number of columns
+     */
     public SGridLayout(int rows, int cols) {
         setRows(rows);
         setColumns(cols);
     }
 
     /**
-     * TODO: documentation
+     * sets the number of columns
      *
-     * @param c
+     * @param c number of columns
      */
     public void setColumns(int c) {
         cols = c;
     }
+
+    /**
+     * returns the number of columns
+     *
+     * @return number of columns
+     */
     public int getColumns() { return cols; }
 
     /**
-     * TODO: documentation
+     * sets the number of rows
      *
-     * @param r
+     * @param r number of rows
      */
     public void setRows(int r) {
         rows = r;
     }
+
+    /**
+     * returns the number of rows
+     *
+     * @returns number of rows
+     */
     public int getRows() { return rows; }
 
     public void addComponent(SComponent c, Object constraint) {
         components.add(c);
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
     public void removeComponent(SComponent c) {
         components.remove(c);
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param i
-     * @return
+     * returns a list of all components
+     * @return all components
      */
     public List getComponents() {
         return components;
