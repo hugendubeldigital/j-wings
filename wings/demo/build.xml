@@ -43,6 +43,8 @@
         <include name="**/*.gif" />
         <include name="**/*.css" />
         <include name="**/*.thtml" />
+        <include name="**/*.html" />
+	<exclude name="**/index.html" />
       </fileset>
     </copy>
   </target>
@@ -53,7 +55,8 @@
     <mkdir dir="${deploy}/wingset/WEB-INF/lib"/>
     <mkdir dir="${deploy}/wingset/WEB-INF/classes"/>
 
-    <copy file="wingset.xml" tofile="${deploy}/wingset/WEB-INF/web.xml"/>
+    <copy file="wingset/wingset.xml" tofile="${deploy}/wingset/WEB-INF/web.xml"/>
+    <copy file="wingset/index.html" tofile="${deploy}/wingset/index.html"/>
 
     <copy todir="${deploy}/wingset/WEB-INF/classes">
       <fileset dir="${classes}">
@@ -74,7 +77,9 @@
     <mkdir dir="${deploy}/ldap/WEB-INF/lib"/>
     <mkdir dir="${deploy}/ldap/WEB-INF/classes"/>
 
-    <copy file="ldap.xml" tofile="${deploy}/ldap/WEB-INF/web.xml"/>
+    <copy file="ldap/ldap.xml" tofile="${deploy}/ldap/WEB-INF/web.xml"/>
+    <copy file="ldap/index.html" tofile="${deploy}/ldap/index.html"/>
+    <copy file="ldap/ldapclientlayout.html" tofile="${deploy}/ldap/WEB-INF/classes/ldapclientlayout.html"/>
 
     <copy todir="${deploy}/ldap/WEB-INF/classes">
       <fileset dir="${classes}">
@@ -95,7 +100,8 @@
     <mkdir dir="${deploy}/explorer/WEB-INF/lib"/>
     <mkdir dir="${deploy}/explorer/WEB-INF/classes"/>
 
-    <copy file="explorer.xml" tofile="${deploy}/explorer/WEB-INF/web.xml"/>
+    <copy file="explorer/explorer.xml" tofile="${deploy}/explorer/WEB-INF/web.xml"/>
+    <copy file="explorer/index.html" tofile="${deploy}/explorer/index.html"/>
 
     <copy todir="${deploy}/explorer/WEB-INF/classes">
       <fileset dir="${classes}">
@@ -116,7 +122,8 @@
     <mkdir dir="${deploy}/frameset/WEB-INF/lib"/>
     <mkdir dir="${deploy}/frameset/WEB-INF/classes"/>
 
-    <copy file="frameset.xml" tofile="${deploy}/frameset/WEB-INF/web.xml"/>
+    <copy file="frameset/frameset.xml" tofile="${deploy}/frameset/WEB-INF/web.xml"/>
+    <copy file="frameset/index.html" tofile="${deploy}/frameset/index.html"/>
 
     <copy todir="${deploy}/frameset/WEB-INF/classes">
       <fileset dir="${classes}">
@@ -134,40 +141,52 @@
 
   <!-- ==================== Make wars ==================== -->
   <target name="deploy" depends="build">
-    <war warfile="${deploy}/wingset.war" webxml="wingset.xml">
+    <war warfile="${deploy}/wingset.war" webxml="wingset/wingset.xml">
       <lib dir="${lib}">
         <exclude name="j2ee.jar"/>
       </lib>
       <classes dir="build/classes">
         <include name="wingset/**/*" />
       </classes>
+      <fileset dir="wingset">
+        <include name="index.html"/>
+      </fileset>
     </war>
 
-    <war warfile="${deploy}/ldap.war" webxml="ldap.xml">
+    <war warfile="${deploy}/ldap.war" webxml="ldap/ldap.xml">
       <lib dir="${lib}">
         <exclude name="j2ee.jar"/>
       </lib>
       <classes dir="build/classes">
         <include name="ldap/**/*" />
       </classes>
+      <fileset dir="ldap">
+        <include name="index.html"/>
+      </fileset>
     </war>
 
-    <war warfile="${deploy}/explorer.war" webxml="explorer.xml">
+    <war warfile="${deploy}/explorer.war" webxml="explorer/explorer.xml">
       <lib dir="${lib}">
         <exclude name="j2ee.jar"/>
       </lib>
       <classes dir="build/classes">
         <include name="explorer/**/*" />
       </classes>
+      <fileset dir="explorer">
+        <include name="index.html"/>
+      </fileset>
     </war>
 
-    <war warfile="${deploy}/frameset.war" webxml="frameset.xml">
+    <war warfile="${deploy}/frameset.war" webxml="frameset/frameset.xml">
       <lib dir="${lib}">
         <exclude name="j2ee.jar"/>
       </lib>
       <classes dir="build/classes">
         <include name="frameset/**/*" />
       </classes>
+      <fileset dir="frameset">
+        <include name="index.html"/>
+      </fileset>
     </war>
   </target>
 
