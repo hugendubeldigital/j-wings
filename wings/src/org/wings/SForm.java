@@ -220,7 +220,15 @@ public class SForm
      * entspricht gefeuert und aus der Map entfernt.
      */
     /**
-     * TODO: documentation
+     * This method fires the low level events for all "armed" components of 
+     * this thread (http session) in an ordered manner:
+     * <ul><li>forms
+     * <li>buttons / clickables
+     * <li>"regular" components</ul>
+     * This order derives out of the assumption, that a user first modifies
+     * regular components before he presses the button submitting his changes.
+     * Otherwise button actions would get fired before the edit components
+     * fired their events.
      */
     public static void fireEvents() {
         List armedComponents = (List) threadArmedComponents.get();
@@ -230,6 +238,7 @@ public class SForm
             // hopefully there is only one form ;-)
             Iterator iterator = armedComponents.iterator();
             LinkedList formEvents = null;
+            LinkedList buttonEvents = null;
             while (iterator.hasNext()) {
                 component = (LowLevelEventListener)iterator.next();
                 // fire form events at last
@@ -241,8 +250,20 @@ public class SForm
                         formEvents = new LinkedList();
                     } // end of if ()
                     formEvents.add(component);
+                } else if (component instanceof SAbstractIconTextCompound) {
+                    if ( buttonEvents==null ) {
+                        buttonEvents = new LinkedList();
+                    }            
+                    buttonEvents.add(component);            
                 } else {
                     component.fireIntermediateEvents();
+                }
+            }
+            
+            if ( buttonEvents != null) {
+                iterator = buttonEvents.iterator();
+                while ( iterator.hasNext() ) {
+                    ((SAbstractIconTextCompound)iterator.next()).fireIntermediateEvents();
                 }
             }
 
@@ -257,10 +278,19 @@ public class SForm
             while (iterator.hasNext()) {
                 component = (LowLevelEventListener)iterator.next();
                 // fire form events at last
-                if ( !(component instanceof SForm) ) {
+                if ( !(component instanceof SForm || component instanceof SAbstractIconTextCompound) ) {
                     component.fireFinalEvents();
                 }
             }
+            
+            if ( buttonEvents!=null ) {
+                iterator = buttonEvents.iterator();
+                while ( iterator.hasNext() ) {
+                    ((SAbstractIconTextCompound)iterator.next()).fireFinalEvents();
+                }
+                buttonEvents.clear();
+            }            
+            
 
             if ( formEvents!=null ) {
                 iterator = formEvents.iterator();
