@@ -23,7 +23,8 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.externalizer.ExternalizeManager;
 
-public class CheckBoxCG implements org.wings.plaf.CheckBoxCG, SConstants
+public class CheckBoxCG
+    implements org.wings.plaf.CheckBoxCG, SConstants
 {
     private final static String propertyPrefix = "CheckBox";
 
@@ -35,7 +36,9 @@ public class CheckBoxCG implements org.wings.plaf.CheckBoxCG, SConstants
         component.setStyle(component.getSession().getCGManager().
                            getStyle(getPropertyPrefix() + ".style"));
     }
-    public void uninstallCG(SComponent c) {}
+
+    public void uninstallCG(SComponent c) {
+    }
 
     public void write(Device d, SComponent c)
         throws IOException
