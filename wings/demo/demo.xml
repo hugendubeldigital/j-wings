@@ -35,10 +35,10 @@
     </servlet>
     <servlet>
         <servlet-name>
-            LdapBrowser
+            LdapClient
         </servlet-name>
         <servlet-class>
-           ldap.LdapBrowser
+           ldap.LdapClient
         </servlet-class>
         <init-param>
             <param-name>externalizer.servlet.url</param-name>
@@ -46,7 +46,7 @@
         </init-param>
         <init-param>
             <param-name>ldap.server.host</param-name>
-            <param-value>alladin:389</param-value>
+            <param-value>localhost:389</param-value>
         </init-param>
         <init-param>
             <param-name>ldap.server.basedn</param-name>
@@ -92,18 +92,18 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>
-            TableExample2
+            LdapClient
         </servlet-name>
         <url-pattern>
-            /TableExample2
+            /LdapClient
         </url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>
-            LdapBrowser
+            TableExample2
         </servlet-name>
         <url-pattern>
-            /LdapBrowser
+            /TableExample2
         </url-pattern>
     </servlet-mapping>
     <servlet-mapping>

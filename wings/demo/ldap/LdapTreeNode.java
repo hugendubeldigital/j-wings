@@ -7,16 +7,16 @@ import java.util.Enumeration;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class LdapTreeNode implements TreeNode
+public class LdapTreeNode
+    implements TreeNode
 {
     private String dn;
-
     private LdapTreeNode parent;
     private ArrayList children = null;
-    private LdapClient client;
+    private LdapWorker worker;
 
-    public LdapTreeNode(LdapClient client, LdapTreeNode parent, String dn) {
-	this.client = client;
+    public LdapTreeNode(LdapWorker worker, LdapTreeNode parent, String dn) {
+	this.worker = worker;
 	this.dn = dn;
 	this.parent = parent;
     }
@@ -27,29 +27,29 @@ public class LdapTreeNode implements TreeNode
 
     public TreeNode getChildAt(int childIndex) {
 	//System.out.println("getChildAt" + childIndex);
-	if (children == null) {
+	if (children==null)
 	    getChildren();
-	}
+
 	return (TreeNode)children.get(childIndex);
     }
-
+    
+    
     public int getChildCount() {
 	//System.out.println("getChildCount");
 	return children.size();
     }
 
-    
     public TreeNode getParent() {
-	//System.out.println("getParent");
+	//System.out.println("getPar");
 	return (TreeNode)parent;
     }
 
     
     public int getIndex(TreeNode node) {
 	//System.out.println("getIndex");
-	if (children == null) {
+	if (children ==null)
 	    getChildren();
-	}
+
 	return children.indexOf(node);
     }
 
@@ -59,11 +59,10 @@ public class LdapTreeNode implements TreeNode
 	return true;
     }
 
-    
     public boolean isLeaf() {
-	if (children == null) {
+	if (children == null)
 	    getChildren();
-	}
+
 	return children.isEmpty();
     }
 
@@ -72,35 +71,31 @@ public class LdapTreeNode implements TreeNode
 	    getChildren();
 	return Collections.enumeration(children);
     }
-    
+
     private void getChildren() {
 	//System.out.println("getChildAt");
-	NamingEnumeration results = client.list(dn);
+	NamingEnumeration results = worker.list(dn);
 	children = new ArrayList();
 	try {
 	    while (results != null && results.hasMoreElements()) {
 		SearchResult sr  = (SearchResult)results.next(); 
-		children.add(new LdapTreeNode(client, this, sr.getName()));
+		children.add(new LdapTreeNode(worker, this, sr.getName()));
 	    }
 	}
 	catch (NamingException e) {
 	    System.err.println(e);
-	    
 	}
     }
 
     public String getDN() {
-	return dn;
-    }
-
-    public String getCompleteDN() {
-	if (getParent() == null || !(getParent() instanceof LdapTreeNode))
-	    return getDN();
-	else
-	    return ((LdapTreeNode)getParent()).getCompleteDN() + "," + getDN();
+        if (getParent() == null || !(getParent() instanceof LdapTreeNode))
+            return dn;
+        else
+            return ((LdapTreeNode)getParent()).getDN() + "," + dn;
     }
 
     public String toString() {
-	return getDN();
+	return dn;
     }
 }
+                                                                                                               
