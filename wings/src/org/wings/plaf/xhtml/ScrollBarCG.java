@@ -55,7 +55,7 @@ public class ScrollBarCG
         
         SScrollBar sb = (SScrollBar)c;
 
-        d.print("<table cellspacing=\"2\" cellpadding=\"0\" border=\"0\"><tr>");
+        d.print("<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\"><tr>");
         writePrefix(d, sb);
         writePostfix(d, sb);
         d.print("</tr></table>");
@@ -165,7 +165,7 @@ public class ScrollBarCG
         for ( int i = 0; i < SCROLLBAR_STEPS; ++i ) {
             d.print( prefix );
             if ( i >= mark && len-- > 0 ) {
-                d.print( "<td style=\"border-width: 1px; border-style: outset;\" bgcolor=").print( SCROLLER_COLOR );
+                d.print( "<td style=\"border-width: 0px; border-style: outset;\" bgcolor=").print( SCROLLER_COLOR );
                 bordercorrection = 2;
             }
             else {
