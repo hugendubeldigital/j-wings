@@ -630,18 +630,19 @@ public class SGMLTag {
      * @return SGML tag as string, showing range and values
      */
     public String toString() {
-        String str = "[SGMLTag " + name + ": (" + getOffset() +","+ "---" + ")";
+      StringBuffer str = new StringBuffer();
+      str.append("[SGMLTag ").append(name).append(": (").append(getOffset()).append(",---)");
         if (attrs != null && wellFormed) {
             Iterator iter = attributes(true);
             while (iter.hasNext()) {
                 String key = (String)iter.next();
-                str += " " + key + "=\"" + value(key, null) + "\"";
+                str.append(" ").append(key).append("=\"").append(value(key, null)).append("\"");
             }
         } else {
-            str += " *MALFORMED TAG*";
+            str.append(" *MALFORMED TAG*");
         }
-
-        return str + " ]";
+        str.append(" ]");
+        return str.toString();
     }
 }
 
