@@ -77,7 +77,7 @@ public abstract class Resource implements Serializable, URLResource, Renderable
      *
      * @return
      */
-    public final String getExtension() {
+    public String getExtension() {
         return extension;
     }
 
@@ -86,7 +86,7 @@ public abstract class Resource implements Serializable, URLResource, Renderable
      *
      * @return
      */
-    public final String getMimeType() {
+    public String getMimeType() {
         return mimeType;
     }
 
@@ -119,7 +119,7 @@ public abstract class Resource implements Serializable, URLResource, Renderable
         /**
          * Create new entry.
          */
-        HeaderEntry(Object k, Object v) { 
+        public HeaderEntry(Object k, Object v) {
             key = k;
             value = v; 
         }
