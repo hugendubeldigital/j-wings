@@ -219,14 +219,15 @@ public class SInternalFrame
     }
 
     /**
-     * TODO: documentation
+     * Remove the dialog from internal frame.
+     * @param dialog remove this dialog
      */
-    public final SDialog popDialog() {
+    public final SDialog popDialog(SDialog dialog) {
         int count = getComponentCount();
         if (count <= 1)
             throw new IllegalStateException("there's no dialog left!");
 
-        SDialog dialog = (SDialog)getComponent(count - 1);
+        // SDialog dialog = (SDialog)getComponent(count - 1);
         super.removeComponent(dialog);
         dialog.setFrame((SFrame)null);
         return dialog;
@@ -359,7 +360,7 @@ public class SInternalFrame
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i] == InternalFrameListener.class) {
+            if (listeners[i] == SInternalFrameListener.class) {
                 switch (event.getID()) {
                 case SInternalFrameEvent.INTERNAL_FRAME_CLOSED:
                     ((SInternalFrameListener)listeners[i+1]).internalFrameClosed(event);

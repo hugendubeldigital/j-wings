@@ -39,7 +39,7 @@ public class DialogCG
 
         Utils.writeBorderPrefix(d, border);
         writePrefix(d, dialog);
-        Utils.writeContainerContents(d, dialog);
+        Utils.writeContainerContents(d, dialog.getContentPane());
         writePostfix(d, dialog);
         Utils.writeBorderPostfix(d, border);
     }
@@ -47,6 +47,7 @@ public class DialogCG
     protected void writePrefix(Device d, SDialog dialog)
 	throws IOException
     {
+        /*
         String encodingType = dialog.getEncodingType();
 
         d.append("<form method=\"");
@@ -61,12 +62,13 @@ public class DialogCG
 
         d.append(" action=\"").append(dialog.getServerAddress()).
             append("\">\n");
+        */
     }
 
     protected void writePostfix(Device d, SDialog dialog)
         throws IOException
     {
-        d.append("</form>");
+        // d.append("</form>");
     }
 }
 

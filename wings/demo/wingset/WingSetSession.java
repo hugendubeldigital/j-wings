@@ -77,6 +77,7 @@ public class WingSetSession
         // a Tab with icon..
         tab.addTab("Tree", new ResourceImageIcon("org/wings/icons/JavaCup.gif"), 
                    new TreeExample(), "Tree Tool Tip");
+        tab.add(new DialogExample(getFrame()), "Dialog");
         tab.add(new OptionPaneExample(getFrame()), "OptionPane");
         tab.add(new TableExample(), "Table");
         tab.add(new ListExample(), "List");

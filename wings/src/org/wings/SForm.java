@@ -159,6 +159,13 @@ public class SForm
     }
 
     /**
+      * This is hot!
+      */
+    public void removeAllListeners() {
+        listenerList = new EventListenerList();
+    }
+
+    /**
      * Fire a ActionEvent at each registered listener.
      */
     protected void fireActionPerformed() {

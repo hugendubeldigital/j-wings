@@ -113,16 +113,18 @@ public class DesktopSession
         editor.setPreferredSize(new SDimension(300,200));
         desktop.add(editor);
 
-        final SDialog dialog = new SDialog(new SFlowDownLayout());
-        dialog.setEncodingType("multipart/form-data");
+        final SDialog dialog = new SDialog();
+        SForm form = new SForm(new SFlowDownLayout());
+        form.setEncodingType("multipart/form-data");
+        dialog.getContentPane().add(form);
 
         SLabel label = new SLabel("Choose file");
-        dialog.add(label);
+        form.add(label);
 
         final SFileChooser chooser = new SFileChooser();
-        dialog.add(chooser);
+        form.add(chooser);
 
-        dialog.add(new SSpacer(1, VERTICAL));
+        form.add(new SSpacer(1, VERTICAL));
 
         SButton submit = new SButton("upload");
         submit.addActionListener(new ActionListener() {
@@ -143,7 +145,7 @@ public class DesktopSession
                     SOptionPane.showMessageDialog(editor, "An error occured", e.getMessage());
                 }
             }});
-        dialog.add(submit);
+        form.add(submit);
 
         dialog.show(editor);
     }

@@ -44,7 +44,7 @@ import org.wings.session.SessionManager;
  * @version $Revision$
  */
 public class SFrame
-    extends SContainer
+    extends SWindow
     implements PropertyChangeListener
 {
     /**
@@ -53,11 +53,6 @@ public class SFrame
     private static final String cgClassID = "FrameCG";
 
     private static final boolean DEBUG = true;
-
-    /**
-     *  The Title of the Frame.
-     */
-    protected String title = "";
 
     /**
      * The container for the contentPane.
@@ -309,23 +304,25 @@ public class SFrame
     public final void pushDialog(SDialog dialog) {
         super.addComponent(dialog, null);
         int count = getComponentCount();
-        System.err.println("pushDialog: " + count);
+        System.err.println("pushDialog: " + count +", "+dialog.getTitle());
         dialog.setFrame(this);
         reload();
     }
 
     /**
-     * TODO: documentation
+     * Remove the dialog from this frame.
+     * @param dialog remove this dialog
+     * @return the removed dialog
      */
-    public final SDialog popDialog() {
+    public final SDialog popDialog(SDialog dialog) {
         int count = getComponentCount();
         if (count <= 1)
             throw new IllegalStateException("there's no dialog left!");
 
-        SDialog dialog = (SDialog)getComponent(count - 1);
+        // SDialog dialog = (SDialog)getComponent(count - 1);
         super.removeComponent(dialog);
         dialog.setFrame((SFrame)null);
-        System.err.println("popDialog: " + count);
+        System.err.println("popDialog: " + count+", "+dialog.getTitle());
 
         reload();
         return dialog;
@@ -450,25 +447,6 @@ public class SFrame
     public List headers() {
 	return headers;
     }
-
-
-    /**
-     * TODO: documentation
-     *
-     * @param t
-     */
-    public void setTitle(String t) {
-        if ( t==null )
-            title = "";
-        else
-            title = t;
-    }
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getTitle() { return title; }
 
     /**
      * TODO: documentation

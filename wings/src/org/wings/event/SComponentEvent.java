@@ -43,7 +43,7 @@ import java.awt.AWTEvent;
  *
  * @see org.wings.event.ComponentAdapter
  * @see org.wings.event.ComponentListener
- * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @version $Revision$, $Date$
  */
 public class SComponentEvent

@@ -16,6 +16,7 @@ package org.wings;
 
 import java.util.Locale;
 import java.util.ArrayList;
+import javax.swing.event.EventListenerList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -31,9 +32,29 @@ import org.wings.plaf.*;
  * ActionEvent.
  */
 /**
- * TODO: documentation
+ * SOptionPane is used to easy create some standard dialogs.
+ * Following example creates two connected dialogs.
+ * First an question dialog with "yes"- and "no"-button is shown. If User answers
+ * "yes" an dialog with the text "Fine !" is exposed, otherwise 
+ * an dialog with the message "No Problem ..." is shown.
+ * <blockquote><pre>
+ * final ActionListener comment = new ActionListener() {
+ *     public void actionPerformed(ActionEvent e) {
+ *         if ( e.getActionCommand()==SOptionPane.OK_ACTION )
+ *             SOptionPane.showMessageDialog(frame, "Fine !");
+ *         else
+ *             SOptionPane.showMessageDialog(frame, 
+ *                 "No Problem, just look at another site");
+ *         }
+ *     };
  *
+ * SOptionPane.showQuestionDialog(frame, "Do you want to go on?",
+ *     "A Question", comment);
+ * </pre></blockquote>
+ * Not like the swing JOptionPane, these option dialogs are non-blocking. Therefore 
+ * you need Events, to get the result.
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @version $Revision$
  */
 public class SOptionPane
@@ -117,6 +138,21 @@ public class SOptionPane
     public static final int YES_NO_CANCEL_RESET_OPTION = 997;
 
     /**
+     * TODO: documentation
+     */
+    public static final String OK_ACTION = "OK";
+
+    /**
+     * TODO: documentation
+     */
+    public static final String CANCEL_ACTION = "CANCEL";
+
+    /**
+     * TODO: documentation
+     */
+    public static final String UNKNOWN_ACTION = "UNKNOWN";
+
+    /**
      * ContentPane with border layout.
      */
     private final SContainer contents = new SContainer(new SBorderLayout());
@@ -187,6 +223,17 @@ public class SOptionPane
         new SImage(new ResourceImageIcon("org/wings/icons/Question.gif"));
 
     /**
+     * The container for the contentPane.
+     */
+    protected final SForm contentPane = new SForm();
+    
+    /**
+      * ActionListeners for this Dialog.
+      */
+    private java.util.List actionListeners = new java.util.ArrayList();
+
+
+    /**
      * The chosen option
      * @see #OK_OPTION
      * @see #YES_OPTION
@@ -202,7 +249,8 @@ public class SOptionPane
     public SOptionPane() {
         SGridLayout layout = new SGridLayout(1);
         layout.setBorder(1);
-        setLayout(layout);
+        contentPane.setLayout(layout);
+        super.getContentPane().add(contentPane);
         initPanel();
     }
 
@@ -231,12 +279,12 @@ public class SOptionPane
         images.add(yesnoImage);
         yesnoImage.setAlternativeText("question");
 
-        add(optionTitle);
+        contentPane.add(optionTitle);
         contents.add(optionData, SBorderLayout.CENTER);
         contents.add(images, SBorderLayout.WEST);
-        add(contents);
+        contentPane.add(contents);
 
-        add(optionButtons);
+        contentPane.add(optionButtons);
     }
 
     /**
@@ -269,40 +317,6 @@ public class SOptionPane
         optionYes.setText("Yes");
         optionNo.setText("No");
         optionReset.setText("Reset");
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param e
-     */
-    public void actionPerformed(ActionEvent e) {
-        if (frame != null) {
-            if (frame instanceof SFrame)
-                ((SFrame)frame).popDialog();
-            else
-                ((SInternalFrame)frame).popDialog();
-        }
-
-        selected = e.getSource();
-
-        if ( e.getSource()==optionOK ) {
-            fireActionPerformed(OK_ACTION);
-        }
-        else if ( e.getSource()==optionYes ) {
-            fireActionPerformed(YES_ACTION);
-        }
-        else if ( e.getSource()==optionCancel ) {
-            fireActionPerformed(CANCEL_ACTION);
-        }
-        else if ( e.getSource()==optionNo ) {
-            fireActionPerformed(NO_ACTION);
-        }
-        else {
-            fireActionPerformed(UNKNOWN_ACTION);
-        }
-
-        removeAll();
     }
 
     /**
@@ -465,7 +479,7 @@ public class SOptionPane
                                          int messageType,
                                          ActionListener al) {
         SOptionPane p = new SOptionPane();
-
+        p.setTitle(title);
         p.showPlainMessage(parent, message, title);
         p.addActionListener(al);
     }
@@ -488,7 +502,7 @@ public class SOptionPane
                                               int messageType,
                                               ActionListener al) {
         SOptionPane p = new SOptionPane();
-
+        p.setTitle(title);
         p.showPlainMessage(parent, message, title);
         p.addActionListener(al);
 
@@ -507,54 +521,40 @@ public class SOptionPane
         messageImage.setVisible(true);
     }
 
-
     /**
-     * TODO: documentation
-     */
-    public void showPlainQuestionDialog(SComponent parent,
-                                        Object message, String title) {
-        showOption(parent, title, message);
-
-        setOptionType(OK_CANCEL_RESET_OPTION);
-
-        questionImage.setVisible(true);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param message
-     * @return
-     */
-    // protected String getSimpleInput(Object message) {
-    //     return JOptionPane.showInputDialog(this, message);
-    // }
-
-
-    /**
-     * TODO: documentation
+     * Show an Question dialog with question image.
      */
     public static void showQuestionDialog(SComponent parent,
                                           Object question, String title,
                                           ActionListener al) {
         SOptionPane p = new SOptionPane();
-
         p.showPlainQuestionDialog(parent, question, title);
         p.addActionListener(al);
     }
 
     /**
-     * TODO: documentation
+     * Show an Question dialog without question image.
      */
     public static void showPlainQuestionDialog(SComponent parent,
                                                Object question, String title,
                                                ActionListener al) {
         SOptionPane p = new SOptionPane();
-
         p.showPlainQuestionDialog(parent, question, title);
         p.addActionListener(al);
 
         questionImage.setVisible(false);
+    }
+
+    /**
+     * Make an question dialog with question image.
+     */
+    public void showPlainQuestionDialog(SComponent parent,
+                                        Object message, String title) {
+        showOption(parent, title, message);
+        setTitle(title);
+        setOptionType(OK_CANCEL_RESET_OPTION);
+
+        questionImage.setVisible(true);
     }
 
 
@@ -603,11 +603,21 @@ public class SOptionPane
     }
 
     /**
+      * Gets the contentPane object for this dialog.
+      * return a {@link org.wings.SForm}.
+      */
+    public SContainer getContentPane() {
+        return contentPane;
+    }
+
+
+    /**
      * TODO: documentation
      */
     public static void showYesNoDialog(SComponent parent, Object question,
                                        String title, ActionListener al) {
         SOptionPane p = new SOptionPane();
+        p.setTitle(title);
         p.addActionListener(al);
 
         p.showYesNo(parent, question, title);
@@ -627,6 +637,88 @@ public class SOptionPane
 
     public void setCG(OptionPaneCG cg) {
         super.setCG(cg);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public String getEncodingType() {
+        return contentPane.getEncodingType();
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public boolean getMethod() {
+        return contentPane.getMethod();
+    }
+    
+    /**
+      * Fire action event with given state to all listeners.
+      * @see #fireActionPerformed(ActionEvent)
+      */
+    protected void fireActionPerformed(String state) {
+        ActionEvent e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, state);
+        fireActionPerformed(e);
+    }
+
+    /**
+      * Fire this action event to all listeners.
+      */
+    protected void fireActionPerformed(ActionEvent e) {
+        for (int i=0; i<actionListeners.size(); i++) {
+            ((ActionListener) actionListeners.get(i)).actionPerformed(e);
+        }
+    }
+
+    /**
+     * Called, when a button inside the option pane
+     * is pressed.
+     * @see #fireActionPerformed(String)
+     * @param e the event from the calling button
+     */
+    public void actionPerformed(ActionEvent e) {
+        hide();
+            
+        selected = e.getSource();
+
+        if ( selected==optionOK ) {
+            fireActionPerformed(OK_ACTION);
+        }
+        else if ( selected==optionYes ) {
+            fireActionPerformed(YES_ACTION);
+        }
+        else if ( selected==optionCancel ) {
+            fireActionPerformed(CANCEL_ACTION);
+        }
+        else if ( selected==optionNo ) {
+            fireActionPerformed(NO_ACTION);
+        }
+        else {
+            fireActionPerformed(UNKNOWN_ACTION);
+        }
+
+        removeAll();
+    }
+
+    /**
+      * Add the given actionlistener to this option pane.
+      * If component receives event from SOptionPane 
+      * {@link java.awt.event.ActionEvent.getModifiers()} returns 
+      * one of the following values:
+      * <li><tt>OK_ACTION</tt>: "OK"-Button was pressed</li>
+      * <li><tt>YES_ACTION</tt>: "YES"-Button was pressed</li>
+      * <li><tt>CANCEL_ACTION</tt>: "CANCEL"-Button was pressed</li>
+      * <li><tt>NO_ACTION</tt>: "NO"-Button was pressed</li>
+      * <li><tt>UNKNOWN_ACTION</tt>: unknown button was pressed</li>
+      */
+    public void addActionListener(ActionListener al) {
+        if (al != null)
+            actionListeners.add(al);
     }
 }
 

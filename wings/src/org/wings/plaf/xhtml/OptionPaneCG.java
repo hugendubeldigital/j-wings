@@ -38,35 +38,8 @@ public class OptionPaneCG
         SOptionPane optionPane = (SOptionPane)c;
 
         Utils.writeBorderPrefix(d, border);
-        writePrefix(d, optionPane);
         Utils.writeContainerContents(d, optionPane);
-        writePostfix(d, optionPane);
         Utils.writeBorderPostfix(d, border);
-    }
-
-    protected void writePrefix(Device d, SOptionPane optionPane)
-        throws IOException
-    {
-        String encodingType = optionPane.getEncodingType();
-
-        d.append("<form method=\"");
-        if (optionPane.getMethod())
-            d.append("post");
-        else
-            d.append("get");
-        d.append("\"");
-
-        if (encodingType != null)
-            d.append(" enctype=\"").append(encodingType).append("\"");
-
-        d.append(" action=\"").append(optionPane.getServerAddress()).
-            append("\">\n");
-    }
-
-    protected void writePostfix(Device d, SOptionPane optionPane)
-        throws IOException
-    {
-        d.append("</form>");
     }
 }
 

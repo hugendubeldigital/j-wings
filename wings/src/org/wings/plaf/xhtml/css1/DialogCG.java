@@ -69,17 +69,15 @@ public final class DialogCG
         CGUtil.writeSize(d, dialog);
         d.append("><tr>\n");
 
-        d.append("<td color=\"#ffffff\" bgcolor=\"#5555aa\" class=\"frametitle\">&nbsp;<b>")
-            .append(text)
-            .append("</b></td>");
+        d.append("<td class=\"frametitle\">").append(text).append("</td>");
         cols ++;
 
         if (closeAdr != null) {
             SFrame frame = dialog.getParentFrame();
             addr = frame.getServerAddress();
-            addr.add(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_CLOSED);
+            addr.add(dialog.getNamePrefix() + "=" + SWindowEvent.WINDOW_CLOSED);
 
-            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
+            d.append("<td align=\"right\" bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
                 .append(addr)
                 .append("\"><img src=\"")
                 .append(closeAdr)
@@ -92,32 +90,11 @@ public final class DialogCG
         d.append("<tr><td colspan=\"" + cols)
             .append("\" CLASS=\"frameborder\">\n");
 
-        writePrefix(d, dialog);
-        org.wings.plaf.xhtml.Utils.writeContainerContents(d, dialog);
+        org.wings.plaf.xhtml.Utils.writeContainerContents(d, dialog.getContentPane());
         d.append("</td></tr>\n</table>\n");
         d.append("</td></tr>\n</table>\n");
     }
 
-    protected void writePrefix(Device d, SDialog dialog)
-        throws IOException
-    {
-        String encodingType = dialog.getEncodingType();
-
-        d.append("<form method=\"");
-        if (dialog.getMethod())
-            d.append("post");
-        else
-            d.append("get");
-        d.append("\"");
-
-        Utils.writeStyleAttribute(d, dialog.getStyle());
-
-        if (encodingType != null)
-            d.append(" enctype=\"").append(encodingType).append("\"");
-
-        d.append(" action=\"").append(dialog.getServerAddress()).
-            append("\">\n");
-    }
 }
 
 /*

@@ -61,8 +61,9 @@ public final class Utils implements SConstants
           layout.write(d);
         }
         else {
-            for (int i=0; i < c.getComponentCount(); i++)
+            for (int i=0; i < c.getComponentCount(); i++) {
               c.getComponentAt(i).write(d);
+            }
         }
     }
 

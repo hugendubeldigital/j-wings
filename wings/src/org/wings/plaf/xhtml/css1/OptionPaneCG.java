@@ -16,12 +16,26 @@ package org.wings.plaf.xhtml.css1;
 
 import java.io.IOException;
 
+import org.wings.*;
 import org.wings.plaf.*;
 import org.wings.io.*;
 
 public final class OptionPaneCG
     extends org.wings.plaf.xhtml.OptionPaneCG
 {
+    /*
+    private DialogCG dialogcg = new DialogCG();
+    
+    public void installCG(SComponent component) {
+        dialogcg.installCG(component);
+    }
+    
+    public void write(Device d, SComponent c)
+        throws IOException
+    {
+        dialogcg.write(d,c);
+    }
+    */
 }
 
 /*

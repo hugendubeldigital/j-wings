@@ -18,41 +18,27 @@ import java.util.ArrayList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import javax.swing.event.EventListenerList;
+// import javax.swing.event.EventListenerList;
 
 import org.wings.*;
+import org.wings.event.*;
 import org.wings.plaf.*;
 
 /**
- * TODO: documentation
+ * Show an dialog.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @version $Revision$
  */
 public class SDialog
-    extends SForm
+    extends SWindow
+    implements SGetListener
 {
     /**
      * @see #getCGClassID
      */
     private static final String cgClassID = "DialogCG";
-
-    /**
-     * TODO: documentation
-     */
-    public static final String OK_ACTION = "OK";
-
-    /**
-     * TODO: documentation
-     */
-    public static final String CANCEL_ACTION = "CANCEL";
-
-    /**
-     * TODO: documentation
-     */
-    public static final String UNKNOWN_ACTION = "UNKNOWN";
-
-    protected String title;
 
     /*
      * Alle die es interessiert, wann der OptionPane fertig ist. Z.B. um
@@ -61,7 +47,7 @@ public class SDialog
     /**
      * TODO: documentation
      */
-    //protected EventListenerList listenerList = new EventListenerList();
+    // protected EventListenerList listenerList = new EventListenerList();
 
     /**
      * TODO: documentation
@@ -76,38 +62,32 @@ public class SDialog
     public SDialog(SLayoutManager layout) {
         super(layout);
     }
-    /**
-     * TODO: documentation
-     *
-     */
-    public SDialog() {}
 
     /**
      * TODO: documentation
      *
-     * @param t
      */
-    public void setTitle(String t) {
-        if ( t==null )
-            title = "";
-        else
-            title = t;
-    }
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getTitle() { return title; }
-
-    protected void fireActionPerformed(String state) {
-        setActionCommand(state);
-        //ActionEvent e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, state);
-        //fireActionPerformed(e);
-        fireActionPerformed();
-        listenerList = new EventListenerList();
+    public SDialog() {
+        super();
     }
 
+    /**
+      * Gets the contentPane object for this dialog.
+      * return a {@link org.wings.SContainer}.
+      */
+    public SContainer getContentPane() {
+        return this;
+    }
+
+    /**
+     * Add a component to this dialog.
+     * @deprecated use getContentPane().addComponent(c) instead.
+     */
+    public SComponent addComponent(SComponent c, Object constraint) {
+        return super.addComponent(c, constraint);
+        // throw new IllegalArgumentException("use getContentPane().addComponent()");
+    }
+    
     /**
      * TODO: documentation
      *
@@ -120,13 +100,18 @@ public class SDialog
      * Remove this dialog from its frame.
      */
     public void hide() {
-        System.err.println("hide");
         if (frame != null) {
+            processEvent(new SWindowEvent(this, SWindowEvent.WINDOW_CLOSING));
+
             if (frame instanceof SFrame)
-                ((SFrame)frame).popDialog();
+                ((SFrame)frame).popDialog(this);
             else
-                ((SInternalFrame)frame).popDialog();
+                ((SInternalFrame)frame).popDialog(this);
+
+            processEvent(new SWindowEvent(this, SWindowEvent.WINDOW_CLOSED));
         }
+        else
+            throw new IllegalStateException("SDialog.frame == null!");
     }
 
     /**
@@ -144,9 +129,9 @@ public class SDialog
     }
 
     /**
-     * shows the option pane
+     * Shows the dialog
      *
-     * @param c
+     * @param c the parent component for this dialog
      */
     public void show(SComponent c) {
         if (c instanceof SContainer)
@@ -165,9 +150,31 @@ public class SDialog
             ((SFrame)frame).pushDialog(this);
         else
             ((SInternalFrame)frame).pushDialog(this);
+            
+        processEvent(new SWindowEvent(this, SWindowEvent.WINDOW_OPENED));
     }
 
-    public void getPerformed(String name, String value) {}
+    private SWindowEvent event;
+    
+    public void getPerformed(String name, String value)
+    {
+        System.out.println("SDialog.getPerformed("+name+","+value+")");
+        int id = new Integer(value).intValue();
+        switch (id) {
+            case SWindowEvent.WINDOW_CLOSED:
+                this.hide();
+                break;
+        }
+        event = new SWindowEvent(this, id);
+    }
+
+    public void fireIntermediateEvents() {}
+
+    public void fireFinalEvents() {
+        processEvent(event);
+        event = null;
+    }
+
 
     /**
      * Returns the name of the CGFactory class that generates the
@@ -184,6 +191,7 @@ public class SDialog
     public void setCG(DialogCG cg) {
         super.setCG(cg);
     }
+
 }
 
 /*
