@@ -4,8 +4,8 @@
 # see Rules.make
 ##
 
-WINGS_DIR=wings-`cat RELEASE`
-WINGS_DEVEL_DIR=wings-devel-`cat RELEASE`
+WINGX_DIR=wingx-`cat RELEASE`
+WINGX_DEVEL_DIR=wingx-devel-`cat RELEASE`
 
 fun: 
 
@@ -15,7 +15,7 @@ fun:
 
 doc: dummy
 	rm -rf doc/api ; mkdir doc/api ; \
-	${JAVA_HOME}/bin/javadoc -d doc/api -windowtitle 'wingS API' `find . -name "*.java" -exec dirname {} \; | sort | uniq | sed 's/\.\/\(src\/\|demo\/\)\?//g' | sed 's/\//./g'`
+	${JAVA_HOME}/bin/javadoc -d doc/api -windowtitle 'wingS eXtensions API' `find . -name "*.java" -exec dirname {} \; | sort | uniq | sed 's/\.\/\(src\/\|demo\/\)\?//g' | sed 's/\//./g'`
 
 jar: dummy
 	rm wingx.jar ; cd src ; \
@@ -60,15 +60,15 @@ dist: fun doc jar demojar
 	make -C dist/src cvs-clean
 	cp -r demo/* ${DEVEL_HOME}/dist/demo
 	make -C dist/demo cvs-clean
-	ln -s dist ${WINGS_DIR}
-	ln -s dist ${WINGS_DEVEL_DIR}
-	tar -hcvf ${WINGS_DEVEL_DIR}.tar ${WINGS_DEVEL_DIR}
-	tar -hcvf ${WINGS_DIR}.tar ${WINGS_DIR}
-	tar --delete -v -f ${WINGS_DIR}.tar ${WINGS_DIR}/src
-	rm ${WINGS_DIR} ${WINGS_DEVEL_DIR}
-	gzip ${WINGS_DIR}.tar ${WINGS_DEVEL_DIR}.tar
+	ln -s dist ${WINGX_DIR}
+	ln -s dist ${WINGX_DEVEL_DIR}
+	tar -hcvf ${WINGX_DEVEL_DIR}.tar ${WINGX_DEVEL_DIR}
+	tar -hcvf ${WINGX_DIR}.tar ${WINGX_DIR}
+	tar --delete -v -f ${WINGX_DIR}.tar ${WINGX_DIR}/src
+	rm ${WINGX_DIR} ${WINGX_DEVEL_DIR}
+	gzip ${WINGX_DIR}.tar ${WINGX_DEVEL_DIR}.tar
 
 distclean:
 	rm -rf dist
-	rm ${WINGS_DIR}.tar.gz ${WINGS_DEVEL_DIR}.tar.gz
+	rm ${WINGX_DIR}.tar.gz ${WINGX_DEVEL_DIR}.tar.gz
 
