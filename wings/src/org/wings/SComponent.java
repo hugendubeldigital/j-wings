@@ -1034,8 +1034,7 @@ public abstract class SComponent
     }
 
     /**
-     * Notification from the CGFactory that the L&F
-     * has changed.
+     * Notification from the CGFactory that the L&F has changed.
      *
      * @see SComponent#updateCG
      */

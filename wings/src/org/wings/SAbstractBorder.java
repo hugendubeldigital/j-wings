@@ -76,6 +76,11 @@ public abstract class SAbstractBorder
         return cgClassID;
     }
 
+    /**
+     * Sets the look and feel delegate.
+     *
+     * @param newGC the new componet's cg
+     */
     protected void setCG(BorderCG newCG) {
         cg = newCG;
     }
@@ -89,86 +94,40 @@ public abstract class SAbstractBorder
         return cg;
     }
 
-    /**
-     * Notification from the CGFactory that the L&F
-     * has changed.
-     *
-     * @see SComponent#updateCG
-     */
     public void updateCG() {
         setCG((BorderCG)SessionManager.getSession().getCGManager().getCG(this));
     }
 
-    /**
-     * sets the Insets
-     *
-     * @param insets the Insets
-     * @see java.awt.Insets
-     */
     public void setInsets(Insets insets) {
         this.insets = insets;
     }
 
-    /**
-     * returns the Insets
-     *
-     * @return the insets
-     */
     public Insets getInsets() { return insets; }
 
-    /**
-     * TODO: documentation
-     *
-     * @param d
-     */
     public void writePrefix(Device d) throws IOException {
 	cg.writePrefix(d, this);
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param d
-     */
     public void writePostfix(Device d) throws IOException {
 	cg.writePostfix(d, this);
     }
 
-    /**
-     * Write border attributes for span element.
-     */
     public void writeSpanAttributes(Device d) throws IOException {
         cg.writeSpanAttributes( d, this );
     }
 
-    /**
-     * Get the color of the border.
-     */
     public java.awt.Color getColor() {
         return fColor;
     }
 
-    /**
-     * Get the color of this border.
-     */
     public void setColor(java.awt.Color color) {
         fColor = color;
     }
 
-    /**
-     * Get the thickness in pixel for this border.
-     * @return thickness
-     * @see #setThickness(int)
-     */
     public int getThickness() {
         return fThickness;
     }
 
-    /**
-     * Set the thickness in pixel for this border.
-     * @param thickness
-     * @see #getThickness()
-     */
     public void setThickness(int thickness) {
         fThickness = thickness;
     }

@@ -20,44 +20,88 @@ import java.io.IOException;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * This is the interface for Borders.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public interface SBorder {
+
     /**
      * Sets the insets of this border. Insets describe the amount
      * of space 'around' the bordered component.
+     *
+     * @param insets
      * @see #getInsets()
      */
     void setInsets(Insets insets);
 
     /**
+     * Returns the insets of this border.
+     *
      * @return Insets specification of the border.
      * @see #setInsets()
      */
     Insets getInsets();
-    
+
     /**
      * Get the color of the border.
+     *
+     * @return color
      */
     java.awt.Color getColor();
 
     /**
      * Get the color of this border.
+     *
+     * @param color the color
      */
-    void setColor( java.awt.Color color );
-    
+    void setColor(java.awt.Color color);
+
+    /**
+     * writes the border prefix
+     *
+     * @exception IOException
+     * @param d output device
+     */
     void writePrefix(Device d) throws IOException;
+
+    /**
+     * writes the border postfix to the given device
+     *
+     * @exception IOException
+     * @param d output device
+     */
     void writePostfix(Device d) throws IOException;
-    void writeSpanAttributes( Device d ) throws IOException;
-    
+
+    /**
+     * writes the border attributes for span element.
+     *
+     * @exception IOException
+     * @param d output device
+     */
+    void writeSpanAttributes(Device d) throws IOException;
+
+    /**
+     * Returns the name of the CGFactory class that generates the
+     * look and feel for this border.
+     *
+     * @return content of private static final cgClassID attribute
+     * @see SBorder#getCGClassID
+     * @see org.wings.plaf.CGDefaults#getCG
+     */
     String getCGClassID();
+
+    /**
+     * Notification from the CGFactory that the L&F has changed.
+     *
+     * @see SComponent#updateCG
+     */
     void updateCG();
 
     /**
      * Get the thickness in pixel for this border.
+     *
      * @return thickness
      * @see #setThickness(int)
      */
@@ -65,10 +109,11 @@ public interface SBorder {
 
     /**
      * Set the thickness in pixel for this border.
+     *
      * @param thickness
      * @see #getThickness()
      */
-    public void setThickness( int thickness );
+    public void setThickness(int thickness);
 }
 
 /*
