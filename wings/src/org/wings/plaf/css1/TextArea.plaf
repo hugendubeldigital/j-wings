@@ -1,13 +1,36 @@
 <template name="TextAreaCG" for="org.wings.STextArea">
 <write>
-<textarea cols="<%?columns%>" rows="<%?rows%>"<%
-  if (!component.isEditable()) { %> readonly="1"<% }
-  if (component.isEnabled())   { %> name="<%?namePrefix%>"<% }
-  Utils.printStyle(device, component.getStyle()); 
-  switch (component.getLineWrap()) {
-     case STextArea.VIRTUAL_WRAP : %> wrap="virtual"<%  break;
-     case STextArea.PHYSICAL_WRAP: %> wrap="physical"<% break;
-  }
-  %>><%?text%></textarea>
+<%
+    String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
+    final String attr = (component.getAttributes().size() > 0) ? ("_" + component.getUnifiedId()) : null;
+
+    if (style != null && attr != null) {
+        %><span class="<%=style%>"><%
+        %><textarea class="<%=attr%>"<%
+    }
+    else {
+	if (style == null)
+            style = attr;
+        %><textarea<%
+        %><%|class=style%><%
+    }
+
+    /* writeEvents() */
+    %><%|cols=component.getColumns()%><%
+    %><%|rows=component.getRows()%><%
+    if (!component.isEditable()) { %> readonly="1"<% }
+    if (component.isEnabled())   { %> name="<%?namePrefix%>"<% }
+
+    switch (component.getLineWrap()) {
+        case STextArea.VIRTUAL_WRAP : %> wrap="virtual"<%  break;
+        case STextArea.PHYSICAL_WRAP: %> wrap="physical"<% break;
+    }
+    %>><%?text%><%
+    %></textarea><%
+
+    if (style != null && attr != null) {
+        %></span><%
+    }
+%>
 </write>
 </template>
