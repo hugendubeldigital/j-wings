@@ -86,11 +86,10 @@
   <target name="jar" depends="wings.jar" />
 
   <target name="wings.jar" depends="compile">
-    <jar jarfile="${dist.lib}/wings.jar" basedir="${build.class}">
+    <jar jarfile="${dist.lib}/wings.jar">
       <fileset dir="${build.class}">
         <exclude name="org/wings/plaf/xhtml/**" />
         <exclude name="org/wings/plaf/css1/**" />
-        <exclude name="org/wings/plaf/compiler/**" />
       </fileset>
       <fileset dir="src">
         <include name="**/*.properties" />
@@ -99,6 +98,7 @@
         <include name="**/*.css" />
         <exclude name="**/.*" />
         <exclude name="**/.*/**" />
+        <exclude name="org/wings/plaf/xhtml/**" />
       </fileset>
     </jar>
   </target>
@@ -116,6 +116,9 @@
       </fileset>
       <fileset dir="src/org/wings/plaf/xhtml/css1">
         <include name="default.properties" />
+      </fileset>
+      <fileset dir="src">
+        <include name="org/wings/plaf/xhtml/css1/default.css" />
       </fileset>
     </jar>
   </target>
