@@ -234,7 +234,7 @@ public class SList
 
 
     /**
-     * @param style the style of selected cells
+     * @param selectionStyle the style of selected cells
      */
     public void setSelectionStyle(String selectionStyle) {
         if ( isDifferent(this.selectionStyle, selectionStyle) ) {
@@ -310,7 +310,7 @@ public class SList
 
     /**
      * Set the background color.
-     * @param c the new background color
+     * @param color the new background color
      */
     public void setSelectionBackground(Color color) {
         setSelectionAttribute("background-color", CSSStyleSheet.getAttribute(color));
@@ -326,7 +326,7 @@ public class SList
 
     /**
      * Set the foreground color.
-     * @param c the new foreground color
+     * @param color the new foreground color
      */
     public void setSelectionForeground(Color color) {
         setSelectionAttribute("color", CSSStyleSheet.getAttribute(color));
@@ -448,7 +448,7 @@ public class SList
     /**
      * creates the default selection model. It uses the swing
      * DefaultListSelectionModel, and wraps some methods to support 
-     * {@link SConstants.NO_SELECTION}
+     * {@link SConstants#NO_SELECTION}
      */
     protected SListSelectionModel createSelectionModel() {
         return new SDefaultListSelectionModel();
@@ -457,10 +457,10 @@ public class SList
 
     /**
      * Returns the current selection model. If selection mode is 
-     * {@link SConstants.NO_SELECTION} it return <em>null</em>
+     * {@link SConstants#NO_SELECTION} it return <em>null</em>
      *
      * @return the ListSelectionModel that implements list selections. 
-     * If selection mode is {@link SConstants.NO_SELECTION} it return
+     * If selection mode is {@link SConstants#NO_SELECTION} it return
      * <em>null</em> 
      * @see #setSelectionModel
      * @see ListSelectionModel
@@ -560,8 +560,6 @@ public class SList
      * Set the selectionModel for the list.
      * The selection model keeps track of which items are selected.
      *
-     * @return selectionModel  the ListSelectionModel that implements
-     *                         list selections
      * @see #getSelectionModel
      * @beaninfo
      *       bound: true
@@ -579,7 +577,7 @@ public class SList
 
         SListSelectionModel oldValue = this.selectionModel;
         this.selectionModel = selectionModel;
-        //firePropertyChange("selectionModel", oldValue, selectionModel);
+        firePropertyChange("selectionModel", oldValue, selectionModel);
     }
 
 
@@ -722,8 +720,8 @@ public class SList
 
 
     /**
-     * @param anchor The first index to remove from the selection
-     * @param lead The last index to remove from the selection
+     * @param index0 The first index to remove from the selection
+     * @param index1 The last index to remove from the selection
      * @see ListSelectionModel#removeSelectionInterval
      * @see #setSelectionInterval
      * @see #addSelectionInterval
@@ -814,6 +812,8 @@ public class SList
 
     /**
      * Return the values of the selected cells.
+     * Returns only the selected elements which are in the model.
+     * If the selection model indices a selection outside the the datamodel it is ignored 
      *
      * @return the selected values
      * @see #isSelectedIndex
@@ -834,7 +834,7 @@ public class SList
         Object[] rvTmp = new Object[1+ (iMax - iMin)];
         int n = 0;
         for(int i = iMin; i <= iMax; i++) {
-            if (sm.isSelectedIndex(i)) {
+            if (sm.isSelectedIndex(i) && i<dm.getSize() ) {
                 rvTmp[n++] = dm.getElementAt(i);
             }
         }
@@ -945,7 +945,7 @@ public class SList
     public void setType(String[] t) {
         if ( t == null ) {
             setType( (String) null );
-            setOrderType( (String) null );
+            setOrderType( null );
         }
         else if ( t.length == 2 ) {
             setType(t[0]);
@@ -1121,7 +1121,6 @@ public class SList
     /**
      * TODO: documentation
      *
-     * @return
      */
     public void removeCellRendererPane() {
         cellRendererPane.setParent(null);
