@@ -181,8 +181,13 @@ public class LabelCG
             if (align != null)
                 d.append(" valign=\"").append(align).append("\"");
             if (ic != null) {
-                d.append(" width=\"").append(ic.getIconWidth()).append("\"");
-                d.append(" height=\"").append(ic.getIconHeight()).append("\"");
+                int scale;
+                scale = ic.getIconWidth();
+                if (scale > 0)
+                    d.append(" width=\"").append(scale).append("\"");
+                scale = ic.getIconHeight();
+                if (scale > 0)
+                    d.append(" height=\"").append(scale).append("\"");
             }
             d.append(" border=\"0\"");
 

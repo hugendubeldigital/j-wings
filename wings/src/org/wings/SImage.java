@@ -209,6 +209,14 @@ public class SImage
     public void appendPrefix(Device s) {
         String imagePath = this.imagePath;
 
+        int outWidth  = (width  > 0 || image == null) 
+            ? width 
+            : image.getIconWidth();
+
+        int outHeight = (height > 0 || image == null) 
+            ? height 
+            : image.getIconHeight();
+
         if ( image!=null ) {
             try {
                 imagePath = getExternalizeManager().externalize(image);
@@ -218,27 +226,13 @@ public class SImage
         s.append("<img src=\""+imagePath+"\"");
         if ( text!=null && text.length()>0 )
             s.append(" alt=\"" + text + "\"");
+        
+        if ( outWidth > 0 )
+            s.append(" width=\"").append(outWidth).append("\"");
 
-		if ( width > 0 || image != null )
-         {
-        	s.append(" width=\"");
-        	if ( width>0 )
-            	s.append(width);
-        	else
-	            s.append(image.getIconWidth());
-        	s.append("\"");
-		 }
-
-        if ( height > 0 || image != null )
-         {
-        	s.append(" height=\"");
-        	if ( height>0 )
-            	s.append(height);
-        	else
-	            s.append(image.getIconHeight());
-        	s.append("\"");
-		 }
-
+        if ( outHeight > 0 )
+            s.append(" height=\"").append(outHeight).append("\"");
+        
         if ( alignment==SConstants.RIGHT_ALIGN )
             s.append(" align=\"right\"");
         else if ( alignment==SConstants.LEFT_ALIGN )
