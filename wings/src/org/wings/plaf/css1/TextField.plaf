@@ -1,6 +1,9 @@
 <!-- $Id$ -->
 
 <template name="TextFieldCG" for="org.wings.STextField">
+<import>org.wings.script.*</import>
+    private static final JavaScriptListener submitListener = new JavaScriptListener(JavaScriptEvent.ON_CHANGE, "submit()");
+
 <write>
 <%
     // writeEvents();
@@ -15,6 +18,11 @@
         %> id="<%?namePrefix%>"<%
     }
     %><%|tabindex=component.getFocusTraversalIndex()%><%
+    component.removeScriptListener(submitListener);
+        if (component.getActionListeners().length>0) {
+            component.addScriptListener(submitListener);
+        }
+
     Utils.writeEvents(device, component);
     %><%|value=component.getText()%>/></write>
 </template>
