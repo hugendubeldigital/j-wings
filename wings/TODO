@@ -58,5 +58,7 @@
   
   the gnerated button would be in this case
   <input type=button name="_121_3" onClick="_asdfoer98l()">
-  
+
 * write a tutorial
+
+* log / debug

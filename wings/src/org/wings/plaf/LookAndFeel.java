@@ -19,7 +19,8 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 import javax.servlet.ServletOutputStream;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
+import javax.swing.Icon;
 
 import org.wings.*;
 import org.wings.io.*;
@@ -29,10 +30,6 @@ import org.wings.style.*;
 public class LookAndFeel
 {
     private static Map wrappers = new HashMap();
-
-    protected Properties properties;
-    protected ClassLoader classLoader;
-
     static {
         wrappers.put(Boolean.TYPE, Boolean.class);
         wrappers.put(Character.TYPE, Character.class);
@@ -44,10 +41,16 @@ public class LookAndFeel
         wrappers.put(Double.TYPE, Double.class);
     }
 
+    protected Properties properties;
+    protected ClassLoader classLoader;
+    protected CGDefaults defaults;
+
 
     public LookAndFeel(Properties properties) {
 	this.properties = properties;
 	this.classLoader = getClass().getClassLoader();
+
+        defaults = new ResourceFactory();
     }
 
     public LookAndFeel(ClassLoader classLoader)
@@ -57,8 +60,10 @@ public class LookAndFeel
         this.properties = new Properties();
         InputStream in = classLoader.getResourceAsStream("default.properties");
         if (in == null)
-            throw new IOException ("'default.properties' not found in toplevel package in classpath. Look-and-Feel jar included ?");
+            throw new IOException ("'default.properties' not found in toplevel package in classpath.");
         this.properties.load(in);
+
+        defaults = new ResourceFactory();
     }
 
     /**
@@ -81,88 +86,63 @@ public class LookAndFeel
         return classLoader;
     }
 
-    /**
-     * This method is called once by CGManager.setLookAndFeel to create
-     * the look and feel specific defaults table.  Other applications,
-     * for example an application builder, may also call this method.
-     *
-     * @see #initialize
-     * @see #uninitialize
-     * @see CGManager#setLookAndFeel
-     */
     public CGDefaults getDefaults() {
-        CGDefaults table = new CGDefaults();
-        table.setLookAndFeel(this);
-	table.putAll(properties);
-        return table;
+        return defaults;
     }
 
-    /**
-     * Return an appropriate Device for code generation.
-     * Some lafs can deal with a stream, others rely on a buffered
-     * Device, because they produce code that must appear in the header.
-     *
-     * In fact, this feature was never used, yet. Should we de deprecate it?
-     *
-     * @return a Device that is suitable for this laf
-     */
-    public Device createDevice(javax.servlet.ServletOutputStream stream) {
+    public Object makeCG(String className) {
+        try {
+            Class cgClass = Class.forName(className, true, classLoader);
+            return cgClass.newInstance();
+        }
+        catch (ClassNotFoundException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace(System.err);
+        }
+        catch (InstantiationException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace(System.err);
+        }
+        catch (IllegalAccessException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace(System.err);
+        }
         return null;
     }
 
     /**
-     * CGManager.setLookAndFeel calls this method before the first
-     * call (and typically the only call) to getDefaults().
-     *
-     * @see #uninitialize
-     * @see CGManager#setLookAndFeel
-     */
-    public void initialize() {
-    }
-
-    /**
-     * CGManager.setLookAndFeel calls this method just before we're
-     * replaced by a new default look and feel.   Subclasses may
-     * choose to free up some resources here.
-     *
-     * @see #initialize
-     */
-    public void uninitialize() {
-    }
-
-    /**
-     * Utility method that creates an ImageIcon from a resource
+     * Utility method that creates an Icon from a resource
      * located realtive to the given base class.
      * @param baseClass the ClassLoader of the baseClass will be used
      * @param fileName of the image file
-     * @return a newly allocated ImageIcon
+     * @return a newly allocated Icon
      * @deprecated give the <code>classLoader</code> instead the <code>baseClass</code>
      */
-    public static ImageIcon makeIcon(Class baseClass, String fileName) {
+    public static Icon makeIcon(Class baseClass, String fileName) {
         return new ResourceImageIcon(baseClass, fileName);
     }
 
     /**
-     * Utility method that creates an ImageIcon from a resource
+     * Utility method that creates an Icon from a resource
      * located realtive to the given base class.
      * @param classLoader the ClassLoader that should load the icon
      * @param fileName of the image file
-     * @return a newly allocated ImageIcon
+     * @return a newly allocated Icon
      */
-    public static ImageIcon makeIcon(ClassLoader classLoader, String fileName) {
+    public static Icon makeIcon(ClassLoader classLoader, String fileName) {
         return new ResourceImageIcon(classLoader, fileName);
     }
 
     /**
-     * Utility method that creates an ImageIcon from a resource
+     * Utility method that creates an Icon from a resource
      * located realtive to the given base class. Uses the ClassLoader
      * of the LookAndFeel
      *
      * @see LookAndFeel.LookAndFeel(Properties p, ClassLoader cl)
      * @param fileName of the image file
-     * @return a newly allocated ImageIcon
+     * @return a newly allocated Icon
      */
-    public ImageIcon makeIcon(String fileName) {
+    public Icon makeIcon(String fileName) {
         return makeIcon(classLoader, fileName);
     }
 
@@ -269,6 +249,48 @@ public class LookAndFeel
      */
     public String toString() {
         return "[" + getDescription() + " - " + getClass().getName() + "]";
+    }
+
+    class ResourceFactory
+        extends CGDefaults
+    {
+        public ResourceFactory() { super(null); }
+
+        public Object get(String id, Class type) {
+            Object value = get(id);
+            if (value != null)
+                return value;
+
+            String property = properties.getProperty(id);
+            if (property == null)
+                return null;
+
+            if (ComponentCG.class.isAssignableFrom(type))
+                value = makeCG(property);
+            else if (LayoutCG.class.isAssignableFrom(type))
+                value = makeCG(property);
+            else if (BorderCG.class.isAssignableFrom(type))
+                value = makeCG(property);
+            else if (Icon.class.isAssignableFrom(type))
+                value = makeIcon(property);
+            else if (SFont.class.isAssignableFrom(type))
+                value = makeFont(property);
+            else if (Color.class.isAssignableFrom(type))
+                value = makeColor(property);
+            else if (Style.class.isAssignableFrom(type))
+                value = makeStyle(property);
+            else if (StyleSheet.class.isAssignableFrom(type))
+                value = makeStyleSheet(property);
+            else
+                value = makeObject(property, type);
+
+            put(id, value);
+            return value;
+        }
+
+        public Object put(Object key, Object value) {
+            return super.put(key, value);
+        }
     }
 }
 

@@ -287,7 +287,7 @@ public abstract class WingServlet extends HttpServlet
             sessionServlet.setParent(this);
             sessionServlet.setExternalizeManager(getExternalizeManager());
             sessionServlet.init(servletConfig);
-            session.putAttribute(lookupName, sessionServlet);
+            session.setAttribute(lookupName, sessionServlet);
 
             return sessionServlet;
         }

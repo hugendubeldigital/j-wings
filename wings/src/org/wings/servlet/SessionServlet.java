@@ -33,6 +33,7 @@ import org.wings.session.SessionManager;
 import org.wings.util.ASUtil;
 import org.wings.util.DebugUtil;
 import org.wings.util.TimeMeasure;
+import org.wings.plaf.LookAndFeelFactory;
 
 /**
  * TODO: documentation
@@ -114,7 +115,7 @@ public abstract class SessionServlet
     protected SessionServlet(Session session) {
         this.session = session;
         SessionManager.setSession(session);
-        LookAndFeelFactory.unregister(session);
+        LookAndFeelFactory.registerSession(session);
     }
 
     /**
@@ -677,7 +678,7 @@ public abstract class SessionServlet
     public void destroy() {
         debug("destroy called");
 
-        LookAndFeelFactory.unregister(session);
+        LookAndFeelFactory.unregisterSession(session);
 
         try {
             SFrame f = getFrame();
