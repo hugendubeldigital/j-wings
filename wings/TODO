@@ -53,3 +53,49 @@
 * remove _all_ places, where HTML is output in org.wings.* - Components
 
 * are sessions serializable ?
+
+* remove all references to old Containers if possible (Hashtable->HashMap)
+
+* should SIcon return a SGetAddress ?
+
+* externalization of Frames: after the generated *.html - file is downloaded, 
+  forget about the externalized object after some short period.
+
+* SWindow      -> use technique from frames.
+  SProgressBar -> simple implementation would have two states: 'working' and
+                  'done'. This could be implemented with some table that
+                   has one row/column, loaded with some animated background
+                   picture (some rolling spiral for example: {/////////}).
+                   This background picture is displayed immediately. The
+                   column contains one icon, whose download is postponed
+                   by the externalizer, until the progress-bar has 100%.
+                   Drawback: one open connection until the progress-bar is
+                   complete which means one occupied socket and thread..
+
+* website: make links to WingSet example and Explorer example (without
+  write-access). Visualize the links to the examples as iconized screenshots
+  .. this animates people to click (like the icons in freshmeat).
+  Provide download-links for the war-files so that people
+  can check it out immediately 'at home' without compiling first. When they're
+  interested they will come back to download the source for sure.
+
+* get rid of X-Windows dependence ? What causes this ? Use of awt.Image ?
+  Is there a simple way to calculate the image dimensions of ResourceImageIcons
+  without loading them in awt.Image ? Greying out images as well ?
+  (java 2D?)
+
+* Jump to current position in window. This as such is not very possible with
+  HTML but a near approximation would be to create an <a name="current">
+  at the component that last fired an event, and create URLs, that jump
+  to '#current'. Some effort has to be done, so that we can avoid this
+  part, as it increases the page size (two characters per HRef-Button
+  and action-URL '#c' .. this is _way_ to much). Is it possible to go 
+  to some <a name=..> with JavaScript ? If we enable it only when frames
+  are active, then we only need this '#current' sub-part of the URL once
+  in the loading frame - much easier (and, in fact, this is often needed for
+  this kind of application; consider two frames, one of it showing a tree,
+  that needs scrolling - if we unfold a subtree, then we need to scroll to
+  that position).
+
+* does it really make sense to derive the SessionServlet from HttpServlet ?
+  How much from a 'servlet' a wingS-Session context has ?
