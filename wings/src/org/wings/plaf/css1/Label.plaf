@@ -2,33 +2,111 @@
 
 /* Beispiele für Properties */
 <property type="SIcon" name="defaultIcon"></property>
-<property type="String" name="fallbackText"></property>
+<property type="String" name="fallbackText">Ein Fallback text</property>
+
+void writeIcon(Device device, SIcon icon) throws IOException {
+     if (icon != null) {
+        %><img<%
+        /*
+	 * write optional attributes ..
+	 */
+        %><%|src=icon.getURL()%><%
+        %><%|width=icon.getIconWidth()%><%
+        %><%|height=icon.getIconHeight()%><%
+        %>><%
+     }
+}
+
+void writeText(Device device, String text, boolean noBreak) 
+      throws IOException {
+   if (text != null) {
+      if (noBreak) { %><nobr><% }
+      %><%=text%><%
+      if (noBreak) { %></nobr><% }
+   } 
+}
 
 <write>
 <%
    String text = component.getText();
    SIcon  icon = component.getIcon();
-   
+   final int horizontalTextPosition = component.getHorizontalTextPosition();
+   final int verticalTextPosition   = component.getVerticalTextPosition();
+   final boolean noBreak = component.isNoBreak();
+
    if (icon == null) {
        icon = defaultIcon;
    }
    if (text == null) {
        text = fallbackText;
    }
-
-   if (icon != null) {
-      %><img src="<%=icon.getURL()%>"<%
-      if ( icon.getIconWidth() > 0) {
-         %> width="<%=icon.getIconWidth()%>"<%
-      }
-      if ( icon.getIconHeight() > 0) {
-         %> height="<%=icon.getIconWidth()%>"<%
-      }
-      %>><%
+   
+   if (icon == null) {
+      writeText(device, text, noBreak);
    }
-  
-   if (text != null) {
-       %><%?text%><%
+   else if (text == null) {
+      writeIcon(device, icon);
+   }
+   else {
+       %><table><%
+       // if we are on the top, create a top row
+       if (verticalTextPosition == TOP) {
+	       %><tr><td><% 
+	       if (horizontalTextPosition == LEFT) { 
+		  writeText(device, text, noBreak); 
+	       }
+	       %></td><td><%
+	       if (horizontalTextPosition == CENTER) { 
+	          writeText(device, text, noBreak); 
+	       }
+	       %></td><td><% 
+	       if (horizontalTextPosition == RIGHT) {
+		  writeText(device, text, noBreak); 
+	       }
+	       %></td></tr><%
+       }
+
+       // we always have a center row, since we have to write the icon
+       if (verticalTextPosition == CENTER) {
+	       %><tr><td><%
+	       if (horizontalTextPosition == LEFT) { 
+	           writeText(device, text, noBreak); 
+	       }
+	       %></td><td align="center"><%
+	       if (horizontalTextPosition == CENTER) { 
+	          writeText(device, text, noBreak); 
+                  %><br/><%
+	       }
+	       // the rendered icon in the center
+	       writeIcon(device, icon);
+	       %></td><td><% 
+	       if (horizontalTextPosition == RIGHT) { 
+	          writeText(device, text, noBreak); 
+	       }
+	       %></td></tr><%
+       } else {
+	       %><tr><td></td><td align="center"><%
+	       writeIcon(device, icon); 
+	       %></td><td></td></tr><%
+       }
+
+       // bottom row only, if text is there ..
+       if (verticalTextPosition == BOTTOM) {
+               %><tr><td><% 
+	       if (horizontalTextPosition == LEFT) {
+		     writeText(device, text, noBreak);
+	       }
+	       %></td><td><%
+	       if (horizontalTextPosition == CENTER) { 
+	          writeText(device, text, noBreak); 
+	       }
+	       %></td><td><% 
+	       if (horizontalTextPosition == RIGHT) {
+	            writeText(device, text, noBreak);
+	       }
+	       %></td></tr><%
+       } 
+       %></table><%
    }
 %></write>
 </template>
