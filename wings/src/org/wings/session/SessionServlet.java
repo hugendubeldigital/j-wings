@@ -84,14 +84,6 @@ final class SessionServlet
      */
     private Session session = null;
 
-    /**
-     * when the user exits the session with one of the exitSession() methods,
-     * this URL is set to the URL the browser should be redirected after
-     * the session. This is set in the exitSession(String) method and
-     * evaluated in doGet() after the event dispatching phase.
-     */
-    private String afterSessionURL = null;
-
     private boolean firstRequest = true;
 
     /**
@@ -523,11 +515,14 @@ final class SessionServlet
             // event, we got an URL to redirect after the session.
             /*
              * where is the right place?
-             * The right place is _after_ we processed the events 
-             * (e.g. the 'Pressed Exit-Button'-event or gave
-             * the user the chance to exit this session in the custom
-             * processRequest(), but _before_ the rendering of the page,
-             * because otherwise an redirect won't work.
+             * The right place is 
+             *    - _after_ we processed the events 
+             *        (e.g. the 'Pressed Exit-Button'-event or gave
+             *         the user the chance to exit this session in the custom
+             *         processRequest())
+             *    - but _before_ the rendering of the page,
+             *      because otherwise an redirect won't work, since we must
+             *      not have sent anything to the output stream).
              */
             if (session.getRedirectAddress() != null) {
                 req.getSession().invalidate(); // calls destroy implicitly
