@@ -63,7 +63,7 @@ public class LocaleCharSet
 	public String getCharSet(Locale aLocale)
 	{
 	    String cs = null;
-	    System.out.println("Getting charset for locale " + aLocale);
+	    //System.out.println("Getting charset for locale " + aLocale);
 	    
 	    cs = fCharSet.getProperty(
 	    	aLocale.getCountry()+"_"+aLocale.getLanguage());

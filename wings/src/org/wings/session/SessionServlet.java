@@ -451,11 +451,16 @@ final class SessionServlet
              * the encodeURL() here: we just leave the requestURL as it is
              * in the properties .. and this is url-encoded, since
              * we had set it up in the very beginning of this session 
-             * with URL-encoding on  (see WingServlet::newSession())   (hen)
+             * with URL-encoding on  (see WingServlet::newSession()).
+             *
+             * Vice versa: if the requestedSessionId is valid, then we can
+             * do the encoding (which then does URL-encoding or not, depending
+             * whether the servlet engine detected a cookie).
+             * (hen)
              */
             RequestURL requestURL = null;
             if (req.isRequestedSessionIdValid()) {
-                 requestURL = new RequestURL("", response.encodeURL(""));
+                 requestURL = new RequestURL("", getSessionEncoding(response));
                 // this will fire an event, if the encoding has changed ..
                 ((PropertyService)session).setProperty("request.url", 
                                                        requestURL);
@@ -697,6 +702,17 @@ final class SessionServlet
      */
     public void valueUnbound(HttpSessionBindingEvent event) {
         session.destroy();
+    }
+
+    /**
+     * get the Session Encoding, that is appended to each URL.
+     * Basically, this is response.encodeURL(""), but unfortuntatly, this
+     * empty encoding isn't supported by Tomcat 4.x anymore.
+     */
+    public static String getSessionEncoding(HttpServletResponse response) {
+        if (response == null) return "";
+        String enc = response.encodeURL("foo").substring(3);
+        return enc;
     }
 
     /**

@@ -29,7 +29,6 @@ import java.util.logging.*;
 import org.wings.RequestURL;
 import org.wings.util.StringUtil;
 import org.wings.io.Device;
-import org.wings.io.ServletDevice; // remove later.
 
 /**
  * 
@@ -156,7 +155,7 @@ public abstract class AbstractExternalizeManager
     public void setResponse(HttpServletResponse response) {
         this.response = response;
         if (response != null) {
-            sessionEncoding = response.encodeURL("");
+            sessionEncoding = response.encodeURL("foo").substring(3);
         }
     }
 

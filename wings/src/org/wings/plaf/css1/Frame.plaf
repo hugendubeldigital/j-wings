@@ -36,8 +36,8 @@
         String language = "en"; // TODO: ???
         String title = frame.getTitle();
         List headers = frame.headers();
-        String encoding = org.wings.util.LocaleCharSet.getInstance().getCharSet(
-        	frame.getSession().getLocale());
+        String encoding = org.wings.util.LocaleCharSet.getInstance()
+	                     .getCharSet(frame.getSession().getLocale());
 
         %><?xml version="1.0" encoding="<%=encoding%>"?><%
         %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd"><%

@@ -21,10 +21,10 @@ import java.util.StringTokenizer;
 
 
 /**
-  * Detect the browser from the user-agent string.
-  * @author <a href="mailto:andre@lison.de">Andre Lison</a>
-  * @version $Revision$
-  */
+ * Detect the browser from the user-agent string.
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
+ * @version $Revision$
+ */
 public class Browser
 {
     /**

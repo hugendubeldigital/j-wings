@@ -211,7 +211,11 @@ public final class WingServlet
 
             SessionServlet sessionServlet = new SessionServlet();
 
-            // the constructor of SessionServlet associates the Session with the thread
+            /*
+             * the constructor of SessionServlet associates the Session with 
+             * the thread: it sets it in the SessionManager. Thus we can access
+             * it here.
+             */
             SessionManager.getSession().setServletRequest(request);
             SessionManager.getSession().setServletResponse(response);
             
@@ -222,7 +226,9 @@ public final class WingServlet
              * Subsequent requests might decide, _not_ to encode the sessionid
              * in the URL (see SessionServlet::doGet())                   -hen
              */
-            RequestURL requestURL = new RequestURL("", response.encodeURL(""));
+            RequestURL requestURL = 
+                new RequestURL("",SessionServlet.getSessionEncoding(response));
+                               
             ((PropertyService)sessionServlet.getSession())
                 .setProperty("request.url", requestURL);
 
@@ -249,7 +255,7 @@ public final class WingServlet
         if ( session != null ) {
             sessionServlet = (SessionServlet)session.getAttribute(lookupName);
         } else {
-            logger.info("no http session, create new one");
+            logger.info("no http session");
         }
 
         /*
@@ -303,8 +309,6 @@ public final class WingServlet
     protected AbstractExternalizeManager getExternalizeManager(HttpServletRequest req) 
         throws ServletException 
     {
-        
-        AbstractExternalizeManager extManager = null;
         if ( isSystemExternalizeRequest(req) ) {
             return SystemExternalizeManager.getSharedInstance();
         }
