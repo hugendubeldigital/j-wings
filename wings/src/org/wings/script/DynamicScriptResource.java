@@ -19,6 +19,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import org.wings.SComponent;
+import org.wings.SContainer;
 import org.wings.SFrame;
 import org.wings.DynamicResource;
 import org.wings.io.Device;
@@ -63,14 +64,12 @@ public class DynamicScriptResource
             this.out = out;
         }
 
-        public void visit(SComponent component)
-            throws IOException
-        {
-            //System.err.println("StyleSheetWriter.visit(" + component.getClass() + ")");
+        private void writeListenersFrom(SComponent component) 
+            throws IOException {
             Collection listeners = component.getScriptListeners();
             if (listeners.size() == 0)
                 return;
-
+            
             Iterator iterator = listeners.iterator();
             while (iterator.hasNext()) {
                 ScriptListener listener = (ScriptListener)iterator.next();
@@ -83,6 +82,15 @@ public class DynamicScriptResource
                     out.print(listener.getScript());
                 }
             }
+        }
+
+        public void visit(SComponent component) throws IOException {
+            writeListenersFrom(component);
+        }
+
+        public void visit(SContainer container) throws Exception {
+            writeListenersFrom(container);
+            container.inviteEachComponent(this);
         }
     }
 }

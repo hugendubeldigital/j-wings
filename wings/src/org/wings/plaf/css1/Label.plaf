@@ -3,44 +3,46 @@
 
 <property type="SIcon" name="clickableFallbackIcon">org/wings/icons/Pencil.gif</property>
 
-void writeIcon(Device device, SIcon icon, RequestURL eventURL) 
+void writeIcon(Device device, SIcon icon, AnchorProperties anchor) 
      throws IOException {
      if (icon != null) {
-        if (eventURL != null) {
-           %><a href="<%=eventURL%>"><%
-        }     
+        if (anchor != null) { 
+	    %><a href="<%=anchor.getURL()%>"<%|target=anchor.getTarget()%>><% 
+        }
 
         %><img<%
         /*
 	 * write optional attributes ..
 	 */
-        if (eventURL != null) { %> border='0'<% }
+        if (anchor != null) { %> border="0"<% }
         %><%|src=icon.getURL()%><%
         %><%|width=icon.getIconWidth()%><%
         %><%|height=icon.getIconHeight()%><%
         %>><%
 
-        if (eventURL != null) {
+        if (anchor != null) {
 	    %></a><%
         }     
      }
 }
 
-void writeText(Device device, SLabel label) throws IOException {
+void writeText(Device device, SLabel label, AnchorProperties anchor)
+    throws IOException {
     final String text = label.getText();
     if (text != null) {
-        final RequestURL eventURL = label.getEventURL();
-        final boolean noBreak = label.isNoBreak();
+       final boolean noBreak = label.isNoBreak();
 
         if (noBreak) { %><nobr><% }
-        if (eventURL!=null) { %><a href="<%=eventURL%>"><% }
+        if (anchor != null) { 
+	    %><a href="<%=anchor.getURL()%>"<%|target=anchor.getTarget()%>><% 
+        }
 	if (label.isEscapeSpecialChars()) {
             %><%=text%><%
         }
 	else {
 	    %><%#text%><% // write raw.
         }
-        if (eventURL!=null) { %></a><% }
+        if (anchor != null) { %></a><% }
         if (noBreak) { %></nobr><% }
    }
 }
@@ -54,15 +56,14 @@ void writeText(Device device, SLabel label) throws IOException {
    final boolean noBreak = component.isNoBreak();
    final String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
    final String attr = (component.getAttributes().size() > 0) ? ("_" + component.getUnifiedId()) : null;
-
-   final RequestURL eventURL = component.getEventURL();
+   final AnchorProperties anchor = AnchorRenderStack.get();
 
    /*
     * fallback icon in case we are clickable, but there is nothing
     * to click to (no icon nor text).
     */
     if (icon == null) {
-	if (eventURL != null && (text == null || text.length() == 0)) {
+	if (anchor != null && (text == null || text.length() == 0)) {
 	    // no text either.
 	    icon = clickableFallbackIcon;
 	}
@@ -78,7 +79,7 @@ void writeText(Device device, SLabel label) throws IOException {
           %><span class="<%=attr%>"><%
           spans++;
       }
-      writeText(device, component);
+      writeText(device, component, anchor);
       if (spans == 1) { %></span><% }
       if (spans == 2) { %></span></span><% }
    }
@@ -92,7 +93,7 @@ void writeText(Device device, SLabel label) throws IOException {
           %><span class="<%=attr%>"><%
           spans++;
       }
-      writeIcon(device, icon, eventURL);
+      writeIcon(device, icon, anchor);
       if (spans == 1) { %></span><% }
       if (spans == 2) { %></span></span><% }
    }
@@ -106,19 +107,19 @@ void writeText(Device device, SLabel label) throws IOException {
                %><%|class=attr%><%
                %>><% 
 	       if (horizontalTextPosition == LEFT) { 
-                  writeText(device, component);
+                  writeText(device, component, anchor);
 	       }
 	       %></td><td<%
                %><%|class=attr%><%
                %>><%
 	       if (horizontalTextPosition == CENTER) { 
-                  writeText(device, component);
+                  writeText(device, component, anchor);
 	       }
 	       %></td><td<%
                %><%|class=attr%><%
                %>><% 
 	       if (horizontalTextPosition == RIGHT) {
-                  writeText(device, component);
+                  writeText(device, component, anchor);
 	       }
 	       %></td></tr><%
        }
@@ -129,29 +130,29 @@ void writeText(Device device, SLabel label) throws IOException {
                %><%|class=attr%><%
                %>><%
 	       if (horizontalTextPosition == LEFT) {
-                  writeText(device, component);
+                  writeText(device, component, anchor);
 	       }
 	       %></td><td align="center"<%
                %><%|class=attr%><%
                %>><%
 	       if (horizontalTextPosition == CENTER) { 
-                  writeText(device, component);
+                  writeText(device, component, anchor);
                   %><br/><%
 	       }
 	       // the rendered icon in the center
-	       writeIcon(device, icon, eventURL);
+	       writeIcon(device, icon, anchor);
 	       %></td><td<%
                %><%|class=attr%><%
                %>><% 
 	       if (horizontalTextPosition == RIGHT) { 
-                  writeText(device, component);
+                  writeText(device, component, anchor);
 	       }
 	       %></td></tr><%
        } else {
 	       %><tr><td></td><td align="center"<%
                %><%|class=attr%><%
                %>><%
-	       writeIcon(device, icon, eventURL); 
+	       writeIcon(device, icon, anchor); 
 	       %></td><td></td></tr><%
        }
 
@@ -161,19 +162,19 @@ void writeText(Device device, SLabel label) throws IOException {
                %><%|class=attr%><%
                %>><% 
 	       if (horizontalTextPosition == LEFT) {
-                  writeText(device, component);
+                  writeText(device, component, anchor);
 	       }
 	       %></td><td<%
                %><%|class=attr%><%
                %>><%
 	       if (horizontalTextPosition == CENTER) { 
-                  writeText(device, component);
+                  writeText(device, component, anchor);
 	       }
 	       %></td><td<%
                %><%|class=attr%><%
                %>><% 
 	       if (horizontalTextPosition == RIGHT) {
-                  writeText(device, component);
+                  writeText(device, component, anchor);
 	       }
 	       %></td></tr><%
        } 

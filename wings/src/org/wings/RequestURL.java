@@ -24,8 +24,7 @@ import org.wings.io.Device;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class RequestURL
-    implements Cloneable, Serializable, Renderable
+public class RequestURL extends SimpleURL implements Cloneable
 {
     private static final byte[] _delimiter = "_".getBytes();
     private static final byte[] _ampStr    = "&amp;".getBytes();
@@ -140,9 +139,7 @@ public class RequestURL
      * @param d the Device to write to 
      */
     public void write(Device d) throws IOException {
-        if ( baseURL!=null ) {
-            d.print(baseURL);
-        }
+        super.write(d);
 
         if (resource != null && epoch != null) {
             d.print(epoch);

@@ -19,10 +19,12 @@ import java.io.IOException;
 import java.util.*;
 import javax.swing.ListSelectionModel;
 
-import org.wings.*; import org.wings.border.*;
+import org.wings.*;
+import org.wings.border.*;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.*;
 import org.wings.util.CGUtil;
+import org.wings.util.AnchorRenderStack;
 import org.wings.plaf.*;
 import org.wings.plaf.xhtml.*;
 import org.wings.style.*;
@@ -205,7 +207,7 @@ public final class TableCG
                                   table.getEditParameter(row, col));
 
             if ( comp instanceof ClickableRenderComponent ) {
-                ((ClickableRenderComponent)comp).pushEventURL(editAddr, null);
+                AnchorRenderStack.push(editAddr, null);
                 pushedURL = true;
             } 
             else {
@@ -219,7 +221,7 @@ public final class TableCG
         rendererPane.writeComponent(d, comp, table);
 
         if (pushedURL) {
-            ((ClickableRenderComponent)comp).popEventURL();
+            AnchorRenderStack.pop();
         }
         
         d.print("</td>");
@@ -254,8 +256,7 @@ public final class TableCG
                                          table.getSelectionToggleParameter(row,col));
 
         if ( comp instanceof ClickableRenderComponent ) {
-            ((ClickableRenderComponent)comp).pushEventURL(toggleSelectionAddr, 
-                                                          null);
+            AnchorRenderStack.push(toggleSelectionAddr, null);
         } else {
             d.print("<a href=\"").
                 print(toggleSelectionAddr.toString()).print("\">");
@@ -264,7 +265,7 @@ public final class TableCG
         rendererPane.writeComponent(d, comp, table);
 
         if ( comp instanceof ClickableRenderComponent ) {
-            ((ClickableRenderComponent)comp).popEventURL();
+            AnchorRenderStack.pop();
         } else {
             d.print("</a>");
         }

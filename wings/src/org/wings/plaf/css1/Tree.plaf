@@ -181,10 +181,11 @@
             selectionAddr.addParameter(component.getSelectionParameter(node));
             
             if ( cellComp instanceof ClickableRenderComponent ) {
-                ((ClickableRenderComponent)cellComp).pushEventURL(selectionAddr, null);
+                AnchorRenderStack.push(selectionAddr, null);
                 rendererPane.writeComponent(device, cellComp, component);
-                ((ClickableRenderComponent)cellComp).popEventURL();
-            } else {
+                AnchorRenderStack.pop();
+            } 
+            else {
 	        /*
 		 * if it is not a ClickableRenderComponent, then surround it with
 		 * <a href=".."></a> and hope for the best...

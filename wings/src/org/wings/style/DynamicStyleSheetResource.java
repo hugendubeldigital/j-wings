@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.lang.reflect.*;
 
 import org.wings.SComponent;
+import org.wings.SContainer;
 import org.wings.SFrame;
 import org.wings.DynamicResource;
 import org.wings.io.Device;
@@ -60,10 +61,9 @@ public class DynamicStyleSheetResource
         public StyleSheetWriter(Device out) {
             this.out = out;
         }
-
-        public void visit(SComponent component)
-            throws IOException
-        {
+        
+        private void writeAttributesFrom(SComponent component) 
+            throws IOException {
             AttributeSet attributes = component.getAttributes();
             if (attributes.size() == 0)
                 return;
@@ -71,6 +71,15 @@ public class DynamicStyleSheetResource
             out.print(" {");
             attributes.write(out);
             out.print("}\n");
+        }
+        
+        public void visit(SComponent component) throws IOException {
+            writeAttributesFrom(component);
+        }
+
+        public void visit(SContainer container) throws Exception {
+            writeAttributesFrom(container);
+            container.inviteEachComponent(this);
         }
     }
 }

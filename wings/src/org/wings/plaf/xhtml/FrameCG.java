@@ -44,9 +44,18 @@ public class FrameCG
     public void write(Device d, SComponent c)
         throws IOException
     {
-        SFrame frame = (SFrame)c;
-        writeHeader(d, frame);
-        writeBody(d, frame);
+        SFrame frame = (SFrame)c; 
+        try {
+            writeHeader(d, frame);
+            writeBody(d, frame);
+        }
+        finally {
+            /*
+             * cleanup, in case someone didn't do this
+             * correctly.
+             */
+            ClickableRenderUtil.reset();
+        }
     }
 
     protected void writeHeader(Device d, SFrame frame)

@@ -17,18 +17,20 @@ package org.wings;
 import org.wings.RequestURL;
 
 /**
- * A component implementing this interface is able to produce events on 
- * user mouse click. E.g. the TreeCG implementation renders nodes with each 
+ * Tagging interface - a component implementing this interface states, that
+ * it is able to produce events on user mouse click.
+ *
+ * <p>E.g. the TreeCG implementation renders nodes with each 
  * node being a SLable with icon and text. Or the TableCG needs to receive
  * events on clicked cells to switch to the edit cell renderer.
  * 
  * <p>What is simple in graphical user interfaces -- they just receive a click
  * and know the component below where it occured -- is not that easy
  * in HTML rendering. In order to receive events here, we've to write
- * some anchor around it. This is what this ClickableRenderComponent is all
- * about: it gets an URL and the plaf for that component makes sure, that
- * there is an anchor rendered around the important parts so that the 
- * application gets the event.
+ * some anchor around it.
+ * This is what this ClickableRenderComponent is all
+ * about: it states, that it can render an anchor around its elements it
+ * renders, so that the application gets the event.
  * 
  * <p>Why is this needed, and we cannot just write an anchor tag around
  * the component being rendered? Consider the layout for the SLabel
@@ -45,15 +47,15 @@ import org.wings.RequestURL;
  * or SAnchors, you need to implement this interface. And if you are lazy, then
  * you just use the SLabel which already does this ;-)
  *
- * <p>The use of this interface is as follows: if a plaf wants to render
- * anchors and finds out, that the component is <code>instanceof</code>
- * ClickableRenderComponent, it sets the URL, calls 
- * {@link SComponent#write(Device)} and resets the URL again. The plaf of
- * that component then has to take care of the URL.
- * <p>Since multiple threads can render content in parallel, you must
- * make sure, that the internal variable is thread save - use a ThreadLocal
- * variable, or the utility class {@link ClickableRenderUtil}; it is used
- * by the SLabel as well.
+ * <p>This interface is only a tagging interface, the actual work is done
+ * in the plaf of this component.
+ * The use of this interface is as follows: if a plaf needs to be informed by
+ * an event from some sub-component and that component is 
+ * <code>instanceof</code> ClickableRenderComponent, it pushes the URL on
+ * some global stack and lets the sub-component render itself (
+ * {@link SComponent#write(Device)}). Then the URL is popped. 
+ * So the plaf of the ClickableRender-Component has to take care, that the URL
+ * is rendered.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
@@ -61,17 +63,6 @@ import org.wings.RequestURL;
  */
 public interface ClickableRenderComponent
 {   
-    /**
-     * The URL that is used to generate the event. This method is called
-     * by the plaf that wants this ClickableRenderComponent to sourround
-     * its contents by an anchor (or more, if necessary).
-     */
-    void pushEventURL(RequestURL url, String target);
-    
-    /**
-     * pop the latest URL.
-     */
-    void popEventURL();
 }
 
 /*

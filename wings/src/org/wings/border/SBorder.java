@@ -26,8 +26,7 @@ import org.wings.io.Device;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public interface SBorder
-    extends Serializable
+public interface SBorder extends Serializable
 {
 
     /**

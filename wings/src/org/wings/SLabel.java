@@ -336,24 +336,6 @@ public class SLabel
     public void setCG(LabelCG cg) {
         super.setCG(cg);
     }
-
-    //--- implementation of the ClickableRenderComponent.
-
-    public void pushEventURL(RequestURL url, String target) {
-        ClickableRenderUtil.pushEventURL(url, target);
-    }
-
-    public void popEventURL() {
-        ClickableRenderUtil.popEventURL();
-    }
-
-    public RequestURL getEventURL() {
-        return ClickableRenderUtil.getEventURL();
-    }
-
-    public String getEventTarget() {
-        return ClickableRenderUtil.getEventTarget();
-    }
 }
 
 /*

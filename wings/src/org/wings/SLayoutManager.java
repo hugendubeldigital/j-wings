@@ -25,8 +25,7 @@ import org.wings.io.Device;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public interface SLayoutManager
-    extends Serializable
+public interface SLayoutManager extends Serializable, Renderable
 {
     /**
      * Adds a component to the layout manager

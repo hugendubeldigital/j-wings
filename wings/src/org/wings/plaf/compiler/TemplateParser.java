@@ -186,6 +186,7 @@ public class TemplateParser {
         out.println ("import org.wings.*;");
         out.println ("import org.wings.border.*;");
         out.println ("import org.wings.style.*;");
+        out.println ("import org.wings.util.*;");
         out.println ("import org.wings.io.Device;");
 
         if (cgProperties.size() > 0 || compProperties.size() > 0 ) {

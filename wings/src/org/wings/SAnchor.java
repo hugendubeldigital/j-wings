@@ -36,7 +36,7 @@ public class SAnchor extends SContainer
     /**
      * the URL to link to.
      */
-    protected String reference;
+    protected SimpleURL url;
 
     /**
      * the target frame/window.
@@ -47,7 +47,7 @@ public class SAnchor extends SContainer
      * creates an anchor with emtpy URL and target.
      */
     public SAnchor() {
-        this(null, null);
+        this((SimpleURL) null, null);
     }
 
     /**
@@ -63,11 +63,23 @@ public class SAnchor extends SContainer
      * creates an anchor that points to the URL and is openend
      * in the frame or window named target.
      *
-     * @param reference the url to link to.
+     * @param url the url to link to.
      * @param target the target window or frame.
      */
-    public SAnchor(String reference, String target) {
-        setReference(reference);
+    public SAnchor(String url, String target) {
+        setURL(url);
+        setTarget(target);
+    }
+
+    /**
+     * creates an anchor that points to the URL and is openend
+     * in the frame or window named target.
+     *
+     * @param url the url to link to.
+     * @param target the target window or frame.
+     */
+    public SAnchor(SimpleURL url, String target) {
+        setURL(url);
         setTarget(target);
     }
 
@@ -76,23 +88,46 @@ public class SAnchor extends SContainer
      *
      * @param ref the url.
      */
-    public void setReference(URL ref) {
+    public void setURL(URL ref) {
         if (ref != null) {
-            setReference(ref.toString());
+            setURL(ref.toString());
+        }
+        else {
+            setURL((SimpleURL) null);
         }
     }
 
     /**
      * set the url this anchor points to.
      *
+     * @param ref the url.
+     */
+    public void setURL(SimpleURL r) {
+        SimpleURL oldURL = url;
+        url = r;
+        if (url == null && oldURL != null
+            || (url != null && !url.equals(oldURL))) {
+            reload(ReloadManager.RELOAD_CODE);
+        }
+    }
+
+    /**
+     * set the url this anchor points to.
+     *
+     * @param ref the url.
+     */
+    public void setURL(String url) {
+        setURL(new SimpleURL(url));
+    }
+
+    /**
+     * set the url this anchor points to.
+     *
+     * @deprecated use setURL() instead.
      * @param r
      */
     public void setReference(String r) {
-        String oldReference = reference;
-        reference = r;
-        if (reference == null && oldReference != null ||
-            reference != null && !reference.equals(oldReference))
-            reload(ReloadManager.RELOAD_CODE);
+        setURL(r);
     }
 
     /**
@@ -111,11 +146,15 @@ public class SAnchor extends SContainer
 
     /**
      * TODO: documentation
-     *
+     * @deprecated use getURL() instead.
      * @return
      */
     public String getReference() {
-        return reference;
+        return url.toString();
+    }
+
+    public SimpleURL getURL() {
+        return url;
     }
 
     public String getCGClassID() {

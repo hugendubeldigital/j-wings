@@ -1,16 +1,37 @@
 <template name="AnchorCG" for="org.wings.SAnchor">
 
-<write>
-<a<%
-   final String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
+void writeStartAnchor(Device device, SAnchor anchor, String style) 
+   throws IOException {
+   %><a<%
    if (style != null) {
        %><span class="<%=style%>"><%
    }
-   %><%|name=component.getName()%><%
-   %><%|target=component.getTarget()%><%
-   %><%|href=component.getReference()%><%
-%>><%
-   Utils.renderContainer(device, component);
-%></a>
+   %><%|name=anchor.getName()%><%
+   %><%|target=anchor.getTarget()%><%
+   %><%|href=anchor.getReference()%><%
+   %>><%
+}
+
+void writeEndAnchor(Device device, Style style)
+   throws IOException {
+   if (style != null) {
+       %></span><%
+   }
+   %></a><%
+}
+
+<write>
+<%
+   final String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
+//writeStartAnchor(device, component, style);
+   try {
+      AnchorRenderStack.push(component.getURL(), component.getTarget());
+      Utils.renderContainer(device, component);
+   }
+   finally {
+      AnchorRenderStack.pop();
+   }
+// writeEndAnchor(device, style);
+%>
 </write>
 </template>
