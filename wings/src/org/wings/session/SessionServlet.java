@@ -15,30 +15,7 @@
 package org.wings.session;
 
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionBindingListener;
-
-import org.wings.DynamicCodeResource;
-import org.wings.RequestURL;
-import org.wings.Resource;
-import org.wings.SForm;
-import org.wings.SFrame;
-import org.wings.SLabel;
-import org.wings.STemplateLayout;
+import org.wings.*;
 import org.wings.event.ExitVetoException;
 import org.wings.event.SRequestEvent;
 import org.wings.externalizer.ExternalizeManager;
@@ -47,29 +24,38 @@ import org.wings.io.Device;
 import org.wings.io.DeviceFactory;
 import org.wings.io.ServletDevice;
 import org.wings.util.DebugUtil;
-import org.wings.util.LocaleCharSet;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * The servlet engine creates for each user a new HttpSession. This 
- * HttpSession can be accessed by all Serlvets running in the engine. A 
- * WingServlet creates one wings SessionServlet per HTTPSession and stores 
+ * The servlet engine creates for each user a new HttpSession. This
+ * HttpSession can be accessed by all Serlvets running in the engine. A
+ * WingServlet creates one wings SessionServlet per HTTPSession and stores
  * it in its context.
- * As the SessionServlets acts as Wrapper for the WingsServlet, you can 
- * access from there as used the  ServletContext and the HttpSession. 
- * Additionally the SessionServlet containts also the wingS-Session with 
- * all important services and the superordinated SFrame. To this SFrame all 
- * wings-Components and hence the complete application state is attached. 
+ * As the SessionServlets acts as Wrapper for the WingsServlet, you can
+ * access from there as used the  ServletContext and the HttpSession.
+ * Additionally the SessionServlet containts also the wingS-Session with
+ * all important services and the superordinated SFrame. To this SFrame all
+ * wings-Components and hence the complete application state is attached.
  * The developer can access from any place via the SessionManager a
- * reference to the wingS-Session. Additionally the SessionServlet 
+ * reference to the wingS-Session. Additionally the SessionServlet
  * provides access to the all containing HttpSession.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 final class SessionServlet
-    extends HttpServlet
-    implements HttpSessionBindingListener
-{
+        extends HttpServlet
+        implements HttpSessionBindingListener {
     private static Logger logger = Logger.getLogger("org.wings.session");
 
     /**
@@ -96,11 +82,11 @@ final class SessionServlet
     }
 
     /**
-     * Sets the parent servlet contianint this wings session 
+     * Sets the parent servlet contianint this wings session
      * servlet (WingsServlet, delegating its requests to the SessionServlet).
      */
     protected final void setParent(HttpServlet p) {
-        if (p!=null) parent = p;
+        if (p != null) parent = p;
     }
 
     public final Session getSession() {
@@ -108,15 +94,15 @@ final class SessionServlet
     }
 
     /**
-     * Overrides the session set for setLocaleFromHeader by a request 
+     * Overrides the session set for setLocaleFromHeader by a request
      * parameter.
-     * Hence you can force the wings session to adopt the clients Locale. 
+     * Hence you can force the wings session to adopt the clients Locale.
      */
     public final void setLocaleFromHeader(String[] args) {
-        if (args==null)
+        if (args == null)
             return;
 
-        for (int i=0; i<args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             try {
                 getSession().setLocaleFromHeader(Boolean.valueOf(args[i]).booleanValue());
             } catch (Exception e) {
@@ -126,9 +112,9 @@ final class SessionServlet
     }
 
     /**
-     * The Locale of the current wings session servlet is determined by 
-     * the locale transmitted by the browser. The request parameter 
-     * <PRE>LocaleFromHeader</PRE> can override the behaviour 
+     * The Locale of the current wings session servlet is determined by
+     * the locale transmitted by the browser. The request parameter
+     * <PRE>LocaleFromHeader</PRE> can override the behaviour
      * of a wings session servlet to adopt the clients browsers Locale.
      *
      * @param req The request to determine the local from.
@@ -137,12 +123,12 @@ final class SessionServlet
         setLocaleFromHeader(req.getParameterValues("LocaleFromHeader"));
 
         if (getSession().getLocaleFromHeader()) {
-            for ( Enumeration en=req.getLocales(); en.hasMoreElements(); ) {
-                Locale locale = (Locale)en.nextElement();
+            for (Enumeration en = req.getLocales(); en.hasMoreElements();) {
+                Locale locale = (Locale) en.nextElement();
                 try {
                     getSession().setLocale(locale);
                     return;
-                } catch ( Exception ex ) {
+                } catch (Exception ex) {
                     logger.warning("locale not supported " + locale);
                 } // end of try-catch
             } // end of for ()
@@ -158,7 +144,7 @@ final class SessionServlet
      * @return
      */
     public ServletContext getServletContext() {
-        if (parent!=this)
+        if (parent != this)
             return parent.getServletContext();
         else
             return super.getServletContext();
@@ -171,7 +157,7 @@ final class SessionServlet
      * @return
      */
     public String getInitParameter(String name) {
-        if (parent!=this)
+        if (parent != this)
             return parent.getInitParameter(name);
         else
             return super.getInitParameter(name);
@@ -183,20 +169,20 @@ final class SessionServlet
      * @return
      */
     public Enumeration getInitParameterNames() {
-        if (parent!=this)
+        if (parent != this)
             return parent.getInitParameterNames();
         else
             return super.getInitParameterNames();
     }
 
     /**
-     * Delegates log messages to the according WingsServlet or alternativley 
+     * Delegates log messages to the according WingsServlet or alternativley
      * to the HttpServlet logger.
      *
      * @param msg The logmessage
      */
     public void log(String msg) {
-        if (parent!=this)
+        if (parent != this)
             parent.log(msg);
         else
             super.log(msg);
@@ -208,7 +194,7 @@ final class SessionServlet
      * @return
      */
     public String getServletInfo() {
-        if (parent!=this)
+        if (parent != this)
             return parent.getServletInfo();
         else
             return super.getServletInfo();
@@ -220,7 +206,7 @@ final class SessionServlet
      * @return
      */
     public ServletConfig getServletConfig() {
-        if (parent!=this)
+        if (parent != this)
             return parent.getServletConfig();
         else
             return super.getServletConfig();
@@ -229,8 +215,8 @@ final class SessionServlet
     // bis hierhin
 
     /**
-     * The error template which should be presented on any uncaught Exceptions can be set 
-     * via a property <code>wings.error.template</code> in the web.xml file. 
+     * The error template which should be presented on any uncaught Exceptions can be set
+     * via a property <code>wings.error.template</code> in the web.xml file.
      *
      * @param config
      * @throws ServletException
@@ -245,12 +231,20 @@ final class SessionServlet
      * init
      */
     public final void init(ServletConfig config,
-                           HttpServletRequest request) throws ServletException {
+                           HttpServletRequest request,
+                           HttpServletResponse response) throws ServletException {
         try {
             initErrorTemplate(config);
 
             session = new Session();
             SessionManager.setSession(session);
+
+            // set request.url in session, if used in constructor of wings main classs
+            if (request.isRequestedSessionIdValid()) {
+                // this will fire an event, if the encoding has changed ..
+                ((PropertyService) session).setProperty("request.url",
+                                                        new RequestURL("", getSessionEncoding(response)));
+            }
 
             session.init(config, request);
 
@@ -262,21 +256,18 @@ final class SessionServlet
                     mainClass = Class.forName(mainClassName, true,
                                               Thread.currentThread()
                                               .getContextClassLoader());
-                }
-                catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException e) {
                     // fallback, in case the servlet container fails to set the
                     // context class loader.
                     mainClass = Class.forName(mainClassName);
                 }
                 Object main = mainClass.newInstance();
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 logger.log(Level.SEVERE, "could not load wings.mainclass: " +
-                           config.getInitParameter("wings.mainclass"), ex);
+                                         config.getInitParameter("wings.mainclass"), ex);
                 throw new ServletException(ex);
             }
-        }
-        finally {
+        } finally {
             // The session was set by the constructor. After init we
             // expect that only doPost/doGet is called, which set the
             // session also. So remove it here.
@@ -285,22 +276,20 @@ final class SessionServlet
     }
 
     /**
-     * this method references to 
+     * this method references to
      * {@link #doGet(HttpServletRequest, HttpServletResponse)}
      */
     public final void doPost(HttpServletRequest req, HttpServletResponse res)
-        throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         //value chosen to limit denial of service
-        if (req.getContentLength() > getSession().getMaxContentLength()*1024) {
+        if (req.getContentLength() > getSession().getMaxContentLength() * 1024) {
             res.setContentType("text/html");
             ServletOutputStream out = res.getOutputStream();
             out.println("<html><head><title>Too big</title></head>");
             out.println("<body><h1>Error - content length &gt; " +
                         getSession().getMaxContentLength() + "k");
             out.println("</h1></body></html>");
-        }
-        else {
+        } else {
             doGet(req, res);
         }
         // sollte man den obigen Block nicht durch folgende Zeile ersetzen?
@@ -316,15 +305,15 @@ final class SessionServlet
      * <LI> Dispatch Get Parameter
      * <LI> feuert Form Events
      * </UL>
-     * Ist synchronized, damit nur ein Frame gleichzeitig bearbeitet 
+     * Ist synchronized, damit nur ein Frame gleichzeitig bearbeitet
      * werden kann.
      * {@link org.wings.SFrameSet}
+     *
      * @ deprecated -- bsc: warum? und was aendern?
      */
     public final synchronized void doGet(HttpServletRequest req,
                                          HttpServletResponse response)
-        throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         SessionManager.setSession(session);
         session.setServletRequest(req);
         session.setServletResponse(response);
@@ -336,7 +325,7 @@ final class SessionServlet
 
         Device outputDevice = null;
 
-        try {                                 
+        try {
             /*
              * The tomcat 3.x has a bug, in that it does not encode the URL
              * sometimes. It does so, when there is a cookie, containing some
@@ -359,37 +348,37 @@ final class SessionServlet
              */
             RequestURL requestURL = null;
             if (req.isRequestedSessionIdValid()) {
-                 requestURL = new RequestURL("", getSessionEncoding(response));
+                requestURL = new RequestURL("", getSessionEncoding(response));
                 // this will fire an event, if the encoding has changed ..
-                ((PropertyService)session).setProperty("request.url", 
-                                                       requestURL);
+                ((PropertyService) session).setProperty("request.url",
+                                                        requestURL);
             }
-            
+
             if (logger.isLoggable(Level.FINER)) {
                 logger.finer("RequestURL: " + requestURL);
                 logger.finer("\nHEADER:");
                 for (Enumeration en = req.getHeaderNames(); en.hasMoreElements();) {
-                    String header = (String)en.nextElement();
+                    String header = (String) en.nextElement();
                     logger.finer("   " + header + ": " + req.getHeader(header));
                 }
                 logger.finer("");
             }
 
             handleLocale(req);
-                        
+
             Enumeration en = req.getParameterNames();
             
             // are there parameters/low level events to dispatch 
-            if ( en.hasMoreElements() ) {
+            if (en.hasMoreElements()) {
                 // only fire DISPATCH_START if we have parameters to dispatch
                 session.fireRequestEvent(SRequestEvent.DISPATCH_START);
-                
+
                 while (en.hasMoreElements()) {
-                    String paramName = (String)en.nextElement();
+                    String paramName = (String) en.nextElement();
                     String[] value = req.getParameterValues(paramName);
 
                     logger.fine("dispatching " + paramName + " = " + value[0]);
-                    
+
                     session.getDispatcher().dispatch(paramName, value);
                 }
 
@@ -419,26 +408,25 @@ final class SessionServlet
 
                 try {
                     session.firePrepareExit();
-                    
+
                     String redirectAddress;
                     if (session.getExitAddress().length() > 0) {
                         // redirect to user requested URL.
                         redirectAddress = session.getExitAddress();
-                    }
-                    else {
+                    } else {
                         // redirect to a fresh session.
                         redirectAddress = req.getRequestURL().toString();
                     }
                     req.getSession().invalidate(); // calls destroy implicitly
                     response.sendRedirect(redirectAddress);
-                     
+
                     return;
-                } catch ( ExitVetoException ex ) {
+                } catch (ExitVetoException ex) {
                     session.exit(null);
                 } // end of try-catch
             }
 
-            if (session.getRedirectAddress()!=null) {
+            if (session.getRedirectAddress() != null) {
                 // redirect to user requested URL.
                 response.sendRedirect(session.getRedirectAddress());
                 session.setRedirectAddress(null);
@@ -461,8 +449,8 @@ final class SessionServlet
              */
             String externalizeIdentifier = null;
             if (pathInfo == null
-                || pathInfo.length() == 0 
-                || "_".equals(pathInfo) 
+                || pathInfo.length() == 0
+                || "_".equals(pathInfo)
                 || firstRequest) {
                 logger.fine("delivering default frame");
 
@@ -473,22 +461,21 @@ final class SessionServlet
                 // this should work in most cases. if there are more than one
                 // toplevel frames, the developer has to care about the resource
                 // ids anyway ..
-                SFrame defaultFrame = (SFrame)session.frames().iterator().next();
+                SFrame defaultFrame = (SFrame) session.frames().iterator().next();
                 while (defaultFrame.getParent() != null)
-                    defaultFrame = (SFrame)defaultFrame.getParent();
-                
+                    defaultFrame = (SFrame) defaultFrame.getParent();
+
                 Resource resource = defaultFrame.getDynamicResource(DynamicCodeResource.class);
                 externalizeIdentifier = resource.getId();
 
                 firstRequest = false;
-            }
-            else {
+            } else {
                 externalizeIdentifier = pathInfo;
             }
             
             // externalized this resource.
             ExternalizedResource extInfo = extManager
-                .getExternalizedResource(externalizeIdentifier);
+                    .getExternalizedResource(externalizeIdentifier);
             if (extInfo != null) {
                 outputDevice = DeviceFactory.createDevice(extInfo);
                 //outputDevice = createOutputDevice(req, response, extInfo);
@@ -498,23 +485,23 @@ final class SessionServlet
                 extManager.deliver(extInfo, response, outputDevice);
 
                 session.fireRequestEvent(SRequestEvent.DELIVER_DONE, extInfo);
-            }
-            else {
+            } else {
                 handleUnknownResourceRequested(req, response);
             }
-            
-        }
-        catch (Throwable e) {
+
+        } catch (Throwable e) {
             logger.log(Level.SEVERE, "exception: ", e);
             handleException(req, response, e);
-        }
-        finally {
-	    if (session != null) {
+        } finally {
+            if (session != null) {
                 session.fireRequestEvent(SRequestEvent.REQUEST_END);
             }
 
             if (outputDevice != null) {
-                try { outputDevice.close(); } catch (Exception e) {}
+                try {
+                    outputDevice.close();
+                } catch (Exception e) {
+                }
             }
 
             /*
@@ -555,8 +542,8 @@ final class SessionServlet
      */
     protected Device createOutputDevice(HttpServletRequest request,
                                         HttpServletResponse response,
-                                        ExternalizedResource extInfo) 
-        throws IOException {
+                                        ExternalizedResource extInfo)
+            throws IOException {
         return new ServletDevice(response.getOutputStream());
     }
 
@@ -569,9 +556,8 @@ final class SessionServlet
     private SLabel errorStackTraceLabel;
     private SLabel errorMessageLabel;
 
-    protected void handleException(HttpServletRequest req, 
-                                   HttpServletResponse res, Throwable e) 
-    {
+    protected void handleException(HttpServletRequest req,
+                                   HttpServletResponse res, Throwable e) {
         try {
             if (errorFrame == null) {
                 errorFrame = new SFrame();
@@ -581,7 +567,7 @@ final class SessionServlet
                  * to the user (may be security relevant)
                  */
                 errorFrame.getContentPane().
-                    setLayout(new STemplateLayout(errorTemplateFile));
+                        setLayout(new STemplateLayout(errorTemplateFile));
 
                 errorStackTraceLabel = new SLabel();
                 errorFrame.getContentPane().add(errorStackTraceLabel,
@@ -596,9 +582,9 @@ final class SessionServlet
             ServletOutputStream out = res.getOutputStream();
             errorStackTraceLabel.setText(DebugUtil.getStackTraceString(e));
             errorMessageLabel.setText(e.getMessage());
-            errorFrame.write(new ServletDevice (out));
+            errorFrame.write(new ServletDevice(out));
+        } catch (Exception ex) {
         }
-        catch (Exception ex) {}
     }
 
     /**
@@ -609,9 +595,8 @@ final class SessionServlet
      * @param res the HttpServletResponse of this request
      */
     protected void handleUnknownResourceRequested(HttpServletRequest req,
-                                                  HttpServletResponse res) 
-        throws IOException
-    {
+                                                  HttpServletResponse res)
+            throws IOException {
         res.setStatus(HttpServletResponse.SC_NOT_FOUND);
         res.setContentType("text/html");
         res.getOutputStream().println("<h1>404 Not Found</h1>Unknown Resource Requested");
@@ -650,7 +635,6 @@ final class SessionServlet
 
     /**
      * TODO: documentation
-     *
      */
     public void destroy() {
         logger.info("destroy called");
@@ -665,11 +649,9 @@ final class SessionServlet
             errorFrame = null;
             errorStackTraceLabel = null;
             errorMessageLabel = null;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             logger.throwing(SessionServlet.class.getName(), "destroy", ex);
-        }
-        finally {
+        } finally {
             SessionManager.removeSession();
         }
     }

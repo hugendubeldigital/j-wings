@@ -14,13 +14,12 @@
 
 package org.wings.session;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.wings.RequestURL;
+import org.wings.externalizer.AbstractExternalizeManager;
+import org.wings.externalizer.ExternalizedResource;
+import org.wings.externalizer.SystemExternalizeManager;
+import org.wings.io.Device;
+import org.wings.io.ServletDevice;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -28,13 +27,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.wings.RequestURL;
-import org.wings.externalizer.AbstractExternalizeManager;
-import org.wings.externalizer.ExternalizedResource;
-import org.wings.externalizer.SystemExternalizeManager;
-import org.wings.io.Device;
-import org.wings.io.ServletDevice;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Central servlet delegating all requests to the according j-wings session servlet.
@@ -44,10 +43,8 @@ import org.wings.io.ServletDevice;
  * @version $Revision$
  */
 public final class WingServlet
-    extends HttpServlet
-{
+        extends HttpServlet {
     /**
-     *
      * @deprecated use {@link WingsStatistics#getStatistics()} instead
      */
     public static final int getRequestCount() {
@@ -76,24 +73,24 @@ public final class WingServlet
      * used to init session servlets
      */
     protected ServletConfig servletConfig = null;
-    
+
     /** */
     private String lookupName = "SessionServlet";
 
     /**
      * TODO: documentation
      */
-    public WingServlet() {}
+    public WingServlet() {
+    }
 
 
-    protected void initLookupName(ServletConfig config) 
-        throws ServletException 
-    {
+    protected void initLookupName(ServletConfig config)
+            throws ServletException {
         // with specified lookupname it is possible to handle different sessions
         // for servlet aliases/mappings
         lookupName = config.getInitParameter("wings.servlet.lookupname");
 
-        if ( lookupName==null || lookupName.trim().length()==0 ) {
+        if (lookupName == null || lookupName.trim().length() == 0) {
             lookupName = "SessionServlet:" + config.getInitParameter("wings.mainclass");
         }
 
@@ -102,19 +99,19 @@ public final class WingServlet
 
     /**
      * The following init parameters are known by wings.
-     *
+     * <p/>
      * <dl compact>
-     * <dt>externalizer.timeout</dt><dd> - The time, externalized objects 
-     *          are kept, before they are removed</dd>
-     *
-     * <dt>content.maxlength</dt><dd> - Maximum content lengt for form posts. 
-     *          Remember to increase this, if you make use of the SFileChooser
-     *          component</dd>
-     *
+     * <dt>externalizer.timeout</dt><dd> - The time, externalized objects
+     * are kept, before they are removed</dd>
+     * <p/>
+     * <dt>content.maxlength</dt><dd> - Maximum content lengt for form posts.
+     * Remember to increase this, if you make use of the SFileChooser
+     * component</dd>
+     * <p/>
      * <dt>filechooser.uploaddir</dt><dd> - The directory, where uploaded
-     *          files ar stored temporarily</dd>
+     * files ar stored temporarily</dd>
      * </dl>
-     *
+     * <p/>
      * <dt>wings.servlet.lookupname</dt><dd> - The name the wings sessions of
      * this servlet instance are stored in the servlet session hashtable</dd>
      * </dl>
@@ -129,7 +126,7 @@ public final class WingServlet
         if (logger.isLoggable(Level.CONFIG)) {
             logger.config("init-params:");
             for (Enumeration en = config.getInitParameterNames(); en.hasMoreElements();) {
-                String param = (String)en.nextElement();
+                String param = (String) en.nextElement();
                 logger.config(param + " = " + config.getInitParameter(param));
             }
         }
@@ -139,14 +136,13 @@ public final class WingServlet
 
     /**
      * returns the last modification of an externalized resource to allow the
-     * browser to cache it. 
+     * browser to cache it.
      */
     protected long getLastModified(HttpServletRequest request) {
         AbstractExternalizeManager extMgr;
         try {
             extMgr = getExternalizeManager(request);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return System.currentTimeMillis();
         }
         String pathInfo = request.getPathInfo();
@@ -166,8 +162,7 @@ public final class WingServlet
      * Parse POST request with <code>MultipartRequest</code> and passes to <code>doGet()</code>
      */
     public final void doPost(HttpServletRequest req, HttpServletResponse res)
-        throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         SessionServlet sessionServlet = getSessionServlet(req, res, true);
 
         if (logger.isLoggable(Level.FINE))
@@ -180,18 +175,17 @@ public final class WingServlet
         try {
             int maxContentLength = sessionServlet.getSession().getMaxContentLength();
             req = new MultipartRequest(req, maxContentLength * 1024);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
         }
 
         if (logger.isLoggable(Level.FINER)) {
             if (req instanceof MultipartRequest) {
-                MultipartRequest multi = (MultipartRequest)req;
+                MultipartRequest multi = (MultipartRequest) req;
                 logger.finer("Files:");
                 Iterator files = multi.getFileNames();
                 while (files.hasNext()) {
-                    String name = (String)files.next();
+                    String name = (String) files.next();
                     String filename = multi.getFileName(name);
                     String type = multi.getContentType(name);
                     File f = multi.getFile(name);
@@ -214,14 +208,13 @@ public final class WingServlet
 
     private final SessionServlet newSession(HttpServletRequest request,
                                             HttpServletResponse response)
-        throws ServletException
-    {
+            throws ServletException {
         long timestamp = System.currentTimeMillis();
         try {
             logger.fine("new session");
 
             SessionServlet sessionServlet = new SessionServlet();
-            sessionServlet.init(servletConfig, request);
+            sessionServlet.init(servletConfig, request, response);
 
             Session session = sessionServlet.getSession();
             /* the request URL is needed already in the setup-phase. Note,
@@ -237,10 +230,9 @@ public final class WingServlet
 
             sessionServlet.setParent(this);
 
-            logger.fine("time to create a new session " + (System.currentTimeMillis()-timestamp));
+            logger.fine("time to create a new session " + (System.currentTimeMillis() - timestamp));
             return sessionServlet;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
             throw new ServletException(e);
         }
@@ -249,16 +241,15 @@ public final class WingServlet
     public final SessionServlet getSessionServlet(HttpServletRequest request,
                                                   HttpServletResponse response,
                                                   boolean createSessionServlet)
-        throws ServletException 
-    {
+            throws ServletException {
         HttpSession httpSession = request.getSession(true);
 
         // it should be enough to synchronize on the http session object...
-        synchronized ( httpSession ) {
+        synchronized (httpSession) {
             SessionServlet sessionServlet = null;
 
             if (httpSession != null) {
-                sessionServlet = (SessionServlet)httpSession.getAttribute(lookupName);
+                sessionServlet = (SessionServlet) httpSession.getAttribute(lookupName);
             }
 
             /*
@@ -266,28 +257,28 @@ public final class WingServlet
              * not null. If it is null, then we just called getSessionServlet()
              * for lookup purposes and are satisfied, if we don't get anything.
              */
-            if ( sessionServlet == null && createSessionServlet ) {
+            if (sessionServlet == null && createSessionServlet) {
                 logger.info("no session servlet, create new one");
                 sessionServlet = newSession(request, response);
                 httpSession.setAttribute(lookupName, sessionServlet);
             }
 
 
-            if ( logger.isLoggable(Level.FINER) ) {
+            if (logger.isLoggable(Level.FINER)) {
                 logger.finer("session id " + request.getRequestedSessionId());
                 logger.finer("session from cookie " + request.isRequestedSessionIdFromCookie());
                 logger.finer("session from url " + request.isRequestedSessionIdFromURL());
                 logger.finer("session valid " + request.isRequestedSessionIdValid());
-                logger.finer("session created at " + 
+                logger.finer("session created at " +
                              new java.util.Date(httpSession.getCreationTime()));
                 logger.finer("session httpsession id " + httpSession.getId());
                 logger.finer("session httpsession new " + httpSession.isNew());
-                logger.finer("session last accessed at " + 
+                logger.finer("session last accessed at " +
                              new java.util.Date(httpSession.getLastAccessedTime()));
-                logger.finer("session max inactive interval " + 
+                logger.finer("session max inactive interval " +
                              httpSession.getMaxInactiveInterval());
-                logger.finer("session contains wings session " + 
-                             (httpSession.getAttribute(lookupName)!=null));
+                logger.finer("session contains wings session " +
+                             (httpSession.getAttribute(lookupName) != null));
             }
 
             sessionServlet.getSession().getExternalizeManager().setResponse(response);
@@ -333,13 +324,13 @@ public final class WingServlet
                 try {
                     String sessionCharacterEncoding = sessionServlet.getSession().getCharacterEncoding();                 
                     // We know better about the used character encoding than tomcat
-                    logger.finer("Advising servlet container to interpret request as " + sessionCharacterEncoding);              
+                    logger.finer("Advising servlet container to interpret request as " + sessionCharacterEncoding);
                     request.setCharacterEncoding(sessionCharacterEncoding);
                 } catch (UnsupportedEncodingException e) {
                     logger.log(Level.WARNING, "Problem on applying current session character encoding", e);
-                }                
-            }            
-            
+                }
+            }
+
             return sessionServlet;
         }
     }
@@ -351,21 +342,19 @@ public final class WingServlet
      */
     protected boolean isSystemExternalizeRequest(HttpServletRequest request) {
         String pathInfo = request.getPathInfo();
-        return (pathInfo != null 
-                && pathInfo.length() > 1 
+        return (pathInfo != null
+                && pathInfo.length() > 1
                 && pathInfo.startsWith("/-"));
     }
 
     /**
      *
      */
-    protected AbstractExternalizeManager getExternalizeManager(HttpServletRequest req) 
-        throws ServletException 
-    {
-        if ( isSystemExternalizeRequest(req) ) {
+    protected AbstractExternalizeManager getExternalizeManager(HttpServletRequest req)
+            throws ServletException {
+        if (isSystemExternalizeRequest(req)) {
             return SystemExternalizeManager.getSharedInstance();
-        }
-        else {
+        } else {
             SessionServlet sessionServlet = getSessionServlet(req, null, false);
             if (sessionServlet == null)
                 return null;
@@ -378,8 +367,8 @@ public final class WingServlet
      */
     public final void doGet(HttpServletRequest req,
                             HttpServletResponse response)
-        throws ServletException, IOException
-    {
+            throws ServletException, IOException {
+
         try {
             /* 
              * make sure, that our context ends with '/'. Otherwise redirect
@@ -416,15 +405,15 @@ public final class WingServlet
              * (if there is something in the path info, that starts with '-')
              * or just a normal request to this servlet.
              */
-            if ( isSystemExternalizeRequest(req) ) {
+            if (isSystemExternalizeRequest(req)) {
                 String identifier = pathInfo.substring(1);
-                AbstractExternalizeManager extManager = 
-                    SystemExternalizeManager.getSharedInstance();
+                AbstractExternalizeManager extManager =
+                        SystemExternalizeManager.getSharedInstance();
                 ExternalizedResource extInfo = extManager
-                    .getExternalizedResource(identifier);
+                        .getExternalizedResource(identifier);
                 if (extInfo != null) {
                     extManager.deliver(extInfo, response,
-                                       createOutputDevice(req, response, 
+                                       createOutputDevice(req, response,
                                                           extInfo));
                 }
                 return;
@@ -435,15 +424,13 @@ public final class WingServlet
             SessionServlet sessionServlet = getSessionServlet(req, response, true);
 
             sessionServlet.doGet(req, response);
-        }
-        catch (ServletException e) {
+        } catch (ServletException e) {
             logger.log(Level.SEVERE, "doGet", e);
             throw e;
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             logger.log(Level.SEVERE, "doGet", e);
             throw new ServletException(e);
-        } 
+        }
     }
 
     /**
@@ -467,8 +454,8 @@ public final class WingServlet
      */
     protected Device createOutputDevice(HttpServletRequest request,
                                         HttpServletResponse response,
-                                        ExternalizedResource extInfo) 
-        throws IOException {
+                                        ExternalizedResource extInfo)
+            throws IOException {
         return new ServletDevice(response.getOutputStream());
     }
 }
