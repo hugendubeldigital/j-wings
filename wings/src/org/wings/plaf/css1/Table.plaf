@@ -148,11 +148,13 @@
                    %>overflow-y: scroll; <%
                 break;
            }
-           %>width:<%=dim.getWidth()%>; height:<%=dim.getHeight()%>;" onscroll="sync<%=table.getComponentId()%>()"><%
+           if (dim != null) {
+            %><%=dim.toString();%><%
+           }
+           %>" onscroll="sync<%=table.getComponentId()%>()"><%
            %><table<%
            if (dim != null) {
-               %><%|width=dim.width%><%
-               %><%|height=dim.height%><%
+               %><%=dim.toString();%><%
             }
            %>><%
            writeColSpan(device, table, startCol, endCol);
