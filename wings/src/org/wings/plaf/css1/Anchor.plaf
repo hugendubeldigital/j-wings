@@ -10,7 +10,7 @@ Utils.printOptAttr(device, "href", component.getReference());
 %>><%
 Utils.renderContainer(device, component);
 %></a><%
-Utils.renderBorderPrefix(device, border);
+Utils.renderBorderPostfix(device, border);
 %>
 </write>
 </template>
