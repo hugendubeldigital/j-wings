@@ -137,7 +137,7 @@ protected org.wings.io.StringBufferDevice getStringBufferDevice() {
             java.awt.Rectangle viewport = list.getViewportSize();
             if ( viewport != null) {
                 start = viewport.y;
-                end = start+viewport.height; 
+                end = start+viewport.height;
         }
 
             for (int i=start; i < end; i++) {
@@ -200,20 +200,22 @@ protected org.wings.io.StringBufferDevice getStringBufferDevice() {
 
 <write>
 <%
-   final AnchorProperties anchor = AnchorRenderStack.get();
+    final AnchorProperties anchor = AnchorRenderStack.get();
+
+    if ( anchor!=null ) {
+        if ( anchor.isFormAnchor() ) {
+            %><a href="" onclick="return submitForm(event, '<%=anchor.getFormEventName()%>','<%=anchor.getFormEventValue()%>')"><%
+        } else {
+            %><a href="<%=anchor.getURL().toString()%>"><%
+        }
+    }
 
     SList list = (SList)component;
-    if (list.getShowAsFormComponent())
+    if (list.getShowAsFormComponent()) {
         writeFormList(device, list);
-    else {
-    if ( anchor!=null ) {
-        %><a href="<%=anchor.getURL()%>"<%|target=anchor.getTarget()%>><%
-        }
+    } else {
         writeAnchorList(device, list);
-        if (anchor != null) {
-        %></a><%
-        } 
-   }    
+    }
 %>
 </write>
 </template>

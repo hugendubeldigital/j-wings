@@ -11,14 +11,17 @@
 <property type="Boolean" name="renderXmlDeclaration">Boolean.TRUE</property>
 
 
- /*
+
 
 public static final JavaScriptListener DATE_CHOOSER_SCRIPT_LOADER =
-	new JavaScriptListener("", "", loadScript());
+	new JavaScriptListener("", "", loadScript("org/wings/plaf/css1/DateChooser.js"));
 
-public static String loadScript() {
+public static final JavaScriptListener FORM_SCRIPT_LOADER =
+	new JavaScriptListener("", "", loadScript("org/wings/plaf/css1/Form.js"));
+
+public static String loadScript(String resource) {
     try {
-        InputStream in = MenuCG.class.getClassLoader().getResourceAsStream("org/wings/plaf/css1/DateChooser.js");
+        InputStream in = MenuCG.class.getClassLoader().getResourceAsStream(resource);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         StringBuffer buffer = new StringBuffer();
         String line;
@@ -33,7 +36,7 @@ public static String loadScript() {
         return "";
     }
 }
-*/
+
 
 static final SResourceIcon ICON = new SResourceIcon("org/wings/icons/ArrowDown.gif");
 
@@ -76,7 +79,8 @@ static final SResourceIcon ICON = new SResourceIcon("org/wings/icons/ArrowDown.g
 
         component.headers().add(0, staticCgSytles);
 
-       // component.addScriptListener(DATE_CHOOSER_SCRIPT_LOADER);
+        component.addScriptListener(DATE_CHOOSER_SCRIPT_LOADER);
+        component.addScriptListener(FORM_SCRIPT_LOADER);
 
 
 </install>
