@@ -529,6 +529,7 @@ public class SFrame
      * bacause the ids of the Components change at that time.
      */
     public ScriptListener[] getScriptListeners() {
+        ToolTipManager.sharedInstance().installListener(this);
         setFocus();
         return (ScriptListener[]) super.getListeners(ScriptListener.class);
     }

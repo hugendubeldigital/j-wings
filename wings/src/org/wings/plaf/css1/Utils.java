@@ -37,6 +37,7 @@ public final class Utils {
         '6', '7', '8', '9', 'a', 'b',
         'c', 'd', 'e', 'f'};
 
+
     private Utils() {
     }
 
@@ -56,6 +57,53 @@ public final class Utils {
         }
     }
 
+    /**
+     * Renders a complex ToolTip
+     */
+    public static void writeToolTip(Device d, SComponent c) throws IOException {
+      SToolTip stt = ToolTipManager.sharedInstance().lookupComponent(c);
+      if (stt != null) {
+        d.print(" onmouseover=\"showTooltip(true,'");
+        org.wings.plaf.compiler.Utils.writeToolTip(d, stt.getTipText());
+        d.print("', this)\" onmouseout=\"showTooltip(false)\" ");
+      } else {
+        if (c.getToolTipText() != null) {
+          d.print(" title=\"");
+          d.print(c.getToolTipText());
+          d.print("\"");
+        }
+      }
+    }
+
+    /**
+     * Renders a complex ToolTip
+     */
+    public static void writeToolTip(Device d, SComponent c, StringBuffer onMouseOver, StringBuffer onMouseOut) throws IOException {
+      SToolTip stt = ToolTipManager.sharedInstance().lookupComponent(c);
+      if (stt != null) {
+        d.print(" onMouseover=\"");
+        d.print(onMouseOver);
+        d.print("showTooltip(true,'");
+        org.wings.plaf.compiler.Utils.writeToolTip(d, stt.getTipText());
+        d.print("', this)\" onMouseout=\"");
+        d.print(onMouseOut);
+        d.print("showTooltip(false)\" ");
+      } else {
+        if (c.getToolTipText() != null) {
+          d.print(" title=\"");
+          d.print(c.getToolTipText());
+          d.print("\"");
+        }
+        if (onMouseOver.length() > 0) {
+          d.print(" Onmouseover=\"");
+          d.print(onMouseOver);
+          d.print("\" Onmouseout=\"");
+          d.print(onMouseOut);
+          d.print("\" ");
+        }
+     }
+    }
+    
     public static void writeEvents(Device d, SComponent c)
         throws IOException {
         ScriptListener[] listeners = c.getScriptListeners();

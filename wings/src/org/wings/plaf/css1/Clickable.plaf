@@ -65,7 +65,7 @@ void writeText(final Device device, SAbstractClickable clickable, String attr)
     if ( writeAnchor ) {
         %><a href="<%=url%>"<% 
         Utils.writeEvents(device, clickable);
-        %><%|title=clickable.getToolTipText()%><%
+        Utils.writeToolTip(device, clickable);
     }
     else {
         %><span<%
@@ -126,7 +126,7 @@ void writeIcon(final Device device, SAbstractClickable clickable, String attr)
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
     Utils.writeEvents(device, clickable);
-    %><%|title=tooltip%><%
+    Utils.writeToolTip(device, clickable);
     %><%|alt=tooltip%> /><%
 
     if ( writeAnchor ) {

@@ -5,12 +5,12 @@
 
 public void writeIcon(Device device, SIcon icon, SLabel label, AnchorProperties anchor) throws IOException {
     if (icon != null) {
-        writeAnchorStart(device, anchor);
+        writeAnchorStart(device, anchor, label);
         %><img border="0"<%
         if (label.isImageAbsBottom()) {
             %> align="absbottom"<%
         }
-        %> <%|title=label.getToolTipText()%><%
+        Utils.writeToolTip(device, label);
         /* write optional attributes ..*/
         %><%|src=icon.getURL()%><%
         %><%|width=icon.getIconWidth()%><%
@@ -24,7 +24,7 @@ public void writeIcon(Device device, SIcon icon, SLabel label, AnchorProperties 
 public void writeText(Device device, SLabel label, AnchorProperties anchor) throws IOException {
     final String text = label.getText();
     if (text != null) {
-        writeAnchorStart(device, anchor);
+        writeAnchorStart(device, anchor, label);
         final boolean noBreak = label.isNoBreak();
 
         if (noBreak) {
@@ -38,14 +38,14 @@ public void writeText(Device device, SLabel label, AnchorProperties anchor) thro
     }
 }
 
-public void writeAnchorStart(Device device, AnchorProperties anchor) throws IOException {
+public void writeAnchorStart(Device device, AnchorProperties anchor, SLabel label) throws IOException {
     if ( anchor!=null ) {
         if ( anchor.isFormAnchor() ) {
             %><a href="" onclick="return submitForm(event, '<%=anchor.getFormEventName()%>','<%=anchor.getFormEventValue()%>')"<%
         } else {
             %><a href="<%=anchor.getURL().toString()%>"<%|target=anchor.getTarget()%><%
         }
-        %><%|title=anchor.getToolTipText()%>><%
+        Utils.writeToolTip(device, label);
     }
 }
 

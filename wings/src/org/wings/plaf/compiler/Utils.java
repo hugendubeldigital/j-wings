@@ -65,12 +65,13 @@ public final class Utils implements SConstants {
             // write special characters as code ..
             if (c < 32 || c > 127) {
                 d.print(chars, last, (pos - last));
-                if (c == '\n' && quoteNewline) {
+                if (quoteNewline && (c == '\n' || (c == '\r' && (pos < chars.length && chars[pos+1] == '\n')))) {
                     d.print("<br>");
+                    if ( c == '\r' ) pos++;
                 } else {
                     d.print("&#");
                     d.print((int) c);
-                    d.print(";");
+                    d.print(';');
                 } // end of if ()
                 last = pos + 1;
             } else
@@ -133,7 +134,29 @@ public final class Utils implements SConstants {
             quote(d, s, false);
         }
     }
-
+    
+    /**
+     * writes the given String to the device. The string is quoted, i.e.
+     * for all special characters in *ML, their appropriate entity is
+     * returned.
+     * If the String starts with '<html>', the content is regarded being
+     * HTML-code and is written as is (without the <html> tag).
+     */
+    public static void writeToolTip(Device d, String s) throws IOException {
+      if (s == null) return;
+      int pos = 0;
+      StringBuffer sb = new StringBuffer(s);
+      while ( (pos = sb.indexOf("'", pos)) != -1) {    /* Preprocess any of the ' chars */
+        sb.insert(pos,'\\');
+        pos+=2;
+      }
+      if ((s.length() > 5) && (s.startsWith("<html>"))) {
+        writeRaw(d, sb.substring(6));
+      } else {
+        quote(d, sb.toString(), true);
+      }
+    }
+    
     /**
      * Prints an optional attribute. If the String value has a content
      * (value != null && value.length > 0), the attrib is added otherwise

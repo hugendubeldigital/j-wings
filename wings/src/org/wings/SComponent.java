@@ -1034,7 +1034,22 @@ public abstract class SComponent
      * @param t the new tooltip text
      */
     public void setToolTipText(String t) {
-        tooltip = t;
+      if ((t != null) && (!"".equals(t))) {
+        if (t.startsWith("<html>") || t.indexOf('\n') != -1  || t.length()>30 ) {
+          SToolTip stt = ToolTipManager.sharedInstance().lookupComponent(this);
+          if (stt == null) {
+            stt = createToolTip();
+          }
+          stt.setTipText(t);
+          ToolTipManager.sharedInstance().registerComponent(stt);
+          tooltip = "";
+        } else {
+          tooltip = t;
+        }
+      } else {
+        ToolTipManager.sharedInstance().unregisterComponent(this);
+      }
+      
     }
 
     /**
@@ -1046,6 +1061,19 @@ public abstract class SComponent
         return tooltip;
     }
 
+    
+    /**
+     * Return the instance of <code>SToolTip</code> for tooltip generation
+     * In the case of the usage of this Component ther will be javascript generated !
+     *
+     * @return the <code>StoolTip</code> used to display this toolTip
+     */
+    public SToolTip createToolTip() {
+      SToolTip tip = new SToolTip();
+      tip.setComponent(this);
+      return tip;
+    }
+    
     /**
      * The index in which the focus is traversed using Tab. This is
      * a very simplified notion of traversing the focus, but that is,

@@ -52,11 +52,7 @@ protected void writeFormList(Device device, SList list) throws IOException {
             %> selected="selected"<%
         }
         if (renderer!=null) {
-            if (renderer.getToolTipText() != null) {
-                %> title="<%
-                %><%=renderer.getToolTipText()%><%
-                %>"<%
-            }
+            Utils.writeToolTip(device, renderer);
 
             org.wings.io.StringBufferDevice stringBufferDevice = getStringBufferDevice();
             org.wings.plaf.xhtml.Utils.writeAttributes(stringBufferDevice, renderer);
@@ -214,7 +210,7 @@ protected org.wings.io.StringBufferDevice getStringBufferDevice() {
         } else {
             %><a href="<%=anchor.getURL().toString()%>"<%
         }
-        %><%|title=anchor.getToolTipText()%>><%
+        Utils.writeToolTip(device, component);
     }
 
     SList list = (SList)component;

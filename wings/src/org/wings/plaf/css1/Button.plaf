@@ -42,7 +42,7 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
              %> onclick="return submitForm(event, '<%=abstractButton.getEncodedLowLevelEventId()%>','<%=abstractButton.getToggleSelectionParameter()%>')" <%
         }
 	    Utils.writeEvents(device, abstractButton);
-        %><%|title=abstractButton.getToolTipText()%><%
+        Utils.writeToolTip(device, abstractButton);
         %><%|accesskey=abstractButton.getMnemonic()%><%
         %> style="<% Utils.writeAttributes(device, abstractButton);%>"<%
     }
@@ -52,7 +52,7 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
         } else {
             %><a href="<%=anchorProperties.getURL().toString()%>"<%
         }
-        %><%|title=anchorProperties.getToolTipText()%><%
+        Utils.writeToolTip(device, abstractButton);    
     }
     else {
         %><span<%
@@ -95,6 +95,9 @@ protected void writeDynamicIcons(final Device device, SAbstractButton abstractBu
 				 String iconName, boolean renderNameAttribute)
      throws IOException
 {
+    StringBuffer  onMouseOver = new StringBuffer();
+    StringBuffer  onMouseOut = new StringBuffer();
+
     if ( abstractButton.isEnabled() &&
 	(abstractButton.getGroup()==null || !abstractButton.isSelected()) ) {
        // render rollover
@@ -108,9 +111,8 @@ protected void writeDynamicIcons(final Device device, SAbstractButton abstractBu
 
 
            if ( rolloverIcon!=null ) {
-               %> onMouseover="if(document.images){this.src='<%=rolloverIcon.getURL()
-               %>';}" onmouseout="if(document.images){this.src='<%=origIcon.getURL()
-               %>';}"<%
+               onMouseOver.append("if(document.images){this.src='").append(rolloverIcon.getURL()).append("';}");
+               onMouseOut.append("if(document.images){this.src='").append(origIcon.getURL()).append("';}");
            }
 
            if ( pressedIcon!=null ) {
@@ -120,7 +122,7 @@ protected void writeDynamicIcons(final Device device, SAbstractButton abstractBu
            }
         }
     }
-
+    Utils.writeToolTip(device, abstractButton, onMouseOver, onMouseOut);
 }
 
 protected void writeAnchorIcon(final Device device, SAbstractButton abstractButton, String attr)
@@ -144,7 +146,8 @@ protected void writeAnchorIcon(final Device device, SAbstractButton abstractButt
         if (abstractButton.getParentForm() != null) {
              %> onclick="return submitForm(event, '<%=abstractButton.getEncodedLowLevelEventId()%>','<%=abstractButton.getToggleSelectionParameter()%>')" <%
         }               
-        %>"<%|title=abstractButton.getToolTipText()%><%
+        %>"<%
+        Utils.writeToolTip(device, abstractButton);
         %><%|accesskey=abstractButton.getMnemonic()%><%
         %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
         Utils.writeEvents(device, abstractButton);
@@ -157,7 +160,6 @@ protected void writeAnchorIcon(final Device device, SAbstractButton abstractButt
         } else {
             %><a href="<%=anchorProperties.getURL().toString()%>"<%
         }
-        %><%|title=anchorProperties.getToolTipText()%><%
     } else {
         %><span<%
     }
@@ -169,6 +171,7 @@ protected void writeAnchorIcon(final Device device, SAbstractButton abstractButt
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
     Utils.writeEvents(device, abstractButton);
+    Utils.writeToolTip(device, abstractButton);
     %><%|alt=abstractButton.getToolTipText()%> /><%
 
     if ( enabled ) {
@@ -212,7 +215,6 @@ protected void writeFormText(final Device device, SAbstractButton abstractButton
     %><input type="<%=abstractButton.getType()%>"<%
     %> name="<%=Utils.event(abstractButton)%>"<%
     %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
-    %><%|title=abstractButton.getToolTipText()%><%
     %><%|accesskey=abstractButton.getMnemonic()%><%
     %><%|class=attr%><%
     Utils.writeEvents(device, abstractButton);
@@ -245,7 +247,6 @@ protected void writeFormIcon(final Device device, SAbstractButton abstractButton
     writeDynamicIcons(device, abstractButton, icon, abstractButton.getComponentId(),
 		      false);
     %><%|alt=abstractButton.getToolTipText()%><%
-    %><%|title=abstractButton.getToolTipText()%><%
     Utils.writeEvents(device, abstractButton);
     %><%|text=abstractButton.getToolTipText()%><%
     if ( !abstractButton.isEnabled() ||

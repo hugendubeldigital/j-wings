@@ -52,11 +52,7 @@ protected void writeFormComboBox(Device device, SComboBox comboBox) throws IOExc
         }
 
         if (cellRenderer!=null) {
-            if (cellRenderer.getToolTipText() != null) {
-                %> title="<%
-                %><%=cellRenderer.getToolTipText()%><%
-                %>"<%
-            }
+            Utils.writeToolTip(device, cellRenderer);
 
             org.wings.io.StringBufferDevice stringBufferDevice = getStringBufferDevice();
             org.wings.plaf.xhtml.Utils.writeAttributes(stringBufferDevice, cellRenderer);
