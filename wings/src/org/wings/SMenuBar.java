@@ -199,12 +199,12 @@ public class SMenuBar extends SContainer
         paintBorder = b;
         firePropertyChange("borderPainted", oldValue ? Boolean.TRUE : Boolean.FALSE, 
                            paintBorder ? Boolean.TRUE : Boolean.FALSE );
+       /*
         if (b != oldValue) {
-            /*
               revalidate();
               repaint();
-            */
         }
+       */
     }
 
     /**
@@ -238,12 +238,12 @@ public class SMenuBar extends SContainer
         Insets old = margin;
         this.margin = m;
         firePropertyChange("margin", old, m);
+      /*
         if (old == null || !m.equals(old)) {
-            /*
               revalidate();
               repaint();
-            */
         }
+      */
     }
 
     /**

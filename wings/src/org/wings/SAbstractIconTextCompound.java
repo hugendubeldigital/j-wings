@@ -415,12 +415,12 @@ public abstract class SAbstractIconTextCompound
      * @return
      */
     public SIcon getDisabledIcon() {
+        /**** TODO
         if(disabledIcon == null) {
-            /**** TODO
                   if(icon != null && icon instanceof ImageIcon)
                   disabledIcon = new ImageIcon(GrayFilter.createDisabledImage(((ImageIcon)icon).getImage()));
-            ***/
         }
+        ***/
         return disabledIcon;
     }
 
