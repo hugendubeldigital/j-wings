@@ -14,9 +14,10 @@
 
 package ldap;
 
+import java.net.URL;
 import javax.servlet.*;
 import javax.servlet.http.*;
- 
+
 import org.wings.*;
 import org.wings.externalizer.*;
 import org.wings.servlet.*;

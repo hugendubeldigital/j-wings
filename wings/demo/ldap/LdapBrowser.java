@@ -14,6 +14,7 @@
 
 package ldap;
 
+import java.net.URL;
 import javax.servlet.*;
 import javax.servlet.http.*;
  
