@@ -115,7 +115,10 @@ public class ExternalizeManager
 
         String name = null;
         ObjectHandler handler = getObjectHandler(obj.getClass());
-        if ( obj != null && handler != null ) {
+        if ( handler == null ) {
+            System.err.println("could not find externalizer for " + obj.getClass());
+        }
+        else if ( obj != null ) {
             Session session = SessionManager.getSession();
             name = externalizer.externalize(obj, handler, session);
         }
@@ -131,7 +134,10 @@ public class ExternalizeManager
 
         String name = null;
         ObjectHandler handler = getObjectHandler(mimeType);
-        if ( obj != null && handler != null ) {
+        if ( handler == null ) {
+            System.err.println("could not find externalizer for " + mimeType);
+        }
+        else if ( obj != null ) {
             Session session = SessionManager.getSession();
             name = externalizer.externalize(obj, handler, session);
         }
