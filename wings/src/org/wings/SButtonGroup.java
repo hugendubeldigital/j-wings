@@ -102,7 +102,8 @@ public class SButtonGroup
         if ( oldSelection!=null && oldSelection.getGroup()==this )
             oldSelection.setSelected(false);
 
-        fireActionPerformed();
+        fireActionPerformed(selection!=null ? selection.getActionCommand() : 
+                            SELECTION_CHANGED);
     }
 
     /*
@@ -231,9 +232,9 @@ public class SButtonGroup
     /**
      * Fire an ActionEvent at each registered listener.
      */
-    protected void fireActionPerformed() {
+    protected void fireActionPerformed(String command) {
         fireActionEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-                                        SELECTION_CHANGED));
+                                        command));
     }
 
     /**
