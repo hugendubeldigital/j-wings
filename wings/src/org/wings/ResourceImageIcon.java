@@ -92,9 +92,10 @@ public class ResourceImageIcon
                 width  = icon.getIconWidth();
                 height = icon.getIconHeight();
             }
-        } catch ( Exception e ) {
+        } catch ( Throwable e ) {
             // is not possible to calc Dimensions
-            // maybe it is not possible to buffer resource, or resource is not a
+            // maybe it is not possible to buffer resource, 
+            // or resource is not a
             // supported image type
         }
     }
