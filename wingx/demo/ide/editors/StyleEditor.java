@@ -34,7 +34,7 @@ public class StyleEditor extends SPropertyEditorSupport
 	    return;
 	}
 
-	Style style = SessionManager.getSession().getCGManager().getLookAndFeel().getStyleSheet().getStyle(s);
+	Style style = SessionManager.getSession().getRootFrame().getStyleSheet().getStyle(s);
 	if (style == null)
             throw new IllegalArgumentException(s);
 
@@ -43,7 +43,7 @@ public class StyleEditor extends SPropertyEditorSupport
 
     public String[] getTags() {
 	if (tags == null) {
-	    StyleSheet sheet = SessionManager.getSession().getCGManager().getLookAndFeel().getStyleSheet();
+	    StyleSheet sheet = SessionManager.getSession().getRootFrame().getStyleSheet();
 	    Style[] styles = (Style[])sheet.styles().toArray(new Style[sheet.styles().size()]);
 	    tags = new String[styles.length + 1];
 	    tags[0] = "";

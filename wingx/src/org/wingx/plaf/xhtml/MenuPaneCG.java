@@ -198,7 +198,7 @@ public class MenuPaneCG implements ComponentCG
         for (;m<pane.getMenuCount(); m++) {
             menu = pane.getMenu(m);
 			menu.setCG(menuButtonCG);
-			menu.setStyle(fStyleSheet.getMenuLinkStyle());
+			menu.setStyle(fStyleSheet.getMenuLinkStyle().getName());
             writeMenu(d, menu);
             if (menu.isActive())
             	break;
@@ -214,7 +214,7 @@ public class MenuPaneCG implements ComponentCG
             if (i<subMenuCount) {
                 SMenuItem submenu = (SMenuItem) menu.getMenuComponent(i);
                 submenu.setCG(menuButtonCG);
-                submenu.setStyle(fStyleSheet.getMenuItemStyle());
+                submenu.setStyle(fStyleSheet.getMenuItemStyle().getName());
             	submenu.write(d);
             }
             else {
@@ -276,7 +276,7 @@ public class MenuPaneCG implements ComponentCG
 	        for (;m<pane.getMenuCount(); m++) {
 	            menu = pane.getMenu(m);
 	            menu.setCG(menuButtonCG);
-				menu.setStyle(fStyleSheet.getMenuLinkStyle());
+				menu.setStyle(fStyleSheet.getMenuLinkStyle().getName());
 	            writeMenu(d, menu);
 	        }
 			d.print("   </table>\n");
@@ -310,7 +310,7 @@ public class MenuPaneCG implements ComponentCG
 	            d.print("<br>");
 	        }
 
-			writeAnchorText(d, button, button.getStyle().getName());
+			writeAnchorText(d, button, button.getStyle());
 	    }
 
 	    protected void writeAnchorPrefix(Device d, SButton button)
@@ -320,7 +320,7 @@ public class MenuPaneCG implements ComponentCG
             d.print("<a href=\"");
             writeAnchorAddress(d, button);
             d.print("\" class=\"");
-            d.print(button.getStyle().getName());
+            d.print(button.getStyle());
             d.print("\" ");
 
             if (tooltip != null)

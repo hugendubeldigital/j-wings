@@ -42,14 +42,14 @@ import org.wingx.plaf.*;
  * @version $Revision$
  */
 public class ScrollPaneSession
-    extends SessionServlet
+    // extends SessionServlet
     implements SConstants
 {
     STree tree1 = new STree(new DefaultTreeModel(generateTree()));
     STree tree2 = new STree(new DefaultTreeModel(generateTree()));
 
     public ScrollPaneSession(Session session, HttpServletRequest req) {
-        super(session);
+        //super(session);
     }
 
     public void postInit(ServletConfig config)
@@ -62,11 +62,13 @@ public class ScrollPaneSession
 
 	SScrollPane scrollPane = new SScrollPane(tree2);
         scrollPane.setVerticalAlignment(TOP_ALIGN);
+        /*
         getFrame().getContentPane().setLayout(new SGridLayout(2));
         getFrame().getContentPane().add(new SLabel("inner frame scrollpane"));
         getFrame().getContentPane().add(new SLabel("default scrollpane"));
         getFrame().getContentPane().add(innerScrollPane);
         getFrame().getContentPane().add(scrollPane);
+        */
     }
 
     TreeNode generateTree() {
