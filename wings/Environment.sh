@@ -12,6 +12,7 @@ DEVEL_HOME=`pwd`
 
 if [ ! -x $JAVA_HOME/bin/java ] ; then
 	for d in  /usr/local/jdk1.2.2 \
+		  /usr/local/lib/jdk/1.2.2 \
 		  /usr/local/java \
 		  /usr/java ;
        	do

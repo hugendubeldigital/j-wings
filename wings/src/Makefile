@@ -18,5 +18,4 @@ fun:
 	make -C org/wings/plaf/xhtml/css1 $@
 	make -C org/wings/template $@
 	make -C org/wings/date $@
-	make -C org/wings/example $@
 
