@@ -47,6 +47,7 @@ public final class SUtil
 
     /**
      * TODO: documentation
+     * @deprecated Use Utils in plaf
      */
     public static String toColorString(int rgb) {
         char[] buf = new char[6];
@@ -62,6 +63,7 @@ public final class SUtil
 
     /**
      * TODO: documentation
+     * @deprecated Use Utils in plaf
      */
     public static String toColorString(java.awt.Color c) {
         return toColorString(c.getRGB());
@@ -69,6 +71,7 @@ public final class SUtil
 
     /**
      * TODO: documentation
+     * @deprecated Use Utils in plaf
      */
     public static void appendTableCellAlignment(Device s, SComponent c) {
         switch ( c.getHorizontalAlignment() ) {
@@ -106,6 +109,7 @@ public final class SUtil
 
     /**
      * TODO: documentation
+     * @deprecated Use Utils in plaf
      */
     public static void appendTableCellColors(Device s, SComponent c) {
         /*    if ( c.getForeground()!=null )
@@ -118,6 +122,7 @@ public final class SUtil
 
     /**
      * TODO: documentation
+     * @deprecated Use Utils in plaf
      */
     public static void appendTableCellSpan(Device s, SComponent c) {
         if ( c.getRowSpan()>0 )
@@ -130,6 +135,7 @@ public final class SUtil
 
     /**
      * TODO: documentation
+     * @deprecated Use Utils in plaf
      */
     public static void appendTableCellAttributes(Device s, SComponent c) {
         appendTableCellColors(s, c);
@@ -140,6 +146,7 @@ public final class SUtil
 
     /**
      * TODO: documentation
+     * @deprecated Use Utils in plaf
      */
     public static void writeFontPrefix(Device d, SFont font) {
         writeFontPrefix(d, font, null);
@@ -148,6 +155,7 @@ public final class SUtil
 
     /**
      * TODO: documentation
+     * @deprecated Use Utils in plaf
      */
     public static void writeFontPrefix(Device d, SFont font, Color color) {
         String face = null;
@@ -183,6 +191,7 @@ public final class SUtil
 
     /**
      * TODO: documentation
+     * @deprecated Use Utils in plaf
      */
     public static void writeFontPostfix(Device d, SFont font) {
         int style = PLAIN;
@@ -197,6 +206,10 @@ public final class SUtil
     }
 
 
+    /**
+     * TODO: documentation
+     * @deprecated Use ResourceImageIcon
+     */
     public static ImageIcon makeIcon(Object o, String fileName) {
         if ( o==null )
             return null;
@@ -210,6 +223,7 @@ public final class SUtil
      * @param baseClass
      * @param fileName of gif file
      * @return image icon
+     * @deprecated Use ResourceImageIcon
      */
     public static ImageIcon makeIcon(Class baseClass, String fileName) {
         return new ResourceImageIcon(baseClass, fileName);
