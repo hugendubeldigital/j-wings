@@ -53,7 +53,7 @@
 	      }
 	  }
 	  %> /><% // close image tag.
-          SRadioButton button = (SRadioButton)buttons.getComponentAt(i);
+          SAbstractButton button = (SAbstractButton)buttons.getComponentAt(i);
           String text = button.getText();
           if (text != null && !text.endsWith("&nbsp;")) {
                button.setText(text + "&nbsp;");

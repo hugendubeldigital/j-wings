@@ -34,6 +34,8 @@ public class SResetButton
      */
     public SResetButton(String text) {
         super(text);
+        
+        setType(RESET_BUTTON);
     }
 
     /**
@@ -50,7 +52,10 @@ public class SResetButton
      * @param t
      */
     public void setType(String t) {
-        super.setType(SConstants.RESET_BUTTON);
+        if ( !RESET_BUTTON.equals(t) )
+            throw new IllegalArgumentException("type change not supported, type is fix: resetbutton");
+        
+        super.setType(t);
     }
 
     public String getCGClassID() {

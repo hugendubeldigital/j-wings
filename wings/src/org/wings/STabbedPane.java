@@ -116,10 +116,10 @@ public class STabbedPane
         group = new SButtonGroup();
         group.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    SCheckBox checkbox = group.getSelection();
+                    SAbstractButton button = group.getSelection();
                     for (int i=0; i < getTabCount(); i++) {
                         Page page = getPageAt(i);
-                        if (checkbox == page.button) {
+                        if (button == page.button) {
                             setSelectedIndex(i);
                             fireStateChanged();
                             return;
@@ -902,7 +902,7 @@ public class STabbedPane
         SIcon disabledIcon;
         STabbedPane parent;
         SComponent component;
-        SRadioButton button;
+        SAbstractButton button;
         String tip;
         boolean enabled = true;
 
@@ -915,7 +915,7 @@ public class STabbedPane
             this.component = component;
             this.tip = tip;
 
-            button = new SRadioButton(title);
+            button = new SToggleButton(title);
             button.setShowAsFormComponent(false);
             button.setSelectedIcon(icon);
             button.setDisabledSelectedIcon(disabledIcon);

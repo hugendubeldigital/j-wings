@@ -24,7 +24,7 @@ import org.wings.plaf.xhtml.*;
 public final class CheckBoxCG
     extends org.wings.plaf.xhtml.CheckBoxCG
 {
-    protected void writeAnchorPrefix(Device d, SCheckBox checkBox)
+    protected void writeAnchorPrefix(Device d, SAbstractButton checkBox)
         throws IOException
     {
         String tooltip = checkBox.getToolTipText();
@@ -39,8 +39,8 @@ public final class CheckBoxCG
             else
                 Utils.writeStyleAttribute(d, "anchor", checkBox.getStyle(), "nonselection");
 
-            if (checkBox.getRealTarget() != null)
-                d.print(" target=\"").print(checkBox.getRealTarget()).print("\"");
+            if (checkBox.getEventTarget() != null)
+                d.print(" target=\"").print(checkBox.getEventTarget()).print("\"");
 
             if (tooltip != null)
                 d.print(" title=\"").print(tooltip).print("\"");
@@ -49,7 +49,7 @@ public final class CheckBoxCG
         }
     }
 
-    protected void writeFormPrefix(Device d, SCheckBox checkBox)
+    protected void writeFormPrefix(Device d, SAbstractButton checkBox)
         throws IOException
     {
         d.print("<input type=\"");
@@ -70,3 +70,5 @@ public final class CheckBoxCG
  * compile-command: "ant -emacs -find build.xml"
  * End:
  */
+
+

@@ -19,6 +19,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Enumeration;
+import java.util.Collections;
+import javax.swing.event.EventListenerList;
 
 import org.wings.session.SessionManager;
 
@@ -29,7 +31,7 @@ import org.wings.session.SessionManager;
  * group. 
  *
  * <p>A SButtonGroup can be used with any set of objects that inherit from
- * {@link SCheckBox}, because they support the selected state.
+ * {@link SAbstractButton}, because they support the selected state.
  *
  * <p>Initially, all buttons in the group are unselected. Once any button is 
  * selected, one button is always selected in the group. There is no way to
@@ -39,7 +41,7 @@ import org.wings.session.SessionManager;
  * <p><em>Details:</em>The implementation of the button group is a 
  * bit tricky for the HTML generation. In HTML, groups of components are
  * usually formed by giving them all the same name. The problem is, that 
- * any {@link SComponent}, especially the {@link SCheckBox}, have globally 
+ * any {@link SComponent}, especially the {@link SAbstractButton}, have globally 
  * <em>unique</em> names. So this implementation gives all buttons in the
  * group the name of this SButtonGroup, and sets their <em>value</em> to
  * their actual name. So a bit of dispatching is already done here.
@@ -58,12 +60,12 @@ public class SButtonGroup
     /**
      * TODO: documentation
      */
-    protected ArrayList buttons = new ArrayList(2);
+    protected final ArrayList buttons = new ArrayList(2);
 
     /**
      * TODO: documentation
      */
-    protected SCheckBox selection = null;
+    private SAbstractButton selection = null;
 
     /* */
     private transient String unifiedId = null;
@@ -71,7 +73,7 @@ public class SButtonGroup
     /**
      * TODO: documentation
      */
-    protected ArrayList actionListener = null;
+    protected final EventListenerList listenerList = new EventListenerList();
 
     /**
      * TODO: documentation
@@ -89,6 +91,20 @@ public class SButtonGroup
         return unifiedId;
     }
 
+    protected void setSelection(SAbstractButton button) {
+        SAbstractButton oldSelection = selection;
+
+        selection = button;
+
+        if ( selection!=null ) 
+            selection.setSelected(true);
+
+        if ( oldSelection!=null && oldSelection.getGroup()==this )
+            oldSelection.setSelected(false);
+
+        fireActionPerformed();
+    }
+
     /*
      * Konzeptionell richtiger waere hier SAbstractButton. Macht aber keinen
      * Sinn. Macht nur Sinn abstract Checkboxes(eventuell nur RadioButtons ???).
@@ -98,12 +114,13 @@ public class SButtonGroup
      *
      * @param button
      */
-    public void add(SCheckBox button) {
+    public void add(SAbstractButton button) {
         if ( buttons!=null && !buttons.contains(button) ) {
             buttons.add(button);
-            if ( selection==null && button.isSelected() )
-                selection = button;
             button.setGroup(this);
+            if ( selection==null && button.isSelected() ) {
+                setSelection(button);
+            }
         }
     }
 
@@ -112,14 +129,16 @@ public class SButtonGroup
      *
      * @param button
      */
-    public void remove(SCheckBox button) {
-        if ( button==null )
+    public void remove(SAbstractButton button) {
+        if ( button==null || button.getGroup()!=this )
             return;
 
         buttons.remove(button);
-        if ( button==selection )
-            selection=null;
         button.setGroup(null);
+
+        if ( button==selection ) {
+            setSelection(null);
+        }
     }
 
     /**
@@ -128,7 +147,7 @@ public class SButtonGroup
      */
     public void removeAll() {
         while ( buttons.size()>0 )
-            remove((SCheckBox)buttons.get(0));
+            remove((SAbstractButton)buttons.get(0));
     }
 
 
@@ -137,22 +156,13 @@ public class SButtonGroup
      *
      * @return
      */
-    public SCheckBox getSelection() {
-        if ( selection!=null && selection.isSelected() )
-            return selection;
-        else
-            return null;
+    public final SAbstractButton getSelection() {
+        return selection;
     }
 
-    public void setSelected(SCheckBox b, boolean selected) {
-        if ( selected && b!=selection ) {
-            SCheckBox oldSelection = selection;
-            selection = b;
-            selection.setSelected(true);
-            if ( oldSelection!=null ) {
-                oldSelection.setSelected(false);
-            }
-            fireActionPerformed();
+    public void setSelected(SAbstractButton b, boolean selected) {
+        if ( selected && b!=selection && b!=null ) {
+            setSelection(b);
         }
     }
 
@@ -162,7 +172,7 @@ public class SButtonGroup
      * @param button
      * @return
      */
-    public boolean isSelected(SCheckBox button) {
+    public boolean isSelected(SAbstractButton button) {
         return button==getSelection();
     }
 
@@ -181,7 +191,7 @@ public class SButtonGroup
      * @return
      */
     public Enumeration getElements() {
-        return java.util.Collections.enumeration(buttons);
+        return Collections.enumeration(buttons);
     }
 
     /**
@@ -191,7 +201,7 @@ public class SButtonGroup
      */
     public String getNamePrefix() {
         if ( buttons!=null && buttons.size()>0 ) {
-            SCheckBox b = (SCheckBox)buttons.get(0);
+            SAbstractButton b = (SAbstractButton)buttons.get(0);
             if (b.getParentFrame() != null)
                 return b.getParentFrame().getEventEpoch() + SConstants.UID_DIVIDER +
                     getUnifiedId(); // + SConstants.UID_DIVIDER;
@@ -204,10 +214,8 @@ public class SButtonGroup
      *
      * @param al
      */
-    public void addActionListener(ActionListener al) {
-        if ( actionListener==null )
-            actionListener = new ArrayList(2);
-        actionListener.add(al);
+    public void addActionListener(ActionListener listener) {
+        listenerList.add(ActionListener.class, listener);
     }
 
     /**
@@ -215,27 +223,37 @@ public class SButtonGroup
      *
      * @param al
      */
-    public void removeActionListener(ActionListener al) {
-        if ( actionListener==null )
-            return;
-        actionListener.remove(al);
+    public void removeActionListener(ActionListener listener) {
+        listenerList.remove(ActionListener.class, listener);
+    }
+
+
+    /**
+     * Fire an ActionEvent at each registered listener.
+     */
+    protected void fireActionPerformed() {
+        fireActionEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
+                                        SELECTION_CHANGED));
     }
 
     /**
-     * TODO: documentation
-     *
+     * Fire an ActionEvent at each registered listener.
      */
-    protected void fireActionPerformed() {
-        if ( actionListener!=null &&
-             actionListener.size()>0 ) {
-            ActionEvent e = new ActionEvent(this,
-                                            ActionEvent.ACTION_PERFORMED,
-                                            SELECTION_CHANGED);
+    protected final void fireActionEvent(ActionEvent e) {
+        if ( e==null )
+            return;
 
-            for ( int i=0; i<actionListener.size(); i++ )
-                ((ActionListener)actionListener.get(i)).actionPerformed(e);
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i] == ActionListener.class) {
+                ((ActionListener)listeners[i+1]).actionPerformed(e);
+            }
         }
     }
+
 }
 
 /*

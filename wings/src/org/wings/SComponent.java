@@ -989,6 +989,22 @@ public abstract class SComponent
     {
         visitor.visit(this);
     }
+
+    /**
+     * use this method for changing a variable. if a new value is different from
+     * the old value set the new one and notify e.g. the reloadmanager...
+     */
+    protected static final boolean isDifferent(Object oldObject, 
+                                               Object newObject) {
+        if ( oldObject==newObject )
+            return false;
+
+        if ( oldObject==null )
+            return true;
+
+        return !oldObject.equals(newObject);
+    }
+
 }
 
 /*

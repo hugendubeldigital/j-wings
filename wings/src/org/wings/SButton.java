@@ -14,15 +14,9 @@
 
 package org.wings;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.*;
 import javax.swing.Action;
 
-import java.util.ArrayList;
-
 import org.wings.plaf.*;
-import org.wings.io.Device;
 
 /**
  * TODO: documentation
@@ -36,30 +30,6 @@ public class SButton extends SAbstractButton
 
     /**
      * TODO: documentation
-     */
-    protected SIcon icon = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected SIcon disabledIcon = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected int verticalTextPosition = CENTER;
-    /**
-     * TODO: documentation
-     */
-    protected int horizontalTextPosition = RIGHT;
-
-    /**
-     * TODO: documentation
-     */
-    protected  int iconTextGap = 1;
-
-    /**
-     * TODO: documentation
      *
      * @param text
      */
@@ -70,9 +40,18 @@ public class SButton extends SAbstractButton
     /**
      * TODO: documentation
      *
+     * @param text
+     */
+    public SButton(Action action) {
+        super(action);
+    }
+
+    /**
+     * TODO: documentation
+     *
      */
     public SButton() {
-        super(null);
+        super();
     }
 
     /**
@@ -81,213 +60,13 @@ public class SButton extends SAbstractButton
      * @param i
      */
     public SButton(SIcon i) {
-        super(null);
+        super();
         setIcon(i);
     }
 
     public SButton(String text, SIcon i) {
         super(text);
         setIcon(i);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param textPosition
-     */
-    public void setHorizontalTextPosition(int textPosition) {
-        horizontalTextPosition = textPosition;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public int getHorizontalTextPosition() {
-        return horizontalTextPosition;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param textPosition
-     */
-    public void setVerticalTextPosition(int textPosition) {
-        verticalTextPosition = textPosition;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public int getVerticalTextPosition() {
-        return verticalTextPosition;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param gap
-     */
-    public void setIconTextGap(int gap) {
-        iconTextGap = gap;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public int getIconTextGap() {
-        return iconTextGap;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setIcon(SIcon i) {
-        SIcon oldIcon = icon;
-        icon = i;
-        if ((icon == null && oldIcon != null) ||
-            icon != null && !icon.equals(oldIcon))
-            reload(ReloadManager.RELOAD_CODE);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public SIcon getIcon() {
-        return icon;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setDisabledIcon(SIcon i) {
-        SIcon oldDisabledIcon = disabledIcon;
-        disabledIcon = i;
-        if ((disabledIcon == null && oldDisabledIcon != null) ||
-            disabledIcon != null && !disabledIcon.equals(oldDisabledIcon))
-            reload(ReloadManager.RELOAD_CODE);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public SIcon getDisabledIcon() {
-        if(disabledIcon == null) {
-            /**** TODO
-                  if(icon != null && icon instanceof ImageIcon)
-                  disabledIcon = new ImageIcon(GrayFilter.createDisabledImage(((ImageIcon)icon).getImage()));
-            ***/
-        }
-        return disabledIcon;
-    }
-
-    private Action action;
-    private PropertyChangeListener actionPropertyChangeListener;
-    
-    public void setAction(Action a) {
-	Action oldValue = getAction();
-	if (action == null || !action.equals(a)) {
-	    action = a;
-	    if (oldValue != null) {
-		removeActionListener(oldValue);
-		oldValue.removePropertyChangeListener(actionPropertyChangeListener);
-		actionPropertyChangeListener = null;
-	    }
-	    configurePropertiesFromAction(action);
-	    if (action != null) {		
-		// Don't add if it is already a listener
-		if (!isListener(ActionListener.class, action)) {
-		    addActionListener(action);
-		}
-		// Reverse linkage:
-		actionPropertyChangeListener = createActionPropertyChangeListener(action);
-		action.addPropertyChangeListener(actionPropertyChangeListener);
-	    }
-	    firePropertyChange("action", oldValue, action);
-	}
-    }
-
-    private boolean isListener(Class c, ActionListener a) {
-	boolean isListener = false;
-	Object[] listeners = listenerList.getListenerList();
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i] == c && listeners[i+1] == a) {
-                isListener = true;
-	    }
-	}
-	return isListener;
-    }
-
-    public Action getAction() {
-	return action;
-    }
-
-    protected void configurePropertiesFromAction(Action a) {
-        // uncomment if compiled against < jdk 1.3
-        //	setActionCommand((a != null 
-        //                  ? (String)a.getValue(Action.ACTION_COMMAND_KEY) 
-        //                  : null));
-	setText((a != null ? (String)a.getValue(Action.NAME) : null));
-	setIcon((a != null ? (SIcon)a.getValue(Action.SMALL_ICON) : null));
-	setEnabled((a != null ? a.isEnabled() : true));
- 	setToolTipText((a != null ? (String)a.getValue(Action.SHORT_DESCRIPTION) : null));	
-    }
-
-    protected PropertyChangeListener createActionPropertyChangeListener(Action a) {
-        return new ButtonActionPropertyChangeListener(this, a);
-    }
-
-    private static class ButtonActionPropertyChangeListener
-        extends AbstractActionPropertyChangeListener
-    {
-	ButtonActionPropertyChangeListener(SButton b, Action a) {
-	    super(b, a);
-	}
-
-	public void propertyChange(PropertyChangeEvent e) {	    
-	    String propertyName = e.getPropertyName();
-	    SButton button = (SButton)getTarget();
-	    if (button == null) {
-		Action action = (Action)e.getSource();
-		action.removePropertyChangeListener(this);
-            }
-            else {
-                if (e.getPropertyName().equals(Action.NAME)) {
-                    String text = (String)e.getNewValue();
-                    button.setText(text);
-                }
-                else if (e.getPropertyName().equals(Action.SHORT_DESCRIPTION)) {
-                    String text = (String)e.getNewValue();
-                    button.setToolTipText(text);
-                }
-                else if (propertyName.equals("enabled")) {
-                    Boolean enabled = (Boolean)e.getNewValue();
-                    button.setEnabled(enabled.booleanValue());
-                }
-                else if (e.getPropertyName().equals(Action.SMALL_ICON)) {
-                    SIcon icon = (SIcon) e.getNewValue();
-                    button.setIcon(icon);
-                }
-                // uncomment if compiled against jdk < 1.3
-                /*                else if (e.getPropertyName().equals(Action.ACTION_COMMAND_KEY)) {
-                    String actionCommand = (String)e.getNewValue();
-                    button.setActionCommand(actionCommand);
-                    }*/
-            }
-        }
     }
 
     public String getCGClassID() {
@@ -297,6 +76,24 @@ public class SButton extends SAbstractButton
     public void setCG(ButtonCG cg) {
         super.setCG(cg);
     }
+
+    /**
+     * 
+     */
+    public void setSelected(boolean b) {
+        // button is never in a selected state...
+        super.setSelected(false);
+    }
+
+    /**
+     * in form components the parameter value of an button is the button
+     * text. So just toggle selection, in process request, if it is a request
+     * for me.
+     */
+    protected boolean parseSelectionToggle(String toggleParameter) {
+        return true;
+    }
+
 }
 
 /*
@@ -306,3 +103,8 @@ public class SButton extends SAbstractButton
  * compile-command: "ant -emacs -find build.xml"
  * End:
  */
+
+
+
+
+

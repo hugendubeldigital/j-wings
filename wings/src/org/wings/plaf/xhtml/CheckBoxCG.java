@@ -34,7 +34,7 @@ public class CheckBoxCG
     public void write(Device d, SComponent c)
         throws IOException
     {
-        SCheckBox checkBox = (SCheckBox)c;
+        SAbstractButton checkBox = (SAbstractButton)c;
         SBorder border = checkBox.getBorder();
         boolean selected = checkBox.isSelected();
         boolean enabled = checkBox.isEnabled();
@@ -53,14 +53,14 @@ public class CheckBoxCG
         Utils.writeBorderPostfix(d, border);
     }
 
-    protected void writeHiddenComponent(Device d, SCheckBox checkBox)
+    protected void writeHiddenComponent(Device d, SAbstractButton checkBox)
         throws IOException
     {
         Utils.writeHiddenComponent(d, checkBox.getNamePrefix(),
-                                   checkBox.getUnifiedId() + UID_DIVIDER + "0");
+                                   checkBox.getDeselectParameter());
     }
 
-    protected void writeAnchorButton(Device d, SCheckBox checkBox)
+    protected void writeAnchorButton(Device d, SAbstractButton checkBox)
         throws IOException
     {
         SIcon icon = checkBox.isSelected() ? checkBox.getSelectedIcon() :
@@ -131,7 +131,7 @@ public class CheckBoxCG
         }
     }
 
-    protected void writeAnchorText(Device d, SCheckBox checkBox)
+    protected void writeAnchorText(Device d, SAbstractButton checkBox)
         throws IOException
     {
         String text = checkBox.getText();
@@ -142,13 +142,13 @@ public class CheckBoxCG
         }
     }
 
-    protected void writeAnchorIcon(Device d, SCheckBox checkBox)
+    protected void writeAnchorIcon(Device d, SAbstractButton checkBox)
         throws IOException
     {
         writeAnchorIcon(d, checkBox, null);
     }
 
-    protected void writeAnchorIcon(Device d, SCheckBox checkBox, String align)
+    protected void writeAnchorIcon(Device d, SAbstractButton checkBox, String align)
         throws IOException
     {
         SIcon icon = null;
@@ -203,14 +203,15 @@ public class CheckBoxCG
         }
     }
 
-    protected void writeAnchorAddress(Device d, SCheckBox checkBox) 
+    protected void writeAnchorAddress(Device d, SAbstractButton checkBox) 
     throws IOException {
         RequestURL addr = checkBox.getRequestURL();
-        addr.addParameter(checkBox.getNamePrefix() + "=" + checkBox.getUnifiedId() + SConstants.UID_DIVIDER);
+        addr.addParameter(checkBox.getNamePrefix() + "=" + 
+                          checkBox.getSelectionToggleParameter());
         addr.write(d);
     }
 
-    protected void writeAnchorPrefix(Device d, SCheckBox checkBox)
+    protected void writeAnchorPrefix(Device d, SAbstractButton checkBox)
         throws IOException
     {
         String tooltip = checkBox.getToolTipText();
@@ -220,8 +221,8 @@ public class CheckBoxCG
             writeAnchorAddress(d, checkBox);
             d.print("\"");
             
-            if (checkBox.getRealTarget() != null)
-                d.print(" target=\"").print(checkBox.getRealTarget()).print("\"");
+            if (checkBox.getEventTarget() != null)
+                d.print(" target=\"").print(checkBox.getEventTarget()).print("\"");
 
             if (tooltip != null)
                 d.print(" title=\"").print(tooltip).print("\"");
@@ -230,7 +231,7 @@ public class CheckBoxCG
         }
     }
 
-    protected void writeAnchorBody(Device d, SCheckBox checkBox)
+    protected void writeAnchorBody(Device d, SAbstractButton checkBox)
         throws IOException
     {
         String text = checkBox.getText();
@@ -241,7 +242,7 @@ public class CheckBoxCG
         d.print((noBreak) ? StringUtil.replace(text, " ", "&nbsp;") : text);
     }
 
-    protected void writeAnchorPostfix(Device d, SCheckBox checkBox)
+    protected void writeAnchorPostfix(Device d, SAbstractButton checkBox)
         throws IOException
     {
         if (checkBox.isEnabled()) {
@@ -249,7 +250,7 @@ public class CheckBoxCG
         }
     }
 
-    protected void writeFormButton(Device d, SCheckBox checkBox)
+    protected void writeFormButton(Device d, SAbstractButton checkBox)
         throws IOException
     {
         SIcon icon = null;
@@ -266,6 +267,7 @@ public class CheckBoxCG
 
         if (icon == null ) {
             writeFormText(d, checkBox, id);
+            writeFormIcon(d, checkBox, id);
         } else if (text == null) {
             writeFormIcon(d, checkBox, id);
         } else {
@@ -337,7 +339,7 @@ public class CheckBoxCG
         }
     }
 
-    protected void writeFormText(Device d, SCheckBox checkBox, String id)
+    protected void writeFormText(Device d, SAbstractButton checkBox, String id)
         throws IOException
     {
         d.print("<label for=\"").print(id).print("\">");
@@ -345,7 +347,7 @@ public class CheckBoxCG
         d.print("</label>");
     }
 
-    protected void writeFormIcon(Device d, SCheckBox checkBox, String id)
+    protected void writeFormIcon(Device d, SAbstractButton checkBox, String id)
         throws IOException
     {
         writeFormPrefix(d, checkBox, id);
@@ -353,7 +355,7 @@ public class CheckBoxCG
         writeFormPostfix(d, checkBox);
     }
 
-    protected void writeFormPrefix(Device d, SCheckBox checkBox, String id)
+    protected void writeFormPrefix(Device d, SAbstractButton checkBox, String id)
         throws IOException
     {
         d.print("<input type=\"");
@@ -361,7 +363,7 @@ public class CheckBoxCG
         d.print("\" id=\"").print(id).print("\"");
     }
 
-    protected void writeFormBody(Device d, SCheckBox checkBox)
+    protected void writeFormBody(Device d, SAbstractButton checkBox)
         throws IOException
     {
         if (checkBox.isEnabled())
@@ -369,14 +371,14 @@ public class CheckBoxCG
                 print(checkBox.getNamePrefix()).print("\"");
 
         d.print(" value=\"").
-            print(checkBox.getUnifiedId() + UID_DIVIDER + "1").
+            print(checkBox.getSelectParameter()).
             print("\"");
 
         if (checkBox.isSelected())
             d.print(" checked=\"1\"");
     }
 
-    protected void writeFormPostfix(Device d, SCheckBox checkBox)
+    protected void writeFormPostfix(Device d, SAbstractButton checkBox)
         throws IOException
     {
         d.print(" />");

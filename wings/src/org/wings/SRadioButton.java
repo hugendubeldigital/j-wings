@@ -29,33 +29,15 @@ import org.wings.plaf.*;
  * @version $Revision$
  */
 public class SRadioButton
-    extends SCheckBox
+    extends SAbstractButton
 {
     private static final String cgClassID = "RadioButtonCG";
-
-    private static ResourceImageIcon DEFAULT_SELECTED_ICON =
-        new ResourceImageIcon("org/wings/icons/SelectedRadioButton.gif");
-
-    private static ResourceImageIcon DEFAULT_NOT_SELECTED_ICON =
-        new ResourceImageIcon("org/wings/icons/NotSelectedRadioButton.gif");
-
-    private static ResourceImageIcon DEFAULT_DISABLED_SELECTED_ICON =
-        new ResourceImageIcon("org/wings/icons/DisabledSelectedRadioButton.gif");
-
-    private static ResourceImageIcon DEFAULT_DISABLED_NOT_SELECTED_ICON =
-        new ResourceImageIcon("org/wings/icons/DisabledNotSelectedRadioButton.gif");
-
-    /**
-     * TODO: documentation
-     */
-    protected String label = "";
 
     /**
      * TODO: documentation
      *
      */
     public SRadioButton() {
-        setDefaultIcons();
         setType(RADIOBUTTON);
     }
 
@@ -65,9 +47,7 @@ public class SRadioButton
      * @param label
      */
     public SRadioButton(String label) {
-        super(label);
-        setDefaultIcons();
-        setType(RADIOBUTTON);
+        super(label, RADIOBUTTON);
     }
 
     /**
@@ -76,16 +56,8 @@ public class SRadioButton
      * @param selected
      */
     public SRadioButton(boolean selected) {
-        super(selected);
-        setDefaultIcons();
-        setType(RADIOBUTTON);
-    }
-
-    private void setDefaultIcons() {
-        setSelectedIcon(DEFAULT_SELECTED_ICON);
-        setDisabledSelectedIcon(DEFAULT_DISABLED_SELECTED_ICON);
-        setIcon(DEFAULT_NOT_SELECTED_ICON);
-        setDisabledIcon(DEFAULT_DISABLED_NOT_SELECTED_ICON);
+        this();
+        setSelected(selected);
     }
 
     /**
@@ -94,7 +66,10 @@ public class SRadioButton
      * @param t
      */
     public void setType(String t) {
-        super.setType(SConstants.RADIOBUTTON);
+        if ( !RADIOBUTTON.equals(t) )
+            throw new IllegalArgumentException("type change not supported, type is fix: radiobutton");
+        
+        super.setType(t);
     }
 
     public String getCGClassID() {
@@ -104,6 +79,7 @@ public class SRadioButton
     public void setCG(RadioButtonCG cg) {
         super.setCG(cg);
     }
+
 }
 
 /*

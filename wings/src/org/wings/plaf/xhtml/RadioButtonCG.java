@@ -37,18 +37,18 @@ public class RadioButtonCG
         return propertyPrefix;
     }
 
-    protected void writeAnchorPrefix(Device d, SCheckBox checkBox)
+    protected void writeAnchorPrefix(Device d, SAbstractButton button)
         throws IOException
     {
-        String tooltip = checkBox.getToolTipText();
+        String tooltip = button.getToolTipText();
 
-        if (checkBox.isEnabled() && !checkBox.isSelected()) {
+        if (button.isEnabled() && !button.isSelected()) {
             d.print("<a href=\"");
-            writeAnchorAddress(d, checkBox);
+            writeAnchorAddress(d, button);
             d.print("\"");
 
-            if (checkBox.getRealTarget() != null)
-                d.print(" target=\"").print(checkBox.getRealTarget()).print("\"");
+            if (button.getEventTarget() != null)
+                d.print(" target=\"").print(button.getEventTarget()).print("\"");
 
             if (tooltip != null)
                 d.print(" title=\"").print(tooltip).print("\"");
@@ -57,10 +57,10 @@ public class RadioButtonCG
         }
     }
 
-    protected void writeAnchorPostfix(Device d, SCheckBox checkBox)
+    protected void writeAnchorPostfix(Device d, SAbstractButton button)
         throws IOException
     {
-        if (checkBox.isEnabled() && !checkBox.isSelected())
+        if (button.isEnabled() && !button.isSelected())
             d.print("</a>");
     }
 }

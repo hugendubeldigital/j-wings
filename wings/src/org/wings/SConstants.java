@@ -62,11 +62,6 @@ public interface SConstants
     int VIRTUAL_WRAP  = 1;
     int PHYSICAL_WRAP = 2;
 
-    String SUBMIT_BUTTON  = "submit";
-    String RESET_BUTTON   = "reset";
-    String IMAGE_BUTTON   = "image";
-    String CHECKBOX       = "checkbox";
-    String RADIOBUTTON    = "radio";
 
     int CLEAR_NO    = 0;
     int CLEAR_LEFT  = 1;

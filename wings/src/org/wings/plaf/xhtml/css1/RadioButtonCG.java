@@ -24,7 +24,7 @@ import org.wings.plaf.xhtml.*;
 public final class RadioButtonCG
     extends org.wings.plaf.xhtml.RadioButtonCG
 {
-    protected void writeAnchorPrefix(Device d, SCheckBox checkBox)
+    protected void writeAnchorPrefix(Device d, SAbstractButton checkBox)
         throws IOException
     {
         String tooltip = checkBox.getToolTipText();
@@ -34,8 +34,8 @@ public final class RadioButtonCG
             writeAnchorAddress(d, checkBox);
             d.print("\"");
 
-            if (checkBox.getRealTarget() != null)
-                d.print(" target=\"").print(checkBox.getRealTarget()).print("\"");
+            if (checkBox.getEventTarget() != null)
+                d.print(" target=\"").print(checkBox.getEventTarget()).print("\"");
 
             if (tooltip != null)
                 d.print(" title=\"").print(tooltip).print("\"");
@@ -53,7 +53,7 @@ public final class RadioButtonCG
         d.print(">");
     }
 
-    protected void writeFormPrefix(Device d, SCheckBox checkBox)
+    protected void writeFormPrefix(Device d, SAbstractButton checkBox)
         throws IOException
     {
         d.print("<input type=\"");
@@ -66,7 +66,7 @@ public final class RadioButtonCG
             Utils.writeStyleAttribute(d, "form", checkBox.getStyle(), "nonselection");
     }
 
-    protected void writeAnchorPostfix(Device d, SCheckBox checkBox)
+    protected void writeAnchorPostfix(Device d, SAbstractButton checkBox)
         throws IOException
     {
         if (checkBox.isEnabled() && !checkBox.isSelected())

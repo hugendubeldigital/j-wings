@@ -34,61 +34,9 @@ import org.wings.io.Device;
  * @author Dominik Bartenstein, <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SCheckBox extends SButton
+public class SCheckBox extends SAbstractButton
 {
     private static final String cgClassID = "CheckBoxCG";
-
-    /**
-     * TODO: documentation
-     */
-    protected SButtonGroup group = null;
-
-    /** selection state of the checkBox */
-    protected boolean selected = false;
-
-    /**
-     * TODO: documentation
-     */
-    protected SIcon selectedIcon = DEFAULT_SELECTED_ICON;
-
-    /**
-     * TODO: documentation
-     */
-    protected SIcon disabledSelectedIcon = DEFAULT_DISABLED_SELECTED_ICON;
-
-    /**
-     * TODO: documentation
-     */
-    protected SIcon backupIcon = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected SIcon backupDisabledIcon = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected Style backupStyle = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected Style backupDisabledStyle = null;
-
-
-    private static ResourceImageIcon DEFAULT_SELECTED_ICON =
-        new ResourceImageIcon("org/wings/icons/SelectedCheckBox.gif");
-
-    private static ResourceImageIcon DEFAULT_NOT_SELECTED_ICON =
-        new ResourceImageIcon("org/wings/icons/NotSelectedCheckBox.gif");
-
-    private static ResourceImageIcon DEFAULT_DISABLED_SELECTED_ICON =
-        new ResourceImageIcon("org/wings/icons/DisabledSelectedCheckBox.gif");
-
-    private static ResourceImageIcon DEFAULT_DISABLED_NOT_SELECTED_ICON =
-        new ResourceImageIcon("org/wings/icons/DisabledNotSelectedCheckBox.gif");
-
 
     /**
      * TODO: documentation
@@ -116,81 +64,10 @@ public class SCheckBox extends SButton
     public SCheckBox(boolean selected) {
         setSelected(selected);
 
-        setIcon(DEFAULT_NOT_SELECTED_ICON);
-        setDisabledIcon(DEFAULT_DISABLED_NOT_SELECTED_ICON);
-
         setHorizontalTextPosition(NO_ALIGN);
         setVerticalTextPosition(NO_ALIGN);
-    }
 
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setSelectedIcon(SIcon i) {
-        if ( i!=selectedIcon || i!=null && !i.equals(selectedIcon) ) {
-            selectedIcon = i;
-            reload(ReloadManager.RELOAD_CODE);
-        } 
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public SIcon getSelectedIcon() {
-        return selectedIcon;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setDisabledSelectedIcon(SIcon i) {
-        if ( i!=disabledSelectedIcon || 
-             i!=null && !i.equals(disabledSelectedIcon) ) {
-            disabledSelectedIcon = i;
-            reload(ReloadManager.RELOAD_CODE);
-        } 
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public SIcon getDisabledSelectedIcon() {
-        return disabledSelectedIcon;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public SButtonGroup getGroup() {
-        return group;
-    }
-
-    /**
-     * Add this button to a button group. This influences the event-prefix
-     * this button reports to the request dispatcher: it will change to
-     * the button group's prefix.
-     * @param g
-     */
-    protected void setGroup(SButtonGroup g) {
-        if ( group!=g ) {
-            if (getDispatcher()!=null ) {
-                getDispatcher().unregister(this);
-                group = g;
-                getDispatcher().register(this);
-            }
-            else
-                group = g;
-        }
+        super.setType(CHECKBOX);
     }
 
     /**
@@ -198,101 +75,11 @@ public class SCheckBox extends SButton
      *
      * @param t
      */
-    public void setType(String t) {
-        if ( t.equals(SConstants.RADIOBUTTON) )
-            super.setType(SConstants.RADIOBUTTON);
-        else
-            super.setType(SConstants.CHECKBOX);
-    }
-
-
-    /*
-     * Setzt, falls angehoeriger einer {@link SButtonGroup}, sich
-     * selbst als das selektierte Element.
-     */
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void setSelected(boolean selected) {
-        boolean oldSelected = this.selected;
-        this.selected = selected;
-
-        if (group != null)
-            group.setSelected(this, selected);
-        if (oldSelected != selected)
-            reload(ReloadManager.RELOAD_CODE);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void doClick() {
-        setSelected(!isSelected());
-
-        fireActionPerformed();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     */
-    public void backupIcons() {
-        backupDisabledIcon = getDisabledIcon();
-        backupIcon = getIcon();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     */
-    public void restoreIcons() {
-        setDisabledIcon(backupDisabledIcon);
-        setIcon(backupIcon);
-    }
-
-    /*
-     * Zuerst bekommt die Komponente die Action von der Checkbox (falls
-     * diese selektiert wurde). Danach die von der Hidden
-     * Komponente. Falls die Selektionsaction nicht kam, wird die
-     * Selektion zurueckgesetzt.
-     */
-    public void processRequest(String action, String[] values) {
-        String uid = getUnifiedId()+SConstants.UID_DIVIDER;
-
-        if ( getShowAsFormComponent() ) {
-            for ( int i=0; i<values.length; i++ ) {
-                // the request is for this component only, if value starts with
-                // its unified IdString (ButtonGroup)
-                if ( values[i].startsWith(uid) ) {
-                    if (values[i].endsWith("1")) {
-                        setSelected(true);
-                        SForm.addArmedComponent(this);
-                        return;
-                    } else {
-                        setSelected(false);
-                        SForm.addArmedComponent(this);
-                    }
-                }
-            }
-        } else {
-            for ( int i=0; i<values.length; i++ ) {
-                // the request is for this component only, if value starts with
-                // its unified IdString (ButtonGroup)
-                if ( values[i].startsWith(uid) ) {
-                    setSelected(!isSelected());
-                    SForm.addArmedComponent(this);
-                    return;
-                }
-            }
-        }
+    public final void setType(String t) {
+        if ( !CHECKBOX.equals(t) )
+            throw new IllegalArgumentException("type change not supported, type is fix: radiobutton");
+        
+        super.setType(t);
     }
 
     public String getCGClassID() {
@@ -303,25 +90,6 @@ public class SCheckBox extends SButton
         super.setCG(cg);
     }
 
-    //--- RequestListener implementation.
-    /*
-     * if this button belongs to a button group, then its name
-     * is returned, otherwise the own.
-     */
-    
-    public String getNamePrefix() {
-        if ( group==null )
-            return super.getNamePrefix();
-        else
-            return group.getNamePrefix();
-    }
-
-    public void fireIntermediateEvents() {
-        // TODO: fire item events
-        fireActionPerformed();
-    }
-
-    public void fireFinalEvents() {}
 }
 
 /*
