@@ -40,11 +40,6 @@ public class SContainer extends SComponent implements ClickableRenderComponent
     private static final String cgClassID = "ContainerCG";
 
     /**
-     * The constraints for the component.
-     */
-    protected ArrayList containerListener;
-
-    /**
      * The layout for the component.
      */
     protected SLayoutManager layout;
@@ -153,14 +148,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param    l the container listener
      */
     public final void addContainerListener(SContainerListener l) {
-        if (l == null) {
-            return;
-        }
-
-        if ( containerListener==null )
-            containerListener = new ArrayList();
-
-        containerListener.add(l);
+        addEventListener(SContainerListener.class, l);
     }
 
     /**
@@ -171,10 +159,23 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param 	l the container listener
      */
     public final void removeContainerListener(SContainerListener l) {
-        if (l == null || containerListener==null ) {
-            return;
+        removeEventListener(SContainerListener.class, l);
+    }
+
+    protected void fireContainerEvent(int type, SComponent comp) {
+        SContainerEvent event = null;
+
+        Object[] listeners = getListenerList();
+        for ( int i = listeners.length-2; i>=0; i -= 2 ) {
+            if ( listeners[i]==SContainerListener.class ) {
+                // Lazily create the event:
+                if ( event==null )
+                    event = new SContainerEvent(this, type, comp);
+
+                processContainerEvent((SContainerListener)listeners[i+1],
+                                      event);
+            }
         }
-        containerListener.remove(l);
     }
 
     /**
@@ -187,20 +188,16 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * b) Container events are enabled via enableEvents()
      * @param e the container event
      */
-    protected void processContainerEvent(SContainerEvent e) {
-        if (containerListener != null && containerListener.size()>0) {
-            Iterator it=containerListener.iterator();
-            switch(e.getID()) {
-            case SContainerEvent.COMPONENT_ADDED:
-                while (it.hasNext())
-                    ((SContainerListener)it.next()).componentAdded(e);
-                break;
+    protected void processContainerEvent(SContainerListener listener,
+                                         SContainerEvent e) {
+        switch( e.getID() ) {
+        case SContainerEvent.COMPONENT_ADDED:
+            listener.componentAdded(e);
+            break;
 
-            case SContainerEvent.COMPONENT_REMOVED:
-                while (it.hasNext())
-                    ((SContainerListener)it.next()).componentRemoved(e);
-                break;
-            }
+        case SContainerEvent.COMPONENT_REMOVED:
+            listener.componentRemoved(e);
+            break;
         }
     }
 
@@ -287,8 +284,8 @@ public class SContainer extends SComponent implements ClickableRenderComponent
         if ( isRemoved ) {
             getConstraintList().remove(index);
 
-            processContainerEvent(new SContainerEvent(this,
-                                  SContainerEvent.COMPONENT_REMOVED, c));
+            fireContainerEvent(SContainerEvent.COMPONENT_REMOVED, c);
+
             c.setParent(null);
             reload(ReloadManager.RELOAD_CODE);
         }
@@ -446,7 +443,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
             getConstraintList().add(index, constraint);
             c.setParent(this);
 
-            processContainerEvent(new SContainerEvent(this, SContainerEvent.COMPONENT_ADDED, c));
+            fireContainerEvent(SContainerEvent.COMPONENT_ADDED, c);
             reload(ReloadManager.RELOAD_ALL);
         }
 

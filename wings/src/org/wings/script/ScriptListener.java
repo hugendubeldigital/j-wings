@@ -15,6 +15,7 @@
 package org.wings.script;
 
 import org.wings.SComponent;
+import java.util.EventListener;
 
 /**
  * TODO: documentation
@@ -22,7 +23,7 @@ import org.wings.SComponent;
  * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public interface ScriptListener
+public interface ScriptListener extends EventListener
 {
     String getEvent();
     String getCode();

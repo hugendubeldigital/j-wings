@@ -79,8 +79,6 @@ public class STabbedPane
     /** the maximum tabs per line */
     protected int maxTabsPerLine = -1;
 
-    List changeListener = new ArrayList(2);
-
     /** The style of selected tabs */
     protected String selectionStyle;
 
@@ -242,8 +240,7 @@ public class STabbedPane
      * @param cl add to listener list
      */
     public void addChangeListener(ChangeListener cl) {
-        if ( !changeListener.contains(cl) )
-            changeListener.add(cl);
+        addEventListener(ChangeListener.class, cl);
     }
 
     /**
@@ -253,16 +250,26 @@ public class STabbedPane
      * @param cl remove from listener list
      */
     public void removeChangeListener(ChangeListener cl) {
-        changeListener.remove(cl);
+        removeEventListener(ChangeListener.class, cl);
     }
 
     /**
      * Fire ChangeEvents at all registered change listeners.
      */
     protected void fireStateChanged() {
-        ChangeEvent ce = new ChangeEvent(this);
-        for ( int i=0; i<changeListener.size(); i++ ) {
-            ((ChangeListener)changeListener.get(i)).stateChanged(ce);
+        ChangeEvent event = null;
+
+        // maybe the better way to do this is to user the getListenerList
+        // and iterate through all listeners, this saves the creation of
+        // an array but it must cast to the apropriate listener
+        Object[] listeners = getListenerList();
+        for ( int i = listeners.length-2; i>=0; i -= 2 ) {
+            if ( listeners[i]==ChangeListener.class ) {
+                // Lazily create the event:
+                if ( event==null )
+                    event = new ChangeEvent(this);
+                ((ChangeListener) listeners[i+1]).stateChanged(event);
+            }
         }
     }
 
@@ -975,8 +982,10 @@ public class STabbedPane
     {
         final int index = model.getSelectedIndex();
         if (index >= pages.size()) return;
-		card.show(((Page) pages.get(index)).component);
-		fireStateChanged();
+        card.show(((Page) pages.get(index)).component);
+
+        reload(ReloadManager.RELOAD_CODE);
+        fireStateChanged();
     }
 
 }

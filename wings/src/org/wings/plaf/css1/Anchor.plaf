@@ -4,7 +4,7 @@
 <write>
 <%
     String style = Utils.style(component);
-    if (style != null || component.getScriptListeners().size() != 0) {
+    if (style != null || component.getScriptListeners().length != 0) {
         %><span<%
         %><%|class=style%><%
         Utils.writeEvents(device, component);
@@ -19,7 +19,7 @@
         AnchorRenderStack.pop();
     }
 
-    if (style != null || component.getScriptListeners().size() != 0) {
+    if (style != null || component.getScriptListeners().length != 0) {
         %></span><%
     }
 %>

@@ -14,6 +14,8 @@
 
 package org.wings;
 
+
+
 import java.awt.Color;
 import java.awt.Font;
 import java.beans.*;
@@ -21,20 +23,21 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.logging.*;
-
+import javax.swing.event.EventListenerList;
+import org.wings.border.SBorder;
+import org.wings.event.*;
+import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.Device;
 import org.wings.io.StringBufferDevice;
 import org.wings.plaf.*;
-import org.wings.event.*;
 import org.wings.plaf.ComponentCG;
+import org.wings.script.ScriptListener;
 import org.wings.session.LowLevelEventDispatcher;
 import org.wings.session.Session;
 import org.wings.session.SessionManager;
 import org.wings.style.*;
-import org.wings.externalizer.ExternalizeManager;
 import org.wings.util.*;
-import org.wings.script.ScriptListener;
-import org.wings.border.SBorder;
+import org.wings.util.StringUtil;
 
 /**
  * The basic component implementation for all components in this package.
@@ -45,6 +48,15 @@ import org.wings.border.SBorder;
 public abstract class SComponent
     implements SConstants, Cloneable, Serializable, Renderable
 {
+
+    public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+
+    public static final String ENABLED_PROPERTY = "_Enabled_Property";
+    public static final String VISIBLE_PROPERTY = "_Visible_Property";
+    public static final String OPAQUE_PROPERTY = "_Opaque_Property";
+    public static final String BORDER_PROPERTY = "_Border_Property";
+    public static final String NAME_PROPERTY = "_Name_Property";
+
 
     private final static Logger logger = Logger.getLogger("org.wings");
 
@@ -102,17 +114,19 @@ public abstract class SComponent
     /** The focus traversal Index */
     protected int focusTraversalIndex = -1;
 
-    /** */
-    private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-
     /** Preferred size of component in pixel. */
     protected SDimension preferredSize;
 
-    /** */
-    protected ArrayList componentListeners;
-    
-    /** */
-    protected List scriptListeners;
+
+    /**
+     * This is for performance optimizations. With this flag is set, property change
+     * events are generated and so every property setter method has to test if a property
+     * has changed and temporarily store the old value to generate the property
+     * change event
+     */
+    private boolean firePropertyChangeEvents = false;
+
+    private EventListenerList listeners;
 
     /**
      * Default constructor.cript
@@ -122,20 +136,22 @@ public abstract class SComponent
         updateCG();
     }
 
-    /**
-     * Return the border of this component.
-     * @return the border
-     */
-    public final SBorder getBorder() {
+    public SBorder getBorder() {
         return border;
     }
 
-    /**
-     * Set the border to be drawn around this component.
-     * @param b the new border
-     */
-    public final void setBorder(SBorder b) {
-        border = b;
+    public void setBorder(SBorder border) {
+        if ( firePropertyChangeEvents ) {
+            if ( this.border!=border ) {
+                SBorder oldBorder = this.border;
+
+                this.border = border;
+
+                firePropertyChange(BORDER_PROPERTY, oldBorder, border);
+            }
+        } else {
+            this.border = border;
+        }
     }
 
     /**
@@ -210,16 +226,8 @@ public abstract class SComponent
      * @see      org.wings.event.SComponentListener
      * @see      org.wings.SComponent#removeComponentListener
      */
-    public final synchronized void addComponentListener(SComponentListener l) {
-        if (l == null) {
-            return;
-        }
-
-        if ( componentListeners == null ) {
-            componentListeners = new ArrayList();
-        }
-
-        componentListeners.add( l );
+    public final void addComponentListener(SComponentListener l) {
+        addEventListener(SComponentListener.class, l);
     }
 
     /**
@@ -233,16 +241,8 @@ public abstract class SComponent
      * @see      org.wings.event.SComponentListener
      * @see      org.wings.SComponent#addComponentListener
      */
-    public final synchronized void removeComponentListener(SComponentListener l) {
-        if (l == null) {
-            return;
-        }
-        if ( componentListeners == null ) return;
-
-        int index = componentListeners.indexOf( l );
-        if ( index == -1 ) return;
-        componentListeners.remove( index );
-        return;
+    public final void removeComponentListener(SComponentListener l) {
+        removeEventListener(SComponentListener.class, l);
     }
 
     /**
@@ -252,9 +252,18 @@ public abstract class SComponent
      */
     protected void fireComponentChangeEvent( SComponentEvent aEvent )
     {
-        if ( componentListeners == null ) return;
-        for ( ListIterator it = componentListeners.listIterator(); it.hasNext(); )
-            processComponentEvent( (SComponentListener) it.next(), aEvent );
+        // maybe the better way to do this is to user the getListenerList
+        // and iterate through all listeners, this saves the creation of
+        // an array but it must cast to the apropriate listener
+        Object[] listeners = getListenerList();
+        for ( int i = listeners.length-2; i>=0; i -= 2 ) {
+            if ( listeners[i]==SComponentListener.class ) {
+                // Lazily create the event:
+                processComponentEvent((SComponentListener) listeners[i+1],
+                                      aEvent);
+            }
+        }
+
     }
 
     /**
@@ -302,19 +311,8 @@ public abstract class SComponent
      * @see      org.wings.event.SComponentListener
      * @see      org.wings.SComponent#removeComponentListener
      */
-    public final synchronized void addScriptListener(ScriptListener listener) {
-        if (listener == null)
-            return;
-
-        // lazyly create List
-        if (scriptListeners == null) {
-            scriptListeners = new ArrayList();
-        }
-
-        scriptListeners.add(listener);
-        if (listener.getScript() != null) {
-            reload(ReloadManager.RELOAD_SCRIPT);
-        }
+    public final void addScriptListener(ScriptListener listener) {
+        addEventListener(ScriptListener.class, listener);
     }
 
     /**
@@ -328,23 +326,12 @@ public abstract class SComponent
      * @see      org.wings.event.SComponentListener
      * @see      org.wings.SComponent#addComponentListener
      */
-    public final synchronized void removeScriptListener(ScriptListener listener) {
-        if (listener == null)
-            return;
-
-        if (scriptListeners != null
-            && scriptListeners.remove(listener)
-            && listener.getScript() != null) {
-            reload(ReloadManager.RELOAD_SCRIPT);
-        }
+    public final void removeScriptListener(ScriptListener listener) {
+        removeEventListener(ScriptListener.class, listener);
     }
 
-    public Collection getScriptListeners() {
-        if ( scriptListeners!=null ) {
-            return scriptListeners;
-        } else {
-            return Collections.EMPTY_LIST;
-        }
+    public ScriptListener[] getScriptListeners() {
+        return (ScriptListener[])getListeners(ScriptListener.class);
     }
 
 
@@ -422,9 +409,9 @@ public abstract class SComponent
      * Watch components beeing garbage collected.
      */
     /* comment out, unless explicitly debugged ..
-    protected void finalize() {
-        System.out.println("finalize " + getClass().getName());
-    }
+       protected void finalize() {
+       System.out.println("finalize " + getClass().getName());
+       }
     */
 
     /**
@@ -565,16 +552,16 @@ public abstract class SComponent
      * Set the visibility.
      * @param v wether this component wil show or not
      */
-    public void setVisible(boolean newVisible) {
-        boolean oldVisible = visible;
-        visible = newVisible;
-        if (oldVisible != newVisible) {
-            reload(ReloadManager.RELOAD_CODE);
-            SComponentEvent evt = 
-                new SComponentEvent(this,(visible
-                                          ? SComponentEvent.COMPONENT_SHOWN
-                                          : SComponentEvent.COMPONENT_HIDDEN));
-            fireComponentChangeEvent(evt);
+    public void setVisible(boolean visible) {
+        if ( firePropertyChangeEvents ) {
+            if ( this.visible!=visible ) {
+                this.visible = visible;
+                firePropertyChange(VISIBLE_PROPERTY,
+                                   Boolean.valueOf(!visible),
+                                   Boolean.valueOf(visible));
+            }
+        } else {
+            this.visible = visible;
         }
     }
 
@@ -602,11 +589,16 @@ public abstract class SComponent
      *
      * @param v true if the component is enabled, false otherwise
      */
-    public void setEnabled(boolean e) {
-        boolean old = enabled;
-        enabled = e;
-        if (old != enabled) {
-            reload(ReloadManager.RELOAD_CODE);
+    public void setEnabled(boolean enabled) {
+        if ( firePropertyChangeEvents ) {
+            if ( this.enabled!=enabled ) {
+                this.enabled = enabled;
+                firePropertyChange(ENABLED_PROPERTY,
+                                   Boolean.valueOf(!enabled),
+                                   Boolean.valueOf(enabled));
+            }
+        } else {
+            this.enabled = enabled;
         }
     }
 
@@ -633,8 +625,18 @@ public abstract class SComponent
      *
      * @param n the new name for this component
      */
-    public void setName(String n) {
-        name = n;
+    public void setName(String name) {
+        if ( firePropertyChangeEvents ) {
+            if ( isDifferent(this.name, name) ) {
+                this.name = name;
+
+                firePropertyChange(NAME_PROPERTY,
+                                   this.name,
+                                   name);
+            }
+        } else {
+            this.name = name;
+        }
     }
 
 
@@ -964,53 +966,6 @@ public abstract class SComponent
         firePropertyChange(key.toString(), oldValue, value);
     }
 
-    /**
-     * Add a PropertyChangeListener to the current list of listeners.
-     *
-     * @param l some class implementing the PropertyChangeListener interface
-     */
-    public void addPropertyChangeListener(PropertyChangeListener l) {
-	propertyChangeSupport.addPropertyChangeListener(l);
-    }
-
-    /**
-     * Remove a PropertyChangeListener from the current list of listeners.
-     *
-     * @param l the listener to be removed
-     */
-    public void removePropertyChangeListener(PropertyChangeListener l) {
-	propertyChangeSupport.removePropertyChangeListener(l);
-    }
-
-    /**
-     * Notify all listeners that a property change has occured.
-     * @param propertyName the name of the property
-     * @param oldValue the old value
-     * @param newValue the new value
-     */
-    protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-        propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
-    }
-
-    /**
-     * Notify all listeners that a property change has occured.
-     * @param propertyName the name of the property
-     * @param oldValue the old value
-     * @param newValue the new value
-     */
-    protected void firePropertyChange(String propertyName, int oldValue, int newValue) {
-        propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
-    }
-
-    /**
-     * Notify all listeners that a property change has occured.
-     * @param propertyName the name of the property
-     * @param oldValue the old value
-     * @param newValue the new value
-     */
-    protected void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
-        propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
-    }
 
     /**
      * Set the look and feel delegate for this component.
@@ -1138,10 +1093,17 @@ public abstract class SComponent
      *       expert: true
      *  description: The component's opacity
      */
-    public void setOpaque(boolean isOpaque) {
-        boolean oldValue = opaque;
-        opaque = isOpaque;
-        firePropertyChange("opaque", oldValue, isOpaque);
+    public void setOpaque(boolean opaque) {
+        if ( firePropertyChangeEvents ) {
+            if ( this.opaque!=opaque ) {
+                this.opaque = opaque;
+                firePropertyChange(OPAQUE_PROPERTY,
+                                   Boolean.valueOf(!opaque),
+                                   Boolean.valueOf(opaque));
+            }
+        } else {
+            this.opaque = opaque;
+        }
     }
 
     /**
@@ -1158,6 +1120,161 @@ public abstract class SComponent
 
         return !oldObject.equals(newObject);
     }
+
+    protected final void addEventListener(Class type, EventListener listener) {
+        if ( listeners==null ) {
+            listeners = new EventListenerList();
+        }
+
+        listeners.add(type, listener);
+    }
+
+    protected final void removeEventListener(Class type, EventListener listener) {
+        if ( listeners!=null ) {
+            listeners.remove(type, listener);
+        }
+    }
+
+    /**
+     * Returns the number of listeners of the specified type for this component.
+     * @param type The type of listeners
+     * @return The number of listeners
+     * @see EventListenerList
+     */
+    protected final int getListenerCount(Class type) {
+        if ( listeners!=null ) {
+            return listeners.getListenerCount(type);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Returns all the listeners of this component. For performance reasons, this is the actual data
+     * structure and so no modification of this array should be made.
+     * @return All listeners of this component. The result array has a pair structure,
+     * the first element of each pair is the listener type, the second the listener
+     * itself. It is guaranteed that this returns a non-null array.
+     * @see EventListenerList
+     */
+    protected final Object[] getListenerList() {
+        if ( listeners==null ) {
+            return EMPTY_OBJECT_ARRAY;
+        } else {
+            return listeners.getListenerList();
+        } // end of else
+    }
+
+    /**
+     * Creates an typed array of all listeners of the specified type
+     * @param type All listeners of this type are added to the result array
+     * @return an array of the specified type with all listeners of the specified type
+     * @see EventListenerList
+     */
+    protected final EventListener[] getListeners(Class type) {
+        if ( listeners!=null ) {
+            return listeners.getListeners(type);
+        } else {
+            return (EventListener[]) Array.newInstance(type, 0);
+        }
+    }
+
+    /**
+     * Adds a new {@link PropertyChangeListener} to this component.
+     * This forces the
+     * {@link #setFirePropertyChangeEvents firePropertyChangeEvents}
+     * flag to be set to true.
+     * @param listener
+     */
+    public final void addPropertyChangeListener(PropertyChangeListener listener) {
+        if ( listener==null )
+            throw new IllegalArgumentException("null parameter not allowed");
+
+        addEventListener(PropertyChangeListener.class, listener);
+
+        // somebody is interested, so fire the events.
+        setFirePropertyChangeEvents(true);
+    }
+
+    /**
+     * Removes a {@link PropertyChangeListener} from this component. If it was the last
+     * {@link PropertyChangeListener} it forces the
+     * {@link #setfirePropertyChangeEvents firePropertyChangeEvents}
+     * flags to be set to false
+     * @param listener
+     */
+    public final void removePropertyChangeListener(PropertyChangeListener listener) {
+        if ( listener==null )
+            throw new IllegalArgumentException("null parameter not allowed");
+
+        removeEventListener(PropertyChangeListener.class, listener);
+
+        if ( getListenerCount(PropertyChangeListener.class)==0 ) {
+            setFirePropertyChangeEvents(false);
+        }
+    }
+
+    /**
+     * This is for performance optimizations. With the firePropertyChangeEvents flag set,
+     * property change
+     * events are generated and so every property setter method has to test if a property
+     * has changed and temporarily store the old value to generate the property
+     * change event. If it is not set, a setter just have to set the property.
+     */
+    public final void setFirePropertyChangeEvents(boolean b) {
+        firePropertyChangeEvents = b;
+    }
+
+    /**
+     * Indicates, if PropertyChangeEvents are fired.
+     * @see #setfirePropertyChangeEvents
+     * @return true, if PropertyChangeEvents are fired, false otherwise
+     */
+    public final boolean getFirePropertyChangeEvents() {
+        return firePropertyChangeEvents;
+    }
+
+    /**
+     * Fires a PropertyChangedEvent to all listeners if the
+     * {@link #getfirePropertyChangeEvents firePropertyChangeEvents} is set.
+     * @param property The property which has changed
+     * @param oldValue The old value of the property before the change
+     * @param newValue The new value of the property
+     */
+    protected final void firePropertyChange(String property,
+                                            Object oldValue, Object newValue) {
+        if ( firePropertyChangeEvents ) {
+
+            PropertyChangeEvent event = null;
+
+            // maybe the better way to do this is to user the getListenerList
+            // and iterate through all listeners, this saves the creation of
+            // an array but it must cast to the apropriate listener
+            Object[] listeners = getListenerList();
+            for ( int i = listeners.length-2; i>=0; i -= 2 ) {
+                if ( listeners[i]==PropertyChangeListener.class ) {
+                    // Lazily create the event:
+                    if ( event==null )
+                        event = new PropertyChangeEvent(this, property, oldValue, newValue);
+                    ((PropertyChangeListener) listeners[i+1]).propertyChange(event);
+                }
+            }
+
+            // this is an array with length > 0 , so it is not the
+            // EMPTY_EVENTLISTENER_ARRAY and so of the
+            // correct (PropertyChangeListener[]) type
+            /* this is the alternative aproach
+               PropertyChangeListener[] pcListener =
+               (PropertyChangeListener[]) getListeners(PropertyChangeListener.class);
+
+               for (int i = 0; i < pcListener.length; i++) {
+               pcListener[i].propertyChange(event);
+               }
+            */
+        }
+
+    }
+
 }
 
 /*

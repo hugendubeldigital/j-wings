@@ -62,11 +62,6 @@ public class STable
     protected SListSelectionModel selectionModel;
 
     /**
-     * TODO: documentation
-     */
-    protected final EventListenerList listenerList = new EventListenerList();
-
-    /**
      * The default renderer is used if no other renderer is set for the
      * content of a cell.
      */

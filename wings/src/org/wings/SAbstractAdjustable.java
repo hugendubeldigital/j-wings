@@ -83,11 +83,6 @@ public abstract class SAbstractAdjustable
     protected int orientation;
 
     /**
-     * TODO: documentation
-     */
-    protected final EventListenerList listenerList = new EventListenerList();
-
-    /**
      * Creates a scrollbar with the specified orientation,
      * value, extent, mimimum, and maximum.
      * The "extent" is the size of the viewable area. It is also known
@@ -504,7 +499,7 @@ public abstract class SAbstractAdjustable
      * @see BoundedRangeModel#addChangeListener
      */
     public void addAdjustmentListener(AdjustmentListener l) {
-        listenerList.add(AdjustmentListener.class, l);
+        addEventListener(AdjustmentListener.class, l);
     }
 
 
@@ -515,7 +510,7 @@ public abstract class SAbstractAdjustable
      * @see #addAdjustmentListener
      */
     public void removeAdjustmentListener(AdjustmentListener l) {
-        listenerList.remove(AdjustmentListener.class, l);
+        removeEventListener(AdjustmentListener.class, l);
     }
 
 
@@ -526,8 +521,9 @@ public abstract class SAbstractAdjustable
      * @see EventListenerList
      */
     protected void fireAdjustmentValueChanged(int id, int type, int value) {
-        Object[] listeners = listenerList.getListenerList();
         AdjustmentEvent e = null;
+
+        Object[] listeners = getListenerList();
         for ( int i = listeners.length - 2; i >= 0; i -= 2 ) {
             if (listeners[i]==AdjustmentListener.class) {
                 if ( e == null ) {

@@ -59,11 +59,6 @@ public abstract class SAbstractButton
     /**
      * TODO: documentation
      */
-    protected final EventListenerList listenerList = new EventListenerList();
-
-    /**
-     * TODO: documentation
-     */
     protected String actionCommand;
 
     /**
@@ -243,7 +238,7 @@ public abstract class SAbstractButton
      * @param listener
      */
     public void addActionListener(ActionListener listener) {
-        listenerList.add(ActionListener.class, listener);
+        addEventListener(ActionListener.class, listener);
     }
 
     /**
@@ -252,7 +247,7 @@ public abstract class SAbstractButton
      * @param listener
      */
     public void removeActionListener(ActionListener listener) {
-        listenerList.remove(ActionListener.class, listener);
+        removeEventListener(ActionListener.class, listener);
     }
 
     /**
@@ -271,7 +266,7 @@ public abstract class SAbstractButton
             return;
 
         // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
+        Object[] listeners = getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
@@ -510,7 +505,7 @@ public abstract class SAbstractButton
 
     private boolean isListener(Class c, ActionListener a) {
 	boolean isListener = false;
-	Object[] listeners = listenerList.getListenerList();
+	Object[] listeners = getListenerList();
         for (int i = listeners.length-2; i>=0; i-=2) {
             if (listeners[i] == c && listeners[i+1] == a) {
                 isListener = true;

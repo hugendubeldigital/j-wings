@@ -182,7 +182,7 @@ public class SFormDayChooser
             ActionEvent e =
                 new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""+getDay());
 
-            final Object[] listeners = listenerList.getListenerList();
+            final Object[] listeners = getListenerList();
             for( int i = listeners.length - 2; i >= 0; i -= 2 )
                 if( listeners[ i ] == ActionListener.class )
                     ((ActionListener) listeners[ i + 1 ]).actionPerformed( e );

@@ -13,6 +13,9 @@
  */
 package org.wings.event;
 
+import java.util.EventListener;
+
+
 /**
  * This listener is called on modifications on a Container. It can
  * be registered on an SContainer.
@@ -20,7 +23,7 @@ package org.wings.event;
  * @see   org.wings.SContainer#addContainerListener(SContainerListener)
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  */
-public interface SContainerListener {
+public interface SContainerListener extends EventListener {
     /**
      * called, whenever a component is added to the container.
      */

@@ -67,11 +67,6 @@ public class SComboBox
     protected String actionCommand = "comboBoxChanged";
     
     /**
-     *
-     */
-    protected final EventListenerList listenerList = new EventListenerList();
-    
-    /**
      * indicates if this component - if it is inside a {@link SForm} -  renders
      * itself as form component or not.
      */
@@ -374,7 +369,7 @@ public class SComboBox
      * @param listener  the ItemListener that is to be notified
      */
     public void addItemListener(ItemListener listener) {
-        listenerList.add(ItemListener.class, listener);
+        addEventListener(ItemListener.class, listener);
     }
 
     /** Removes an ItemListener
@@ -382,7 +377,7 @@ public class SComboBox
      * @param listener  the ItemListener to remove
      */
     public void removeItemListener(ItemListener listener) {
-        listenerList.remove(ItemListener.class, listener);
+        removeEventListener(ItemListener.class, listener);
     }
 
     /** 
@@ -392,7 +387,7 @@ public class SComboBox
      * @param listener  the ActionListener that is to be notified
      */
     public void addActionListener(ActionListener listener) {
-        listenerList.add(ActionListener.class, listener);
+        addEventListener(ActionListener.class, listener);
         reload(ReloadManager.RELOAD_CODE);
     }
 
@@ -401,7 +396,7 @@ public class SComboBox
      * @param listener  the ActionListener to remove
      */
     public void removeActionListener(ActionListener listener) {
-        listenerList.remove(ActionListener.class, listener);
+        removeEventListener(ActionListener.class, listener);
         reload(ReloadManager.RELOAD_CODE);
     }
 
@@ -413,9 +408,7 @@ public class SComboBox
      *         array if no listeners are there
      */
     public ActionListener[] getActionListeners() {
-        if (listenerList == null) return null;
-        return (ActionListener[])listenerList.getListeners(
-                ActionListener.class);
+        return (ActionListener[])getListeners(ActionListener.class);
     }
 
     /** 
@@ -449,7 +442,7 @@ public class SComboBox
      */
     protected void fireItemStateChanged(ItemEvent e) {
         // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
+        Object[] listeners = getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for ( int i = listeners.length-2; i>=0; i-=2 ) {
@@ -473,7 +466,7 @@ public class SComboBox
             ActionEvent e = null;
 
             // Guaranteed to return a non-null array
-            Object[] listeners = listenerList.getListenerList();
+            Object[] listeners = getListenerList();
             // Process the listeners last to first, notifying
             // those that are interested in this event
             for ( int i = listeners.length-2; i>=0; i-=2 ) {

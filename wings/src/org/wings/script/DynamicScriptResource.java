@@ -66,13 +66,12 @@ public class DynamicScriptResource
 
         private void writeListenersFrom(SComponent component) 
             throws IOException {
-            Collection listeners = component.getScriptListeners();
-            if (listeners.size() == 0)
+            ScriptListener[] listeners = component.getScriptListeners();
+            if (listeners.length == 0)
                 return;
 
-            Iterator iterator = listeners.iterator();
-            while (iterator.hasNext()) {
-                ScriptListener listener = (ScriptListener)iterator.next();
+            for ( int i=0; i<listeners.length; i++ ) {
+                ScriptListener listener = listeners[i];
                 if (listener.getScript() != null) {
                     if (set.contains(listener.getScript()))
                         continue;

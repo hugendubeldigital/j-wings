@@ -53,9 +53,9 @@ public final class Utils
         throws IOException
     {
         Map eventScripts = new HashMap();
-        Iterator it = c.getScriptListeners().iterator();
-        while (it.hasNext()) {
-            ScriptListener script = (ScriptListener)it.next();
+        ScriptListener[] listeners = c.getScriptListeners();
+        for ( int i=0; i<listeners.length; i++ ) {
+            ScriptListener script = listeners[i];
             String eventScriptCode = script.getCode();
             String event = script.getEvent();
             if (eventScripts.containsKey(event)) {
@@ -65,8 +65,9 @@ public final class Utils
                     + eventScriptCode;
             }
             eventScripts.put(event,  eventScriptCode);
-        }
-        it = eventScripts.keySet().iterator();
+        } // end of for ()
+        
+        Iterator it = eventScripts.keySet().iterator();
         while (it.hasNext()) {
             String event = (String) it.next();
             String code = (String) eventScripts.get(event);

@@ -47,6 +47,7 @@ public class DefaultPropertyManager implements PropertyManager {
 
 		interpreter.eval(value);
 	    } catch ( Exception ex ) {
+		ex.printStackTrace();
 		// ignore it, maybe log it
 	    } // end of try-catch
 	    
@@ -109,6 +110,10 @@ public class DefaultPropertyManager implements PropertyManager {
 
 /*
    $Log$
+   Revision 1.2  2002/09/04 14:26:35  ahaaf
+   o SComponent now have a EventListenerList (not allocated by default)
+   o every component which manages listeners uses now the SComponent EventListener
+
    Revision 1.1  2002/08/06 16:45:55  ahaaf
    add DefaultPropertyManager using reflection and bean shell scripting support
 

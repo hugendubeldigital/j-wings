@@ -34,7 +34,6 @@ public class CardLayoutCG implements LayoutCG
         throws IOException
     {
         SCardLayout layout = (SCardLayout)l;
-        SComponent component = (SComponent) layout.getContainer();
         SComponent c = layout.getVisibleComponent();
 
         if (c == null) return;

@@ -105,11 +105,6 @@ public class SList
     private ListSelectionHandler selectionHandler;
 
     /**
-     *
-     */
-    protected final EventListenerList listenerList = new EventListenerList();
-
-    /**
      * which extent of the component should be rendered
      */
     private Rectangle viewport = null;
@@ -486,7 +481,7 @@ public class SList
     protected void fireSelectionValueChanged(int firstIndex, int lastIndex,
                                              boolean isAdjusting)
     {
-        Object[] listeners = listenerList.getListenerList();
+        Object[] listeners = getListenerList();
         ListSelectionEvent e = null;
 
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
@@ -531,7 +526,7 @@ public class SList
             getSelectionModel().addListSelectionListener(selectionHandler);
         }
 
-        listenerList.add(ListSelectionListener.class, listener);
+        addEventListener(ListSelectionListener.class, listener);
     }
 
 
@@ -544,7 +539,7 @@ public class SList
      * @see #getSelectionModel
      */
     public void removeListSelectionListener(ListSelectionListener listener) {
-        listenerList.remove(ListSelectionListener.class, listener);
+        removeEventListener(ListSelectionListener.class, listener);
     }
 
 

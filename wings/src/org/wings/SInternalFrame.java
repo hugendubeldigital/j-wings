@@ -58,11 +58,6 @@ public class SInternalFrame
 
     /**
      * TODO: documentation
-     */
-    protected EventListenerList listenerList = new EventListenerList();
-
-    /**
-     * TODO: documentation
      *
      */
     public SInternalFrame() {
@@ -214,7 +209,7 @@ public class SInternalFrame
      * @param listener
      */
     public void addInternalFrameListener(SInternalFrameListener listener) {
-        listenerList.add(SInternalFrameListener.class, listener);
+        addEventListener(SInternalFrameListener.class, listener);
     }
 
     /**
@@ -223,7 +218,7 @@ public class SInternalFrame
      * @param listener
      */
     public void removeInternalFrameListener(SInternalFrameListener listener) {
-        listenerList.remove(SInternalFrameListener.class, listener);
+        removeEventListener(SInternalFrameListener.class, listener);
     }
 
     private SInternalFrameEvent event;
@@ -263,7 +258,7 @@ public class SInternalFrame
 
     public void fireFinalEvents() {
         // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
+        Object[] listeners = getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {

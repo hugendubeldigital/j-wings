@@ -40,12 +40,6 @@ public abstract class STextComponent
 
     /**
      * TODO: documentation
-     */
-    protected EventListenerList listenerList = new EventListenerList();
-
-
-    /**
-     * TODO: documentation
      *
      */
     public STextComponent() {
@@ -150,7 +144,7 @@ public abstract class STextComponent
      * @param al
      */
     public void addTextListener(TextListener listener) {
-        listenerList.add(TextListener.class, listener);
+        addEventListener(TextListener.class, listener);
     }
 
     /**
@@ -159,21 +153,25 @@ public abstract class STextComponent
      * @param al
      */
     public void removeTextListener(TextListener listener) {
-        listenerList.remove(TextListener.class, listener);
+        removeEventListener(TextListener.class, listener);
     }
 
     /**
      * Fire a TextEvent at each registered listener.
      */
     protected void fireTextValueChanged() {
-        TextEvent e = new TextEvent(this, TextEvent.TEXT_VALUE_CHANGED);
+        TextEvent event = null;
         // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
+        Object[] listeners = getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
             if (listeners[i] == TextListener.class) {
-                ((TextListener)listeners[i+1]).textValueChanged(e);
+                if ( event==null ) {
+                    event = new TextEvent(this, TextEvent.TEXT_VALUE_CHANGED);
+                } // end of if ()
+                
+                ((TextListener)listeners[i+1]).textValueChanged(event);
             }
         }
     }

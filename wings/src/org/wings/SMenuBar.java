@@ -193,7 +193,8 @@ public class SMenuBar extends SContainer
     public void setBorderPainted(boolean b) {
         boolean oldValue = paintBorder;
         paintBorder = b;
-        firePropertyChange("borderPainted", oldValue, paintBorder);
+        firePropertyChange("borderPainted", oldValue ? Boolean.TRUE : Boolean.FALSE, 
+                           paintBorder ? Boolean.TRUE : Boolean.FALSE );
         if (b != oldValue) {
             /*
               revalidate();

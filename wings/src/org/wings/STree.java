@@ -95,11 +95,6 @@ public class STree
      */
     protected STreeSelectionModel selectionModel;
 
-    /** 
-     * the event listeners
-     */
-    protected final EventListenerList listenerList = new EventListenerList();
-
     /**
      * store here all delayed expansion events
      */
@@ -167,7 +162,7 @@ public class STree
      * @param tsl
      */
     public void addTreeSelectionListener(TreeSelectionListener tsl) {
-        listenerList.add(TreeSelectionListener.class, tsl);
+        addEventListener(TreeSelectionListener.class, tsl);
     }
 
     /**
@@ -176,14 +171,14 @@ public class STree
      * @param tsl
      */
     public void removeTreeSelectionListener(TreeSelectionListener tsl) {
-        listenerList.remove(TreeSelectionListener.class, tsl);
+        removeEventListener(TreeSelectionListener.class, tsl);
     }
 
 
 
     protected void fireTreeSelectionEvent(TreeSelectionEvent e) {
         // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
+        Object[] listeners = getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
@@ -202,7 +197,7 @@ public class STree
      *            expansion")
      */
     public void addTreeWillExpandListener(TreeWillExpandListener tel) {
-        listenerList.add(TreeWillExpandListener.class, tel);
+        addEventListener(TreeWillExpandListener.class, tel);
     }
 
     /**
@@ -211,7 +206,7 @@ public class STree
      * @param tel the <code>TreeWillExpandListener</code> to remove
      */
     public void removeTreeWillExpandListener(TreeWillExpandListener tel) {
-        listenerList.remove(TreeWillExpandListener.class, tel);
+        removeEventListener(TreeWillExpandListener.class, tel);
     }
 
 
@@ -228,7 +223,7 @@ public class STree
          throws ExpandVetoException {
 
          // Guaranteed to return a non-null array
-         Object[] listeners = listenerList.getListenerList();
+         Object[] listeners = getListenerList();
          TreeExpansionEvent e = null;
          // Process the listeners last to first, notifying
          // those that are interested in this event
@@ -255,7 +250,7 @@ public class STree
      * @param tel
      */
     public void addTreeExpansionListener(TreeExpansionListener tel) {
-        listenerList.add(TreeExpansionListener.class, tel);
+        addEventListener(TreeExpansionListener.class, tel);
     }
 
     /**
@@ -264,7 +259,7 @@ public class STree
      * @param tel
      */
     public void removeTreeExpansionListener(TreeExpansionListener tel) {
-        listenerList.remove(TreeExpansionListener.class, tel);
+        removeEventListener(TreeExpansionListener.class, tel);
     }
 
 
@@ -320,7 +315,7 @@ public class STree
             addDelayedExpansionEvent(e, expansion);
         } else {
             // Guaranteed to return a non-null array
-            Object[] listeners = listenerList.getListenerList();
+            Object[] listeners = getListenerList();
             // Process the listeners last to first, notifying
             // those that are interested in this event
             for (int i = listeners.length-2; i>=0; i-=2) {

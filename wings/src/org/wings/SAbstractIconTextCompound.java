@@ -136,11 +136,6 @@ public abstract class SAbstractIconTextCompound
      */
     private boolean imageAbsBottom = false;
 
-    /** 
-     * All item listeners.
-     */
-    protected ArrayList itemListeners;
-
     /**
      * Create a button with given text.
      * @param text the button text
@@ -161,12 +156,7 @@ public abstract class SAbstractIconTextCompound
 	 * @see #removeItemListener(ItemListener)
 	 */
 	public void addItemListener(ItemListener il) {
-	    if (il == null) return;
-		if ( itemListeners == null ) {
-            itemListeners = new ArrayList();
-        }
-
-        itemListeners.add( il );	    
+            addEventListener(ItemListener.class, il);
 	}
 
 	/**
@@ -182,11 +172,7 @@ public abstract class SAbstractIconTextCompound
 	 * @see #addItemListener(ItemListener)
 	 */
 	public void removeItemListener(ItemListener il) {
-	    if (il == null || itemListeners == null) return;
-        int index = itemListeners.indexOf( il );
-        if ( index == -1 ) return;
-        itemListeners.remove( index );
-        return;
+            removeEventListener(ItemListener.class, il);
 	}
 
     /**
@@ -502,11 +488,20 @@ public abstract class SAbstractIconTextCompound
      * @see java.awt.event.ItemListener
      * @see java.awt.ItemSelectable
      */
-    protected void fireItemStateChanged( ItemEvent ie)
+    protected void fireItemStateChanged(ItemEvent ie)
     {
-        if ( itemListeners == null ) return;
-        for ( ListIterator it = itemListeners.listIterator(); it.hasNext(); )
-            ((ItemListener) it.next()).itemStateChanged(ie);
+        if ( ie==null )
+            return;
+
+        // Guaranteed to return a non-null array
+        Object[] listeners = getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i] == ItemListener.class) {
+                ((ItemListener)listeners[i+1]).itemStateChanged(ie);
+            }
+        }
     }
 
 
