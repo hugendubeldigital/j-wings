@@ -76,18 +76,6 @@ final class SessionServlet
     protected transient HttpServlet parent = this;
 
     /**
-     * Which locales are supported by this servlet. If null, every locale from
-     * the browser is accepted. If not null only locales listed in this array
-     * are supported.
-     */
-    private Locale[] supportedLocales = null;
-
-    /**
-     * Is locale supplied by the browser?
-     */
-    private boolean localeFromHeader = true;
-
-    /**
      * This should be a resource ..
      */
     protected String errorTemplateFile;
@@ -118,8 +106,8 @@ final class SessionServlet
     }
 
     /**
-     * A String setter for the localeFromHeader property. Interates over all passed strings and tries to
-     * parse string value as boolean. Used for parsing HTTP request header.
+     * Overrides the session set for setLocaleFromHeader by a request parameter.
+     * Hence you can force the wings session to adopt the clients Locale. 
      */
     public final void setLocaleFromHeader(String[] args) {
         if (args==null)
@@ -127,7 +115,7 @@ final class SessionServlet
 
         for (int i=0; i<args.length; i++) {
             try {
-                setLocaleFromHeader(new Boolean(args[i]).booleanValue());
+                getSession().setLocaleFromHeader(new Boolean(args[i]).booleanValue());
             } catch (Exception e) {
                 logger.throwing(SessionServlet.class.getName(), "setLocaleFromHeader", e);
             }
@@ -135,71 +123,19 @@ final class SessionServlet
     }
 
     /**
-     * Indicates if the wings session servlet should adopt the clients Locale provided by the
-     * browsers in the HTTP header.
-     * @param adoptLocale if true, try to determine, false ignore
-     */
-    public final void setLocaleFromHeader(boolean adoptLocale) {
-        localeFromHeader = adoptLocale;
-    }
-
-    /**
-     * Indicates if the wings session servlet should adopt the clients Locale provided by the
-     * browsers in the HTTP header.
-     */
-    public final boolean getLocaleFromHeader() {
-        return localeFromHeader;
-    }
-
-    /**
-     * The current Locale of this wings session. If localeFromHeader is true, then this typically reflects
-     * the Locale configured in the client browser.
-     */
-    public final Locale getLocale() {
-        return session.getLocale();
-    }
-
-    /**
-     * sets a new locale for this session. The locale is <em>only</em> set,
-     * if it is one of the supported locales {@link #setSupportedLocales},
-     * otherwise an IllegalArgumentException is thrown.
-     * 
-     * @param l the locale to be associated with this session.
-     * @throws IllegalArgumentException if this locale is not supported, as
-     *         predefined with {@link #setSupportedLocales}.
-     */
-    protected final void setLocale(Locale l) throws IllegalArgumentException {
-        if (supportedLocales==null ||
-            supportedLocales.length==0 ||
-            Arrays.asList(supportedLocales).contains(l)) {
-            session.setLocale(l);
-            logger.config("Set Locale " + l);
-        } else
-            throw new IllegalArgumentException("Locale " + l +" not supported");
-    }
-
-    /**
-     * sets the locales, supported by this application. If empty or 
-     * <em>null</em>, all locales are supported.
-     */
-    protected final void setSupportedLocales(Locale[] locales) {
-        supportedLocales = locales;
-    }
-
-    /**
      * The Locale of the current wings session servlet is determined by the locale transmitted
-     * by the browser. The property <PRE>LocaleFromHeader</PRE> modifies this behaviour of a 
-     * wings session servlet to adopt the clients browsers Locale.
+     * by the browser. The request parameter <PRE>LocaleFromHeader</PRE> can override the behaviour 
+     * of a wings session servlet to adopt the clients browsers Locale.
      * @param req The request to determine the local from.
      */
     protected final void handleLocale(HttpServletRequest req) {
         setLocaleFromHeader(req.getParameterValues("LocaleFromHeader"));
 
-        if (localeFromHeader) {
+        if (getSession().getLocaleFromHeader()) {
             for ( Enumeration en=req.getLocales(); en.hasMoreElements(); ) {
                 Locale locale = (Locale)en.nextElement();
                 try {
-                    setLocale(locale);
+                    getSession().setLocale(locale);
                     return;
                 } catch ( Exception ex ) {
                     logger.warning("locale not supported " + locale);
@@ -382,7 +318,6 @@ final class SessionServlet
                                          HttpServletResponse response)
         throws ServletException, IOException
     {
-        //req.setCharacterEncoding("utf-8");        
         SessionManager.setSession(session);
         session.setServletRequest(req);
         session.setServletResponse(response);
@@ -420,8 +355,8 @@ final class SessionServlet
              
             // TODO: Actually the whole character encoding is depending FIXED on clients locale
             // Should be propably a per session setting             
-            if ((req.getCharacterEncoding() == null) && (session.getLocale() != null)) {             
-                String sessionCharacterEncoding = LocaleCharSet.getInstance().getCharSet(session.getLocale());                 
+            if ((req.getCharacterEncoding() == null)) {             
+                String sessionCharacterEncoding = getSession().getCharacterEncoding();                 
                  // We know better about the used character encoding than tomcat
                 logger.finer("Advising servlet container to interpret request as " + sessionCharacterEncoding);
                 req.setCharacterEncoding(sessionCharacterEncoding); 
