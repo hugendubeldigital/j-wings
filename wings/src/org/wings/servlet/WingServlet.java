@@ -278,7 +278,8 @@ public abstract class WingServlet
         throws ServletException
     {
         try {
-            log("generating Session Servlet");
+            log("generating new Session Servlet");
+            debug("generating new Session Servlet");
 
             HttpSession session = req.getSession(true);
 
@@ -302,16 +303,15 @@ public abstract class WingServlet
         throws ServletException 
     {
         HttpSession session = req.getSession(false);
-
         SessionServlet sessionServlet = null;
 
         if ( session != null )
             sessionServlet = (SessionServlet)session.getValue(lookupName);
 
         if ( sessionServlet == null )
-            return newSession(req);
-        else
-            return sessionServlet;
+            sessionServlet = newSession(req);
+
+        return sessionServlet;
     }
 
     /**

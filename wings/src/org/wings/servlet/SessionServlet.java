@@ -433,11 +433,18 @@ public abstract class SessionServlet
      * init
      */
     public final void init(ServletConfig config) throws ServletException {
-        preInit(config);
-        session.init(config);
-        SessionManager.setSession(session);
-        initErrorTemplate(config);
-        postInit(config);
+        try {
+            preInit(config);
+            session.init(config);
+            initErrorTemplate(config);
+            postInit(config);
+        }
+        finally {
+            // The session was set by the constructor. After init we
+            // expect that only doPost/doGet is called, which set the
+            // session also. So remove it here.
+            SessionManager.removeSession();
+        }
     }
 
     /**
@@ -514,99 +521,104 @@ public abstract class SessionServlet
         SessionManager.setSession(session);
 
         try {
-            if ( DEBUG ) {
-                System.out.println("\nHEADER: ");
-                for ( Enumeration en = req.getHeaderNames(); en.hasMoreElements(); ) {
-                    String header = (String)en.nextElement();
-                    System.out.println("   " + header + ": " + req.getHeader(header));
+            try {
+                if ( DEBUG ) {
+                    System.out.println("\nHEADER: ");
+                    for ( Enumeration en = req.getHeaderNames(); en.hasMoreElements(); ) {
+                        String header = (String)en.nextElement();
+                        System.out.println("   " + header + ": " + req.getHeader(header));
+                    }
+                    System.out.println();
                 }
-                System.out.println();
+
+                handleLocale(req);
+                getFrame().setServer(response.encodeUrl(HttpUtils.getRequestURL(req).toString()));
+            }
+            finally {
+                prepareRequest(req, response);
             }
 
-            handleLocale(req);
+            try {
+                ServletRequest asreq = new ServletRequest(req);
 
-            getFrame().setServer(response.encodeUrl(HttpUtils.getRequestURL(req).toString()));
+                if ( DEBUG )
+                    measure.start("time to dispatch");
+
+                boolean eventsContained = false;
+                Enumeration en = null;
+                en = req.getParameterNames();
+                while (en.hasMoreElements()) {
+                    String paramName = (String)en.nextElement();
+                    String[] value = req.getParameterValues(paramName);
+                    if (!getDispatcher().dispatch(paramName, value))
+                        asreq.addParam(paramName,value);
+                    else
+                        eventsContained = true;
+                }
+
+                if (req.getMethod().toUpperCase().equals("POST")) {
+                    eventsContained = dispatchPostQuery(req.getQueryString()) || eventsContained;
+                }
+
+                if ( DEBUG ) {
+                    measure.stop();
+                    measure.start("time to fire form events");
+                }
+
+                SForm.fireEvents();
+
+                // moved this beyound SForm.fireEvents()
+                getDispatcher().dispatchDone();
+
+                if ( DEBUG ) {
+                    measure.stop();
+                    measure.start("time to process request");
+                }
+
+                if (generateCode) {
+                    // default content ist text/html
+                    response.setContentType("text/html;charset=" + session.getCharSet());
+
+                    // Page must not be cached since higly dynamic
+                    response.setHeader("Pragma", "no-cache");
+                    response.setHeader("Cache-Control",
+                                       "max-age=0, no-cache, must-revalidate");
+                    // 1000 (one second after Jan 01 1970) because of some IE bug:
+                    response.setDateHeader("Expires", 1000);
+                }
+
+                processRequest(asreq, response);
+
+                System.err.println("eventsContained: " + eventsContained);
+
+                if (generateCode) {
+                    SComponent reload = null;
+                    if (eventsContained)
+                        reload = getSession().getReloadManager().getManagerComponent();
+
+                    if (reload == null)
+                        reload = getFrame();
+
+                    reload.write(new ServletDevice(response.getOutputStream()));
+                }
+
+                if ( DEBUG ) {
+                    measure.stop();
+                    debug(measure.print());
+                    measure.reset();
+                }
+
+            }
+            catch ( Exception e) {
+                handleException(req, response, e);
+            }
+            finally {
+                finalizeRequest(req, response);
+            }
         }
         finally {
-            prepareRequest(req, response);
-        }
-
-        try {
-            ServletRequest asreq = new ServletRequest(req);
-
-            if ( DEBUG )
-                measure.start("time to dispatch");
-
-            boolean eventsContained = false;
-            Enumeration en = null;
-            en = req.getParameterNames();
-            while (en.hasMoreElements()) {
-                String paramName = (String)en.nextElement();
-                String[] value = req.getParameterValues(paramName);
-                if (!getDispatcher().dispatch(paramName, value))
-                    asreq.addParam(paramName,value);
-                else
-                    eventsContained = true;
-            }
-
-            if (req.getMethod().toUpperCase().equals("POST")) {
-                eventsContained = dispatchPostQuery(req.getQueryString()) || eventsContained;
-            }
-
-            if ( DEBUG ) {
-                measure.stop();
-                measure.start("time to fire form events");
-            }
-
-            SForm.fireEvents();
-
-            // moved this beyound SForm.fireEvents()
-            getDispatcher().dispatchDone();
-
-            if ( DEBUG ) {
-                measure.stop();
-                measure.start("time to process request");
-            }
-
-            if (generateCode) {
-                // default content ist text/html
-                response.setContentType("text/html;charset=" + session.getCharSet());
-                
-                // Page must not be cached since higly dynamic
-                response.setHeader("Pragma", "no-cache");
-                response.setHeader("Cache-Control",
-                                   "max-age=0, no-cache, must-revalidate");
-                // 1000 (one second after Jan 01 1970) because of some IE bug:
-                response.setDateHeader("Expires", 1000); 
-            }
-
-            processRequest(asreq, response);
-
-            System.err.println("eventsContained: " + eventsContained);
-
-            if (generateCode) {
-                SComponent reload = null;
-                if (eventsContained)
-                    reload = getSession().getReloadManager().getManagerComponent();
-
-                if (reload == null)
-                    reload = getFrame();
-
-                reload.write(new ServletDevice(response.getOutputStream()));
-            }
-
-            if ( DEBUG ) {
-                measure.stop();
-                debug(measure.print());
-                measure.reset();
-            }
-
-        }
-        catch ( Exception e) {
-            handleException(req, response, e);
-        }
-        finally {
-            finalizeRequest(req, response);
+            // make sure that the session association to the thread is removed
+            SessionManager.removeSession();
         }
     }
 
