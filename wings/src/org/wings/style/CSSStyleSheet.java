@@ -22,13 +22,6 @@ import org.wings.DynamicResource;
 import org.wings.SFont;
 import org.wings.SFrame;
 import org.wings.io.Device;
-import sun.security.krb5.internal.i;
-import sun.security.krb5.internal.n;
-import sun.security.krb5.internal.w;
-import sun.security.krb5.internal.crypto.c;
-import sun.security.krb5.internal.crypto.e;
-import sun.security.krb5.internal.crypto.j;
-import sun.security.krb5.internal.crypto.r;
 
 public class CSSStyleSheet
     implements StyleSheet 
