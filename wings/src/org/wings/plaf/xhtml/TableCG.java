@@ -18,6 +18,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 import javax.swing.Icon;
+import javax.swing.ListSelectionModel;
 
 import org.wings.*;
 import org.wings.io.*;
@@ -30,8 +31,11 @@ public class TableCG
     implements org.wings.plaf.TableCG, SConstants
 {
 
-    private static final SIcon EDIT_ICON = 
+    protected static final SIcon EDIT_ICON = 
         new ResourceImageIcon("org/wings/icons/Pencil.gif");
+
+    protected static final STableCellRenderer DEFAULT_ROW_SELECTION_RENDERER = 
+        new SDefaultTableRowSelectionRenderer();
 
     protected static final byte LEFT   = 1;
     protected static final byte RIGHT  = 2;
@@ -90,7 +94,7 @@ public class TableCG
         SDimension intercellPadding = table.getIntercellPadding();
         SDimension intercellSpacing = table.getIntercellSpacing();
 
-        d.append("<table");
+        d.print("<table");
         CGUtil.writeSize(d, table);
 
         int thickness = 0;
@@ -106,9 +110,9 @@ public class TableCG
                 if (border == null)
                     border = "box";
 
-                d.append(" frame=\"")
-                    .append(border)
-                    .append("\"");
+                d.print(" frame=\"")
+                    .print(border)
+                    .print("\"");
 
                 if (borderLines.top > 0)
                     thickness = borderLines.top;
@@ -125,36 +129,36 @@ public class TableCG
             thickness = 1;
 
         if (showHorizontalLines && showVerticalLines)
-            d.append(" rules=\"all\"");
+            d.print(" rules=\"all\"");
         else if (showVerticalLines) 
-            d.append(" rules=\"cols\"");
+            d.print(" rules=\"cols\"");
         else if (showHorizontalLines)
-            d.append(" rules=\"rows\"");
+            d.print(" rules=\"rows\"");
         else
-            d.append(" rules=\"none\"");
+            d.print(" rules=\"none\"");
 
         if (thickness > 0)
-            d.append(" border=\"")
-                .append(thickness)
-                .append("\"");
+            d.print(" border=\"")
+                .print(thickness)
+                .print("\"");
 
         if (intercellSpacing != null && intercellSpacing.width != null)
-            d.append(" cellspacing=\"")
-                .append(intercellSpacing.width)
-                .append("\""); 
+            d.print(" cellspacing=\"")
+                .print(intercellSpacing.width)
+                .print("\""); 
 
         if (intercellPadding != null && intercellPadding.width != null)
-            d.append(" cellpadding=\"")
-                .append(intercellPadding.width)
-                .append("\""); 
+            d.print(" cellpadding=\"")
+                .print(intercellPadding.width)
+                .print("\""); 
 
-        d.append(">\n");
+        d.print(">\n");
     }
 
     public void writePostfix(Device d, STable table)
         throws IOException
     {
-        d.append("</table>\n");
+        d.print("</table>\n");
     }
 
     public void writeBody(Device d, STable table)
@@ -174,23 +178,51 @@ public class TableCG
 
         SCellRendererPane rendererPane = table.getCellRendererPane();
         if (table.isHeaderVisible()) {
-            d.append("<tr>\n");
+            d.print("<tr>\n");
+
+            boolean selectionWritten = table.getRowSelectionColumn()<0;
             for (int c = originCol; c < colCount; c++) {
+
+                if ( !selectionWritten && 
+                     c>=table.getRowSelectionColumn() ) {
+                    writeEmptyHeaderCell(table, d);
+                    selectionWritten = true;
+                }
+
                 writeHeaderCell(d, table, rendererPane, c);
             }
-            d.append("</tr>\n");
+            
+            if ( !selectionWritten ) {
+                writeEmptyHeaderCell(table, d);
+            }
+
+            d.print("</tr>\n");
         }
 
-        // make sure internal table structure is  ok
-        table.checkSelectables();
 
         for (int r = originRow; r < rowCount; r++) {
-            d.append("<tr>\n");
+            d.print("<tr>\n");
+
+            boolean selectionWritten = table.getRowSelectionColumn()<0;
+
             for (int c = originCol; c < colCount; c++) {
+
+                if ( !selectionWritten && 
+                     c>=table.getRowSelectionColumn() ) {
+                    writeRowSelection(d, table, rendererPane, r);
+                    selectionWritten = true;
+                }
+
                 writeCell(d, table, rendererPane, r, c);
             }
-            d.append("</tr>\n");
+
+            if ( !selectionWritten ) {
+                writeRowSelection(d, table, rendererPane, r);
+            }
+
+            d.print("</tr>\n");
         }
+
     }
 
     protected void writeCell(Device d, STable table, 
@@ -209,39 +241,109 @@ public class TableCG
             comp = table.prepareRenderer(table.getCellRenderer(row, col), 
                                          row, col);
 
-        d.append("<td");
+        d.print("<td");
         Utils.appendTableCellAttributes(d, comp);
-        d.append(">");
+        d.print(">");
 
         if ( !isEditingCell && table.isCellEditable(row, col) ) {
             RequestURL editAddr = table.getRequestURL();
-            editAddr.addParameter(table.getEditParameter(row, col));
+            editAddr.addParameter(table.getNamePrefix() + "=" + 
+                                  table.getEditParameter(row, col));
             
-            d.append("<a href=\"").append(editAddr.toString()).
-                append("\">");
+            d.print("<a href=\"").print(editAddr.toString()).
+                print("\">");
             Utils.appendIcon(d, editIcon, null);
-            d.append("</a>&nbsp;");
+            d.print("</a>&nbsp;");
         }
 
         rendererPane.writeComponent(d, comp, table);
 
 
-        d.append("</td>");
+        d.print("</td>");
+    }
+
+    protected void writeDefaultFormRowSelection(Device d, STable table, 
+                                                SCellRendererPane rendererPane,
+                                                int row)
+        throws IOException
+    {
+
+        d.print("<td>");
+
+        d.print("<input type=\"hidden\"");
+        d.print(" name=\"").print(table.getNamePrefix()).print("\"").
+            print(" value=\"").print(table.getDeselectParameter(row,-1)).print("\"");
+        d.print(">");
+
+
+        d.print("<input type=\"");
+
+        switch ( table.getSelectionMode() ) {
+        case ListSelectionModel.SINGLE_SELECTION:
+            d.print("radio");
+            break;
+        default:
+            d.print("checkbox");
+            break;
+        } 
+
+        d.print("\" ").
+            print("name=\"").print(table.getNamePrefix()).print("\"").
+            print("value=\"").print(table.getSelectionToggleParameter(row,-1)).print("\"");
+
+        if ( table.isRowSelected(row) )
+            d.print(" checked=\"checked\"");
+
+        d.print(">");
+        d.print("</td>");
+    }
+
+    protected void writeRowSelection(Device d, STable table, 
+                                     SCellRendererPane rendererPane,
+                                     int row)
+        throws IOException
+    {
+        STableCellRenderer rowSelectionRenderer =
+            table.getRowSelectionRenderer();
+
+        if ( rowSelectionRenderer==null ) {
+            if ( table.getResidesInForm() ) {
+                writeDefaultFormRowSelection(d, table, rendererPane, row);
+                return;
+            }
+            rowSelectionRenderer = DEFAULT_ROW_SELECTION_RENDERER;
+        }
+
+        SComponent comp =  
+            rowSelectionRenderer.getTableCellRendererComponent(table,
+                                                               table.getSelectionToggleParameter(row, -1),
+                                                               table.isRowSelected(row),
+                                                               row, -1);
+        d.print("<td");
+        Utils.appendTableCellAttributes(d, comp);
+        d.print(">");
+
+        rendererPane.writeComponent(d, comp, table);
+
+        d.print("</td>");
     }
 
     protected void writeHeaderCell(Device d, STable table, 
                                    SCellRendererPane rendererPane, int col)
         throws IOException
     {
-        if (col >= table.getModel().getColumnCount()
-            && table.getSelectionMode() != SConstants.NO_SELECTION)
-            d.append("<th>&nbsp;</th>");
-        else {
-            SComponent comp = table.prepareHeaderRenderer(col);
-            d.append("<th>");
-            rendererPane.writeComponent(d, comp, table);
-            d.append("</th>");
-        }
+
+
+        SComponent comp = table.prepareHeaderRenderer(col);
+        d.print("<th>");
+        rendererPane.writeComponent(d, comp, table);
+        d.print("</th>");
+    }
+
+    protected void writeEmptyHeaderCell(STable table, Device d)
+        throws IOException
+    {
+        d.print("<th>&nbsp;</th>");
     }
 }
 

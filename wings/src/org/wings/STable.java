@@ -24,6 +24,8 @@ import java.util.HashMap;
 import javax.swing.event.*;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.DefaultListSelectionModel;
 
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.Device;
@@ -40,26 +42,17 @@ import org.wings.style.*;
  */
 public class STable
     extends SBaseTable
-    implements ActionListener, CellEditorListener, RequestListener
+    implements CellEditorListener, RequestListener
 {
     /**
      * @see #getCGClassID
      */
     private static final String cgClassID = "TableCG";
 
-    protected int selectionMode = SConstants.NO_SELECTION;
-
     /**
      * TODO: documentation
      */
-    protected EventListenerList listenerList = new EventListenerList();
-
-    protected Selectable[] selects = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected SButtonGroup selectGroup = null;
+    protected final EventListenerList listenerList = new EventListenerList();
 
     /** If editing, Component that is handling the editing. */
     transient protected SComponent editorComp;
@@ -79,7 +72,7 @@ public class STable
     /**
      * TODO: documentation
      */
-    protected HashMap editors = new HashMap();
+    protected final HashMap editors = new HashMap();
 
     /** Icon used for buttons that start editing in a cell. */
     transient protected SIcon editIcon;
@@ -92,9 +85,21 @@ public class STable
     protected AttributeSet selectionAttributes = new SimpleAttributeSet();
 
     /**
-      * Show/hide selectables. Default is "show".
-      */
-    protected boolean showSelectables = true;
+     * 
+     */
+    protected ListSelectionModel selectionModel = new DefaultListSelectionModel();
+
+    /**
+     * 
+     */
+    protected STableCellRenderer rowSelectionRenderer = null;
+
+    /**
+     * the column where the row selection element should be rendered. If
+     * negativ, no selection element is rendered.
+     */
+    protected int rowSelectionColumn = Integer.MAX_VALUE;
+
 
     /**
      * TODO: documentation
@@ -114,181 +119,80 @@ public class STable
      */
     public void setModel(TableModel tm) {
         super.setModel(tm);
-        initSelectables();
     }
+
 
     /**
-     * TODO: documentation
-     *
+     * Adds the row from <i>index0</i> to <i>index0</i> inclusive to the current selection.
      */
-    protected void initSelectables() {
-        if (getSelectionMode() != SConstants.NO_SELECTION) {
-            if (selectGroup == null)
-                selectGroup = new SButtonGroup();
-            else
-                selectGroup.removeAll();
-
-            if (selects != null) {
-                for (int i=0; i < selects.length; i++)
-                    selects[i].setSelected(false);
-
-                if (selects.length<getRowCount()) {
-                    addSelectables(selects.length, getRowCount()-1);
-                }
-                else if (selects.length>getRowCount()) {
-                    deleteSelectables(getRowCount(), selects.length-1);
-                }
-            }
-            else {
-                selects = new Selectable[model.getRowCount()];
-                for (int i=0; i<model.getRowCount(); i++)
-                    selects[i] = generateSelectable(i);
-            }
-        }
+    public void addRowSelectionInterval(int index0, int index1)
+    {
+        selectionModel.addSelectionInterval(index0, index1);
     }
-
-    /**
-     * TODO: documentation
-     *
-     */
-    public void checkSelectables() {
-        if (selects == null || getRowCount() != selects.length) {
-            // System.err.println("checkSelectables() wird tatsächlich gebraucht !!!");
-            initSelectables();
-        }
-    }
-
-	/**
-      * Adds the row from <i>index0</i> to <i>index0</i> inclusive to the current selection.
-      */
-	public void addRowSelectionInterval(int index0, int index1)
-     {
-     	int smode = getSelectionMode();
-     	if ( selects == null || smode == SConstants.NO_SELECTION ) return;
-        
-        if ( index0 > index1 )
-         {
-			int t = index0;
-            index0 = index1;
-            index1 = t;
-         }
-        
-        if ( smode == SConstants.SINGLE_SELECTION )
-         {
-         	clearSelection();
-			selects[ index0 ].setSelected( true );
-            fireSelectionValueChanged( index0 );
-            return;
-         }
-
-		if ( smode == SConstants.MULTIPLE_SELECTION )
-         {
-         	for ( ; index0 <= index1; index0++ )
-				selects[ index0 ].setSelected( true );
-			fireSelectionValueChanged( index0 );
-         }
-
-		return;
-	 }
-
-    /**
-     * TODO: documentation
-     *
-     * @param row
-     * @return
-     */
-    protected Selectable generateSelectable(int row) {
-        SCheckBox tmp = null;
-        if (getSelectionMode() == SConstants.SINGLE_SELECTION) {
-            tmp = new SRadioButton();
-            selectGroup.add(tmp);
-        }
-        else {
-            tmp = new SCheckBox();
-        }
-        tmp.setParent(getParent());
-
-        // hiermit werden ListSelectionEvents getriggert
-        tmp.addActionListener(this);
-        return tmp;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param sel
-     */
-    protected void deactivateSelectable(Selectable sel) {
-        if (sel != null) {
-            sel.setParent(null);
-            sel.removeActionListener(this);
-        }
-    }
-
 
     public void setParent(SContainer p) {
         super.setParent(p);
 
         if (editorComp != null)
             editorComp.setParent(p);
-
-        if (selects != null)
-            for (int i=0; i<selects.length; i++)
-                selects[i].setParent(p);
     }
-
-	/**
-      * Show selectables (SRadioButton's) or not.
-      * This is usefull, if we don't want to realize selection 
-      * via radiobuttons (f.e. with {@link org.wings.SButton} in 
-      * table cells).
-      * @param show 
-      *		<li><code>true</code> show them, if selection mode do not equals <code>NO_SELECTION</code>
-      *		<li><code>false</code> hide them at all
-      * @see #getShowSelectables()
-      */
-	public void setShowSelectables( boolean show )
-     {
-		showSelectables = show;
-     }
-
-	/**
-      * Get display mode of selectables.
-      * @see #setShowSelectables(boolean)
-      */
-	public boolean getShowSelectables( )
-     {
-		return showSelectables;
-     }
 
     public void processRequest(String action, String[] values) {
-        String value = values[0];
-        System.out.println("process request " + value);
-        int colonIndex = value.indexOf(':');
-        if ( colonIndex<0 )
-            return;
+        if ( values.length>1 ) 
+            getSelectionModel().setValueIsAdjusting(true);
 
-        int row = new Integer(value.substring(0, colonIndex)).intValue();
-        int col = new Integer(value.substring(colonIndex + 1)).intValue();
-
-        System.out.println("edit cell " + row + ":" +col);
- 
-        editCellAt(row, col, null);
-    }
-
-    public STableCellRenderer getCellRenderer(int row, int column) {
-        if (column >= super.getColumnCount())
-            return defaultRenderer;
-        return super.getCellRenderer(row, column);
-    }
-
-    public SComponent prepareRenderer(STableCellRenderer r, int row, int col) {
-        if (col >= super.getColumnCount()
-            && getSelectionMode() != SConstants.NO_SELECTION) {
-            return (SComponent)selects[row];
+        for ( int i=0; i<values.length; i++ ) {
+            String value = values[i];
+            
+            if ( value.length()>1 ) {
+                
+                char modus = value.charAt(0);
+                value = value.substring(1);
+                
+                int colonIndex = value.indexOf(':');
+                if ( colonIndex<0 )
+                    return;
+                
+                try {
+                    int row = Integer.parseInt(value.substring(0, colonIndex));
+                    int col = Integer.parseInt(value.substring(colonIndex + 1));
+                    
+                    // editor event
+                    switch ( modus ) {
+                    case 'e':
+                        editCellAt(row, col, null);
+                        break;
+                    case 't':
+                        if ( getSelectionModel().isSelectedIndex(row) ) 
+                            getSelectionModel().removeSelectionInterval(row, row);
+                        else
+                            getSelectionModel().addSelectionInterval(row, row);
+                        break;
+                    case 's':
+                        getSelectionModel().addSelectionInterval(row, row);
+                        break;
+                    case 'd':
+                        getSelectionModel().removeSelectionInterval(row, row);
+                        break;
+                    }
+                } catch ( NumberFormatException ex ) {
+                    // hier loggen...
+                    ex.printStackTrace();
+                }
+            }
         }
-        else
-            return super.prepareRenderer(r, row, col);
+ 
+       if ( values.length>1 ) 
+            getSelectionModel().setValueIsAdjusting(false);
+ 
+    }
+        
+    public void setRowSelectionRenderer(STableCellRenderer r) {
+        rowSelectionRenderer = r;
+    }
+
+    public STableCellRenderer getRowSelectionRenderer() {
+        return rowSelectionRenderer;
     }
 
     /**
@@ -594,7 +498,7 @@ public class STable
      * Creates default cell editors for Objects, numbers, and boolean values.
      */
     protected void createDefaultEditors() {
-        editors = new HashMap();
+        editors.clear();
 
         // Objects
         STextField textField = new STextField();
@@ -618,13 +522,17 @@ public class STable
      *
      * @return
      */
-    public int getColumnCount() {
-        if (getSelectionMode() != SConstants.NO_SELECTION && showSelectables ) {
-            return super.getColumnCount()+1;
-        }
-        else {
-            return super.getColumnCount();
-        }
+    public ListSelectionModel getSelectionModel() {
+        return selectionModel;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public void setSelectionModel(ListSelectionModel m) {
+        selectionModel = m;
     }
 
     /**
@@ -633,14 +541,14 @@ public class STable
      * @return
      */
     public int getSelectedRowCount() {
-        int count = 0;
-        if (selects != null && getSelectionMode() != SConstants.NO_SELECTION) {
-            for (int i=0; i<selects.length; i++) {
-                if (selects[i].isSelected())
-                    count++;
-            }
+        int result = 0;
+        for ( int i=getSelectionModel().getMinSelectionIndex(); 
+              i<=getSelectionModel().getMaxSelectionIndex(); i++ ) {
+            if ( getSelectionModel().isSelectedIndex(i) )
+                result++;
         }
-        return count;
+
+        return result;
     }
 
     /**
@@ -649,35 +557,27 @@ public class STable
      * @return
      */
     public int getSelectedRow() {
-        if (selects != null && getSelectionMode() != SConstants.NO_SELECTION) {
-            for (int i=0; i<selects.length; i++) {
-                if (selects[i].isSelected())
-                    return i;
-            }
-        }
-        return -1;
+        return getSelectionModel().getMinSelectionIndex();
     }
 
     public int[] getSelectedRows() {
-        int[] erg = new int[getSelectedRowCount()];
-        if (selects != null && getSelectionMode() != SConstants.NO_SELECTION) {
-            int index = 0;
-            for (int i=0; i<selects.length; i++) {
-                if (selects[i].isSelected())
-                    erg[index++]=i;
-            }
+        int[] result = new int[getSelectedRowCount()];
+
+        int index = 0;
+        for ( int i=getSelectionModel().getMinSelectionIndex(); 
+              i<=getSelectionModel().getMaxSelectionIndex(); i++ ) {
+            if ( getSelectionModel().isSelectedIndex(i) )
+                result[index++] = i;
         }
-        return erg;
+
+        return result;
     }
 
     /**
      * Deselects all selected columns and rows.
      */
     public void clearSelection() {
-        if (selects != null) {
-            for (int i=0; i<selects.length; i++)
-                selects[i].setSelected(false);
-        }
+        getSelectionModel().clearSelection();
     }
 
 
@@ -688,32 +588,32 @@ public class STable
      * @return
      */
     public boolean isRowSelected(int row) {
-        return getSelectionMode() != SConstants.NO_SELECTION &&
-            selects != null && selects[row] != null &&
-            selects[row].isSelected();
+        return getSelectionModel().isSelectedIndex(row);
     }
 
     /**
      * Sets the selection mode. Use one of the following values:
      * <UL>
-     * <LI> {@link SConstants#NO_SELECTION}
-     * <LI> {@link SConstants#SINGLE_SELECTION}
-     * <LI> {@link SConstants#MULTIPLE_SELECTION}
+     * <LI> {@link ListSelectionModel#NO_SELECTION}
+     * <LI> {@link ListSelectionModel#SINGLE_SELECTION}
+     * <LI> {@link ListSelectionModel#MULTIPLE_SELECTION}
      * </UL>
      */
     public void setSelectionMode(int s) {
-        clearSelection();
-        selectionMode = s;
-        initSelectables();
+        getSelectionModel().setSelectionMode(s);
     }
 
     /**
      * TODO: documentation
-     *
      * @return
+     * <UL>
+     * <LI> {@link ListSelectionModel#NO_SELECTION}
+     * <LI> {@link ListSelectionModel#SINGLE_SELECTION}
+     * <LI> {@link ListSelectionModel#MULTIPLE_SELECTION}
+     * </UL>
      */
     public int getSelectionMode() {
-        return selectionMode;
+        return getSelectionModel().getSelectionMode();
     }
 
     /**
@@ -722,7 +622,7 @@ public class STable
      * @param listener
      */
     public void addSelectionListener(ListSelectionListener listener) {
-        listenerList.add(ListSelectionListener.class, listener);
+        getSelectionModel().addListSelectionListener(listener);
     }
 
     /**
@@ -731,111 +631,13 @@ public class STable
      * @param listener
      */
     public void removeSelectionListener(ListSelectionListener listener) {
-        listenerList.remove(ListSelectionListener.class, listener);
-    }
-
-    /**
-     * Fire a SelectionEvent at each registered listener.
-     */
-    protected void fireSelectionValueChanged(int index) {
-        ListSelectionEvent e = new ListSelectionEvent(this, index, index, false);
-        // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i] == ListSelectionListener.class) {
-                ((ListSelectionListener)listeners[i+1]).valueChanged(e);
-            }
-        }
-        reload(ReloadManager.RELOAD_CODE);
+        getSelectionModel().removeListSelectionListener(listener);
     }
 
     public void fireIntermediateEvents() {
     }
 
     public void fireFinalEvents() {
-    }
-
-    /*
-     * Hier wird der SelectionPerformed Event gefeuert.
-     */
-    /**
-     * TODO: documentation
-     *
-     * @param e
-     */
-    public void actionPerformed(ActionEvent e) {
-        for (int i=0; i<getRowCount(); i++) {
-            if (selects[i] == e.getSource()) {
-                fireSelectionValueChanged(i);
-                return;
-            }
-        }
-    }
-
-    /*
-     * Fuegt eine Menge neuer Selectierbare Komponenten hinzu. Diese
-     * Methode wird aufgerufen, wenn im TableModel Daten(Zeilen)
-     * eingefuegt werden. Die Methode {@link #generateSelectable} wird
-     * benutzt um Selectables zu erzeugen.
-     */
-    /**
-     * TODO: documentation
-     */
-    protected final void addSelectables(int firstrow, int lastrow) {
-        if (getSelectionMode() != SConstants.NO_SELECTION) {
-            // System.out.println("add " + firstrow + " : " + lastrow);
-
-            firstrow = Math.max(firstrow, 0);
-            lastrow = Math.min(getRowCount(), lastrow);
-
-            Selectable[] newselects = new Selectable[(lastrow+1)-firstrow];
-            for (int i=0; i<=lastrow-firstrow; i++) {
-                // System.out.println("generate select " + (firstrow+i));
-                newselects[i] = generateSelectable(firstrow+i);
-            }
-
-            Selectable[] oldselects = selects;
-
-            selects = new Selectable[newselects.length+oldselects.length];
-
-            System.arraycopy(oldselects, 0, selects, 0, firstrow);
-            System.arraycopy(newselects, 0, selects, firstrow, newselects.length);
-            System.arraycopy(oldselects, firstrow, selects,
-                             firstrow+newselects.length,
-                             oldselects.length-firstrow);
-
-            // System.out.println(" Prior " + oldselects.length +
-            //                    " now Only " + selects.length + " selects");
-        }
-    }
-
-    /**
-     * TODO: documentation
-     */
-    protected final void deleteSelectables(int firstrow, int lastrow) {
-        if (getSelectionMode() != SConstants.NO_SELECTION) {
-            // System.out.println("delete " + firstrow + " : " +lastrow);
-            Selectable[] oldselects = selects;
-
-            firstrow = Math.max(firstrow, 0);
-            lastrow = Math.min(selects.length-1, lastrow);
-
-            selects = new Selectable[selects.length-(lastrow+1-firstrow)];
-
-            System.arraycopy(oldselects, 0, selects, 0, firstrow);
-            System.arraycopy(oldselects, lastrow+1, selects, firstrow,
-                             oldselects.length-(lastrow+1));
-
-            // die entfernten muessen natuerlich deactiviert werden.
-            for (int i=firstrow; i<=lastrow; i++) {
-                // System.out.println("deactivate select " + i);
-                deactivateSelectable(oldselects[i]);
-            }
-            // System.out.println(" Prior " + oldselects.length +
-            //                    " now Only " + selects.length + " selects");
-        }
     }
 
     /**
@@ -847,30 +649,23 @@ public class STable
         // kill active editors
         editingCanceled(null);
 
-        // this could be null !!!
-        if ( e!=null ) {
+        if (e == null || e.getFirstRow() == TableModelEvent.HEADER_ROW) {
+            // The whole thing changed
+            clearSelection();
+        } else {
             switch ( e.getType() ) {
             case TableModelEvent.INSERT:
                 if (e.getFirstRow() >= 0)
-                    addSelectables(e.getFirstRow(), e.getLastRow());
+                    getSelectionModel().insertIndexInterval(e.getFirstRow(),
+                                                            e.getLastRow(), true);
                 break;
                 
             case TableModelEvent.DELETE:
                 if (e.getFirstRow() >= 0)
-                    deleteSelectables(e.getFirstRow(), e.getLastRow());
-                break;
-                
-            case TableModelEvent.UPDATE:
-                // Falls sich die Daten geaendert haben, sonst sind keine
-                // Aenderungen noetig.
-                if ( selects != null && 
-                    ( e.getFirstRow() <= 0 ||
-                      e.getLastRow()>selects.length ) )
-                    initSelectables();
+                    getSelectionModel().removeIndexInterval(e.getFirstRow(),
+                                                            e.getLastRow());
                 break;
             }
-        } else {
-            initSelectables();
         }
         reload(ReloadManager.RELOAD_CODE);
     }
@@ -894,7 +689,6 @@ public class STable
      */
     public void setSelectionStyle(Style selectionStyle) {
         this.selectionStyle = selectionStyle;
-        System.err.println("SSSSSSSSelectionStyle " + getSelectionStyle());
     }
 
     /**
@@ -979,9 +773,28 @@ public class STable
     }
     
     public String getEditParameter(int row, int col) {
-        return getNamePrefix() + "=" + row + ":" + col;
+        return "e" + row + ":" + col;
     }
 
+    public String getSelectionToggleParameter(int row, int col) {
+        return "t" + row + ":" + col;
+    }
+
+    public String getSelectParameter(int row, int col) {
+        return "s" + row + ":" + col;
+    }
+
+    public String getDeselectParameter(int row, int col) {
+        return "d" + row + ":" + col;
+    }
+
+    public void setRowSelectionColumn(int column) {
+        rowSelectionColumn = column;
+    }
+
+    public int getRowSelectionColumn() {
+        return rowSelectionColumn;
+    }
 }
 
 /*
