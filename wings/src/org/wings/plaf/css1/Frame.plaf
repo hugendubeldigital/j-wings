@@ -6,10 +6,12 @@
 <import>java.io.*</import>
 <import>org.wings.externalizer.*</import>
 
-/* The IE "browser" renders web pages differently (bigger fonts, etc. if the HTML has a
-   valid XML declaration header vs. if none. Property enables to beautify pages. */
+/* The IE "browser" renders web pages differently (bigger fonts, etc. 
+ * if the HTML has a valid XML declaration header vs. if none. 
+ * Property enables to beautify pages. 
+ */
 <property type="Boolean" name="renderXmlDeclaration">Boolean.TRUE</property>
-
+<property type="String"  name="documentType"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd"></property>
 
 
 
@@ -115,8 +117,9 @@ static final SResourceIcon ICON = new SResourceIcon("org/wings/icons/ArrowDown.g
 <%
         }
 
-        %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+        %><%=documentType%>
 <%
+
         %><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=language%>" lang="<%=language%>">
 <%
     }
