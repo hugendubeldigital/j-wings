@@ -56,11 +56,14 @@ public class WingSetSession
         contentPane.setLayout(new SFlowDownLayout());
 
         STabbedPane tab = new STabbedPane();
+        tab.setBackground(new java.awt.Color(206, 206, 206));
 
         tab.add(new LabelExample(), "Label");
         tab.add(new BorderExample(), "Border");
         tab.add(new TextComponentExample(), "Text Component");
-        tab.add(new TreeExample(), "Tree");
+        // a Tab with icon..
+        tab.addTab("Tree", new ResourceImageIcon("icons/JavaCup.gif"), 
+                   new TreeExample(), "Tree Tool Tip");
         tab.add(new OptionPaneExample(getFrame()), "OptionPane");
         tab.add(new TableExample(), "Table");
         tab.add(new ListExample(), "List");
@@ -69,7 +72,9 @@ public class WingSetSession
         tab.add(new RadioButtonExample(), "RadioButton");
         tab.add(new FileChooserExample(), "FileChooser");
         tab.add(new ScrollPaneExample(), "ScrollPane");
-        tab.add(new TemplateExample(), "Template");
+        tab.addTab("Template", new ResourceImageIcon(WingSet.class, 
+                                                     "cowSmall.gif"), 
+                   new TemplateExample(), "Template Layout Manager");
         //tab.add(new DateChooserExample(), "DateChooser");
 
         contentPane.add(tab);
