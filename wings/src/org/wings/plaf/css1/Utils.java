@@ -11,12 +11,11 @@
  *
  * Please see COPYING for the complete licence.
  */
-
 package org.wings.plaf.css1;
 
 import java.io.IOException;
 
-import org.wings.*;
+import org.wings.*; 
 import org.wings.border.*;
 import org.wings.style.*;
 import org.wings.io.Device;
