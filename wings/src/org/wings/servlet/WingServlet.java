@@ -51,7 +51,6 @@ public abstract class WingServlet
      * TODO: documentation
      */
     protected int maxContentLength = 64; // in kByte
-    protected String uploaddir;
 
     private ServletConfig servletConfig = null;
 
@@ -176,10 +175,6 @@ public abstract class WingServlet
         initExtObjectHandler(config);
         initMaxContentLength(config);
 
-        uploaddir = config.getInitParameter("filechooser.uploaddir");
-        if (uploaddir == null || uploaddir.length() == 0)
-            uploaddir = "/tmp";
-
         servletConfig = config;
         postInit(config);
     }
@@ -237,7 +232,7 @@ public abstract class WingServlet
         // Wrap with MultipartRequest which can handle multipart/form-data
         // (file - upload), otherwise behaves like normal HttpServletRequest
         try {
-            req = new MultipartRequest(req, uploaddir, maxContentLength * 1024);
+            req = new MultipartRequest(req, maxContentLength * 1024);
         }
         catch (IOException e) {
             res.getOutputStream().println(e.getMessage());
