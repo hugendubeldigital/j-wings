@@ -56,7 +56,7 @@ public abstract class WingServlet extends HttpServlet
      */
     protected int maxContentLength = 64; // in kByte
 
-    private ServletConfig servletConfig = null;
+    protected ServletConfig servletConfig = null;
 
     private String lookupName = "SessionServlet";
 

@@ -10,6 +10,24 @@
     </fileset>
   </path>
 
+  <path id="testcompile.classpath">
+    <path location="build/testclasses"/>
+    <fileset dir="build/dist/lib">
+      <include name="*.jar" />
+    </fileset>
+    <fileset dir="testlib">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+
+  <path id="test.classpath">
+    <path refid="build.classpath" />
+    <path location="build/testclasses"/>
+    <fileset dir="build/dist/lib">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+
   <!-- ==================== Properties ==================== -->
   <target name="init">
     <tstamp/>
@@ -22,6 +40,10 @@
     <property name="doc"     value="${build}/doc" />
     <property name="distlib" value="${dist}/lib" />
     <property name="lib"     value="lib" />        <!-- external libraries -->
+    <property name="testsrc"     value="testsrc" />
+    <property name="testlib"     value="testlib" />
+    <property name="testclasses"     value="${build}/testclasses" />
+    <property name="testreport"     value="${build}/testreport" />
 
     <!-- read additional properties from file -->
     <property file="build.properties" />
@@ -36,6 +58,8 @@
     <mkdir dir="${doc}" />
     <mkdir dir="${doc}/api" />
     <mkdir dir="${lib}" />     <!-- avoid errors in case it does not exist -->
+    <mkdir dir="${testclasses}" />
+    <mkdir dir="${testreport}" />
   </target>
 
 
@@ -57,7 +81,7 @@
 
 
   <target name="jar" depends="compile">
-    <jar jarfile="${distlib}/wings.jar" basedir="${classes}">
+    <jar file="${distlib}/wings.jar" basedir="${classes}">
       <exclude name="org/wings/plaf/xhtml/**" />
     </jar>
 
@@ -75,7 +99,7 @@
   <target name="plaf" depends="css1,old" />
 
   <target name="css1" depends="compile">
-    <jar jarfile="${distlib}/css1.jar">
+    <jar file="${distlib}/css1.jar">
       <fileset dir="${classes}">
         <include name="org/wings/plaf/xhtml/*.class" />
         <include name="org/wings/plaf/xhtml/css1/*" />
@@ -88,7 +112,7 @@
   </target>
 
   <target name="old" depends="compile">
-    <jar jarfile="${distlib}/old.jar">
+    <jar file="${distlib}/old.jar">
       <fileset dir="${classes}">
         <include name="org/wings/plaf/xhtml/*.class" />
         <include name="org/wings/plaf/xhtml/old/*" />
@@ -98,6 +122,34 @@
         <include name="default.properties" />
       </fileset>
     </jar>
+  </target>
+
+
+  <target name="testcompile" depends="jar,css1">
+    <javac srcdir="${testsrc}" destdir="${testclasses}"
+	   debug="true"
+	   deprecation="${build.deprecation}"
+	   encoding="ISO8859-1">
+      <classpath refid="testcompile.classpath"/>
+    </javac>
+    <copy file="${distlib}/css1.jar" todir="${testsrc}/org/wings/plaf"/>
+  </target>
+
+  <target name="test" depends="testcompile">
+    <taskdef name="junit"
+	     classpath="${testlib}/junit.jar"
+	     classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
+
+    <junit>
+      <formatter type="plain"/>
+      <classpath refid="test.classpath"/>
+      <batchtest fork="yes" todir="${testreport}">
+        <fileset dir="${testclasses}">
+          <include name="**/Test*.class"/>
+          <exclude name="**/*$$*"/>
+        </fileset>
+      </batchtest>
+    </junit>
   </target>
 
 

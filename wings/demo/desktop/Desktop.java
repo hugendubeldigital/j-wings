@@ -20,6 +20,7 @@ import javax.servlet.http.*;
 
 import org.wings.*;
 import org.wings.externalizer.*;
+import org.wings.plaf.*;
 import org.wings.servlet.*;
 import org.wings.session.*;
 
@@ -35,10 +36,18 @@ public class Desktop
     public SessionServlet generateSessionServlet(HttpServletRequest req)
         throws Exception
     {
-        // create new default session and set plaf
         DefaultSession session = new DefaultSession();
-        session.getCGManager().setLookAndFeel(new URL(new URL(HttpUtils.getRequestURL(req).toString()),
-                                                      "../css1.jar"));
+        if (!LookAndFeelFactory.isDeployed("xhtml/css1")) {
+            try {
+                URL url = servletConfig.getServletContext().getResource("css1.jar");
+                LookAndFeelFactory.deploy(url);
+            }
+            catch (Exception e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace(System.err);
+            }
+        }
+        session.getCGManager().setLookAndFeel("xhtml/css1");
 
         // return a new desktop session
         return new DesktopSession(session);

@@ -26,7 +26,7 @@ public class LookAndFeelFactory
     private static Map lafs = new HashMap();
     private static List sessions = new LinkedList();
 
-    public static void deployLookAndFeel(URL classpath)
+    public static void deploy(URL classpath)
 	throws IOException
     {
         ClassLoader classLoader = new URLClassLoader(new URL[] { classpath },
@@ -37,6 +37,10 @@ public class LookAndFeelFactory
 	    System.err.println("redeploy");
 	    notifySessions(lookAndFeel);
 	}
+    }
+
+    public static boolean isDeployed(String name) {
+        return lafs.containsKey(name);
     }
 
     public static LookAndFeel getLookAndFeel(String name) {

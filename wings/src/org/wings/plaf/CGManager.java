@@ -36,14 +36,17 @@ public class CGManager
     }
 
     public ComponentCG getCG(SComponent target) {
+        System.err.print("CGManager.getCG(SComponent)");
         return (ComponentCG)getDefaults().get(target.getCGClassID(), ComponentCG.class);
     }
 
     public LayoutCG getCG(SLayoutManager target) {
+        System.err.print("CGManager.getCG(SLayoutManager)");
         return (LayoutCG)getDefaults().get(target.getCGClassID(), LayoutCG.class);
     }
 
     public BorderCG getCG(SBorder target) {
+        System.err.print("CGManager.getCG(SBorder)");
         return (BorderCG)getDefaults().get(target.getCGClassID(), BorderCG.class);
     }
 
@@ -108,19 +111,22 @@ public class CGManager
      * @see #getLookAndFeel
      */
     public void setLookAndFeel(LookAndFeel newLookAndFeel) {
+        System.err.print("CGManager.setLookAndFeel");
         lookAndFeel = newLookAndFeel;
-
+        
         if (newLookAndFeel != null) {
             setLookAndFeelDefaults(new CGDefaults(newLookAndFeel.getDefaults()));
         }
         else {
             setLookAndFeelDefaults(null);
         }
-
+        
         // have the session fire a propertyChangeEvent regarding the new lookAndFeel
         if (SessionManager.getSession() != null)
             ((PropertyService)SessionManager.getSession())
-                .setProperty("lookAndFeel", newLookAndFeel.getName());
+                .setProperty("lookAndFeel", "" + newLookAndFeel.hashCode());
+        else
+            System.err.println("no session associated with session manager");
     }
 }
 

@@ -91,6 +91,7 @@ public class LookAndFeel
     }
 
     public Object makeCG(String className) {
+        System.err.print("LookAndFeel.makeCG(" + className + ")");
         try {
             Class cgClass = Class.forName(className, true, classLoader);
             return cgClass.newInstance();
@@ -152,7 +153,7 @@ public class LookAndFeel
      * @return a font with the given attributes
      */
     public static SFont makeFont(String value) {
-        int pos1 = value.indexOf(",", 1); 
+        int pos1 = value.indexOf(",", 1);
         String name = value.substring(0, pos1);
 
         int pos2 = value.indexOf(",", pos1 + 1); 
@@ -287,10 +288,11 @@ public class LookAndFeel
             put(id, value);
             return value;
         }
-
+        /*
         public Object put(Object key, Object value) {
             return super.put(key, value);
         }
+        */
     }
 }
 

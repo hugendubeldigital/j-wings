@@ -122,7 +122,11 @@
 
     <copy file="explorer/explorer.xml" tofile="${deploy}/explorer/WEB-INF/web.xml"/>
     <copy file="explorer/index.html" tofile="${deploy}/explorer/index.html"/>
-    <copy file="explorer/*.gif" tofile="${deploy}/explorer/"/>
+    <copy todir="${deploy}/explorer">
+      <fileset dir="explorer">
+        <include name="*.gif" />
+      </fileset>
+    </copy>
 
     <copy todir="${deploy}/explorer/WEB-INF/classes">
       <fileset dir="${classes}">

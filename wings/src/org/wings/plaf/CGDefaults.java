@@ -48,15 +48,15 @@ public class CGDefaults
      * @see java.util.Map#put
      */
     public Object put(Object key, Object value) {
-        Object oldValue = (value == null) ? remove(key) : put(key, value);
+        Object oldValue = (value == null) ? super.remove(key) : super.put(key, value);
         if (key instanceof String) {
             firePropertyChange((String)key, oldValue, value);
         }
         return oldValue;
     }
 
-    public Object get(Object id, Class type) {
-        Object value = get(id);
+    public Object get(String id, Class type) {
+        Object value = super.get(id);
         if (value != null)
             return value;
 

@@ -106,11 +106,9 @@ public class WingSetSession
                     try {
                         URL contextURL = new URL(getFrame().getServerAddress().getAbsoluteAddress());
                         if (css1.isSelected())
-                            getSession().getCGManager()
-                                .setLookAndFeel(new URL(contextURL, "../css1.jar"));
+                            getSession().getCGManager().setLookAndFeel("xhtml/css1");
                         else
-                            getSession().getCGManager()
-                                .setLookAndFeel(new URL(contextURL, "../old.jar"));
+                            getSession().getCGManager().setLookAndFeel("xhtml/old");
                     }
                     catch (Exception e) {
                         System.out.println(e.getMessage());

@@ -15,6 +15,7 @@
 package wingset;
 
 import java.io.*;
+import java.net.URL;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -47,14 +48,17 @@ public class Test
 
     public void preInit(ServletConfig config) {
         DefaultSession session = (DefaultSession)getSession();
-        try {
-            CGManager cgManager = session.getCGManager();
-            cgManager.setLookAndFeel(new org.wings.plaf.xhtml.old.OldLookAndFeel());
+        if (!LookAndFeelFactory.isDeployed("xhtml/css1")) {
+            try {
+                URL url = config.getServletContext().getResource("css1.jar");
+                LookAndFeelFactory.deploy(url);
+            }
+            catch (Exception e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace(System.err);
+            }
         }
-        catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
-        }
+        session.getCGManager().setLookAndFeel("xhtml/css1");
     }
 
     public void postInit(ServletConfig config) {
