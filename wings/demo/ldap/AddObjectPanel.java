@@ -133,16 +133,13 @@ public class AddObjectPanel
         String objectClass = (String)objectClassList.getSelectedValue();
         try {
             dn = new Properties();
-            InputStream in = AddObjectPanel.class.getClassLoader().getResourceAsStream("dn.properties");
+            InputStream in = AddObjectPanel.class.getClassLoader().getResourceAsStream("ldap/editors/dn.properties");
             dn.load(in);
             
-            dnKey = dn.getProperty(objectClass.toLowerCase() +
-                                          ".dncomponents").trim();
-            dnAttribute = dn.getProperty(objectClass.toLowerCase() +
-                                                ".dnattribute").trim();
-            
+            dnKey = dn.getProperty(objectClass.toLowerCase() + ".dncomponents");
+            dnAttribute = dn.getProperty(objectClass.toLowerCase() + ".dnattribute");
         }
-        catch(NullPointerException e) {
+        catch (NullPointerException e) {
             e.printStackTrace();
         }
         catch (IOException e) {
@@ -151,9 +148,7 @@ public class AddObjectPanel
         
         try {
             boolean automatic = false;
-            
             Vector keyComponents = new Vector();
-            
             String dn = dnTextField.getText();
             
             if (parent.trim().equals(dn.trim())) {
@@ -170,9 +165,7 @@ public class AddObjectPanel
             Attributes specifiedAttributes = new BasicAttributes();
 
             NamingEnumeration enum = attributes.getAll();
-
             HashMap dnMap = new HashMap();
-            
 	    while (enum.hasMore()) {
 		Attribute attribute = (Attribute)enum.next();
                 if (attribute.size() != 0) {
@@ -184,8 +177,7 @@ public class AddObjectPanel
                 }
             }
             
-            specifiedAttributes.put(new
-                BasicAttribute("objectClass",objectClass));
+            specifiedAttributes.put(new BasicAttribute("objectClass",objectClass));
             StringBuffer dnBuffer = new StringBuffer();
             if (dnMap.size()>0) {
                 for (int i = 0;i<dnMap.size();i++) 
@@ -201,16 +193,17 @@ public class AddObjectPanel
             int index =  dn.indexOf(",");
             if (index>0)
                 ownDN = dn.substring(0,index);
-            
+
+            // create
 	    getContext().createSubcontext(dn, specifiedAttributes);
-            
+
+            // tell the tree
             STree tree = (STree)SessionManager.getSession().getProperty("tree");
-            
-            LdapTreeNode parentNode =
-                (LdapTreeNode)tree.getLastSelectedPathComponent();
+            LdapTreeNode parentNode = (LdapTreeNode)tree.getLastSelectedPathComponent();
             if (parentNode == null)
                 parentNode = (LdapTreeNode)(((DefaultTreeModel)(tree.getModel())).getRoot());
-            LdapTreeNode node = new LdapTreeNode(getContext(),parentNode,ownDN);
+
+            LdapTreeNode node = new LdapTreeNode(getContext(), parentNode,ownDN);
             DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
             model.insertNodeInto(node,parentNode,0);
             //model.nodesWereInserted(parentNode, new int[]
@@ -235,7 +228,7 @@ public class AddObjectPanel
 		}
 	    }
 	}
-	catch (NamingException e) {
+	catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
 	}
     }

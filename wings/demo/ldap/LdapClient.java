@@ -72,7 +72,7 @@ public class LdapClient
     private LdapTreeNode node;
     
     private STabbedPane tabbedPane;
-    private SForm mainPanel;
+    private SPanel mainPanel;
     private STree tree;
     
     private AddObjectPanel addPanel;
@@ -90,8 +90,6 @@ public class LdapClient
     public LdapClient()
         throws Exception
     {
-        
-
         frame = new SFrame("LDAP Client");
 
         stats = ResourceBundle.getBundle("ldap.AttributeResources", crtLocale);
@@ -138,8 +136,7 @@ public class LdapClient
         settingsForm.add(disconnectButton);
 
 
-        mainPanel = new SForm();
-        mainPanel.setEncodingType("multipart/form-data");
+        mainPanel = new SPanel();
         try {
             mainPanel.setLayout(new STemplateLayout(getClass().getResource("ldapclientlayout.html")));
         }
@@ -207,7 +204,6 @@ public class LdapClient
 
         frame.show();
         System.out.println(SessionManager.getSession().getServletRequest().getAuthType());
-        
     }
     
     

@@ -155,10 +155,9 @@ public class AttributesEditor
 	    this.component = editor.createComponent(attributes);
 	    this.maymust = maymust;
             
-	    if (maymust == LDAP.MUST) {
+	    if (maymust == LDAP.MUST)
 		label.setAttribute("font-weight", "bold");
-            }
-            
+
 	    this.message.setAttribute("color", "red");
 	}
     }

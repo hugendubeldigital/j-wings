@@ -29,15 +29,15 @@
     </init-param>
     <init-param>
       <param-name>java.naming.provider.url</param-name>
-      <param-value>ldap://alladin:389</param-value>
+      <param-value>ldap://localhost:389</param-value>
     </init-param>
     <init-param>
       <param-name>java.naming.provider.basedn</param-name>
-      <param-value>dc=mercatis,dc=de</param-value>
+      <param-value>dc=to,dc=com</param-value>
     </init-param>
     <init-param>
       <param-name>java.naming.security.principal</param-name>
-      <param-value>cn=manager,dc=mercatis,dc=de</param-value>
+      <param-value>cn=manager,dc=to,dc=com</param-value>
     </init-param>
     <init-param>
       <param-name>java.naming.security.credentials</param-name>
@@ -67,15 +67,15 @@
     </init-param>
     <init-param>
       <param-name>ldap.server.host</param-name>
-      <param-value>alladin:389</param-value>
+      <param-value>localhost:389</param-value>
     </init-param>
     <init-param>
       <param-name>ldap.server.basedn</param-name>
-      <param-value>ou=users,dc=mercatis,dc=de</param-value>
+      <param-value>ou=users,dc=to,dc=com</param-value>
     </init-param>
     <init-param>
       <param-name>ldap.server.binddn</param-name>
-      <param-value>cn=manager,dc=mercatis,dc=de</param-value>
+      <param-value>cn=manager,dc=to,dc=com</param-value>
     </init-param>
     <init-param>
       <param-name>ldap.server.password</param-name>
