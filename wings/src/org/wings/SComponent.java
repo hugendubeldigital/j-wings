@@ -331,21 +331,23 @@ public abstract class SComponent
     }
 
     /*
-     * If a subclass implements the {@link GetListener} interface,
+     * If a subclass implements the {@link RequestListener} interface,
      * it will be unregistered at the associated dispatcher.
      */
     private void unregister() {
-        if (getDispatcher() != null && this instanceof RequestListener)
+        if (getDispatcher() != null && this instanceof RequestListener) {
             getDispatcher().unregister((RequestListener)this);
+        }
     }
 
     /*
-     * If a subclass implements the {@link GetListener} interface,
+     * If a subclass implements the {@link RequestListener} interface,
      * it will be registered at the associated dispatcher.
      */
     private void register() {
-        if (getDispatcher() != null && this instanceof RequestListener)
+        if (getDispatcher() != null && this instanceof RequestListener) {
             getDispatcher().register((RequestListener)this);
+        }
     }
 
     /**
@@ -605,7 +607,7 @@ public abstract class SComponent
     }
 
     /**
-     * renders the component into a string
+     * renders the component into a string.
      */
     public String toString() {
         Device d = new StringBufferDevice();
