@@ -16,7 +16,7 @@ package org.wings.template;
 
 import org.wings.SURLIcon;
 import org.wings.SComponent;
-import org.wings.SButton;
+import org.wings.SAbstractButton;
 
 /**
  * TODO: documentation
@@ -24,16 +24,15 @@ import org.wings.SButton;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SButtonPropertyManager
-    extends SComponentPropertyManager
+public class SAbstractButtonPropertyManager extends SComponentPropertyManager
 {
-    static final Class[] classes = {SButton.class};
+    static final Class[] classes = {SAbstractButton.class};
 
-    public SButtonPropertyManager() {
+    public SAbstractButtonPropertyManager() {
     }
 
     public void setProperty(SComponent comp, String name, String value) {
-        SButton c = (SButton) comp;
+        SAbstractButton c = (SAbstractButton) comp;
         if ( name.equals("ICON") )
             c.setIcon(new SURLIcon(value));
         else if ( name.equals("TEXT") )
