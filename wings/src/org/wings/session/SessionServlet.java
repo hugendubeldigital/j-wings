@@ -16,12 +16,12 @@ package org.wings.session;
 
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
-import javax.servlet.http.HttpUtils;
+
 import org.wings.DynamicCodeResource;
 import org.wings.RequestURL;
 import org.wings.Resource;
@@ -39,31 +39,27 @@ import org.wings.SForm;
 import org.wings.SFrame;
 import org.wings.SLabel;
 import org.wings.STemplateLayout;
-import org.wings.event.SRequestEvent;
 import org.wings.event.ExitVetoException;
+import org.wings.event.SRequestEvent;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.externalizer.ExternalizedResource;
 import org.wings.io.Device;
 import org.wings.io.DeviceFactory;
 import org.wings.io.ServletDevice;
-import org.wings.plaf.LookAndFeelFactory;
-import org.wings.util.ComponentVisitor;
 import org.wings.util.DebugUtil;
-import org.wings.util.TimeMeasure;
+import org.wings.util.LocaleCharSet;
 
 /**
- * TODO: documentation
-Die ServletEngine erzeugt f�r jeden User eine eigene HttpSession. Auf diese kann
-man von allen Servlets, die in der Engine laufen, zugreifen. _Ein_ WingServlet
-erzeugt ein SessionServlet pro HttpSession und legt es dort ab. Da das
-SessionServlet als Wrapper f�r das WingServlet fungiert, kann man von dort, wie
-gewohnt auf den ServletContext und die HttpSession zugreifen. Zus�tzlich h�ngt
-am SessionServlet die wingS-Session mit wichtigen Services und der �bergeordnete
-SFrame. An diesem Frame h�ngen alle wingS-Komponenten und somit der gesamte
-Zustand der Anwendung. Der Programmierer bekommt �ber den SessionManager von
-jeder Stelle aus eine Referenz auf die wingS-Session. Das SessionServlet bietet
-zudem Zugang zur Servlet �bergreifenden HttpSession.
-
+ * The servlet engine creates for each user a new HttpSession. This HttpSession can be
+ * accessed by all Serlvets running in the engine. A WingServlet creates one 
+ * wings SessionServlet per HTTPSession and stores it in its context.
+ * As the SessionServlets acts as Wrapper for the WingsServlet, you can access from
+ * there as used the  ServletContext and the HttpSession. Additionally the SessionServlet
+ * containts also the wingS-Session with all important services and the superordinated
+ * SFrame. To this SFrame all wings-Components and hence the complete application state
+ * is attached. The developer can access from any place via the SessionManager a 
+ * reference to the wingS-Session. Additionally the SessionServlet provides access to the
+ * all containing HttpSession.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -75,7 +71,7 @@ final class SessionServlet
     private static Logger logger = Logger.getLogger("org.wings.session");
 
     /**
-     * TODO: documentation
+     * The parent WingsServlet
      */
     protected transient HttpServlet parent = this;
 
@@ -104,14 +100,14 @@ final class SessionServlet
     private boolean firstRequest = true;
 
     /**
-     * TODO: documentation
-     *
+     * Default constructor-
      */
     protected SessionServlet() {
     }
 
     /**
-     * TODO: documentation
+     * Sets the parent servlet contianint this wings session servlet (WingsServlet, delegating
+     * its requests to the SessionServlet).
      */
     protected final void setParent(HttpServlet p) {
         if (p!=null) parent = p;
@@ -122,7 +118,8 @@ final class SessionServlet
     }
 
     /**
-     * TODO: documentation
+     * A String setter for the localeFromHeader property. Interates over all passed strings and tries to
+     * parse string value as boolean. Used for parsing HTTP request header.
      */
     public final void setLocaleFromHeader(String[] args) {
         if (args==null)
@@ -138,21 +135,25 @@ final class SessionServlet
     }
 
     /**
-     * TODO: documentation
+     * Indicates if the wings session servlet should adopt the clients Locale provided by the
+     * browsers in the HTTP header.
+     * @param adoptLocale if true, try to determine, false ignore
      */
-    public final void setLocaleFromHeader(boolean b) {
-        localeFromHeader = b;
+    public final void setLocaleFromHeader(boolean adoptLocale) {
+        localeFromHeader = adoptLocale;
     }
 
     /**
-     * TODO: documentation
+     * Indicates if the wings session servlet should adopt the clients Locale provided by the
+     * browsers in the HTTP header.
      */
     public final boolean getLocaleFromHeader() {
         return localeFromHeader;
     }
 
     /**
-     * TODO: documentation
+     * The current Locale of this wings session. If localeFromHeader is true, then this typically reflects
+     * the Locale configured in the client browser.
      */
     public final Locale getLocale() {
         return session.getLocale();
@@ -185,13 +186,11 @@ final class SessionServlet
         supportedLocales = locales;
     }
 
-    /*
-     * Das Locale des Servlets wird ueber das Locale des Browsers bestimmt und den
-     * verfuegbaren Locales bestimmt.Uber den Parameter <PRE>LocaleFromHeader</PRE>
-     * mit Werten true/false, kann diese Verhalten gesteuert werden.
-     */
     /**
-     * TODO: documentation
+     * The Locale of the current wings session servlet is determined by the locale transmitted
+     * by the browser. The property <PRE>LocaleFromHeader</PRE> modifies this behaviour of a 
+     * wings session servlet to adopt the clients browsers Locale.
+     * @param req The request to determine the local from.
      */
     protected final void handleLocale(HttpServletRequest req) {
         setLocaleFromHeader(req.getParameterValues("LocaleFromHeader"));
@@ -250,9 +249,9 @@ final class SessionServlet
     }
 
     /**
-     * TODO: documentation
+     * Delegates log messages to the according WingsServlet or alternativley to the HttpServlet logger.
      *
-     * @param msg
+     * @param msg The logmessage
      */
     public void log(String msg) {
         if (parent!=this)
@@ -288,7 +287,8 @@ final class SessionServlet
     // bis hierhin
 
     /**
-     * TODO: documentation
+     * The error template which should be presented on any uncaught Exceptions can be set 
+     * via a property <code>wings.error.template</code> in the web.xml file. 
      *
      * @param config
      * @throws ServletException
@@ -363,6 +363,7 @@ final class SessionServlet
         }
         // sollte man den obigen Block nicht durch folgende Zeile ersetzen?
         //throw new RuntimeException("this method must never be called!");
+        // bsc: Wieso?
     }
 
 
@@ -375,12 +376,13 @@ final class SessionServlet
      * </UL>
      * Ist synchronized, damit nur ein Frame gleichzeitig bearbeitet werden kann.
      * {@link org.wings.SFrameSet}
-     * @deprecated
+     * @ deprecated -- bsc: warum? und was aendern?
      */
     public final synchronized void doGet(HttpServletRequest req,
                                          HttpServletResponse response)
         throws ServletException, IOException
     {
+        //req.setCharacterEncoding("utf-8");        
         SessionManager.setSession(session);
         session.setServletRequest(req);
         session.setServletResponse(response);
@@ -393,6 +395,38 @@ final class SessionServlet
         Device outputDevice = null;
 
         try {
+            /* Handling of the requests character encoding.
+             * --------------------------------------------
+             * The following block is needed for a correct handling of non-ISO-8859-1 data:
+             * 
+             * Using LocaleCharacterSet and/or charset.properties we can advise the client to use i.e. UTF-8 as
+             * character encoding. Once told the browser consequently also encodes his requests in the choosen
+             * characterset of the sings session. This is achieved by adding the HTML code 
+             * <meta http-equiv="Content-Type" content="text/html;charset="<charset>"> to the generated pages. 
+             * If the user hasn't overridden the encoding in their browser, then all form data is submitted with 
+             * data encoded like m%C3%BCller because byte pair C3 BC is how the german u-umlaut is represented in 
+             * UTF-8. If the form is iso-8859-1 encoded then you get m%FCller, because byte FC is how it is 
+             * presented in iso-8859-1.
+             * So the browser behaves correctly by sending his form input correctly encoded in the advised character
+             * encoding. The issue is that the servlet container is typically unable to determine the correct encoding
+             * of this form data. By proposal the browser should als declare the used character encoding for his data.
+             * But actual browsers omit this information and hence the servlet container is unable to guess the right
+             * encoding (Tomcat actually thenalways guesses ISO 8859-1). This results in totally scrumbled up data
+             * for all non ISO-8859-1 character encodings. With the block below we tell the servlet container about
+             * the character encoding we expect in the browsers request and hence the servlet container can do the 
+             * correct decoding.
+             * This has to be done at very first, otherwise the servlet container will ignore this setting.
+             */
+             
+            // TODO: Actually the whole character encoding is depending FIXED on clients locale
+            // Should be propably a per session setting             
+            if ((req.getCharacterEncoding() == null) && (session.getLocale() != null)) {             
+                String sessionCharacterEncoding = LocaleCharSet.getInstance().getCharSet(session.getLocale());                 
+                 // We know better about the used character encoding than tomcat
+                logger.finer("Advising servlet container to interpret request as " + sessionCharacterEncoding);
+                req.setCharacterEncoding(sessionCharacterEncoding); 
+            }
+                                  
             /*
              * The tomcat 3.x has a bug, in that it does not encode the URL
              * sometimes. It does so, when there is a cookie, containing some
@@ -420,7 +454,7 @@ final class SessionServlet
                 ((PropertyService)session).setProperty("request.url", 
                                                        requestURL);
             }
-
+            
             if (logger.isLoggable(Level.FINER)) {
                 logger.finer("RequestURL: " + requestURL);
                 logger.finer("\nHEADER:");
@@ -432,7 +466,7 @@ final class SessionServlet
             }
 
             handleLocale(req);
-
+                        
             Enumeration en = req.getParameterNames();
             
             // are there parameters/low level events to dispatch 
@@ -483,7 +517,7 @@ final class SessionServlet
                     }
                     else {
                         // redirect to a fresh session.
-                        redirectAddress = HttpUtils.getRequestURL(req).toString();
+                        redirectAddress = req.getRequestURL().toString();
                     }
                     req.getSession().invalidate(); // calls destroy implicitly
                     response.sendRedirect(redirectAddress);
