@@ -78,9 +78,7 @@ public class StringResource
     }
 
     public SimpleURL getURL() {
-        String name = extension!=null ? 
-	    getId() + "." + extension : 
-	    getId();
+        String name = getId();
 
         // append the sessionid, if not global
         if ((externalizerFlags & ExternalizeManager.GLOBAL) > 0) {

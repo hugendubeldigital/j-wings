@@ -14,16 +14,15 @@
 
 package org.wings;
 
+import org.wings.externalizer.ExternalizeManager;
+import org.wings.io.Device;
+import org.wings.session.PropertyService;
+import org.wings.session.SessionManager;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.logging.*;
-
-import org.wings.session.*;
-import org.wings.externalizer.ExternalizeManager;
-import org.wings.externalizer.AbstractExternalizeManager;
-import org.wings.io.Device;
+import java.util.logging.Logger;
 
 /**
  * TODO: documentation
@@ -216,8 +215,7 @@ public abstract class StaticResource extends Resource
         
         if ( buffer.isValid() ) {     // buffered and small enough. buffer->out
             buffer.writeTo(out);
-        }
-        else {                        // too large to be buffered. res->out
+        } else {                        // too large to be buffered. res->out
             InputStream resource = getResourceStream();
             if ( resource!=null ) {
                 int deliverSize = 0;
@@ -246,8 +244,6 @@ public abstract class StaticResource extends Resource
 
     public SimpleURL getURL() {
         String name = getId();
-        if (extension != null)
-            name += "." + extension;
 
         // append the sessionid, if not global
         if ((externalizerFlags & ExternalizeManager.GLOBAL) > 0) {

@@ -120,11 +120,7 @@ public abstract class DynamicResource
         RequestURL requestURL = (RequestURL)getPropertyService().getProperty("request.url");
         requestURL = (RequestURL) requestURL.clone();
         requestURL.setEpoch(getEpoch());
-
-        if (extension != null)
-            requestURL.setResource(getId() + "." + extension);
-        else
-            requestURL.setResource(getId());
+        requestURL.setResource(getId());
 
         return requestURL;
     }
@@ -150,7 +146,6 @@ public abstract class DynamicResource
       * Get additional http-headers.
       * Returns <tt>null</tt>, if there are no additional headers to be set.
       * @return Set of {@link java.util.Map.Entry} (key-value pairs)
-      * @param obj get headers for this object
       */
     public Collection getHeaders() {
         return null;
@@ -160,7 +155,6 @@ public abstract class DynamicResource
       * Get additional http-headers.
       * Returns <tt>null</tt>, if there are no additional headers to be set.
       * @return Set of {@link java.util.Map.Entry} (key-value pairs)
-      * @param obj get headers for this object
       */
     public Set getCookies() {
         return null;
