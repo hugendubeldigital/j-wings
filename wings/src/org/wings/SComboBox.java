@@ -223,7 +223,7 @@ public class SComboBox
 
             if ( !delayEvent ) {
 
-                if (selectedItemReminder != dataModel.getSelectedItem()) {
+                if (isDifferent(selectedItemReminder , dataModel.getSelectedItem())) {
                     // in case a users implementation of ComboBoxModel
                     // doesn't fire a ListDataEvent when the selection
                     // changes.
@@ -630,7 +630,7 @@ public class SComboBox
 
     public void fireFinalEvents() {
         if ( delayedEvent ) {
-            if (selectedItemReminder != dataModel.getSelectedItem()) {
+            if (isDifferent(selectedItemReminder, dataModel.getSelectedItem())) {
                 // in case a users implementation of ComboBoxModel
                 // doesn't fire a ListDataEvent when the selection
                 // changes.
