@@ -54,7 +54,7 @@ public final class WingServlet
 
     private static final long BIRTHDAY = System.currentTimeMillis();
 
-    synchronized static final int getRequestCount() {
+    synchronized public static final int getRequestCount() {
         return REQUEST_COUNTER;
     }
 
@@ -226,14 +226,7 @@ public final class WingServlet
 
             SessionServlet sessionServlet = new SessionServlet();
             sessionServlet.init(servletConfig, request);
-            /*
-             * the constructor of SessionServlet associates the Session with 
-             * the thread: it sets it in the SessionManager. Thus we can access
-             * it here.
-             */
-            sessionServlet.getSession().setServletRequest(request);
-            sessionServlet.getSession().setServletResponse(response);
-            
+
             /* the request URL is needed already in the setup-phase. Note,
              * that at this point, the URL will always be encoded, since
              * we (or better: the servlet engine) does not know yet, if setting
@@ -365,6 +358,7 @@ public final class WingServlet
              * generated page size.
              */
             String pathInfo = req.getPathInfo();
+
             if (pathInfo == null || pathInfo.length() == 0) {
                 StringBuffer pathUrl = HttpUtils.getRequestURL(req);
                 pathUrl.append('/');
@@ -376,6 +370,7 @@ public final class WingServlet
                 response.sendRedirect(pathUrl.toString());
                 return;
             }
+
 
             /*
              * we either have a request for the system externalizer
@@ -409,7 +404,7 @@ public final class WingServlet
         catch (Throwable e) {
             logger.log(Level.SEVERE, "doGet", e);
             throw new ServletException(e);
-        }
+        } 
     }
 
     /**
