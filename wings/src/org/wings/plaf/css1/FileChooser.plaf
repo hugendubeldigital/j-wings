@@ -17,6 +17,7 @@
     Utils.writeEvents(device, component);
     %><%|size=columns%><%
     %><%|accept=component.getFileNameFilter()%><%
+    %><%|tabindex=component.getFocusTraversalIndex()%><%
     %><%|class=Utils.style(component)%>/><%
 %>
 </write>

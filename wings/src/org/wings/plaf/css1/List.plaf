@@ -17,6 +17,7 @@
         %><%|class=Utils.style(list)%><%
         %><%|name=list.getNamePrefix()%><%
         %><%|size=list.getVisibleRowCount()%><%
+        %><%|tabindex=list.getFocusTraversalIndex()%><%
         %><%|multiple=(list.getSelectionMode() == SConstants.MULTIPLE_SELECTION) ? "multiple" : null%><%
 		Utils.writeEvents(device, list);
         %>><%
