@@ -73,6 +73,10 @@ public final class Session
      */
     public static String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
 
+    private static int SESSION_COUNTER = 0;
+
+    private static int ACTIVE_SESSION_COUNTER = 0;
+
     /**
      * Every session has its own {@link CGManager}. 
      *
@@ -103,6 +107,7 @@ public final class Session
     private transient HttpServletRequest servletRequest;
 
     private String redirectAddress;
+
     private String exitAddress;
 
 
@@ -112,20 +117,28 @@ public final class Session
      */
     private final EventListenerList listenerList = new EventListenerList();
 
-    public static final int getOverallSessions() {
-        return SessionServlet.getOverallSessions();
+    synchronized public static final int getOverallSessions() {
+        return SESSION_COUNTER;
     }
 
-    public static final int getActiveSessions() {
-        return SessionServlet.getActiveSessions();
+    synchronized public static final int getActiveSessions() {
+        return ACTIVE_SESSION_COUNTER;
     }
-   
+
+    static boolean collectStatistics = true;
+
 
     /**
      * TODO: documentation
      *
      */
     public Session()  {
+        if ( collectStatistics ) {
+            synchronized(Session.class) {
+                SESSION_COUNTER++;
+                ACTIVE_SESSION_COUNTER++;
+            }
+        } // end of if ()
     }
 
     /**
@@ -507,8 +520,15 @@ public final class Session
 
         Object[] listeners = listenerList.getListenerList(); 
         for ( int i = listeners.length-2; i>=0; i -= 2 ) {
-            listenerList.remove(listeners[i].getClass(), (EventListener)listeners[i+1]);
+            listenerList.remove((Class)listeners[i], (EventListener)listeners[i+1]);
         } // end of for (int i=0; i<; i++)
+
+
+        if ( collectStatistics ) {
+            synchronized(Session.class) {
+                ACTIVE_SESSION_COUNTER--;
+            }
+        } // end of if ()
     }
 
     /**
@@ -615,6 +635,10 @@ public final class Session
                 ((SRequestListener)listeners[i+1]).processRequest(event);
             }
         }
+    }
+
+    protected void finalize() {
+        logger.info("gc session");
     }
 
 }
