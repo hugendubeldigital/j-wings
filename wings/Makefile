@@ -41,7 +41,7 @@ htdocs: dummy javadoc
 	cd htdocs ;\
 	ln -s ../doc/api .
 
-dist: fun javadoc jar demojar
+dist: distclean fun javadoc jar demojar
 	mkdir dist
 	mkdir dist/lib
 	mkdir dist/doc
