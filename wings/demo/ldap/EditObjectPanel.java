@@ -12,7 +12,7 @@ import org.wings.*;
 import org.wings.session.*;
 
 public class EditObjectPanel
-    extends SPanel
+    extends SForm
 {
     private final static Logger logger = Logger.getLogger("ldap");
 
@@ -32,7 +32,7 @@ public class EditObjectPanel
         throws NamingException
     {
         super(new SFlowDownLayout());
-        //setEncodingType("multipart/form-data");
+        setEncodingType("multipart/form-data");
 
         attributeOrdering = new Properties();
         try {
@@ -103,10 +103,16 @@ public class EditObjectPanel
     }
 
     protected void ok() {
+        Attributes attributes = null;
 	try {
-            
-            Attributes attributes = editor.getData();
+            attributes = editor.getData();
+        }
+	catch (NamingException e) {
+	    logger.log(Level.WARNING, "modify failed", e);
+            return;
+	}
 
+        try {
 	    List modifications = new LinkedList();
 	    NamingEnumeration enum = attributes.getAll();
 	    while (enum.hasMore()) {
@@ -146,6 +152,7 @@ public class EditObjectPanel
 	    logger.log(Level.WARNING, "modify failed", e);
 	}
         catch (Exception e) {
+	    logger.log(Level.WARNING, "modify failed", e);
         }
     }
 

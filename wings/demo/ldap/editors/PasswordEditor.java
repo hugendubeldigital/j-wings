@@ -69,10 +69,9 @@ public class PasswordEditor
 	    return null;
 
 	if (!t1.equals(t2)) {
-          System.out.println("verschiedene   Passworrter");
+	    logger.info("confirmation differs");
   	    throw new NamingException("confirmation differs");
         }
-	   
 
 	return new BasicAttribute(id, t1);
     }

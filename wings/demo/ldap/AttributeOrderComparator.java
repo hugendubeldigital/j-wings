@@ -27,7 +27,7 @@ class AttributeOrderComparator
 	if (pos1 == -1 && pos2 == -1)
 	    return (r1 == null) ? -1 : r1.id.compareTo(r2.id);
 
-	return pos2 - pos1;
+	return pos1 - pos2;
     }
 
     public boolean equals(Object obj) {

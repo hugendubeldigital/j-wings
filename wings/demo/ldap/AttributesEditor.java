@@ -99,6 +99,7 @@ public class AttributesEditor
     public Attributes getData()
 	throws NamingException
     {
+        NamingException exception = null;
 	Attributes attributes = new BasicAttributes();
 	Iterator it = rows.iterator();
 	while (it.hasNext()) {
@@ -107,15 +108,21 @@ public class AttributesEditor
 		Attribute attribute = row.editor.getValue(row.component, row.id);
 		if (attribute != null)
 		    attributes.put(attribute);
-            
-		if (row.maymust == LDAP.MUST && attribute.size() == 0)
-		    addMessage(row.id, "required");
-	    }
 
+		if (row.maymust == LDAP.MUST && attribute.size() == 0) {
+		    addMessage(row.id, "required");
+                    exception = new InvalidAttributesException(row.id + " is required");
+                }
+	    }
 	    catch (NamingException e) {
 		addMessage(row.id, e.getMessage());
+                exception = e;
 	    }
 	}
+
+        if (exception != null)
+            throw exception;
+
 	return attributes;
     }
 
@@ -131,7 +138,6 @@ public class AttributesEditor
 		messages = true;
 		return;
 	    }
-
 	}
     }
 
