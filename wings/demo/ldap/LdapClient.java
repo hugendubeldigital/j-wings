@@ -42,228 +42,187 @@ import org.wings.util.*;
 
 public class LdapClient
     implements SConstants, 
-	       TreeSelectionListener, 
-	       ActionListener,
-	       ChangeListener
+	       TreeSelectionListener 
 {  
     private final static Logger logger = Logger.getLogger("ldap");
 
     SFrame frame;
-    public static Locale crtLocale = Locale.GERMAN;
 
-    private final static String NOT_CONNECTED = "not connected";
-    private final static String JPEGPATH = "/home/nina/wings/demo/ldap/jpeg/";
-    private final static String LF= "LaufendeFortbildung";
-    private final static String TAET= "taetigkeitsbereiche";
-    private final static String ZUSATZ= "zusatzausbildungen";
-    private final static String TEAM= "team";
-    private final static String BERGANG= "werdegang";
-    private final static String DELIM= ":";
-    private final static String CONNECTIONSETTINGS= "Verbindung";
-    private final static String SELECTPHOTO= "Foto aussuchen...";
     private final int columns = 50;
     private final int maxcolumns = 100;
-    
-    ResourceBundle stats;
 
-    private LdapWorker worker = null;
+    private ResourceBundle resources;
+
+    private DirContext context;
     private TreeModel treeModel; 
     private String dn;
-    private LdapTreeNode node;
-    
+
     private STabbedPane tabbedPane;
     private SPanel mainPanel;
     private STree tree;
-    
+
     private AddObjectPanel addPanel;
     private EditObjectPanel editPanel;
     private SPanel treePanel;
-    
+
     private SForm settingsForm;
-    private STextField server;
-    private STextField baseDN;
-    private STextField bindDN;
-    private STextField bindDNPassword;
+    private STextField urlTextField;
+    private STextField basednTextField;
+    private STextField binddnTextField;
+    private STextField passwordTextField;
     private SButton connectButton;
     private SButton disconnectButton;
 
     public LdapClient()
         throws Exception
     {
+        try {
+            resources = ResourceBundle.getBundle("ldap/LdapClient", SessionManager.getSession().getLocale());
+        }
+        catch (MissingResourceException e) {
+            throw new ServletException("resource bundle not found", e);
+        }
+
         frame = new SFrame("LDAP Client");
 
-        stats = ResourceBundle.getBundle("ldap.AttributeResources", crtLocale);
         SContainer contentPane = frame.getContentPane();
         tabbedPane = new STabbedPane();
-        contentPane.setLayout(new SFlowLayout());
-        //contentPane.setLayout(new STemplateLayout(getClass().getResource("ldapclient.html")));
-	
+        contentPane.setLayout(null);
+
         settingsForm = new SForm(new SGridLayout(2));
-        tabbedPane.add(settingsForm, CONNECTIONSETTINGS);
+        tabbedPane.add(settingsForm, resources.getString("provider"));
+
+        urlTextField = new STextField();
+        urlTextField.setColumns(columns);
+        urlTextField.setText((String)SessionManager.getSession().getProperty("java.naming.provider.url"));
+        settingsForm.add(new SLabel(resources.getString("provider.url")));
+        settingsForm.add(urlTextField);
+
+        basednTextField = new STextField();
+        basednTextField.setColumns(columns);
+        basednTextField.setText((String)SessionManager.getSession().getProperty("java.naming.provider.basedn"));
+        settingsForm.add(new SLabel(resources.getString("provider.basedn")));
+        settingsForm.add(basednTextField);
 	
-        SLabel descServer = new SLabel("sever:port");
-        server = new STextField("");
-        server.setColumns(columns);
-        server.setText((String)SessionManager.getSession().getProperty("java.naming.provider.url"));
-        settingsForm.add(descServer);
-        settingsForm.add(server);
+        binddnTextField = new STextField();
+        binddnTextField.setColumns(columns);
+        binddnTextField.setText((String)SessionManager.getSession().getProperty("java.naming.security.principal"));
+        settingsForm.add(new SLabel(resources.getString("provider.binddn")));
+        settingsForm.add(binddnTextField);
 	
-        SLabel descBaseDN = new SLabel("base DN");
-        baseDN = new STextField();
-        baseDN.setColumns(columns);
-        baseDN.setText((String)SessionManager.getSession().getProperty("java.naming.provider.basedn"));
-        settingsForm.add(descBaseDN);
-        settingsForm.add(baseDN);
+        passwordTextField = new SPasswordField();
+        passwordTextField.setColumns(columns);
+        passwordTextField.setText((String)SessionManager.getSession().getProperty("java.naming.security.credentials"));
+        settingsForm.add(new SLabel(resources.getString("provider.password")));
+        settingsForm.add(passwordTextField);
 	
-        SLabel descBindDN = new SLabel("bind DN");
-        bindDN= new STextField();
-        bindDN.setText((String)SessionManager.getSession().getProperty("java.naming.security.principal"));
-        bindDN.setColumns(columns);
-        settingsForm.add(descBindDN);
-        settingsForm.add(bindDN);
-	
-        SLabel descBindDNPassword = new SLabel("password");
-        bindDNPassword= new SPasswordField();
-        bindDNPassword.setText((String)SessionManager.getSession().getProperty("java.naming.security.credentials"));
-        bindDNPassword.setColumns(columns);
-        settingsForm.add(descBindDNPassword);
-        settingsForm.add(bindDNPassword);
-	
-        connectButton = new SButton("connect");
-        disconnectButton = new SButton("disconnect");
+        connectButton = new SButton(resources.getString("provider.connect"));
+        disconnectButton = new SButton(resources.getString("provider.disconnect"));
         disconnectButton.setVisible(false);
         settingsForm.add(connectButton);
         settingsForm.add(disconnectButton);
 
-
         mainPanel = new SPanel();
+
         try {
             mainPanel.setLayout(new STemplateLayout(getClass().getResource("ldapclientlayout.html")));
         }
         catch(Exception e) {
 	    logger.log(Level.WARNING, "no template", e);
+            mainPanel.setLayout(new SFlowLayout());
         }
-        tabbedPane.add(mainPanel, "Browser");
+
+        tabbedPane.add(mainPanel, resources.getString("browser"));
 
         createTreeModel(null);
-        createTree();
+	tree = new STree(treeModel);
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        tree.addTreeSelectionListener(this);
+
+        SessionManager.getSession().setProperty("tree", tree);
+
         editPanel = new EditObjectPanel();
         mainPanel.add(tree,"tree");
         mainPanel.add(editPanel, "editor");
 
         addPanel = new AddObjectPanel();
-        tabbedPane.add(addPanel, "Neues Objekt");
+        tabbedPane.add(addPanel, resources.getString("add"));
 
         contentPane.add(tabbedPane);
 
         connectButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    worker = new LdapWorker(server.getText(),
-					    baseDN.getText(),
-					    bindDN.getText(),
-					    bindDNPassword.getText());
-		    
-		    boolean success = worker.getSuccess();
-		    if (success) {
-			connectButton.setVisible(false);
-			server.setVisible(false);
-			baseDN.setVisible(false);
-			bindDN.setVisible(false);
-			bindDNPassword.setVisible(false);
-			
-			disconnectButton.setVisible(true);
-			tabbedPane.setSelectedIndex(1);
-		    }
-		    else {
-			connectButton.setVisible(true);
-			disconnectButton.setVisible(false);
-		    }
-		    
-		    if (success) {
-			setLdapWorker(worker);
-			createTreeModel(worker);
+		public void actionPerformed(ActionEvent event) {
+                    Session session = SessionManager.getSession();
+
+                    String url = urlTextField.getText();
+                    if (url != null && url.length() > 0)
+                        session.setProperty("java.naming.provider.url", url);
+
+                    String basedn = basednTextField.getText();
+                    if (basedn != null && basedn.length() > 0)
+                        session.setProperty("java.naming.provider.basedn", basedn);
+
+                    String binddn = binddnTextField.getText();
+                    if (binddn != null && binddn.length() > 0)
+                        session.setProperty("java.naming.security.principal", binddn);
+
+                    String password = passwordTextField.getText();
+                    if (password != null && password.length() > 0)
+                        session.setProperty("java.naming.security.credentials", password);
+
+                    try {
+                        context = new InitialDirContext(new Hashtable(session.getProperties()));
+                        createTreeModel(context);
 			tree.setModel(treeModel);
+			tabbedPane.setSelectedIndex(1);
+
+			urlTextField.setVisible(true);
+			basednTextField.setVisible(true);
+			binddnTextField.setVisible(true);
+			passwordTextField.setVisible(true);
+
+                        connectButton.setVisible(true);
+			disconnectButton.setVisible(false);
+                        passwordTextField.setText(null);
+		    }
+                    catch (NamingException e) {
+                        passwordTextField.setText(null);
+                        logger.log(Level.WARNING, "no initial context", e);
 		    }
 		}
 	    });
 	
         disconnectButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(ActionEvent event) {
 		    createTreeModel(null);
 		    tree.setModel(treeModel);
-		    bindDNPassword.setText("");
-		    disconnectButton.setVisible(false);
-		    connectButton.setVisible(true);
-		    server.setVisible(true);
-		    bindDN.setVisible(true);
-		    bindDNPassword.setVisible(true);
-		    baseDN.setVisible(true);
-		    bindDNPassword.setText("");
+
+                    urlTextField.setVisible(false);
+                    basednTextField.setVisible(false);
+                    binddnTextField.setVisible(false);
+                    passwordTextField.setVisible(false);
+
+                    connectButton.setVisible(false);
+                    disconnectButton.setVisible(true);
+		    passwordTextField.setText(null);
 		}
 	    });
 
         frame.show();
-        System.out.println(SessionManager.getSession().getServletRequest().getAuthType());
-    }
-    
-    
-    
-    private LdapWorker getLdapWorker() {
-	return worker;
-    }
-    
-    private void setLdapWorker(LdapWorker c) {
-	this.worker = c;
     }
 
-    private void createTreeModel(final LdapWorker c) {
+    private void createTreeModel(DirContext context) {
 	TreeNode root = null;
 
-        
-	if (c != null) {
-	    root = new LdapTreeNode(c.getContext(), null, c.getBaseDN());
+	if (context != null) {
+            String base = (String)SessionManager.getSession().getProperty("java.naming.provider.basedn");
+	    root = new LdapTreeNode(context, null, base);
         }
 	else
-	    root = new DefaultMutableTreeNode(NOT_CONNECTED);
+	    root = new DefaultMutableTreeNode(resources.getString("browser.not_connected"));
 
 	treeModel = new DefaultTreeModel(root);
     }
-
-    private void createTree() {
-	tree = new STree(treeModel);
-        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        tree.addTreeSelectionListener(this);
-        //in der session einbinden
-        SessionManager.getSession().setProperty("tree",tree);
-
-        
-    }
-
-    public void actionPerformed(ActionEvent evt) {
-	String newValue = null;
-	String oldValue = null;
-	String oValue;
-
-        /*
-	if (evt.getSource().equals(removeButton)) {
-            String dn = getDN();
-	    
-	    LdapWorker worker = getLdapWorker();
-	    worker.removeEntry(dn);
-	    existentAttrsF.removeAll();
-	    otherAttrsF.removeAll();
-	    LdapTreeNode nd= (LdapTreeNode)getNode();
-	    LdapTreeNode parent = (LdapTreeNode)nd.getParent();
-	    DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
-	    if (parent!=null) {
-		//parent.remove(node);
-		model.removeNodeFromParent(nd);
-		//model.nodesWereRemoved(parent,new int[]{parent.getIndex(node)}, new Object[] {node});
-	    }
-	}
-        */
-    }
-
 
     private void setDN(String dn) {
 	this.dn = dn;
@@ -271,9 +230,7 @@ public class LdapClient
 
         try {
             editPanel.setDn(dn);
-            //editPanel.setTree(tree);
             addPanel.setParent(dn);
-
         }
 	catch (NamingException e) {
 	    logger.log(Level.SEVERE, "selection failed", e);
@@ -281,15 +238,6 @@ public class LdapClient
     }
     public String getDN() { return dn; }
 
-    private void setNode(LdapTreeNode node) {
-	this.node=node;
-    }
-    public LdapTreeNode getNode() { return node; }
-
-
-    public void stateChanged(ChangeEvent ch) {
-	System.out.println("switch tab");
-    }
 
     public void valueChanged(TreeSelectionEvent e) {
 	TreeNode node = (TreeNode)tree.getLastSelectedPathComponent();
@@ -305,7 +253,6 @@ public class LdapClient
 
         // the dn and the node, that might have to be updated later
         setDN(actDN);
-	setNode((LdapTreeNode)node);
     }
 }
 

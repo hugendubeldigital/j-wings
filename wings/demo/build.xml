@@ -10,6 +10,7 @@
   <!-- directories -->
   <property name="build"       value="build"/>
   <property name="build.class" value="${build}/class"/>
+  <property name="build.etc"   value="${build}/etc"/>
   <property name="dist"        value="dist"/>
   <property name="dist.deploy" value="${dist}/deploy"/>
 
@@ -31,6 +32,7 @@
     <mkdir dir="lib"/>
     <mkdir dir="${build}"/>
     <mkdir dir="${build.class}"/>
+    <mkdir dir="${build.etc}"/>
     <mkdir dir="${dist}"/>
     <mkdir dir="${dist.deploy}"/>
   </target>
@@ -73,8 +75,13 @@
   </target>
 
   <target name="ldap" depends="compile">
+    <filter filtersfile="ldap.properties"/>
+    <copy toFile="${build.etc}/ldap.xml"
+          file="ldap/ldap.xml"
+          filtering="true"/>
+
     <war warfile="${dist.deploy}/ldap.war"
-	 webxml="ldap/ldap.xml">
+	 webxml="${build.etc}/ldap.xml">
       <lib dir="../dist/lib">
         <include name="wings.jar"/>
       </lib>
@@ -85,8 +92,7 @@
         <include name="ldap/editors/*.properties"/>
         <include name="ldap/images/*.gif"/>
         <include name="ldap/*.jpg"/>
-      </classes>
-      <classes dir=".">
+        <include name="ldap/*.properties"/>
         <include name="ldap/ldapclientlayout.html"/>
       </classes>
       <fileset dir="ldap">

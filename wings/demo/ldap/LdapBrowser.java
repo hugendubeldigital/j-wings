@@ -80,7 +80,7 @@ public class LdapBrowser
 
 	Hashtable env = new Hashtable();
 	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-	env.put(Context.PROVIDER_URL, "ldap://" + server);
+	env.put(Context.PROVIDER_URL, server);
 	env.put(Context.SECURITY_PRINCIPAL, binddn);
 	env.put(Context.SECURITY_CREDENTIALS, password);
 

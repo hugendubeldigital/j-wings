@@ -4,16 +4,20 @@ import javax.naming.*;
 import javax.naming.directory.*;
 import javax.swing.tree.*;
 import java.util.*;
+import java.util.logging.*;
 
 public class LdapTreeNode
     implements MutableTreeNode 
 {
+    private final static Logger logger = Logger.getLogger("ldap");
+
     private static String[] RETURNING_ATTRIBUTES = new String [] { "objectclass" };
     private static String SEARCH_FILTER = "(objectclass=*)";
 
     private String dn;
 
     private DirContext context;
+    private Hashtable environment;
     private LdapTreeNode parent;
     private ArrayList children = null;
 
@@ -21,6 +25,11 @@ public class LdapTreeNode
 	this.context = context;
 	this.dn = dn;
 	this.parent = parent;
+
+        try {
+            this.environment = context.getEnvironment();
+        }
+        catch (NamingException e) { /* ignore */ }
     }
 
     public LdapTreeNode(String dn) {
@@ -107,14 +116,18 @@ public class LdapTreeNode
             constraints.setSearchScope(SearchControls.ONELEVEL_SCOPE);
             constraints.setReturningAttributes(RETURNING_ATTRIBUTES);
 
-            NamingEnumeration results = context.search(getDN(), SEARCH_FILTER, constraints);
+            NamingEnumeration results = getContext().search(getDN(), SEARCH_FILTER, constraints);
             while (results != null && results.hasMoreElements()) {
                 SearchResult sr  = (SearchResult)results.next(); 
                 children.add(new LdapTreeNode(context, this, sr.getName()));
             }
         }
+        catch (CommunicationException e) {
+            logger.log(Level.WARNING, (String)environment.get(Context.PROVIDER_URL), e);
+            context = null;
+        }
         catch (NamingException e) {
-            System.err.println(e);
+            logger.log(Level.SEVERE, "get children failed", e);
         }
     }
 
@@ -130,9 +143,17 @@ public class LdapTreeNode
             return actDN;
         }
     }
-    
+
     public String toString() {
         return dn;
+    }
+
+    protected DirContext getContext()
+        throws NamingException
+    {
+        if (context == null)
+            context = new InitialDirContext(environment);
+        return context;
     }
 
     public static void main(String[] args) {
@@ -156,7 +177,7 @@ public class LdapTreeNode
 
             Enumeration enum = root.breadthFirstEnumeration();
         }
-	catch(NamingException e) {
+	catch (NamingException e) {
             System.err.println(e.getMessage());
             e.printStackTrace(System.err);
 	}
