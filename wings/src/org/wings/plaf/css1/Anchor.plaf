@@ -5,6 +5,7 @@
 SBorder border = component.getBorder();
 Utils.renderBorderPrefix(device, border);
 %><a<% 
+Utils.printStyle(device, component.getStyle());
 Utils.printOptAttr(device, "name", component.getName());
 Utils.printOptAttr(device, "href", component.getReference());
 %>><%
