@@ -20,6 +20,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.wings.*;
+import org.wings.externalizer.*;
 import org.wings.servlet.*;
 import org.wings.session.*;
 
@@ -32,7 +33,8 @@ import org.wings.session.*;
 public class Explorer
     extends WingServlet
 {
-    public Explorer() {
+    public void postInit(ServletConfig config) {
+        getExternalizeManager().setExternalizer(new ServletExternalizer(config));
     }
 
     public SessionServlet generateSessionServlet(HttpServletRequest req)

@@ -44,7 +44,10 @@ public class ExplorerSession
 
     public void postInit(ServletConfig config) throws ServletException
     {
-        String dir = config.getInitParameter("ExploreBaseDir");
+        super.postInit( config );
+
+        String dir = config.getInitParameter("BaseDir");
+
         if (dir == null)
             mainPanel = new ExplorerPanel(new String("."));
         else
