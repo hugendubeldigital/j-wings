@@ -33,6 +33,7 @@
 
   <!-- ==================== Build wingS Demos ================ -->
   <target name="build" depends="prepare">
+    <!--ant antfile="build.xml" dir=".." target="main"/-->
     <javac srcdir="${src}" destdir="${classes}" debug="off">
       <classpath refid="build.classpath" />
     </javac>
@@ -109,6 +110,27 @@
     </copy>
   </target>
 
+  <target name="frameset" depends="build">
+    <mkdir dir="${deploy}/frameset"/>
+    <mkdir dir="${deploy}/frameset/WEB-INF"/>
+    <mkdir dir="${deploy}/frameset/WEB-INF/lib"/>
+    <mkdir dir="${deploy}/frameset/WEB-INF/classes"/>
+
+    <copy file="frameset.xml" tofile="${deploy}/frameset/WEB-INF/web.xml"/>
+
+    <copy todir="${deploy}/frameset/WEB-INF/classes">
+      <fileset dir="${classes}">
+        <include name="frameset/**/*" />
+      </fileset>
+    </copy>
+
+    <copy todir="${deploy}/frameset/WEB-INF/lib">
+      <fileset dir="${lib}">
+        <exclude name="j2ee.jar"/>
+      </fileset>
+    </copy>
+  </target>
+
 
   <!-- ==================== Make wars ==================== -->
   <target name="deploy" depends="build">
@@ -138,6 +160,15 @@
         <include name="explorer/**/*" />
       </classes>
     </war>
+
+    <war warfile="${deploy}/frameset.war" webxml="frameset.xml">
+      <lib dir="${lib}">
+        <exclude name="j2ee.jar"/>
+      </lib>
+      <classes dir="build/classes">
+        <include name="frameset/**/*" />
+      </classes>
+    </war>
   </target>
 
 
@@ -159,5 +190,5 @@
 
   <target name="all" depends="clean,build,deploy"/>
   <target name="main" depends="build"/>
-  <target name="webapps" depends="wingset,ldap,explorer"/>
+  <target name="webapps" depends="wingset,ldap,explorer,frameset"/>
 </project>
