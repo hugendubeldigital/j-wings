@@ -94,14 +94,17 @@ public abstract class SComponent
     /** The tooltip for this component. */
     protected String tooltip = null;
 
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+    /** */
+    private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     /** Preferred size of component in pixel. */
-    protected SDimension preferredSize = null;
+    protected SDimension preferredSize;
 
+    /** */
     protected ArrayList componentListeners;
-
-    protected Map scriptListeners = new HashMap();
+    
+    /** */
+    protected Map scriptListeners;
 
     /**
      * Default constructor.cript
@@ -201,11 +204,15 @@ public abstract class SComponent
      * @see      org.wings.event.SComponentListener
      * @see      org.wings.SComponent#removeComponentListener
      */
-    public synchronized void addComponentListener(SComponentListener l) {
+    public final synchronized void addComponentListener(SComponentListener l) {
         if (l == null) {
             return;
         }
-        if ( componentListeners == null ) componentListeners = new ArrayList();
+
+        if ( componentListeners == null ) {
+            componentListeners = new ArrayList();
+        }
+
         componentListeners.add( l );
     }
 
@@ -220,7 +227,7 @@ public abstract class SComponent
      * @see      org.wings.event.SComponentListener
      * @see      org.wings.SComponent#addComponentListener
      */
-    public synchronized void removeComponentListener(SComponentListener l) {
+    public final synchronized void removeComponentListener(SComponentListener l) {
         if (l == null) {
             return;
         }
@@ -289,9 +296,13 @@ public abstract class SComponent
      * @see      org.wings.event.SComponentListener
      * @see      org.wings.SComponent#removeComponentListener
      */
-    public synchronized void addScriptListener(ScriptListener l) {
+    public final synchronized void addScriptListener(ScriptListener l) {
         if (l == null)
             return;
+
+        // lazy create HashMap
+        if ( scriptListeners==null )
+            scriptListeners = new HashMap();
 
         scriptListeners.put(l.getEvent(), l);
         if (l.getScript() != null)
@@ -309,15 +320,23 @@ public abstract class SComponent
      * @see      org.wings.event.SComponentListener
      * @see      org.wings.SComponent#addComponentListener
      */
-    public synchronized void removeScriptListener(ScriptListener l) {
+    public final synchronized void removeScriptListener(ScriptListener l) {
         if (l == null)
             return;
 
-        if (scriptListeners.remove(l.getEvent()) != null && l.getScript() != null)
+        if ( scriptListeners!=null && 
+             scriptListeners.remove(l.getEvent()) != null && 
+             l.getScript() != null)
             reload(ReloadManager.RELOAD_SCRIPT);
     }
 
-    public Collection getScriptListeners() { return scriptListeners.values(); }
+    public Collection getScriptListeners() { 
+        if ( scriptListeners!=null ) {
+            return scriptListeners.values(); 
+        } else {
+            return Collections.EMPTY_LIST;
+        }
+    }
 
     /**
      * Return a jvm wide unique id.
@@ -334,7 +353,7 @@ public abstract class SComponent
      *
      * @return the session
      */
-    public Session getSession() {
+    public final Session getSession() {
         if (session == null) {
             session = SessionManager.getSession();
         }
@@ -368,7 +387,7 @@ public abstract class SComponent
      *
      * @return the locale
      */
-    public Locale getLocale() {
+    public final Locale getLocale() {
         return getSession().getLocale();
     }
 
@@ -376,7 +395,7 @@ public abstract class SComponent
      * If a subclass implements the {@link RequestListener} interface,
      * it will be unregistered at the associated dispatcher.
      */
-    private void unregister() {
+    private final void unregister() {
         if (getDispatcher() != null && this instanceof RequestListener) {
             getDispatcher().unregister((RequestListener)this);
         }
@@ -386,7 +405,7 @@ public abstract class SComponent
      * If a subclass implements the {@link RequestListener} interface,
      * it will be registered at the associated dispatcher.
      */
-    private void register() {
+    private final void register() {
         if (getDispatcher() != null && this instanceof RequestListener) {
             getDispatcher().register((RequestListener)this);
         }
@@ -409,7 +428,7 @@ public abstract class SComponent
     /**
      * @return the current style
      */
-    public Style getStyle() { return style; }
+    public final Style getStyle() { return style; }
 
     /**
      * Set a attribute.
@@ -428,7 +447,7 @@ public abstract class SComponent
      * return the value of an attribute.
      * @param name the attribute name
      */
-    public String getAttribute(String name) {
+    public final String getAttribute(String name) {
         return attributes.getAttribute(name);
     }
 
@@ -556,7 +575,7 @@ public abstract class SComponent
      * @return wether the component will show
      * @deprecated use isVisible instead
      */
-    public boolean getVisible() {
+    public final boolean getVisible() {
         return visible;
     }
 
@@ -565,7 +584,7 @@ public abstract class SComponent
      *
      * @return wether the component will show
      */
-    public boolean isVisible() {
+    public final boolean isVisible() {
         return visible;
     }
 
@@ -586,7 +605,7 @@ public abstract class SComponent
      *
      * @return true if component is enabled
      */
-    public boolean isEnabled() {
+    public final boolean isEnabled() {
         return enabled;
     }
 
@@ -595,7 +614,7 @@ public abstract class SComponent
      *
      * @return the name of this component
      */
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
@@ -726,7 +745,7 @@ public abstract class SComponent
      *
      * @param t the new tooltip text
      */
-    public void setToolTipText(String t) {
+    public final void setToolTipText(String t) {
         tooltip = t;
     }
 
@@ -735,7 +754,7 @@ public abstract class SComponent
      *
      * @return the tooltip text
      */
-    public String getToolTipText() { return tooltip; }
+    public final String getToolTipText() { return tooltip; }
 
     /**
      * Clone this component.
@@ -790,7 +809,7 @@ public abstract class SComponent
     private Map clientProperties;
 
     /**
-     * @return a small Hashtable
+     * @return a small HashMap
      * @see #putClientProperty
      * @see #getClientProperty
      */
