@@ -43,7 +43,7 @@
       ExternalizerServlet
     </servlet-name>
     <url-pattern>
-      /ExternalizerServlet
+      /ExternalizerServlet/*
     </url-pattern>
   </servlet-mapping>
 </web-app>

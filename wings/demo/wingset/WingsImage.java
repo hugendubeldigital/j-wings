@@ -36,6 +36,7 @@ public class WingsImage
     public SComponent createExample() {
         SPanel p = new SPanel();
         final SBorderLayout layout = new SBorderLayout();
+
         p.setLayout(layout);
         p.setBackground(new java.awt.Color(150, 168, 240));
         SLabel label = new SLabel(new ResourceImageIcon(WingSet.class, 
