@@ -47,7 +47,7 @@ public class SPageScroller
     /**
      *
      */
-    private static final SEmptyBorder DEFAULT_DIRECT_CLICKABLE_BORDER = 
+    private static final SEmptyBorder DEFAULT_DIRECT_CLICKABLE_BORDER =
         new SEmptyBorder(0,5,0,5);
 
     public static final int FORWARD = 0;
@@ -90,7 +90,7 @@ public class SPageScroller
                                           + "Scroll"
                                           + postfixes[direction] + ".gif");
                 DEFAULT_ICONS[orientation][direction][SClickable.DISABLED_ICON] =
-                    new ResourceImageIcon("org/wings/icons/Disabled" 
+                    new ResourceImageIcon("org/wings/icons/Disabled"
                                           + prefixes[direction]
                                           + "Scroll"
                                           + postfixes[direction] + ".gif");
@@ -121,7 +121,7 @@ public class SPageScroller
      * @see #setLayoutMode
      */
     protected int layoutMode;
-    
+
     /** contains the clickables forward, backward, first, last */
     protected SClickable[] clickables = new SClickable[4];
 
@@ -193,14 +193,14 @@ public class SPageScroller
     }
 
     /**
-     * 
+     *
      **/
     public SLabel getPageCountLabel() {
         return pageCountLabel;
     }
 
     /**
-     * 
+     *
      **/
     protected void setPageCountText(int pages) {
         pageCountLabel.setText("/" + pages);
@@ -276,12 +276,12 @@ public class SPageScroller
     }
 
     /**
-     * Sets the default icons 
+     * Sets the default icons
      */
     public void resetIcons() {
         for ( int i=0; i<clickables.length; i++ ) {
             clickables[i].setIcons(DEFAULT_ICONS[layoutMode][i]);
-        } 
+        }
     }
 
     /**
@@ -306,7 +306,7 @@ public class SPageScroller
         // avoid division by zero
         if ( getExtent()==0 )
             return 0;
-        return (getMaximum()+(getExtent()-1)-getMinimum()) / getExtent();
+        return ((getMaximum()+1)+(getExtent()-1)-getMinimum()) / getExtent();
     }
 
     /**
@@ -420,16 +420,16 @@ public class SPageScroller
         }
 
         // upper bound: maximum - extent
-        clickables[FORWARD].setEnabled(getValue() < getMaximum()-getExtent());
+        clickables[FORWARD].setEnabled(getValue() < (getMaximum()+1)-getExtent());
         clickables[LAST].setEnabled(clickables[FORWARD].isEnabled());
 
         if ( clickables[FORWARD].isEnabled() ) {
             clickables[FORWARD].setEvent(getEventParameter(getValue()+getExtent()));
-            clickables[LAST].setEvent(getEventParameter(getMaximum()-getExtent()));
+            clickables[LAST].setEvent(getEventParameter((getMaximum()+1)-getExtent()));
         }
 
 
-        // overall pages 
+        // overall pages
         int pages = getPageCount();
 
         setPageCountText(pages);
@@ -446,7 +446,7 @@ public class SPageScroller
             directPageClickables[i].setVisible(false);
         }
 
-        for ( int i=0; 
+        for ( int i=0;
               i<Math.min(directPageClickables.length, pages-firstDirectPage);
               i++ ) {
 
@@ -460,12 +460,12 @@ public class SPageScroller
             if ( page == currentPage ) {
                 directPageClickables[i].setEnabled(false);
                 directPageClickables[i].setSelected(true);
-            } 
+            }
             else {
                 directPageClickables[i].setEnabled(true);
                 directPageClickables[i].setSelected(false);
             }
-            
+
         }
     }
 
