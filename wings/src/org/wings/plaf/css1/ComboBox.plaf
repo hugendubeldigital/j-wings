@@ -16,6 +16,7 @@
         %><select size="1"<%
         %><%|class=Utils.style(comboBox)%><%
         %><%|name=comboBox.getNamePrefix()%><%
+        %><%|style=comboBox.getPreferredSize()%><%
 
         comboBox.removeScriptListener(submitListener);
         if (comboBox.getActionListeners().length>0) {
