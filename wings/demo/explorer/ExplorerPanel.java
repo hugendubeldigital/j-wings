@@ -51,12 +51,12 @@ public class ExplorerPanel
         fileTable.setSelectionMode(fileTable.MULTIPLE_SELECTION);
         add(fileTable, "FileTable");
 
-        SButton delete = new SButton("delete");
-        delete.addActionListener(new ActionListener() {
+        SButton deleteButton = new SButton("delete");
+        deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 deleteFiles();
             } });
-        add(delete, "Delete");
+        add(deleteButton, "DeleteButton");
 
         initUploadFile();
     }

@@ -1,14 +1,14 @@
-<TABLE border=4 bordercolordark=#660000 bordercolorlight=#FF0000>
-<TR>
-<TH align=left bgcolor=#808080>Verzeichnis</TH>
-<TH align=center bgcolor=#808080>Inhalt<TH>
-</TR>
-<TR>
-<TD align=left valign=top bgcolor=#f0f0ff><COMPONENT NAME=DirTree></COMPONENT></TD>
-<TD align=right valign=top bgcolor=#f0f0ff><COMPONENT NAME=FileTable></COMPONENT></TD>
-</TR>
-<TR>
-<TD align=left valign=top bgcolor=#f0f0ff><COMPONENT NAME=UploadForm></COMPONENT></TD>
-<TD align=center valign=center bgcolor=#f0f0ff><COMPONENT NAME=Delete ICON="http://www.mercatis.de/~rene/swhtml/delete.gif"></COMPONENT></TD>
-</TR>
-</TABLE>
+<table border=4 bordercolordark=#660000 bordercolorlight=#FF0000>
+<tr>
+<th align=left bgcolor=#808080>Verzeichnis</th>
+<th align=center bgcolor=#808080>Inhalt<th>
+</tr>
+<tr>
+<td align=left valign=top bgcolor=#f0f0ff><object name=DirTree></object></td>
+<td align=right valign=top bgcolor=#f0f0ff><object name=FileTable></object></td>
+</tr>
+<tr>
+<td align=left valign=top bgcolor=#f0f0ff><object name=UploadForm></object></td>
+<td align=center valign=center bgcolor=#f0f0ff><object name=Delete icon="http://www.mercatis.de/~rene/swhtml/delete.gif"></object></td>
+</tr>
+</table>

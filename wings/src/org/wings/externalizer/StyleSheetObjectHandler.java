@@ -28,7 +28,7 @@ public class StyleSheetObjectHandler
     implements ObjectHandler
 {
     public String getExtension(Object obj) {
-        return ".css";
+        return "css";
     }
 
     public String getMimeType(Object obj) {

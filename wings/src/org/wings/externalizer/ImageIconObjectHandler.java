@@ -27,30 +27,22 @@ import Acme.JPM.Encoders.GifEncoder;
  * @version $Revision$
  */
 public class ImageIconObjectHandler
-    implements ObjectHandler
+    extends ImageObjectHandler
 {
-    public String getExtension(Object obj) {
-        return ".gif";
+    public ImageIconObjectHandler() {}
+
+    public ImageIconObjectHandler(String format) {
+        this.format = format;
     }
 
-    public String getMimeType(Object obj) {
-        return "image/gif";
-    }
-
-    public boolean isStable(Object obj) {
-        return false;
+    public Class getSupportedClass() {
+        return ImageIcon.class;
     }
 
     public void write(Object obj, java.io.OutputStream out)
         throws java.io.IOException
     {
-        Image img = ((ImageIcon)obj).getImage();
-        GifEncoder encoder = new GifEncoder(img, out, true);
-        encoder.encode();
-    }
-
-    public Class getSupportedClass() {
-        return ImageIcon.class;
+        super.write(((ImageIcon)obj).getImage(), out);
     }
 }
 

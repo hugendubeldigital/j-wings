@@ -54,9 +54,9 @@ public class ResourceImageIcon
         super(getImageData(baseClass, resourceFileName));
         this.baseClass = baseClass;
         this.resourceFileName = resourceFileName;
-        extension = resourceFileName.substring(resourceFileName.lastIndexOf('.')+1);
+        extension = resourceFileName.substring(resourceFileName.lastIndexOf('.') + 1);
         if (extension == null || extension.length() == 0)
-            extension = ".png";
+            extension = "png";
     }
 
     /**

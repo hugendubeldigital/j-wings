@@ -33,10 +33,9 @@ public class ResourceImageIconObjectHandler
     }
 
     public String getMimeType(Object obj) {
-        // todo: return correct mime type!
-        // note: ResourceImageIcon always returns the extension ".gif", so
-        //       this has to be fixed also.
-        return "image/gif";
+        if (obj == null)
+            return null;
+        return "image/" + getExtension(obj);
     }
 
     public boolean isStable(Object obj) {

@@ -25,6 +25,18 @@ demojar: dummy
 	rm wings-demo.jar ; cd demo ; \
 	${JAVA_HOME}/bin/jar cvf ../wings-demo.jar `find . -name "*.class" -o -name "*.gif" -o -name "*.css"`
 
+tomcat: dummy
+	rm -rf demo/tomcat ;\
+	mkdir demo/tomcat ;\
+	mkdir demo/tomcat/WEB-INF ;\
+	mkdir demo/tomcat/WEB-INF/classes ;\
+	mkdir demo/tomcat/WEB-INF/lib ;\
+	cp wings.jar demo/tomcat/WEB-INF/lib ;\
+	cd demo ;\
+	cp -P `find wingset -name "*.class" -o -name "*.gif" -o -name "*.css"` ../demo/tomcat/WEB-INF/classes ;\
+	cd .. \;
+	cp demo/wingset.xml demo/tomcat/WEB-INF/web.xml
+
 htdocs: dummy javadoc
 	cd htdocs ;\
 	ln -s ../doc/api .

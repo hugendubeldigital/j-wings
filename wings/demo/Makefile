@@ -9,4 +9,3 @@ fun:
 % :
 	make -C explorer $@
 	make -C wingset $@
-

@@ -38,7 +38,7 @@ class ExternalizedInfo
         handler     = hdl;
         session     = ses;
         stable      = handler.isStable(extObject);
-        extFileName = generateFileName() + handler.getExtension(extObject);
+        extFileName = generateFileName() + "." + handler.getExtension(extObject);
         touch();
     }
 

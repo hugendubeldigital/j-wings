@@ -212,6 +212,8 @@ public final class SUtil
      * @return image icon
      */
     public static ImageIcon makeIcon(Class baseClass, String fileName) {
+        return new ResourceImageIcon(baseClass, fileName);
+        /*
         InputStream resource = null;
         try {
             resource = baseClass.getResourceAsStream(fileName);
@@ -238,6 +240,7 @@ public final class SUtil
             catch(Exception e) { // ignore
             }
         }
+        */
     }
 }
 

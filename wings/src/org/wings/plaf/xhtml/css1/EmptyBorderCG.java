@@ -35,7 +35,7 @@ public final class EmptyBorderCG
 	SEmptyBorder border = (SEmptyBorder)b;
 	Insets insets = b.getInsets();
 
-	d.append("<span style=\"padding: ")
+	d.append("<div style=\"padding: ")
 	    .append(insets.top).append(" ")
 	    .append(insets.right).append(" ")
 	    .append(insets.bottom).append(" ")

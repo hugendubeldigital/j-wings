@@ -85,6 +85,8 @@ public abstract class LookAndFeel
      * @return image icon
      */
     public static ImageIcon makeIcon(Class baseClass, String fileName) {
+        return new ResourceImageIcon(baseClass, fileName);
+        /*
         InputStream resource = null;
         try {
             resource = baseClass.getResourceAsStream(fileName);
@@ -110,6 +112,7 @@ public abstract class LookAndFeel
             }
             catch(Exception e) {} // ignore
         }
+        */
     }
 
     /**

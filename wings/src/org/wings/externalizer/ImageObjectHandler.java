@@ -16,6 +16,7 @@ package org.wings.externalizer;
 
 import java.awt.Image;
 import Acme.JPM.Encoders.GifEncoder;
+import com.keypoint.*;
 
 /**
  * TODO: documentation
@@ -27,28 +28,62 @@ import Acme.JPM.Encoders.GifEncoder;
 public class ImageObjectHandler
     implements ObjectHandler
 {
-    public String getExtension( Object obj ) {
-        return ".gif";
+    public static final String FORMAT_PNG = "png";
+    public static final String FORMAT_GIF = "gif";
+
+    protected String format = FORMAT_PNG;
+
+    public ImageObjectHandler() {}
+
+    public ImageObjectHandler(String format) {
+        this.format = format;
     }
 
-    public String getMimeType( Object obj ) {
-        return "image/gif";
+    public String getExtension(Object obj) {
+        return format;
     }
 
-    public boolean isStable( Object obj ) {
+    public String getMimeType(Object obj) {
+        return "image/" + format;
+    }
+
+    public boolean isStable(Object obj) {
         return false;
-    }
-
-    public void write( Object obj, java.io.OutputStream out )
-        throws java.io.IOException
-    {
-        Image img = (Image)obj;
-        GifEncoder encoder = new GifEncoder(img, out, true);
-        encoder.encode();
     }
 
     public Class getSupportedClass() {
         return Image.class;
+    }
+
+    public void write(Object obj, java.io.OutputStream out)
+        throws java.io.IOException
+    {
+        Image img = (Image)obj;
+        if (FORMAT_PNG.equals(format))
+            writePNG(img, out);
+        else
+            writeGIF(img, out);
+    }
+
+    public void writeGIF(Image img, java.io.OutputStream out)
+        throws java.io.IOException
+    {
+        GifEncoder encoder = new GifEncoder(img, out, true);
+        encoder.encode();
+    }
+
+    public void writePNG(Image img, java.io.OutputStream out)
+        throws java.io.IOException
+    {
+        PngEncoder png =  new PngEncoder(img, PngEncoder.ENCODE_ALPHA);
+        byte[] pngbytes = png.pngEncode();
+        if (pngbytes == null) {
+            System.err.println("Null image");
+        }
+        else {
+            out.write(pngbytes);
+        }
+        out.flush();
     }
 }
 

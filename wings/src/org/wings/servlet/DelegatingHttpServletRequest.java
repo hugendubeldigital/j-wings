@@ -485,11 +485,10 @@ public class DelegatingHttpServletRequest
         return null;
     }
 
-    /*
+    // comment this out, if you compile against jsdk-2.0
     public RequestDispatcher getRequestDispatcher(String s) {
         return null;
     }
-    */
 
     public boolean isSecure() {
         return false;

@@ -77,8 +77,8 @@ public interface SConstants
     int MULTIPLE_SELECTION = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
     int MULTIPLE_INTERVAL_SELECTION = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 
-    int VERTICAL = 0;
-    int HORIZONTAL = 1;
+    int VERTICAL = 1;
+    int HORIZONTAL = 0;
 
     int VERTICAL_SPLIT = VERTICAL;
     int HORIZONTAL_SPLIT = HORIZONTAL;
