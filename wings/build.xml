@@ -81,7 +81,7 @@
 
 
   <target name="jar" depends="compile">
-    <jar file="${distlib}/wings.jar" basedir="${classes}">
+    <jar jarfile="${distlib}/wings.jar" basedir="${classes}">
       <exclude name="org/wings/plaf/xhtml/**" />
     </jar>
 
@@ -99,7 +99,7 @@
   <target name="plaf" depends="css1,old" />
 
   <target name="css1" depends="compile">
-    <jar file="${distlib}/css1.jar">
+    <jar jarfile="${distlib}/css1.jar">
       <fileset dir="${classes}">
         <include name="org/wings/plaf/xhtml/*.class" />
         <include name="org/wings/plaf/xhtml/css1/*" />
@@ -112,7 +112,7 @@
   </target>
 
   <target name="old" depends="compile">
-    <jar file="${distlib}/old.jar">
+    <jar jarfile="${distlib}/old.jar">
       <fileset dir="${classes}">
         <include name="org/wings/plaf/xhtml/*.class" />
         <include name="org/wings/plaf/xhtml/old/*" />
