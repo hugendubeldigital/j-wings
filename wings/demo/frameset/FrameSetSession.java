@@ -1,4 +1,4 @@
-package wingsframeset;
+package frameset;
 
 import java.awt.event.*;
 
