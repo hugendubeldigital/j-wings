@@ -2,11 +2,11 @@
  * $Id$
  * (c) Copyright 2000 wingS development team.
  *
- * This file is part of wingS (http://wings.mercatis.de).
+ * This file is part of the wingS demo (http://wings.mercatis.de).
  *
- * wingS is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License
- * as published by the Free Software Foundation; either version 2.1
+ * The wingS demo is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
  *
  * Please see COPYING for the complete licence.
@@ -14,151 +14,148 @@
 
 package frameset;
 
-import java.text.SimpleDateFormat;
-
 import java.awt.event.*;
+import java.io.*;
+import java.util.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.wings.util.*;
 import org.wings.*;
 import org.wings.servlet.*;
 import org.wings.session.*;
 
+import org.wings.io.Device;
+import org.wings.io.ServletDevice;
+
+/**
+ * TODO: documentation
+ *
+ * @author Holger Engels
+ * @version $Revision$
+ */
 public class FrameSetSession
-    extends SessionServlet{
+    extends SessionServlet
+{
+    private SFrameSet vertical;
+    private SFrameSet horizontal;
+    private SFrame toolbarFrame;
+    private SFrame menuFrame;
+    private SFrame mainFrame;
+    private ReloadManagerFrame reloadManagerFrame;
 
-    private final static SIcon on = new ResourceImageIcon(SCheckBox.class,
-                                              "icons/bulb2.gif");
-    private final static SIcon off = new ResourceImageIcon(SCheckBox.class, 
-                                              "icons/bulb1.gif");
+    private SButton menuButton = new SButton("menu frame");
+    private SButton mainButton = new SButton("main frame");
 
-    private SLabel leftLabel = createLabel(null, on);
-    private SLabel rightLabel = createLabel(null, on);
-  
+    private int menuCount = 0;
+    private int mainCount = 0;
 
     public FrameSetSession(Session session, HttpServletRequest req) {
         super(session);
     }
 
     public void postInit(ServletConfig config)
-        throws ServletException{
-
-        getSession().setReloadManager(new FrameSetReloadManager());
-
-        SFrameSet vertical = new SFrameSet(new SFrameSetLayout(null, "50,*"));
-        SFrame toolbarFrame = new SFrame("toolbar");
-        toolbarFrame.getContentPane().setLayout(new SBorderLayout());
-        toolbarFrame.getContentPane().add(new SLabel("This demonstrates, that frames are only reloaded, if any of their contents have changed."), SBorderLayout.NORTH);
-        toolbarFrame.getContentPane().add(new TimestampLabel(), SBorderLayout.EAST);
+        throws ServletException
+    {
+        vertical = new SFrameSet(new SFrameSetLayout(null, "30,*"));
+        toolbarFrame = new SFrame("toolbar");
         vertical.add(toolbarFrame);
 
-        SFrameSet horizontal = new SFrameSet(new SFrameSetLayout("300,*", null));
+        horizontal = new SFrameSet(new SFrameSetLayout("210,*", null));
         vertical.add(horizontal);
-        SFrame leftFrame = new SFrame("left frame");
-        leftFrame.getContentPane().setLayout(new SBorderLayout());
-        leftFrame.getContentPane().add(new TimestampLabel(), SBorderLayout.NORTH);
-        horizontal.add(leftFrame);
-        SFrame rightFrame = new SFrame("right frame");
-        rightFrame.getContentPane().setLayout(new SBorderLayout());
-        rightFrame.getContentPane().add(new TimestampLabel(), SBorderLayout.NORTH);
-        horizontal.add(rightFrame);
+        menuFrame = new SFrame("menu frame");
+        horizontal.add(menuFrame);
+        mainFrame = new SFrame("main frame");
+        horizontal.add(mainFrame);
 
-
-
-        ActionListener changeLeft = new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    if ( leftLabel.getIcon()==on )
-                        leftLabel.setIcon(off);
-                    else
-                        leftLabel.setIcon(on);
-                }
-            };
-
-        ActionListener changeRight = new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    if ( rightLabel.getIcon()==on )
-                        rightLabel.setIcon(off);
-                    else
-                        rightLabel.setIcon(on);
-                }
-            };
-
-
-        SButton changeLeftButton = createButton("change left");
-        changeLeftButton.addActionListener(changeLeft);
-
-        SButton changeRightButton = createButton("change right");
-        changeRightButton.addActionListener(changeRight);
-
-        SButton changeBothButton = createButton("change both");
-        changeBothButton.addActionListener(changeLeft);
-        changeBothButton.addActionListener(changeRight);
-
-
-        SPanel toolbarPanel = new SPanel(null);
-        toolbarPanel.add(changeLeftButton);
-        toolbarPanel.add(changeRightButton);
-        toolbarPanel.add(changeBothButton);
-        toolbarFrame.getContentPane().add(toolbarPanel, SBorderLayout.CENTER);
-
-        // left frame
-        SPanel leftFramePanel = new SPanel(new SBorderLayout());
-        leftFramePanel.add(leftLabel,  SBorderLayout.WEST);
-        SForm leftButtons = createFormButtons("here", changeLeft,
-                                              "-->",  changeRight);
-        leftFramePanel.add(leftButtons, SBorderLayout.EAST);
-        leftFrame.getContentPane().add(leftFramePanel, SBorderLayout.CENTER);
-
-        // right frame
-        SPanel rightFramePanel = new SPanel(new SBorderLayout());
-        rightFramePanel.add(rightLabel, SBorderLayout.EAST);
-        SForm rightButtons = createFormButtons("<--", changeLeft,
-                                               "here",  changeRight);
-        rightFramePanel.add(rightButtons, SBorderLayout.WEST);
-        rightFrame.getContentPane().add(rightFramePanel, SBorderLayout.CENTER);
-
+        vertical.setBaseTarget("_top");
         setFrame(vertical);
+
+        buildFrames(toolbarFrame, menuFrame, mainFrame);
     }
 
-    SButton createButton(String text) {
-        SButton b = new SButton(text + "&nbsp;&nbsp;&nbsp;&nbsp;");
-        return b;
+    protected void buildFrames(SFrame toolbar, SFrame menu, SFrame main) {
+        ActionListener menuIncrement = new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    menuCount++;
+                    menuButton.setText("menu frame: " + menuCount);
+                }
+            };
+        ActionListener mainIncrement = new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    mainCount++;
+                    mainButton.setText("main frame: " + mainCount);
+                }
+            };
+
+        ActionListener menuDecrement = new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    menuCount--;
+                    menuButton.setText("menu frame: " + menuCount);
+                }
+            };
+        ActionListener mainDecrement = new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    mainCount--;
+                    mainButton.setText("main frame: " + mainCount);
+                }
+            };
+
+        SButton menuModifier = new SButton("reload menu frame&nbsp;&nbsp;&nbsp;&nbsp;");
+        menuModifier.addActionListener(menuIncrement);
+
+        SButton mainModifier = new SButton("reload main frame&nbsp;&nbsp;&nbsp;&nbsp;");
+        mainModifier.addActionListener(mainIncrement);
+
+        SButton bothModifier = new SButton("reload both frames&nbsp;&nbsp;&nbsp;&nbsp;");
+        bothModifier.addActionListener(menuIncrement);
+        bothModifier.addActionListener(mainIncrement);
+
+        toolbar.getContentPane().add(menuModifier);
+        toolbar.getContentPane().add(mainModifier);
+        toolbar.getContentPane().add(bothModifier);
+
+        menu.getContentPane().setLayout(null);
+        menu.getContentPane().add(menuButton);
+
+        main.getContentPane().setLayout(null);
+        main.getContentPane().add(mainButton);
+
+        menuButton.addActionListener(menuDecrement);
+        mainButton.addActionListener(mainDecrement);
     }
 
-    SLabel createLabel(String text, SIcon icon) {
-        SLabel l = new SLabel(icon);
-        return l;
+    void installReloadManagerFrame() {
+        // add reload manager frame
+        vertical.setLayout(new SFrameSetLayout(null, "30,*, 10"));
+        reloadManagerFrame = new ReloadManagerFrame();
+        vertical.add(reloadManagerFrame);
+
+        // set base target
+        toolbarFrame.setBaseTarget("frame" + reloadManagerFrame.getUnifiedId());
+        menuFrame.setBaseTarget("frame" + reloadManagerFrame.getUnifiedId());
+        mainFrame.setBaseTarget("frame" + reloadManagerFrame.getUnifiedId());
+
+        // set target resource
+        toolbarFrame.setBaseTarget(reloadManagerFrame.getUnifiedId());
+        menuFrame.setBaseTarget(reloadManagerFrame.getUnifiedId());
+        mainFrame.setBaseTarget(reloadManagerFrame.getUnifiedId());
     }
 
-    SForm createFormButtons(String text1, ActionListener listener1,
-                            String text2, ActionListener listener2) {
-        SForm f = new SForm(new SBorderLayout());
-        SButton b;
-        b = new SButton(text1);
-        b.addActionListener(listener1);
-        f.add(b, SBorderLayout.WEST);
-        b = new SButton(text2);
-        b.addActionListener(listener2);
-        f.add(b, SBorderLayout.EAST);
-        return f;
+    protected void processRequest(HttpServletRequest req, HttpServletResponse response)
+        throws ServletException, IOException
+    {
+        Set dirtyResources = getSession().getReloadManager().getDirtyResources();
+        reloadManagerFrame.setDirtyResources(dirtyResources);
+	getSession().getReloadManager().clear();
     }
 
+    /**
+     * Servletinfo
+     */
     public String getServletInfo() {
-        return "FrameSet Demo ($Revision$)";
-    }
-}
-
-class TimestampLabel extends SLabel {
-    private final static SimpleDateFormat dateFormat = 
-        new SimpleDateFormat("'rendered&nbsp;at&nbsp;'HH:mm:ss.SSS");
-    
-    TimestampLabel() {
-        setHorizontalAlignment(RIGHT);
-    }
-        
-    public String getText() {
-        return dateFormat.format(new java.util.Date());
+        return "FrameSet ($Revision$)";
     }
 }
 
@@ -166,6 +163,5 @@ class TimestampLabel extends SLabel {
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
- * compile-command: "ant -emacs -find build.xml"
  * End:
  */

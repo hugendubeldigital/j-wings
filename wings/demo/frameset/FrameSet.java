@@ -2,11 +2,11 @@
  * $Id$
  * (c) Copyright 2000 wingS development team.
  *
- * This file is part of wingS (http://wings.mercatis.de).
+ * This file is part of the wingS demo (http://wings.mercatis.de).
  *
- * wingS is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License
- * as published by the Free Software Foundation; either version 2.1
+ * The wingS demo is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
  *
  * Please see COPYING for the complete licence.
@@ -15,13 +15,12 @@
 package frameset;
 
 import java.io.IOException;
-import java.net.URL;
+import java.net.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.wings.*;
-import org.wings.externalizer.*;
 import org.wings.plaf.*;
 import org.wings.servlet.*;
 import org.wings.session.*;
@@ -38,7 +37,9 @@ public class FrameSet
     public SessionServlet generateSessionServlet(HttpServletRequest req)
         throws Exception
     {
+        // create new default session and set plaf
         DefaultSession session = new DefaultSession();
+
         if (!LookAndFeelFactory.isDeployed("xhtml/css1")) {
             try {
                 URL url = servletConfig.getServletContext().getResource("css1.jar");
@@ -51,6 +52,7 @@ public class FrameSet
         }
         session.getCGManager().setLookAndFeel("xhtml/css1");
 
+        // return a new frameSet session
         return new FrameSetSession(session, req);
     }
 }
@@ -59,6 +61,5 @@ public class FrameSet
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
- * compile-command: "ant -emacs -find build.xml"
  * End:
  */
