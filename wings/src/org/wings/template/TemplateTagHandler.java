@@ -15,8 +15,8 @@
 package org.wings.template;
 
 import java.io.*;
-import java.util.Dictionary;
-import java.util.Enumeration;
+import java.util.Map;
+import java.util.Iterator;
 
 import javax.servlet.http.*;
 import javax.servlet.ServletConfig;
@@ -37,7 +37,7 @@ abstract class TemplateTagHandler implements SpecialTagHandler
 {
     long startPos;
     long endPos;
-    Dictionary properties;
+    Map properties;
     String name;
 
     /**
@@ -82,13 +82,15 @@ abstract class TemplateTagHandler implements SpecialTagHandler
         else {
             // set properties; the STemplateLayout knows how
             if (properties.size() > 0) {
-                PropertyManager propManager = STemplateLayout
-                    .getPropertyManager(c.getClass());
+                PropertyManager propManager = 
+                    STemplateLayout.getPropertyManager(c.getClass());
+
                 if (propManager != null) {
-                    Enumeration e = properties.keys();
-                    while (e.hasMoreElements()) {
-                        String key = (String) e.nextElement();
+                    Iterator iter = properties.keySet().iterator();
+                    while ( iter.hasNext()) {
+                        String key = (String) iter.next();
                         String value = (String) properties.get(key);
+                        // System.out.println("set Property " + key + "=" +value + "  for " + name);
                         propManager.setProperty(c, key, value);
                     }
                 }

@@ -134,8 +134,8 @@ public class SGMLTag {
     public int end = 0;
 
     // private stuff
-    private Vector attrs = null;            // tag attributes (mixed)
-    private Hashtable values = null;        // tag attribute values (uc)
+    private LinkedList attrs = null;            // tag attributes (mixed)
+    private HashMap values = null;        // tag attribute values (uc)
     private boolean wellFormed = true;      // looks good?
     private boolean attr_ready = false;
   
@@ -357,16 +357,16 @@ public class SGMLTag {
      * @return enumeration of attribute names specified as strings,
      * or null if this tag is poorly formed
      */
-    public Enumeration attributes(boolean upperCase) {
+    public Iterator attributes(boolean upperCase) {
         // check to make sure attributes have been read
         if (!isWellFormed())
             return null;
 
         // or return uppercase names?
         if (upperCase) {
-            return values.keys();
+            return values.keySet().iterator();
         } else {
-            return attrs.elements();
+            return attrs.iterator();
         }
     }
 
@@ -402,8 +402,8 @@ public class SGMLTag {
         if (values == null && wellFormed) {
             String key = null, token;
             wellFormed = false;
-            attrs = new Vector();
-            values = new Hashtable();
+            attrs = new LinkedList();
+            values = new HashMap();
 
             while (true) {
 		// check for valid value tag (or end delimiter)
@@ -432,7 +432,7 @@ public class SGMLTag {
 		// ok, we have a key. Now insure that we have an equals sign
 		token = nextToken(input);
 		if (token == null || token.charAt(0) != '=') {
-		    attrs.addElement(key);
+		    attrs.add(key);
 		    if (token == null)
 			break;
 		    key = token; // this token is the next key
@@ -451,7 +451,7 @@ public class SGMLTag {
 		// store attribute name with original case
 		String upperCase = key.toUpperCase();
 		if (!values.containsKey(upperCase))
-		    attrs.addElement(key);
+		    attrs.add(key);
 
 		// store assignment in case-insensitive manner
 		values.put(upperCase, token);
@@ -483,7 +483,7 @@ public class SGMLTag {
      * @see #attributes
      * @see #value
      */
-    public Hashtable getAttributes() {
+    public HashMap getAttributes() {
         return isWellFormed() ? values : null;
     }
 
@@ -632,10 +632,10 @@ public class SGMLTag {
     public String toString() {
         String str = "[SGMLTag " + name + ": (" + getOffset() +","+ "---" + ")";
         if (attrs != null && wellFormed) {
-            Enumeration e = attributes(true);
-            while (e.hasMoreElements()) {
-                Object key = e.nextElement();
-                str += " " + key + "=\"" + value((String) key, null) + "\"";
+            Iterator iter = attributes(true);
+            while (iter.hasNext()) {
+                String key = (String)iter.next();
+                str += " " + key + "=\"" + value(key, null) + "\"";
             }
         } else {
             str += " *MALFORMED TAG*";
