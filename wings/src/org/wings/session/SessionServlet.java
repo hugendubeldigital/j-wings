@@ -699,6 +699,8 @@ final class SessionServlet
     public void destroy() {
         logger.info("destroy called");
 
+        // Session is needed on destroying the session 
+        SessionManager.setSession(session);
         try {
             // hint the gc.
             setParent(null);
@@ -708,16 +710,11 @@ final class SessionServlet
             errorStackTraceLabel = null;
             errorMessageLabel = null;
         }
-        catch (Exception e) {
-            logger.throwing(SessionServlet.class.getName(), "destroy", e);
+        catch (Exception ex) {
+            logger.throwing(SessionServlet.class.getName(), "destroy", ex);
         }
         finally {
-            Runtime rt = Runtime.getRuntime();
-            if (logger.isLoggable(Level.FINE))
-                logger.fine("free mem before gc: " + rt.freeMemory());
-            rt.gc();
-            if (logger.isLoggable(Level.FINE))
-                logger.fine("free mem after gc: " + rt.freeMemory());
+            SessionManager.removeSession();
         }
     }
 
