@@ -10,15 +10,19 @@ import java.util.Enumeration;
 import java.util.StringTokenizer; 
 import javax.swing.event.ListSelectionListener; 
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.tree.DefaultTreeModel;
+
 
 public class AddObjectsPanel
     extends SPanel
+
     implements ActionListener, ListSelectionListener 
 {
     SList objList;
     SPanel attributePanel  =new SPanel();
     ArrayList obj = new ArrayList();
     LdapWorker worker = null;
+    STree tree = null;
     SForm attrForm;
     SButton addEntry;
     SButton submit;
@@ -55,6 +59,14 @@ public class AddObjectsPanel
 	    objList.setListData(objects.toArray());
 	}
     }
+
+
+    public void setTree(STree tree) {
+	if (tree != null) {
+	    this.tree = tree;
+	}
+    }
+    
 
     private void fillAttributePanel(ArrayList selectedObjects) {
 	Hashtable attr;
@@ -147,9 +159,54 @@ public class AddObjectsPanel
 		}
 	    }
 	    System.out.println("dn ist" + dnText.getText());
+	    DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
+	    LdapTreeNode root = (LdapTreeNode)model.getRoot();
+	    LdapTreeNode parent = getParentForNewNode(root, dnText.getText().trim());
+	    LdapTreeNode newNode = new LdapTreeNode(worker, parent,dnText.getText().trim());
+	    parent.addChild(newNode);
+	    model.nodesWereInserted(parent, new int[] {parent.getChildCount()-1});
 	    worker.addNewEntry(dnText.getText().trim(),vals); 
 	}
     }
+
+    private LdapTreeNode getParentForNewNode(LdapTreeNode parent,String dn) {
+	LdapTreeNode node;
+	String parentDN = parent.getDN();
+	Enumeration children = parent.children();	
+	while (children!=null && children.hasMoreElements()) {
+	    node = (LdapTreeNode)children.nextElement();
+	    if (partOf(node.getDN(),dn)) {
+		parent = node;
+		getParentForNewNode(node,dn);
+	    }
+	}
+	
+	System.out.println("unterhalb von " + parent.getDN());
+	return parent;
+    }
+    
+
+    private boolean partOf(String a, String inB ) {
+
+	a = a.trim();
+	inB = inB.trim();
+	StringTokenizer sta = new StringTokenizer(a," ");
+	StringTokenizer stb = new StringTokenizer(inB, " ");
+	String anotherA = "";
+	String anotherInB = "";
+	while (sta.hasMoreTokens()) anotherA.concat(sta.nextToken ());
+	while (stb.hasMoreTokens()) anotherInB.concat(stb.nextToken());
+	if (anotherA.equals(""))
+	    anotherA = a;
+	if (anotherInB.equals(""))
+	    anotherInB = inB;
+	System.out.println(" a is "+ anotherA);
+	System.out.println("b is " + anotherInB);
+	if (anotherInB.endsWith(anotherA)) return true;
+	return false;
+	
+    }
+
 
     private void setSelectedObjects(Object [] elements) {
 	obj.clear();

@@ -160,6 +160,7 @@ public class LdapClientSession
 			createTreeModel(worker);
 			tree.setModel(treeModel);
 			addPanel.setWorker(worker);
+			addPanel.setTree(tree);
 		    }
 		}
 	    });
