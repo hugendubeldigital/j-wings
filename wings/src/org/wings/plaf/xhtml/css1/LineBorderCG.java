@@ -34,9 +34,9 @@ public final class LineBorderCG
     {
         SLineBorder border = (SLineBorder)b;
         int thickness = border.getThickness();
-        Color color = border.getColor();
+        Color color   = border.getColor();
         Insets insets = b.getInsets();
-
+        
         d.append("<div style=\"border: solid ")
             .append(thickness)
             .append("px; color: ")
@@ -51,7 +51,7 @@ public final class LineBorderCG
         else
             d.append("\">");
     }
-
+    
     public void writePostfix(Device d, SBorder b)
         throws IOException
     {

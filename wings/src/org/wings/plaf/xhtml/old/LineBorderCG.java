@@ -37,7 +37,8 @@ public final class LineBorderCG
     Icon transIcon;
 
     public LineBorderCG () {
-        transIcon = LookAndFeel.makeIcon(TabbedPaneCG.class, "/org/wings/icons/transdot.gif");
+        transIcon = LookAndFeel.makeIcon(TabbedPaneCG.class, 
+                                         "/org/wings/icons/transdot.gif");
     }
 
     public void writePrefix(Device d, SBorder b)
@@ -81,7 +82,7 @@ public final class LineBorderCG
         d.append("</td></tr></table>\n");
     }
 
-    public void writeTD(Device d, Color color, int colspan)
+    private void writeTD(Device d, Color color, int colspan)
         throws IOException
     {
         d.append("<td bgcolor=\"")
@@ -96,7 +97,7 @@ public final class LineBorderCG
             d.append(">");
     }
 
-    public void writeIMG(Device d, int width, int height)
+    private void writeIMG(Device d, int width, int height)
         throws IOException
     {
         String transAdr = null;

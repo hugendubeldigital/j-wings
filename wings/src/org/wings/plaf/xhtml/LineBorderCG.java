@@ -29,7 +29,7 @@ public class LineBorderCG
     public void writeSpanAttributes( Device d, SBorder border )
         throws IOException {
         SLineBorder b = ( SLineBorder ) border;
-        java.awt.Color  color = b.getColor();
+        java.awt.Color  color  = b.getColor();
         java.awt.Insets insets = b.getInsets();
         
         /* thickness & type */
