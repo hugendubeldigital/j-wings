@@ -34,7 +34,8 @@ import org.wingx.beans.editors.*;
  *  </li>
  * </ul>
  *
- * @author Michael Reinsch, mreinsch@to.com
+ * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>,
+ *         <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
  * @version $Revision$
  */
 
@@ -49,6 +50,7 @@ public class BeanEditor
     protected PropertyDescriptor[] propertyDescriptors = noPropertyDescriptors;
 
     protected Map properties = new HashMap();
+    protected int size = 0;
 
     protected final SPanel editorPanel = new SPanel(new SGridLayout(2));
 
@@ -56,7 +58,6 @@ public class BeanEditor
 	super(new SFlowDownLayout());
         add(editorPanel);
     }
-
 
     public void setPropertyDescriptors(PropertyDescriptor[] descriptors) {
         propertyDescriptors = descriptors;
@@ -69,7 +70,6 @@ public class BeanEditor
         initComponents();
     }
     public PropertyDescriptor[] getPropertyDescriptors() { return propertyDescriptors; }
-
 
     public void introspect() {
         PropertyDescriptor[] descriptors = null;
@@ -86,7 +86,6 @@ public class BeanEditor
 
         setPropertyDescriptors(descriptors);
     }
-
 
     protected EditorAdapter getEditorAdapter(SPropertyEditor propertyEditor) {
         EditorAdapter editor = null;
@@ -153,6 +152,7 @@ public class BeanEditor
     protected void initComponents() {
         editorPanel.removeAll();
 
+        size = 0;
         PropertyDescriptor[] descriptors = getPropertyDescriptors();
         for (int i = 0; i < descriptors.length; i++) {
             PropertyDescriptor descriptor = descriptors[i];
@@ -198,11 +198,13 @@ public class BeanEditor
             editorPanel.add(editorAdapter.getComponent());
 
 	    properties.put(name, new Property(descriptor, propertyEditor, editorAdapter));
+            
+            if (setter != null)
+                size++;
         }
-
-        if (getBean() != null)
-            readBean();
     }
+
+    public int size() { return size; }
 
     protected void readBean() {
         PropertyDescriptor[] descriptors = getPropertyDescriptors();
