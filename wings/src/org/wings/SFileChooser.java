@@ -31,17 +31,15 @@ import org.wings.io.Device;
  * <p>The uploaded file is stored temporarily in the filesystem of the
  * server with a unique name, so that uploaded files with the same
  * filename do not clash. You can access this internal name with
- * the {@link #getFiledir()} and {@link #getFileid()} methods. 
+ * the {@link #getFileDir()} and {@link #getFileId()} methods. 
  * The user provided filename can be queried with the 
- * {@link #getFilename()} method.
+ * {@link #getFileName()} method.
  *
  * Since the file is stored temporarily in the filesystem, you should
- * call {@link #reset()} after you are done with the file - this removes
- * the temporary file and thus avoids a 'filesystem memory'-leak in your 
- * application.
- *
- * <p>If you don't call reset, the file is eventually be removed
- * by the Java garbage collector, if you haven't renamed it.
+ * {@link File#delete()} it, when you are done with it.
+ * However, if you don't delete the file yourself, it is eventually 
+ * being removed by the Java garbage collector, if you haven't renamed it
+ * (see {@link #getFile()}).
  *
  * <p>The form, you add this SFileChooser to, needs to have the encoding type
  * <code>multipart/form-data</code> set 
@@ -68,7 +66,9 @@ import org.wings.io.Device;
  * events contained, since they might be incomplete. However, the file
  * chooser needs to be informed, that something went wrong as to present
  * an error message to the user. So in that case, only <em>one</em> event
- * is delivered to the form, that contains this SFileChooser.
+ * is delivered to the enclosing <em>form</em>, that contains this
+ * SFileChooser.
+ *
  * <p>Note, that in this case, this will <em>not</em> trigger the action
  * listener that you might have added to the submit-button.
  * This means, that you <em>always</em> should add your action listener
@@ -303,30 +303,38 @@ public class SFileChooser
     }
 
     /**
-     * resets this FileChooser (no file selected). It did not remove an upload filter!.
-     * CAVEAT: If a file is selected it is
-     * NOT removed on the 
-     * local tmp disk space. If an uploaded file is not referenced any more, the
-     * garbage collectors finalize will remove the file.
+     * resets this FileChooser (no file selected). It does not remove an 
+     * upload filter!.
+     * reset() will <em>not</em> remove a previously selected file from
+     * the local tmp disk space, so as long as you have a reference to
+     * such a file, you can still access it. If you don't have a reference
+     * to the file, it will automatically be removed when the file object
+     * is garbage collected.
      */
     public void reset() {
-        if (currentFile != null) {
-            currentFile = null;
-            fileId  = null;
-            fileDir = null;
-            fileType = null;
-            fileName = null;
-        }
+        currentFile = null;
+        fileId  = null;
+        fileDir = null;
+        fileType = null;
+        fileName = null;
+        exception = null;
     }
 
     /**
      * returns the file, that has been uploaded. Use this, to open and
      * read from the file uploaded by the user. Don't use this method
      * to query the actual filename given by the user, since this file
-     * wraps a system generated file that has not the filename given by
-     * the user. Use {@link #getFilename()} instead. The file returned is
-     * not removed from the filesystem unless you loose the reference to
-     * it. If you rename the file, it is not removed from the filesystem.
+     * wraps a system generated file with a different (unique) name.
+     * Use {@link #getFilename()} instead.
+     *
+     * <p>The file returned here
+     * will delete itself if you loose the reference to it and it is
+     * garbage collected to avoid filling up the filesystem (This doesn't 
+     * mean, that you shouldn't be a good programmer and delete the 
+     * file yourself, if you don't need it anymore :-).
+     * If you rename() the file to use it somewhere else,
+     * it is regarded not temporary anymore and thus will <em>not</em> 
+     * be removed from the filesystem.
      *
      * @return a File to access the content of the uploaded file.
      */
@@ -354,7 +362,7 @@ public class SFileChooser
     }
 
     /**
-     * TODO: documentation
+     * Returns the upload filter set in {@link #setUploadFilter(Class)}
      *
      * @return
      */
@@ -369,6 +377,7 @@ public class SFileChooser
         return UploadFilterManager.getFilterInstance(getNamePrefix());
     }
 
+    //-- Plaf specific methods
     public String getCGClassID() {
         return cgClassID;
     }
