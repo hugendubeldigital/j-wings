@@ -3,7 +3,7 @@
 <!-- ======================================================================= -->
 <!-- Build file                                                              -->
 <!-- ======================================================================= -->
-<project name="hellowings" default="jar" basedir=".">
+<project name="hellowings" default="war" basedir=".">
 
     <!-- Initialize some variables                                          -->
     <property name="wings.home" value="../../../"/>

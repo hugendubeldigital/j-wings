@@ -3,7 +3,7 @@
 <!-- ======================================================================= -->
 <!-- Build file                                                              -->
 <!-- ======================================================================= -->
-<project name="wingskeleton" default="jar" basedir=".">
+<project name="wingskeleton" default="war" basedir=".">
 
     <!-- Initialize some variables                                          -->
     <property name="wings.home" value="../../../../"/>
@@ -44,6 +44,7 @@
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${build.dest}"/>
 	<mkdir dir="${build.src}"/>
+	<mkdir dir="${project.dir}/lib" />
 
 	<copy todir="${build.src}">
 	  <fileset dir="${src.java.dir}">
@@ -179,7 +180,7 @@
     <target name="package-zip" depends="package-prepare"
 	description="Package with zip">
         <delete file="${package.dir}/${final.name}.zip" verbose="false"/>
-        <zip destfile="${package.dir}/${final.name}.zip">
+        <zip zipfile="${package.dir}/${final.name}.zip">
 	    <fileset dir="${build.dist}">
 	         <include name="**/**" />
 	    </fileset>
@@ -190,7 +191,7 @@
 	description="Packages the distribution with TAR-GZIP">
         <delete file="${package.dir}/${final.name}.tar" verbose="false"/>
         <delete file="${package.dir}/${final.name}.tar.gz" verbose="false"/>
-        <tar destfile="${package.dir}/${final.name}.tar" basedir="${build.dist}" />
+        <tar tarfile="${package.dir}/${final.name}.tar" basedir="${build.dist}" />
         <gzip zipfile="${package.dir}/${final.name}.tar.gz" 
 	      src="${package.dir}/${final.name}.tar"/>
     </target>
