@@ -58,13 +58,11 @@ public class SAbstractButton
     extends SComponent
     implements SGetListener, Selectable
 {
-    /**
-     * This is the text the button ist showing.
-     */
+    /** the text the button is showing */
     protected String text;
 
     /**
-     * The button type.
+     * button type
      * @see #setType
      */
     protected String type;
@@ -137,12 +135,9 @@ public class SAbstractButton
         this("SUBMIT");
     }
 
-    /*
+    /**
      * If the text of the button should not be wrapped, set this to true. This
      * inserts a &lt;NOBREAK&gt; Tag around the label
-     */
-    /**
-     * TODO: documentation
      *
      * @param b
      */
@@ -244,7 +239,7 @@ public class SAbstractButton
             SForm.fireActionEvent((ActionListener)actionListener.get(i), e);
     }
 
-    /*
+    /**
      * Sets the button type. Use one of the following types:
      * <UL>
      * <LI> {@link SConstants#SUBMIT_BUTTON}
@@ -252,9 +247,6 @@ public class SAbstractButton
      * <LI> {@link SConstants#CHECKBOX}
      * <LI> {@link SConstants#RADIOBUTTON}
      * </UL>
-     */
-    /**
-     * TODO: documentation
      *
      * @param t
      */
@@ -271,11 +263,8 @@ public class SAbstractButton
         return type;
     }
 
-    /*
-     * Sets the label of the button.
-     */
     /**
-     * TODO: documentation
+     * Sets the label of the button.
      *
      * @param t
      */
