@@ -61,8 +61,8 @@ public class SelectableTableCellRenderer
         return(false);
     }
 
-    public void getPerformed(String action, String value) {
-        fireCellSelectionPerformed(value);
+    public void processRequest(String action, String[] values) {
+        fireCellSelectionPerformed(values[0]);
     }
 
     public void addCellSelectionListener(CellSelectionListener listener) {

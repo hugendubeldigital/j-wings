@@ -64,7 +64,7 @@ public abstract class SessionServlet
     /**
      * TODO: documentation
      */
-    private SGetDispatcher dispatcher = null;
+    private SRequestDispatcher dispatcher = null;
 
     /**
      * TODO: documentation
@@ -435,7 +435,7 @@ public abstract class SessionServlet
     /**
      * TODO: documentation
      */
-    public final SGetDispatcher getDispatcher() {
+    public final SRequestDispatcher getDispatcher() {
         if (dispatcher == null)
             dispatcher = session.getDispatcher();
         return dispatcher;

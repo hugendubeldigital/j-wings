@@ -117,13 +117,13 @@ public abstract class STextComponent
         return text;
     }
 
-    public void getPerformed(String action, String value) {
+    public void processRequest(String action, String[] values) {
         if ( isEditable() && isEnabled() ) {
             // System.out.println("getPerformed " + action + " : " + value);
-            if ( value != null )
-                value = value.trim();
-            if ( getText() == null || !getText().equals( value ) ) {
-                setText( value );
+            if ( values[0] != null )
+                values[0] = values[0].trim();
+            if ( getText() == null || !getText().equals( values[0] ) ) {
+                setText( values[0] );
                 SForm.addArmedComponent(this);
             }
         }

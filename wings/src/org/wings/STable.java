@@ -263,7 +263,8 @@ public class STable
 		return showSelectables;
      }
 
-    public void getPerformed(String action, String value) {
+    public void processRequest(String action, String[] values) {
+        String value = values[0];
         int row = new Integer(value.substring(0, value.indexOf(':'))).intValue();
         int col = new Integer(value.substring(value.indexOf(':') + 1)).intValue();
         editCellAt(row, col, null);

@@ -111,6 +111,27 @@ public class Resource
 	return url;
     }
 
+    /**
+     * returns a byte array of the resource object and buffers(caches) it, if
+     * not to big {@link #MAX_SIZE_BUFFER} and the resouce isn't buffered
+     * already 
+     * @return buffered resource or null if resource is to big.
+     */
+    protected byte[] bufferResource() throws IOException {
+        if ( buffer==null ) {
+            InputStream resource = getResourceStream();
+            if ( resource!=null ) {
+                int size = resource.available();
+                if ( size <= MAX_SIZE_TO_BUFFER ) {
+                    buffer = new byte[size];
+                    resource.read(buffer);
+                    resource.close();
+                }
+            }
+        }
+        return buffer;
+    }
+
     public final void write(OutputStream out) throws IOException {
         if ( buffer==null ) {
             InputStream resource = getResourceStream();

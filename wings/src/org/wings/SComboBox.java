@@ -511,9 +511,9 @@ public class SComboBox
     public void setShowAsFormComponent(boolean showAsFormComponent) {}
     public boolean getShowAsFormComponent() { return true; }
 
-    public void getPerformed(String action, String value) {
+    public void processRequest(String action, String[] values) {
         try {
-            int sel = Integer.parseInt(value);
+            int sel = Integer.parseInt(values[0]);
             setSelectedIndex(sel);
         }
         catch (Exception e) {

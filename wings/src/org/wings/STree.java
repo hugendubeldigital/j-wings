@@ -828,9 +828,9 @@ public class STree
     }
 
 
-    public void getPerformed(String action, String value) {
-        boolean handle = value.charAt(0) == 'h';
-        value = value.substring(1);
+    public void processRequest(String action, String[] values) {
+        boolean handle = values[0].charAt(0) == 'h';
+        String value = values[0].substring(1);
         TreePath path = getPathForRow(getRow(value));
         if ( path != null )
             if ( ((TreeNode)path.getLastPathComponent()).isLeaf() || !handle ) {

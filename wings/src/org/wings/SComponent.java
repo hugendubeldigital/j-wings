@@ -358,7 +358,7 @@ public abstract class SComponent
      *
      * @return the dispatcher
      */
-    public SGetDispatcher getDispatcher() {
+    public SRequestDispatcher getDispatcher() {
         if ( getParentFrame()==null )
             return null;
         else

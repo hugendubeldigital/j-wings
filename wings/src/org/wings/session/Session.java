@@ -19,7 +19,7 @@ import java.util.Locale;
 
 import javax.servlet.ServletConfig;
 
-import org.wings.SGetDispatcher;
+import org.wings.SRequestDispatcher;
 import org.wings.ReloadManager;
 import org.wings.plaf.CGManager;
 import org.wings.externalizer.ExternalizeManager;
@@ -52,7 +52,7 @@ public interface Session
     Service getService(Object key);
 
     CGManager getCGManager();
-    SGetDispatcher getDispatcher();
+    SRequestDispatcher getDispatcher();
 
     void addPropertyChangeListener(PropertyChangeListener listener);
 

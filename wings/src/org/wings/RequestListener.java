@@ -29,19 +29,13 @@ public interface RequestListener
      * @param name the name-value-pair's name
      * @param value the name-value-pair's value
      */
-    void getPerformed(String name, String value);
+    void processRequest(String name, String[] values);
+
     String getNamePrefix();
+
     String getName();
 
-    /**
-     * Events, that update a component's (or its model's) state are <code>immediate</code>
-     * events.
-     */
     void fireIntermediateEvents();
-    /**
-     * For example ActionEvents, that are caused by clicking the submit button of a form
-     * must be fired <b>after</b> all other events have been fired.
-     */
     void fireFinalEvents();
 }
 

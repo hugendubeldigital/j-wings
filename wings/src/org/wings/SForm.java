@@ -290,7 +290,7 @@ public class SForm
         return addr;
     }
 
-    public void getPerformed(String name, String value) {
+    public void processRequest(String name, String[] values) {
         SForm.addArmedComponent(this);
     }
 

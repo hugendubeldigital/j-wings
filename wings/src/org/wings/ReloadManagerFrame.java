@@ -43,7 +43,7 @@ public class ReloadManagerFrame
     extends SFrame
 {
     public ReloadManagerFrame() {
-	getSession().getDispatcher().setTarget(getUnifiedIdString());
+        //	getSession().getDispatcher().setTarget(getUnifiedIdString());
     }
 
     public final SContainer getContentPane() {

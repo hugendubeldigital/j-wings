@@ -106,7 +106,7 @@ public class SFrame
     /**
      * TODO: documentation
      */
-    private transient SGetDispatcher dispatcher = null;
+    private transient SRequestDispatcher dispatcher = null;
 
     private Session session;
 
@@ -199,7 +199,7 @@ public class SFrame
      *
      * @return
      */
-    public SGetDispatcher getDispatcher() {
+    public SRequestDispatcher getDispatcher() {
         if (dispatcher == null)
             dispatcher = getSession().getDispatcher();
         return dispatcher;

@@ -289,7 +289,7 @@ public abstract class SAbstractButton
     public void setSelected(boolean s) {
     }
 
-    public void getPerformed(String action, String value) {
+    public void processRequest(String action, String[] values) {
         SForm.addArmedComponent(this);
     }
 

@@ -58,7 +58,7 @@ public class CGManager
      * @param target the SComponent
      */
     public ComponentCG getCG(SComponent target) {
-        System.err.print("CGManager.getCG(SComponent)");
+        //        System.err.print("CGManager.getCG(SComponent)");
         return (ComponentCG)getDefaults().get(target.getCGClassID(), ComponentCG.class);
     }
 
@@ -69,7 +69,7 @@ public class CGManager
      * @param target the SLayoutManager
      */
     public LayoutCG getCG(SLayoutManager target) {
-        System.err.print("CGManager.getCG(SLayoutManager)");
+        //        System.err.print("CGManager.getCG(SLayoutManager)");
         return (LayoutCG)getDefaults().get(target.getCGClassID(), LayoutCG.class);
     }
 
@@ -80,7 +80,7 @@ public class CGManager
      * @param target the SBorder
      */
     public BorderCG getCG(SBorder target) {
-        System.err.print("CGManager.getCG(SBorder)");
+        //        System.err.print("CGManager.getCG(SBorder)");
         return (BorderCG)getDefaults().get(target.getCGClassID(), BorderCG.class);
     }
 
@@ -182,7 +182,7 @@ public class CGManager
      * @see #getLookAndFeel
      */
     public void setLookAndFeel(LookAndFeel newLookAndFeel) {
-        System.err.print("CGManager.setLookAndFeel");
+        //        System.err.print("CGManager.setLookAndFeel");
         lookAndFeel = newLookAndFeel;
         
         if (newLookAndFeel != null) {

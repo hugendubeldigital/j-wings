@@ -110,8 +110,9 @@ public class SFileChooser
         return fileNameFilter;
     }
 
-    public void getPerformed(String action, String value) {
-    	System.out.println( action + "-> '" + value + "'");
+    public void processRequest(String action, String[] values) {
+        String value = values[0];
+        System.out.println( action + "-> '" + value + "'");
         try {
             Hashtable params = HttpUtils.parseQueryString(value);
             String[] arr;

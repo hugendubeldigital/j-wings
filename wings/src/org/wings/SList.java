@@ -76,8 +76,6 @@ public class SList
      */
     protected boolean[] oldSelection = null;
 
-    private boolean hidden = true;
-
     protected EventListenerList listenerList = new EventListenerList();
     private Rectangle viewport = null;
 
@@ -905,33 +903,38 @@ public class SList
      * @param action the name
      * @param value the value
      */
-    public void getPerformed(String action, String value) {
-        try {
-            int sel = Integer.parseInt(value);
+    public void processRequest(String action, String[] values) {
+        if (getShowAsFormComponent()) {
+            syncSelection();
 
-            if (getShowAsFormComponent()) {
-                if (hidden)
-                    syncSelection();
-                
-                if (sel < 0) {
-                    hidden = true;
-                    fireEvents();
-                }
-                else {
-                    selection[sel] = true;
-                    hidden = false;
+            for ( int i=0; i<values.length; i++ ) {
+                try {
+                    int sel = Integer.parseInt(values[i]);
+
+                    if ( sel>=0 ) 
+                        selection[sel] = true;
+                } catch (Exception e) {
+                System.err.println("Cannot parse expected integer");
+                e.printStackTrace();
                 }
             }
-            else {
-                if (isSelectedIndex(sel))
-                    removeSelectionInterval(sel, sel);
-                else
-                    addSelectionInterval(sel, sel);
+
+            fireEvents();
+        } else {
+            for ( int i=0; i<values.length; i++ ) {
+                try {
+                    int sel = Integer.parseInt(values[i]);
+                    
+                    if (isSelectedIndex(sel))
+                        removeSelectionInterval(sel, sel);
+                    else
+                        addSelectionInterval(sel, sel);
+                } catch (Exception e) {
+                System.err.println("Cannot parse expected integer");
+                e.printStackTrace();
+                }
+
             }
-        }
-        catch (Exception e) {
-            System.err.println("Cannot parse expected integer");
-            e.printStackTrace();
         }
     }
 

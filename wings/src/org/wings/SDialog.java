@@ -167,7 +167,7 @@ public class SDialog
             ((SInternalFrame)frame).pushDialog(this);
     }
 
-    public void getPerformed(String name, String value) {}
+    public void processRequest(String name, String[] values) {}
 
     public String getCGClassID() {
         return cgClassID;

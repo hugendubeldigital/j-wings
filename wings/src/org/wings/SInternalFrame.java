@@ -282,8 +282,8 @@ public class SInternalFrame
 
     private SInternalFrameEvent event;
 
-    public void getPerformed(String name, String value) {
-        switch (new Integer(value).intValue()) {
+    public void processRequest(String name, String[] values) {
+        switch (new Integer(values[0]).intValue()) {
         case SInternalFrameEvent.INTERNAL_FRAME_CLOSED:
             setClosed(true);
             break;
@@ -305,10 +305,10 @@ public class SInternalFrame
             break;
 
         default:
-            throw new RuntimeException("unknown id: " + value);
+            throw new RuntimeException("unknown id: " + values[0]);
         }
 
-        event = new SInternalFrameEvent(this, new Integer(value).intValue());
+        event = new SInternalFrameEvent(this, new Integer(values[0]).intValue());
     }
 
     public void fireIntermediateEvents() {}

@@ -28,22 +28,22 @@ import org.wings.session.SessionManager;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class FastDispatcher
-    implements SGetDispatcher
+public final class DefaultSRequestDispatcher
+    implements SRequestDispatcher
 {
     public static final boolean DEBUG = false;
 
-    HashMap listener = new HashMap();
+    private final HashMap listener = new HashMap();
 
     protected boolean namedEvents = true;
 
     /**
      * creates a new fast dispatcher
      */
-    public FastDispatcher() {
+    public DefaultSRequestDispatcher() {
     }
 
-    private final void addGetListener(RequestListener gl, String namePrefix) {
+    private final void addRequestListener(RequestListener gl, String namePrefix) {
         ArrayList l = (ArrayList)listener.get(namePrefix);
         if ( l==null ) {
             l = new ArrayList(2);
@@ -53,8 +53,8 @@ public class FastDispatcher
         else if ( !l.contains(gl) )
             l.add(gl);
     }
-
-    private final void removeGetListener(RequestListener gl, String namePrefix) {
+    
+    private final void removeRequestListener(RequestListener gl, String namePrefix) {
         ArrayList l = (ArrayList)listener.get(namePrefix);
         if ( l!=null ) {
             l.remove(gl);
@@ -81,13 +81,13 @@ public class FastDispatcher
         key = key.substring(key.indexOf(SConstants.UID_DIVIDER)+1);
 
         debug("register " + key);
-        addGetListener(gl, key);
+        addRequestListener(gl, key);
 
         if ( namedEvents ) {
             key = gl.getName();
             if ( key!=null && key.trim().length()>0 ) {
                 debug("register " + key);
-                addGetListener(gl, key);
+                addRequestListener(gl, key);
             }
         }
     }
@@ -109,12 +109,12 @@ public class FastDispatcher
         key = key.substring(key.indexOf(SConstants.UID_DIVIDER)+1);
 
         debug("unregister " + key);
-        removeGetListener(gl, key);
+        removeRequestListener(gl, key);
 
         key = gl.getName();
         if ( key!=null && key.trim().length()>0 ) {
             debug("unregister " + key);
-            removeGetListener(gl, key);
+            removeRequestListener(gl, key);
         }
 
     }
@@ -161,8 +161,7 @@ public class FastDispatcher
 
             for (int i=0; i<l.size(); i++) {
                 gl = (RequestListener)l.get(i);
-                for (int j=0; j<values.length; j++)
-                    gl.getPerformed(name, values[j]);
+                gl.processRequest(name, values);
                 erg = true;
             }
         }
@@ -186,20 +185,13 @@ public class FastDispatcher
         }
     }
 
-    private String target = null;
-
-    public void setTarget(String target) {
-        this.target = target;
-    }
-    public String getTarget() { return target; }
-
     protected void finalize() {
         debug("finalize");
     }
 
     private static final void debug(String mesg) {
         if ( DEBUG ) {
-            System.out.println("[" + FastDispatcher.class.getName() + "] " + mesg);
+            System.out.println("[" + DefaultSRequestDispatcher.class.getName() + "] " + mesg);
         }
     }
 }

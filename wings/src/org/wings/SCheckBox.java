@@ -46,12 +46,6 @@ public class SCheckBox extends SButton
     /** selection state of the checkBox */
     protected boolean selected = false;
 
-    /*
-     * Gibt an, ob das letzte getPerformed von dem hidden Element stammt oder
-     * nicht !!
-     */
-    protected boolean hidden=true;
-
     /**
      * TODO: documentation
      */
@@ -76,11 +70,6 @@ public class SCheckBox extends SButton
      * TODO: documentation
      */
     protected SIcon backupIcon = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected String backupIconAdr = null;
 
     /**
      * TODO: documentation
@@ -281,31 +270,33 @@ public class SCheckBox extends SButton
      * Komponente. Falls die Selektionsaction nicht kam, wird die
      * Selektion zurueckgesetzt.
      */
-    public void getPerformed(String action, String value) {
-        // System.out.println("getPerformed " + action + " : " + value);
-        // nur falls es wirklich meins ist (bei group ist die action fuer alle
-        // CheckBoxes in der Group gleich !!!)
-        // System.out.println("getPerformed " + action + ":" + value);
+    public void processRequest(String action, String[] values) {
+        String uid = getUnifiedIdString()+SConstants.UID_DIVIDER;
 
-        if ( value.startsWith(getUnifiedIdString()+SConstants.UID_DIVIDER) ) {
-
-            if (!getShowAsFormComponent()) {
-                setSelected(!isSelected());
-                SForm.addArmedComponent(this);
-                return;
-            }
-
-            if (value.endsWith("1")) {
-                hidden = false;
-                setSelected(true);
-                SForm.addArmedComponent(this);
-            }
-            else {
-                if (hidden) {
-                    setSelected(false);
-                    SForm.addArmedComponent(this);
+        if ( getShowAsFormComponent() ) {
+            for ( int i=0; i<values.length; i++ ) {
+                // the request is for this component only, if value starts with
+                // its unified IdString (ButtonGroup)
+                if ( values[i].startsWith(uid) ) {
+                    if (values[i].endsWith("1")) {
+                        setSelected(true);
+                        SForm.addArmedComponent(this);
+                        return;
+                    } else {
+                        setSelected(false);
+                        SForm.addArmedComponent(this);
+                    }
                 }
-                hidden = true;
+            }
+        } else {
+            for ( int i=0; i<values.length; i++ ) {
+                // the request is for this component only, if value starts with
+                // its unified IdString (ButtonGroup)
+                if ( values[i].startsWith(uid) ) {
+                    setSelected(!isSelected());
+                    SForm.addArmedComponent(this);
+                    return;
+                }
             }
         }
     }

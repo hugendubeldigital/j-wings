@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.swing.ImageIcon;
+
 import org.wings.session.SessionManager;
 import org.wings.externalizer.ExternalizeManager;
 
@@ -38,6 +40,16 @@ import org.wings.externalizer.ExternalizeManager;
  */
 public class ResourceImageIcon extends Resource implements SIcon
 {
+    /**
+     * TODO: documentation
+     */
+    private int width = -1;
+
+    /**
+     * TODO: documentation
+     */
+    private int height = -1;
+
     /**
      * TODO: documentation
      *
@@ -61,14 +73,35 @@ public class ResourceImageIcon extends Resource implements SIcon
             mimeType = "image/jpeg";
         else
             mimeType = "image/" + extension;
+
+        calcDimensions();
+    }
+
+    /**
+     *
+     */
+    protected void calcDimensions() {
+        try {
+            bufferResource();
+            
+            if ( buffer!=null ) {
+                ImageIcon icon = new ImageIcon(buffer);
+                width = icon.getIconWidth();
+                height = icon.getIconHeight();
+            }
+        } catch ( Exception e ) {
+            // is not possible to calc Dimensions
+            // maybe it is not possible to buffer resource, or resource is not a
+            // supported image type
+        }
     }
 
     public int getIconWidth() {
-        return -1;
+        return width;
     }
 
     public int getIconHeight() {
-        return -1;
+        return height;
     }
 }
 

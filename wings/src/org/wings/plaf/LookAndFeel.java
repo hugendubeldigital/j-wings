@@ -1,6 +1,6 @@
 /*
  * $Id$
- * (c) Copyright 2000 wingS development team.
+
  *
  * This file is part of wingS (http://wings.mercatis.de).
  *
@@ -118,7 +118,7 @@ public class LookAndFeel
      * @return a new CG instance
      */
     public Object makeCG(String className) {
-        System.err.print("LookAndFeel.makeCG(" + className + ")");
+        //        System.err.print("LookAndFeel.makeCG(" + className + ")");
         try {
             Class cgClass = Class.forName(className, true, classLoader);
             return cgClass.newInstance();
@@ -245,7 +245,7 @@ public class LookAndFeel
      */
     public static Object makeObject(ClassLoader classLoader, String value, Class clazz) {
         try {
-            System.err.println("makeObject of type " + clazz.getName() + " with " + value);
+            //            System.err.println("makeObject of type " + clazz.getName() + " with " + value);
             if (value.startsWith("new ")) {
                 int bracket = value.indexOf("(");
                 String name = value.substring("new ".length(), bracket);

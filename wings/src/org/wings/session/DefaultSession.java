@@ -24,9 +24,9 @@ import java.util.Locale;
 import javax.servlet.ServletConfig;
 
 import org.wings.DefaultReloadManager;
-import org.wings.FastDispatcher;
+import org.wings.DefaultSRequestDispatcher;
 import org.wings.ReloadManager;
-import org.wings.SGetDispatcher;
+import org.wings.SRequestDispatcher;
 import org.wings.plaf.CGManager;
 import org.wings.util.WeakPropertyChangeSupport;
 import org.wings.externalizer.ExternalizeManager;
@@ -44,7 +44,7 @@ public class DefaultSession
     private final CGManager cgManager = new CGManager();
     private ReloadManager reloadManager = null;
     private ExternalizeManager extManager = null;
-    private SGetDispatcher dispatcher = new FastDispatcher();
+    private SRequestDispatcher dispatcher = new DefaultSRequestDispatcher();
     private Properties props = new Properties();
 
     /**
@@ -136,7 +136,7 @@ public class DefaultSession
      *
      * @return
      */
-    public SGetDispatcher getDispatcher() {
+    public SRequestDispatcher getDispatcher() {
         return dispatcher;
     }
 

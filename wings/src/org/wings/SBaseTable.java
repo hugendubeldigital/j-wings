@@ -133,6 +133,16 @@ public class SBaseTable
         setModel(tm);
     }
 
+    public void setPrototype(String p) {
+    }
+
+    /**
+     * rows, cols
+     */
+    public String[][]getPrototype() {
+        return null;
+    }
+
     /**
      * TODO: documentation
      *
