@@ -3,14 +3,14 @@
 
 <write>
 <hr<% 
-printStyle(<%?style%>);
-printOptAttr(<%?width%>);
-printOptAttr(<%?size%>);
-switch (<%?alignment%>) {
+printStyle(component.getStyle());
+printOptAttr(component.getWidth());
+printOptAttr(component.getSize());
+switch (component.getAlignment()) {
    case SSeparator.RIGHT_ALIGN : %> align="right"<%; break;
    case SSeparator.CENTER_ALIGN: %> align="center"<%; break;
    case SSeparator.BLOCK_ALIGN : %> align="justify"<%; break;
 };
-if (!<%?shade%>) %> noshade<%;%>>
+if (!component.getShade()) %> noshade<%;%>>
 </write>
 </template>

@@ -5,8 +5,8 @@
 <textarea cols="<%?columns%>" rows="<%?rows%>"<%
 if (!component.isEditable()) %> readonly="1"<%;
 if (component.isEnabled())   %> name="<%?namePrefix%>"<%;
-printStyle(<%?style%>); 
-switch (<%?lineWrap%>) {
+printStyle(component.getStyle()); 
+switch (component.getLineWrap()) {
    case STextArea.VIRTUAL_WRAP : %> wrap="virtual"<%; break;
    case STextArea.PHYSICAL_WRAP: %> wrap="physical"<%; break;
 };
