@@ -24,7 +24,7 @@
 -                BufferedImage image = 
 -                    ImageIO.read(new ByteArrayInputStream(buffer.getBytes()));
 -                width = image.getWidth();
--                width = image.getHeight();
+-                height = image.getHeight();
 +                ImageIcon icon = new ImageIcon(buffer.getBytes());
 +                width  = icon.getIconWidth();
 +                height = icon.getIconHeight();
