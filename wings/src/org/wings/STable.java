@@ -157,6 +157,37 @@ public class STable
         }
     }
 
+	/**
+      * Adds the row from <i>index0</i> to <i>index0</i> inclusive to the current selection.
+      */
+	public void addRowSelectionInterval(int index0, int index1)
+     {
+     	int smode = getSelectionMode();
+     	if ( selects == null || smode == SConstants.NO_SELECTION ) return;
+        
+        if ( index0 > index1 )
+         {
+			int t = index0;
+            index0 = index1;
+            index1 = t;
+         }
+        
+        if ( smode == SConstants.SINGLE_SELECTION )
+         {
+         	clearSelection();
+			selects[ index0 ].setSelected( true );
+            return;
+         }
+
+		if ( smode == SConstants.MULTIPLE_SELECTION )
+         {
+         	for ( ; index0 <= index1; index0++ )
+				selects[ index0 ].setSelected( true );
+         }
+
+		return;
+	 }
+
     /**
      * TODO: documentation
      *
