@@ -46,6 +46,9 @@ import org.wings.externalizer.ExternalizedInfo;
  */
 public abstract class WingServlet extends HttpServlet
 {
+
+    protected static final Boolean initializer = new Boolean(true);
+
     static {
         /*
         try {
@@ -58,20 +61,15 @@ public abstract class WingServlet extends HttpServlet
     protected static Logger logger = Logger.getLogger("org.wings.servlet");
 
     /**
-     * TODO: documentation
-     */
-    public static final boolean DEBUG = true;
-
-    /**
      * used to init session servlets
      */
     protected ServletConfig servletConfig = null;
-
+    
+    /** */
     private String lookupName = "SessionServlet";
 
     /**
      * TODO: documentation
-     *
      */
     public WingServlet() {}
 
@@ -91,6 +89,17 @@ public abstract class WingServlet extends HttpServlet
      */
     protected void preInit(ServletConfig config) throws ServletException {}
 
+    protected void initLookupName(ServletConfig config) 
+        throws ServletException 
+    {
+        // with specified lookupname it is possible to handle different sessions
+        // for servlet aliases/mappings
+        lookupName = config.getInitParameter("wings.servlet.lookupname");
+
+        if ( lookupName==null || lookupName.trim().length()==0 ) {
+            lookupName = "SessionServlet:" + getClass().getName();
+        }
+    }
 
     /*
      * The following init parameters are known by wings.
@@ -115,14 +124,12 @@ public abstract class WingServlet extends HttpServlet
      * @throws ServletException
      */
     public final void init(ServletConfig config) throws ServletException {
+        servletConfig = config;
+
         preInit(config);
         super.init(config);
-
-        // with specified lookupname it is possible to handle different sessions
-        // for servlet aliases/mappings
-        lookupName = config.getInitParameter("wings.servlet.lookupname");
-        if ( lookupName==null || lookupName.trim().length()==0 )
-             lookupName = "SessionServlet:" + getClass().getName();
+        
+        initLookupName();
 
         if (logger.isLoggable(Level.CONFIG)) {
             logger.config("init-params:");
@@ -132,8 +139,6 @@ public abstract class WingServlet extends HttpServlet
             }
         }
 
-
-        servletConfig = config;
         postInit(config);
     }
 
@@ -165,7 +170,11 @@ public abstract class WingServlet extends HttpServlet
     public final void doPost(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException
     {
-        SessionServlet sessionServlet = getSessionServlet(req, res);
+        SessionServlet sessionServlet = null;
+
+        synchronized (initializer) {
+            sessionServlet = getSessionServlet(req, res);
+        }
 
         if (logger.isLoggable(Level.FINE))
             logger.fine((sessionServlet != null) ?
@@ -231,8 +240,6 @@ public abstract class WingServlet extends HttpServlet
             throw new ServletException(e);
         }
     }
-
-    static final Boolean initializer = new Boolean(true);
 
     public final SessionServlet getSessionServlet(HttpServletRequest request,
                                                   HttpServletResponse response) 
@@ -343,17 +350,6 @@ public abstract class WingServlet extends HttpServlet
             SessionServlet sessionServlet = null;
             synchronized (initializer) {
                 sessionServlet = getSessionServlet(req, response);
-            }
-
-            if (DEBUG) {
-                if (req.getParameterValues("exit") != null) {
-                    req.getSession(false).invalidate();
-                    sessionServlet.destroy();
-                    sessionServlet = null;
-                    System.gc();
-                    try { Thread.sleep(1000); } catch (Exception e) {}
-                    System.exit(0);
-                }
             }
 
             sessionServlet.doGet(req, response);
