@@ -177,7 +177,7 @@ public class TemplateParser {
         out.println ("import org.wings.style.*;");
         out.println ("import org.wings.io.Device;");
 
-        if (cgProperties.size() > 0) {
+        if (cgProperties.size() > 0 || compProperties.size() > 0 ) {
             out.println ("import org.wings.plaf.CGManager;");
             out.println ("import org.wings.session.SessionManager;");
         }
@@ -427,6 +427,14 @@ public class TemplateParser {
         anyError = true;
     }
 
+    /**
+     * like report error, but throws an Exception.
+     */
+    public void seriousError(String msg) throws ParseException {
+        anyError = true;
+        throw new ParseException(in.getFileStackTrace() + ": " + msg);
+    }
+
     public void reportError(String msg) {
         System.err.println(in.getFileStackTrace() + ": " + msg);
         anyError = true;
@@ -457,8 +465,9 @@ public class TemplateParser {
             switch (parseJavaCode(commonJavaCode)) {
             case END_JAVA:
                 writeJavaCode.removeTailNewline();
-                if ((parseHTMLTemplate(commonJavaCode)) == END_WRITE)
-                    throw new ParseException("</write> not expected in common code");
+                if ((parseHTMLTemplate(commonJavaCode)) == END_WRITE) {
+                    seriousError("</write> not expected in common code");
+                }
                 break;
             case START_WRITE:
                 checkBracesClosed();
@@ -491,12 +500,12 @@ public class TemplateParser {
                 p = new Property(type, name);        
             }
             catch (ClassNotFoundException e) {
-                throw new ParseException("<property>: " + e.getMessage());
+                seriousError("<property>: " + e.getMessage());
             }
         }
         StringBuffer defaultVal = new StringBuffer();
         if ((findTransitions(defaultVal, stateTransitionTags)) != endTag) {
-            throw new ParseException ("unexpected tag in <property> area");
+            seriousError("unexpected tag in <property> area");
         }
         if (p != null) {
             p.setValue(defaultVal.toString());
@@ -517,8 +526,9 @@ public class TemplateParser {
                 checkBracesClosed();
                 return;
             }
-            if (parseJavaCode(writeJavaCode) != END_JAVA)
-                throw new ParseException("unexpected tag in <write> area.");
+            if (parseJavaCode(writeJavaCode) != END_JAVA) {
+                seriousError("unexpected tag in <write> area.");
+            }
             writeJavaCode.removeTailNewline();
         }
     }
@@ -556,9 +566,9 @@ public class TemplateParser {
             execJava(tempBuffer, destination);
             switch (trans) {
             case START_JAVA:               // <%  ERRORnous start java
-                throw new ParseException("opening scriptlet while in scriptlet");
+                seriousError("opening scriptlet while in scriptlet");
             case END_WRITE:                // </write> ERROR
-                throw new ParseException("encountered </write> in java code; missing '%>'?");
+                seriousError("encountered </write> in java code; missing '%>'?");
             case INCLUDE:                  // <include
                 handleIncludeTag();
                 break;
@@ -584,7 +594,7 @@ public class TemplateParser {
             
             switch (trans) {
             case END_JAVA:                  // '%>' ERRORnous end-java
-                throw new ParseException("closing java tag in HTML code. Missing '<%' somewhere?");
+                seriousError("closing java tag in HTML code. Missing '<%' somewhere?");
             case INCLUDE:                   // <include
                 handleIncludeTag();
                 break;
