@@ -4,7 +4,7 @@
 <head>
 <title>Documentation</title>
 <meta http-equiv="Content-type" content='text/html; charset="iso-8859-1"' />
-<link rel="stylesheet" type="text/css" href="styles.css" />
+<link rel="stylesheet" type="text/css" href="FAQ.css" />
 </head>
 <body>
 
@@ -54,13 +54,16 @@ What are the requirements for <span class="wings">wingS</span>?
    <a href="http://java.sun.com" target="_blank">Sun's JDK 1.4</a>. If
    you are using another Java 2 implemenation without the logging API, you could
    use the logging.jar in the lib directory of the 
-   <span class="wings">wingS</span> distribution. 
+   <span class="wings">wingS</span> distribution. See <a href="#jdk1.3">Using
+   wingS with JDK1.3"</a>
   </li>
+<!--  we added it to the repository
   <li>A copy of JSDK2.2 API jar. You will find it in every servlet container
   implementing the JSDK2.2 API or on Sun's 
   <a href="http://java.sun.com/products/servlet/" target="_blank">JSDK website</a>. 
   Copy it to the lib directory of your <span class="wings">wingS</span> installation.
   </li>
+-->
   <li>
   <a href="http://jakarta.apache.org" target="_blank">Ant</a> version 1.3 or higher.
   </li>
@@ -85,19 +88,70 @@ What are the requirements for <span class="wings">wingS</span>?
 
 <li>
 <div class="question">
-How do I install it?
+<a name="jdk1.3"/>
+Compiling and using <span class="wings">wingS</span> with jdk1.3
 </div>
 <div class="answer">
-There's no special installation procedure. You need the wings.jar in your classpath
-in order to compile <span class="wings">wingS</span> applications. The war file has
-to contain the css1.jar also.
+<p>
+You need to apply some patches to compile <span class="wings">wingS</span> with
+jdk1.3. Start 
+<pre>ant PatchForJDK1.3</pre>
+in the wings directory to apply the patches.
+</p>
+
+<p>
+Compile <span class="wings">wingS</span> with 
+<pre>ant</pre>
+Note: Compiling works without having "logging.jar" in the
+bootclass path.
+</p>
+
+<p>
+Using <span class="wings">wingS</span> with jdk1.3 is not so trivial. You have
+to change your start scripts of your servlet container. Add to the java options
+of your servlet container:
+<pre>-Xbootclasspath/a:logging.jar</pre>
+For example tomcat 4 start script is "catalina.sh". You could set the
+environment variable "JAVA_OPTS" and start tomcat (untested!):
+<pre>
+export JAVA_OPTS="-Xbootclasspath/a:logging.jar"
+catalina.sh run
+</pre>
+
+</p>
 </div>
 <br />
 </li>
 
 <li>
 <div class="question">
-Why does <span class="wings">wingS</span> require access to an X Server under Unix/Linux?
+Adding logging support to jdk1.3 forever (without using -Xbootclasspath)
+</div>
+<div class="answer">
+We need to update the rt.jar in jdk's directory
+rt.jar is most possibly in something like jdk1.3/lib or jdk1.3/jre/lib (in case
+of IBM's jdk) now we suggest to copy rt.jar to rt_temp.jar, because you won't be
+able to update it (maybe some VM is running and rt.jar is locked so you will get IOException ).
+Extract logging.jar to the directory where you found rt.jar. 
+<pre>
+jar xf logging.jar
+</pre>
+You will now have a new directory named "java". This is what we need to put in rt_temp.jar. the
+command is :
+<pre>
+jar -uf rt_temp.jar java
+</pre>
+If everything went well, you can switch the rt_temp.jar and rt.jar: 
+rename the rt.jar to rt_old.jar  and rename rt_temp.jar to rt.jar. That's it,
+now you have logging support in your jdk1.3. You can delete the created "java" directory.
+</div>
+<br />
+</li>
+
+<li>
+<div class="question">
+Why does <span class="wings">wingS</span> require access to an X Server under
+Unix/Linux? (only if using jdk1.3)
 </div>
 <div class="answer">
 This problem disappears, if wingS is compiled for jdk1.4 (javax.imageio.ImageIO).
