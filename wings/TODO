@@ -15,7 +15,7 @@
 
 * make jsp like plaf description. For each component, write the HTML code
   with embedded Java code (as opposed to the current approach: HTML in
-  Java). Check, whether the JSP syntax is ok or too awkward.
+  Java). Check, whether the JSP syntax is ok or too awkward. (Henner)
 
 * docs
 
@@ -24,7 +24,8 @@
     of the session (like static icons etc.) and session specific object.
     Session specific objects should be cleaned up on session invalidation.
   - support externalized objects, that generate the content dynamically
-    (JavaScript, Frame-content, CSS)
+    (JavaScript, Frame-content, CSS)                        (Armin)
+
 * document all classes
 
 * clean up plaf loading envirionment.
@@ -57,5 +58,5 @@
   
   the gnerated button would be in this case
   <input type=button name="_121_3" onClick="_asdfoer98l()">
-
+  
 * write a tutorial
