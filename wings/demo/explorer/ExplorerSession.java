@@ -54,7 +54,7 @@ public class ExplorerSession
     }
 
     void initGUI() {
-        frame.getContentPane().add(mainPanel, SBorderLayout.CENTER);
+        getFrame().getContentPane().add(mainPanel, SBorderLayout.CENTER);
     }
 
     /**

@@ -52,14 +52,16 @@ public class WingSetSession
     }
 
     void initGUI() {
-        frame.getContentPane().setLayout(new SFlowDownLayout());
+        SContainer contentPane = getFrame().getContentPane();
+        contentPane.setLayout(new SFlowDownLayout());
 
         STabbedPane tab = new STabbedPane();
 
         tab.add(new LabelExample(), "Label Example");
         tab.add(new BorderExample(), "Border Example");
+        tab.add(new TextComponentExample(), "Text Component Example");
         tab.add(new TreeExample(), "Tree Example");
-        tab.add(new OptionPaneExample(frame), "OptionPane Example");
+        tab.add(new OptionPaneExample(getFrame()), "OptionPane Example");
         tab.add(new TableExample(), "Table Example");
         tab.add(new ListExample(), "List Example");
         tab.add(new ButtonExample(), "Button Example");
@@ -71,8 +73,8 @@ public class WingSetSession
         tab.add(new SLabel("temporarily disabled"), "DateChooser Example");
         //tab.add(new DateChooserExample(), "DateChooser Example");
 
-        frame.getContentPane().add(tab);
-        frame.getContentPane().add(new SSeparator());
+        contentPane.add(tab);
+        contentPane.add(new SSeparator());
 
         SPanel south = new SPanel();
         south.add(timeMeasure);
@@ -98,12 +100,12 @@ public class WingSetSession
             });
         group.add(old);
         group.add(css1);
-        
+
         south.add(old);
         south.add(new SSpacer(1));
         south.add(css1);
 
-        frame.getContentPane().add(south);
+        contentPane.add(south);
     }
 
     /**
@@ -119,7 +121,7 @@ public class WingSetSession
             // Dies ist ein Dummy-Aufruf, um die Zeit zu messen; es wird
             // sozusagen die Seite zweimal aufgebaut, denn die Ausgabe der
             // Zeit ist ja selbst wieder eine Component.
-            String erg = frame.show();
+            String erg = getFrame().show();
             measure.stop();
             timeMeasure.setText(measure.print());
             measure.reset();

@@ -153,7 +153,7 @@ public class STable
      */
     public void checkSelectables() {
         if ( selects == null || getRowCount() != selects.length ) {
-            System.err.println("checkSelectables() wird tatsächlich gebraucht !!!");
+            // System.err.println("checkSelectables() wird tatsächlich gebraucht !!!");
             initSelectables();
         }
     }

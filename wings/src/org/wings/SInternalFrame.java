@@ -109,7 +109,7 @@ public class SInternalFrame
     public final void showContentPane() {
         card.show(this, CONTENT_PANEL);
         if ( optionPane!=null )
-            optionPane.setFrame(null);
+            optionPane.setFrame((SFrame)null);
     }
 
     /*
@@ -165,6 +165,8 @@ public class SInternalFrame
     public void show() {
         super.setVisible(true);
         SDesktopPane desktop = (SDesktopPane)getParent();
+        if (desktop == null)
+            throw new IllegalStateException("no parent; SInternalFrame requires a SDesktop as parent.");
         desktop.moveToFront(this);
     }
 

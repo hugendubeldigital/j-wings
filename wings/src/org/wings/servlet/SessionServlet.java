@@ -89,7 +89,7 @@ public abstract class SessionServlet
     /**
      * The default frame. Mostly the one and only frame.
      */
-    protected final SFrame frame;
+    private final SFrame frame;
 
     /**
      * This should be a resource ..
@@ -99,7 +99,7 @@ public abstract class SessionServlet
     /**
      * The session.
      */
-    protected Session session = null;
+    private Session session = null;
 
     /**
      * TODO: documentation
@@ -120,7 +120,9 @@ public abstract class SessionServlet
             parent = p;
     }
 
-    public final Session getSession() { return session; }
+    public final Session getSession() {
+        return session;
+    }
 
     /**
      * TODO: documentation
@@ -149,7 +151,7 @@ public abstract class SessionServlet
     /**
      * TODO: documentation
      */
-    public final boolean setLocaleFromHeader() {
+    public final boolean getLocaleFromHeader() {
         return localeFromHeader;
     }
 
@@ -385,7 +387,7 @@ public abstract class SessionServlet
         session.init(config);
         SessionManager.setSession(session);
         initErrorTemplate(config);
-        frame.setDispatcher(getDispatcher());
+        getFrame().setDispatcher(getDispatcher());
         postInit(config);
     }
 
@@ -467,7 +469,7 @@ public abstract class SessionServlet
 
             handleLocale(req);
 
-            frame.setServer(response.encodeUrl(req.getRequestURI()));
+            getFrame().setServer(response.encodeUrl(req.getRequestURI()));
         }
         finally {
             // das sollte auf alle Faelle ausgefuehrt werden, also evtl in finally
@@ -522,7 +524,7 @@ public abstract class SessionServlet
             processRequest(asreq, response);
 
             // schreibt direkt in einen Device:
-            frame.write(new ServletDevice(response.getOutputStream()));
+            getFrame().write(new ServletDevice(response.getOutputStream()));
 
             if ( DEBUG ) {
                 measure.stop();
@@ -554,11 +556,11 @@ public abstract class SessionServlet
 
     // Exception Handling
 
-    SFrame errorFrame;
+    private SFrame errorFrame;
 
-    SLabel errorStackTraceLabel;
+    private SLabel errorStackTraceLabel;
 
-    SLabel errorMessageLabel;
+    private SLabel errorMessageLabel;
 
     protected void handleException(HttpServletRequest req,
                                    HttpServletResponse res,

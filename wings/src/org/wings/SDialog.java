@@ -133,18 +133,22 @@ public class SDialog
         actionListener.clear();
     }
 
-    /*
-     * Setzt den Frame, in dem der OptionPane dargestellt wird.
+    /**
+     * sets the frame in which the option pane is displayed
      */
-    void setFrame(SContainer f) {
+    protected void setFrame(SFrame f) {
         frame = f;
     }
 
-    /*
-     * Baut den OptionPane auf.
-     */
     /**
-     * TODO: documentation
+     * sets the frame in which the option pane is displayed
+     */
+    protected void setFrame(SInternalFrame f) {
+        frame = f;
+    }
+
+    /**
+     * shows the option pane
      *
      * @param c
      */

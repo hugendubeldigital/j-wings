@@ -294,7 +294,7 @@ public class SFrame
     public final void showContentPane() {
         card.show(this, CONTENT_PANEL);
         if ( optionPane!=null )
-            optionPane.setFrame(null);
+            optionPane.setFrame((SFrame)null);
     }
 
     /**

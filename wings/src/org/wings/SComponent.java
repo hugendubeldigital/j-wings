@@ -254,10 +254,10 @@ public abstract class SComponent
      * @return the session
      */
     public Session getSession() {
-        if (parentFrame == null)
+        if (getParentFrame() == null)
             return SessionManager.getSession();
         else
-            return parentFrame.getSession();
+            return getParentFrame().getSession();
     }
 
     /**
@@ -266,10 +266,10 @@ public abstract class SComponent
      * @return the dispatcher
      */
     public SGetDispatcher getDispatcher() {
-        if ( parentFrame==null )
+        if ( getParentFrame()==null )
             return null;
         else
-            return parentFrame.getDispatcher();
+            return getParentFrame().getDispatcher();
     }
 
     /**

@@ -37,8 +37,8 @@ public class Test
     extends SessionServlet
     implements SConstants
 {
-    public Test( Session session ) {
-        super( session );
+    public Test() {
+        super( new DefaultSession() );
         System.out.println("I`m starting now");
         System.err.println("I`m starting now");
     }
@@ -49,7 +49,8 @@ public class Test
     }
 
     void initGUI() {
-        frame.getContentPane().setLayout(new SFlowDownLayout());
+        SContainer contentPane = getFrame().getContentPane();
+        contentPane.setLayout(new SFlowDownLayout());
 
         Icon sel = SUtil.makeIcon(SCheckBox.class, "icons/bulb2.gif");
         Icon nsel = SUtil.makeIcon(SCheckBox.class, "icons/bulb1.gif");
@@ -133,7 +134,7 @@ public class Test
 
         erg.add(b);
 
-        frame.getContentPane().add(b);
+        contentPane.add(b);
     }
 
     /**
