@@ -37,16 +37,16 @@ public class SLink extends SComponent
     protected String rev = null;
     protected String type = null;
     protected String target = null;
-    protected SimpleURL url = null;
+    protected URLResource urlSource = null;
 
     public SLink(String rel, String rev, String type, 
-                 String target, SimpleURL url) 
+                 String target, URLResource urlSource) 
     {
 	this.rel = rel;
 	this.rev = rev;
 	this.type = type;
 	this.target = target;
-	this.url = url;
+        this.urlSource = urlSource;
     }
 
     public void setRel(String rel) {
@@ -64,10 +64,7 @@ public class SLink extends SComponent
     }
     public String getType() { return type; }
 
-    public void setURL(SimpleURL url) {
-        this.url = url;
-    }
-    public SimpleURL getURL() { return url; }
+    public SimpleURL getURL() { return urlSource.getURL(); }
     
     public void setTarget(String target) {
 	this.target = target;
