@@ -509,6 +509,8 @@ final class SessionServlet
                 // only fire DISPATCH DONE if we have parameters to dispatch
                 session.fireRequestEvent(SRequestEvent.DISPATCH_DONE);
             }
+
+            session.fireRequestEvent(SRequestEvent.PROCESS_REQUEST);
             
             
             if (logger.isLoggable(Level.FINER)) {
@@ -529,17 +531,24 @@ final class SessionServlet
              *      because otherwise an redirect won't work, since we must
              *      not have sent anything to the output stream).
              */
-            if (session.getRedirectAddress() != null) {
+            if (session.getExitAddress() != null) {
                 req.getSession().invalidate(); // calls destroy implicitly
-                if (session.getRedirectAddress().length() > 0) {
+                if (session.getExitAddress().length() > 0) {
                     // redirect to user requested URL.
-                    response.sendRedirect(session.getRedirectAddress());
+                    response.sendRedirect(session.getExitAddress());
                 }
                 else {
                     // redirect to a fresh session.
                     response.sendRedirect(HttpUtils.getRequestURL(req)
                                           .toString());
                 }
+                return;
+            }
+
+            if (session.getRedirectAddress()!=null) {
+                // redirect to user requested URL.
+                response.sendRedirect(session.getRedirectAddress());
+                session.setRedirectAddress(null);
                 return;
             }
             
