@@ -76,6 +76,7 @@ public class CSSStyleSheet
 	    is.close();
 	}
 	catch (Throwable e) {
+            e.printStackTrace();
 	    // on error we simply have no styles... the html
 	    // will look mighty wrong but still function.
 	}
@@ -572,8 +573,8 @@ public class CSSStyleSheet
 	    int n = selectors.size();
 	    for (int i = 0; i < n; i++) {
 		String[] selector = (String[])selectors.get(i);
-		if (selector.length > 0) {
-		    CSSStyleSheet.this.putStyle(new Style(selector[i], declaration));
+		for (int j=selector.length-1; j >= 0; --j) {
+		    CSSStyleSheet.this.putStyle(new Style(selector[j], declaration));
 		}
 	    }
 	    declaration.clear();
