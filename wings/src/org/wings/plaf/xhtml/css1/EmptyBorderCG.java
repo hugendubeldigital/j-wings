@@ -30,7 +30,7 @@ public final class EmptyBorderCG
     public void writePrefix(Device d, SBorder b)
 	throws IOException
     {
-	d.print("<div ");
+	d.print("<div style=\"");
 
         writeSpanAttributes(d, b);
         
@@ -48,11 +48,11 @@ public final class EmptyBorderCG
     {
 	Insets insets = b.getInsets();
 
-        d.print("style=\"padding:")
+        d.print("padding:")
             .print(insets.top).print("px ")
             .print(insets.right).print("px ")
             .print(insets.bottom).print("px ")
-            .print(insets.left).print("px");
+            .print(insets.left).print("px;");
     }
 
 }
