@@ -250,10 +250,14 @@ public class TableCG
             editAddr.addParameter(table.getNamePrefix() + "=" + 
                                   table.getEditParameter(row, col));
             
-            d.print("<a href=\"").print(editAddr.toString()).
-                print("\">");
-            Utils.appendIcon(d, editIcon, null);
-            d.print("</a>&nbsp;");
+            if ( comp instanceof ClickableRenderComponent ) {
+                ((ClickableRenderComponent)comp).setEventParam(editAddr.toString());
+            } else {
+                d.print("<a href=\"").print(editAddr.toString()).
+                    print("\">");
+                Utils.appendIcon(d, editIcon, null);
+                d.print("</a>&nbsp;");
+            }
         }
 
         rendererPane.writeComponent(d, comp, table);
