@@ -5,18 +5,10 @@
 - developers guide
 - asynchron event handling for components (Holger)
 - high level events (TreeExpansion...) for tree component
-- logging
-- edit icon, ok-cancel in table 
 - tutorial article for iX, c't magazin
 - wings logo
 
 (esp. for the pre-1.0-cleanup)
-* Documentation
-
-* make jsp like plaf description. For each component, write the HTML code
-  with embedded Java code (as opposed to the current approach: HTML in
-  Java). Check, whether the JSP syntax is ok or too awkward. (Henner)
-
 * docs
 
 * Write scripthandler that creates an externalizeable JavaScript file containng
@@ -46,20 +38,7 @@
   the gnerated button would be in this case
   <input type=button name="_121_3" onClick="_asdfoer98l()">
 
-* write a tutorial (florian)
-
-* log / debug
-
-* remove _all_ places, where HTML is output in org.wings.* - Components
-
 * are sessions serializable ?
-
-* remove all references to old Containers if possible (Hashtable->HashMap)
-
-* should SIcon return a SGetAddress ?
-
-* externalization of Frames: after the generated *.html - file is downloaded, 
-  forget about the externalized object after some short period.
 
 * SWindow      -> use technique from frames.
   SProgressBar -> simple implementation would have two states: 'working' and
@@ -79,11 +58,6 @@
   can check it out immediately 'at home' without compiling first. When they're
   interested they will come back to download the source for sure.
 
-* get rid of X-Windows dependence ? What causes this ? Use of awt.Image ?
-  Is there a simple way to calculate the image dimensions of ResourceImageIcons
-  without loading them in awt.Image ? Greying out images as well ?
-  (java 2D?)
-
 * Jump to current position in window. This as such is not very possible with
   HTML but a near approximation would be to create an <a name="current">
   at the component that last fired an event, and create URLs, that jump
@@ -96,9 +70,4 @@
   this kind of application; consider two frames, one of it showing a tree,
   that needs scrolling - if we unfold a subtree, then we need to scroll to
   that position).
-
-* does it really make sense to derive the SessionServlet from HttpServlet ?
-  How much from a 'servlet' a wingS-Session context has ?
-
-* remove all finalize() methods that are used for debugging.
 

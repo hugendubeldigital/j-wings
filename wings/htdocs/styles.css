@@ -123,8 +123,16 @@ H3 {
    color: #000077
 }
 
+.bigisheader {
+   font-family: sans-serif;
+   font-size: 16pt;
+   font-weight: normal;
+   font-style: normal;
+   color: #ffffff
+}
+
 .menu {
-   background: #000077;
+   background: #222299;
    padding: 0;
    margin: 0;
    font-family: sans-serif;
@@ -168,4 +176,3 @@ A:active.menu {
    font-style: normal;
    color: #000077
 }
-

@@ -4,7 +4,7 @@
 <head>
 <title>Documentation</title>
 <meta http-equiv="Content-type" content='text/html; charset="iso-8859-1"' />
-<link rel="stylesheet" type="text/css" href="FAQ.css" />
+<link rel="stylesheet" type="text/css" href="styles.css" />
 </head>
 <body>
 
@@ -154,7 +154,6 @@ How do I create a new servlet using <span class="wings">wingS</span>?
  <pre>
 
 &lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
-
 &lt;!DOCTYPE web-app
     PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
     "http://java.sun.com/j2ee/dtds/web-app_2.2.dtd"&gt;
@@ -171,7 +170,6 @@ How do I create a new servlet using <span class="wings">wingS</span>?
       &lt;param-name&gt;wings.mainclass&lt;/param-name&gt;
       &lt;param-value&gt;HelloWorld&lt;/param-value&gt;
     &lt;/init-param&gt;
-
     &lt;init-param&gt;
       &lt;param-name&gt;wings.lookandfeel.factory&lt;/param-name&gt;
       &lt;param-value&gt;org.wings.plaf.LookAndFeelFactory$Default&lt;/param-value&gt;
@@ -182,8 +180,6 @@ How do I create a new servlet using <span class="wings">wingS</span>?
     &lt;/init-param&gt;
   &lt;/servlet&gt;
 
-&lt;!-- url mapping --&gt;
-
   &lt;servlet-mapping&gt;
     &lt;servlet-name&gt;
       HelloWorld
@@ -192,11 +188,9 @@ How do I create a new servlet using <span class="wings">wingS</span>?
       /HelloWorld/*
     &lt;/url-pattern&gt;
   &lt;/servlet-mapping&gt;
-
 &lt;/web-app&gt;
-
  </pre>
-<br />
+
 For more information please look at the 
 <a href="http://wingsdemo.mercatis.de/hellowings/WingSTutorial/" target="_blank">online tutorial</a>,
 which is a part of <span class="wings">wingS</span> (in the docs/tutorial dir) 
@@ -358,6 +352,7 @@ SOptionPane.showYesNoDialog(null, "do you catch it?", "Question?",
       }
     }
   });
+</pre>
 </div>
 <br />
 </li>
@@ -369,17 +364,17 @@ How can I access the session object from another thread.
 <div class="answer">
 If you start a thread, add this thread to the SessionManager with 
 <pre>
-org.wing.session.SessionManager.setSession(session);
+   org.wing.session.SessionManager.setSession(session);
 </pre>
 where session is the session of the parent thread.
 After that have access to the session in the new thread with 
 <pre>
-org.wing.session.SessionManager.getSession();
+   org.wing.session.SessionManager.getSession();
 </pre>
 At the end of the thread you should remove the session object from the
 sessionmanager with
 <pre>
-org.wing.session.SessionManager.removeSession();
+   org.wing.session.SessionManager.removeSession();
 </pre>
 </div>
 <br />
@@ -398,5 +393,3 @@ org.wing.session.SessionManager.removeSession();
 
 </body>
 </html>
-
-
