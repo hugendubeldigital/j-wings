@@ -192,12 +192,13 @@ public final class Utils implements SConstants
       */
     public static boolean hasSpanAttributes( SComponent component )
      {
-		return
-        		component.getBackground() != null || 
-        		component.getForeground() != null ||
-                component.getFont() != null ||
-                component.getBorder() != null
-                ;
+         
+         return component != null && 
+             ( component.getBackground() != null || 
+               component.getForeground() != null ||
+               component.getFont() != null ||
+               component.getBorder() != null )
+             ;
      }
     
     /**

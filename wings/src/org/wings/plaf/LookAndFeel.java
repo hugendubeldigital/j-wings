@@ -55,7 +55,10 @@ public class LookAndFeel
     {
         this.classLoader = classLoader;
         this.properties = new Properties();
-        this.properties.load(classLoader.getResourceAsStream("default.properties"));
+        InputStream in = classLoader.getResourceAsStream("default.properties");
+        if (in == null)
+            throw new IOException ("'default.properties' not found in toplevel package in classpath. Look-and-Feel jar included ?");
+        this.properties.load(in);
     }
 
     /**
