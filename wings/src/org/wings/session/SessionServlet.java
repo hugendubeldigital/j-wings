@@ -562,7 +562,9 @@ final class SessionServlet
             handleException(req, response, e);
         }
         finally {
-            session.fireRequestEvent(SRequestEvent.REQUEST_END);
+	    if (session != null) {
+                session.fireRequestEvent(SRequestEvent.REQUEST_END);
+            }
 
             if (outputDevice != null) {
                 try { outputDevice.close(); } catch (Exception e) {}
