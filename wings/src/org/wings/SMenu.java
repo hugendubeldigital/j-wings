@@ -83,6 +83,7 @@ public class SMenu extends SButton
      */
     public void add(SMenuItem menuitem) {
         menuitem.addActionListener(new MenuItemAction(this));
+        menuitem.setParentFrame(getParentFrame());
         fItems.add(menuitem);
     }
 
@@ -90,6 +91,7 @@ public class SMenu extends SButton
      * Add a menu item to this menu.
      */
     public void add(SComponent menuitem) {
+        menuitem.setParentFrame(getParentFrame());
         fItems.add(menuitem);
     }
 
@@ -130,6 +132,13 @@ public class SMenu extends SButton
      */
     public void remove(int pos) {
         fItems.remove(pos);
+    }
+
+    /**
+     * removes a specific menu item component.
+     */
+    public void remove(SComponent comp) {
+        fItems.remove(comp);
     }
 
     /**
