@@ -83,7 +83,7 @@ public class CheckBoxExample
         boxes[1] = new SCheckBox("testTC");
         boxes[2] = new SCheckBox("testTR");
         boxes[3] = new SCheckBox("testCL");
-        boxes[4] = new SCheckBox("testCC");
+        boxes[4] = new SCheckBox();
         boxes[5] = new SCheckBox("testCR");
         boxes[6] = new SCheckBox("testBL");
         boxes[7] = new SCheckBox("testBC");
@@ -116,7 +116,6 @@ public class CheckBoxExample
         boxes[4].setVerticalTextPosition(SConstants.CENTER);
         boxes[4].setHorizontalTextPosition(SConstants.CENTER);
         */
-        boxes[4].setIcon(null);
 
         boxes[5].setVerticalTextPosition(SConstants.CENTER);
         boxes[5].setHorizontalTextPosition(SConstants.RIGHT);

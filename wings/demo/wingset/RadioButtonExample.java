@@ -89,7 +89,7 @@ public class RadioButtonExample
         boxes[1] = new SRadioButton("testTC");
         boxes[2] = new SRadioButton("testTR");
         boxes[3] = new SRadioButton("testCL");
-        boxes[4] = new SRadioButton("testCC");
+        boxes[4] = new SRadioButton();
         boxes[5] = new SRadioButton("testCR");
         boxes[6] = new SRadioButton("testBL");
         boxes[7] = new SRadioButton("testBC");
@@ -123,7 +123,6 @@ public class RadioButtonExample
         boxes[4].setVerticalTextPosition(SConstants.CENTER);
         boxes[4].setHorizontalTextPosition(SConstants.CENTER);
         */
-        boxes[4].setIcon(null);
 
         boxes[5].setVerticalTextPosition(SConstants.CENTER);
         boxes[5].setHorizontalTextPosition(SConstants.RIGHT);
