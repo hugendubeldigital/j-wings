@@ -14,7 +14,6 @@
 
 package org.wings;
 
-import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /*

@@ -17,7 +17,6 @@ package org.wings;
 import java.awt.Insets;
 import java.io.IOException;
 
-import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
