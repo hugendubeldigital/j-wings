@@ -23,7 +23,7 @@ public class DefaultPropertyManager implements PropertyManager {
     public final HashMap propertyValueConverters = new HashMap();
 
     public static final DefaultPropertyValueConverter 
-	DEFAULT_PROPERTY_VALUE_CONVERTER = new DefaultPropertyValueConverter();
+	DEFAULT_PROPERTY_VALUE_CONVERTER = DefaultPropertyValueConverter.INSTANCE;
 
     private boolean scriptEnabled = false;
 
@@ -113,6 +113,9 @@ public class DefaultPropertyManager implements PropertyManager {
 
 /*
    $Log$
+   Revision 1.4  2002/11/19 15:39:05  ahaaf
+   o use shared instance
+
    Revision 1.3  2002/10/26 11:59:35  ahaaf
    o deactivate scripting per default
 
