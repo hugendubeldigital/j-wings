@@ -60,8 +60,6 @@ public class SGridLayout
     int cellPadding = -1;
     int cellSpacing = -1;
 
-    private SContainer container = null;
-
     /**
      * TODO: documentation
      *
