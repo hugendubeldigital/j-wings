@@ -1,4 +1,4 @@
-<template name="LineBreak" for="org.wings.LineBreak">
+<template name="LineBreak" for="org.wings.SLineBreak">
 
 <write>
 <br<% 

@@ -1,8 +1,10 @@
+<!-- $Id$ -->
+
 <template name="TextField" for="org.wings.STextField">
 <write>
 <input type="text" size="<%?columns%>" maxlength="<%?maxColumns%>"<%
-if (!component.isEditable()) %> readonly="1"<%;
-if (component.isEnabled())   %> name="<%?namePrefix%>"<%;
+if (!component.isEditable()) { %> readonly="1"<% }
+if (component.isEnabled())   {  %> name="<%?namePrefix%>"<% }
 Utils.printStyle(device, component.getStyle());
 %> value="<%?text%>" />
 </write>
@@ -11,8 +13,8 @@ Utils.printStyle(device, component.getStyle());
 <template name="PasswordField" for="org.wings.SPasswordField">
 <write>
 <input type="password" size="<%?columns%>" maxlength="<%?maxColumns%>"<% 
-if (!component.isEditable()) %> readonly="1"<%;
-if (component.isEnabled())   %> name="<%?namePrefix%>"<%;
+if (!component.isEditable()) { %> readonly="1"<% }
+if (component.isEnabled())   {  %> name="<%?namePrefix%>"<% }
 Utils.printStyle(device, component.getStyle());
 %> value="<%?text%>" />
 </write>

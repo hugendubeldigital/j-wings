@@ -1,14 +1,13 @@
 <template name="TextArea" for="org.wings.STextArea">
-
 <write>
 <textarea cols="<%?columns%>" rows="<%?rows%>"<%
-if (!component.isEditable()) %> readonly="1"<%;
-if (component.isEnabled())   %> name="<%?namePrefix%>"<%;
-Utils.printStyle(device, component.getStyle()); 
-switch (component.getLineWrap()) {
-   case STextArea.VIRTUAL_WRAP : %> wrap="virtual"<%; break;
-   case STextArea.PHYSICAL_WRAP: %> wrap="physical"<%; break;
-};
-%>><%?text%></textarea>
+  if (!component.isEditable()) { %> readonly="1"<% }
+  if (component.isEnabled())   { %> name="<%?namePrefix%>"<% }
+  Utils.printStyle(device, component.getStyle()); 
+  switch (component.getLineWrap()) {
+     case STextArea.VIRTUAL_WRAP : %> wrap="virtual"<%  break;
+     case STextArea.PHYSICAL_WRAP: %> wrap="physical"<% break;
+  }
+  %>><%?text%></textarea>
 </write>
 </template>

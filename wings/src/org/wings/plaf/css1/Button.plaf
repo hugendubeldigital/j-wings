@@ -1,61 +1,85 @@
 <template name="Button" for="org.wings.SButton">
 
-/**
- * this is a test.
- */
-void foo() {
- %>Hallo Welt<%
+void writeAnchorText(Device d, SButton c) {
+     // do stuff.
+}
+
+void writeAnchorIcon(Device d, SButton c) {
+     // do stuff.
 }
 
 <write>
 
 <%
-  SIcon		icon = component.getIcon();
-  String	text = component.getText();
-  int		horizontalTextPosition = component.getHorizontalTextPosition();
-  int		verticalTextPosition   = component.getVerticalTextPosition();
+   SIcon   icon = component.getIcon();
+   String  text = component.getText();
+   int     horizontalTextPosition = component.getHorizontalTextPosition();
+   int     verticalTextPosition   = component.getVerticalTextPosition();
   
-  if (icon == null)
-        writeAnchorText(device, button);
-  else if (text == null)
-        writeAnchorIcon(device, button);
-  else { %>
-<table>
-<%
-// if we are on the top, create a top row
-if (verticalTextPosition == TOP) {%>
- <tr><td><% if (horizontalTextPosition == LEFT)   writeAnchorText(device,component);%></td>
-     <td><% if (horizontalTextPosition == CENTER) writeAnchorText(device,component);%></td>
-     <td><% if (horizontalTextPosition == RIGHT)  writeAnchorText(device,component);%></td></tr>
-<%}
+   if (icon == null) {
+        writeAnchorText(device, component);
+   } else if (text == null) {
+        writeAnchorIcon(device, component);
+   } else {
+       %><table><%
+       // if we are on the top, create a top row
+       if (verticalTextPosition == TOP) {
+	       %><tr><td><% 
+	       if (horizontalTextPosition == LEFT) { 
+		  writeAnchorText(device,component); 
+	       }
+	       %></td><td><%
+	       if (horizontalTextPosition == CENTER) { 
+		    writeAnchorText(device,component); 
+	       }
+	       %></td><td><% 
+	       if (horizontalTextPosition == RIGHT) {
+		  writeAnchorText(device,component); 
+	       }
+	       %></td></tr><%
+       }
 
-// we always have a center rows, since we have to write the icon
-if (verticalTextPosition == CENTER) {%>
- <tr><td><% if (horizontalTextPosition == LEFT)   writeAnchorText(device,component);%></td>
-     <td><% if (horizontalTextPosition == CENTER) writeAnchorText(device,component);
-            /* the actually centered icon */
-             writeAnchorIcon(device, component);%></td>
-     <td><% if (horizontalTextPosition == RIGHT)  writeAnchorText(device,component);%></td></tr>
-<%} else {%>
-  <tr><td></td><td><% writeAnchorIcon(device, component); %></td><td></td></tr>
-<%}
+       // we always have a center row, since we have to write the icon
+       if (verticalTextPosition == CENTER) {
+	   %><tr><td><%
+	   if (horizontalTextPosition == LEFT) { 
+	       writeAnchorText(device,component); 
+	   }
+	   %></td><td><% 
+	   if (horizontalTextPosition == CENTER) { 
+	      writeAnchorText(device,component); 
+	   }
+	   // the rendered icon in the center
+	   writeAnchorIcon(device, component); 
+	   %></td><td><% 
+	   if (horizontalTextPosition == RIGHT) { 
+	      writeAnchorText(device,component); 
+	   }
+	   %></td></tr><%
+       } else {
+	   %><tr><td></td><td><%
+	   writeAnchorIcon(device, component); 
+	   %></td><td></td></tr><%
+       }
 
-// ..
-if (verticalTextPosition == BOTTOM) {%>
- <tr><td><% if (horizontalTextPosition == LEFT)   writeAnchorText(device,component);%></td>
-     <td><% if (horizontalTextPosition == CENTER) writeAnchorText(device,component);%></td>
-     <td><% if (horizontalTextPosition == RIGHT)  writeAnchorText(device,component);%></td></tr>
-<%} %>
-</table>
-}
+       // ..
+       if (verticalTextPosition == BOTTOM) {
+	   %><tr><td><% 
+	   if (horizontalTextPosition == LEFT) {
+	     writeAnchorText(device,component);
+	   }
+	   %></td><td><% 
+	   if (horizontalTextPosition == CENTER) {
+	     writeAnchorText(device,component);
+	   }
+	   %></td><td><% 
+	   if (horizontalTextPosition == RIGHT) {
+	      writeAnchorText(device,component);
+	   }
+	   %></td></tr><%
+       }
+       %></table><%
+    }
 %>
 </write>
-
-/**
- * This is a test.
- */
-void foobar() {
-}
-
 </template>
-
