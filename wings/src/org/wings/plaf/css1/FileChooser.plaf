@@ -1,0 +1,38 @@
+<template name="FileChooserCG" for="org.wings.SFileChooser">
+
+
+<write>
+<%
+    int columns = component.getColumns();
+    int maxColumns = component.getMaxColumns();
+    String fileNameFilter = component.getFileNameFilter();
+
+    String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
+    final String attr = (component.getAttributes().size() > 0) ? ("_" + component.getUnifiedId()) : null;
+
+    if (style != null && attr != null) {
+        %><span class="<%=style%>"><%
+        %><input class="<%=attr%>"<%
+    }
+    else {
+	if (style == null)
+            style = attr;
+        %><input<%
+        %><%|class=style%><%
+    }
+	
+%> type="file" name="<%=component.getNamePrefix()%>" <%|size=columns%><%|maxlength=maxColumns%><%|accept=fileNameFilter%>/><%
+
+    if (style != null && attr != null) {
+        %></span><%
+    }
+
+%></write>
+</template>
+
+
+
+
+
+
+
