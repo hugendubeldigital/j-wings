@@ -91,6 +91,8 @@ static final SResourceIcon ICON = new SResourceIcon("org/wings/icons/ArrowDown.g
 	component.removeDynamicResource(DynamicCodeResource.class);
 	component.removeDynamicResource(DynamicStyleSheetResource.class);
 	component.removeDynamicResource(DynamicScriptResource.class);
+	component.removeScriptListener(DATE_CHOOSER_SCRIPT_LOADER);
+	component.removeScriptListener(FORM_SCRIPT_LOADER);
 	component.clearHeaders();
 </uninstall>
 
