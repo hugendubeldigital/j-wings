@@ -501,6 +501,23 @@ public class DelegatingHttpServletRequest
 
     public void setAttribute(String s, Object o) {
     }
+
+    public void setCharacterEncoding(String enc)
+        throws java.io.UnsupportedEncodingException
+    {
+        // req.setCharacterEncoding(enc);
+    }
+
+    public java.util.Map getParameterMap() {
+        return null;
+        // return req.getParameterMap();
+    }
+
+    public java.lang.StringBuffer getRequestURL() {
+        return null;
+        // return req.getRequestURL();
+    }
+
 }
 
 /*

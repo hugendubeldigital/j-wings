@@ -440,6 +440,23 @@ public class ServletRequest
 
     public void setAttribute(String s, Object o) {
     }
+
+    public void setCharacterEncoding(String enc)
+        throws java.io.UnsupportedEncodingException
+    {
+        // orig.setCharacterEncoding(enc);
+    }
+
+    public java.util.Map getParameterMap() {
+        return null;
+        // return orig.getParameterMap();
+    }
+
+    public java.lang.StringBuffer getRequestURL() {
+        return null;
+        // return orig.getRequestURL();
+    }
+
 }
 
 /*
