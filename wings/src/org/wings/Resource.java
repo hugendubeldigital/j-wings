@@ -20,6 +20,7 @@ import java.util.*;
 
 import org.wings.session.*;
 import org.wings.externalizer.ExternalizeManager;
+import java.util.Collection;
 
 /*
  * Diese Klasse ist nur ein Wrapper, um Eingabestroeme von Grafiken mit dem
@@ -60,7 +61,7 @@ public abstract class Resource implements Serializable, URLResource, Renderable
      */
     protected String mimeType; 
 
-    protected Set headers;
+    protected Collection headers;
 
     protected Resource(String extension, String mimeType) {
         this.extension = extension;
@@ -94,11 +95,11 @@ public abstract class Resource implements Serializable, URLResource, Renderable
         return mimeType;
     }
 
-    public void setHeaders(Set headers) {
+    public void setHeaders(Collection headers) {
         this.headers = headers;
     }
 
-    public Set getHeaders() { return headers; }
+    public Collection getHeaders() { return headers; }
 
     /**
      *
@@ -115,6 +116,59 @@ public abstract class Resource implements Serializable, URLResource, Renderable
     public String toString() {
         return getId();
     }
+
+
+    public static final class HeaderEntry implements Map.Entry {
+        final Object key;
+        Object value;
+
+        /**
+         * Create new entry.
+         */
+        HeaderEntry(Object k, Object v) { 
+            key = k;
+            value = v; 
+        }
+
+        public Object getKey() {
+            return key;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+    
+        public Object setValue(Object newValue) {
+            Object oldValue = value;
+            value = newValue;
+            return oldValue;
+        }
+    
+        public boolean equals(Object o) {
+            if (!(o instanceof Map.Entry))
+                return false;
+            Map.Entry e = (Map.Entry)o;
+            Object k1 = getKey();
+            Object k2 = e.getKey();
+            if (k1 == k2 || (k1 != null && k1.equals(k2))) {
+                Object v1 = getValue();
+                Object v2 = e.getValue();
+                if (v1 == v2 || (v1 != null && v1.equals(v2))) 
+                    return true;
+            }
+            return false;
+        }
+    
+        public int hashCode() {
+            return (key==null ? 0 : key.hashCode()) ^
+                   (value==null   ? 0 : value.hashCode());
+        }
+    
+        public String toString() {
+            return getKey() + "=" + getValue();
+        }
+    }
+
 }
 
 /*

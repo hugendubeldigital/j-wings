@@ -587,8 +587,6 @@ final class SessionServlet
                 Resource resource = defaultFrame.getDynamicResource(DynamicCodeResource.class);
                 externalizeIdentifier = resource.getId();
 
-                if (firstRequest)
-                    response.setDateHeader("Expires", 1000);
                 firstRequest = false;
             }
             else {

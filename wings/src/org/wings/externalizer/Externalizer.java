@@ -16,7 +16,7 @@ package org.wings.externalizer;
 
 import org.wings.io.Device;
 import java.io.IOException;
-import java.util.Set;
+import java.util.Collection;
 
 import org.wings.RequestURL;
 
@@ -92,7 +92,7 @@ public interface Externalizer
      * @return Set of {@link java.util.Map.Entry} (key-value pairs)
      * @param obj get headers for this object
      */
-    Set getHeaders( Object obj );
+    Collection getHeaders( Object obj );
 }
 
 /*

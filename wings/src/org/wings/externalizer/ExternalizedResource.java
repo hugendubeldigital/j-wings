@@ -14,7 +14,7 @@
 
 package org.wings.externalizer;
 
-import java.util.Set;
+import java.util.Collection;
 
 import org.wings.session.Session;
 
@@ -31,11 +31,11 @@ public class ExternalizedResource
     private final Externalizer  externalizer;
     private final int           flags;
     private final long          lastModified;
-    private final Set           headers;
+    private final Collection    headers;
     private String              id;
 
     public ExternalizedResource(Object obj, Externalizer ext, 
-                                String mt, Set headers, int flags) {
+                                String mt, Collection headers, int flags) {
         extObject   = obj;
         externalizer= ext;
         mimeType    = mt;
@@ -81,7 +81,7 @@ public class ExternalizedResource
      *
      * @return
      */
-    public final Set getHeaders() {
+    public final Collection getHeaders() {
         return headers;
     }
     

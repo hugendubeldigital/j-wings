@@ -9,6 +9,7 @@ import java.io.StringReader;
 import java.io.Reader;
 
 import org.wings.RequestURL;
+import java.util.Collection;
 
 public class TextExternalizer
     implements Externalizer
@@ -76,7 +77,7 @@ public class TextExternalizer
 	return supportedMimeTypes;
     }
 
-    public java.util.Set getHeaders(Object obj) { return null; }
+    public Collection getHeaders(Object obj) { return null; }
 }
 
 /*

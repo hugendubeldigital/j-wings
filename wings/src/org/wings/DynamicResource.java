@@ -23,6 +23,7 @@ import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.Device;
 import org.wings.util.StringUtil;
 import org.wings.session.*;
+import java.util.Collection;
 
 /**
  * Dynamic Resources are web resources representing rendered components 
@@ -146,7 +147,7 @@ public abstract class DynamicResource
       * @return Set of {@link java.util.Map.Entry} (key-value pairs)
       * @param obj get headers for this object
       */
-    public Set getHeaders() {
+    public Collection getHeaders() {
         return null;
     }
 

@@ -19,6 +19,7 @@ import java.io.InputStream;
 import org.wings.Renderable;
 import org.wings.style.StyleSheet;
 import org.wings.io.Device;
+import java.util.Collection;
 
 /**
  * TODO: documentation
@@ -62,7 +63,7 @@ public class StyleSheetExternalizer implements Externalizer
         return SUPPORTED_MIME_TYPES;
     }
 
-    public java.util.Set getHeaders(Object obj) { return null; }
+    public Collection getHeaders(Object obj) { return null; }
 }
 
 /*

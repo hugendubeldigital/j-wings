@@ -21,6 +21,7 @@ import org.wings.io.DeviceOutputStream;
 
 import Acme.JPM.Encoders.GifEncoder;
 import com.keypoint.PngEncoder;
+import java.util.Collection;
 
 /**
  * TODO: documentation
@@ -124,7 +125,7 @@ public class ImageExternalizer
         out.flush();
     }
     
-    public java.util.Set getHeaders(Object obj) { return null; }
+    public Collection getHeaders(Object obj) { return null; }
 }
 
 /*

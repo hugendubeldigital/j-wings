@@ -71,7 +71,7 @@ public class StaticResourceExternalizer implements Externalizer
         return null;
     }
 
-    public Set getHeaders(Object obj) {
+    public Collection getHeaders(Object obj) {
         if (obj != null)
             return ((StaticResource)obj).getHeaders();
         else

@@ -71,7 +71,7 @@ public class StringResourceExternalizer implements Externalizer
         return null;
     }
 
-    public Set getHeaders(Object obj) {
+    public Collection getHeaders(Object obj) {
         if (obj != null)
             return ((StringResource)obj).getHeaders();
         else

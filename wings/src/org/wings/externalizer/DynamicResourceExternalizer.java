@@ -15,7 +15,7 @@
 package org.wings.externalizer;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.Collection;
 
 import org.wings.Renderable;
 import org.wings.DynamicResource;
@@ -72,7 +72,7 @@ public class DynamicResourceExternalizer
         return null;
     }
 
-    public Set getHeaders(Object obj) {
+    public Collection getHeaders(Object obj) {
         if (obj != null)
             return ((DynamicResource)obj).getHeaders();
         else

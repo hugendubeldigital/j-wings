@@ -18,14 +18,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.Iterator;
 import java.util.Collections;
+import java.util.Collection;
+import java.util.Date;
+import java.util.logging.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletOutputStream;
 
-import java.util.logging.*;
 import org.wings.RequestURL;
 import org.wings.util.StringUtil;
 import org.wings.io.Device;
@@ -224,7 +225,7 @@ public abstract class AbstractExternalizeManager
      *
      * @return a URL for accessing the object relative to the base URL.
      */
-    public String externalize(Object obj, Externalizer externalizer, Set headers)
+    public String externalize(Object obj, Externalizer externalizer, Collection headers)
     {
         return externalize(obj, externalizer, headers, SESSION);
     }
@@ -267,7 +268,7 @@ public abstract class AbstractExternalizeManager
      * @return a URL for accessing the object relative to the base URL.
      */
     public String externalize(Object obj, Externalizer externalizer, 
-                              Set headers, int flags)
+                              Collection headers, int flags)
     {
         if (obj == null || externalizer == null)
             throw new IllegalStateException("no externalizer");
@@ -303,7 +304,7 @@ public abstract class AbstractExternalizeManager
      * @return a URL for accessing the object relative to the base URL.
      */
     public String externalize(Object obj, Externalizer externalizer, 
-                              String mimeType, Set headers)
+                              String mimeType, Collection headers)
     {
         return externalize(obj, externalizer, mimeType, headers, SESSION);
     }
@@ -327,7 +328,7 @@ public abstract class AbstractExternalizeManager
      * @return a URL for accessing the object relative to the base URL.
      */
     public String externalize(Object obj, Externalizer externalizer, 
-                              String mimeType, Set headers, int flags)
+                              String mimeType, Collection headers, int flags)
     {
         if ( externalizer == null )
             throw new IllegalStateException("no externalizer");
@@ -432,12 +433,22 @@ public abstract class AbstractExternalizeManager
             }
         }
 
-        Set headers = extInfo.getHeaders();
+        Collection headers = extInfo.getHeaders();
         if ( headers != null ) {
             for ( Iterator it = headers.iterator(); it.hasNext(); ) {
                 Map.Entry entry = (Map.Entry) it.next();
-                response.addHeader( (String) entry.getKey(), 
-                                    (String) entry.getValue());
+                if ( entry.getValue() instanceof String  ) {
+                    response.addHeader( (String) entry.getKey(), 
+                                        (String) entry.getValue());
+                } else if ( entry.getValue() instanceof Date  ) {
+                    response.addDateHeader( (String) entry.getKey(), 
+                                            ((Date) entry.getValue()).getTime());
+                     
+                } else if ( entry.getValue() instanceof Integer  ) {
+                    response.addIntHeader( (String) entry.getKey(), 
+                                           ((Integer) entry.getValue()).intValue());
+                     
+                } // end of if ()
             }
         }
 
@@ -456,11 +467,7 @@ public abstract class AbstractExternalizeManager
             // we want.
             response.setDateHeader("Expires", 
                                    System.currentTimeMillis() + FINAL_EXPIRES);
-        } else {
-            // expire in deep past ..
-            // 1000 instead of 0: work around IE bug.
-            response.setDateHeader("Expires", 1000);
-        }
+        } 
 
         extInfo.getExternalizer().write(extInfo.getObject(), out);
     }

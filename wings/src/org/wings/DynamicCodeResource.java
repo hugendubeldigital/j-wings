@@ -16,9 +16,9 @@ package org.wings;
 
 import java.io.IOException;
 import java.lang.reflect.*;
-import java.util.Set;
 import java.util.logging.*;
-
+import java.util.ArrayList;
+import java.util.Collection;
 import org.wings.io.Device;
 import org.wings.util.StringUtil;
 
@@ -33,6 +33,16 @@ public class DynamicCodeResource
     extends DynamicResource
 {
     private static Logger logger = Logger.getLogger("org.wings");
+
+    private static final ArrayList DEFAULT_CODE_HEADER = new ArrayList();
+
+    static {
+        DEFAULT_CODE_HEADER.add(new HeaderEntry("Expires", new java.util.Date(1000)));
+        DEFAULT_CODE_HEADER.add(new HeaderEntry("Cache-Control", "no-store, no-cache, must-revalidate"));
+        DEFAULT_CODE_HEADER.add(new HeaderEntry("Cache-Control", "post-check=0, pre-check=0"));
+        DEFAULT_CODE_HEADER.add(new HeaderEntry("Pragma", "no-cache"));
+    }
+            
 
     /**
      * Create a code resource for the specified frame.
@@ -58,6 +68,11 @@ public class DynamicCodeResource
             throw new IOException(e.getMessage()); // UndeclaredThrowable
         }
     }
+
+    public Collection getHeaders() {
+        return DEFAULT_CODE_HEADER;
+    }
+
 }
 
 /*
