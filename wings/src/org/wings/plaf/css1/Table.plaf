@@ -43,6 +43,9 @@
     %>>
 <%
 
+    /*
+     * get viewable area
+     */
     int startRow = 0;
     int startCol = 0;
     int endRow = table.getRowCount();
@@ -57,6 +60,9 @@
 
     SCellRendererPane rendererPane = table.getCellRendererPane();
 
+    /*
+     * render the header 
+     */
     if (table.isHeaderVisible()) {
         String style = null;
         if (table.getHeaderAttributes().size() > 0)
@@ -85,6 +91,9 @@
 <%
     }
 
+    /*
+     * render row by row
+     */
     String style = Utils.style(table);
     String selectionStyle = Utils.selectionStyle(table);
     int selectionMode = table.getSelectionModel().getSelectionMode();
@@ -121,8 +130,12 @@
 %>
 </write>
 
-    private static String[] rules = new String[] { "none", "rows", "cols", "all" };
+    private static String[] rules = new String[] { "none", "rows", 
+                                                   "cols", "all" };
 
+    /**
+     * write a specific cell to the device
+     */
     protected void writeCell(Device device, STable table,
                              SCellRendererPane rendererPane, int row, int col)
         throws IOException
@@ -142,9 +155,25 @@
             %>></td><%
             return;
         }
-        %><%|class=comp.getStyle()%><%
-	    final String compStyle = comp.getStyle();
-	    comp.setStyle(null);
+        %>
+
+        <%|class=comp.getStyle()%><%
+        final String compStyle = comp.getStyle();
+	comp.setStyle(null);
+
+        switch (comp.getHorizontalAlignment()) {
+        case LEFT_ALIGN: 
+             %> align="left"<% 
+             break;
+        case CENTER_ALIGN:
+             %> align="center"<% 
+             break;
+        case RIGHT_ALIGN: 
+             %> align="right"<% 
+             break;
+        }
+
+        // close <td..>
         %>><%
 
         boolean pushedURL = false;
