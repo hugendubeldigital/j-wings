@@ -24,11 +24,13 @@ import org.wings.SDimension;
 import org.wings.SFont;
 import org.wings.SIcon;
 import org.wings.SURLIcon;
+import org.wings.plaf.LookAndFeel;
 import org.wings.style.AttributeSet;
 import org.wings.style.CSSStyleSheet;
 import org.wings.style.SimpleAttributeSet;
 import org.wings.style.StyleSheet;
 import org.wings.template.PropertyValueConverter;
+import org.wings.plaf.ComponentCG;
 
 
 /**
@@ -45,6 +47,9 @@ import org.wings.template.PropertyValueConverter;
  * @version $Revision$
  */
 public class DefaultPropertyValueConverter  implements PropertyValueConverter  {
+
+    public static final DefaultPropertyValueConverter INSTANCE =
+	new DefaultPropertyValueConverter();
 
     private final static Logger logger = Logger.getLogger("org.wings.template");
     
@@ -107,26 +112,16 @@ public class DefaultPropertyValueConverter  implements PropertyValueConverter  {
 	    return new StringBuffer(value);
 	} // end of if ()
 
-	if ( targetClass==SIcon.class ) {
-	    return new SURLIcon(value);
+	if ( SIcon.class.isAssignableFrom(targetClass) ) {
+	    return LookAndFeel.makeIcon(getClass().getClassLoader(), value);
 	}
 
 	if ( targetClass==Color.class ) {
-	    try {
-		return Color.decode(value);
-	    } catch ( Exception ex ) {
-		logger.log(Level.WARNING, "cannot convert color value", ex);
-		return null;
-	    }
+	    return LookAndFeel.makeColor(value);
 	}
 
 	if ( targetClass==SDimension.class ) {
-            int commaIndex = value.indexOf(',');
-            if ( commaIndex>0 ) {
-                return new SDimension(value.substring(0, commaIndex),
-                                      value.substring(commaIndex+1));
-            }
-	    return null;
+	    return LookAndFeel.makeDimension(value);
 	}
 
 	if ( targetClass==SFont.class ) {
@@ -138,40 +133,30 @@ public class DefaultPropertyValueConverter  implements PropertyValueConverter  {
 	}
 
 	if ( AttributeSet.class.isAssignableFrom(targetClass) ) {
-	    AttributeSet attributes = new SimpleAttributeSet();
-	    StringTokenizer tokens = new StringTokenizer(value, ";");
-	    while (tokens.hasMoreTokens()) {
-		String token = tokens.nextToken();
-		int pos = token.indexOf(":");
-		if (pos >= 0) {
-		    attributes.put(token.substring(0, pos), 
-				   token.substring(pos + 1));
-		}
-	    }
-	    return attributes;
+	    return LookAndFeel.makeAttributeSet(value);
 	}
 
 	if ( StyleSheet.class.isAssignableFrom(targetClass) ) {
-	    try {
-		CSSStyleSheet styleSheet = new CSSStyleSheet();
-		InputStream in = getClass().getClassLoader().getResourceAsStream(value);
-		styleSheet.read(in);
-		return styleSheet;
-	    }
-	    catch (Exception ex) {
-		logger.log(Level.WARNING, "style sheet resource not found:" + value, ex);
-		return null;
-	    }
+	    return LookAndFeel.makeStyleSheet(getClass().getClassLoader(), value);
 	}
 
-	
-	throw new UnsupportedOperationException();
+	if ( ComponentCG.class.isAssignableFrom(targetClass) ) {
+	    return LookAndFeel.makeCG(getClass().getClassLoader(), value);
+	}
+
+	throw new UnsupportedOperationException("cannot create object of type " + 
+						targetClass.getName());
     }
     
+
+ 
 }// DefaultPropertyValueConverter
 
 /*
    $Log$
+   Revision 1.3  2002/11/19 15:36:40  ahaaf
+   o use LookAndFeel methods
+
    Revision 1.2  2002/11/01 14:17:50  ahaaf
    o add support for more types
 
