@@ -234,7 +234,8 @@ public abstract class WingServlet
         else
             debug("no session yet...");
 
-        // es koennte multipart/form-data sein ..
+        // Wrap with MultipartRequest which can handle multipart/form-data
+        // (file - upload), otherwise behaves like normal HttpServletRequest
         try {
             req = new MultipartRequest(req, uploaddir, maxContentLength * 1024);
         }

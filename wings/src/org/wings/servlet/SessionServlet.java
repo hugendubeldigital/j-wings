@@ -535,24 +535,24 @@ public abstract class SessionServlet
 
             SForm.fireEvents();
 
-
             if ( DEBUG ) {
                 measure.stop();
                 measure.start("time to process request");
             }
 
-            // default content ist text
+            // default content ist text/html
             response.setContentType("text/html;charset=" + session.getCharSet());
 
-            // Seite darf nicht gecacht werden !!
+            // Page must not be cached since higly dynamic
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Cache-Control",
                                "max-age=0, no-cache, must-revalidate");
-            response.setDateHeader("Expires", 0);
+            // 1000 (one second after Jan 01 1970) because of some IE bug:
+            response.setDateHeader("Expires", 1000); 
 
             processRequest(asreq, response);
 
-            // schreibt direkt in einen Device:
+            // writes directly to the ServletDevice
             getFrame().write(new ServletDevice(response.getOutputStream()));
 
             if ( DEBUG ) {
@@ -598,6 +598,11 @@ public abstract class SessionServlet
         try {
             if ( errorFrame == null ) {
                 errorFrame = new SFrame();
+                /*
+                 * if we don't have an errorTemplateFile defined, then this
+                 * will throw an Exception, so the StackTrace is NOT exposed
+                 * to the user (may be security relevant)
+                 */
                 errorFrame.getContentPane().
                     setLayout(new STemplateLayout(errorTemplateFile));
 
@@ -616,7 +621,7 @@ public abstract class SessionServlet
             errorFrame.write(new ServletDevice (out));
         }
         catch ( Exception ex ) {
-            // naja, wenns dann soweit ist...
+            // Ok, seems that we have no luck: write this to the error-Log.
             e.printStackTrace();
         }
     }
@@ -651,6 +656,7 @@ public abstract class SessionServlet
             SFrame f = getFrame();
             if ( f != null )
                 f.getContentPane().removeAll();
+            // remove all elements in ExternalizerCache ?
         }
         catch ( Exception e ) {
             e.printStackTrace();
