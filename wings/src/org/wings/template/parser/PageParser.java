@@ -364,8 +364,8 @@ public class PageParser
 		}
 	    } 
 	    while (!tag.finished());
-	    sourceInfo.parseTime = System.currentTimeMillis() - startTime;
 	    /***
+	    sourceInfo.parseTime = System.currentTimeMillis() - startTime;
 		System.err.println ("PageParser: parsing '" + 
 		source.getCanonicalName() + "' took " + 
 		sourceInfo.parseTime + "ms for " +
@@ -388,7 +388,7 @@ public class PageParser
 	ArrayList parts;
 	Map       labels;
 	long      lastModified;
-	long      parseTime;
+//	long      parseTime;
 
 	public TemplateSourceInfo () {}
     }

@@ -517,8 +517,8 @@ public class CSSStyleSheet
         public void parse(URL base, Reader r, boolean parseDeclaration, boolean isLink)
             throws IOException {
             this.base = base;
-            this.isLink = isLink;
-            this.parsingDeclaration = parseDeclaration;
+//            this.isLink = isLink;
+//            this.parsingDeclaration = parseDeclaration;
             declaration.clear();
             selectorTokens.clear();
             selectors.clear();
@@ -618,9 +618,9 @@ public class CSSStyleSheet
         AttributeSet declaration = new SimpleAttributeSet();
         /** True if parsing a declaration, that is the Reader will not
          * contain a selector. */
-        boolean parsingDeclaration;
+        // boolean parsingDeclaration;
         /** True if the attributes are coming from a linked/imported style. */
-        boolean isLink;
+//        boolean isLink;
         /** Where the CSS stylesheet lives. */
         URL base;
         CSSParser parser = new CSSParser();
