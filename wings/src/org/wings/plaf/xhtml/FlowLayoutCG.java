@@ -62,13 +62,31 @@ implements LayoutCG {
               d.print("\" ");
             }
             
-            d.print("><tr><td>");
+            d.print("><tr><td");
           }
           else if (orientation == SConstants.VERTICAL)
-            d.print("</td></tr>\n<tr><td>");
+            d.print("</td></tr>\n<tr><td");
           else
-            d.print("</td><td>");
-          ((SComponent)components.get(i)).write(d);
+            d.print("</td><td");
+          
+          SComponent c = ((SComponent)components.get(i));
+          Utils.printTableCellAlignment(d, c);
+          if (c instanceof SContainer && Utils.hasSpanAttributes(c)) {
+            // Adapt inner styles (esp. width of containers)
+            // maybe better restrict to dimension styles only?
+            d.print(" style=\"");
+            Utils.writeAttributes(d,  c);
+            d.print("\"");
+            
+            // Some containers (like SPanel) do not support
+            // background colors, hence we render the background
+            // of them using this surrounding gridlayout cell
+            // Utils.printTableCellColors(d, c);
+            
+          }
+          d.print(">");
+          
+          c.write(d);
           count++;
         }
       }
