@@ -53,6 +53,7 @@ public class WingSetSession
     }
 
     void initGUI() {
+        getFrame().setTitle("WingSet Demo");
         SContainer contentPane = getFrame().getContentPane();
         try {
             java.net.URL templateURL = 
@@ -68,6 +69,7 @@ public class WingSetSession
         }
         
         STabbedPane tab = new STabbedPane();
+        tab.setMaxTabsPerLine(8);
         tab.setBackground(new java.awt.Color(206, 206, 206));
 
         tab.add(new WingsImage(), "wingS!");
