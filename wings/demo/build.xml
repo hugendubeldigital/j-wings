@@ -71,9 +71,11 @@
       <lib refid="regexp.jar"/>
       <lib refid="jlfgr.jar"/>
       <lib refid="bsh.jar"/>     
+      <lib dir="../dist/lib">
+        <include name="css1.jar"/>
+      </lib>
       <classes dir="${build.class}">
-        <include name="wingset/**"/>
-        <include name="../dist/lib/css1.jar" />
+        <include name="wingset/**"/>        
       </classes>
       <classes dir=".">
         <include name="wingset/icons/*.gif"/>
