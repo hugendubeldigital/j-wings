@@ -37,6 +37,11 @@ public class SScrollPane
      */
     private static final String cgClassID = "ScrollPaneCG";
 
+    /***
+     * the viewportView component
+     ***/
+    private SComponent viewComponent;
+    
     /**
      * store the scrollables viewport. Scrollable is reset to this value, if it
      * is removed from the this scrollpane
@@ -103,7 +108,7 @@ public class SScrollPane
     public SScrollPane(SComponent c) {
         this();
 
-        add(c);
+        setViewportView(c);
     }
 
     public AdjustmentListener getAdjustmentListener() {
@@ -459,6 +464,21 @@ public class SScrollPane
 
          return verticalExtent;
      }
+
+     /**
+     * Sets the viewportComponent
+     * if there already exists one, it will be removed first
+     *
+     * @param view the component to add to the viewport
+     */
+    public void setViewportView(SComponent view) {
+        if (viewComponent != null) {
+            remove(viewComponent);
+        }
+        add(view);
+        viewComponent = view;;
+    }
+
 
 }
 
