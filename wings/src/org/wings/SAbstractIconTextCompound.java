@@ -42,7 +42,7 @@ import org.wings.plaf.*;
  * @version $Revision$
  */
 public abstract class SAbstractIconTextCompound
-    extends SComponent implements SSelectionComponent
+    extends SComponent implements SSelectionComponent, ItemSelectable
 {
 
     public static final int ICON_COUNT = 7;
