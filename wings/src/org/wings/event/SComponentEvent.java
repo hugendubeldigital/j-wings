@@ -47,7 +47,7 @@ import java.awt.Dimension;
  * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
  * @version $Revision$, $Date$
  */
-public class ComponentEvent
+public class SComponentEvent
 	extends java.awt.AWTEvent
 {
 	/**
@@ -85,7 +85,7 @@ public class ComponentEvent
       * @param aSource the Component object that originated the event
       * @param aId an integer indicating the type of event
       */
-	public ComponentEvent( SComponent aSource, int aId )
+	public SComponentEvent( SComponent aSource, int aId )
      {
 		super( aSource, aId );
      }

@@ -35,28 +35,28 @@ package org.wings.event;
  * @see org.wings.event.ComponentEvent
  * @see org.wings.event.ComponentListener
  */
-public abstract class ComponentAdapter
-	implements ComponentListener
+public abstract class SComponentAdapter
+	implements SComponentListener
 {
 	/**
       * Invoked when the component has been made invisible.
       */
-	public void componentHidden(ComponentEvent e) {} ;
+	public void componentHidden(SComponentEvent e) {} ;
 
 	/**
       * Invoked when the component's position changes.
       */
-	public void componentMoved(ComponentEvent e) {} ;
+	public void componentMoved(SComponentEvent e) {} ;
     
 	/**
       * Invoked when the component's size changes.
       */
-	public void componentResized(ComponentEvent e) {} ;
+	public void componentResized(SComponentEvent e) {} ;
 
 	/**
       * Invoked when the component has been made visible.
       */
-	public void componentShown(ComponentEvent e) {} ;
+	public void componentShown(SComponentEvent e) {} ;
 }
 
 /*

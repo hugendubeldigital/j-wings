@@ -39,28 +39,28 @@ import java.awt.event.*;
  * @see org.wings.event.ComponentAdapter
  * @see org.wings.event.ComponentEvent
  */
-public interface ComponentListener
+public interface SComponentListener
     extends java.util.EventListener
 {
 	/**
       * Invoked when the component has been made invisible.
       */
-	public void componentHidden(ComponentEvent e);
+	public void componentHidden(SComponentEvent e);
 
 	/**
       * Invoked when the component's position changes.
       */
-	public void componentMoved(ComponentEvent e);
+	public void componentMoved(SComponentEvent e);
     
 	/**
       * Invoked when the component's size changes.
       */
-	public void componentResized(ComponentEvent e);
+	public void componentResized(SComponentEvent e);
 
 	/**
       * Invoked when the component has been made visible.
       */
-	public void componentShown(ComponentEvent e);
+	public void componentShown(SComponentEvent e);
 }
 
 /*
