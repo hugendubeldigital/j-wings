@@ -52,15 +52,11 @@ public class SDimension
     }
     
     public void setWidth(String width) {
-        if (width != null && !Character.isDigit(width.charAt(0)))
-            throw new IllegalArgumentException(width);
         this.width = width;
         iwidth=-1;
     }
 
     public void setHeight(String height) {
-        if (height != null && !Character.isDigit(height.charAt(0)))
-            throw new IllegalArgumentException(height);
         this.height = height;
         iheight=-1;
     }
