@@ -280,8 +280,8 @@ class MultipartRequest
             throw new IOException("Separation boundary was not specified (BUG in Tomcat 3.* with Opera?)");
         }
 
-        MultipartInputStream mimeStream = new
-            MultipartInputStream(req.getInputStream(), req.getContentLength(), maxSize);
+        MultipartInputStream mimeStream = null;
+        
 
         StringBuffer header = new StringBuffer();
         StringBuffer content = new StringBuffer();        
@@ -296,6 +296,7 @@ class MultipartRequest
         int last = -1;
 
         try {
+            mimeStream = new MultipartInputStream(req.getInputStream(), req.getContentLength(), maxSize);
             while(currentByte != -1) {
                 // Read MIME part header line
                 done = false;                
@@ -432,9 +433,11 @@ class MultipartRequest
         catch (IOException ex) {
             // cleanup and store the exception for notification of SFileChooser
             logger.log(Level.WARNING, "upload", ex);
-            try { fileStream.close(); } catch (Exception ign) {}
             if (uploadFile != null) uploadFile.delete();
             setException(currentParam, ex);
+        } finally {
+            try { fileStream.close(); } catch (Exception ign) {}          
+            try { mimeStream.close(); } catch (Exception ign) {}          
         }
     }
 
@@ -548,7 +551,7 @@ class MultipartRequest
     private static class MultipartInputStream extends InputStream
     {
         ServletInputStream istream = null;
-        int len, pos, num, maxLength;
+        int len, pos, maxLength;
 
         public MultipartInputStream(ServletInputStream istream, int len, int maxLength) {
             this.istream = istream;
