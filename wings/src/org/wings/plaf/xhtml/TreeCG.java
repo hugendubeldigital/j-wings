@@ -100,10 +100,11 @@ public class TreeCG
 
         TreeNode node = (TreeNode)path.getLastPathComponent();
         STreeCellRenderer cellRenderer = tree.getCellRenderer();
+
         SComponent renderer = cellRenderer.getTreeCellRendererComponent(tree, node,
                                                                         tree.isPathSelected(path),
                                                                         tree.isExpanded(path),
-                                                                        node.isLeaf(), 0,
+                                                                        tree.getModel().isLeaf(node), 0,
                                                                         false);
         SCellRendererPane rendererPane = tree.getCellRendererPane();
         rendererPane.writeComponent(d, renderer, tree);
