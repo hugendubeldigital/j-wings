@@ -35,7 +35,9 @@ public interface ComponentVisitor
     /**
      * Visit a SContainer. A container contains multiple
      * elements. If you are interested in these components,
-     * invite yourself.
+     * invite yourself 
+     * ({@link SContainer#inviteEachComponent(ComponentVisitor)})
+     *
      * @param container the component to be visited
      */
     void visit(SContainer container) throws Exception;

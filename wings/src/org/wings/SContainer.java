@@ -463,10 +463,21 @@ public class SContainer extends SComponent implements ClickableRenderComponent
     public void setCG(ContainerCG cg) {
         super.setCG(cg);
     }
+
+    /**
+     * Invite a ComponentVisitor.
+     * Invokes visit(SContainer) on the ComponentVisitor.
+     * @param visitor the visitor to be invited 
+     */
+    public void invite(ComponentVisitor visitor)
+        throws Exception
+    {
+        visitor.visit(this);
+    }
     
     /**
      * Calls the visitor on each SComponent this container has. You might
-     * want to call this in your visitor.
+     * want to call this in your visitor in visit(SContainer).
      *
      * @param visitor an implementation of the {@link ComponentVisitor}
      *                interface.
