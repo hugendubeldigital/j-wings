@@ -25,8 +25,11 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.wings.script.JavaScriptListener;
+
 import java.util.Vector;
+
 import org.wings.script.ScriptListener;
 
 /**
@@ -43,8 +46,7 @@ import org.wings.script.ScriptListener;
  */
 public class SFrame
     extends SRootContainer
-    implements PropertyChangeListener
-{
+    implements PropertyChangeListener {
     /**
      * @see #getCGClassID
      */
@@ -88,9 +90,9 @@ public class SFrame
     private String targetResource;
 
     private HashMap dynamicResources;
-    
+
     private SComponent focusComponent = null;                //Component which requests the focus
-    
+
     private JavaScriptListener focus = null;          //Listener which sets the focus onload
 
     /**
@@ -122,15 +124,15 @@ public class SFrame
         }
         dynamicResources.put(d.getClass(), d);
     }
-    
+
     /**
-     * Removes the instance of the dynamic ressource of the given class. 
+     * Removes the instance of the dynamic ressource of the given class.
      */
     public void removeDynamicResource(Class dynamicResourceClass) {
         if (dynamicResources != null) {
             dynamicResources.remove(dynamicResourceClass);
-        }        
-    }    
+        }
+    }
 
     /**
      * TODO: documentation
@@ -195,10 +197,10 @@ public class SFrame
         RequestURL result = null;
         // first time we are called, and we didn't get any change yet
         if (requestURL == null) {
-            requestURL =(RequestURL)SessionManager.getSession().getProperty("request.url");
+            requestURL = (RequestURL) SessionManager.getSession().getProperty("request.url");
         }
         if (requestURL != null) {
-            result = (RequestURL)requestURL.clone();
+            result = (RequestURL) requestURL.clone();
             result.setResource(getTargetResource());
         }
         return result;
@@ -229,7 +231,7 @@ public class SFrame
     public void setBaseTarget(String baseTarget) {
         this.baseTarget = baseTarget;
     }
-    
+
     /**
      * set the base target frame. This frame will receive all klicks
      * in this frame. Usually you want to use this for the ReloadManager
@@ -251,6 +253,10 @@ public class SFrame
         return baseTarget;
     }
 
+    /**
+     *
+     * @param m is typically a {@link Renderable}.
+     */
     public void addHeader(Object m) {
         if (!headers().contains(m))
             headers.add(m);
@@ -261,13 +267,13 @@ public class SFrame
     }
 
     public void clearHeaders() {
-	headers().clear();
+        headers().clear();
     }
-    
+
     public List headers() {
         if (headers == null)
             headers = new ArrayList(2);
-	return headers;
+        return headers;
     }
 
     /**
@@ -277,12 +283,15 @@ public class SFrame
     public void setTitle(String title) {
         this.title = title;
     }
+
     /**
      * TODO: documentation
      *
      * @return
      */
-    public String getTitle() { return title; }
+    public String getTitle() {
+        return title;
+    }
 
     /**
      * TODO: documentation
@@ -404,7 +413,7 @@ public class SFrame
     }
 
     public void setVisible(boolean b) {
-        if ( b ) {
+        if (b) {
             getSession().addFrame(this);
         } else {
             getSession().removeFrame(this);
@@ -417,17 +426,15 @@ public class SFrame
             updateComponentTreeCG(getContentPane());
         }
         if ("request.url".equals(pe.getPropertyName())) {
-            setRequestURL((RequestURL)pe.getNewValue());
+            setRequestURL((RequestURL) pe.getNewValue());
         }
     }
 
     private void updateComponentTreeCG(SComponent c) {
-        if (c instanceof SComponent) {
-            ((SComponent)c).updateCG();
-        }
+        c.updateCG();
         if (c instanceof SContainer) {
-            SComponent[] children = ((SContainer)c).getComponents();
-            for(int i = 0; i < children.length; i++) {
+            SComponent[] children = ((SContainer) c).getComponents();
+            for (int i = 0; i < children.length; i++) {
                 updateComponentTreeCG(children[i]);
             }
         }
@@ -443,62 +450,60 @@ public class SFrame
     }
 
     public void invite(ComponentVisitor visitor)
-        throws Exception
-    {
+        throws Exception {
         visitor.visit(this);
     }
-    
+
     /*
-     * Adds a scriptListener to the body-tag, which sets the focus to the Component 
+     * Adds a scriptListener to the body-tag, which sets the focus to the Component
      * of the frame which requests the focus at last.
      **/
-    public void setFocus(){
+    public void setFocus() {
         StringBuffer formId,
-                     compId;
-        if (focusComponent != null){
-            try{
+            compId;
+        if (focusComponent != null) {
+            try {
                 this.removeScriptListener(focus);
+            } catch (Exception e) {
             }
-            catch(Exception e){
-            }
-        
-            SForm form = (SForm)focusComponent.getParent();
+
+            SForm form = (SForm) focusComponent.getParent();
             formId = new StringBuffer(form.getEncodedLowLevelEventId());
-           /* int i = Integer.parseInt(formId.substring(1,2));
-            formId.replace(1,2, Integer.toString(i + 1));*/
-        
+            /* int i = Integer.parseInt(formId.substring(1,2));
+             formId.replace(1,2, Integer.toString(i + 1));*/
+
             compId = new StringBuffer(focusComponent.getEncodedLowLevelEventId());
-           /* i = Integer.parseInt(compId.substring(1,2));
-            compId.replace(1,2, Integer.toString(i + 1));*/
-        
-            focus = new JavaScriptListener("onload","document."+formId + "."+ compId + ".focus()");
+            /* i = Integer.parseInt(compId.substring(1,2));
+             compId.replace(1,2, Integer.toString(i + 1));*/
+
+            focus = new JavaScriptListener("onload", "document." + formId + "." + compId + ".focus()");
             addScriptListener(focus);
-            
+
             focusComponent = null;
         }
-        
+
     }
-    
+
     /*
-     * This function is called by SComponent.requestFocus(). 
+     * This function is called by SComponent.requestFocus().
      * @param c the component which requests the focus.
      *
      **/
-    public void focusRequest(SComponent c){
+    public void focusRequest(SComponent c) {
         focusComponent = c;
     }
-    
+
     /*
-     * Everytime a frame ist reloaded, this Method is called 
-     * by org.wings.plaf.css1.Util. Then setFocus must be called, 
-     * bacause the ids of the Components change at that time. 
+     * Everytime a frame ist reloaded, this Method is called
+     * by org.wings.plaf.css1.Util. Then setFocus must be called,
+     * bacause the ids of the Components change at that time.
      */
-     public ScriptListener[] getScriptListeners() {
-         setFocus();
-         return (ScriptListener[])super.getListeners(ScriptListener.class);
+    public ScriptListener[] getScriptListeners() {
+        setFocus();
+        return (ScriptListener[]) super.getListeners(ScriptListener.class);
     }
-    
- 
+
+
 }
 
 /*
