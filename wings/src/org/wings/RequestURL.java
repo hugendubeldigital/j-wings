@@ -118,6 +118,34 @@ public class RequestURL extends SimpleURL
     }
 
     /**
+     * Add an additional name/value pair to be included in the GET paramter
+     * list. The added parameter will be 'name=value'
+     *
+     * @param name  the name of the parameter
+     * @param value the value of the parameter
+     * @return a reference to <code>this</code> to simplify 'call chaining'
+     */
+    public RequestURL addParameter(String name, String value) {
+        addParameter(name);
+        parameters.append("=").append(value);
+        return this;
+    }
+
+    /**
+     * Add an additional name/value pair to be included in the GET paramter
+     * list. The added parameter will be 'name=value'
+     *
+     * @param name  the name of the parameter
+     * @param value the value of the parameter
+     * @return a reference to <code>this</code> to simplify 'call chaining'
+     */
+    public RequestURL addParameter(String name, int value) {
+        addParameter(name);
+        parameters.append("=").append(value);
+        return this;
+    }
+
+    /**
      * clear all additional paramters given in the {@link #addParameter(String)} call.
      */
     public void clear() {
