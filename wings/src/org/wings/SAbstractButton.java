@@ -597,13 +597,14 @@ implements LowLevelEventListener {
         }
     }
 
-    public void setMnemonic(String m) {
-        mnemonic = m;
+    public void setMnemonic(String pMnemonic) {
+        mnemonic = pMnemonic;
     }
 
     public String getMnemonic() {
         return mnemonic;
     }
+
 }
 
 /*
