@@ -101,6 +101,7 @@ public final class OldLookAndFeel
         table.putDefaults(layoutCgDefaults);
 
         Object[] borderCgDefaults = {
+             "EtchedBorderCG", oldPackageName + "EtchedBorderCG",
               "BevelBorderCG", oldPackageName + "BevelBorderCG",
                "LineBorderCG", oldPackageName + "LineBorderCG",
               "EmptyBorderCG", oldPackageName + "EmptyBorderCG",

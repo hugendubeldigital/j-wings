@@ -66,7 +66,7 @@ public class SScrollPane
          * @param e
          */
         public void adjustmentValueChanged(AdjustmentEvent e) {
-            if ( scrollable != null ) {
+            if (scrollable != null) {
                 Rectangle newViewport =
                     new Rectangle(horizontalScroller.getValue(),
                                   verticalScroller.getValue(),
@@ -112,17 +112,19 @@ public class SScrollPane
      * Adjust the scrollbars to the scrollable
      */
     protected void adjustScrollBars() {
-        if ( scrollable != null ) {
-            setScrollBarsVisible(true);
+        if (scrollable != null) {
+            //setScrollBarsVisible(true);
 
             Dimension scrollableViewport = scrollable.getScrollableViewportSize();
             verticalScroller.setMinimum(0);
             verticalScroller.setVisibleAmount(verticalExtent);
             verticalScroller.setMaximum(scrollableViewport.height);
+            verticalScroller.setVisible(verticalExtent < scrollableViewport.height);
 
             horizontalScroller.setMinimum(0);
             horizontalScroller.setVisibleAmount(horizontalExtent);
             horizontalScroller.setMaximum(scrollableViewport.width);
+            horizontalScroller.setVisible(horizontalExtent < scrollableViewport.width);
         }
         else {
             setScrollBarsVisible(false);

@@ -50,7 +50,7 @@ public class BorderLayoutCG
         if (center != null) cols++;
         if (east != null) cols++;
 
-        d.append("\n<table cellpadding=\"0\" cellspacing=\"0\"");
+        d.append("\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"");
         if (border > 0)
             d.append(" border=\"").append(border).append("\"");
         if (container != null && container.getBackground() != null)

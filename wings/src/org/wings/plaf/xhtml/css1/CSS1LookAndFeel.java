@@ -107,6 +107,7 @@ public final class CSS1LookAndFeel
 	table.putDefaults(layoutCgDefaults);
 
 	Object[] borderCgDefaults = {
+             "EtchedBorderCG", css1PackageName + "EtchedBorderCG",
               "BevelBorderCG", css1PackageName + "BevelBorderCG",
                "LineBorderCG", css1PackageName + "LineBorderCG",
               "EmptyBorderCG", css1PackageName + "EmptyBorderCG",

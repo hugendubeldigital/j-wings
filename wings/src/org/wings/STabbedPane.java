@@ -799,6 +799,7 @@ public class STabbedPane
             this.tip = tip;
 
             button = new SButton(title);
+            button.setShowAsFormComponent(false);
             button.setNoBreak(true);
             button.addActionListener(parent);
         }
