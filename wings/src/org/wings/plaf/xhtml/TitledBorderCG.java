@@ -71,7 +71,7 @@ public class TitledBorderCG implements BorderCG
 		        d.print("\"");
 		    }
 		    d.print(">");
-		    org.wings.plaf.xhtml.Utils.quote(d, b.getTitle());
+		    org.wings.plaf.compiler.Utils.write(d, b.getTitle());
 		    d.print("</legend>");
 		}
     }
