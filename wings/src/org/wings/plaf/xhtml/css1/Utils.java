@@ -67,6 +67,16 @@ public final class Utils implements SConstants
             writeStyleAttribute(d, prefix + id);
     }
 
+    public static void writeStyleAttribute(Device d, String prefix, Style style, String postfix)
+        throws IOException
+    {
+        if (style == null)
+            return;
+        String id = style.getID();
+        if (id != null)
+            writeStyleAttribute(d, prefix + id + postfix);
+    }
+
     public static void writeStyleAttribute(Device d, Style style, String postfix)
         throws IOException
     {

@@ -32,7 +32,10 @@ public final class ToggleButtonCG
         if (checkBox.isEnabled()) {
             d.append("<a href=\"").append(generateAnchorAddress(checkBox)).append("\"");
 
-            Utils.writeStyleAttribute(d, "anchor", checkBox.getStyle());
+            if (checkBox.isSelected())
+                Utils.writeStyleAttribute(d, "anchor", checkBox.getStyle(), "selection");
+            else
+                Utils.writeStyleAttribute(d, "anchor", checkBox.getStyle(), "nonselection");
 
             if (checkBox.getRealTarget() != null)
                 d.append(" target=\"").append(checkBox.getRealTarget()).append("\"");
@@ -50,7 +53,11 @@ public final class ToggleButtonCG
         d.append("<input type=\"");
         d.append(checkBox.getType());
         d.append("\"");
-        Utils.writeStyleAttribute(d, "form", checkBox.getStyle());
+
+        if (checkBox.isSelected())
+            Utils.writeStyleAttribute(d, "form", checkBox.getStyle(), "selection");
+        else
+            Utils.writeStyleAttribute(d, "form", checkBox.getStyle(), "nonselection");
     }
 }
 

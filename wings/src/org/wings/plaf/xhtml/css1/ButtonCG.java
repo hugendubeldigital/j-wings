@@ -32,7 +32,10 @@ public final class ButtonCG
         if (button.isEnabled()) {
             d.append("<a href=\"").append(generateAnchorAddress(button)).append("\"");
 
-            Utils.writeStyleAttribute(d, "anchor", button.getStyle());
+            if (button.isSelected())
+                Utils.writeStyleAttribute(d, "anchor", button.getStyle(), "selection");
+            else
+                Utils.writeStyleAttribute(d, "anchor", button.getStyle(), "nonselection");
 
             if (button.getRealTarget() != null)
                 d.append(" target=\"").append(button.getRealTarget()).append("\"");
@@ -48,7 +51,11 @@ public final class ButtonCG
         throws IOException
     {
         d.append("<input type=\"submit\"");
-        Utils.writeStyleAttribute(d, "form", button.getStyle());
+
+        if (button.isSelected())
+            Utils.writeStyleAttribute(d, "form", button.getStyle(), "selection");
+        else
+            Utils.writeStyleAttribute(d, "form", button.getStyle(), "nonselection");
     }
 }
 

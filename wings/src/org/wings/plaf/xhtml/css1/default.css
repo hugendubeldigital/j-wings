@@ -1,77 +1,187 @@
-BODY		{ background: #dddddd;
-		  padding: 0;
-		  margin: 0;
-		  border-width: 0 }
-P		{ font-family: sans-serif;
-		  font-size: 12pt;
-		  font-weight: normal;
-		  font-style: normal;
-		  color: #000066;
-		  text-align: left }
-B		{ font-weight: bold }
-EM		{ font-style: normal;
-		  color: #990000 }
-STRONG		{ font-weight: bold;
-		  color: #990000 }
-SMALL		{ font-size: 8pt;
-		  color: #000066 }
-A:link		{ color: #000099;
-		  text-decoration: none;
-		  font-weight: bold }
-A:active	{ color: #0000FF;
-		  text-decoration: none }
-A:visited       { color: #000066;
-		  text-decoration: none }
-HR		{ padding-top: 0;
-		  padding-bottom: 0 }
-H1		{ font-size: 16pt;
-		  font-weight: bold;
-		  font-family: sans-serif }
-H2		{ font-size: 14pt;
-		  font-weight: bold;
-		  font-family: sans-serif }
-H3		{ font-size: 12pt;
-		  font-weight: bold;
-		  font-family: sans-serif }
+BODY { 
+   background: #dddddd;
+   padding: 0;
+   margin: 0;
+   border-width: 0 
+}
 
-.label		{ font-family: sans-serif;
-		  font-size: 12pt;
-		  font-weight: bold;
-		  font-style: normal;
-		  color: #000066 }
-.textfield	{ font-family: sans-serif;
-		  font-size: 12pt;
-		  font-weight: normal;
-		  font-style: normal;
-		  color: #006600 }
-.anchorbutton	{ color: #000099;
-		  text-decoration: none;
-		  font-weight: bold }
-.formbutton	{ color: #000099;
-		  text-decoration: none;
-		  font-weight: bold }
-.anchorcheckbox	{ color: #000099;
-		  text-decoration: none;
-		  font-weight: bold }
-.href		{ color: #990000;
-		  text-decoration: none;
-		  font-weight: bold }
-.formcheckbox	{ color: #000099;
-		  text-decoration: none;
-		  font-weight: normal }
-.anchorradiobutton { color: #000099;
-		     text-decoration: none;
-		     font-weight: bold }
-.formradiobutton   { color: #000099;
-		     text-decoration: none;
-		     font-weight: normal }
-.anchortogglebutton { color: #000099;
-		     text-decoration: none;
-		     font-weight: bold }
+P { 
+   font-family: sans-serif;
+   font-size: 12pt;
+   font-weight: normal;
+   font-style: normal;
+   color: #000066;
+   text-align: left 
+}
+
+B { 
+   font-weight: bold 
+}
+
+EM { 
+   font-style: normal;
+   color: #990000 
+}
+
+STRONG { 
+   font-weight: bold;
+   color: #990000 
+}
+
+SMALL { 
+   font-size: 8pt;
+   color: #000066 
+}
+
+A:link { 
+   color: #000099;
+   text-decoration: none;
+   font-weight: bold 
+}
+
+A:active { 
+   color: #0000FF;
+   text-decoration: none 
+}
+
+A:visited { 
+   color: #000066;
+   text-decoration: none 
+}
+
+HR { 
+   padding-top: 0;
+   padding-bottom: 0 
+}
+
+H1 { 
+   font-size: 16pt;
+   font-weight: bold;
+   font-family: sans-serif 
+}
+
+H2 { 
+   font-size: 14pt;
+   font-weight: bold;
+   font-family: sans-serif 
+}
+
+H3 { 
+   font-size: 12pt;
+   font-weight: bold;
+   font-family: sans-serif 
+}
+
+.label { 
+   font-family: sans-serif;
+   font-size: 12pt;
+   font-weight: bold;
+   font-style: normal;
+   color: #000066 
+}
+
+.textfield { 
+   font-family: sans-serif;
+   font-size: 12pt;
+   font-weight: normal;
+   font-style: normal;
+   color: #006600 
+}
+
+.anchorbuttonnonselection { 
+   color: #000099;
+   text-decoration: none;
+   font-weight: bold 
+}
+
+.anchorbuttonselection { 
+   color: #990000;
+   text-decoration: none;
+   font-weight: bold 
+}
+
+.formbuttonnonselection { 
+   color: #000099;
+   text-decoration: none;
+   font-weight: bold 
+}
+
+.formbuttonselection { 
+   color: #990000;
+   text-decoration: none;
+   font-weight: bold 
+}
+
+.anchorcheckboxnonselection { 
+   color: #000099;
+   text-decoration: none;
+   font-weight: bold 
+}
+
+.anchorcheckboxselection { 
+   color: #990000;
+   text-decoration: none;
+   font-weight: bold 
+}
+
+.formcheckboxnonselection { 
+   color: #000099;
+   text-decoration: none;
+   font-weight: normal 
+}
+
+.formcheckboxselection { 
+   color: #990000;
+   text-decoration: none;
+   font-weight: normal 
+}
+
+.anchorradiobuttonnonselection { 
+   color: #000099;
+   text-decoration: none;
+   font-weight: bold 
+}
+
+.anchorradiobuttonselection { 
+   color: #990000;
+   text-decoration: none;
+   font-weight: bold 
+}
+
+.formradiobuttonnonselection { 
+   color: #000099;
+   text-decoration: none;
+   font-weight: normal 
+}
+
+.formradiobuttonselection { 
+   color: #990000;
+   text-decoration: none;
+   font-weight: normal 
+}
+
+.anchortogglebuttonnonselection { 
+   color: #000099;
+   text-decoration: none;
+   font-weight: bold 
+}
+
+.anchortogglebuttonselection { 
+   color: #990000;
+   text-decoration: none;
+   font-weight: bold 
+}
+
 .formtogglebutton {
    color: #000099;
    text-decoration: none;
    font-weight: normal
+}
+
+.href { 
+   color: #990000;
+   text-decoration: none;
+   font-weight: bold 
 }
 
 .table {
@@ -145,22 +255,36 @@ H3		{ font-size: 12pt;
    color: #000099;
 }
 
-.topleft	{ text-align: left;
-		  vertical-align: top }
-.bottomleft	{ text-align: left;
-		  vertical-align: bottom }
-.topright	{ text-align: right;
-		  vertical-align: top }
-.bottomright	{ text-align: right;
-		  vertical-align: bottom }
+.topleft { 
+   text-align: left;
+   vertical-align: top 
+}
+
+.bottomleft {
+   text-align: left;
+   vertical-align: bottom 
+}
+
+.topright { 
+   text-align: right;
+   vertical-align: top 
+}
+
+.bottomright { 
+   text-align: right;
+   vertical-align: bottom 
+}
+
 .right {
    text-align: right;
    vertical-align: middle;
 }
+
 .left {
    text-align: left;
    vertical-align: middle;
 }
+
 .center {
    text-align: center;
    vertical-align: middle;
