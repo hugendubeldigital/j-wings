@@ -27,7 +27,7 @@ import java.io.IOException;
 public interface Device
 {
     /**
-     * Flush this Stream.
+     * Flush this Device.
      */
     void flush () throws IOException;
 
@@ -36,11 +36,8 @@ public interface Device
     // default character encoding to convert characters into bytes.
     // much like a PrintWriter
     // ------------*/
-
-    /**
-     * Print a String.
-     */
-    Device print (String s) throws IOException;
+    
+    // -- print basic characters --
 
     /**
      * Print a character.
@@ -53,9 +50,17 @@ public interface Device
     Device print (char[] c) throws IOException;
 
     /**
-     * Print a character array.
+     * Print a portion of a character array. Start at position
+     * 'start' and write 'len' characters.
      */
-    Device print (char[] c, int start, int end) throws IOException;
+    Device print (char[] c, int start, int len) throws IOException;
+
+    //-- print objects --
+
+    /**
+     * Print a String.
+     */
+    Device print (String s) throws IOException;
 
     /**
      * Print an integer.
@@ -73,23 +78,24 @@ public interface Device
      ** They notably do _not_ throw Exceptions
      ** !! These methods are supposed to be removed after full
      **    transition; this is just for convenience reasons !
+     ** THIS WILL NOT BE THERE IN 1.0
      **------------*/
 
     /**
      * Print a String. For compatibility.
-     * @Xdeprecated use print() instead
+     * @deprecated use print() instead
      */
     Device append (String s);
 
     /**
      * Print an Integer. For compatibility.
-     * @Xdeprecated use print() instead
+     * @deprecated use print() instead
      */
     Device append (int i);
 
     /**
      * Print an Object. For compatibility.
-     * @Xdeprecated use print() instead
+     * @deprecated use print() instead
      */
     Device append (Object o);
 

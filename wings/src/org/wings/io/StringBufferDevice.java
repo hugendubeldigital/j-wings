@@ -101,9 +101,9 @@ public final class StringBufferDevice
     /**
      * Print a character array.
      */
-    public Device print (char[] c, int start, int end) throws IOException {
+    public Device print (char[] c, int start, int len) throws IOException {
         if (byteStream != null) flush();
-        buffer.append(c, start, end-start);
+        buffer.append(c, start, len);
         return this;
     }
 

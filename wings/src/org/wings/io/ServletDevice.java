@@ -129,8 +129,9 @@ public final class ServletDevice
     /**
      * Print a character array.
      */
-    public Device print (char[] c, int start, int end) throws IOException {
-        for (int i=start; i <= end; i++)
+    public Device print (char[] c, int start, int len) throws IOException {
+        final int end = start + len;
+        for (int i=start; i < end; ++i)
             out.print(c[i]);
         return this;
     }

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0"?><!-- -*-sgml-*- -->
 <!-- ant build file for wingS -->
 <!-- $Id$ -->
 
@@ -201,9 +201,9 @@
   <target name="main" depends="build" description="build changed files"/>
 
 
-  <!--target name="demo" depends="build" description="build demo">
+  <!-- target name="demo" depends="build" description="build demo">
     <ant dir="demo"/>
-  </target-->
+  </target -->
 
   <target name="dist" depends="init" description="create distribution tar.gz">
       <property name="distname" value="${ant.project.name}-${wings.version}"/>
@@ -234,3 +234,8 @@
       <delete dir="${distname}" />
   </target>
 </project>
+<!--
+ Local variables:
+ compile-command: "ant -emacs -find build.xml"
+ End:
+-->

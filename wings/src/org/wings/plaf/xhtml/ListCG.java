@@ -57,20 +57,20 @@ public class ListCG
         int visibleRows = list.getVisibleRowCount();
         int selectionMode = list.getSelectionMode();
 
-        d.append("<select name=\"");
-        d.append(list.getNamePrefix());
-        d.append("\"");
+        d.print("<select name=\"");
+        d.print(list.getNamePrefix());
+        d.print("\"");
 
-        d.append(" size=\"").append(visibleRows);
-        d.append("\"");
+        d.print(" size=\"").print(visibleRows);
+        d.print("\"");
 
         if (selectionMode == SConstants.MULTIPLE_SELECTION)
-            d.append(" multiple=\"multiple\"");
+            d.print(" multiple=\"multiple\"");
 
         //if (submitOnChange)
-        //    d.append(" onChange=\"submit()\"");
+        //    d.print(" onChange=\"submit()\"");
 
-        d.append(">\n");
+        d.print(">\n");
     }
 
     public void writeFormBody(Device d, SList list)
@@ -86,11 +86,11 @@ public class ListCG
                 Object o = model.getElementAt(i);
                 boolean selected = list.isSelectedIndex(i);
 
-                d.append("<option value=\"").append(i).append("\"");
+                d.print("<option value=\"").print(i).print("\"");
                 if (selected)
-                    d.append(" selected=\"selected\">");
+                    d.print(" selected=\"selected\">");
                 else
-                    d.append(">");
+                    d.print(">");
 
                 SComponent renderer
                     = cellRenderer.getListCellRendererComponent(list, o, false, i);
@@ -106,17 +106,15 @@ public class ListCG
                 for (int c=0; c < chars.length; c++) {
                     switch (chars[c]) {
                     case '<':
-                        if (c > pos)
-                            d.print(chars, pos, c - 1);
+                        d.print(chars, pos, c - pos);
                         break;
                     case '>':
                         pos = c+1;
                     }
                 }
-                if (chars.length > pos)
-                    d.print(chars, pos, chars.length - 1);
+                d.print(chars, pos, chars.length - pos);
 
-                d.append("</option>\n");
+                d.print("</option>\n");
             }
         }
     }
@@ -132,7 +130,7 @@ public class ListCG
     protected void writeFormPostfix(Device d, SList list)
         throws IOException
     {
-        d.append("</select>\n");
+        d.print("</select>\n");
         Utils.writeHiddenComponent(d, list.getNamePrefix(), "-1");
     }
 
@@ -150,13 +148,13 @@ public class ListCG
         String orderType = list.getOrderType();
         int start = list.getStart();
 
-        d.append("<");
+        d.print("<");
         writeType(d, list);
         if (orderType != null)
-            d.append(" type=\"").append(orderType).append("\"");
+            d.print(" type=\"").print(orderType).print("\"");
         if (start > 0)
-            d.append(" start=\"").append(start).append("\"");
-        d.append(">\n");
+            d.print(" start=\"").print(start).print("\"");
+        d.print(">\n");
     }
 
     public void writeAnchorBody(Device d, SList list)
@@ -173,11 +171,11 @@ public class ListCG
                 Object o = model.getElementAt(i);
                 boolean selected = list.isSelectedIndex(i);
 
-                d.append("<li>");
+                d.print("<li>");
                 SComponent renderer
                     = cellRenderer.getListCellRendererComponent(list, o, selected, i);
                 rendererPane.writeComponent(d, renderer, list);
-                d.append("</li>\n");
+                d.print("</li>\n");
             }
         }
     }
@@ -185,13 +183,14 @@ public class ListCG
     public void writeAnchorPostfix(Device d, SList list)
         throws IOException
     {
-        d.append("</");
+        d.print("</");
         writeType(d, list);
-        d.append(">\n");
+        d.print(">\n");
     }
 
-    protected void writeType(Device d, SList list) {
-        d.append(list.getType());
+    protected void writeType(Device d, SList list) 
+        throws IOException {
+        d.print(list.getType());
     }
 }
 

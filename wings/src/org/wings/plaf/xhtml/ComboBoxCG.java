@@ -44,9 +44,9 @@ public class ComboBoxCG
     public void writeFormPrefix(Device d, SComboBox comboBox)
         throws IOException
     {
-        d.append("<select name=\"");
-        d.append(comboBox.getNamePrefix());
-        d.append("\" size=\"1\">\n");
+        d.print("<select name=\"");
+        d.print(comboBox.getNamePrefix());
+        d.print("\" size=\"1\">\n");
     }
 
     public void writeFormBody(Device d, SComboBox comboBox)
@@ -63,11 +63,11 @@ public class ComboBoxCG
             for (int i=0; i < size; i++) {
                 Object o = model.getElementAt(i);
 
-                d.append("<option value=\"").append(i).append("\"");
+                d.print("<option value=\"").print(i).print("\"");
                 if (i == selectedIndex)
-                    d.append(" selected=\"selected\">");
+                    d.print(" selected=\"selected\">");
                 else
-                    d.append(">");
+                    d.print(">");
 
                 SComponent renderer
                     = cellRenderer.getListCellRendererComponent(comboBox, o, false, i);
@@ -84,18 +84,17 @@ public class ComboBoxCG
                 for (int c=0; c < chars.length; c++) {
                     switch (chars[c]) {
                     case '<':
-                        if (c > pos)
-                            d.print(chars, pos, c - 1);
+                        if (pos - c - 1 > 0)
+                            d.print(chars, pos, c - pos);
                         break;
                     case '>':
                         pos = c+1;
                     }
                 }
-                if (chars.length > pos)
-                    d.print(chars, pos, chars.length - 1);
+                d.print(chars, pos, chars.length - pos);
 
 
-                d.append("</option>\n");
+                d.print("</option>\n");
             }
         }
     }
@@ -111,7 +110,7 @@ public class ComboBoxCG
     protected void writeFormPostfix(Device d, SComboBox comboBox)
         throws IOException
     {
-        d.append("</select>\n");
+        d.print("</select>\n");
     }
 }
 
