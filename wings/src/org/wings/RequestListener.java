@@ -15,7 +15,7 @@
 package org.wings;
 
 /**
- * TODO: documentation
+ * This is the request listener interface
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$

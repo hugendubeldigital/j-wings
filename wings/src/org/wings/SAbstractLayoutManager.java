@@ -22,7 +22,7 @@ import org.wings.plaf.*;
 import org.wings.session.*;
 
 /**
- * TODO: documentation
+ * This is an abstract implementation of an layout manager.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
@@ -92,19 +92,19 @@ public abstract class SAbstractLayoutManager
 	throws IOException
     {
 	String name = null;
-	
+
         if (DEBUG) {
 	    name = getClass().getName();
 	    name = name.substring(name.lastIndexOf('.') + 1);
-	    
+
             d.append("\n\n<!-- ")
-		.append(name)
-		.append(" ").append(id)
-		.append(" -->");
+                .append(name)
+                .append(" ").append(id)
+                .append(" -->");
 	}
 
 	cg.write(d, this);
-	
+
         if (DEBUG)
             d.append("\n<!-- /")
 		.append(name)
@@ -115,7 +115,10 @@ public abstract class SAbstractLayoutManager
     public void setContainer(SContainer c) {
 	container = c;
     }
-    public SContainer getContainer() { return container; }
+
+    public SContainer getContainer() {
+        return container;
+    }
 
     /**
      * Set the preferred size of the receiving {@link SLayoutManager} in pixel.
@@ -133,7 +136,9 @@ public abstract class SAbstractLayoutManager
      * Get the preferred size of this {@link SLayoutManager }.
      * @see #setPreferredSize
      */
-    public final SDimension getPreferredSize() { return this.preferredSize; }
+    public final SDimension getPreferredSize() {
+        return this.preferredSize;
+    }
 }
 
 /*

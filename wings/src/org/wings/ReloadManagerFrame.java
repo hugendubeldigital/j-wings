@@ -33,6 +33,8 @@ import org.wings.session.Session;
 import org.wings.session.SessionManager;
 
 /**
+ * TODO: doc (holger)
+ *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */

@@ -31,7 +31,7 @@ import org.wings.style.Style;
 import org.wings.externalizer.ExternalizeManager;
 
 /**
- *
+ * This is the reload manager interface.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$

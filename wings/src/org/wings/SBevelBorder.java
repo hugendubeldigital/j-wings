@@ -43,25 +43,26 @@ public class SBevelBorder
     private int bevelType = RAISED;
     
     /**
-     * TODO: documentation
-     *
+     * Creates a new beveled raised border.
      */
     public SBevelBorder() {}
 
     /**
-     * TODO: documentation
+     * Creates a new beveled border with the given type.
      *
-     * @param bevelType
+     * @param bevelType one of the following constants:
+     *        <code>RAISED</code> or <code>LOWERED</code>
      */
     public SBevelBorder(int bevelType) {
         setBevelType(bevelType);
     }
 
     /**
-     * TODO: documentation
+     * Creates a new beveled border with the given type and insets.
      *
-     * @param bevelType
-     * @param insets
+     * @param bevelType one of the following constants:
+     *        <code>RAISED</code> or <code>LOWERED</code>
+     * @param padding (space between border and component) around
      */
     public SBevelBorder(int bevelType, Insets insets) {
         setBevelType(bevelType);
@@ -69,9 +70,11 @@ public class SBevelBorder
     }
 
     /**
-     * Create a new border with given
-     * bevelType, insets and border thickness
-     * @param bevelType <i>RAISED</i> or <i>LOWERED</i>
+     * Creates a new beveled border with the given type, insets and
+     * border thickness
+     *
+     * @param bevelType one of the following constants:
+     *        <code>RAISED</code> or <code>LOWERED</code>
      * @param insets padding (space between border and component) around
      * @param thickness the thickness of drawn line
      */
@@ -82,20 +85,28 @@ public class SBevelBorder
     }
 
     /**
-     * TODO: documentation
+     * sets the bevel type.
      *
-     * @param bevelType
+     * @param bevelType one of the following constants:
+     *        <code>RAISED</code> or <code>LOWERED</code>
      */
     public void setBevelType(int bevelType) {
         this.bevelType = bevelType;
     }
-    
-    public int getBevelType() { return bevelType; }
+
+    /**
+     * returns the bevel type.
+     *
+     * @return the current bevel type
+     * @see #setBevelType
+     */
+    public int getBevelType() {
+        return bevelType;
+    }
 
     public String getCGClassID() {
         return cgClassID;
     }
-    
 }
 
 /*

@@ -31,8 +31,8 @@ import org.wings.style.Style;
 import org.wings.externalizer.ExternalizeManager;
 
 /**
- * This implementation assumes, that the whole document has to be reloaded
- * with every request.
+ * This is a default implementation of the reload manager. It assumes, that
+ * the whole document has to be reloaded with every request.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$

@@ -20,15 +20,10 @@ import java.util.StringTokenizer;
 
 import org.wings.session.SessionManager;
 
-/*
- * FastDispatcher.java
- *
- * Diese Implementation eines {@link SGetDispatcher} speichert die
- * Listener in einer HashMap und und deshalb um ein vielfaches
- * schneller, als der {@link DefaultGetDispatcher}.
- */
 /**
- * TODO: documentation
+ * This implementation of a {@link SGetDispatcher} saves the listener
+ * in a HashMap and is therefore much faster than the
+ * {@link DefaultGetDispatcher}.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -36,9 +31,6 @@ import org.wings.session.SessionManager;
 public class FastDispatcher
     implements SGetDispatcher
 {
-    /**
-     * TODO: documentation
-     */
     public static final boolean DEBUG = false;
 
     HashMap listener = new HashMap();
@@ -46,8 +38,7 @@ public class FastDispatcher
     protected boolean namedEvents = true;
 
     /**
-     * TODO: documentation
-     *
+     * creates a new fast dispatcher
      */
     public FastDispatcher() {
     }
@@ -76,15 +67,11 @@ public class FastDispatcher
         namedEvents = b;
     }
 
-    /*
-     * Registiert einen Listener. In der HashMap wird das NamePrefix
-     * des Listeners als key abgelegt. Der value ist eine Menge (ArrayList)
-     * von {@link SGetListener}
-     */
     /**
-     * TODO: documentation
+     * Registers a listener. The NamePrefix of the listener is stored in the
+     * HasMap as key. The value is a Set (ArrayList) of {@link SGetListener}.
      *
-     * @param gl
+     * @param gl listener
      */
     public void register(SGetListener gl) {
         if ( gl==null )
@@ -109,8 +96,8 @@ public class FastDispatcher
      * TODO: documentation
      *
      * TODO:
-     * This should remove the GetListener from the HashMap, not the Names of the
-     * GetListener (Names may change)
+     * This should remove the GetListener from the HashMap, not the Names of
+     * the GetListener (Names may change)
      *
      * @param gl
      */
@@ -206,10 +193,6 @@ public class FastDispatcher
     }
     public String getTarget() { return target; }
 
-    /**
-     * TODO: documentation
-     *
-     */
     protected void finalize() {
         debug("finalize");
     }

@@ -29,18 +29,14 @@ import javax.swing.event.TableModelListener;
 import org.wings.plaf.*;
 import org.wings.io.Device;
 
-/*
- * Basis Tabelle in HTML. Hier wird ein wenig vom Swing Konzept
- * abgewichen. Eine Basis Tabelle ist eine simple Tabelle, die
- * keinerlei Besonderheiten zur normalen HTML Tabelle
- * aufweist. Diese Tabelle wird immer dann benutzt, falls keine
- * Selektionen noetig sind und die Tabelle nur zu formatier Zwecken
- * benutzt wird. Die weiterfuehrende Funktionalitaet (Selektion) ist
- * in {@link STable} implementiert. Trotz allem sind die meisten
- * API Aufrufe Swing nachempfunden.
- */
 /**
- * TODO: documentation
+ * This is a base implementation from which all other tables are derived.
+ * This base table is a simple table. It is used if selection is not
+ * required and the table is only used to arrange stuff.
+ * <p>
+ * The advanced stuff like selection is implemented in {@link STable}.
+ * <p>
+ * Most API calls are based of Swing.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -54,48 +50,35 @@ public class SBaseTable
      */
     private static final String cgClassID = "BaseTableCG";
 
-    /*
-     * Der default renderer wird verwendet, wenn für die Klasse
-     * eines Zellinhalts kein Renderer gesetzt ist
+    /**
+     * The default renderer is used if no other renderer is set for the
+     * content of a cell.
      */
     protected STableCellRenderer defaultRenderer;
 
-    /*
-     * Der header renderer wird für die header-Zeile verwendet.
-     */
+    /** The header renderer is used for the header line */
     protected STableCellRenderer headerRenderer;
 
-    /*
-     * Das default model, welches gesetzt wird, falls zufaellig ;-) mal
-     * ein null Wert gesetzt wird.
-     */
     /**
-     * TODO: documentation
+     * The default model which is used if someone sets the model to null.
      */
     protected final static TableModel defaultModel = new DefaultTableModel();
 
     /**
-     * TODO: documentation
+     * The table model.
      */
     protected TableModel model = null;
 
-    /*
-     * Die Renderer fuer die verschiedenen Klassen von Cell Inhalten.
-     * Key ist Klasse, value ist Renderer.
-     */
     /**
-     * TODO: documentation
+     * The renderer for the different classes of cell content. The class is
+     * the key, the renderer the value.
      */
     protected final HashMap renderer = new HashMap();
 
-    /*
-     * Vorerst mal ist der Header noch nicht wie im Swing
-     * implementiert. Ich koennte mir aber vorstellen, dass das schon
-     * Sinn macht. Seis wies ist, hiermit kann man setzen, ob der Header
-     * sichtbar sein soll oder nicht.
-     */
     /**
-     * TODO: documentation
+     * header visible. <p>
+     * The header is not (yet) implemented like in Swing. But maybe someday.
+     * So you can disable it if you like.
      */
     protected boolean headerVisible = true;
 

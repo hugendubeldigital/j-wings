@@ -18,7 +18,7 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * Pops up an alert using java script.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$

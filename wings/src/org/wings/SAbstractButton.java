@@ -22,33 +22,9 @@ import javax.swing.event.EventListenerList;
 import org.wings.plaf.*;
 import org.wings.io.Device;
 
-/*
- * Die Basisklasse aller HTML Komponenten, die Button Funktionalitaet
- * haben. Diese Klasse stellt ein ActionListener Interface zur
- * Verfuegung.
- *
- * Um eine Klassen Hierarchie der verschiedenen Buttno Typen zu erreichen, ist
- * der Aufbau des HTML Renderings etwas komplexer als normal. Zum einen gibt es
- * zu beachten, dass Buttons sowohl in einer Form, als auch als normaler Anchor
- * vorkommen koennen. Deshalb ist der Ablauf HTML Code in den Device zu
- * schreiben etwas anders. Jedoch sind die appendBorder Methoden davon
- * unberuehrt.
- * Ist ein Button deaktiviert, wird er im Grunde als Anchor-Button
- * interpretiert, auch wenn er innerhalb einer Form ist. Ein Button kann auch
- * explizit als Anchor-Button spezifiziert sein, egal ob er innerhalb einer Form
- * ist oder nicht.
- * Ansonsten werden die 3 HTML Code erzeugenden Methoden appendPrefix,
- * appendBody und appendPostfix jeweils aufgesplittet in die Methoden
- * appendAnchorPrefix, appendAnchorBody, appendAnchorPostfix
- * bzw. appendFormPrefix, appendFormBody, appendFormPostfix.
- * Die Methoden, die den Anchor Teil rendern muessen den deaktivierten Button
- * rendern koennen. In den Form Teil kommen nur aktivierte Buttons. Im Form Teil
- * gibt es noch einen Spezialfall, die Methode appendFormBodyAttributes. Diese
- * Methode wird benoetigt um bei Form Buttons zusatzliche Attribute, wie etwa
- * checked, einzufuegen.
- */
 /**
- * TODO: documentation
+ * This is the base class for all components which have a button
+ * functionality. This class provides an ActionListener interface.
  *
  * @author
  * @version $Revision$
@@ -109,14 +85,17 @@ public abstract class SAbstractButton
 
     /**
      * Create a button with given text.
-     * @param the button text.
+     * @param text the button text
      */
     public SAbstractButton(String text) {
         this(text, SConstants.SUBMIT_BUTTON);
     }
 
-    /*
-     * Erzeugt eine Button mit dem angebenen Text vom angebenen Typ.
+    /**
+     * Creates a new Button with the given Text and the given Type.
+     *
+     * @param text the button text
+     * @param type the button type
      * @see #setType
      */
     public SAbstractButton(String text, String type) {
@@ -124,12 +103,8 @@ public abstract class SAbstractButton
         setType(type);
     }
 
-    /*
-     * Erzeugt einen Submit Button mit dem Text "SUBMIT"
-     */
     /**
-     * TODO: documentation
-     *
+     * Creates a new submit button with thh text "SUBMIT"
      */
     public SAbstractButton() {
         this("SUBMIT");
@@ -177,14 +152,11 @@ public abstract class SAbstractButton
         return showAsFormComponent && getResidesInForm();
     }
 
-    /*
-     * Dies macht nur Sinn, wenn Button ein AnchorButton ist und nicht
-     * in einer Form !!!
-     */
     /**
-     * TODO: documentation
+     * This is only usefull if the button is an anchor button (and not a
+     * form button).
      *
-     * @param t
+     * @param t the real target
      */
     public void setRealTarget(String t) {
         realTarget = t;
@@ -216,8 +188,6 @@ public abstract class SAbstractButton
     public String getActionCommand() {
         return actionCommand;
     }
-
-
 
 
     /**
