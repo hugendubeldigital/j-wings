@@ -23,6 +23,8 @@ package org.wings;
 public interface SGetListener {
     void getPerformed(String name, String value);
     String getNamePrefix();
+
+    String getName();
 }
 
 /*
