@@ -108,7 +108,7 @@ public class WingSetSession
                         if (css1.isSelected())
                             getSession().getCGManager().setLookAndFeel("xhtml/css1");
                         else
-                            getSession().getCGManager().setLookAndFeel("xhtml/old");
+                            System.err.println("sorry no xhtml/old");
                     }
                     catch (Exception e) {
                         System.out.println(e.getMessage());

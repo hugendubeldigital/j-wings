@@ -123,7 +123,7 @@ public final class TableCG
         SCellRendererPane rendererPane = table.getCellRendererPane();
         if (table.isHeaderVisible()) {
             d.append("<tr");
-            Utils.writeStyleAttribute(d, style, "header");
+            Utils.writeStyleAttribute(d, "", style, "header");
             d.append(">\n");
             for (int c = originCol; c < colCount; c++) {
                 writeHeaderCell(d, table, rendererPane, c);
@@ -133,9 +133,9 @@ public final class TableCG
         for (int r = originRow; r < rowCount; r++) {
             d.append("<tr");
             if (table.isRowSelected(r))
-                Utils.writeStyleAttribute(d, style, "selection");
+                Utils.writeStyleAttribute(d, "", style, "selection");
             else
-                Utils.writeStyleAttribute(d, style, "nonselection");
+                Utils.writeStyleAttribute(d, "", style, "nonselection");
             d.append(">\n");
             for (int c = originCol; c < colCount; c++) {
                 writeCell(d, table, rendererPane, r, c);

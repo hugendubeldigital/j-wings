@@ -260,7 +260,7 @@ public abstract class SAbstractButton
         text = t;
         if ((text == null && oldText != null) ||
             text != null && !text.equals(oldText))
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**

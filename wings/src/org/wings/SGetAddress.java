@@ -18,6 +18,7 @@ import java.io.IOException;
 import org.wings.io.Device;
 
 /**
+ * PENDING (dynamic resources) support for pathinfo
  * This class handles a HTTP GET Address that can be updated
  * with additional GET parameters.
  *

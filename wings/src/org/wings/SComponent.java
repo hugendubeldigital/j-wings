@@ -28,9 +28,9 @@ import org.wings.event.*;
 import org.wings.plaf.ComponentCG;
 import org.wings.session.Session;
 import org.wings.session.SessionManager;
-import org.wings.style.Style;
+import org.wings.style.*;
 import org.wings.externalizer.ExternalizeManager;
-import org.wings.util.StringUtil;
+import org.wings.util.*;
 
 /**
  * The basic component for all components in this package.
@@ -54,15 +54,9 @@ public abstract class SComponent
 
     /**
      * The code generation delegate, which is responsible for
-     * the visual representation of a component.
+     * the visual representation of this component.
      */
     protected transient ComponentCG cg;
-
-    /** Background color */
-    protected Color background;
-
-    /** Foreground color */
-    protected Color foreground;
 
     /** Vertical alignment */
     protected int verticalAlignment = NO_ALIGN;
@@ -70,21 +64,11 @@ public abstract class SComponent
     /** Horizontal alignment */
     protected int horizontalAlignment = NO_ALIGN;
 
-    /**
-     * TODO: documentation
-     */
-    protected int colSpan = 0;
-
-    /**
-     * TODO: documentation
-     */
-    protected int rowSpan = 0;
-
-    /** The style */
+    /** The style class */
     protected Style style;
 
-    /** The font */
-    protected SFont font;
+    /** The attributes */
+    protected AttributeSet attributes = new SimpleAttributeSet();
 
     /** Visibility. */
     protected boolean visible = true;
@@ -179,11 +163,10 @@ public abstract class SComponent
      */
     public SGetAddress getServerAddress() {
         SFrame p = getParentFrame();
-        if ( p==null )
+        if (p == null)
             throw new IllegalStateException("no parent frame");
 
         return p.getServerAddress();
-        // return new SGetAddress();
     }
 
     /**
@@ -304,7 +287,7 @@ public abstract class SComponent
      * @return an id
      */
     public final String getUnifiedId() {
-        if ( unifiedId==null )
+        if (unifiedId == null)
             unifiedId = getSession().createUniqueId();
         return unifiedId;
     }
@@ -372,82 +355,82 @@ public abstract class SComponent
 
     /**
      * Watch components beeing garbage collected.
-     */
     protected void finalize() {
-        if (DEBUG)
-            System.out.println("finalize " + getClass().getName());
+        System.out.println("finalize " + getClass().getName());
+    }
+     */
+
+    /**
+     * Set the class of the laf-provided style.
+     * @param style the new value for style
+     */
+    public void setStyle(Style style) {
+        this.style = style;
+    }
+    /**
+     * @return the current style
+     */
+    public Style getStyle() { return style; }
+
+    /**
+     * Set the attributes.
+     * @param attributes the attributes
+     */
+    public void setAttributes(AttributeSet attributes) {
+        if (attributes == null)
+            throw new IllegalArgumentException("null not allowed");
+
+        if (!this.attributes.equals(attributes)) {
+            this.attributes = attributes;
+            reload(RELOAD_STYLE);
+        }
     }
 
     /**
-     * Set the style.
-     * The style is used by style based lafs like xhtml/css1.
-     *
-     * @param s the style
+     * @return the current attributes
      */
-    public void setStyle(Style s) {
-        Style old = style;
-        style = s;
-        if ((old == null && style != null) ||
-            (old != null && !old.equals(style)))
-            reload();
-    }
-
-    /**
-     * Return the style.
-     *
-     * @return the style
-     */
-    public Style getStyle() {
-        return style;
+    public AttributeSet getAttributes() {
+        return attributes;
     }
 
     /**
      * Set the background color.
-     *
      * @param c the new background color
      */
-    public void setBackground(Color c) {
-        Color old = background;
-        background = c;
-        if ((old == null && background != null) ||
-            (old != null && !old.equals(background)))
-            reload();
+    public void setBackground(Color color) {
+        boolean changed = attributes.putAttributes(CSSStyleSheet.getAttributes(color, "background-color"));
+        if (changed)
+            reload(RELOAD_STYLE);
     }
 
     /**
      * Return the background color.
-     *
      * @return the background color
      */
     public Color getBackground() {
-        return background;
+        return CSSStyleSheet.getBackground(attributes);
     }
 
     /**
      * Set the foreground color.
-     *
      * @param c the new foreground color
      */
-    public void setForeground(Color c) {
-        Color old = foreground;
-        foreground = c;
-        if ((old == null && foreground != null) ||
-            (old != null && !old.equals(foreground)))
-            reload();
+    public void setForeground(Color color) {
+        boolean changed = attributes.putAttributes(CSSStyleSheet.getAttributes(color, "color"));
+        if (changed)
+            reload(RELOAD_STYLE);
     }
 
     /**
      * Return the foreground color.
-     *
      * @return the foreground color
      */
     public Color getForeground() {
-        return foreground;
+        return CSSStyleSheet.getForeground(attributes);
     }
 
     /**
      * Set the font.
-     *
      * @param f the new font
      */
     public void setFont(Font f) {
@@ -456,50 +439,40 @@ public abstract class SComponent
             return;
         }
 
-        SFont font = new SFont();
-
-        font.setFace(f.getName());
-        font.setStyle(f.getStyle());
-        font.setSize(f.getSize()-10);
-
+        SFont font = new SFont(f.getName(), f.getStyle(), f.getSize());
         setFont(font);
     }
 
     /**
      * Set the font.
-     *
      * @param f the new font
      */
-    public void setFont(SFont f) {
-        SFont old = font;
-        font = f;
-        if (!font.equals(old))
-            reload();
+    public void setFont(SFont font) {
+        boolean changed = attributes.putAttributes(CSSStyleSheet.getAttributes(font));
+        if (changed)
+            reload(RELOAD_STYLE);
     }
 
     /**
      * Return the font.
-     *
      * @return f the font
      */
     public SFont getFont() {
-        return font;
+        return CSSStyleSheet.getFont(attributes);
     }
 
     /**
      * Set the visibility.
-     *
      * @param v wether this component wil show or not
      */
     public void setVisible(boolean v) {
         boolean old = visible;
         visible = v;
-        if (old != visible)
-        {
-            reload();
-            SComponentEvent evt =
-                new SComponentEvent(this,
-                                    v ? SComponentEvent.COMPONENT_SHOWN : SComponentEvent.COMPONENT_HIDDEN);
+        if (old != visible) {
+            reload(RELOAD_STATE);
+            SComponentEvent evt = new SComponentEvent(this, v ?
+                                                      SComponentEvent.COMPONENT_SHOWN :
+                                                      SComponentEvent.COMPONENT_HIDDEN);
             fireComponentChangeEvent(evt);
         }
     }
@@ -532,7 +505,7 @@ public abstract class SComponent
         boolean old = enabled;
         enabled = e;
         if (old != enabled)
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**
@@ -562,13 +535,66 @@ public abstract class SComponent
         name = n;
     }
 
+    /**
+     * TODO: documentation
+     *
+     * @param s
+     */
+    public void appendPrefix(Device s) {
+        if ( getFont()!=null )
+            getFont().appendPrefix(s);
+        else if ( getForeground()!=null || getBackground()!=null )
+            s.append("<FONT");
+
+        if ( getForeground()!=null ) {
+            s.append(" COLOR=#").append(SUtil.toColorString(getForeground()));
+        }
+
+        // hab keine Idee, wie man das sonst machen kann !!!
+        // Mit Table wuerds funktionieren (siehe unten), aber...
+        if ( getBackground()!=null )
+            s.append(" STYLE=\"background-color:#").append(SUtil.toColorString(getBackground())).append(";\"");
+
+
+        if ( getFont()!=null )
+            getFont().appendBody(s);
+        else if ( getForeground()!=null || getBackground()!=null )
+            s.append(">");
+
+        //    if ( getBackground()!=null )
+        //      s.append("<TABLE BGCOLOR=#").append(SUtil.toColorString(getBackground())).append(">");
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param s
+     */
+    public void appendPostfix(Device s) {
+        //    if ( getBackground()!=null )
+        //      s.append("</TABLE>");
+        if ( getFont()!=null )
+            getFont().appendPostfix(s);
+        else if ( getForeground()!=null || getBackground()!=null )
+            s.append("</FONT>");
+
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param s
+     */
+    public void appendBody(Device s) {
+        //    s.append("&nbsp;");
+    }
 
     /**
      * Mark the component as subject to reload.
      * The component will be registered with the ReloadManager.
      */
-    public final void reload() {
-        getSession().getReloadManager().markDirty(this);
+    public final void reload(int aspect) {
+        getSession().getReloadManager().markDirty(this, aspect);
     }
 
     /**
@@ -638,11 +664,7 @@ public abstract class SComponent
      * @return a unique name prefix
      */
     public String getNamePrefix() {
-        if (getParentFrame() != null)
-            return getParentFrame().getUniquePrefix() + SConstants.UID_DIVIDER
-                + getUnifiedId() + SConstants.UID_DIVIDER;
-        else
-            return getUnifiedId() + SConstants.UID_DIVIDER;
+        return getUnifiedId();
     }
 
     /**
@@ -742,34 +764,6 @@ public abstract class SComponent
      */
     public final int getVerticalAlignment() {
         return verticalAlignment;
-    }
-
-    /**
-     * @deprecated use GridBagLayout instead
-     */
-    public final int getColSpan() {
-        return colSpan;
-    }
-
-    /**
-     * @deprecated use GridBagLayout instead
-     */
-    public final void setColSpan(int span) {
-        colSpan = span;
-    }
-
-    /**
-     * @deprecated use GridBagLayout instead
-     */
-    public final int getRowSpan() {
-        return rowSpan;
-    }
-
-    /**
-     * @deprecated use GridBagLayout instead
-     */
-    public final void setRowSpan(int span) {
-        rowSpan = span;
     }
 
     private Map clientProperties;
@@ -922,7 +916,7 @@ public abstract class SComponent
 
         if ((cg == null && oldCG != null) ||
             (cg != null && !cg.equals(oldCG)))
-            reload();
+            reload(RELOAD_ALL);
     }
 
     /**
@@ -961,6 +955,10 @@ public abstract class SComponent
      */
     public String getCGClassID() {
         return cgClassID;
+    }
+
+    public void invite(ComponentVisitor visitor) {
+        visitor.visit(this);
     }
 }
 

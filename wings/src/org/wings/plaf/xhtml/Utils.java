@@ -171,11 +171,6 @@ public final class Utils implements SConstants
     }
 
     public static void appendTableCellSpan(Device s, SComponent c) {
-        if (c.getRowSpan()>0)
-            s.append(" rowspan=").append(c.getRowSpan());
-
-        if (c.getColSpan()>0)
-            s.append(" colspan=").append(c.getColSpan());
     }
 
 

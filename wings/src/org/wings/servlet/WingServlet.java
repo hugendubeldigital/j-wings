@@ -332,59 +332,59 @@ public abstract class WingServlet extends HttpServlet
         org.wings.util.TimeMeasure m = new TimeMeasure();
         m.start("doGet");
         try {
-        /* 
-         * make sure, that our context ends with '/'. Otherwise redirect
-         * to the same location with appended slash. 
-         *
-         * We need a '/' at the
-         * end of the servlet, so that relative requests work. Relative
-         * requests are either externalization requests, providing the
-         * wanted resource name in the path info (like 'abc_121.gif')
-         * or 'normal' requests which are just an empty URL with the 
-         * request parameter (like '?12_22=121').
-         * The browser assembles the request URL from the current context
-         * (the 'directory' it assumes it is in) plus the relative URL.
-         * Thus emitted URLs are as short as possible and thus the generated
-         * page size.
-         */
-        String pathInfo = req.getPathInfo();
-        if (pathInfo == null || pathInfo.length() == 0) {
-            StringBuffer pathUrl = HttpUtils.getRequestURL(req);
-            pathUrl.append('/');
-            if (req.getQueryString() != null) {
-                pathUrl.append('?').append(req.getQueryString());
+            /* 
+             * make sure, that our context ends with '/'. Otherwise redirect
+             * to the same location with appended slash. 
+             *
+             * We need a '/' at the
+             * end of the servlet, so that relative requests work. Relative
+             * requests are either externalization requests, providing the
+             * wanted resource name in the path info (like 'abc_121.gif')
+             * or 'normal' requests which are just an empty URL with the 
+             * request parameter (like '?12_22=121').
+             * The browser assembles the request URL from the current context
+             * (the 'directory' it assumes it is in) plus the relative URL.
+             * Thus emitted URLs are as short as possible and thus the generated
+             * page size.
+             */
+            String pathInfo = req.getPathInfo();
+            if (pathInfo == null || pathInfo.length() == 0) {
+                StringBuffer pathUrl = HttpUtils.getRequestURL(req);
+                pathUrl.append('/');
+                if (req.getQueryString() != null) {
+                    pathUrl.append('?').append(req.getQueryString());
+                }
+                response.sendRedirect(pathUrl.toString());
+                return;
             }
-            response.sendRedirect(pathUrl.toString());
-            return;
-        }
 
-        /*
-         * we either have a request for externalization
-         * (if there is something in the path info) or just a normal
-         * request to this servlet.
-         */
-        if (isExternalizeRequest(req)) {
-            getExternalizeManager(req).deliver(pathInfo.substring(1), response);
-            return;
-        }
+            /*
+             * we either have a request for externalization
+             * (if there is something in the path info) or just a normal
+             * request to this servlet.
+             */
+            if (isExternalizeRequest(req)) {
+                getExternalizeManager(req).deliver(pathInfo.substring(1), response);
+                return;
+            }
         
-        SessionServlet sessionServlet = null;
-        synchronized (initializer) {
-            sessionServlet = getSessionServlet(req, response);
-        }
-
-        if (DEBUG) {
-            if (req.getParameterValues("exit")!=null) {
-                req.getSession(false).invalidate();
-                sessionServlet.destroy();
-                sessionServlet = null;
-                System.gc();
-                try {Thread.sleep(1000);} catch (Exception e){}
-                System.exit(0);
+            SessionServlet sessionServlet = null;
+            synchronized (initializer) {
+                sessionServlet = getSessionServlet(req, response);
             }
-        }
 
-        sessionServlet.doGet(req, response);
+            if (DEBUG) {
+                if (req.getParameterValues("exit")!=null) {
+                    req.getSession(false).invalidate();
+                    sessionServlet.destroy();
+                    sessionServlet = null;
+                    System.gc();
+                    try {Thread.sleep(1000);} catch (Exception e){}
+                    System.exit(0);
+                }
+            }
+
+            sessionServlet.doGet(req, response);
 
         } finally {
             m.stop();

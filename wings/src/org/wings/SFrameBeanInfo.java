@@ -16,17 +16,12 @@ public class SFrameBeanInfo extends SimpleBeanInfo
 	    PropertyDescriptor resizable       = new PropertyDescriptor("resizable", beanClass);
 	    PropertyDescriptor backgroundURL  = new PropertyDescriptor("backgroundURL", beanClass);
 	    PropertyDescriptor backgroundImage  = new PropertyDescriptor("backgroundImage", beanClass);
-	    PropertyDescriptor textColor  = new PropertyDescriptor("textColor", beanClass);
-	    PropertyDescriptor linkColor        = new PropertyDescriptor("linkColor", beanClass);
-	    PropertyDescriptor vLinkColor        = new PropertyDescriptor("vLinkColor", beanClass);
-	    PropertyDescriptor aLinkColor        = new PropertyDescriptor("aLinkColor", beanClass);
 	    PropertyDescriptor styleSheet     = new PropertyDescriptor("styleSheet", beanClass);
 	    PropertyDescriptor statusLine     = new PropertyDescriptor("statusLine", beanClass);
 
 	    PropertyDescriptor rv[] = {
 		resizable, backgroundURL, backgroundImage,
-		textColor, linkColor, vLinkColor,
-		aLinkColor, styleSheet, statusLine
+		styleSheet, statusLine
 	    };
 	    return rv;
 	}

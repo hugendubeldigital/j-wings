@@ -19,19 +19,6 @@
 
 * docs
 
-* Clean up Externalizer: 
-  - differentiate between externalized objects independent
-    of the session (like static icons etc.) and session specific object.
-    Session specific objects should be cleaned up on session invalidation.
-  - support externalized objects, that generate the content dynamically
-    (JavaScript, Frame-content, CSS)                        (Armin)
-
-* document all classes
-
-* clean up plaf loading envirionment.
-
-* write java-doc
-
 * Write scripthandler that creates an externalizeable JavaScript file containng
   scriptlets, that are attached to SComponents. The scriptlets are registered
   for component supported events (like 'onClick' or 'onMouseOver'). The
@@ -59,7 +46,7 @@
   the gnerated button would be in this case
   <input type=button name="_121_3" onClick="_asdfoer98l()">
 
-* write a tutorial
+* write a tutorial (florian)
 
 * log / debug
 

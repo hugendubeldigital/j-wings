@@ -20,6 +20,7 @@ import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.plaf.xhtml.*;
+import org.wings.style.*;
 
 public final class LabelCG
     extends org.wings.plaf.xhtml.LabelCG
@@ -31,24 +32,24 @@ public final class LabelCG
         if (text != null && text.trim().length() > 0) {
             final boolean noBreak  = label.isNoBreak();
             final boolean escape   = label.isEscapeSpecialChars();
-            final SFont font       = label.getFont();
-            final Color foreground = label.getForeground();
-            final Color background = label.getBackground();
+            final Style style = label.getStyle();
 
-            Utils.writeSpanWithStyleAttributePrefix(d, label );
-            // override additional settings
-            Utils.writeFontPrefix(d, font, foreground);
+            if (style != null) {
+                d.append("<span class=\"")
+                    .append(style)
+                    .append("\">");
+            }
+
             if (noBreak)
                 d.append("<nobr>");
-
             if (escape)
                 text = org.wings.plaf.xhtml.Utils.escapeSpecialChars(text);
             d.append(text);
-
             if (noBreak)
                 d.append("</nobr>");
-            Utils.writeFontPostfix(d, font, foreground);
-            Utils.writeSpanWithStyleAttributePostfix(d, label);
+
+            if (style != null)
+                d.append("</span>");
         }
     }
 }

@@ -17,10 +17,11 @@ package org.wings;
 import java.awt.event.ContainerListener;
 import java.awt.event.ContainerEvent;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
+import org.wings.util.*;
 
 /**
  * This is a container which can hold several other <code>SComponents</code>.
@@ -472,6 +473,14 @@ public class SContainer
 
     public void setCG(ContainerCG cg) {
         super.setCG(cg);
+    }
+
+    public void invite(ComponentVisitor visitor) {
+        visitor.visit(this);
+
+	Iterator iterator = getComponentList().iterator();
+	while (iterator.hasNext())
+	    ((SComponent)iterator.next()).invite(visitor);
     }
 }
 

@@ -63,9 +63,7 @@ public final class Utils
     {
         if (style == null)
             return;
-        String id = style.getID();
-        if (id != null)
-            writeStyleAttribute(d, prefix + id);
+        writeStyleAttribute(d, prefix, style, "");
     }
 
     public static void writeStyleAttribute(Device d, String prefix, Style style, String postfix)
@@ -73,19 +71,7 @@ public final class Utils
     {
         if (style == null)
             return;
-        String id = style.getID();
-        if (id != null)
-            writeStyleAttribute(d, prefix + id + postfix);
-    }
-
-    public static void writeStyleAttribute(Device d, Style style, String postfix)
-        throws IOException
-    {
-        if (style == null)
-            return;
-        String id = style.getID();
-        if (id != null)
-            writeStyleAttribute(d, id + postfix);
+        writeStyleAttribute(d, prefix + style.getName() + postfix);
     }
 
     public static void writeStyleAttribute(Device d, Style style)
@@ -93,17 +79,17 @@ public final class Utils
     {
         if (style == null)
             return;
-        writeStyleAttribute(d, style.getID());
+        writeStyleAttribute(d, style.getName());
     }
 
-    public static void writeStyleAttribute(Device d, String id)
+    public static void writeStyleAttribute(Device d, String style)
         throws IOException
     {
-        if (id == null)
+        if (style == null)
             return;
 
         d.append(" class=\"");
-        d.append(id);
+        d.append(style);
         d.append("\"");
     }
 
@@ -121,14 +107,13 @@ public final class Utils
         if ( style == null && ! hasAttr )
             return;
 
-        d.append("<span " );
-        if ( hasAttr )
-         {
-         	d.append( "style=\"");
-			org.wings.plaf.xhtml.Utils.writeSpanAttributes( d, component );
-        	d.append( "\" " );
-		 }
-        writeStyleAttribute( d, style );
+        d.append("<span ");
+        if (hasAttr) {
+            d.append( "style=\"");
+            org.wings.plaf.xhtml.Utils.writeSpanAttributes(d, component);
+            d.append( "\" ");
+        }
+        writeStyleAttribute(d, style);
         d.append(">");
     }
 

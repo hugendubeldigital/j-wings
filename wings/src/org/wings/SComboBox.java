@@ -121,7 +121,7 @@ public class SComboBox
         dataModel.addListDataListener(this);
         if (model == null && oldModel != null ||
             model != null && !model.equals(oldModel))
-            reload();
+            reload(RELOAD_MODEL);
     }
 
     /**
@@ -146,7 +146,7 @@ public class SComboBox
         maximumRowCount = count;
         firePropertyChange("maximumRowCount", oldCount, maximumRowCount);
         if (maximumRowCount != oldCount)
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**
@@ -191,7 +191,7 @@ public class SComboBox
     public void setSelectedItem(Object object) {
         dataModel.setSelectedItem(object);
         fireActionEvent();
-        reload();
+        reload(RELOAD_MODEL);
     }
 
     /**
@@ -435,7 +435,7 @@ public class SComboBox
                                                lastSelectedItem,
                                                ItemEvent.SELECTED));
         fireActionEvent();
-        reload();
+        reload(RELOAD_MODEL);
     }
 
     /** 
@@ -463,7 +463,7 @@ public class SComboBox
         if ((lastSelectedItem == null && newSelectedItem != null)
             || (lastSelectedItem != null && !lastSelectedItem.equals(newSelectedItem)))
             selectedItemChanged();
-        reload();
+        reload(RELOAD_MODEL);
     }
 
     /**

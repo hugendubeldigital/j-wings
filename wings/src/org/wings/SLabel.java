@@ -247,7 +247,7 @@ public class SLabel
     public void setIcon(SIcon i) {
         if ( i!=icon || i!=null && !i.equals(icon) ) {
             icon = i;
-            reload();
+            reload(RELOAD_STATE);
         }
     }
 
@@ -268,7 +268,7 @@ public class SLabel
     public void setDisabledIcon(SIcon i) {
         if ( i!=icon || i!=null && !i.equals(disabledIcon) ) {
             disabledIcon = i;
-            reload();
+            reload(RELOAD_STATE);
         }
     }
 
@@ -299,7 +299,7 @@ public class SLabel
     public void setText(String t) {
         if ( t!=text || t!=null && !t.equals(text) ) {
             text = t;
-            reload();
+            reload(RELOAD_STATE);
         }
     }
 

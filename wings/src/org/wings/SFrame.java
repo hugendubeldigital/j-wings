@@ -28,7 +28,7 @@ import org.wings.plaf.*;
 import org.wings.style.StyleSheet;
 import org.wings.session.Session;
 import org.wings.session.SessionManager;
-import org.wings.util.StringUtil;
+import org.wings.util.*;
 
 /*
  * The frame is the root component in every component hierarchie.
@@ -44,7 +44,7 @@ import org.wings.util.StringUtil;
  */
 public class SFrame
     extends SContainer
-    implements PropertyChangeListener
+    implements DynamicResource, PropertyChangeListener
 {
     /**
      * @see #getCGClassID
@@ -56,7 +56,7 @@ public class SFrame
     /**
      *  The Title of the Frame.
      */
-    protected String title = "";
+    protected String title;
 
     /**
      * The container for the contentPane.
@@ -78,9 +78,9 @@ public class SFrame
     protected final ArrayList headers = new ArrayList(2);
 
     /**
-     * A List containing JavaScript code snippets to be included in the html header.
+     * A List containing links for the html header.
      */
-    protected final ArrayList javaScript = new ArrayList(2);
+    protected final ArrayList links = new ArrayList(2);
 
 
     private Color textColor = null;
@@ -89,7 +89,6 @@ public class SFrame
     private Color aLinkColor = null;
 
     private SIcon backgroundImage = null;
-    private String backgroundURL = null;
 
     /**
      * TODO: documentation
@@ -110,6 +109,10 @@ public class SFrame
     private transient SRequestDispatcher dispatcher = null;
 
     private Session session;
+
+    protected String extension = "html";
+    protected String mimeType = "text/xhtml"; 
+    protected int epoch = 1;
 
     /**
      * TODO: documentation
@@ -147,22 +150,6 @@ public class SFrame
      */
     public boolean isResizable() {
         return resizable;
-    }
-
-    /**
-     * Set the URL of the background image.
-     */
-    public void setBackgroundURL(String url) {
-        backgroundURL = url;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getBackgroundURL() {
-        return backgroundURL;
     }
 
     /**
@@ -260,7 +247,7 @@ public class SFrame
         int count = getComponentCount();
         System.err.println("pushDialog: " + count);
         dialog.setFrame(this);
-        reload();
+        reload(RELOAD_STATE);
     }
 
     /**
@@ -276,7 +263,7 @@ public class SFrame
         dialog.setFrame((SFrame)null);
         System.err.println("popDialog: " + count);
 
-        reload();
+        reload(RELOAD_STATE);
         return dialog;
     }
 
@@ -301,7 +288,7 @@ public class SFrame
                                 String path) {
         String addr = scheme + "://"+server;
 
-        if ( port>0 && port!=80 )
+        if (port > 0 && (port != 443 && "https".equals(scheme) || port != 80 && "http".equals(scheme))
             addr += ":" + port;
 
         addr += path;
@@ -328,17 +315,7 @@ public class SFrame
      * TODO: documentation
      */
     public final SGetAddress getServerAddress() {
-        if  ( DEBUG && serverAddress.getRelativeAddress()==null && getParent()!=null )
-            System.out.println("Frame " + serverAddress);
-
-        return (SGetAddress)serverAddress.clone();
-    }
-
-    /**
-     * TODO: documentation
-     */
-    public final SGetAddress getServerAddress(boolean target) {
-        if ( DEBUG && serverAddress.getRelativeAddress()==null && getParent()!=null )
+        if  (DEBUG && serverAddress.getRelativeAddress() == null && getParent() != null)
             System.out.println("Frame " + serverAddress);
 
         return (SGetAddress)serverAddress.clone();
@@ -400,17 +377,25 @@ public class SFrame
 	return headers;
     }
 
+    public void addLink(SLink link) {
+	links.add(link);
+    }
+
+    public void clearLinks() {
+	links.clear();
+    }
+    
+    public List links() {
+	return links;
+    }
 
     /**
      * TODO: documentation
      *
      * @param t
      */
-    public void setTitle(String t) {
-        if ( t==null )
-            title = "";
-        else
-            title = t;
+    public void setTitle(String title) {
+        this.title = title;
     }
     /**
      * TODO: documentation
@@ -570,6 +555,28 @@ public class SFrame
         return cgClassID;
     }
 
+    public void invalidate() {
+        epoch++;
+    }
+
+    public int getEpoch() {
+        return epoch;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+    public String getMimeType() {
+        return mimeType;
+    }
+
     private class SStackLayout extends SAbstractLayoutManager
     {
         private SContainer container = null;
@@ -605,6 +612,10 @@ public class SFrame
 
     public void setCG(FrameCG cg) {
         super.setCG(cg);
+    }
+
+    public void invite(ComponentVisitor visitor) {
+        getContentPane().invite(visitor);
     }
 }
 

@@ -152,7 +152,7 @@ public class SBaseTable
         boolean oldHeaderVisible = headerVisible;
         headerVisible = hv;
         if (oldHeaderVisible != headerVisible)
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**
@@ -185,7 +185,7 @@ public class SBaseTable
         width = w;
         if ((width == null && oldWidth != null) ||
             width != null && !width.equals(oldWidth))
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**
@@ -207,7 +207,7 @@ public class SBaseTable
         boolean oldShowHorizontalLines = showHorizontalLines;
         showHorizontalLines = b;
         if (showHorizontalLines != oldShowHorizontalLines)
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**
@@ -228,7 +228,7 @@ public class SBaseTable
         boolean oldShowVerticalLines = showVerticalLines;
         showVerticalLines = b;
         if (showVerticalLines != oldShowVerticalLines)
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**
@@ -255,7 +255,7 @@ public class SBaseTable
         intercellSpacing = d;
         if ((intercellSpacing == null && oldIntercellSpacing != null) ||
             intercellSpacing != null && !intercellSpacing.equals(oldIntercellSpacing))
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**
@@ -282,7 +282,7 @@ public class SBaseTable
         intercellPadding = d;
         if ((intercellPadding == null && oldIntercellPadding != null) ||
             intercellPadding != null && !intercellPadding.equals(oldIntercellPadding))
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**
@@ -312,7 +312,7 @@ public class SBaseTable
 
         if ((model == null && oldModel != null) ||
             model != null && !model.equals(oldModel))
-            reload();
+            reload(RELOAD_MODEL);
     }
 
     /**
@@ -477,7 +477,7 @@ public class SBaseTable
      * @param e
      */
     public void tableChanged(TableModelEvent e) {
-        reload();
+        reload(RELOAD_MODEL);
     }
 
 
@@ -522,7 +522,7 @@ public class SBaseTable
         viewport = d;
         if ((viewport == null && oldViewport != null) ||
             viewport != null && !viewport.equals(oldViewport))
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**

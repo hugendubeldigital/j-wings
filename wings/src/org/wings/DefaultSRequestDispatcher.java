@@ -21,7 +21,8 @@ import java.util.StringTokenizer;
 import org.wings.session.SessionManager;
 
 /**
- * This implementation of a {@link SGetDispatcher} saves the listener
+ * PENDING (dynamic resources) the reloadmanager shou
+ * This implementation of a {@link SRequestDispatcher} saves the listeners
  * in a HashMap and is therefore much faster than the
  * {@link DefaultGetDispatcher}.
  *
@@ -69,7 +70,7 @@ public final class DefaultSRequestDispatcher
 
     /**
      * Registers a listener. The NamePrefix of the listener is stored in the
-     * HasMap as key. The value is a Set (ArrayList) of {@link RequestListener}.
+     * HashMap as key. The value is a Set (ArrayList) of {@link RequestListener}.
      *
      * @param gl listener
      */
@@ -178,9 +179,9 @@ public final class DefaultSRequestDispatcher
         if (components != null) {
             for (int i=0; i < components.length; i++) {
                 if (components[i] instanceof SFrame)
-                    ((SFrame)components[i]).dispatchDone();
+                    ((SFrame)components[i]).invalidate();
                 else
-                    components[i].getParentFrame().dispatchDone();
+                    components[i].getParentFrame().invalidate();
             }
         }
     }

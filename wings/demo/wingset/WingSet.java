@@ -20,7 +20,6 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.wings.*;
-import org.wings.externalizer.*;
 import org.wings.plaf.*;
 import org.wings.servlet.*;
 import org.wings.session.*;
@@ -40,16 +39,6 @@ public class WingSet
         DefaultSession session = new DefaultSession();
 
         if (!LookAndFeelFactory.isDeployed("xhtml/css1")) {
-            try {
-                URL url = servletConfig.getServletContext().getResource("css1.jar");
-                LookAndFeelFactory.deploy(url);
-            }
-            catch (Exception e) {
-                System.err.println(e.getMessage());
-                e.printStackTrace(System.err);
-            }
-        }
-        if (!LookAndFeelFactory.isDeployed("xhtml/old")) {
             try {
                 URL url = servletConfig.getServletContext().getResource("css1.jar");
                 LookAndFeelFactory.deploy(url);

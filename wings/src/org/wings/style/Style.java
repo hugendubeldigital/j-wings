@@ -14,38 +14,39 @@
 
 package org.wings.style;
 
+import java.util.*;
+
 /**
  * TODO: documentation
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class Style
+public final class Style
+    extends SimpleAttributeSet
 {
-    private String id;
+    StyleSheet sheet;
 
-    /**
-     * TODO: documentation
-     *
-     * @param id
-     */
-    public Style(String id) {
-        this.id = id;
+    public Style(String name, AttributeSet attributes) {
+        super(attributes);
+        this.name = name;
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getID() { return id; }
+    private String name;
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String toString() { return id; }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getName() { return name; }
+
+    public void setSheet(StyleSheet sheet) {
+        this.sheet = sheet;
+    }
+    public StyleSheet getSheet() { return sheet; }
+
+    public String toString() {
+        return name + " { " + super.toString() + "}";
+    }
 }
 
 /*

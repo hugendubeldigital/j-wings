@@ -49,6 +49,7 @@ public class LookAndFeel
     protected Properties properties;
     protected ClassLoader classLoader;
     protected CGDefaults defaults;
+    protected StyleSheet styleSheet;
 
     /**
      * Instantiate a laf using the war's classLoader.
@@ -57,7 +58,7 @@ public class LookAndFeel
     public LookAndFeel(Properties properties) {
 	this.properties = properties;
 	this.classLoader = getClass().getClassLoader();
-
+        System.err.println("new LookAndFeel");
         defaults = new ResourceFactory();
     }
 
@@ -110,6 +111,16 @@ public class LookAndFeel
      */
     public CGDefaults getDefaults() {
         return defaults;
+    }
+
+    /**
+     * Return the <code>lookandfeel.stylesheet</code>
+     * @return the laf's style sheet
+     */
+    public StyleSheet getStyleSheet() {
+        if (styleSheet == null)
+            styleSheet = (StyleSheet)defaults.get("lookandfeel.stylesheet");
+        return styleSheet;
     }
 
     /**
@@ -175,64 +186,58 @@ public class LookAndFeel
     }
 
     /**
-     * Utility method that creates a font from a font spec
-     * @param spec attributes of the font
-     * @return a font with the given attributes
+     * Utility method that creates an AttributeSet from a String
+     *
+     * @param attributes attributes string
+     * @return a newly allocated AttributeSet
      */
-    public static SFont makeFont(String value) {
-        int pos1 = value.indexOf(",", 1);
-        String name = value.substring(0, pos1);
-
-        int pos2 = value.indexOf(",", pos1 + 1); 
-        String styleString = value.substring(pos1, pos2);
-        int style = Font.PLAIN;
-        if (styleString.indexOf("ITALIC") != -1)
-            style |= Font.ITALIC;
-        if (styleString.indexOf("BOLD") != -1)
-            style |= Font.BOLD;
-
-        int size = new Integer(value.substring(pos2 + 1)).intValue();
-
-        return new SFont(name, style, size);
+    public AttributeSet makeAttributeSet(String string) {
+        AttributeSet attributes = new SimpleAttributeSet();
+        StringTokenizer tokens = new StringTokenizer(string, ";");
+        while (tokens.hasMoreTokens()) {
+            String token = tokens.nextToken();
+            int pos = token.indexOf(":");
+            if (pos >= 0)
+                attributes.putAttribute(token.substring(0, pos), token.substring(pos + 1));
+        }
+        return attributes;
     }
 
     /**
-     * Utility method that creates a color from a hex string
-     * @param value color as a hex string
-     * @return the color
-     */
-    public static Color makeColor(String value) {
-        int r = Integer.parseInt(value.substring(1, 3), 16);
-        int g = Integer.parseInt(value.substring(3, 5), 16);
-        int b = Integer.parseInt(value.substring(5, 7), 16);
-        return new Color(r, g, b);
-    }
-
-    /**
-     * Utility method that creates a style from a string
-     * @param value style as a string
-     * @return the style
-     */
-    public static Style makeStyle(String style) {
-        return new Style(style);
-    }
-
-    /**
-     * Utility method that creates a styleSheet from a string
+     * Utility method that creates a styleSheet from a resource string
      * @param value styleSheet as a string
      * @return the style
      */
     public static StyleSheet makeStyleSheet(ClassLoader classLoader, String resourceName) {
-        return new ResourceStyleSheet(classLoader, resourceName);
+        CSSStyleSheet sheet = new CSSStyleSheet();
+        try {
+            InputStream in = classLoader.getResourceAsStream(resourceName);
+            sheet.read(in);
+        }
+        catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace(System.err);
+        }
+        return sheet;
     }
 
     /**
      * Utility method that creates a styleSheet from a string
      * @param value styleSheet as a string
-     * @return the style
+     * @return the styleSheet
      */
     public StyleSheet makeStyleSheet(String resourceName) {
-        return new ResourceStyleSheet(classLoader, resourceName);
+        return makeStyleSheet(classLoader, resourceName);
+    }
+
+    /**
+     * Utility method that fetches the style with the specified <code>name</code>
+     * from the <code>lookandfeel.stylesheet</code>
+     * @param value styleSheet as a string
+     * @return the style
+     */
+    public Style makeStyle(String name) {
+        return getStyleSheet().getStyle(name);
     }
 
     /**
@@ -245,7 +250,7 @@ public class LookAndFeel
      */
     public static Object makeObject(ClassLoader classLoader, String value, Class clazz) {
         try {
-            //            System.err.println("makeObject of type " + clazz.getName() + " with " + value);
+            System.err.println("makeObject of type " + clazz.getName() + " with " + value);
             if (value.startsWith("new ")) {
                 int bracket = value.indexOf("(");
                 String name = value.substring("new ".length(), bracket);
@@ -301,24 +306,25 @@ public class LookAndFeel
             if (property == null)
                 return null;
 
+            System.err.print("make " + type);
+            long millis = System.currentTimeMillis();
             if (ComponentCG.class.isAssignableFrom(type))
                 value = makeCG(property);
             else if (LayoutCG.class.isAssignableFrom(type))
                 value = makeCG(property);
             else if (BorderCG.class.isAssignableFrom(type))
                 value = makeCG(property);
+            else if (AttributeSet.class.isAssignableFrom(type))
+                value = makeAttributeSet(property);
             else if (SIcon.class.isAssignableFrom(type))
                 value = makeIcon(property);
-            else if (SFont.class.isAssignableFrom(type))
-                value = makeFont(property);
-            else if (Color.class.isAssignableFrom(type))
-                value = makeColor(property);
-            else if (Style.class.isAssignableFrom(type))
-                value = makeStyle(property);
             else if (StyleSheet.class.isAssignableFrom(type))
                 value = makeStyleSheet(property);
+            else if (Style.class.isAssignableFrom(type))
+                value = makeStyle(property);
             else
                 value = makeObject(property, type);
+            System.err.println(System.currentTimeMillis() - millis);
 
             put(id, value);
             return value;

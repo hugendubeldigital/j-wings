@@ -123,11 +123,6 @@ public final class SUtil
      * @deprecated Use Utils in plaf
      */
     public static void appendTableCellSpan(Device s, SComponent c) {
-        if ( c.getRowSpan()>0 )
-            s.append(" ROWSPAN=").append(c.getRowSpan());
-
-        if ( c.getColSpan()>0 )
-            s.append(" COLSPAN=").append(c.getColSpan());
     }
 
 

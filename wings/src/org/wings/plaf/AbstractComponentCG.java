@@ -27,12 +27,14 @@ import org.wings.plaf.*;
 import org.wings.style.*;
 
 /**
- * Partial implementation that is common to all ComponentCGs.
+ * Partial CG implementation that is common to all ComponentCGs.
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
 public abstract class AbstractComponentCG implements ComponentCG
 {
+    static Map cache = Collections.synchronizedMap(new HashMap());
+
     /**
      * Install the appropriate CG for <code>component</code>.
      * @param component the component
@@ -50,9 +52,13 @@ public abstract class AbstractComponentCG implements ComponentCG
      */
     protected void configure(Object object, String className, CGManager manager) {
         try {
-            BeanInfo info = Introspector.getBeanInfo(object.getClass());
+            PropertyDescriptor[] descriptors = (PropertyDescriptor[])cache.get(object.getClass());
+            if (descriptors == null) {
+                BeanInfo info = Introspector.getBeanInfo(object.getClass());
+                descriptors = info.getPropertyDescriptors();
+                cache.put(object.getClass(), descriptors);
+            }
 
-            PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
             for (int i=0; i < descriptors.length; i++) {
                 Object value = null;
 
@@ -65,6 +71,7 @@ public abstract class AbstractComponentCG implements ComponentCG
                     continue;
 
                 String propertyName = className + "." + descriptors[i].getName();
+                //System.err.println(propertyName);
                 Class propertyType = descriptors[i].getPropertyType();
                 boolean configurable = false;
 

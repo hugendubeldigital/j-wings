@@ -82,8 +82,6 @@ public class FrameCG
             d.append(" />\n");
         }
 
-        // JavaScript ist in Kommentaren nicht mehr erlaubt, weil xml-Parser Kommentare entfernen dürfen
-
         it = headers.iterator();
         while (it.hasNext()) {
             d.append(it.next());

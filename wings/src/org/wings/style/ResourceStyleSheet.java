@@ -27,7 +27,6 @@ import org.wings.Resource;
  * @version $Revision$
  */
 public class ResourceStyleSheet extends Resource
-    implements StyleSheet
 {
 
     /**

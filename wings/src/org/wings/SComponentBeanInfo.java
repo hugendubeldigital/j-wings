@@ -39,9 +39,6 @@ public class SComponentBeanInfo extends SimpleBeanInfo
     public PropertyDescriptor[] getPropertyDescriptors() {
 	try {
 	    PropertyDescriptor style       = new PropertyDescriptor("style", beanClass);
-	    PropertyDescriptor background  = new PropertyDescriptor("background", beanClass);
-	    PropertyDescriptor foreground  = new PropertyDescriptor("foreground", beanClass);
-	    PropertyDescriptor font        = new PropertyDescriptor("font", beanClass);
 	    PropertyDescriptor visible     = new PropertyDescriptor("visible", beanClass);
 	    PropertyDescriptor enabled     = new PropertyDescriptor("enabled", beanClass);
 	    PropertyDescriptor name        = new PropertyDescriptor("name", beanClass);
@@ -53,8 +50,8 @@ public class SComponentBeanInfo extends SimpleBeanInfo
 	    verticalAlignment.setValue("enumerationValues", verticalAlignments);
  
 	    PropertyDescriptor rv[] = {
-		style, background, foreground,
-		font, visible, enabled,
+		style,
+		visible, enabled,
 		name, toolTipText
 	    };
 	    return rv;

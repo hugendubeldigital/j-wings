@@ -81,21 +81,9 @@ public class TestLookAndFeel
 	BorderCG borderCG = (BorderCG)laf.makeCG("org.wings.plaf.xhtml.css1.EtchedBorderCG");
 	Assert.assertNotNull(borderCG);
 
-	// makeFont
-	SFont font = laf.makeFont("sans-serif,PLAIN,12");
-	Assert.assertEquals("sans-serif", font.getFace());
-	Assert.assertEquals(SConstants.PLAIN, font.getStyle());
-	Assert.assertEquals(12, font.getSize());
-
-	// makeColor
-	Color color = laf.makeColor("#AABBCC");
-	Assert.assertEquals(170, color.getRed());
-	Assert.assertEquals(187, color.getGreen());
-	Assert.assertEquals(204, color.getBlue());
-
-	// makeStyle
-	Style style = laf.makeStyle("blub");
-	Assert.assertEquals("blub", style.getID());
+	// makeAttributeSet
+	AttributeSet attributeSet = laf.makeAttributeSet("color:#123456");
+	Assert.assertEquals("#123456", attributeSet.getAttribute("color"));
 
 	// makeObject
 	Object object = laf.makeObject("42", Integer.class);

@@ -67,7 +67,7 @@ public class STextArea
         int oldRows = rows;
         rows = r;
         if (oldRows != rows)
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**
@@ -89,7 +89,7 @@ public class STextArea
         int oldColumns = columns;
         columns = c;
         if (columns != oldColumns)
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**

@@ -385,7 +385,12 @@ public abstract class SessionServlet
         if (this.frame != null)
           frame.setServer(this.frame.getServerAddress().getAbsoluteAddress());
         this.frame = frame;
-        frame.setBaseTarget(getSession().getReloadManager().getTarget());
+
+        String target = null;
+        SComponent component = getSession().getReloadManager().getManagerComponent();
+        if (component != null)
+            target = "frame" + component.getUnifiedId();
+        frame.setBaseTarget(target);
     }
 
     /**

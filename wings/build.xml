@@ -96,7 +96,7 @@
 
 
   <!-- ==================== LookAndFeel Jars ==================== -->
-  <target name="plaf" depends="css1,old" />
+  <target name="plaf" depends="css1" />
 
   <target name="css1" depends="compile">
     <jar jarfile="${distlib}/css1.jar">
@@ -111,19 +111,25 @@
     </jar>
   </target>
 
-  <target name="old" depends="compile">
-    <jar jarfile="${distlib}/old.jar">
-      <fileset dir="${classes}">
-        <include name="org/wings/plaf/xhtml/*.class" />
-        <include name="org/wings/plaf/xhtml/old/*" />
-        <exclude name="org/wings/plaf/xhtml/old/default.properties" />
+  <target name="parser" depends="prepare">
+    <delete dir="${build}/src" />
+    <mkdir dir="${build}/src/org/wings/style" />
+    <copy todir="${build}/src/org/wings/style">
+      <fileset dir="jj">
+        <include name="*.java" />
       </fileset>
-      <fileset dir="${classes}/org/wings/plaf/xhtml/old">
-        <include name="default.properties" />
-      </fileset>
-    </jar>
-  </target>
+    </copy>
+    <javacc target="jj/css1.jj" 
+	    outputdirectory="${build}/src/org/wings/style"
+	    javacchome="${javacc.home}/bin/lib"/>
 
+    <javac srcdir="${build}/src" destdir="${build}/classes"
+	   debug="true"
+	   deprecation="${build.deprecation}"
+	   encoding="ISO8859-1">
+      <classpath refid="build.classpath" />
+    </javac>
+  </target>
 
   <target name="testcompile" depends="jar,css1">
     <javac srcdir="${testsrc}" destdir="${testclasses}"
@@ -133,6 +139,9 @@
       <classpath refid="testcompile.classpath"/>
     </javac>
     <copy file="${distlib}/css1.jar" todir="${testsrc}/org/wings/plaf"/>
+    <copy todir="${testclasses}">
+      <fileset dir="testres"/>
+    </copy>
   </target>
 
   <target name="test" depends="testcompile">

@@ -42,9 +42,7 @@ import org.wings.session.SessionManager;
 public class ReloadManagerFrame
     extends SFrame
 {
-    public ReloadManagerFrame() {
-        //	getSession().getDispatcher().setTarget(getUnifiedIdString());
-    }
+    public ReloadManagerFrame() {}
 
     public final SContainer getContentPane() {
         return null; // heck :-)

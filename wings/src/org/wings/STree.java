@@ -171,7 +171,7 @@ public class STree
                 ((TreeSelectionListener)selectionListener.get(i)).valueChanged(e);
             }
         }
-        reload();
+        reload(RELOAD_MODEL);
     }
 
 
@@ -733,7 +733,7 @@ public class STree
          }
         */
         fireTreeExpanded(p);
-        reload();
+        reload(RELOAD_STATE);
     }
 
     /**
@@ -753,7 +753,7 @@ public class STree
     public void collapseRow(TreePath p) {
         treeState.setExpandedState(p, false);
         fireTreeCollapsed(p);
-        reload();
+        reload(RELOAD_STATE);
     }
 
     /**
@@ -917,7 +917,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeNodesChanged(e);
-            reload();
+            reload(RELOAD_MODEL);
         }
 
         /**
@@ -929,7 +929,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeNodesInserted(e);
-            reload();
+            reload(RELOAD_MODEL);
         }
 
         /**
@@ -941,7 +941,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeStructureChanged(e);
-            reload();
+            reload(RELOAD_MODEL);
         }
 
         /**
@@ -953,7 +953,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeNodesRemoved(e);
-            reload();
+            reload(RELOAD_MODEL);
         }
     }
 
@@ -1050,7 +1050,7 @@ public class STree
         viewport = d;
         if ((viewport == null && oldViewport != null) ||
             (viewport != null && !viewport.equals(oldViewport)))
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**

@@ -75,7 +75,7 @@ public class SAnchor
         reference = r;
         if (reference == null && oldReference != null ||
             reference != null && !reference.equals(oldReference))
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**

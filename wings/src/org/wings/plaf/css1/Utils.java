@@ -69,9 +69,8 @@ public final class Utils
     static void printStyle(Device d, Style style)
         throws IOException
     {
-        String value = null;
-        if (style != null) value = style.getID();
-        printOptAttr(d, "class", value);
+        if (style != null)
+            printOptAttr(d, "class", style.getName());
     }
 
     /**

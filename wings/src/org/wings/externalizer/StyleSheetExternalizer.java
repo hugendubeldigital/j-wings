@@ -50,14 +50,7 @@ public class StyleSheetExternalizer
     public void write(Object obj, java.io.OutputStream out)
         throws java.io.IOException
     {
-        InputStream in = ((StyleSheet)obj).getInputStream();
-        byte[] buffer = new byte[2000];
-        while ( in.available() > 0 ) {
-            int count = in.read(buffer);
-            if ( count > 0 )  // read sometimes returns -1 at the end...
-                out.write(buffer, 0, count);
-        }
-        in.close();
+        ((StyleSheet)obj).write(out);
     }
 
     public Class[] getSupportedClasses() {

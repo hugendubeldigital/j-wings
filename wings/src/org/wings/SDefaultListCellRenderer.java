@@ -19,7 +19,7 @@ import java.io.IOException;
 import javax.swing.*;
 
 import org.wings.io.Device;
-import org.wings.style.Style;
+import org.wings.style.*;
 
 /**
  * TODO: documentation

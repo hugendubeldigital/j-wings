@@ -40,30 +40,21 @@ public interface ReloadManager
 {
     /**
      * Mark a <code>component</code> dirty.
-     * Frames that container dirty components have to be reloaded.
+     * Frames that contain dirty components have to be reloaded.
      * @param component the dirty component
      */
-    void markDirty(SComponent component);
+    void markDirty(SComponent component, int aspect);
 
     /**
      * Return an array of all dirty components.
      * @return an array of all dirty components
      */
-    SComponent[] getDirtyComponents();
+    SComponent[] getDirtyComponents(int aspect);
+
     /**
      * Clear dirts components list.
      */
-    void clearDirtyComponents();
-
-    /**
-     * Get the reload manager component, that is the target of all links.
-     */
-    SComponent getManagerComponent();
-
-    /**
-     * The key to the reload manager component
-     */
-    String getTarget();
+    void clearDirtyComponents(int aspect);
 }
 
 /*

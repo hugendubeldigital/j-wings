@@ -31,8 +31,7 @@ import org.wings.style.Style;
 import org.wings.externalizer.ExternalizeManager;
 
 /**
- * This is a default implementation of the reload manager. It assumes, that
- * the whole document has to be reloaded with every request.
+ * This is the default implementation of the reload manager.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
@@ -40,27 +39,45 @@ import org.wings.externalizer.ExternalizeManager;
 public class DefaultReloadManager
     implements ReloadManager
 {
-    private SFrame frame = null;
+    Aspect[] aspects = new Aspect[0];
 
-    public void markDirty(SComponent component) {
-	if (component.getParentFrame() != null)
-	    frame = component.getParentFrame();
-    }
-    public SComponent[] getDirtyComponents() {
-	if (frame != null)
-	    return new SComponent[] { frame };
-	else
-	    return null;
+    public void addAspect(int aspect) {
+        int count = aspects.length;
+        Aspect[] newAspects = new Aspect[count+1];
+        System.arraycopy(aspects, 0, newAspects, 0, count);
+        newAspects[count] = new Aspect(aspect);
+        aspects = newAspects;
     }
 
-    public void clearDirtyComponents() {}
-
-    public SComponent getManagerComponent() {
-	return null;
+    public void markDirty(SComponent component, int aspect) {
+        SFrame frame = component.getParentFrame();
+        for (int i=0; i < aspects.length; i++)
+            if ((aspects[i].aspect & aspect) == aspects[i].aspect)
+                aspects[i].dirty.add(frame);
     }
 
-    public String getTarget() {
-	return null;
+    public SComponent[] getDirtyComponents(int aspect) {
+        List components = new LinkedList();
+        for (int i=0; i < aspects.length; i++)
+            if ((aspects[i].aspect & aspect) == aspects[i].aspect)
+                components.addAll(aspects[i].dirty);
+
+        return (SComponent[])components.toArray(new SComponent[components.size()]);
+    }
+
+    public void clearDirtyComponents(int aspect) {
+        for (int i=0; i < aspects.length; i++)
+            if ((aspects[i].aspect & aspect) == aspects[i].aspect)
+                aspects[i].dirty.clear();
+    }
+
+    static class Aspect {
+        public int aspect;
+        public List dirty = new LinkedList();
+
+        public Aspect(int aspect) {
+            this.aspect = aspect;
+        }
     }
 }
 

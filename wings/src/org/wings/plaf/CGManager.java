@@ -85,23 +85,13 @@ public class CGManager
     }
 
     /**
-     * Get a Font from the defaults table.
+     * Get a StyleSheet from the defaults table.
      * If the there's no value associated to the <code>key</code>, the request
      * is delegated to the laf's defaults table.
      * @param key the lookup key
      */
-    public SFont getFont(String key) {
-        return (SFont)getDefaults().get(key, SFont.class);
-    }
-
-    /**
-     * Get a Color from the defaults table.
-     * If the there's no value associated to the <code>key</code>, the request
-     * is delegated to the laf's defaults table.
-     * @param key the lookup key
-     */
-    public Color getColor(String key) {
-        return (Color)getDefaults().get(key, Color.class);
+    public StyleSheet getStyleSheet(String key) {
+        return (StyleSheet)getDefaults().get(key, StyleSheet.class);
     }
 
     /**
@@ -112,16 +102,6 @@ public class CGManager
      */
     public Style getStyle(String key) {
         return (Style)getDefaults().get(key, Style.class);
-    }
-
-    /**
-     * Get a StyleSheet from the defaults table.
-     * If the there's no value associated to the <code>key</code>, the request
-     * is delegated to the laf's defaults table.
-     * @param key the lookup key
-     */
-    public StyleSheet getStyleSheet(String key) {
-        return (StyleSheet)getDefaults().get(key, StyleSheet.class);
     }
 
     /**

@@ -495,7 +495,7 @@ public class STable
         int oldEditingColumn = editingColumn;
         editingColumn = aColumn;
         if (editingColumn != oldEditingColumn)
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**
@@ -507,7 +507,7 @@ public class STable
         int oldEditingRow = editingRow;
         editingRow = aRow;
         if (editingRow != oldEditingRow)
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**
@@ -577,7 +577,7 @@ public class STable
             Object value = editor.getCellEditorValue();
             setValueAt(value, editingRow, editingColumn);
             removeEditor();
-            reload();
+            reload(RELOAD_STATE);
         }
     }
 
@@ -589,7 +589,7 @@ public class STable
      */
     public void editingCanceled(ChangeEvent e) {
         removeEditor();
-        reload();
+        reload(RELOAD_STATE);
     }
 
     /**
@@ -750,7 +750,7 @@ public class STable
                 ((ListSelectionListener)listeners[i+1]).valueChanged(e);
             }
         }
-        reload();
+        reload(RELOAD_MODEL);
     }
 
     public void fireIntermediateEvents() {
@@ -874,7 +874,7 @@ public class STable
         } else {
             initSelectables();
         }
-        reload();
+        reload(RELOAD_MODEL);
     }
 
     /**

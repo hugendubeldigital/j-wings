@@ -50,6 +50,12 @@ public final class FrameCG
         else {
             System.err.println("Frame.styleSheet == null!");
         }
+
+        Iterator iterator = frame.links().iterator();
+        while (iterator.hasNext()) {
+            SLink link = (SLink)iterator.next();
+            link.write(d);
+        }
     }
 }
 

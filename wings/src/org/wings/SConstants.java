@@ -98,6 +98,12 @@ public interface SConstants
     int PLAIN = java.awt.Font.PLAIN;
     int ITALIC = java.awt.Font.ITALIC;
     int BOLD = java.awt.Font.BOLD;
+
+    int RELOAD_MODEL = 1;
+    int RELOAD_STYLE = 2;
+    int RELOAD_SCRIPT = 4;
+    int RELOAD_STATE = 8;
+    int RELOAD_ALL = RELOAD_MODEL | RELOAD_STYLE | RELOAD_SCRIPT | RELOAD_STATE;
 }
 
 /*

@@ -14,9 +14,8 @@
 
 package org.wings.style;
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 /**
  * TODO: documentation
@@ -26,14 +25,15 @@ import java.util.Set;
  */
 public interface StyleSheet
 {
-    Set styleSet();
+    void putStyle(Style style);
+    Style getStyle(String name);
+    Style removeStyle(String name);
 
-    InputStream getInputStream() throws IOException;
-
+    Set styles();
     boolean isFinal();
 
-    // we'll also need some getters for getting the Style associated
-    // with a key
+    void write(OutputStream out) throws IOException;
+    void read(InputStream inStream) throws IOException;
 }
 
 /*

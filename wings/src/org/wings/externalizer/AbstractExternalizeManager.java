@@ -323,7 +323,6 @@ public abstract class AbstractExternalizeManager
         } else {
             return externalize(extInfo);
         }
-                               
     }
 
 

@@ -122,7 +122,7 @@ public final class BaseTableCG
         SCellRendererPane rendererPane = baseTable.getCellRendererPane();
         if (baseTable.isHeaderVisible()) {
             d.append("<tr");
-            Utils.writeStyleAttribute(d, style, "header");
+            Utils.writeStyleAttribute(d, "", style, "header");
             d.append(">\n");
             for (int c = originCol; c < colCount; c++) {
                 writeHeaderCell(d, baseTable, rendererPane, c);
@@ -131,7 +131,7 @@ public final class BaseTableCG
         }
         for (int r = originRow; r < rowCount; r++) {
             d.append("<tr");
-            Utils.writeStyleAttribute(d, style, "cell");
+            Utils.writeStyleAttribute(d, "", style, "cell");
             d.append(">\n");
             for (int c = originCol; c < colCount; c++) {
                 writeCell(d, baseTable, rendererPane, r, c);

@@ -154,7 +154,7 @@ public class SButton extends SAbstractButton
         icon = i;
         if ((icon == null && oldIcon != null) ||
             icon != null && !icon.equals(oldIcon))
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**
@@ -176,7 +176,7 @@ public class SButton extends SAbstractButton
         disabledIcon = i;
         if ((disabledIcon == null && oldDisabledIcon != null) ||
             disabledIcon != null && !disabledIcon.equals(oldDisabledIcon))
-            reload();
+            reload(RELOAD_STATE);
     }
 
     /**
