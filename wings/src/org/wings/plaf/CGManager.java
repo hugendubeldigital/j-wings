@@ -32,6 +32,7 @@ public class CGManager
     private static Logger logger = Logger.getLogger("org.wings.plaf");
 
     private LookAndFeel lookAndFeel;
+    private CGDefaults defaults = null;
 
     /**
      * Get an Object from the defaults table.
@@ -114,8 +115,6 @@ public class CGManager
         return (SIcon)getDefaults().get(key, SIcon.class);
     }
 
-    private CGDefaults defaults = null;
-
     /**
      * Set the defaults table.
      * @param defaults the defaults table
@@ -129,8 +128,9 @@ public class CGManager
      * @return the defaults table
      */
     public CGDefaults getDefaults() {
-        if (defaults == null)
+        if (defaults == null) {
             logger.warning("defaults == null");
+        }
         return defaults;
     }
 
@@ -175,9 +175,10 @@ public class CGManager
         }
 
         // have the session fire a propertyChangeEvent regarding the new lookAndFeel
-        if (SessionManager.getSession() != null)
+        if (SessionManager.getSession() != null) {
             ((PropertyService)SessionManager.getSession())
                 .setProperty("lookAndFeel", "" + newLookAndFeel.hashCode());
+        }
     }
 }
 
