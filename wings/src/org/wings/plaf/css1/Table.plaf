@@ -133,9 +133,13 @@
             comp = table.prepareRenderer(table.getCellRenderer(row, col), row, col);
 
         %><td<%
-        %><%|class=(comp!=null)?comp.getStyle():null%><% 
-	String compStyle = comp.getStyle();
-	comp.setStyle(null);
+        if (comp == null) {
+            %>></td><%
+            return;
+        }
+        %><%|class=comp.getStyle()%><%
+	    final String compStyle = comp.getStyle();
+	    comp.setStyle(null);
         %>><%
 
         boolean pushedURL = false;
@@ -154,15 +158,15 @@
                 %></a>&nbsp;<%
             }
         }
-		
-	rendererPane.writeComponent(device, comp, table);
+
+        rendererPane.writeComponent(device, comp, table);
 
         if (pushedURL) {
             AnchorRenderStack.pop();
         }
 
+        comp.setStyle(compStyle);
         %></td><%
-	comp.setStyle(compStyle);
     }
 
     protected void writeDefaultFormRowSelection(Device device, STable table, 
