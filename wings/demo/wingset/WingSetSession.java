@@ -104,7 +104,6 @@ public class WingSetSession
         group.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     try {
-                        URL contextURL = new URL(getFrame().getServerAddress().getAbsoluteAddress());
                         if (css1.isSelected())
                             getSession().getCGManager().setLookAndFeel("xhtml/css1");
                         else

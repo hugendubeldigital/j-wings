@@ -214,7 +214,7 @@ public class TableCG
         d.append(">");
 
         if ( !isEditingCell && table.isCellEditable(row, col) ) {
-            SGetAddress editAddr = table.getServerAddress();
+            RequestURL editAddr = table.getRequestURL();
             editAddr.addParameter(table.getEditParameter(row, col));
             
             d.append("<a href=\"").append(editAddr.toString()).

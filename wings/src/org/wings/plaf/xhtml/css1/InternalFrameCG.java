@@ -53,7 +53,7 @@ public class InternalFrameCG
         if (text == null)
             text = "wingS";
 
-        SGetAddress addr;
+        RequestURL addr;
 
         d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\"><tr>");
         if (frame.getIcon() != null) {
@@ -69,7 +69,7 @@ public class InternalFrameCG
         cols ++;
 
         if (iconify != null) {
-            addr = frame.getServerAddress();
+            addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_ICONIFIED);
 
             d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
@@ -81,7 +81,7 @@ public class InternalFrameCG
         }
 
         if (deiconify != null) {
-            addr = frame.getServerAddress();
+            addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_DEICONIFIED);
 
             d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
@@ -93,7 +93,7 @@ public class InternalFrameCG
         }
 
         if (maximize != null) {
-            addr = frame.getServerAddress();
+            addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_MAXIMIZED);
 
             d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
@@ -105,7 +105,7 @@ public class InternalFrameCG
         }
 
         if (unmaximize != null) {
-            addr = frame.getServerAddress();
+            addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_UNMAXIMIZED);
 
             d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
@@ -117,7 +117,7 @@ public class InternalFrameCG
         }
 
         if (close != null) {
-            addr = frame.getServerAddress();
+            addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_CLOSED);
 
             d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")

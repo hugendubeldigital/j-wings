@@ -34,7 +34,7 @@ public class SelectableTableCellRenderer
             value = "&nbsp";
         if (isSelectableColumn(col))
         {
-            SGetAddress addr = baseTable.getServerAddress();
+            RequestURL addr = baseTable.getRequestURL();
             addr.addParameter(getNamePrefix() + "=" + col + DELIMITER + row);
             link.setText(value.toString());
             link.setReference(addr.toString());

@@ -91,21 +91,6 @@ public class ReloadManagerFrame
     }
 
     /**
-     * TODO: documentation
-     */
-    public void setServer(String path) {
-	super.setServer(path);
-	setServerAddress(serverAddress);
-    }
-
-    /**
-     * Set server address.
-     */
-    protected void setServerAddress(SGetAddress serverAddress) {
-        this.serverAddress = serverAddress;
-    }
-
-    /**
      * No LayoutManager allowed.
      */
     public void setLayout(SLayoutManager l) {
@@ -118,6 +103,7 @@ public class ReloadManagerFrame
      * After the code has been generated, the dirty components list is cleared.
      */
     public void write(Device d) throws IOException {
+        /*
 	ExternalizeManager externalizer = getSession().getExternalizeManager();
 
 	d.append("<head><title>ReloadManager</title>\n");
@@ -131,7 +117,7 @@ public class ReloadManagerFrame
 	if (toplevel != null) {
 	    System.err.println("reload the whole frameset");
 	    d.append("parent.location='");
-	    d.append(toplevel.getServerAddress());
+	    d.append(toplevel.getRequestURL());
 	    d.append("';\n");
 	}
 	else {
@@ -149,6 +135,7 @@ public class ReloadManagerFrame
 	d.append("</head>\n");
 	d.append("<body onload=\"reload()\"></body>");
 	getReloadManager().clearDirtyComponents();
+        */
     }
 
     private ReloadManager reloadManager = null;

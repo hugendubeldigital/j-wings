@@ -108,7 +108,7 @@ public class SFrame
 
     private Session session;
 
-    private final HashMap dynamicResources = new HashMap();
+    private HashMap dynamicResources;
 
     /**
      * TODO: documentation
@@ -135,6 +135,8 @@ public class SFrame
      *
      */
     public void addDynamicResource(DynamicResource d) {
+        if ( dynamicResources==null )
+            dynamicResources = new HashMap();
         dynamicResources.put(d.getClass(), d);
     }
 

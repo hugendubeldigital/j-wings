@@ -43,7 +43,7 @@ public final class FormCG
         if (encodingType != null)
             d.append(" enctype=\"").append(encodingType).append("\"");
 
-        d.append(" action=\"").append(form.getServerAddress()).
+        d.append(" action=\"").append(form.getRequestURL()).
             append("\">\n");
 
         // the event for the form action

@@ -156,16 +156,6 @@ public abstract class SComponent
         }
     }
 
-    /**
-     * Return the server address of the frame.
-     *
-     * @deprecated
-     * @return the server address
-     */
-    public RequestURL getServerAddress() {
-        return getRequestURL();
-    }
-
     public RequestURL getRequestURL() {
         SFrame p = getParentFrame();
         if (p == null)

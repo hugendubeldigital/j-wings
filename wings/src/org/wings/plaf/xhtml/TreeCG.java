@@ -170,13 +170,13 @@ public class TreeCG
                                                                         isLeaf, 0,
                                                                         false);
 
-        SGetAddress selectionAddr = tree.getServerAddress();
+        RequestURL selectionAddr = tree.getRequestURL();
         selectionAddr.addParameter(tree.getSelectionParameter(node));
 
         if ( isLeaf ) {
             Utils.appendIcon(d, leafIcon, null);
         } else {
-            SGetAddress expansionAddr = tree.getServerAddress();
+            RequestURL expansionAddr = tree.getRequestURL();
             expansionAddr.addParameter(tree.getExpansionParameter(node));
             d.append("<a href=").append(expansionAddr.toString()).append(">");
             if (isExpanded) {

@@ -172,7 +172,7 @@ public class ButtonCG
 
     protected void writeAnchorAddress(Device d, SButton button) 
     throws IOException {
-        SGetAddress addr = button.getServerAddress();
+        RequestURL addr = button.getRequestURL();
         addr.addParameter(button.getNamePrefix() + "=" + button.getUnifiedId() + SConstants.UID_DIVIDER);
         addr.write(d);
     }

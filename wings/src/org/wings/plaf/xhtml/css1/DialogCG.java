@@ -46,7 +46,7 @@ public final class DialogCG
         if (text == null)
             text = "Dialog";
 
-        SGetAddress addr;
+        RequestURL addr;
 
         d.append("<table border=\"0\" width=\"100%\" height=\"100%\"><tr>\n");
         d.append("<td align=\"center\" valign=\"center\">\n");
@@ -61,7 +61,7 @@ public final class DialogCG
 
         if (close != null) {
             SFrame frame = dialog.getParentFrame();
-            addr = frame.getServerAddress();
+            addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() +
                               "=" + SInternalFrameEvent.INTERNAL_FRAME_CLOSED);
 
@@ -101,7 +101,7 @@ public final class DialogCG
         if (encodingType != null)
             d.append(" enctype=\"").append(encodingType).append("\"");
 
-        d.append(" action=\"").append(dialog.getServerAddress()).
+        d.append(" action=\"").append(dialog.getRequestURL()).
             append("\">\n");
     }
 }

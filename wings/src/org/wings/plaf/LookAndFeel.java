@@ -119,7 +119,9 @@ public class LookAndFeel
      */
     public StyleSheet getStyleSheet() {
         if (styleSheet == null)
-            styleSheet = (StyleSheet)defaults.get("lookandfeel.stylesheet");
+            //            styleSheet =
+            //            (StyleSheet)defaults.get("lookandfeel.stylesheet");
+            styleSheet = makeStyleSheet("org/wings/plaf/xhtml/css1/default.css");
         return styleSheet;
     }
 
@@ -314,19 +316,19 @@ public class LookAndFeel
                 value = makeCG(property);
             else if (BorderCG.class.isAssignableFrom(type))
                 value = makeCG(property);
-            else if (AttributeSet.class.isAssignableFrom(type))
-                value = makeAttributeSet(property);
             else if (SIcon.class.isAssignableFrom(type))
                 value = makeIcon(property);
             else if (StyleSheet.class.isAssignableFrom(type))
                 value = makeStyleSheet(property);
             else if (Style.class.isAssignableFrom(type))
                 value = makeStyle(property);
+            else if (AttributeSet.class.isAssignableFrom(type))
+                value = makeAttributeSet(property);
             else
                 value = makeObject(property, type);
             System.err.println(System.currentTimeMillis() - millis);
 
-            put(id, value);
+            //            put(id, value);
             return value;
         }
     }

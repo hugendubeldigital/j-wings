@@ -47,20 +47,20 @@ public class RequestURL
     private StringBuffer parameters = null;
 
     /**
-     * creates an empty SGetAddress
+     * 
      */
     public RequestURL() { 
     }
 
     /**
-     * creates an empty SGetAddress
+     * 
      */
-    public RequestURL(String queryString) { 
-        
+    public RequestURL(String pathInfo) { 
+        System.out.println("pathInfo " + pathInfo);
     }
 
     /**
-     * creates an empty SGetAddress
+     * 
      */
     public RequestURL(String baseURL, String encodedBaseURL) { 
         setBaseURL(baseURL, encodedBaseURL);
@@ -118,7 +118,10 @@ public class RequestURL
         if ( baseParameters.length()==0 )
             baseParameters = null;
 
-        hasQuestMark = baseParameters.indexOf('?')>=0;
+        if ( baseParameters!=null )
+            hasQuestMark = baseParameters.indexOf('?')>=0;
+        else
+            hasQuestMark = false;
     }
 
 
@@ -202,11 +205,11 @@ public class RequestURL
         }
 
         if ( context!=null ) {
-            erg.append(context).append(_delimiter);
+            erg.append(context).append("_");
         }
 
         if ( epoch!=null ) {
-            erg.append(epoch).append(_delimiter);
+            erg.append(epoch).append("_");
         }
 
         if ( resource!=null ) {
@@ -218,7 +221,7 @@ public class RequestURL
         }
 
         if (parameters != null && parameters.length() > 0) {
-            erg.append(hasQuestMark ? _ampStr : _questMark);
+            erg.append(hasQuestMark ? "&" : "?");
             erg.append(parameters);
         }
 

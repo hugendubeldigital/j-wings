@@ -528,7 +528,7 @@ public abstract class SessionServlet
                     measure.start("time to dispatch");
 
                 // check actuality
-                RequestURL request = new RequestURL(req.getQueryString());
+                RequestURL request = new RequestURL(req.getPathInfo());
 
                 debug("request " + request);
 

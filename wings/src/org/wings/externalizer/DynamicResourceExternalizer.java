@@ -53,7 +53,7 @@ public class DynamicResourceExternalizer
         return true;
     }
 
-    public int getEpoch(Object obj) {
+    public String getEpoch(Object obj) {
         return ((DynamicResource)obj).getEpoch();
     }
 

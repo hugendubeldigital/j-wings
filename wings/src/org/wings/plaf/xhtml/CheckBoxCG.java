@@ -205,7 +205,7 @@ public class CheckBoxCG
 
     protected void writeAnchorAddress(Device d, SCheckBox checkBox) 
     throws IOException {
-        SGetAddress addr = checkBox.getServerAddress();
+        RequestURL addr = checkBox.getRequestURL();
         addr.addParameter(checkBox.getNamePrefix() + "=" + checkBox.getUnifiedId() + SConstants.UID_DIVIDER);
         addr.write(d);
     }

@@ -59,7 +59,7 @@ public class OptionPaneCG
         if (encodingType != null)
             d.append(" enctype=\"").append(encodingType).append("\"");
 
-        d.append(" action=\"").append(optionPane.getServerAddress()).
+        d.append(" action=\"").append(optionPane.getRequestURL()).
             append("\">\n");
     }
 

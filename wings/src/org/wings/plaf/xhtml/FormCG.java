@@ -60,7 +60,7 @@ public class FormCG
             d.append(" enctype=\"").append(encodingType).append("\"");
 
         d.append(" action=\"");
-        form.getServerAddress().write(d);
+        form.getRequestURL().write(d);
         d.append("\">\n");
 
         // the event for the form action
