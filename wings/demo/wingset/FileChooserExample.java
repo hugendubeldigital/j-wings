@@ -53,6 +53,7 @@ public class FileChooserExample
             public void actionPerformed(ActionEvent e) {
                 filename.setText("filename: " + chooser.getFilename());
                 fileid.setText("fileid: " + chooser.getFileid());
+                chooser.reset();
             }});
         p.add(submit);
 
