@@ -51,8 +51,6 @@ public class SFrame
      */
     private static final String cgClassID = "FrameCG";
 
-    private static final boolean DEBUG = true;
-
     /**
      *  The Title of the Frame.
      */
