@@ -21,14 +21,10 @@ package org.wings.plaf.compiler;
 import java.io.*;
 import java.lang.*;
 import java.util.Iterator;
+import org.wings.template.parser.SGMLTag;
 
 class PlafCompiler {
     final static String varPrefix = "__";
-    final static int DECLARE    = 0;
-    final static int EXECUTE    = 1;
-    final static int EXPRESSION = 2;
-    final static int PROPEXPR   = 3;
-    final static int DIRECTIVE  = 4;
 
     public static void main(String argv[]) throws Exception {
 	if (argv.length == 0) {
@@ -38,10 +34,22 @@ class PlafCompiler {
 	for (int arg=0; arg < argv.length; ++arg) {
 	    System.err.println (argv[arg]);
 	    IncludingReader input = new IncludingReader(argv[arg]);
-	    TemplateParser parser = new TemplateParser("Button", "org.foo.bar",
-						       "org.wings.SButton");
-	    parser.parse(input);
-	    parser.generate(new File("/tmp/plaf"));
+	    TemplateParser parser;
+	    SGMLTag tag = new SGMLTag(input);
+	    while (!tag.finished()) {
+		String name = tag.getAttribute("NAME", null);
+		String forClass = tag.getAttribute("FOR", null);
+		if (name == null || forClass == null) {
+		    throw new IOException ("'name' and 'for' as template attributes expected");
+		}
+		parser = new TemplateParser(name,
+					    "org.wings.plaf.compiler",
+					    forClass);
+		parser.parse(input);
+		parser.generate(new File("/tmp/plaf"));
+
+		tag = new SGMLTag(input);
+	    }
 	}
     }
     
