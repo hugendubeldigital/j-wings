@@ -14,18 +14,17 @@
 
 package org.wings;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.net.URL;
-import java.util.*;
-import java.util.logging.*;
+import org.wings.plaf.FormCG;
 
 import javax.swing.event.EventListenerList;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import org.wings.plaf.*;
-import org.wings.io.Device;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
 
 /*
  * Ein Form Container. In HTML ist die einzige Moeglichkeit
@@ -41,9 +40,8 @@ import org.wings.io.Device;
  * @version $Revision$
  */
 public class SForm
-    extends SContainer
-    implements LowLevelEventListener
-{
+        extends SContainer
+        implements LowLevelEventListener {
     private final static Logger logger = Logger.getLogger("org.wings");
 
     /**
@@ -62,13 +60,13 @@ public class SForm
     /**
      * EncondingType for submission of the data.
      */
-    private String encType = null;
+    private String encType;
 
     /**
      * URL to which data
      * should be sent to
      */
-    private URL action = null;
+    private URL action;
 
     /**
      * TODO: documentation
@@ -78,7 +76,7 @@ public class SForm
     /**
      * TODO: documentation
      */
-    protected String actionCommand = null;
+    protected String actionCommand;
 
     /**
      * the WingS event thread is the servlet doGet()/doPost() context
@@ -87,10 +85,10 @@ public class SForm
      * first processRequest() stage is completed.
      */
     private static ThreadLocal threadArmedComponents = new ThreadLocal() {
-            protected synchronized Object initialValue() {
-                return new ArrayList(2);
-            }
-        };
+        protected synchronized Object initialValue() {
+            return new ArrayList(2);
+        }
+    };
 
     /**
      * TODO: documentation
@@ -103,7 +101,6 @@ public class SForm
 
     /**
      * TODO: documentation
-     *
      */
     public SForm() {
     }
@@ -143,13 +140,13 @@ public class SForm
      * <ul>
      * <li> Java Script submit() event</li>
      * <li> If a form contains a single text input, then many browsers
-     *      submit the form, if the user presses RETURN in that field. In that
-     *      case, the submit button will <em>not</em> receive any event but
-     *      only the form.
-     * <li> The {@link SFileChooser} will trigger a form event, if the file 
-     *      size exceeded the allowed size. In that case, even if the submit
-     *      button has been pressed, no submit-button event will be triggered.
-     *      (For details, see {@link SFileChooser}).
+     * submit the form, if the user presses RETURN in that field. In that
+     * case, the submit button will <em>not</em> receive any event but
+     * only the form.
+     * <li> The {@link SFileChooser} will trigger a form event, if the file
+     * size exceeded the allowed size. In that case, even if the submit
+     * button has been pressed, no submit-button event will be triggered.
+     * (For details, see {@link SFileChooser}).
      * </ul>
      * Form events are guaranteed to be triggered <em>after</em> all
      * Selection-Changes and Button ActionListeners.
@@ -179,15 +176,15 @@ public class SForm
         Object[] listeners = listenerList.getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
-        for (int i = listeners.length-2; i>=0; i-=2) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == ActionListener.class) {
                 // lazy create ActionEvent
-                if ( e==null ) {
-                    e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, 
+                if (e == null) {
+                    e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
                                         actionCommand);
                 }
-                ((ActionListener)listeners[i+1]).actionPerformed(e);
-            } 
+                ((ActionListener) listeners[i + 1]).actionPerformed(e);
+            }
         }
     }
 
@@ -222,7 +219,7 @@ public class SForm
      * entspricht gefeuert und aus der Map entfernt.
      */
     /**
-     * This method fires the low level events for all "armed" components of 
+     * This method fires the low level events for all "armed" components of
      * this thread (http session) in an ordered manner:
      * <ul><li>forms
      * <li>buttons / clickables
@@ -242,67 +239,66 @@ public class SForm
             LinkedList formEvents = null;
             LinkedList buttonEvents = null;
             while (iterator.hasNext()) {
-                component = (LowLevelEventListener)iterator.next();
+                component = (LowLevelEventListener) iterator.next();
                 // fire form events at last
                 // there could be more than one form event (e.g. mozilla posts a
                 // hidden element even if it is in a form outside the posted
                 // form (if the form are nested
-                if ( component instanceof SForm ) {
-                    if ( formEvents==null ) {
+                if (component instanceof SForm) {
+                    if (formEvents == null) {
                         formEvents = new LinkedList();
                     } // end of if ()
                     formEvents.add(component);
                 } else if (component instanceof SAbstractIconTextCompound) {
-                    if ( buttonEvents==null ) {
+                    if (buttonEvents == null) {
                         buttonEvents = new LinkedList();
-                    }            
-                    buttonEvents.add(component);            
+                    }
+                    buttonEvents.add(component);
                 } else {
                     component.fireIntermediateEvents();
                 }
             }
-            
-            if ( buttonEvents != null) {
+
+            if (buttonEvents != null) {
                 iterator = buttonEvents.iterator();
-                while ( iterator.hasNext() ) {
-                    ((SAbstractIconTextCompound)iterator.next()).fireIntermediateEvents();
+                while (iterator.hasNext()) {
+                    ((SAbstractIconTextCompound) iterator.next()).fireIntermediateEvents();
                 }
             }
 
-            if ( formEvents!=null ) {
+            if (formEvents != null) {
                 iterator = formEvents.iterator();
-                while ( iterator.hasNext() ) {
-                    ((SForm)iterator.next()).fireIntermediateEvents();
+                while (iterator.hasNext()) {
+                    ((SForm) iterator.next()).fireIntermediateEvents();
                 }
             }
 
             iterator = armedComponents.iterator();
             while (iterator.hasNext()) {
-                component = (LowLevelEventListener)iterator.next();
+                component = (LowLevelEventListener) iterator.next();
                 // fire form events at last
-                if ( !(component instanceof SForm || component instanceof SAbstractIconTextCompound) ) {
+                if (!(component instanceof SForm || component instanceof SAbstractIconTextCompound)) {
                     component.fireFinalEvents();
                 }
             }
-            
-            if ( buttonEvents!=null ) {
+
+            if (buttonEvents != null) {
                 iterator = buttonEvents.iterator();
-                while ( iterator.hasNext() ) {
-                    ((SAbstractIconTextCompound)iterator.next()).fireFinalEvents();
+                while (iterator.hasNext()) {
+                    ((SAbstractIconTextCompound) iterator.next()).fireFinalEvents();
                 }
                 buttonEvents.clear();
-            }            
-            
+            }
 
-            if ( formEvents!=null ) {
+
+            if (formEvents != null) {
                 iterator = formEvents.iterator();
-                while ( iterator.hasNext() ) {
-                    ((SForm)iterator.next()).fireFinalEvents();
+                while (iterator.hasNext()) {
+                    ((SForm) iterator.next()).fireFinalEvents();
                 }
                 formEvents.clear();
             }
-        }
-        finally {
+        } finally {
             armedComponents.clear();
         }
     }
@@ -310,7 +306,7 @@ public class SForm
 
     /**
      * Set, whether this form is to be transmitted via <code>POST</code> (true)
-     * or <code>GET</code> (false). The default, and this is what you 
+     * or <code>GET</code> (false). The default, and this is what you
      * usually want, is <code>POST</code>.
      *
      * @param postMethod
@@ -342,23 +338,45 @@ public class SForm
      * be transmitted, so you probably don't want to do this, then.
      *
      * @param type the encoding type; one of <code>multipart/form-data</code>,
-     *             <code>application/x-www-form-urlencoded</code>.
+     *             <code>application/x-www-form-urlencoded</code> or null to detect encoding.
      */
     public void setEncodingType(String type) {
         encType = type;
     }
 
     /**
-     * Get the current encoding type, as set with 
+     * Get the current encoding type, as set with
      * {@link #setEncodingType(String)}
      *
      * @return string containting the encoding type. This is something like
-     *         <code>multipart/form-data</code>, 
+     *         <code>multipart/form-data</code>,
      *         <code>application/x-www-form-urlencoded</code> .. or 'null'
      *         by default.
      */
     public String getEncodingType() {
-        return encType;
+        if (encType == null) {
+            return detectEncodingType(this);
+        } else {
+            return encType;
+        }
+    }
+
+    protected String detectEncodingType(SContainer pContainer) {
+        for (int i = 0; i < pContainer.getComponentCount(); i++) {
+            SComponent tComponent = pContainer.getComponent(i);
+
+            if (tComponent instanceof SFileChooser) {
+                return MULTIPART_ENCODING;
+            } else if (tComponent instanceof SContainer) {
+                String tContainerEncoding = detectEncodingType((SContainer) tComponent);
+
+                if (tContainerEncoding != null) {
+                    return tContainerEncoding;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -386,7 +404,7 @@ public class SForm
      */
     public RequestURL getRequestURL() {
         RequestURL addr = super.getRequestURL();
-        if ( getAction()!=null ) {
+        if (getAction() != null) {
             addr.addParameter(getAction().toString()); // ??
         }
         return addr;
@@ -398,7 +416,8 @@ public class SForm
         SForm.addArmedComponent(this);
     }
 
-    public void fireIntermediateEvents() {}
+    public void fireIntermediateEvents() {
+    }
 
     public void fireFinalEvents() {
         fireActionPerformed();
@@ -408,7 +427,7 @@ public class SForm
         return true;
     }
 
-    public SComponent addComponent(SComponent c, Object constraint, int index){
+    public SComponent addComponent(SComponent c, Object constraint, int index) {
         if (c instanceof SForm)
             logger.warning("WARNING: attempt to nest forms; won't work.");
         return super.addComponent(c, constraint, index);
