@@ -117,16 +117,16 @@ public final class TableCG
     {
         Style style = table.getStyle();
 
-        int originRow = 0;
-        int originCol = 0;
-        int rowCount = table.getRowCount();
-        int colCount = table.getColumnCount();
+        int startRow = 0;
+        int startCol = 0;
+        int endRow = table.getRowCount();
+        int endCol = table.getColumnCount();
         Rectangle viewport = table.getViewportSize();
         if (viewport != null) {
-            originRow = viewport.y;
-            originCol = viewport.x;
-            rowCount = viewport.height;
-            colCount = viewport.width;
+            startRow = viewport.y;
+            startCol = viewport.x;
+            endRow = startRow+viewport.height;
+            endCol = startCol+viewport.width;
         }
 
         SCellRendererPane rendererPane = table.getCellRendererPane();
@@ -134,7 +134,7 @@ public final class TableCG
             d.print("<tr>\n");
 
             boolean selectionWritten = table.getRowSelectionColumn()<0;
-            for (int c = originCol; c < colCount; c++) {
+            for (int c = startCol; c < endCol; c++) {
 
                 if ( !selectionWritten && 
                      c>=table.getRowSelectionColumn() ) {
@@ -152,7 +152,7 @@ public final class TableCG
             d.print("</tr>\n");
         }
 
-        for (int r = originRow; r < rowCount; r++) {
+        for (int r = startRow; r < endRow; r++) {
             d.print("<tr ");
 
             Style rowStyle = table.isRowSelected(r) ? 
@@ -165,7 +165,7 @@ public final class TableCG
 
             boolean selectionWritten = table.getRowSelectionColumn()<0;
 
-            for (int c = originCol; c < colCount; c++) {
+            for (int c = startCol; c < endCol; c++) {
 
                 if ( !selectionWritten && 
                      c>=table.getRowSelectionColumn() ) {
@@ -177,7 +177,7 @@ public final class TableCG
             }
 
             if ( !selectionWritten ) {
-                writeRowSelection(d, table, rendererPane, r, colCount);
+                writeRowSelection(d, table, rendererPane, r, endCol);
             }
 
             d.print("</tr>\n");

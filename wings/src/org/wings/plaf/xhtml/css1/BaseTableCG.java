@@ -114,22 +114,22 @@ public final class BaseTableCG
     {
         Style style = baseTable.getStyle();
 
-        int originRow = 0;
-        int originCol = 0;
-        int rowCount = baseTable.getRowCount();
-        int colCount = baseTable.getColumnCount();
+        int startRow = 0;
+        int startCol = 0;
+        int endRow = baseTable.getRowCount();
+        int endCol = baseTable.getColumnCount();
         Rectangle viewport = baseTable.getViewportSize();
         if (viewport != null) {
-            originRow = viewport.y;
-            originCol = viewport.x;
-            rowCount = viewport.height;
-            colCount = viewport.width;
+            startRow = viewport.y;
+            startCol = viewport.x;
+            endRow = startRow+viewport.height;
+            endCol = startCol+viewport.width;
         }
 
         SCellRendererPane rendererPane = baseTable.getCellRendererPane();
         if (baseTable.isHeaderVisible()) {
             d.print("<tr>\n");
-            for (int c = originCol; c < colCount; c++) {
+            for (int c = startCol; c < endCol; c++) {
                 writeHeaderCell(d, baseTable, rendererPane, c);
             }
             d.print("</tr>\n");
@@ -137,9 +137,9 @@ public final class BaseTableCG
 
 
 
-        for (int r = originRow; r < rowCount; r++) {
+        for (int r = startRow; r < endRow; r++) {
             d.print("<tr>\n");
-            for (int c = originCol; c < colCount; c++) {
+            for (int c = startCol; c < endCol; c++) {
                 writeCell(d, baseTable, rendererPane, r, c);
             }
             d.print("</tr>\n");
@@ -150,6 +150,7 @@ public final class BaseTableCG
                              SCellRendererPane rendererPane, int row, int col)
         throws IOException
     {
+
         SComponent comp = baseTable.prepareRenderer(baseTable.getCellRenderer(row, col), row, col);
         Style style = baseTable.getStyle();
 
