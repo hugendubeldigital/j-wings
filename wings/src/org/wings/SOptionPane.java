@@ -16,6 +16,7 @@ package org.wings;
 
 import java.util.Locale;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -416,7 +417,10 @@ public class SOptionPane
             optionData.add((SComponent)message);
         }
         else {
-            optionData.add(new SLabel(message.toString()));
+            StringTokenizer stt = new StringTokenizer(message.toString(), "\n");
+            while ( stt.hasMoreElements() ) {
+                optionData.add(new SLabel(stt.nextElement().toString()));           
+            }
         }
         show(c);
     }
