@@ -14,14 +14,14 @@
 
 package org.wings;
 
-import java.awt.event.ContainerListener;
-import java.awt.event.ContainerEvent;
 import java.io.IOException;
 import java.util.*;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
 import org.wings.util.*;
+import org.wings.event.SContainerListener;
+import org.wings.event.SContainerEvent;
 
 /**
  * This is a container which can hold several other <code>SComponents</code>.
@@ -111,7 +111,7 @@ public class SContainer
      *
      * @param    l the container listener
      */
-    public void addContainerListener(ContainerListener l) {
+    public void addContainerListener(SContainerListener l) {
         if (l == null) {
             return;
         }
@@ -129,7 +129,7 @@ public class SContainer
      *
      * @param 	l the container listener
      */
-    public void removeContainerListener(ContainerListener l) {
+    public void removeContainerListener(SContainerListener l) {
         if (l == null) {
             return;
         }
@@ -147,24 +147,19 @@ public class SContainer
      * @see Component#enableEvents
      * @param e the container event
      */
-    protected void processContainerEvent(ContainerEvent e) {
+    protected void processContainerEvent(SContainerEvent e) {
         if (containerListener != null && containerListener.size()>0) {
+            Iterator it=containerListener.iterator();
             switch(e.getID()) {
-            case ContainerEvent.COMPONENT_ADDED:
-                {
-                    Object[] cls = containerListener.toArray();
-                    for ( int i=0; i<cls.length; i++ )
-                        ((ContainerListener)cls[i]).componentAdded(e);
-                    break;
-                }
+            case SContainerEvent.COMPONENT_ADDED:
+                while (it.hasNext())
+                    ((SContainerListener)it.next()).componentAdded(e);
+                break;
 
-            case ContainerEvent.COMPONENT_REMOVED:
-                {
-                    Object[] cls = containerListener.toArray();
-                    for ( int i=0; i<cls.length; i++ )
-                        ((ContainerListener)cls[i]).componentRemoved(e);
-                    break;
-                }
+            case SContainerEvent.COMPONENT_REMOVED:
+                while (it.hasNext())
+                    ((SContainerListener)it.next()).componentRemoved(e);
+                break;
             }
         }
     }
@@ -255,17 +250,16 @@ public class SContainer
         if ( layout!=null )
             layout.removeComponent(c);
 
-        c.setParent(null);
-
         int index = getComponentList().indexOf(c);
-        boolean erg = getComponentList().remove(c);
-        if ( erg ) {
+        boolean isRemoved = getComponentList().remove(c);
+        if ( isRemoved ) {
             getConstraintList().remove(index);
 
-            // processContainerEvent(new ContainerEvent(this,
-            // ContainerEvent.COMPONENT_REMOVED, c));
+            processContainerEvent(new SContainerEvent(this,
+                                  SContainerEvent.COMPONENT_REMOVED, c));
+            c.setParent(null);
         }
-        return erg;
+        return isRemoved;
     }
 
     /**
@@ -392,8 +386,8 @@ public class SContainer
             getConstraintList().add(constraint);
             c.setParent(this);
 
-            // processContainerEvent(new ContainerEvent(this,
-            // ContainerEvent.COMPONENT_ADDED, c));
+            processContainerEvent(new SContainerEvent(this,
+                                  SContainerEvent.COMPONENT_ADDED, c));
         }
 
         return c;
@@ -428,8 +422,8 @@ public class SContainer
             getConstraintList().add(index, constraint);
             c.setParent(this);
 
-            // processContainerEvent(new ContainerEvent(this,
-            // ContainerEvent.COMPONENT_ADDED, c));
+            processContainerEvent(new SContainerEvent(this,
+                                  SContainerEvent.COMPONENT_ADDED, c));
         }
 
         return c;
@@ -475,8 +469,17 @@ public class SContainer
         super.setCG(cg);
     }
 
+    /**
+     * invite a ComponentVisitor.
+     * This visitor is called with the container itself and all
+     * components, that this container has. Use this, if you want to
+     * iterate through all elements.
+     *
+     * @param visitor an implementation of the {@linke ComponentVisitor}
+     *                interface.
+     */
     public void invite(ComponentVisitor visitor) {
-        visitor.visit(this);
+        visitor.visit(this); // FIXME: explain: why visit ourself ?
 
 	Iterator iterator = getComponentList().iterator();
 	while (iterator.hasNext())
