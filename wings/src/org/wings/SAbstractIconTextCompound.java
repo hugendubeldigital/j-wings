@@ -460,14 +460,15 @@ public abstract class SAbstractIconTextCompound
 
     /**
      * Set the selectionAttributes.
-     * @param selectionAttributes the selectionAttributes
+     * @param newAttributes the selectionAttributes
      */
-    public void setSelectionAttributes(AttributeSet selectionAttributes) {
-        if (selectionAttributes == null)
+    public void setSelectionAttributes(AttributeSet newAttributes) {
+        if (newAttributes == null)
             throw new IllegalArgumentException("null not allowed");
 
-        if (selectionAttributes==null || !this.selectionAttributes.equals(selectionAttributes)) {
-            this.selectionAttributes = selectionAttributes;
+        if (selectionAttributes == null 
+            || !newAttributes.equals(selectionAttributes)) {
+            this.selectionAttributes = newAttributes;
             reload(ReloadManager.RELOAD_STYLE);
         }
     }
