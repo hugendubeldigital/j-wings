@@ -27,10 +27,13 @@ import javax.servlet.http.*;
 import javax.swing.*;
 
 import org.wings.*;
+import org.wings.externalizer.ExternalizeManager;
 import org.wings.script.JavaScriptListener;
 import org.wings.script.ScriptListener;
 import org.wings.externalizer.*;
 import org.wings.event.*;
+import org.wings.border.SBorder;
+import org.wings.border.SBevelBorder;
 import org.wings.io.Device;
 import org.wings.io.ServletDevice;
 import org.wings.servlet.*;
@@ -76,7 +79,7 @@ public class Editor
         textArea = new STextArea();
         textArea.setColumns(80);
         textArea.setRows(24);
-
+        
         SForm form = new SForm(new SGridLayout(1));
         form.add(toolbar);
         form.add(textArea);
@@ -149,6 +152,7 @@ public class Editor
         try {
             SButton saveButton = new SButton(new ResourceImageIcon("/desktop/filesave.png"));
             saveButton.setAttribute("border", "1px outset");
+            saveButton.setToolTipText("save");
             saveButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     save();
@@ -156,12 +160,14 @@ public class Editor
             });
 
             SButton revertButton = new SButton(new ResourceImageIcon("/desktop/filerevert.png"));
+            revertButton.setToolTipText("revert");
             revertButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     revert();
                 }
             });
             SButton closeButton = new SButton(new ResourceImageIcon("/desktop/fileclose.png"));
+            closeButton.setToolTipText("close");
             closeButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     close();
@@ -169,18 +175,21 @@ public class Editor
             });
 
             SButton cutButton = new SButton(new ResourceImageIcon("/desktop/editcut.png"));
+            cutButton.setToolTipText("cut");
             cutButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     cut();
                 }
             });
             SButton copyButton = new SButton(new ResourceImageIcon("/desktop/editcopy.png"));
+            copyButton.setToolTipText("copy");
             copyButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     copy();
                 }
             });
             SButton pasteButton = new SButton(new ResourceImageIcon("/desktop/editpaste.png"));
+            pasteButton.setToolTipText("paste");
             pasteButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     paste();
@@ -225,6 +234,9 @@ public class Editor
 
             // create a file resource
             FileResource resource = new FileResource(file);
+            // we only request this once, thats it.
+            resource.setExternalizerFlags(resource.getExternalizerFlags()
+                                          | ExternalizeManager.REQUEST);
             // advice the browser to pop the save dialog
             Map headers = new HashMap();
             headers.put("Content-Disposition", "attachment; filename=blub");
@@ -278,7 +290,9 @@ public class Editor
     }
 
     public void paste() {
-        textArea.setText(textArea.getText() + clip);
+        if (clip != null) {
+            textArea.setText(textArea.getText() + clip);
+        }
     }
 
     //--- SInternalFrameListener interface ..

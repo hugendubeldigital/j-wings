@@ -124,7 +124,7 @@ public class DesktopSession
      * move the maximization to the new frame.
      */
     public void addNewFrame(final SInternalFrame frame) {
-        desktop.add(frame);
+        desktop.add(frame, 0);
         try {
             desktop.invite(new ComponentVisitor() {
                     public void visit(SComponent c) { /* ign */ }
@@ -197,7 +197,9 @@ public class DesktopSession
 
     /**
      * A menu item, that handles the position of an internal frame within
-     * the desktop - whenever it is clicked, the frame is put on top.
+     * the desktop - whenever it is clicked, the frame is put on top. This
+     * MenuItem is added in some component listener, that gets activated
+     * whenever a window is added or removed from the desktop.
      */
     private static class WindowMenuItem extends SMenuItem {
         private final SInternalFrame frame;
