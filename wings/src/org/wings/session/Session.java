@@ -1,0 +1,70 @@
+/*
+ * $Id$
+ * (c) Copyright 2000 wingS development team.
+ *
+ * This file is part of wingS (http://wings.mercatis.de).
+ *
+ * wingS is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * Please see COPYING for the complete licence.
+ */
+
+package org.wings.session;
+
+import java.beans.PropertyChangeListener;
+import java.util.Locale;
+
+import javax.servlet.ServletConfig;
+
+import org.wings.plaf.CGManager;
+import org.wings.externalizer.ExternalizeManager;
+
+/**
+ * TODO: documentation
+ *
+ * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
+ * @version $Revision$
+ */
+public interface Session
+{
+    String LOCALE_PROPERTY = "LocaleProperty";
+
+    /**
+     * used by servlet session to initialize session
+     */
+    void init(ServletConfig config);
+
+    void setExternalizeManager(ExternalizeManager em);
+
+    void putService(Object key, Service service);
+
+    Service getService(Object key);
+
+    CGManager getCGManager();
+
+    ExternalizeManager getExternalizeManager();
+
+    void addPropertyChangeListener(PropertyChangeListener listener);
+
+    void removePropertyChangeListener(PropertyChangeListener listener);
+
+    void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
+
+    void removePropertyChangeListener(String propertyName,
+                                      PropertyChangeListener listener);
+
+
+    void setLocale(Locale l);
+
+    Locale getLocale();
+}
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

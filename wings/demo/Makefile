@@ -1,0 +1,12 @@
+#
+# $Id$
+#
+# see Rules.make
+##
+
+fun:
+
+% :
+	make -C explorer $@
+	make -C wingset $@
+

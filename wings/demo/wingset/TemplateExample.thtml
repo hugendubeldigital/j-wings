@@ -1,0 +1,20 @@
+<table bgcolor=#DDDDDD>
+<tr><td>
+Ein Beispiel für Komponenten, die einfach in
+einer Seite angeordnet sein können, z.B.
+Eingabefelder und Trees, die in Tabellen angeordnet sind:
+<table cellpadding=2>
+<tr bgcolor=blue><td>Name:</td><td><component name=NAME></component></td>
+<td rowspan=2 bgcolor=red>
+ <component name=BAUM></component>
+</td>
+</tr>
+<tr valign=top bgcolor=lightgreen><td>Vorname:</td><td><component name=VORNAME></component></td></tr>
+</table>
+oder aber auch normale labels: <b><component name="derLabel"></component></b>
+und, nicht zu vergessen, 
+Buttons <component name=TESTBUTTON></component>. Da diese Template-Seite einfach ein Layout-Manager
+ist, ist das für alles Mögliche zu verwenden. Durch einen Cache-Mechanismus, der das
+File nur bei Änderung parst, geht die Interpretation eines solchen Templates sehr schnell.
+</td></tr>
+</table>

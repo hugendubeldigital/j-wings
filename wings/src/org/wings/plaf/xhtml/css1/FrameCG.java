@@ -1,0 +1,47 @@
+package org.wings.plaf.xhtml.css1;
+
+import java.io.IOException;
+
+import java.awt.Color;
+import java.util.Iterator;
+
+import org.wings.*;
+import org.wings.io.*;
+import org.wings.plaf.*;
+import org.wings.style.*;
+import org.wings.plaf.xhtml.*;
+import org.wings.externalizer.ExternalizeManager;
+
+public final class FrameCG
+    extends org.wings.plaf.xhtml.FrameCG
+{
+    public void installCG(SComponent component) {
+	component.setStyle(component.getSession().getCGManager().getStyle(getPropertyPrefix() + "style"));
+    }
+    
+    protected void writeAdditionalHeaders(Device d, SFrame frame)
+        throws IOException
+    {
+	StyleSheet styleSheet = (StyleSheet)frame.getSession().getCGManager().get(getPropertyPrefix() + "stylesheet");
+	
+	if (styleSheet != null) {
+	    ExternalizeManager ext = frame.getExternalizeManager();
+	    String link = null;
+	    
+	    if (ext != null) {
+		try {
+		    link = ext.externalize(styleSheet);
+		}
+		catch (java.io.IOException e) {
+		    // dann eben nicht !!
+		    e.printStackTrace(System.err);
+		}
+	    }
+	    if (link != null) {
+		d.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+		d.append(link);
+		d.append("\" />");
+	    }
+	}
+    }
+}
