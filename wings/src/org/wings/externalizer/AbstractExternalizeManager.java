@@ -455,11 +455,13 @@ public abstract class AbstractExternalizeManager
              * .. have to think about it.
              */
             //response.setDateHeader("Expires", 
-            //                      FINAL_EXPIRES + extInfo.getLastModified());
+            //                      (1000*FINAL_EXPIRES)
+            //                       + extInfo.getLastModified());
             // .. so do this for now, which is the best approximation of what
             // we want.
             response.setDateHeader("Expires", 
-                                   System.currentTimeMillis() + FINAL_EXPIRES);
+                                   System.currentTimeMillis() 
+                                   + (1000 * FINAL_EXPIRES));
         } 
 
         extInfo.getExternalizer().write(extInfo.getObject(), out);
