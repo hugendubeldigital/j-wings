@@ -50,6 +50,7 @@ public class LdapClientSession
 	       ListSelectionListener
 {
     private final static String NOT_CONNECTED = "not connected";
+    private final int columns = 35;
 
     private LdapWorker worker = null;
     private TreeModel treeModel; 
@@ -58,7 +59,7 @@ public class LdapClientSession
 
     private STabbedPane tabbedPane;
     private SForm settingsForm;
-    private SPanel mainPanel;
+    private SForm mainPanel;
     private STree tree;
 
     private SDesktopPane cards;
@@ -69,6 +70,7 @@ public class LdapClientSession
     private SButton select;
     private SButton commitButton;
     private AddObjectsPanel addPanel;
+    private SPanel treePanel;
 
 
     private Hashtable attrHTable;
@@ -77,9 +79,14 @@ public class LdapClientSession
 
     private Hashtable textHashtable = new Hashtable();
     private Hashtable componentTable = new Hashtable();
+
+    private FileInputStream fis;
+    private byte[] b;
+    private boolean string = false;
     
-    private ArrayList obj;
-    private Vector v;
+    private ArrayList obj = new ArrayList();
+    private Vector objectAttributes;
+    private SFileChooser chooser;
 
 
     public LdapClientSession(Session session) {
@@ -132,49 +139,62 @@ public class LdapClientSession
 	settingsForm.add(connectButton);
 	settingsForm.add(disconnectButton);
 
-	mainPanel = new SPanel(new SGridLayout(2));
+	mainPanel = new SForm(new SGridLayout(2));
+	mainPanel.setEncodingType("multipart/form-data");
 	tabbedPane.add(mainPanel, "Browser");
 
 	createTreeModel(null);
 	createTree();
-	mainPanel.add(tree);
+	SBorderLayout layout = new SBorderLayout();
+	layout.setBorder(5);
+	//layout.addComponent(tree, SBorderLayout.NORTH );
+	//layout.addComponent(new SLabel(""), SBorderLayout.CENTER );
+	treePanel = new SPanel(layout);
+	treePanel.add(tree,SBorderLayout.NORTH);
+	treePanel.add(new SLabel("dummy"),SBorderLayout.CENTER);
+	
+	mainPanel.add(treePanel);
 
 	attrPanel = new SForm();
 	attrPanel.setLayout(new SGridLayout(2));
+	attrPanel.setEncodingType("multipart/form-data");
 	
 	existentAttrsF = new SForm(new SGridLayout(2));
+	//existentAttrsF.setEncodingType("multipart/form-data");
 	otherAttrsF = new SForm(new SFlowDownLayout());
 	
 	select = new SButton("select");
 	select.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		    int i = 0;
-		    ArrayList remElem = new ArrayList();
+		    ArrayList remElements = new ArrayList();
 		    while (obj!=null && i< obj.size()) {
 			System.out.println(obj.get(i));
 			String o = (String)obj.get(i);
-			remElem.add(o);
-			SLabel attrLabel = new SLabel(o);
+			remElements.add(o);
+			//SLabel attrLabel = new SLabel(o);
 			STextField attrField = new STextField("");
-			componentTable.put(attrLabel,attrField);
-			textHashtable.put(attrLabel,attrField.getText());
+			attrField.setColumns(columns);
+			//componentTable.put(attrLabel,attrField);
+			componentTable.put(o,attrField);
+			//textHashtable.put(attrLabel,attrField.getText());
+			textHashtable.put(o,attrField.getText());
+			i++;
 		    }
 		    existentAttrsF.removeAll();
 		    Enumeration compEnum;
 		    compEnum = componentTable.keys();
 		    
-		    while (compEnum!=null && compEnum.hasMoreElements()) {
-			Object key = compEnum.nextElement();
-			existentAttrsF.add((SLabel)key);
-			existentAttrsF.add((SComponent)componentTable.get(key));
-		    }
-		   
-		    /*for (int l = 0;i<remElem.size();i++) {
-			int j = obj.indexOf(remElem.get(l));
-			obj.remove(j);
-		    }
+		    addEditableComponents(componentTable);
 		    
-		    otherAttrsL.setListData(obj.toArray());*/
+		    System.out.println("groesse  " + remElements.size());
+		    
+		    for (int l = 0;l<remElements.size();l++) {
+			int j = obj.indexOf(remElements.get(l));
+			System.out.println("ausgesucht  " + remElements.get(l));
+			objectAttributes.remove(j);
+		    }
+		    otherAttrsL.setListData(objectAttributes);
 		}
 		
 	    });
@@ -186,7 +206,7 @@ public class LdapClientSession
 	
 	commitButton = new SButton("Commit");
 	commitButton.addActionListener(this);
-	
+		
 	addPanel = new AddObjectsPanel();
 	tabbedPane.add(addPanel, "Add new Object");
 	
@@ -269,32 +289,73 @@ public class LdapClientSession
 	BasicAttributes attributes = new BasicAttributes();
 	Enumeration enumer = componentTable.keys();
 	while (enumer != null && enumer.hasMoreElements()) {
-	    SLabel key = (SLabel)enumer.nextElement();
-	    System.out.println(key.getText());
+	    String key = (String)enumer.nextElement();
+	    System.out.println(key);
 
 	    oldValue = (String)(textHashtable.get(key));
 	    System.out.println("fuer " + key + " old value " +oldValue);
 	    
-	    newValue = ((STextField)componentTable.get(key)).getText();
+	    if (oldValue != null )
+		newValue = ((STextField)componentTable.get(key)).getText();
 	    
 	    System.out.println("new value " +newValue);
 	    System.out.println("old value " +oldValue);
 	    
-	    if (!oldValue.equals(newValue)) {
-		BasicAttribute attr = new BasicAttribute((String)key.getText());
-		StringTokenizer st = new StringTokenizer(newValue,",");
-		String atV;
-		boolean b = (st !=null && st.hasMoreTokens());
-		if (b) 
-		    while (st !=null && st.hasMoreTokens()) {
-			attr.add(st.nextToken());
+	    if (oldValue!=null) {
+		if (!oldValue.equals(newValue)) {
+		    BasicAttribute attr = new BasicAttribute((String)key);
+		    StringTokenizer st = new StringTokenizer(newValue,",");
+		    String atV;
+		    boolean b = (st !=null && st.hasMoreTokens());
+		    if (b) 
+			while (st !=null && st.hasMoreTokens()) 
+			    attr.add(st.nextToken());
+		    else attr.add(newValue);
+		    attributes.put(attr);
 		}
-		else attr.add(newValue);
-		attributes.put(attr);
 	    }
 	}
-	if (attributes.size() > 0) 
+	
+	if (attributes !=null && attributes.size() > 0) 
 	    worker.modifyAttributes(dn,attributes);
+	
+	if (chooser.getFilename()!="" && chooser.getFilename()!=null) {
+	    String attribut = "jpegPhoto";
+	    BasicAttributes attrs = new BasicAttributes();
+	    BasicAttribute attr = new BasicAttribute("jpegPhoto");
+	    
+	    try {
+		fis = new FileInputStream("/home/nengels/jpg/" + chooser.getFilename());
+		System.out.println("dir" + chooser.getFiledir());
+		System.out.println("file" + chooser.getFilename());
+		try {
+		    int bytesNr = fis.available();
+		    b = new byte[bytesNr];
+		    System.out.println(bytesNr + "  bytes            " );
+		    System.out.println(b.length);
+		    int i = fis.read(b);
+		    fis.close();
+		    componentTable.remove("jpegPhoto");
+		    componentTable.put("jpegPhoto", new SLabel(new ImageIcon("/home/nengels/jpg/" + chooser.getFilename())));
+		    //existentAttrsF.removeAll();
+		    addEditableComponents(componentTable);
+		    
+		    
+		}
+		catch (IOException e) {
+		}
+	    }
+	    catch(FileNotFoundException ex){
+	    }
+	    	    
+	    attr.add(b);
+	    attrs.put(attr);
+	    if (attrs.size() > 0) 
+		worker.modifyAttributes(dn,attrs);
+	    
+	}
+	
+	
     }
     
     
@@ -326,9 +387,7 @@ public class LdapClientSession
 
 	componentTable.clear();
 	textHashtable.clear();
-	attrHTable = new Hashtable();
-	attrHLTable = new Hashtable();
-
+	
 	existentAttrsF.removeAll();
 
 	LdapWorker worker = getLdapWorker();
@@ -340,86 +399,115 @@ public class LdapClientSession
 		BasicAttribute attr = (BasicAttribute)en.nextElement();
 		String label = attr.getID();
 		String values = "";
-	    NamingEnumeration aValues = attr.getAll();
-	    while (aValues!=null && aValues.hasMore()) {
-		Object i = aValues.next();
-		System.out.println("label " + label + "class" + i.getClass().getName());
-		if (i.getClass().getName() == "java.lang.String") {
-		    if(!values.equals("")) {
-			values = values + "," + i;
+		NamingEnumeration aV = attr.getAll();
+		
+		Object cl = null;
+		while (aV!=null && aV.hasMore()) 
+		    cl = aV.next();
+		
+		if (cl!=null) {
+		    if (cl.getClass().getName().equals("java.lang.String")) {
+			NamingEnumeration aValues = attr.getAll();
+			while (aValues!=null && aValues.hasMore()) {
+			    Object o = aValues.next();
+			    if(!values.equals("")) {
+				values = values + "," + o;
+			    }
+			    else {
+				values = (String)o;
+			    }
+			}
+			//SLabel attrLabel = new SLabel(label);
+			STextField attrField = new STextField((String)values);
+			attrField.setColumns(columns);
+			componentTable.put(label,attrField);
+			textHashtable.put(label,values);
+			
 		    }
-		    else {
-			values = (String)i;
+		    
+		    if (cl.getClass().getName().equals("[B")) {
+			NamingEnumeration aValues = attr.getAll();
+			Object o = null;
+			while (aValues!=null && aValues.hasMore()) {
+			     o = aValues.next();
+			}
+			
+			byte hallo [] = (byte [])o;
+			if (label.equals("jpegPhoto")) { 
+			    SLabel attrL = new SLabel(label);
+			    SLabel photo = new SLabel(new ImageIcon((byte [])o));
+			    //SButton photo = new SButton(new ImageIcon((byte [])i));
+			    //SButton photo = new SButton(new ImageIcon("/home/nengels/Nathan.jpg"));
+			    componentTable.put(label,photo);
+			}
+			if (label.equals("userPassword")) { 
+			    SLabel attrLa = new SLabel(label);
+			    STextField attrF = new SPasswordField();
+			    attrF.setColumns(35);
+			    attrF.setText(o.toString());
+			    componentTable.put(label,attrF);
+			    textHashtable.put(label,o.toString());
+			}
 		    }
-		    SLabel attrLabel = new SLabel(label);
-		    STextField attrField = new STextField((String)values);
-		    componentTable.put(attrLabel,attrField);
-		    textHashtable.put(attrLabel,values);
-		}
-		if (i.getClass().getName() == "[B") {
-		    byte hallo [] = (byte [])i;
-		    System.out.println(hallo[3]);
-		    if (label.equals("jpegPhoto")) { 
-			SLabel attrLabel = new SLabel(label);
-			SLabel photo = new SLabel(new ImageIcon((byte [])i));
-			componentTable.put(attrLabel,photo);
-		    }
-		    if (label.equals("userPassword")) { 
-			SLabel attrLabel = new SLabel(label);
-			STextField attrField = new STextField(i.toString());
-			componentTable.put(attrLabel,attrField);
-			textHashtable.put(attrLabel,i.toString());
-		    }
-		    System.out.println("binary");
 		}
 	    }
-	    }
-	    Vector objectAttributes = worker.getObjectAttributes(getDN());
+	    
+	    
+	    objectAttributes = worker.getObjectAttributes(getDN());
 	    Enumeration enum = componentTable.keys();
 	    while (enum != null && enum.hasMoreElements()) {
-		String keyString = (String)((SLabel)enum.nextElement()).getText();
+		String keyString = (String)enum.nextElement();
 		if (objectAttributes.contains((String)keyString)) 
 		    objectAttributes.remove((String)keyString);
 	    }
 	
-	    /*  Enumeration er  = objectAttributes.elements();
+	    
+	    
+	    otherAttrsL = new SList();
+	    otherAttrsL.setSelectionMode(MULTIPLE_SELECTION);
+	    otherAttrsL.addListSelectionListener(this);
+	    otherAttrsL.setVisibleRowCount(12);
+	    
+	    
+	    
+	    Vector v = new Vector();
+	    Enumeration er  = objectAttributes.elements();
 	    while (er!=null && er.hasMoreElements()) {
 		Object ob = er.nextElement();
-		SLabel sLabel = new SLabel((String)ob);
-		STextField tf = new STextField("");
-		componentTable.put(sLabel,tf);
-		textHashtable.put(sLabel,tf.getText());
-		}*/
+		v.add((String)ob);
+	    }  
+	    otherAttrsL.setListData(objectAttributes);
+	    otherAttrsF.removeAll();
+	    otherAttrsF.add(otherAttrsL);
+	    otherAttrsF.add(select);
 	    
-		otherAttrsL = new SList();
-		otherAttrsL.setSelectionMode(MULTIPLE_SELECTION);
-		//otherAttrsL.addListSelectionListener(this);
-		otherAttrsL.setVisibleRowCount(12);
-		
-		
-		v = new Vector();
-		Enumeration er  = objectAttributes.elements();
-		while (er!=null && er.hasMoreElements()) {
-		    Object ob = er.nextElement();
-		    v.add((String)ob);
-		}  
-		otherAttrsL.setListData(v);
-		otherAttrsF.removeAll();
-		otherAttrsF.add(otherAttrsL);
-		otherAttrsF.add(select);
-		
-		
+	    
 	}
 	catch (NamingException ex) {
 	    System.out.println(ex);
 	}
+	
+		
+	addEditableComponents(componentTable);
+    }
 
+    
+    
+    private void addEditableComponents(Hashtable comp) {
+	existentAttrsF.removeAll();
 	Enumeration compEnum;
-	compEnum = componentTable.keys();
+	compEnum = comp.keys();
 	while (compEnum!=null && compEnum.hasMoreElements()) {
 	    Object key = compEnum.nextElement();
-		existentAttrsF.add((SLabel)key);
-		existentAttrsF.add((SComponent)componentTable.get(key));
+		existentAttrsF.add(new SLabel((String)key));
+		existentAttrsF.add((SComponent)comp.get(key));
+		if (((String)key).equals("jpegPhoto")) {
+		    SLabel label = new SLabel("Select jpegPhoto...");
+		    existentAttrsF.add(label);
+		    chooser = new SFileChooser();
+		    existentAttrsF.add(chooser);  
+		    
+		}
 	}
 	existentAttrsF.add(commitButton);
     }

@@ -97,7 +97,6 @@ public class LdapWorker
 	}
     }
 
-
     //gibt einen Vector der unterstuetzten objketklassen zurueck
     public ArrayList getObjects() {
 	ArrayList ol = null;
