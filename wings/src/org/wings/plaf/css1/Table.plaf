@@ -13,6 +13,11 @@
 <comp-property type="String" name="style">table</comp-property>
 <comp-property type="String" name="selectionStyle">tableselection</comp-property>
 
+// The fixedTableBorderWidth property allows to override / set the handling of border="x" to a 
+// fixed value Browsers behave different if rules="none" and border="0" vs. only border="0"! 
+// If this property is set only border="x" will be rendered.
+<property type="String" name="fixedTableBorderWidth"></property>
+
 <write>
 <%
     STable table = (STable)component;
@@ -36,8 +41,13 @@
     }
 
     %><%|class=Utils.style(component)%><%
-    %><%|rules=rules[rr]%><%
-    %><%|border=thickness%><%
+    if (getFixedTableBorderWidth() == null) {
+	    %><%|rules=rules[rr]%><%
+	    %><%|border=thickness%><%
+	} else {
+		// Tweaking: CG configured to have a fixed border="xy" width
+	    %><%|border=fixedTableBorderWidth%><%	
+	}    
     %><%|cellspacing=((intercellSpacing != null) ? intercellSpacing.width : null)%><%
     %><%|cellpadding=((intercellPadding != null) ? intercellPadding.width : null)%><%
     %>>
