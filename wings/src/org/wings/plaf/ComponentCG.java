@@ -24,8 +24,9 @@ public interface ComponentCG
     void reload(SComponent comp, int aspect);
 
     /**
-     * Installs the CG. <p>
-     * <b>Note</b>: Be very careful here since this method is called from
+     * Installs the CG.
+     *
+     * <p><b>Note</b>: Be very careful here since this method is called from
      * the SComponent constructor! Don't call any methods which rely on
      * something that will be constructed in a subconstructor later!
      */
@@ -37,11 +38,19 @@ public interface ComponentCG
     void uninstallCG(SComponent c);
 
     /**
-     * Writes the given component. <p>
-     * his method should be called from the write method in SComponent or
-     * a subclass.
+     * Writes the given component to the Device.
+     *
+     * <p>This renders the component according to this pluggable look and 
+     * feel; it reads the properties of the component and genereates the 
+     * HTML, XML or whatever representation that is written to the Device.
+     *
+     * <p>This method should be called from the write method in SComponent or
+     * a subclass. It delegates
+     *
+     * @param device    the output device.
+     * @param component the component to be rendered.
      */
-    void write(Device d, SComponent c) throws IOException;
+    void write(Device device, SComponent component) throws IOException;
 }
 
 /*

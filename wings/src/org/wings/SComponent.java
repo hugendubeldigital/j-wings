@@ -379,7 +379,7 @@ public abstract class SComponent
 
         if (!this.attributes.equals(attributes)) {
             this.attributes = attributes;
-            reload(RELOAD_STYLE);
+            reload(ReloadManager.RELOAD_STYLE);
         }
     }
 
@@ -397,7 +397,7 @@ public abstract class SComponent
     public void setBackground(Color color) {
         boolean changed = attributes.putAttributes(CSSStyleSheet.getAttributes(color, "background-color"));
         if (changed)
-            reload(RELOAD_STYLE);
+            reload(ReloadManager.RELOAD_STYLE);
     }
 
     /**
@@ -415,7 +415,7 @@ public abstract class SComponent
     public void setForeground(Color color) {
         boolean changed = attributes.putAttributes(CSSStyleSheet.getAttributes(color, "color"));
         if (changed)
-            reload(RELOAD_STYLE);
+            reload(ReloadManager.RELOAD_STYLE);
     }
 
     /**
@@ -447,7 +447,7 @@ public abstract class SComponent
     public void setFont(SFont font) {
         boolean changed = attributes.putAttributes(CSSStyleSheet.getAttributes(font));
         if (changed)
-            reload(RELOAD_STYLE);
+            reload(ReloadManager.RELOAD_STYLE);
     }
 
     /**
@@ -466,7 +466,7 @@ public abstract class SComponent
         boolean old = visible;
         visible = v;
         if (old != visible) {
-            reload(RELOAD_CODE);
+            reload(ReloadManager.RELOAD_CODE);
             SComponentEvent evt = new SComponentEvent(this, v ?
                                                       SComponentEvent.COMPONENT_SHOWN :
                                                       SComponentEvent.COMPONENT_HIDDEN);
@@ -502,7 +502,7 @@ public abstract class SComponent
         boolean old = enabled;
         enabled = e;
         if (old != enabled)
-            reload(RELOAD_CODE);
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -915,7 +915,7 @@ public abstract class SComponent
 
         if ((cg == null && oldCG != null) ||
             (cg != null && !cg.equals(oldCG)))
-            reload(RELOAD_ALL);
+            reload(ReloadManager.RELOAD_ALL);
     }
 
     /**

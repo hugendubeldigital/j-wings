@@ -36,13 +36,13 @@ public class DefaultComponentCG implements ComponentCG, SConstants
         ReloadManager reloadManager = comp.getSession().getReloadManager();
 
         switch ( aspect ) {
-        case RELOAD_CODE: 
+        case ReloadManager.RELOAD_CODE: 
             reloadManager.markDirty(parent.getDynamicResource(DynamicCodeResource.class));
             break;
-        case RELOAD_STYLE: 
+        case ReloadManager.RELOAD_STYLE: 
             reloadManager.markDirty(parent.getDynamicResource(DynamicStyleSheetResource.class));
             break;
-        case RELOAD_SCRIPT: 
+        case ReloadManager.RELOAD_SCRIPT: 
             // TODO
             //            reloadManager.markDirty(parent.getDynamicResource(DynamicScriptResource.class));
             break;

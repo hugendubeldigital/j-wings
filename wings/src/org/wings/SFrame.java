@@ -80,7 +80,6 @@ public class SFrame
      */
     protected ArrayList links;
 
-
     private Color textColor = null;
     private Color linkColor = null;
     private Color vLinkColor = null;
@@ -153,7 +152,6 @@ public class SFrame
         return (DynamicResource)dynamicResources.get(c);
     }
 
-
     /**
      * TODO: documentation
      *
@@ -174,15 +172,17 @@ public class SFrame
 
     /**
      * Set the background image.
+     *
+     * @param icon the SIcon representing the background image.
      */
     public void setBackgroundImage(SIcon icon) {
         backgroundImage = icon;
     }
 
     /**
-     * TODO: documentation
+     * return the background image for this frame.
      *
-     * @return
+     * @return the background image as SIcon.
      */
     public SIcon getBackgroundImage() {
         return backgroundImage;
@@ -250,7 +250,7 @@ public class SFrame
         int count = getComponentCount();
         System.err.println("pushDialog: " + count);
         dialog.setFrame(this);
-        reload(RELOAD_CODE);
+        reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -266,7 +266,7 @@ public class SFrame
         dialog.setFrame((SFrame)null);
         System.err.println("popDialog: " + count);
 
-        reload(RELOAD_CODE);
+        reload(ReloadManager.RELOAD_CODE);
         return dialog;
     }
 

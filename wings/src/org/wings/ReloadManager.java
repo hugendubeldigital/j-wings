@@ -38,6 +38,11 @@ import org.wings.externalizer.ExternalizeManager;
  */
 public interface ReloadManager
 {
+    final int RELOAD_CODE   = 0x01;
+    final int RELOAD_STYLE  = 0x02;
+    final int RELOAD_SCRIPT = 0x04;
+    final int RELOAD_ALL    = RELOAD_CODE | RELOAD_STYLE | RELOAD_SCRIPT;
+
     void reload(SComponent component, int aspect);
 
     /**
@@ -48,13 +53,13 @@ public interface ReloadManager
     void markDirty(DynamicResource d);
 
     /**
-     * Return an array of all dirty components.
-     * @return an array of all dirty components
+     * Return a set of all dynamic resources that are marked dirty.
+     * @return a set all dynamic resource that have been marked dirty.
      */
     Set getDirtyResources();
 
     /**
-     * Clear dirts components list.
+     * Clear dirty components collection.
      */
     void clear();
 

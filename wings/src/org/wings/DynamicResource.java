@@ -36,14 +36,18 @@ public abstract class DynamicResource
     extends Resource
 {
     /**
-     *
+     * The epoch of this resource. With each invalidation, this counter
+     * is incremented.
      */
     private int epoch = 0;
 
+    // byte[] ? Since we use this to write it to a stream ..
     /**
-     *
+     * The epoch as string representation. The epoch is converted in a string
+     * that is as short as possible. This is done once whenever the epoch
+     * changes to do this conversion only once.
      */
-    private String epochCache = StringUtil.toShortestAlphaNumericString(epoch);
+    private String epochCache=StringUtil.toShortestAlphaNumericString(epoch);
 
     /**
      *

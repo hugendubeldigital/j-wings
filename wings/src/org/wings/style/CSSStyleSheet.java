@@ -11,7 +11,7 @@ import org.wings.*;
 public class CSSStyleSheet
     implements StyleSheet
 {
-    private static Map lengthMapping = new HashMap();
+    private static final Map lengthMapping = new HashMap();
     static {
 	lengthMapping.put("pt", new Float(1f));
 	lengthMapping.put("px", new Float(1.3f));
@@ -21,7 +21,7 @@ public class CSSStyleSheet
 	lengthMapping.put("in", new Float(72f));
     }
 
-    private Map map = new HashMap();
+    private final Map map = new HashMap();
 
     public void putStyle(Style style) {
         map.put(style.getName(), style);

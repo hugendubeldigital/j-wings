@@ -64,7 +64,7 @@ public class SFrameSetLayout
     public void setColumns(String columns) {
 	this.columns = columns;
 	if (getContainer() != null)
-	    getContainer().reload(SConstants.RELOAD_CODE);
+	    getContainer().reload(ReloadManager.RELOAD_CODE);
     }
 
     public String getColumns() { return columns; }
@@ -81,7 +81,7 @@ public class SFrameSetLayout
     public void setRows(String rows) {
 	this.rows = rows;
 	if (getContainer() != null)
-	    getContainer().reload(SConstants.RELOAD_CODE);
+	    getContainer().reload(ReloadManager.RELOAD_CODE);
     }
 
     public String getRows() { return rows; }

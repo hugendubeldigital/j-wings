@@ -26,8 +26,16 @@ import org.wings.style.DynamicStyleSheetResource;
 public class DefaultReloadManager
     implements ReloadManager
 {
-    protected final Set dirtyResources = new HashSet();
+    /**
+     * a set of all resources, manged by this ReloadManager, that are marked
+     * dirty.
+     */
+    protected final Set dirtyResources;
 
+    public DefaultReloadManager() {
+        dirtyResources = new HashSet();
+    }
+    
     public void reload(SComponent component, int aspect) {
         SFrame parent = component.getParentFrame();
 
@@ -35,17 +43,16 @@ public class DefaultReloadManager
             return;
 
         switch (aspect) {
-        case SConstants.RELOAD_CODE: 
+        case RELOAD_CODE: 
             markDirty(parent.getDynamicResource(DynamicCodeResource.class));
             break;
-        case SConstants.RELOAD_STYLE: 
+        case RELOAD_STYLE: 
             markDirty(parent.getDynamicResource(DynamicStyleSheetResource.class));
             break;
-        case SConstants.RELOAD_SCRIPT: 
+        case RELOAD_SCRIPT: 
             // TODO
-            //            reloadManager.markDirty(parent.getDynamicResource(DynamicScriptResource.class));
+            //reloadManager.markDirty(parent.getDynamicResource(DynamicScriptResource.class));
             break;
-            
         }
     }
 

@@ -1,3 +1,16 @@
+/*
+ * $Id$
+ * (c) Copyright 2001 wingS development team.
+ *
+ * This file is part of wingS (http://wings.mercatis.de).
+ *
+ * wingS is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
+ * of the License, or (at your option) any later version.
+ *
+ * Please see COPYING for the complete licence.
+ */
 package org.wings.style;
 
 import java.util.*;
@@ -12,24 +25,30 @@ import java.io.*;
 public class SimpleAttributeSet
     implements AttributeSet, Serializable, Cloneable
 {
-    private transient Map map = new HashMap(3);
+    private final transient Map map;
 
     /**
-     * Creates a new attribute set.
+     * create a SimpleAttributeSet from the given HashMap.
      */
-    public SimpleAttributeSet() {}
+    private SimpleAttributeSet(HashMap map) {
+        this.map = map;
+    }
 
+    /**
+     * Creates a new, empty atribute set.
+     */
+    public SimpleAttributeSet() {
+        this(new HashMap(3));
+    }
+    
     /**
      * Creates a new attribute set based on a supplied set of attributes.
      *
      * @param source the set of attributes
      */
     public SimpleAttributeSet(AttributeSet source) {
+        this();
         putAttributes(source);
-    }
-
-    private SimpleAttributeSet(HashMap map) {
-        this.map = map;
     }
 
     /**
@@ -49,11 +68,11 @@ public class SimpleAttributeSet
     public int size() {
         return map.size();
     }
-
+    
     public void clear() {
 	map.clear();
     }
-
+    
     /**
      * Tells whether a given attribute is defined.
      *
@@ -82,7 +101,6 @@ public class SimpleAttributeSet
     public String getAttribute(String name) {
         return (String)map.get(name);
     }
-
 
     /**
      * Adds an attribute to the list.
@@ -185,7 +203,6 @@ public class SimpleAttributeSet
 	return b.toString();
     }
 }
-
 
 /*
  * Local variables:

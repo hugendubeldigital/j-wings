@@ -82,7 +82,7 @@ public abstract class STextComponent
         boolean oldEditable = editable;
         editable = ed;
         if (editable != oldEditable)
-            reload(RELOAD_CODE);
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -105,7 +105,7 @@ public abstract class STextComponent
         text = t;
         if ((text == null && oldText != null) ||
             (text != null && !text.equals(oldText)))
-            reload(RELOAD_CODE);
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**

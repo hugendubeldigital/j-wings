@@ -171,7 +171,7 @@ public class STree
                 ((TreeSelectionListener)selectionListener.get(i)).valueChanged(e);
             }
         }
-        reload(RELOAD_CODE);
+        reload(ReloadManager.RELOAD_CODE);
     }
 
 
@@ -733,7 +733,7 @@ public class STree
          }
         */
         fireTreeExpanded(p);
-        reload(RELOAD_CODE);
+        reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -753,7 +753,7 @@ public class STree
     public void collapseRow(TreePath p) {
         treeState.setExpandedState(p, false);
         fireTreeCollapsed(p);
-        reload(RELOAD_CODE);
+        reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -917,7 +917,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeNodesChanged(e);
-            reload(RELOAD_CODE);
+            reload(ReloadManager.RELOAD_CODE);
         }
 
         /**
@@ -929,7 +929,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeNodesInserted(e);
-            reload(RELOAD_CODE);
+            reload(ReloadManager.RELOAD_CODE);
         }
 
         /**
@@ -941,7 +941,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeStructureChanged(e);
-            reload(RELOAD_CODE);
+            reload(ReloadManager.RELOAD_CODE);
         }
 
         /**
@@ -953,7 +953,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeNodesRemoved(e);
-            reload(RELOAD_CODE);
+            reload(ReloadManager.RELOAD_CODE);
         }
     }
 
@@ -1050,7 +1050,7 @@ public class STree
         viewport = d;
         if ((viewport == null && oldViewport != null) ||
             (viewport != null && !viewport.equals(oldViewport)))
-            reload(RELOAD_CODE);
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**

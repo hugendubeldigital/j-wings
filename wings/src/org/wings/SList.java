@@ -319,7 +319,7 @@ public class SList
         clearSelection();
         if ((model == null && oldModel != null) ||
             (model != null && !model.equals(oldModel)))
-            reload(RELOAD_CODE);
+            reload(ReloadManager.RELOAD_CODE);
     }
 
 
@@ -413,7 +413,7 @@ public class SList
             fireSelectionValueChanged(e.getFirstIndex(),
                                       e.getLastIndex(),
                                       e.getValueIsAdjusting());
-            reload(RELOAD_CODE);
+            reload(ReloadManager.RELOAD_CODE);
         }
     }
 
@@ -582,7 +582,7 @@ public class SList
     public void clearSelection() {
         if (!getSelectionModel().isSelectionEmpty()) {
             getSelectionModel().clearSelection();
-            reload(RELOAD_CODE);
+            reload(ReloadManager.RELOAD_CODE);
         }
     }
 
@@ -956,7 +956,7 @@ public class SList
         viewport = d;
         if ((viewport == null && oldViewport != null) ||
             (viewport != null && !viewport.equals(oldViewport)))
-            reload(RELOAD_CODE);
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**

@@ -47,7 +47,7 @@ public abstract class Resource
     /**
      *
      */
-    protected RequestURL requestURL = new RequestURL();;
+    protected RequestURL requestURL = new RequestURL();
 
     /**
      * TODO: documentation
