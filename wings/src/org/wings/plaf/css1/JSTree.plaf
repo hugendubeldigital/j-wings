@@ -47,8 +47,9 @@ public static String loadScript() {
 </uninstall>
 
 private void writeTreeNode(STree tree, Device device, Object[] path, int depth, 
-                           String nodeId, int maxDepth, int row) throws IOException {
+                           String treeId, int maxDepth, int row) throws IOException {
 
+    final String nodeId = treeId + Integer.toString(row);
     final Object node = path[depth];
     final TreePath treePath = new MyTreePath(path,depth+1);
 
@@ -146,9 +147,10 @@ private void writeTreeNode(STree tree, Device device, Object[] path, int depth,
 }
 
 private void writeScriptNode(STree tree, Device device,
-                               Object[] path, String nodeId, 
+                               Object[] path, String treeId, 
                                int depth, ScriptResult result) throws IOException {
 
+    final String nodeId = treeId + Integer.toString(result.row);
     final TreeModel model = tree.getModel();
     final Object node = path[depth];
     final String isExpanded = tree.isExpanded(new MyTreePath(path,depth+1)) ? "true" : "false";
@@ -161,7 +163,7 @@ private void writeScriptNode(STree tree, Device device,
     // model tree rekursiv...
     for ( int i=0; i<model.getChildCount(node); i++ ) {
         path[depth+1] = model.getChild(node, i);
-        writeScriptNode(tree, device, path, nodeId + "_" + i, depth+1, result);
+        writeScriptNode(tree, device, path, treeId, depth+1, result);
         %>TREE_NODES["<%=nodeId%>"].addChild(TREE_NODES["<%=result.nodeId%>"]);
 <%
     }
@@ -171,14 +173,14 @@ private void writeScriptNode(STree tree, Device device,
 
 
 private int writeSubTree(STree tree, Device device, Object[] path, int depth, 
-                          String nodeId, int maxDepth, int row) throws IOException {
+                          String treeId, int maxDepth, int row) throws IOException {
 
     final TreeModel model = tree.getModel();
     final Object node = path[depth];
 
     if ( tree.isRootVisible() || 
          node!=model.getRoot() ) {
-        writeTreeNode(tree, device, path, depth, nodeId, maxDepth, row);
+        writeTreeNode(tree, device, path, depth, treeId, maxDepth, row);
     }
 
     depth++;
@@ -187,7 +189,7 @@ private int writeSubTree(STree tree, Device device, Object[] path, int depth,
     // model tree rekursiv...
     for ( int i=0; i<model.getChildCount(node); i++ ) {
         path[depth] = model.getChild(node, i);
-        row = writeSubTree(tree, device, path, depth, nodeId + "_" + i, maxDepth, row);
+        row = writeSubTree(tree, device, path, depth, treeId, maxDepth, row);
     }
 
     return row;
@@ -213,7 +215,7 @@ private int writeSubTree(STree tree, Device device, Object[] path, int depth,
   Object[] path = new Object[maxDepth+1];
   path[0] = component.getModel().getRoot();
   writeSubTree(component, device, path, 0,
-	       component.getComponentId() + "_0", maxDepth, 0);
+	       component.getComponentId() + "_", maxDepth, 0);
 
   // expandable last row to fit preferred table size on IE
   %>
@@ -226,7 +228,7 @@ private int writeSubTree(STree tree, Device device, Object[] path, int depth,
   <%
       path[0] = component.getModel().getRoot();
       ScriptResult result = new ScriptResult();
-      writeScriptNode(component, device, path,component.getComponentId() + "_0", 0, result);
+      writeScriptNode(component, device, path,component.getComponentId() + "_", 0, result);
 
   %>var tree_<%=component.getComponentId()%> = new Tree("<%=component.getComponentId()%>","<%=component.getEncodedLowLevelEventId()%>","<%=expandControlIcon.getURL()%>","<%=collapseControlIcon.getURL()%>", "<%=component.getRequestURL()%>", TREE_NODES["<%=result.nodeId%>"]);
 

@@ -89,10 +89,11 @@ private void writeTreeNode(STree tree, Device device, Object[] path, int depth,
 }
 
 private void writeScriptNode(STree tree, Device device,
-                             Object[] path, String nodeId, 
+                             Object[] path, String treeId, 
                              int depth, ScriptResult result, 
                              StringBufferDevice deviceBuffer) throws IOException {
 
+    String nodeId = treeId + Integer.toString(result.row);
     final TreeModel model = tree.getModel();
     final Object node = path[depth];
     final String isExpanded = tree.isExpanded(new MyTreePath(path,depth+1)) ? "true" : "false";
@@ -112,7 +113,7 @@ private void writeScriptNode(STree tree, Device device,
     // model tree rekursiv...
     for ( int i=0; i<model.getChildCount(node); i++ ) {
         path[depth+1] = model.getChild(node, i);
-        writeScriptNode(tree, device, path, nodeId + "_" + i, depth+1, result, deviceBuffer);
+        writeScriptNode(tree, device, path, treeId, depth+1, result, deviceBuffer);
         %>TREE_NODES["<%=nodeId%>"].addChild(TREE_NODES["<%=result.nodeId%>"]);
 <%
     }
@@ -147,7 +148,7 @@ private void writeScriptNode(STree tree, Device device,
   <%
       path[0] = tree.getModel().getRoot();
       ScriptResult result = new ScriptResult();
-      writeScriptNode(tree, device, path,tree.getComponentId() + "_0", 0, result, deviceBuffer);
+      writeScriptNode(tree, device, path,tree.getComponentId() + "_", 0, result, deviceBuffer);
 
   %>
 
@@ -160,15 +161,6 @@ TREE_NODES["<%=result.nodeId%>"].expand();
 
 </script>
   <%
-
-
-
-
-      /*
-  path[0] = tree.getModel().getRoot();
-  writeSubTree(tree, device, path, 0,
-	       tree.getComponentId() + "_0", maxDepth, 0);
-      */
   // expandable last row to fit preferred table size on IE
   %>
 <tr><td<%
@@ -193,40 +185,6 @@ TREE_NODES["<%=result.nodeId%>"].expand();
 
   private final int getMaxDepth(STree tree) {
       return getMaxDepth(tree.getModel(), tree.getModel().getRoot()) - (tree.isRootVisible() ? 1 : 0);
-  }
-
-  private final boolean isLastChild(TreeModel model, TreePath path, int i) {
-      Object node = path.getPathComponent(i);
-      if (i == 0)
-          return true;
-      Object parent = path.getPathComponent(i-1);
-
-      return node == model.getChild(parent,model.getChildCount(parent)-1);
-  }
-
-
-  private void writeIcon(Device device, SIcon icon, int width, int height) throws IOException {
-      if ( icon!=null ) {
-          %><img<%
-          %><%|src=icon.getURL()%><%
-          %><%|width=width%><%
-          %><%|height=height%><%
-          %>/><%
-      }
-  }
-
-  private void writeIcon(Device device, SIcon icon, boolean nullBorder, String id) throws IOException {
-       if (icon != null) {
-           %><img<%
-           if (nullBorder) {
-               %> border="0"<%
-           }
-           %><%|id=id%><%
-           %><%|src=icon.getURL()%><%
-           %><%|width=icon.getIconWidth()%><%
-           %><%|height=icon.getIconHeight()%><%
-           %>/><%
-       }
   }
 
   protected class MyTreePath extends TreePath {
