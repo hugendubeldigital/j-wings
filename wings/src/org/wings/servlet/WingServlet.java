@@ -371,7 +371,12 @@ public abstract class WingServlet extends HttpServlet
                                    info.lastModified() + STABLE_EXPIRE);
         }
         OutputStream out = response.getOutputStream();
-        info.handler.write(info.extObject, out);
+        try {
+            info.handler.write(info.extObject, out);
+        }
+        catch (Exception e) { 
+            /* ignore */
+        }
         out.flush();
         out.close();
     }
