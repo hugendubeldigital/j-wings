@@ -70,6 +70,7 @@ public class LdapClientSession
     private SButton addAttribute;
     private SButton commitButton;
     private SButton removeButton;
+    private SButton disconnectButton;
     private AddObjectsPanel addPanel;
     private SPanel treePanel;
 
@@ -136,10 +137,10 @@ public class LdapClientSession
         settingsForm.add(bindDNPassword);
 
         final SButton connectButton = new SButton("connect");
-        final SButton disconnectButton = new SButton("disconnect");
-        disconnectButton.setVisible(false);
+        //final SButton disconnectButton = new SButton("disconnect");
+        //disconnectButton.setVisible(false);
         settingsForm.add(connectButton);
-        settingsForm.add(disconnectButton);
+        //settingsForm.add(disconnectButton);
 
         try {
             mainPanel = new SForm(new STemplateLayout(getClass().getResource("ldapclientlayout.html")));
@@ -149,7 +150,7 @@ public class LdapClientSession
             System.err.println("LdapClientSession::initGUI() -> " + e);
         }
 
-        mainPanel.setEncodingType("multipart/form-data");
+        //mainPanel.setEncodingType("multipart/form-data");
 
 	Image img = Toolkit.getDefaultToolkit().createImage(getClass().getResource("images/LDAPworm.gif"));
         mainPanel.add(new SImage( img ) ,"BOTTOMIMAGE");
@@ -219,6 +220,15 @@ public class LdapClientSession
 
         addPanel = new AddObjectsPanel();
         tabbedPane.add(addPanel, "Add new Object");
+
+	disconnectButton = new SButton();
+	tabbedPane.add(disconnectButton,"Disconnect");
+	disconnectButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+		    tabbedPane.setSelectedIndex(1);
+		    System.out.println("disconnect");
+		}
+	    });
 	
         connectButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -229,13 +239,18 @@ public class LdapClientSession
 		    
 		    boolean success = worker.getSuccess();
 		    if (success) {
-			connectButton.setVisible(false);
-			disconnectButton.setVisible(true);
+			System.out.println("visible false");
+			
+			settingsForm.setVisible(false);
+			settingsForm.removeAll();
+			//connectButton.setVisible(false);
+			
+			//disconnectButton.setVisible(true);
 			tabbedPane.setSelectedIndex(1);
 		    }
 		    else {
 			connectButton.setVisible(true);
-			disconnectButton.setVisible(false);
+			//disconnectButton.setVisible(false);
 		    }
 		    
 		    if (success) {
@@ -248,7 +263,7 @@ public class LdapClientSession
 		}
 	    });
 	
-        disconnectButton.addActionListener(new ActionListener() {
+        /*disconnectButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		    createTreeModel(null);
 		    tree.setModel(treeModel);
@@ -257,9 +272,9 @@ public class LdapClientSession
                 bindDNPassword.setText("");
 		
                 disconnectButton.setVisible(false);
-                connectButton.setVisible(true);
+		connectButton.setVisible(true);
 		}
-	    });
+		});*/
     }
 
     

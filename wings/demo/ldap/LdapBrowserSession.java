@@ -84,8 +84,8 @@ public class LdapBrowserSession
 	this.server = ((PropertyService)getSession()).getProperty("ldap.server.host");
 	this.baseDN = ((PropertyService)getSession()).getProperty("ldap.server.basedn");
 	this.bindDN = ((PropertyService)getSession()).getProperty("ldap.server.binddn");
-	this.password = ((PropertyService)getSession()).getProperty("ldap.server.password");
-	//this.password = "";
+	//this.password = ((PropertyService)getSession()).getProperty("ldap.server.password");
+	this.password = "";
 	this.peopleName = ((PropertyService)getSession()).getProperty("ldap.server.peoplename");
        
 		
