@@ -113,7 +113,7 @@ public class FrameCG
         d.print("</head>\n");
     }
 
-    private String charSetFor(Locale locale) {
+    public static String charSetFor(Locale locale) {
         final String language = locale.getLanguage();
 
         if(language.equals("pl"))
