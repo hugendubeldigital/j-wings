@@ -1,6 +1,7 @@
 package ldap;
 
 
+
 import javax.naming.*;
 import javax.naming.directory.*;
 import java.util.Hashtable;
@@ -20,6 +21,7 @@ public class LdapWorker
     private String bindDN;
     private String password;
     private String server;
+    private final static String DELIM = ":";
 
     public LdapWorker (String s, String base, String bind, String p) {
 	setBaseDN(base);
@@ -39,8 +41,7 @@ public class LdapWorker
 	}
 	catch(NamingException e) {
 	    setSuccess(false);
-	    System.err.println("Problem " + e);
-	}
+        }
     }
 
     private void setBaseDN(String b) {
@@ -97,6 +98,7 @@ public class LdapWorker
 
     //gibt einen Vector der unterstuetzten objektklassen zurueck
     public ArrayList getObjects() {
+
 	ArrayList ol = null;
 	try {
 	    String [] attrs = null;
@@ -112,13 +114,11 @@ public class LdapWorker
 	    Attribute attr = null;
 	    while (answer.hasMore()) {
 		SearchResult sr = (SearchResult)answer.next();
-		System.out.println(">>>" + sr.getName());
-		Attributes attribs = sr.getAttributes();
+                Attributes attribs = sr.getAttributes();
 		for (NamingEnumeration ae = attribs.getAll();
 		     ae.hasMore();) {
 		    attr = (Attribute)ae.next();
-		    System.out.println("attribute: " + attr.getID());
-		}
+                }
 
 		NamingEnumeration ne = attr.getAll();
 		ol = getObjNames(ne);
@@ -152,8 +152,7 @@ public class LdapWorker
   		}
   		if (sup!=null && !sup.equals("top")) {
   		    obj = obj + " SUP " +"(" + sup + ")";
-  		    System.out.println("obj is" + obj );
-  		}
+                }
 		
   		objArray.add(obj);
   	    }
@@ -426,7 +425,7 @@ public class LdapWorker
     
     public void addNewEntry(String dn, Hashtable vals) {
 	try {
-	System.out.println("ein neues Entry");
+            System.err.println("die dn ist " + dn);
 	Attributes attrs = getAttributes(vals);
 	ctx.createSubcontext(dn,attrs);
 	}
@@ -437,16 +436,16 @@ public class LdapWorker
     
     
     private Attributes getAttributes(Hashtable vals) {
-	Attributes attrs = new BasicAttributes();
+        Attributes attrs = new BasicAttributes();
 	Enumeration e;
 	e = vals.keys();
 	while (e!=null && e.hasMoreElements()) {
 	    Object key = e.nextElement();
 	    Attribute attr = new BasicAttribute((String)key);
 	    String values = (String)vals.get(key);
-	    StringTokenizer parser = new StringTokenizer(values, ",");
+            	    StringTokenizer parser = new StringTokenizer(values, DELIM);
 	    while (parser.hasMoreTokens()) {
-		attr.add(parser.nextToken());
+                attr.add(parser.nextToken());
 	    }
 	    attrs.put(attr);
 	}
@@ -456,8 +455,7 @@ public class LdapWorker
     //remove the entry
     public void removeEntry(String dn) {
 	try { 
-	    System.out.println("entry " + dn + "removed");
-	    ctx.destroySubcontext(dn);
+            ctx.destroySubcontext(dn);
 	}
 	catch (NamingException exc) {
 	    System.out.println("entry to remove not found");

@@ -53,6 +53,7 @@ public class AttributesCellRenderer
 		    StringBuffer buffer = new StringBuffer();
 		    
 		    for (int i=0; i < attribute.size(); i++) {
+
 			if (i > 0)
 			    buffer.append(", ");
 			buffer.append(attribute.get(i).toString());

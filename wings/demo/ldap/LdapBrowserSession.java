@@ -45,6 +45,8 @@ public class LdapBrowserSession
     private SDesktopPane desktop;
     private SInternalFrame searchFrame;
     private SInternalFrame detailFrame;
+    //private SFrame searchFrame;
+    //private SFrame detailFrame;
 
     private STextField searchTextField;
     private STable table;
@@ -118,15 +120,19 @@ public class LdapBrowserSession
     }
 
     void initGUI() {
-	desktop = new SDesktopPane();
+        desktop = new SDesktopPane();
 	getFrame().getContentPane().add(desktop);
 
+	//searchFrame = new SFrame();
+	//getFrame().getContentPane().add(searchFrame);
 	searchFrame = new SInternalFrame();
 	desktop.add(searchFrame);
-
+        
+	//detailFrame = new SFrame();
+	//getFrame().getContentPane().add(detailFrame);
 	detailFrame = new SInternalFrame();
 	desktop.add(detailFrame);
-
+        
 	SForm searchForm = new SForm(new SFlowLayout());
 	searchForm.setBorder(new SBevelBorder());
 
@@ -205,7 +211,9 @@ public class LdapBrowserSession
 	    }
 	}
 
-	detailFrame.show();
+	detailFrame.setIconified(false);
+	detailFrame.setClosed(false);
+	searchFrame.setMaximized(false);
     }
 
     class SearchAction
@@ -213,8 +221,7 @@ public class LdapBrowserSession
     {
 	public void actionPerformed(ActionEvent evt) {
 	    String filter = "(" + searchAttribute + "=*" + searchTextField.getText() + "*)";
-	    System.out.println("filter: " + filter);
-	    overviewModel.setFilter(filter);
+            overviewModel.setFilter(filter);
 	}
     }
 
@@ -222,7 +229,7 @@ public class LdapBrowserSession
 	extends AbstractAction
     {
 	public void actionPerformed(ActionEvent evt) {
-	    searchFrame.show();
+	    detailFrame.setIconified(true);
 	}
     }
 
@@ -232,18 +239,20 @@ public class LdapBrowserSession
     {
 	private String filter = null;
 	private List data = new LinkedList();
-
+        
 	public void setFilter(String filter) {
 	    this.filter = filter;
 	    populateModel();
 	}
-
+        
 	protected void populateModel() {
 	    try {
 		data.clear();
-		NamingEnumeration enum = context.search(basedn, filter, new SearchControls());
+                SearchControls cons = new SearchControls();
+                cons.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		NamingEnumeration enum = context.search(basedn, filter, cons);
 		while (enum.hasMore()) {
-		    SearchResult searchResult = (SearchResult)enum.next();
+                    SearchResult searchResult = (SearchResult)enum.next();
 		    data.add(searchResult.getAttributes());
 		}
 		enum.close();
@@ -253,7 +262,7 @@ public class LdapBrowserSession
 		e.printStackTrace(System.err);
 	    }
 	}
-
+        
 	public int getRowCount() {
 	    return data.size();
 	}
@@ -268,7 +277,7 @@ public class LdapBrowserSession
 
 	public Object getValueAt(int row, int column) {
 	    Attributes attributes = (Attributes)data.get(row);
-	    return attributes.get(overviewAttributes[column]);
+            return attributes.get(overviewAttributes[column]);
 	}
 
 	public Attributes get(int row) {

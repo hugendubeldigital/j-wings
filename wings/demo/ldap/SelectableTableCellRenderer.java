@@ -13,10 +13,14 @@ public class SelectableTableCellRenderer
     implements RequestListener
 {
     private final static String DELIMITER = ":";
-    private SHRef link = new SHRef();
+    private String reference = null;
     private int[] selCol = new int[0];
 
     protected EventListenerList listenerList = new EventListenerList();
+
+    public SelectableTableCellRenderer() {
+        setEscapeSpecialChars(false);
+    }
 
     /** @link dependency 
      * @stereotype send*/
@@ -28,33 +32,31 @@ public class SelectableTableCellRenderer
 						    int row,
 						    int col)
     {
-        if (value == null)
-            value = "";
-        if (value.toString().equals(""))
+        if (value == null || value.toString() == null || value.toString().length() == 0)
             value = "&nbsp";
-        if (isSelectableColumn(col))
-        {
+
+        if (isSelectableColumn(col)) {
             RequestURL addr = baseTable.getRequestURL();
             addr.addParameter(getNamePrefix() + "=" + col + DELIMITER + row);
-            link.setText(value.toString());
-            link.setReference(addr.toString());
-            return(this);
+            setText(value.toString());
+            reference = addr.toString();
+            return this;
         }
+        else
+            reference = null;
+
         return super.getTableCellRendererComponent(baseTable, value, isSelected, row, col);
     }
 
-    public void setSelectableColumns(int[] arr)
-    {
+    public void setSelectableColumns(int[] arr) {
         if (arr != null)
             selCol = arr;
         else
             selCol = new int[0];
     }
 
-    public boolean isSelectableColumn(int col)
-    {
-        for(int i=0;i<selCol.length;i++)
-        {
+    public boolean isSelectableColumn(int col) {
+        for(int i=0;i<selCol.length;i++) {
             if (selCol[i] == col)
                 return(true);
         }
@@ -79,22 +81,19 @@ public class SelectableTableCellRenderer
     protected void fireCellSelectionPerformed(String pos) {
         StringTokenizer tz = new StringTokenizer(pos, DELIMITER);
         int x=-1, y=-1;
-        try
-        {
+        try {
             if (tz.hasMoreElements())
                 x = Integer.parseInt(tz.nextToken());
             if (tz.hasMoreElements())
                 y = Integer.parseInt(tz.nextToken());
         }
-        catch(Exception e)
-        {
-            System.err.println("SelectableTableCellRenderer::fireCellSelectionPerformed("+pos+") -> invalid input");
+        catch(Exception e) {
+            System.err.println("SelectableTableCellRenderer::fireCellSelectionPerformed("
+                               + pos
+                               + ") -> invalid input");
         }
         CellSelectionEvent e = new CellSelectionEvent(this, x, y);
-        // Guaranteed to return a non-null array
         Object[] listeners = listenerList.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
             if (listeners[i] == CellSelectionListener.class) {
                 ((CellSelectionListener)listeners[i+1]).cellSelected(e);
@@ -107,16 +106,17 @@ public class SelectableTableCellRenderer
 
     public void write(Device d) throws IOException
     {
-        if (link != null) {
+        if (reference != null) {
             d.append("<a href=\"");
-            d.append(link.getReference());
+            d.append(reference);
             d.append("\">");
         }
-        d.append(link.getText());
-        if (link != null)
+
+        super.write(d);
+
+        if (reference != null)
             d.append("</a>");
     }
-
 }
 
 

@@ -53,7 +53,10 @@ public class LdapClientSession
 	       ChangeListener
 {
     private final static String NOT_CONNECTED = "not connected";
-    private final int columns = 35;
+    private final static String JPEGPATH = "/home/nina/wings/demo/ldap/jpeg/";
+    private final static String DELIM= ":";
+    private final int columns = 50;
+    private final int maxcolumns = 100;
 
     private LdapWorker worker = null;
     private TreeModel treeModel; 
@@ -117,14 +120,14 @@ public class LdapClientSession
 	
         SLabel descServer = new SLabel("sever:port");
         server = new STextField("");
-        server.setColumns(30);
+        server.setColumns(columns);
         server.setText((String)((PropertyService)getSession()).getProperty("ldap.server.host"));
         settingsForm.add(descServer);
         settingsForm.add(server);
 	
         SLabel descBaseDN = new SLabel("base DN");
         baseDN = new STextField();
-        baseDN.setColumns(30);
+        baseDN.setColumns(columns);
         baseDN.setText((String)((PropertyService)getSession()).getProperty("ldap.server.basedn"));
         settingsForm.add(descBaseDN);
         settingsForm.add(baseDN);
@@ -132,13 +135,13 @@ public class LdapClientSession
         SLabel descBindDN = new SLabel("bind DN");
         bindDN= new STextField();
         bindDN.setText((String)((PropertyService)getSession()).getProperty("ldap.server.binddn"));
-        bindDN.setColumns(30);
+        bindDN.setColumns(columns);
         settingsForm.add(descBindDN);
         settingsForm.add(bindDN);
 	
         SLabel descBindDNPassword = new SLabel("password");
         bindDNPassword= new SPasswordField();
-        bindDNPassword.setColumns(30);
+        bindDNPassword.setColumns(columns);
         settingsForm.add(descBindDNPassword);
         settingsForm.add(bindDNPassword);
 	
@@ -186,13 +189,15 @@ public class LdapClientSession
 			    if (((String)o).equals("userPassword")) {
 				attrField = new SPasswordField();
 				((SPasswordField)attrField).setColumns(columns);
-				((SPasswordField)attrField).setText("");
+				((SPasswordField)attrField).setMaxColumns(maxcolumns);
+                                ((SPasswordField)attrField).setText("");
 				textHashtable.put(o,"");
 			    }
 			    else {
 				attrField = new STextField("");
 				((STextField)attrField).setColumns(columns);
-				textHashtable.put(o,"");
+                                ((STextField)attrField).setMaxColumns(maxcolumns);
+			textHashtable.put(o,"");
 			    }
 			}
 			else {
@@ -327,10 +332,8 @@ public class LdapClientSession
 	    Enumeration enumer = componentTable.keys();
 	    while (enumer != null && enumer.hasMoreElements()) {
 		String key = (String)enumer.nextElement();
-		System.out.println(key);
 		
 		oldValue = (String)(textHashtable.get(key));
-		System.out.println("fuer " + key + " old value " +oldValue);
 		
 		if (oldValue != null ) {
 		    if (componentTable.get(key).getClass().getName().equals("org.wings.SLabel"))
@@ -338,9 +341,6 @@ public class LdapClientSession
 		    else 
 			newValue = ((STextField)componentTable.get(key)).getText();
 		}
-		
-		System.out.println("new value " +newValue);
-		System.out.println("old value " +oldValue);
 		
 		if (oldValue!=null) {
 		    if (!oldValue.equals(newValue)) {
@@ -354,11 +354,11 @@ public class LdapClientSession
 				System.out.println("nicht gleiches Passwort");
 			}
 			else {
-			    StringTokenizer st = new StringTokenizer(newValue,",");
-			    String atV;
+                            StringTokenizer st = new
+                                StringTokenizer(newValue,DELIM);
+                            String atV;
 			    boolean b = ((st !=null) && (st.hasMoreTokens()));
-			    System.out.println("b is " + b);
-			    if (b)
+                            if (b)
 				while (st !=null && st.hasMoreTokens())
 				    {System.out.println("o je");
 				    attr.add(st.nextToken());}
@@ -377,9 +377,9 @@ public class LdapClientSession
 		    BasicAttribute attr = new BasicAttribute("jpegPhoto");
 		    
 		    try {
-			fis = new FileInputStream("/home/nengels/jpg/" + chooser.getFilename());
-			System.out.println("dir" + chooser.getFiledir());
-			System.out.println("file" + chooser.getFilename());
+			fis = new FileInputStream(JPEGPATH + chooser.getFilename());
+			System.out.println("dirrrrrrrrrrrrrrrrrrrrrrrrr" + chooser.getFiledir());
+			System.out.println("filerrrrrrrrrrrrrrrrrrrrrrrrr" + chooser.getFilename());
 			try {
 			    int bytesNr = fis.available();
 			    b = new byte[bytesNr];
@@ -388,7 +388,8 @@ public class LdapClientSession
 			    int i = fis.read(b);
 			    fis.close();
 			    componentTable.remove("jpegPhoto");
-			    componentTable.put("jpegPhoto", new SLabel(new SImageIcon("/home/nengels/jpg/" + chooser.getFilename())));
+			    componentTable.put("jpegPhoto", new SLabel(new
+                                SImageIcon(JPEGPATH + chooser.getFilename())));
 			    addEditableComponents(componentTable);
 			}
 			catch (IOException e) {
@@ -450,7 +451,13 @@ public class LdapClientSession
 	    System.out.println("nothing selected");
 	    return;
 	}
-	setDN(((LdapTreeNode)node).getDN());
+        String actDN = ((LdapTreeNode)node).getDN();
+        if (actDN.endsWith(",")) {
+            int k = actDN.lastIndexOf(",");
+            actDN = actDN.substring(0,k);
+        }
+                
+        setDN(actDN);
 	setNode((LdapTreeNode)node);
 	
 	componentTable.clear();
@@ -480,7 +487,7 @@ public class LdapClientSession
 			while (aValues!=null && aValues.hasMore()) {
 			    Object o = aValues.next();
 			    if(!values.equals("")) {
-				values = values + "," + o;
+				values = values + DELIM + o;
 			    }
 			    else {
 				values = (String)o;
@@ -490,6 +497,7 @@ public class LdapClientSession
 			if (!label.equals("objectClass")) {
 			    attrField = new STextField((String)values);
 			    ((STextField)attrField).setColumns(columns);
+			    ((STextField)attrField).setMaxColumns(maxcolumns);
 			}
 			else { 
 			    attrField = new SLabel((String)values);
@@ -515,7 +523,8 @@ public class LdapClientSession
 			if (label.equals("userPassword")) {
 			    SLabel attrLa = new SLabel(label);
 			    STextField attrF = new SPasswordField();
-			    attrF.setColumns(35);
+			    attrF.setColumns(columns);
+			    attrF.setMaxColumns(maxcolumns);
 			    attrF.setText(o.toString());
 			    componentTable.put(label,attrF);
 			    textHashtable.put(label,o.toString());

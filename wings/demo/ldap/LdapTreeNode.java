@@ -24,7 +24,7 @@ public class LdapTreeNode
     }
 
     public LdapTreeNode(String dn) {
-	this.dn = dn;
+       	this.dn = dn;
     }
 
     public TreeNode getChildAt(int childIndex) {
@@ -121,10 +121,16 @@ public class LdapTreeNode
     public String getDN() {
         if (getParent() == null || !(getParent() instanceof LdapTreeNode))
             return dn;
-        else
-            return dn + "," + ((LdapTreeNode)getParent()).getDN();
+        else {
+            String actDN = dn + "," + ((LdapTreeNode)getParent()).getDN();
+            if (actDN.endsWith(",")) {
+                int index = actDN.lastIndexOf(",");
+                actDN = actDN.substring(0,index);
+            }
+            return actDN;
+        }
     }
-
+    
     public String toString() {
         return dn;
     }
@@ -149,9 +155,7 @@ public class LdapTreeNode
             root.add(node);
 
             Enumeration enum = root.breadthFirstEnumeration();
-            while (enum.hasMoreElements())
-                System.out.println("" + enum.nextElement());
-	}
+        }
 	catch(NamingException e) {
             System.err.println(e.getMessage());
             e.printStackTrace(System.err);
