@@ -65,9 +65,10 @@ public class TemplateParser {
                                                   "<write>",      // 2
                                                   "</write>",     // 3
                                                   "<include",     // 4
-                                                  "<install>",    // 5
-                                                  "</install>",   // 6
-                                                  "</template" }; // 7
+                                                  "<template",    // 5
+                                                  "<install>",    // 6
+                                                  "</install>",   // 7
+                                                  "</template>" }; // 8
 
     // the index for the tags. Yes: c-preprocessor and enumerations would be
     // better.
@@ -76,9 +77,10 @@ public class TemplateParser {
     private final static int START_WRITE  = 2;
     private final static int END_WRITE    = 3;
     private final static int INCLUDE      = 4;
-    private final static int START_INSTALL= 5;
-    private final static int END_INSTALL  = 6;
-    private final static int END_TEMPLATE = 7;
+    private final static int TEMPLATE     = 5;
+    private final static int START_INSTALL= 6;
+    private final static int END_INSTALL  = 7;
+    private final static int END_TEMPLATE = 8;
     
     // current mode we are in - this is important for the brace depth check.
     private final static int JAVA_MODE     = 1;
@@ -126,11 +128,23 @@ public class TemplateParser {
     public void generate(File directory) throws IOException {
         if (anyError)
             return;
+        if (! directory.exists()) {
+            directory.mkdir();
+        }
+        else {
+            if (!directory.isDirectory())
+                throw new IllegalArgumentException(directory + " is not a directory");
+        }
         File outFile = new File(directory, templateName + ".java");
         PrintWriter out = new PrintWriter(new FileWriter(outFile));
         
         out.println ("// DO NOT EDIT! Your changes will be lost: generated from '" + sourcefile.getName() + "'");
-        out.println ("package " + pkg + ";\n\n");
+        if (pkg != null) {
+            out.println ("package " + pkg + ";\n\n");
+        }
+        else {
+            out.println("// default package\n");
+        }
         //out.println ("import java.io.*;");
         out.println ("import java.io.IOException;\n");
         out.println ("import org.wings.*;");

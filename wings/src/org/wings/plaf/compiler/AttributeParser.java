@@ -18,13 +18,9 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 
-/*
- * temporary; copied together - just to make a prelimary
- * version working quickly. DO NOT USE.
- */
 public class AttributeParser {
-    public final static char singleQuote = '\'';
-    public final static char doubleQuote = '\"';
+    private final static char singleQuote = '\'';
+    private final static char doubleQuote = '\"';
     HashMap values;
 
     public AttributeParser(String namevalue) throws IOException {
@@ -50,18 +46,6 @@ public class AttributeParser {
 		// check for valid value tag (or end delimiter)
 		if (key == null)
 		    key = nextToken(input, true);
-
-		/*
-		// close-Tag
-		if (key != null && key.equals(closeTag)) {
-		    break;
-		}
-
-		// close-Tag
-		if (key != null && key.equals("/>")) {
-		    break;
-		}
-		*/
 
 		// 'key'-part 
 		if (key == null 
@@ -142,14 +126,15 @@ public class AttributeParser {
 		}
 		else 
 		    token.append((char) c);
-	    } while ((inDouble && c != doubleQuote) || (inSingle && c != singleQuote));
-	} 
+	    } while ((inDouble && c != doubleQuote)  ||
+                     (inSingle && c != singleQuote));
+	}
 
 	// parameter delimiter? read just one
 	else if (isDelimiter((char) c)) { 
 	    token.append((char) c);
 	}
-
+        
 	// Inserted for token "-->".
 	// Like a word token, but includes the delimiter ">".
 	else if (c == '-') {
