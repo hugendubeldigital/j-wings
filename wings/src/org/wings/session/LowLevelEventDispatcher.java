@@ -15,6 +15,7 @@
 package org.wings.session;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -33,7 +34,7 @@ public final class LowLevelEventDispatcher
     implements java.io.Serializable
 {
     // not the package name but event dispatcher subsystem:
-    private final static Logger logger = Logger.getLogger("org.wings.session");
+    private final static Logger logger = Logger.getLogger("org.wings.event");
 
     private final HashMap listener = new HashMap();
 
@@ -43,7 +44,7 @@ public final class LowLevelEventDispatcher
 
     private final void addLowLevelEventListener(LowLevelEventListener gl, 
                                                 String eventId) {
-        ArrayList l = (ArrayList)listener.get(eventId);
+        List l = (List)listener.get(eventId);
         if ( l==null ) {
             l = new ArrayList(2);
             l.add(gl);
@@ -55,7 +56,7 @@ public final class LowLevelEventDispatcher
     
     private final void removeLowLevelEventListener(LowLevelEventListener gl,
                                                    String eventId) {
-        ArrayList l = (ArrayList)listener.get(eventId);
+        List l = (List)listener.get(eventId);
         if ( l!=null ) {
             l.remove(gl);
             if ( l.size()==0 )
@@ -129,11 +130,11 @@ public final class LowLevelEventDispatcher
             System.out.println("\t"+i+"="+values[i]);
         }
         */
-        boolean erg = false;
+        boolean result = false;
         int dividerIndex = name.indexOf(SConstants.UID_DIVIDER);
         String epoch = null;
 
-        // kein Alias
+        // no Alias
         if (dividerIndex > 0) {
             epoch = name.substring(0, dividerIndex);
             name = name.substring(dividerIndex + 1);
@@ -153,38 +154,39 @@ public final class LowLevelEventDispatcher
         // the click position as .x and .y suffix of the name
         if (name.endsWith(".x") || name.endsWith(".X")) {
             name = name.substring(0, name.length()-2);
-		}
-		else
-		if (name.endsWith(".y") || name.endsWith(".Y")) {
-		    return false;
-		}
-
-		// is value encoded in name ?
-		int p = name.indexOf(SConstants.UID_DIVIDER);
-		if (p > -1) {
-		    String v = name.substring(p+1);
-		    name = name.substring(0, p);
-		    String[] va = new String[values.length+1];
-		    System.arraycopy(values, 0, va, 0, values.length);
-		    va[values.length] = v;
-		    values = va;
-		}
-		
-        ArrayList l = (ArrayList)listener.get(name);
-        if (l != null && l.size()>0 ) {
+        }
+        else if (name.endsWith(".y") || name.endsWith(".Y")) {
+            // .. but don't process the same event twice.
+            logger.finer("discard '.y' part of image event");
+            return false;
+        }
+        
+        // is value encoded in name ? Then append it to the values we have.
+        int p = name.indexOf(SConstants.UID_DIVIDER);
+        if (p > -1) {
+            String v = name.substring(p+1);
+            name = name.substring(0, p);
+            String[] va = new String[values.length+1];
+            System.arraycopy(values, 0, va, 0, values.length);
+            va[values.length] = v;
+            values = va;
+        }
+        
+        List l = (List)listener.get(name);
+        if (l != null && l.size() > 0 ) {
             logger.fine("process event '" + epoch + "_" + name + "'");
-            for (int i=0; i<l.size(); i++) {
+            for (int i=0; i < l.size(); ++i) {
                 LowLevelEventListener gl = (LowLevelEventListener)l.get(i);
                 if ( checkEpoch(epoch, name, gl) ) {
                     logger.fine("process event '" + name + "' by " +
                                  gl.getClass() + "(" + gl.getLowLevelEventId() +
                                  ")" );
                     gl.processLowLevelEvent(name, values);
-                    erg = true;
+                    result = true;
                 }
             }
         }
-        return erg;
+        return result;
     }
 
     protected boolean checkEpoch(String epoch, String name, 
