@@ -162,7 +162,7 @@ public class FastDispatcher
         if (l != null) {
             SGetListener gl = (SGetListener)l.get(0);
             SFrame frame = gl.getParentFrame();
-            if (prefix != null && !prefix.equals(frame.getUniquePrefix())) {
+            if (prefix != null && frame != null && !prefix.equals(frame.getUniquePrefix())) {
                 debug("parameter '" + name + "' is out of date");
                 // do not fire those outdated events but enforce immediate reload of the frame
                 System.err.println("outdated events from frame " + frame.getTitle());
