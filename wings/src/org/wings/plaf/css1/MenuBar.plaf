@@ -28,9 +28,9 @@
                      %> onMouseOver="setStyleClass(this, 'amenu')"<%
                      %> onMouseOut="setStyleClass(this, 'menu')"<%
                  }
-                 %>><%
+                 %>>&nbsp;<%
                  mbar.getComponentAt(i).write(device);
-                 %></td><%
+                 %>&nbsp;</td><%
              }
          }
          if ( !rightAligned ) {
