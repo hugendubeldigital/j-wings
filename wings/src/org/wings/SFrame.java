@@ -444,22 +444,6 @@ public class SFrame
         return statusLine;
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String show() {
-        StringBufferDevice erg = new StringBufferDevice();
-        try {
-            write(erg);
-        }
-        catch (IOException e) {
-        }
-        return erg.toString();
-    }
-
-
     public void propertyChange(PropertyChangeEvent pe) {
         if ("lookAndFeel".equals(pe.getPropertyName())) {
             updateComponentTreeCG(getContentPane());
