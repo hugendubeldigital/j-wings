@@ -10,7 +10,7 @@ P {
    font-size: 12pt;
    font-weight: normal;
    font-style: normal;
-   color: #000066;
+   color: #000044;
    text-align: left 
 }
 
@@ -30,7 +30,7 @@ STRONG {
 
 SMALL { 
    font-size: 8pt;
-   color: #000066 
+   color: #000044 
 }
 
 A:link { 
@@ -45,7 +45,7 @@ A:active {
 }
 
 A:visited { 
-   color: #000066;
+   color: #000044;
    text-decoration: none 
 }
 
@@ -77,7 +77,7 @@ H3 {
    font-size: 12pt;
    font-weight: bold;
    font-style: normal;
-   color: #000066 
+   color: #000044 
 }
 
 .textfield { 
