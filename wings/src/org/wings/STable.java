@@ -47,81 +47,103 @@ public class STable
     implements TableModelListener, Scrollable, CellEditorListener, LowLevelEventListener, SSelectionComponent
 {
     /**
+     * <p>stores the ID of the class to access the <code>ComponentGenerator</code>.</p>
      * @see #getCGClassID
      */
     private static final String cgClassID = "TableCG";
 
     /**
-     * The table model.
+     * <p>the table model.</p>
      */
-    protected TableModel model = null;
+    protected TableModel model;
 
     /**
-     * The selection model.
+     * <p>the selection model.</p>
      */
     protected SListSelectionModel selectionModel;
 
     /**
-     * The default renderer is used if no other renderer is set for the
-     * content of a cell.
-     */
+     * <p>The default renderer is used if no other renderer is set for the
+     * content of a cell.</p>
+     **/
     protected STableCellRenderer defaultRenderer;
 
-    /** The header renderer is used for the header line */
+    /** 
+     * <p>The <code>headerRenderer</code> is used to render the header line.</p>
+     **/
     protected STableCellRenderer headerRenderer;
 
     /**
-     * The renderer for the different classes of cell content. The class is
-     * the key, the renderer the value.
-     */
+     * <p>In this <code>Map</code>, the renderers for the different
+     * classes of cell content are stored.</p><p>The class is treated
+     * as key, the renderer as the value.</p>
+     **/
     protected final HashMap renderer = new HashMap();
 
-    /** If editing, Component that is handling the editing. */
+    /** 
+     * <p>If editing, this is the <code>SComponent</code> that is handling the editing. 
+     **/
     transient protected SComponent editorComp;
 
     /**
-     * The object that overwrites the screen real estate occupied by the
-     * current cell and allows the user to change those contents.
-     */
+     * <p>The object that overwrites the screen real estate occupied by the
+     * current cell and allows the user to change those contents.</p>
+     **/
     transient protected STableCellEditor cellEditor;
 
-    /** Identifies the column of the cell being edited. */
-    transient protected int editingColumn;
+    /** 
+     * <p>Identifies the column of the cell being edited.</p>
+     **/
+    transient protected int editingColumn = -1;
 
-    /** Identifies the row of the cell being edited. */
-    transient protected int editingRow;
+    /** 
+     * <p>Identifies the row of the cell being edited.</p>
+     **/
+    transient protected int editingRow = -1;
 
     /**
-     * TODO: documentation
-     */
+     * <p>In this <code>Map</code>, the <code>STableCellEditor</code>s for the different
+     * classes of cell content are stored.</p><p>The class is treated
+     * as key, the <code>STableCellEditor</code> as the value.</p>
+     **/
     protected final HashMap editors = new HashMap();
 
-    /** The style of selected cells */
+    /** 
+     * <p>The style of selected cells.</p>
+     **/
     protected String selectionStyle;
 
-    /** The dynamic attributes of selected cells */
+    /** 
+     * <p>The dynamic attributes of selected cells.</p>
+     **/
     protected AttributeSet selectionAttributes = new SimpleAttributeSet();
 
     /**
-     * The header is not (yet) implemented like in Swing. But maybe someday.
-     * So you can disable it if you like.
+     * <p>Determines whether the header is visible or not.</p><p>By
+     * default the header is visible.</p> <p><em>CAVEAT:</em>The
+     * header is not (yet) implemented like in Swing. But maybe
+     * someday.  So you can disable it if you like. TODO.</p>
      */
     protected boolean headerVisible = true;
 
-    /** The style of header cells */
+    /** 
+     * <p>The style of header cells.</p>
+     **/
     protected String headerStyle;
 
     /** The dynamic attributes of header cells */
     protected AttributeSet headerAttributes = new SimpleAttributeSet();
 
     /**
-     * TODO: documentation
-     */
+     * <p>Determines if horizontal lines in the table should be
+     * painted.</p><p>This is off by default.</p>
+     **/
     protected boolean showHorizontalLines = false;
 
     /**
-     * TODO: documentation
-     */
+     * <p>Determines if vertical lines in the table should be
+     * painted.</p><p>This is off by default.</p>
+     **/
     protected boolean showVerticalLines = false;
 
     /**
@@ -135,61 +157,64 @@ public class STable
     protected SDimension intercellPadding = new SDimension("1", "1");
 
     /**
-     * A special cell renderer, that displays the control used to select
-     * a table row; ususally, this would be some checkbox. The plaf is the
-     * last instance to decide this.
+     * <p>A special cell renderer, that displays the control used to select
+     * a table row.</p><p>Ususally, this would be some checkbox. The plaf is the
+     * last instance to decide this.</p>
      */
-    protected STableCellRenderer rowSelectionRenderer = null;
+    protected STableCellRenderer rowSelectionRenderer;
 
     /**
-     * the column where the row selection element should be rendered. If
-     * negativ, no selection element is rendered.
-     */
+     * <p>The column where the row selection element should be rendered. If
+     * negative, no selection element is rendered.</p>
+     **/
     protected int rowSelectionColumn = Integer.MAX_VALUE;
 
     /**
      * TODO: documentation
      */
-    protected Rectangle viewport = null;
+    protected Rectangle viewport;
 
     /**
-     * indicates if this component - if it is inside a {@link SForm} -  renders
-     * itself as form component or not.
+     * <p>indicates if this component - if it is inside a {@link SForm} -  renders
+     * itself as form component or not.</p>
      */
     private boolean showAsFormComponent = true;
 
     /**
-     * icon for selected row.
-     * Default: none.
+     * <p>Determines an icon for a selected row.</p>
+     * <p>Default is none.</p>
      */
     protected SIcon fSelectedIcon;
     
     /**
-     * icon for deselected row.
-     * Default: none.
-     */
+     * <p>Determines an icon for a deselected row.</p>
+     * <p>Default is none.</p>
+     **/
     protected SIcon fDeselectedIcon;
 
+    /**
+     * <p>Creates a new <code>STable</code>.</p>
+     **/
     public STable() {
-        
+        this ( null );
     }
 
     /**
-     * TODO: documentation
+     * <p>Creates a new <code>STable</code>.</p>
      *
-     * @param tm
-     */
+     * @param tm the <code>TableModel</code> for the table's contents.
+     **/
     public STable(TableModel tm){
-        setModel(tm);
         setSelectionModel(new SDefaultListSelectionModel());
         createDefaultEditors();
+        setModel(tm);
     }
 
     /**
-     * TODO: documentation
+     * <p>Sets the model of the table.</p>
      *
-     * @param tm
-     */
+     * @param tm the <code>TableModel</code> to set.
+     **/
     public void setModel(TableModel tm) {
         if (model != null)
             model.removeTableModelListener(this);
@@ -207,7 +232,7 @@ public class STable
     }
 
     /**
-     * TODO: documentation
+     * <p>returns the model of the table</p>
      *
      * @return
      */
