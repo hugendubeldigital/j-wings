@@ -111,15 +111,19 @@ public class LabelCG
         throws IOException
     {
         String text = label.getText();
-        if (text != null && text.trim().length() > 0) {
-            boolean noBreak = label.isNoBreak();
-            boolean escape = label.isEscapeSpecialChars();
+        if (text == null) return;
 
-            if (noBreak)
-                d.append("<nobr>");
+        final boolean noBreak = label.isNoBreak();
+        if (noBreak || text.trim().length() > 0) {
+            boolean escape = label.isEscapeSpecialChars();
 
             if (escape)
                 text = Utils.escapeSpecialChars(text);
+            if (noBreak) {
+                text=org.wings.plaf.xhtml.Utils.escapeSpace(text);
+                d.append("<nobr>");
+            }
+
             d.append(text);
             
             if (noBreak)

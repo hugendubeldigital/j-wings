@@ -73,9 +73,9 @@ public class SImage
 
 
     /**
-     * TODO: documentation
-     *
-     * @param img
+     * Construct an image from a external url.
+     * 
+     * @param img the image url
      */
     public SImage(String img) {
         setImage(img);

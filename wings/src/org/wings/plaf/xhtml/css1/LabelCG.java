@@ -28,8 +28,10 @@ public final class LabelCG
         throws IOException
     {
         String text = label.getText();
-        if (text != null && text.trim().length() > 0) {
-            final boolean noBreak  = label.isNoBreak();
+        if (text == null) return;
+
+        final boolean noBreak = label.isNoBreak();
+        if (noBreak || text.trim().length() > 0) {
             final boolean escape   = label.isEscapeSpecialChars();
             final SFont font       = label.getFont();
             final Color foreground = label.getForeground();
@@ -38,11 +40,14 @@ public final class LabelCG
             Utils.writeSpanWithStyleAttributePrefix(d, label );
             // override additional settings
             Utils.writeFontPrefix(d, font, foreground);
-            if (noBreak)
-                d.append("<nobr>");
 
             if (escape)
                 text = org.wings.plaf.xhtml.Utils.escapeSpecialChars(text);
+
+            if (noBreak) {
+                text=org.wings.plaf.xhtml.Utils.escapeSpace(text);
+                d.append("<nobr>");
+            }
             d.append(text);
 
             if (noBreak)

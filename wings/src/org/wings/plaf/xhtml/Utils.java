@@ -92,6 +92,28 @@ public final class Utils implements SConstants
     }
 
     /**
+      * Changes a space to &amp;nbsp;.
+      * @return the escaped String.
+      */
+    public static String escapeSpace(String text) {
+        StringBuffer escaped = new StringBuffer(text.length());
+        char[] t = new char[text.length()];
+        int lastnonwhite = 0, i=0;
+        text.getChars(0, text.length(), t, 0);
+        for (; i<t.length; i++) {
+            if (t[i]==' ') {
+                if(lastnonwhite<i)
+                    escaped.append(t, lastnonwhite, i-lastnonwhite);
+                lastnonwhite=i+1;
+                escaped.append("&nbsp;");
+            }
+        }
+        if (lastnonwhite<i)
+            escaped.append(t, lastnonwhite, i-lastnonwhite);
+        return escaped.toString();
+    }
+
+    /**
      * writes an {X|HT}ML quoted string according to RFC 1866.
      * '"', '<', '>', '&'  become '&quot;', '&lt;', '&gt;', '&amp;'
      */

@@ -269,10 +269,12 @@ public class SContainer
     }
 
     /**
-     * TODO: documentation
+     * Remove the component at given index from this container.
+     * Components are index by the order of adding them.
      *
-     * @param i
-     * @return
+     * @param i index of Component starting with 0
+     * @return the removed component if found, <tt>null</tt> otherwise
+     * @deprecated use {@link remove(int)}
      */
     public SComponent removeComponentAt(int i) {
         SComponent c = getComponentAt(i);
@@ -290,9 +292,10 @@ public class SContainer
     }
 
     /**
-     * TODO: documentation
+     * Remove the component at given index from this container.
+     * Components are index by the order of adding them.
      *
-     * @param i
+     * @param i index of Component starting with 0
      */
     public void remove(int i) {
         removeComponentAt(i);
