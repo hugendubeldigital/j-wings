@@ -32,22 +32,21 @@ public abstract class AbstractComponentCG implements ComponentCG
 	CGManager manager = component.getSession().getCGManager();
         String className = component.getClass().getName();
         className = className.substring(className.lastIndexOf(".") + 1);
-        
+
         configure(component, className, manager);
     }
-    
+
     /**
      * recursively configure the component and dependant objects
      */
-    protected void configure(Object object, String className, 
-                             CGManager manager) {
+    protected void configure(Object object, String className, CGManager manager) {
         try {
             BeanInfo info = Introspector.getBeanInfo(object.getClass());
-            
+
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
             for (int i=0; i < descriptors.length; i++) {
                 Object value = null;
-                
+
                 if (descriptors[i] instanceof IndexedPropertyDescriptor ||
                     descriptors[i].getPropertyType() == null)
                     continue;
@@ -60,20 +59,8 @@ public abstract class AbstractComponentCG implements ComponentCG
                 Class propertyType = descriptors[i].getPropertyType();
                 boolean configurable = false;
 
-                if (Icon.class.isAssignableFrom(propertyType))
-                    value = manager.getIcon(propertyName);
-                else if (SFont.class.isAssignableFrom(propertyType))
-                    value = manager.getFont(propertyName);
-                else if (Color.class.isAssignableFrom(propertyType))
-                    value = manager.getColor(propertyName);
-                else if (Style.class.isAssignableFrom(propertyType))
-                    value = manager.getStyle(propertyName);
-                else if (StyleSheet.class.isAssignableFrom(propertyType))
-                    value = manager.getStyleSheet(propertyName);
-                else {
-                    value = manager.getObject(propertyName, propertyType);
-                    configurable = !propertyType.isPrimitive();
-                }
+                value = manager.getObject(propertyName, propertyType);
+                configurable = !propertyType.isPrimitive();
 
                 if (value != null) {
                     setter.invoke(object, new Object[] { value });
@@ -90,9 +77,6 @@ public abstract class AbstractComponentCG implements ComponentCG
 
     public void uninstallCG(SComponent c) {
     }
-    
-    
-	
 }
 
 /*
