@@ -20,6 +20,7 @@ import java.awt.Color;
 
 import org.wings.SConstants;
 import org.wings.RequestURL;
+import org.wings.SDimension;
 import org.wings.io.Device;
 import org.wings.SIcon;
 import org.wings.style.Style;
@@ -184,6 +185,21 @@ public final class Utils implements SConstants {
             d.print( attr );
             d.write( EQUALS_QUOT );
             write(d, value);
+            d.write( QUOT );
+        }
+    }
+    
+    /**
+     * Prints an optional attribute. If the dimension value not equals <i>null</i>
+     * the attrib is added otherwise it is left out
+     */
+    public static void optAttribute(Device d, String attr, SDimension value) 
+        throws IOException {
+        if (value != null) {
+            d.write( SPACE );
+            d.print( attr );
+            d.write( EQUALS_QUOT );
+            write(d, value.toString());
             d.write( QUOT );
         }
     }
