@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.*;
 
 import javax.swing.ImageIcon;
 import javax.imageio.ImageIO;
@@ -48,13 +49,15 @@ public class ResourceImageIcon
     extends ClasspathResource
     implements SIcon
 {
+    private final static Logger logger = Logger.getLogger("org.wings");
+
     /**
-     * TODO: documentation
+     * Width of icon, <code>-1</code> if not set.
      */
     private int width = -1;
 
     /**
-     * TODO: documentation
+     * Height of icon, <code>-1</code> if not set.
      */
     private int height = -1;
 
@@ -79,7 +82,11 @@ public class ResourceImageIcon
         else
             mimeType = "image/" + extension;
 
-        calcDimensions();
+        try {
+            bufferResource();
+        } catch ( Throwable e ) {
+            logger.log(Level.SEVERE, "Can not buffer resource "+resourceFileName);
+        }
     }
 
     /**
@@ -87,9 +94,7 @@ public class ResourceImageIcon
      */
     protected void calcDimensions() {
         try {
-            bufferResource();
-            
-            if ( buffer!=null && buffer.isValid()) {
+            if (buffer!=null && buffer.isValid()) {
                 BufferedImage image = 
                     ImageIO.read(new ByteArrayInputStream(buffer.getBytes()));
                 width = image.getWidth();
@@ -104,10 +109,14 @@ public class ResourceImageIcon
     }
 
     public int getIconWidth() {
+        if (width == -1)
+            calcDimensions();
         return width;
     }
 
     public int getIconHeight() {
+        if (height == -1)
+            calcDimensions();
         return height;
     }
 
