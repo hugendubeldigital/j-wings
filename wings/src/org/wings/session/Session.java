@@ -77,11 +77,11 @@ public final class Session
      * Every session has its own {@link CGManager}. 
      *
      */
-    private final CGManager cgManager = new CGManager();
+    private CGManager cgManager = new CGManager();
 
     private ReloadManager reloadManager = null;
-    private final ExternalizeManager extManager = new ExternalizeManager();
-    private final LowLevelEventDispatcher dispatcher = new LowLevelEventDispatcher();
+    private ExternalizeManager extManager = new ExternalizeManager();
+    private LowLevelEventDispatcher dispatcher = new LowLevelEventDispatcher();
 
     private final HashMap props = new HashMap();
     private final HashSet frames = new HashSet();
@@ -111,7 +111,15 @@ public final class Session
      *
      */
     private final EventListenerList listenerList = new EventListenerList();
-    
+
+    public static final int getOverallSessions() {
+        return SessionServlet.getOverallSessions();
+    }
+
+    public static final int getActiveSessions() {
+        return SessionServlet.getActiveSessions();
+    }
+   
 
     /**
      * TODO: documentation
@@ -486,6 +494,21 @@ public final class Session
             if (container != null)
                 container.removeAll();
         }
+        
+        reloadManager.clear();
+        reloadManager = null;
+        extManager.clear();
+        extManager = null;
+        dispatcher.clear();
+        dispatcher = null;
+
+        frames.clear();
+        props.clear();
+
+        Object[] listeners = listenerList.getListenerList(); 
+        for (int i=0; i<listeners.length; i++) {
+            listenerList.remove(listeners[i].getClass(), (EventListener)listeners[i+1]);
+        } // end of for (int i=0; i<; i++)
     }
 
     /**
