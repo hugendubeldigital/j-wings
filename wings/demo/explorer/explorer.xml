@@ -18,6 +18,19 @@
     </init-param>
   </servlet>
 
+  <servlet>
+    <servlet-name>
+      FrameExplorer
+    </servlet-name>
+    <servlet-class>
+      explorer.FrameExplorer
+    </servlet-class>
+    <init-param>
+      <param-name>ExplorerBaseDir</param-name>
+      <param-value>/var</param-value>
+    </init-param>
+  </servlet>
+
 <!-- url mappings -->
 
   <servlet-mapping>
@@ -26,6 +39,15 @@
     </servlet-name>
     <url-pattern>
       /Explorer/*
+    </url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>
+      FrameExplorer
+    </servlet-name>
+    <url-pattern>
+      /FrameExplorer/*
     </url-pattern>
   </servlet-mapping>
 </web-app>

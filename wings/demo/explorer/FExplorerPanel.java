@@ -32,28 +32,31 @@ import org.wings.*;
  * @author Armin Haaf
  * @version $Revision$
  */
-public class ExplorerPanel
-    extends SPanel
+public class FExplorerPanel
+    extends SFrameSet
 {
     private final ExplorerComponents components = new ExplorerComponents();
 
-    public ExplorerPanel(String dir) {
-        try {
-            java.net.URL templateURL = getClass()
-                .getResource("/explorer/Explorer.thtml");
-            // you can of course directly give files here.
-            STemplateLayout layout = new STemplateLayout( templateURL );
-            setLayout(new STemplateLayout(templateURL));
-        }
-        catch ( Exception e ) {
-            setLayout(new SFlowLayout());
-        }
+    public FExplorerPanel(String dir) {
+        super(new SFrameSetLayout(null, "*,50"));
 
-	add(components.getTree(), "DirTree");
-	add(components.getTable(), "FileTable");
-	add(components.createUpload(), "UploadForm");
-	add(components.createDeleteButton(), "DeleteButton");
-        add(components.getCurrentDirLabel(), "currentDir");
+        // build frames
+        SFrame tableFrame = new SFrame("Table");
+        SFrame treeFrame = new SFrame("Tree");
+        SFrame toolbarFrame = new SFrame("Toolbar");
+
+        SFrameSet vertical = new SFrameSet(new SFrameSetLayout("200,*", null));
+        vertical.add(treeFrame);
+        vertical.add(tableFrame);
+
+        add(vertical);
+        add(toolbarFrame);
+
+	treeFrame.getContentPane().add(components.getTree());
+	tableFrame.getContentPane().add(components.getTable());
+        toolbarFrame.getContentPane().add(components.getCurrentDirLabel());
+	toolbarFrame.getContentPane().add(components.createUpload());
+	toolbarFrame.getContentPane().add(components.createDeleteButton());
         
         components.setExplorerBaseDir(dir);
     }
@@ -61,7 +64,6 @@ public class ExplorerPanel
     public void setExplorerBaseDir(String dir) {
         components.setExplorerBaseDir(dir);
     }
-
 }
 
 /*
