@@ -1,6 +1,0 @@
-<template name="ContainerCG" for="org.wings.SContainer">
-
-<write><%
-Utils.renderContainer(device, component);
-%></write>
-</template>

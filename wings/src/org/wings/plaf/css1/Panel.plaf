@@ -1,7 +1,0 @@
-<template name="PanelCG" for="org.wings.SPanel" extends="org.wings.plaf.css1.ContainerCG">
-
-<write>
-<%
-    super.write(device, component);
-%></write>
-</template>
