@@ -25,6 +25,19 @@ demojar: dummy
 	rm wingx-demo.jar ; cd demo ; \
 	${JAVA_HOME}/bin/jar cvf ../wingx-demo.jar `find . -name "*.class" -o -name "*.gif" -o -name "*.css"`
 
+demo: dummy
+	rm -rf demo/tomcat ;\
+	mkdir demo/tomcat ;\
+	mkdir demo/tomcat/WEB-INF ;\
+	mkdir demo/tomcat/WEB-INF/classes ;\
+	mkdir demo/tomcat/WEB-INF/lib ;\
+	cp ${WINGS_HOME}/wings.jar demo/tomcat/WEB-INF/lib ;\
+	cp wingx.jar demo/tomcat/WEB-INF/lib ;\
+	cd demo ;\
+	cp -P `find beaneditor iframe -name "*.class" -o -name "*.gif" -o -name "*.css" -o -name "*.thtml"` ../demo/tomcat/WEB-INF/classes ;\
+	cd .. \;
+	cp demo/demo.xml demo/tomcat/WEB-INF/web.xml
+
 htdocs: dummy doc dist
 	cd htdocs
 	ln -s ../COPYING .
