@@ -30,15 +30,15 @@ public final class FrameCG
     extends org.wings.plaf.xhtml.FrameCG
 {
     public void installCG(SComponent component) {
-        component.setStyle(component.getSession().getCGManager().
-                           getStyle(getPropertyPrefix() + ".style"));
+        CGManager cgm = component.getSession().getCGManager();
+        component.setStyle(cgm.getStyle(getPropertyPrefix() + ".style"));
+        ((SFrame)component).setStyleSheet((StyleSheet)cgm.get(getPropertyPrefix() + ".stylesheet"));
     }
 
     protected void writeAdditionalHeaders(Device d, SFrame frame)
         throws IOException
     {
-        StyleSheet styleSheet = (StyleSheet)frame.getSession().getCGManager().
-            get(getPropertyPrefix() + ".stylesheet");
+        StyleSheet styleSheet = frame.getStyleSheet();
 
         if (styleSheet != null) {
             ExternalizeManager ext = frame.getExternalizeManager();
