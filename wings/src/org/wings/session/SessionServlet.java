@@ -106,7 +106,6 @@ final class SessionServlet
     /**
      * TODO: documentation
      *
-     * @param session
      */
     protected SessionServlet() {
     }
@@ -165,7 +164,7 @@ final class SessionServlet
      * otherwise an IllegalArgumentException is thrown.
      * 
      * @param l the locale to be associated with this session.
-     * @throws IllegalArgumentException, if this locale is not supported, as
+     * @throws IllegalArgumentException if this locale is not supported, as
      *         predefined with {@link #setSupportedLocales}.
      */
     protected final void setLocale(Locale l) throws IllegalArgumentException {
@@ -386,6 +385,8 @@ final class SessionServlet
         session.setServletRequest(req);
         session.setServletResponse(response);
 
+        session.fireRequestEvent(SRequestEvent.REQUEST_START);
+
         TimeMeasure measure = null;
         if (logger.isLoggable(Level.FINER)) {        
             measure = new TimeMeasure(new MessageFormat("{0}: {1} {2}"));
@@ -585,10 +586,12 @@ final class SessionServlet
             handleException(req, response, e);
         }
         finally {
+            session.fireRequestEvent(SRequestEvent.REQUEST_END);
+
             if (outputDevice != null) {
                 try { outputDevice.close(); } catch (Exception e) {}
             }
-            
+
             /*
              * the session might be null due to destroy().
              */
@@ -597,6 +600,7 @@ final class SessionServlet
                 session.setServletRequest(null);
                 session.setServletResponse(null);
             }
+
 
             // make sure that the session association to the thread is removed
             // from the SessionManager

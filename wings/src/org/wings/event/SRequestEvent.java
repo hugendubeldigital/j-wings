@@ -52,7 +52,17 @@ public class SRequestEvent extends AWTEvent
     public static final int PROCESS_REQUEST = DELIVER_START+4;
 
     /**
-     * if type is {@link DELIVER_START} or {@link DELIVER_DONE} this field is
+     *
+     */
+    public static final int REQUEST_START = DELIVER_START+5;
+
+    /**
+     *
+     */
+    public static final int REQUEST_END = DELIVER_START+6;
+
+    /**
+     * if type is {@link #DELIVER_START} or {@link #DELIVER_DONE} this field is
      * filled with info about the resource actually delivered, otherwise it is
      * null. 
      */
@@ -61,7 +71,7 @@ public class SRequestEvent extends AWTEvent
     /**
      * Constructs a ComponentEvent object.
      * @param aSource the Component object that originated the event
-     * @param aId an integer indicating the type of event
+     * @param type an integer indicating the type of event
      */
     public SRequestEvent(Object aSource, int type, ExternalizedResource requestedResource) {
         super(aSource, type);
