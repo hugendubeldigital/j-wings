@@ -135,6 +135,7 @@ public class SDimension
      *         false otherwise.
      */
     public boolean equals(Object obj) {
+        if (obj == null) return false;
         return width.equals(((SDimension) obj).width) && height.equals(((SDimension) obj).height);
     }
     
