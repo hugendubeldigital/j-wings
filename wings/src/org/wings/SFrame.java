@@ -75,7 +75,7 @@ public class SFrame
     protected boolean resizable = true;
 
     /** the style sheet used in certain look and feels. */
-    protected StyleSheet styleSheet;  // IMPORTANT: initialization with null causes errors; what errors ?
+    protected StyleSheet styleSheet;  // IMPORTANT: initialization with null causes errors;
     // These: all properties, that are installed by the plaf, are installed during the initialization of
     // SComponent. The null initializations happen afterwards and overwrite the plaf installed values.
     // However: null is the default initialization value, so this is not a problem!
@@ -420,39 +420,6 @@ public class SFrame
 
     public String getCGClassID() {
         return cgClassID;
-    }
-
-    private class SStackLayout extends SAbstractLayoutManager
-    {
-        private SContainer container = null;
-
-        public SStackLayout() {}
-
-        public void updateCG() {}
-        public void addComponent(SComponent c, Object constraint, int index) {}
-        public void removeComponent(SComponent c) {}
-
-        public SComponent getComponentAt(int i) {
-            return (SComponent)SFrame.this.getComponentAt(i);
-        }
-
-        public void setContainer(SContainer c) {
-            container = c;
-        }
-
-        /**
-         * Allways write code for the topmost component.
-         *
-         * @param s
-         * @throws IOException
-         */
-        public void write(Device s)
-            throws IOException
-        {
-            int topmost = container.getComponentCount() - 1;
-            SComponent comp = (SComponent)SFrame.this.getComponentAt(topmost);
-            comp.write(s);
-        }
     }
 
     public void setCG(FrameCG cg) {

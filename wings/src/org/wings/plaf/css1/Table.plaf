@@ -247,7 +247,7 @@
         %><%|src=icon.getURL()%><%
         %><%|width=icon.getIconWidth()%><%
         %><%|height=icon.getIconHeight()%><%
-        %>><%
+        %>/><%
     }
 
 </template>

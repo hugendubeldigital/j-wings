@@ -27,9 +27,10 @@ import org.wings.io.Device;
 public class Script implements Renderable
 {
     protected String language = null;
+    protected String type = null;
     protected URLResource urlSource = null;
 
-    public Script(String language, URLResource urlSource) {
+    public Script(String language, String type, URLResource urlSource) {
 	this.language = language;
         this.urlSource = urlSource;
     }
@@ -39,6 +40,11 @@ public class Script implements Renderable
     }
     public String getLanguage() { return language; }
 
+    public void setType(String type) {
+	this.type = type;
+    }
+    public String getType() { return type; }
+
     public SimpleURL getURL() { return urlSource.getURL(); }
 
     public void write(Device d)
@@ -47,6 +53,8 @@ public class Script implements Renderable
         d.print("<script");
         if (language != null)
             d.print(" language=\"" + language + "\"");
+        if (type != null)
+            d.print(" type=\"" + type + "\"");
         
         if (urlSource != null && urlSource.getURL() != null) {
             d.print(" src=\"");

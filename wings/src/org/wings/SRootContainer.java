@@ -48,7 +48,7 @@ public abstract class SRootContainer extends SContainer {
      */
     public SRootContainer() {
         contentPane = new SPanel();
-	super.setLayout(new SStackLayout());
+	super.setLayout(new SRootLayout());
         super.addComponent(getContentPane(), null, getComponentCount());
     }
 
@@ -110,41 +110,6 @@ public abstract class SRootContainer extends SContainer {
      */
     public boolean removeComponent(SComponent c) {
         throw new IllegalArgumentException("use getContentPane().removeComponent()");
-    }
-
-    /**
-     * a layout manager, that shows only the topmost element.
-     */
-    private class SStackLayout extends SAbstractLayoutManager {
-        private SContainer container = null;
-	
-        public SStackLayout() {}
-	
-        public void updateCG() {}
-        public void addComponent(SComponent c, Object constraint, int index) {}
-        public void removeComponent(SComponent c) {}
-	
-        public SComponent getComponentAt(int i) {
-            return (SComponent)SRootContainer.this.getComponentAt(i);
-        }
-	
-        public void setContainer(SContainer c) {
-            container = c;
-        }
-	
-        /**
-         * Always write code for the topmost component.
-         *
-         * @param s
-         * @throws IOException
-         */
-        public void write(Device s)
-            throws IOException
-        {
-            int topmost = getComponentCount() - 1;
-            SComponent comp = (SComponent)SRootContainer.this.getComponentAt(topmost);
-            comp.write(s);
-        }
     }
 }
 

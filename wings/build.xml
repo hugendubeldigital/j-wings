@@ -71,6 +71,7 @@
       </fileset>
       <fileset dir="src">
         <include name="**/*.properties" />
+        <include name="**/*.thtml" />
         <include name="**/*.gif" />
         <include name="**/*.png" />
         <include name="**/*.css" />

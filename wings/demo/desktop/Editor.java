@@ -151,7 +151,7 @@ public class Editor
     protected SToolbar createToolbar() {
         try {
             SButton saveButton = new SButton(new ResourceImageIcon("/desktop/filesave.png"));
-            saveButton.setAttribute("border", "1px outset");
+            saveButton.setAttribute("border", "black thin outset");
             saveButton.setToolTipText("save");
             saveButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
@@ -160,6 +160,7 @@ public class Editor
             });
 
             SButton revertButton = new SButton(new ResourceImageIcon("/desktop/filerevert.png"));
+            revertButton.setAttribute("border", "black thin outset");
             revertButton.setToolTipText("revert");
             revertButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
@@ -167,6 +168,7 @@ public class Editor
                 }
             });
             SButton closeButton = new SButton(new ResourceImageIcon("/desktop/fileclose.png"));
+            closeButton.setAttribute("border", "black thin outset");
             closeButton.setToolTipText("close");
             closeButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
@@ -175,6 +177,7 @@ public class Editor
             });
 
             SButton cutButton = new SButton(new ResourceImageIcon("/desktop/editcut.png"));
+            cutButton.setAttribute("border", "black thin outset");
             cutButton.setToolTipText("cut");
             cutButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
@@ -182,6 +185,7 @@ public class Editor
                 }
             });
             SButton copyButton = new SButton(new ResourceImageIcon("/desktop/editcopy.png"));
+            copyButton.setAttribute("border", "black thin outset");
             copyButton.setToolTipText("copy");
             copyButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
@@ -189,6 +193,7 @@ public class Editor
                 }
             });
             SButton pasteButton = new SButton(new ResourceImageIcon("/desktop/editpaste.png"));
+            pasteButton.setAttribute("border", "black thin outset");
             pasteButton.setToolTipText("paste");
             pasteButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
@@ -200,6 +205,7 @@ public class Editor
             toolbar.add(saveButton);
             toolbar.add(revertButton);
             toolbar.add(closeButton);
+            toolbar.add(new SLabel("<html>&nbsp;"));
             toolbar.add(cutButton);
             toolbar.add(copyButton);
             toolbar.add(pasteButton);

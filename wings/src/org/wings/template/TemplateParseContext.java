@@ -62,7 +62,7 @@ public final class TemplateParseContext implements ParseContext
     }
 
     public SComponent getComponent (String name) {
-        return (SComponent) layout.getComponentMap().get (name);
+        return layout.getComponent(name);
     }
 }
 

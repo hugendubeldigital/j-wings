@@ -61,7 +61,7 @@
        %><%|src=icon.getURL()%><%
        %><%|width=width%><%
        %><%|height=height%><%
-       %>><%
+       %>/><%
   }
 
   private void writeIcon(Device device, SIcon icon, boolean nullBorder) throws IOException {
@@ -73,7 +73,7 @@
        %><%|src=icon.getURL()%><%
        %><%|width=icon.getIconWidth()%><%
        %><%|height=icon.getIconHeight()%><%
-       %>><%
+       %>/><%
   }
 
   private void writeTreeNode(STree component, Device device, int row, int depth)

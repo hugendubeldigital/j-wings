@@ -56,13 +56,11 @@ public class WingSet
 
         SContainer contentPane = frame.getContentPane();
         try {
-            java.net.URL templateURL = 
-                getClass().getResource("/wingset/templates/ExampleFrame.thtml");
-            if( templateURL == null ){
-                contentPane.add(new SLabel("Sorry, can't find ExampleFrame.thtml. Are you using a JAR-File?"));
+            URL templateURL = getClass().getResource("/wingset/templates/ExampleFrame.thtml");
+            if (templateURL != null) {
+                SRootLayout layout = new SRootLayout(templateURL);
+                frame.setLayout(layout);
             }
-            STemplateLayout layout = new STemplateLayout( templateURL );
-            contentPane.setLayout( layout );
         }
         catch ( java.io.IOException except ) {
             except.printStackTrace();

@@ -39,10 +39,8 @@ public class TemplateLayoutCG
      */
     static {
         PageParser parser = PageParser.getInstance();
-        parser.addTagHandler(STemplateLayout.COMPONENT_TAG,
-                             RangeTagHandler.class);
-        parser.addTagHandler("WINGSOBJECT",
-                             RangeTagHandler.class);
+        parser.addTagHandler("OBJECT", RangeTagHandler.class);
+        parser.addTagHandler("WINGSOBJECT", RangeTagHandler.class);
         parser.addTagHandler("TEXTAREA", RangeTagHandler.class);
         parser.addTagHandler("SELECT",   RangeTagHandler.class);
         parser.addTagHandler("INPUT",    SimpleTagHandler.class);

@@ -7,7 +7,7 @@ private void writeIcon(Device device, SIcon icon) throws IOException {
         %><%|src=icon.getURL()%><%
         %><%|width=icon.getIconWidth()%><%
         %><%|height=icon.getIconHeight()%><%
-        %>><%
+        %>/><%
 }
 
 private void writeWindowIcon(Device device, SDialog dialog,

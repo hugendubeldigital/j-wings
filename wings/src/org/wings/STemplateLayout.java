@@ -77,17 +77,6 @@ public class STemplateLayout
      */
     static private final String cgClassID = "TemplateLayoutCG";
 
-    /**
-     * TODO: documentation
-     */
-    public static final String COMPONENT_TAG = "OBJECT";
-    static final String INLINE = "INLINE";
-
-    /*
-     * Debug Ausgaben aktivieren.
-     */
-    private static final boolean DEBUG = true;
-
     /*
      * Dieser PropertyManager behandelt alle Properties, zu denen kein eigener
      * PropertyManager gefunden wurde.
@@ -126,19 +115,16 @@ public class STemplateLayout
     }
 
     /**
-     * the template in question ..
+     * Abstraction of the template source (file, resource, ..)
      */
+    protected HashMap components = new HashMap();
     private TemplateSource templateSource = null;
-
-
-    private HashMap components = new HashMap();
 
     /**
      * TODO: documentation
      *
      */
-    public STemplateLayout() {
-    }
+    public STemplateLayout() {}
 
     /**
      * Create a TemplateLayout that reads its content from the generic
@@ -166,23 +152,25 @@ public class STemplateLayout
     }
 
     /**
+     * Read the template from a file.
      * Open a template from a file.
      * Whenever the file changes, the Template is reloaded.
      *
      * @param tmplFile the File to read the template from.
      * @throws java.io.IOException
      */
-    public STemplateLayout (File tmplFile) throws java.io.IOException {
+    public STemplateLayout(File tmplFile) throws java.io.IOException {
         setTemplate(tmplFile);
     }
 
     /**
-     * Open Template from URL. Reads the content once in a cache.
-     *
+     * Read the template from an URL.
+     * The content is cached.
+     * 
      * @param  url the URL to read the template from.
      * @throws java.io.IOException
      */
-    public STemplateLayout (URL url) throws java.io.IOException {
+    public STemplateLayout(URL url) throws java.io.IOException {
         setTemplate(url);
     }
 
@@ -280,7 +268,7 @@ public class STemplateLayout
             throw new IllegalArgumentException("null constraint not allowed here");
         components.put(constraint.toString(), c);
     }
-    
+
     /**
      * removes the given component.
      * @param comp the component to be removed.
@@ -295,17 +283,14 @@ public class STemplateLayout
     }
 
     /**
-     *
-     */
-    public TemplateSource getTemplateSource() {
-        return templateSource;
-    }
-
-    /**
      * returns a map of the constraint/component.
      */
-    public Map getComponentMap() {
-        return components;
+    public SComponent getComponent(String name) {
+        return (SComponent)components.get(name);
+    }
+
+    public TemplateSource getTemplateSource() {
+        return templateSource;
     }
 
     /**
@@ -314,14 +299,13 @@ public class STemplateLayout
     public Map getLabels() {
         return PageParser.getInstance().getLabels(getTemplateSource());
     }
-    
+
     /**
      * TODO: documentation
      *
      * @param c
      */
-    public void setContainer(SContainer c) {
-    }
+    public void setContainer(SContainer c) {}
 
     public String getCGClassID() {
         return cgClassID;

@@ -12,7 +12,7 @@ private void writeIcon(Device device, SIcon icon) throws IOException {
         %><%|src=icon.getURL()%><%
         %><%|width=icon.getIconWidth()%><%
         %><%|height=icon.getIconHeight()%><%
-        %>><%
+        %>/><%
 }
 
 private void writeWindowIcon(Device device, SInternalFrame frame,
@@ -40,6 +40,7 @@ private void writeWindowIcon(Device device, SInternalFrame frame,
         SIcon icon = frame.getIcon();
         %><td<%|width=icon.getIconWidth()%> class="framebutton"><%
         writeIcon(device, icon);
+        %></td><%
         ++columns;
     }
 
