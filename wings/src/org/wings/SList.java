@@ -66,7 +66,7 @@ import org.wings.io.Device;
  */
 public class SList
     extends SComponent
-    implements Scrollable, LowLevelEventListener, SSelectionComponent
+    implements Scrollable, LowLevelEventListener, SSelectionComponent, ClickableRenderComponent
 {
     /**
      * @see #getCGClassID
