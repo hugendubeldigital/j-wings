@@ -45,7 +45,7 @@ public class ToggleButtonExample
 
 
     SContainer createExample() {
-        SContainer cont = new SContainer(new SFlowDownLayout());
+        SContainer cont = new SPanel(new SFlowDownLayout());
 
         cont.add(new SLabel("<h4>ToggleButtones not in a ButtonGroup</h4>"));
         cont.add(createToggleButtonExample());

@@ -39,14 +39,10 @@ public class FileChooserExample
         final SFileChooser chooser = new SFileChooser();
         p.add(chooser);
 
-        p.add(new SSpacer(1, VERTICAL));
-
         final SLabel filename = new SLabel("filename: ");
         p.add(filename);
         final SLabel fileid = new SLabel("fileid: ");
         p.add(fileid);
-
-        p.add(new SSpacer(1, VERTICAL));
 
         SButton submit = new SButton("upload");
         submit.addActionListener(new ActionListener() {

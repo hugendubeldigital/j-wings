@@ -89,6 +89,8 @@ public class ButtonExample
         buttons[7] = new SButton("testBC");
         buttons[8] = new SButton("testBR");
 
+        System.err.println("###########################");
+        System.err.println("icon.getURL()" + icon.getURL());
         for ( int i=0; i<buttons.length; i++ ) {
             buttons[i].setIcon(icon);
             buttons[i].setDisabledIcon(disabledIcon);

@@ -29,7 +29,6 @@ public class OptionPaneExample
     implements SConstants
 {
     public OptionPaneExample(SFrame f) {
-        add(new SSpacer(1, VERTICAL));
 
         final SFrame frame = f;
         SButton msg = new SButton("show Message");
@@ -62,7 +61,6 @@ public class OptionPaneExample
                 if ( e.getActionCommand()==SOptionPane.NO_ACTION ) {
                     SPanel p = new SPanel(new SFlowDownLayout());
                     p.add(new SLabel("That's sad !"));
-                    p.add(new SSpacer(1, VERTICAL));
                     SHRef sendMail =  new SHRef("Please send me why");
                     sendMail.setReference("mailto:ahaaf@mercatis.de");
                     p.add(sendMail);
@@ -81,7 +79,6 @@ public class OptionPaneExample
             }});
 
         add(yesno);
-        add(new SSpacer(1, VERTICAL));
         add(new SSeparator());
 
         SHRef href =  new SHRef("View Source Code");
