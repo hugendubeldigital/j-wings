@@ -5,7 +5,7 @@
 <import>java.io.*</import>
 <import>org.wings.script.*</import>
 
-public static final SIcon RIGHT_ARROW = new ResourceImageIcon("org/wings/icons/ArrowRight.gif");
+public static final SIcon RIGHT_ARROW = new ResourceImageIcon("org/wings/icons/MenuArrowRight.gif");
 
 public static final JavaScriptListener SCRIPT_LOADER =
 	new JavaScriptListener("", "", loadScript());
@@ -38,24 +38,53 @@ protected void writePopup(final Device device, SMenu menu)
     String componentId = menu.getComponentId();
     String popupId = componentId + "_pop";
 
-    %><table id="<%=popupId%>" class="pdmenu" style="display:none"><%
+    %><table cellspacing="0" cellpadding="0" id="<%=popupId%>" class="pdmenu" style="display:none"><%
 
     for (int i = 0; i < menu.getMenuComponentCount(); i++) {
-        String hookId = menu.getMenuComponent(i).getComponentId() + "_hook";
-        %><tr id="<%=hookId%>"><td><%
-        menu.getMenuComponent(i).write(device);
-        %></td><td><%
-        if (menu.getMenuComponent(i) instanceof SMenu) {
-            %>&nbsp;<img border="0" align="middle" src="<%=RIGHT_ARROW.getURL()%>"<%
-            %><%|width=RIGHT_ARROW.getIconWidth()%><%
-            %><%|height=RIGHT_ARROW.getIconHeight()%>/><%
-        }
-        %></td></tr><%
+        SComponent menuItem = menu.getMenuComponent(i);
+
+        if ( menuItem.isVisible() ) {
+            String itemComponentId = menu.getMenuComponent(i).getComponentId();
+            String itemHookId = itemComponentId + "_hook";
+            
+            %><tr id="<%=itemHookId%>"<%
+            if ( menu.getMenuComponent(i) instanceof SMenu ) {
+                if (menuItem.isEnabled()) {
+                    String itemParentId = popupId;
+                    String itemPopupId = itemComponentId + "_pop";
+
+                    %> onMouseOver="setStyleClass(this, 'amenu')"<%
+                    %> onMouseOut="setStyleClass(this, 'menu')"<%
+                    %> onMouseDown="Menu.prototype.toggle('<%=itemParentId%>','<%=itemHookId%>','<%=itemPopupId%>')"<%
+                }
+                %> class="menu"<%
+            } else {
+                if (menuItem.isEnabled()) {
+                    %> onMouseOver="setStyleClass(this, 'amenuitem')"<%
+                    %> onMouseOut="setStyleClass(this, 'menuitem')"<%
+                    if ( menuItem instanceof SMenuItem ) {
+                        %> onClick="window.location.href='<%writeAnchorAddress(device, (SMenuItem)menuItem);%>'"<%
+                    }
+                }
+                %> class="menuitem"<%
+            }
+            %>><td><%
+            menu.getMenuComponent(i).write(device);
+            %></td><td><%
+            if (menu.getMenuComponent(i) instanceof SMenu) {
+                %><img border="0" align="middle" src="<%=RIGHT_ARROW.getURL()%>"<%
+                %><%|width=RIGHT_ARROW.getIconWidth()%><%
+                %><%|height=RIGHT_ARROW.getIconHeight()%>/><%
+            }
+            %></td></tr><%
+         }
     }
     %></table><%
 
     for (int i = 0; i < menu.getMenuComponentCount(); i++) {
-        if ( menu.getMenuComponent(i) instanceof SMenu ) {
+        SComponent menuItem = menu.getMenuComponent(i);
+
+        if ( menuItem.isVisible() && menuItem.isEnabled() && menuItem instanceof SMenu ) {
              writePopup(device, (SMenu)menu.getMenuComponent(i));
         }
     }
@@ -64,24 +93,28 @@ protected void writePopup(final Device device, SMenu menu)
 protected void writeItem(final Device device, SMenuItem menu)
     throws IOException
 {
-    String parentId = menu.getParentMenu() != null ? "'" + menu.getParentMenu().getComponentId() + "_pop'" : "null";
+    boolean hasParent = menu.getParentMenu()!=null;
+
+    String parentId = hasParent ? "'" + menu.getParentMenu().getComponentId() + "_pop'" : "null";
     String componentId = menu.getComponentId();
     String popupId = componentId + "_pop";
     String hookId = componentId + "_hook";
 
+
+    
     // parent, hook, menu
-    %><a href="#" id="<%=componentId%>" onMouseDown="Menu.prototype.toggle(<%=parentId%>,'<%=hookId%>','<%=popupId%>')" class="menuitem"<%
-    if (menu.isEnabled()) {
-        %> onMouseOver="enter_item(this)"<%
-        %> onMouseOut="exit_item(this)"<%
+    if ( menu.isEnabled() && !hasParent) {
+        %><span onClick="Menu.prototype.toggle(<%=parentId%>,'<%=hookId%>','<%=popupId%>')" id="<%=componentId%>"><%
     }
-    %>><%
 
     if (menu.getParentMenu() == null)
         writeItemContent(device, menu);
     else
         writeItemContent(device, menu);
-    %></a><%
+
+    if ( menu.isEnabled() && !hasParent) {
+        %></span><%
+    }
 }
 
 <write>

@@ -22,8 +22,14 @@
                      %><td width="100%"></td><%
                      rightAligned = true;
                  }
-                 %><td id="<%=mbar.getComponentAt(i).getComponentId() + "_hook"%>"><%
-	             mbar.getComponentAt(i).write(device);
+                 %><td id="<%=mbar.getComponentAt(i).getComponentId() + "_hook"%>" class="menu"<%
+                 if ( mbar.getComponentAt(i).isEnabled() && 
+                      mbar.getComponentAt(i) instanceof SMenuItem ) {
+                     %> onMouseOver="setStyleClass(this, 'amenu')"<%
+                     %> onMouseOut="setStyleClass(this, 'menu')"<%
+                 }
+                 %>><%
+                 mbar.getComponentAt(i).write(device);
                  %></td><%
              }
          }

@@ -10,7 +10,7 @@ protected void writeItemContent(final Device device, SMenuItem menuItem)
 {
     SIcon icon = getIcon(menuItem);
 
-    %><nobr>&nbsp;<%
+    %><nobr><%
     if ( icon!=null ) {
         %><img border="0" align="middle" src="<%=icon.getURL()%>"<%
         %><%|width=icon.getIconWidth()%><%
@@ -34,19 +34,15 @@ protected void writeItemContent(final Device device, SMenuItem menuItem)
 protected void writeItem(final Device device, SMenuItem menuItem)
     throws IOException
 {
-    %><a href="<%writeAnchorAddress(device, menuItem);%>" class="menuitem"<%
-    if (menuItem.isEnabled()) {
-        %> onMouseOver="enter_item(this)"<%
-        %> onMouseOut="exit_item(this)"<%
-    }
-    %>><%
+    
     writeItemContent(device, menuItem);
-    %></a><%
 }
 
 <write>
 <%
-    writeItem(device, component);
+    if ( component.isVisible() ) {
+        writeItem(device, component);
+    }
 %>
 </write>
 </template>

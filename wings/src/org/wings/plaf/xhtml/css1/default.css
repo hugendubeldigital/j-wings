@@ -170,6 +170,7 @@ FORM {
 }
 
 .menubar {
+	color: #000066;
 	background-color: #CCCCCC;
 	border-color: #EEEEEE #999999 #999999 #eeeeee;
 	padding-right: 0px;
@@ -181,19 +182,25 @@ FORM {
 }
 
 .menu {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	color: #000066;
 	background-color: #CCCCCC;
-	border-color: #CCCCCC #CCCCCC #CCCCCC #CCCCCC;
-	border-style: solid;
+	border-width: 0px;
+	margin: 0px;
 	padding: 0px;
-	border-width: 1px;
+	white-space: nowrap;
 }
 
 .amenu {
-	background-color: #CCCCCC;
-	border-color: #EEEEEE #999999 #999999 #eeeeee;
-	border-style: solid;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+  	color: #ffffff;
+	background-color: #5555AA;
+	border-width: 0px;
+	margin: 0px;
 	padding: 0px;
-	border-width: 1px;
+	white-space: nowrap;
 }
 
 .pdmenu {
@@ -203,31 +210,28 @@ FORM {
 	border-color: #EEEEEE #999999 #999999 #eeeeee;
 	position: absolute;
 	overflow: visible;
-	padding: 0px;
+	padding: 2px 2px 2px 0px;
 	margin: 0px;
 }
 
 .menuitem {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12px;
+	font-size: 14px;
+	color: #000066;
 	background-color: #CCCCCC;
 	white-space: nowrap;
-	border-width: 1px;
-	border-color: #CCCCCC #CCCCCC #CCCCCC #CCCCCC;
-	border-style: solid;
+	border-width: 0px;
 	padding: 0px;
 	margin: 0px;
 }
 
 .amenuitem {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12px;
+	font-size: 14px;
   	color: #ffffff;
 	background-color: #5555AA;
 	white-space: nowrap;
-	border-width: 1px;
-	border-color: #EEEEEE #999999 #999999 #EEEEEE;
-	border-style: solid;
+	border-width: 0px;
 	padding: 0px;
 	margin: 0px;
 }

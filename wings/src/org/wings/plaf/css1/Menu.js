@@ -139,36 +139,32 @@ Menu.prototype.toggleFormElements = function() {
 
 function toggleFormElements(elementBounds) {
 
-/*    var string = 'ITEM: ';
-    for (var b = 0; b < elementBounds.length; ++b) {
-        var bounds = elementBounds[b];
-        string = string + bounds.x + ":" + bounds.y + ":" + bounds.width + ":" + bounds.height + " "
-    }
-    string = string + "\n INPUT: \n";
-*/
-
+//    var string = "";
 
     var selects = document.getElementsByTagName('select')
     for ( var i=0; i<selects.length; i++ ) {
 	var select = selects[i];
-            var selectBounds = new Bounds(select);
+        var selectBounds = new Bounds(select);
 
-//	string = string + input.id + "=" + inputBounds.x + ":" + inputBounds.y + ":" + inputBounds.width + ":" + inputBounds.height + " ";
+//	var selectBoundsString = selectBounds.x + ":" + 
+//                                 selectBounds.y + ":" + selectBounds.width + ":" + 
+//                                 selectBounds.height;
 
-            var hit = false;
-            for (var b = 0; b < elementBounds.length; ++b) {
-                var bounds = elementBounds[b];
+        var hit = false;
+        for (var b = 0; b < elementBounds.length; ++b) {
+            var bounds = elementBounds[b];
+            var elemBoundsString = bounds.x + ":" + bounds.y + ":" + bounds.width + ":" + bounds.height;
 
-                if (selectBounds.intersect(bounds)) {
-                    hit = true;
-//	            string = string + " intersects";		
-                    break;
-                }
+            if (selectBounds.intersect(bounds)) {
+                hit = true;
+//                string = string + elemBoundsString + " intersects " + selectBoundsString + " \n";		
+  		break;
             }
-
-//	    string = string + "\n";		
-
-            setVisible(select, hit);
+//            else {
+//                string = string + elemBoundsString + " not intersects " + selectBoundsString + " \n";		
+//            }
+        }
+        setVisible(select, hit);
     }
 //    alert(string);
 }
@@ -191,10 +187,13 @@ function Bounds(object) {
     this.width = object.offsetWidth;
     this.height = object.offsetHeight;
 
-    while (object.offsetParent != null) {
-        this.x += object.offsetLeft;
-        this.y += object.offsetTop;
-        object = object.offsetParent;
+    // only calc if not a fixed position
+    if ( !object.posX ) {
+        while (object.offsetParent != null) {
+            this.x += object.offsetLeft;
+            this.y += object.offsetTop;
+            object = object.offsetParent;
+        }
     }
 }
 
@@ -209,14 +208,8 @@ Bounds.prototype.intersect = function(other) {
         return true;
 }
 
-function enter_item(item) {
+function setStyleClass(item, newClass) {
     item.style.visibility = 'hidden';
-    item.setAttribute('class', 'amenuitem');
-    item.style.visibility = 'visible';
-}
-
-function exit_item(item) {
-    item.style.visibility = 'hidden';
-    item.setAttribute('class', 'menuitem');
+    item.className = newClass;
     item.style.visibility = 'visible';
 }
