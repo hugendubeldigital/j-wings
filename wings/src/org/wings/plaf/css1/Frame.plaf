@@ -72,7 +72,7 @@
         %><html>
 <%
     } else {
-        if (renderXmlDeclaration.booleanValue()) {
+        if (renderXmlDeclaration == null || renderXmlDeclaration.booleanValue()) {
            %><?xml version="1.0" encoding="<%=encoding%>"?>
 <%    
         }
