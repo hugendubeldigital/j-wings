@@ -68,7 +68,7 @@ public class TemplateLayoutCG
             	device.print("\">");
             }
 
-            PageParser.getInstance().process(source, new TemplateParseContext(device, layout));
+            layout.getPageParser().process(source, new TemplateParseContext(device, layout));
 
             if ( Utils.hasSpanAttributes( container ) ) {
                 device.print("</span>");

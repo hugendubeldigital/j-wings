@@ -121,6 +121,11 @@ public class STemplateLayout
     private TemplateSource templateSource = null;
 
     /**
+     * PageParser to use
+     */
+    protected PageParser pageParser = PageParser.getInstance();
+    
+    /**
      * TODO: documentation
      *
      */
@@ -301,11 +306,27 @@ public class STemplateLayout
      * @deprecated this will be solved differently.
      */
     public Map getLabels() {
-        return PageParser.getInstance().getLabels(getTemplateSource());
+        return pageParser.getLabels(getTemplateSource());
     }
 
     public String getCGClassID() {
         return cgClassID;
+    }
+
+    /**
+     * Retrieve the PageParser of this instance
+     * @return the current PageParser
+     */
+    public PageParser getPageParser() {
+        return pageParser;
+    }
+
+    /**
+     * Set the PageParser for this instance
+     * @param pageParser the new PageParser
+     */
+    public void setPageParser(PageParser pageParser) {
+        this.pageParser = pageParser;
     }
 }
 
