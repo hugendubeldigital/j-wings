@@ -19,7 +19,8 @@ import java.io.IOException;
 import java.awt.Color;
 import java.util.Iterator;
 
-import org.wings.*; import org.wings.border.*;
+import org.wings.*;
+import org.wings.border.*;
 import org.wings.script.DynamicScriptResource;
 import org.wings.script.ScriptListener;
 import org.wings.io.*;

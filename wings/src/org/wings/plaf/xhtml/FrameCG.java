@@ -69,11 +69,11 @@ public class FrameCG
         List headers = frame.headers();
 
         d.print("<?xml version=\"1.0\" encoding=\"");
+        //d.print("<!DOCTYPE html\n");
+        //d.print("     PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n");
+        //d.print("   \"DTD/xhtml1-transitional.dtd\">\n");
         d.print(charSetFor(frame.getSession().getLocale()));
         d.print("\"?>\n");
-        d.print("<!DOCTYPE html\n");
-        d.print("   PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n");
-        d.print("   \"DTD/xhtml1-transitional.dtd\">\n");
         d.print("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"");
         d.print(language);
         d.print("\" lang=\"");

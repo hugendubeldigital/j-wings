@@ -2,15 +2,36 @@ package org.wings.style;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.wings.*;
+import org.wings.DynamicResource;
+import org.wings.SFont;
+import org.wings.SFrame;
 import org.wings.io.Device;
+import sun.security.krb5.internal.i;
+import sun.security.krb5.internal.n;
+import sun.security.krb5.internal.w;
+import sun.security.krb5.internal.crypto.c;
+import sun.security.krb5.internal.crypto.e;
+import sun.security.krb5.internal.crypto.j;
+import sun.security.krb5.internal.crypto.r;
 
 public class CSSStyleSheet
-    implements StyleSheet
+    implements StyleSheet 
 {
     private static final Map lengthMapping = new HashMap();
     static {
@@ -52,15 +73,21 @@ public class CSSStyleSheet
 	return new HashSet(map.values());
     }
 
+	/**
+	 * Write each style in set to the device.
+	 */
     public void write(Device out) throws IOException
     {
 	Iterator iterator = map.entrySet().iterator();
 	while (iterator.hasNext()) {
 	    Map.Entry entry = (Map.Entry)iterator.next();
-            out.print((String)entry.getKey());
+		/*
+		out.print((String)entry.getKey());
 	    out.print(" { ");
-	    out.print(entry.getValue().toString());
-	    out.print(" }\n");
+		out.print(entry.getValue().toString());
+		out.print(" }\n");
+		*/
+	    ((Style) entry.getValue()).write(out);
 	}
         out.flush();
     }

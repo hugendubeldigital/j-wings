@@ -18,7 +18,7 @@ void writeIcon(final Device device, SAbstractButton abstractButton, String attr)
         writeAnchorIcon(device, abstractButton, attr);
 }
 
-void writeAnchorText(final Device device, SAbstractButton abstractButton, String attr)
+protected void writeAnchorText(final Device device, SAbstractButton abstractButton, String attr)
     throws IOException
 {
     boolean noBreak = abstractButton.isNoBreak();
@@ -173,7 +173,7 @@ void writeFormText(final Device device, SAbstractButton abstractButton, String a
     }
 }
 
-void writeFormIcon(final Device device, SAbstractButton abstractButton, String attr)
+protected void writeFormIcon(final Device device, SAbstractButton abstractButton, String attr)
      throws IOException
 {
     SIcon icon = abstractButton.isEnabled() 

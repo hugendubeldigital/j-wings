@@ -27,7 +27,7 @@ import org.wings.externalizer.ExternalizeManager;
 /**
  * TODO: documentation
  *
- * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
+ * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
@@ -35,6 +35,7 @@ public class SMenu extends SButton
 {
     private static final String cgClassID = "MenuCG";
     private boolean fActive = false;
+	private boolean fKeepOpen = false;
 
     /**
      * TODO: documentation
@@ -144,6 +145,16 @@ public class SMenu extends SButton
         fItems.remove(comp);
     }
 
+	/**
+	 * Define, if Menu should left open or not, after user
+	 * clicked menuitem. Normal behaviour is false, that means
+	 * that the menu closes, after user selected a menuitem.
+	 */
+	public void setKeepOpen(boolean keepOpen)
+	{
+	    this.fKeepOpen = keepOpen;
+	}
+
     /**
      * Close menu when an item was klicked.
      */
@@ -153,6 +164,7 @@ public class SMenu extends SButton
         }
 
         public void actionPerformed(ActionEvent e) {
+            if (fKeepOpen) return;
             SMenuItem menuitem = (SMenuItem)e.getSource();
             fMenu.setActive(false);
         }
