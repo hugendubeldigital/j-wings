@@ -55,9 +55,21 @@ public class STabbedPane
 
     ArrayList pages = new ArrayList(2);
 
-    SCardLayout card = new SCardLayout();
-    SContainer contents = new SContainer(card);
+    /**
+     * layout used to render the tabs. Only one tab is on top at a time.
+     */
+    final SCardLayout card = new SCardLayout();
 
+    /**
+     * container for all tabs. The card layout shows always one on
+     * top.
+     */
+    final SContainer contents = new SContainer(card);
+
+    /**
+     * All tabs are buttons, that are handled in this button
+     * group.
+     */
     protected SButtonGroup group;
 
     /**
@@ -843,7 +855,7 @@ public class STabbedPane
         */
     }
 
-    private class Page {
+    private static class Page {
         String title;
         Color background;
         Color foreground;
