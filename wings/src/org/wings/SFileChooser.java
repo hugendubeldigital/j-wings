@@ -43,6 +43,9 @@ import java.util.logging.Logger;
  * <p>The form, you add this SFileChooser to, needs to have the encoding type
  * <code>multipart/form-data</code> set 
  * (form.{@link SForm#setEncodingType(String) setEncodingType("multipart/form-data")}).
+ * If you have specified a special character encoding inside the sesssion via
+ * session.{@link org.wings.session.Session#setCharacterEncoding(String)} you 
+ * should also add it here in the form of <code>multipart/form-data; charset=xxx</code>.  
  *
  * <p>You can limit the size of files to be uploaded, so it is hard to make
  * a denial-of-service (harddisk, bandwidth) attack from outside to your

@@ -338,8 +338,12 @@ public class SForm
      * file upload, it is not necessary to set it to
      * <code>multipart/form-data</code>; actually it enlarges the data to
      * be transmitted, so you probably don't want to do this, then.
+     * Please be aware that if you have set a special character encoding
+     * in the <code>Session</code>, you should also pass this encoding here
+     * i.e. as <code>multipart/form-data; charset=utf-8</code> to work correctly. 
      *
      * @param type the encoding type; one of <code>multipart/form-data</code>,
+     *             <code>multipart/form-data; charset=xxxx</code> or
      *             <code>application/x-www-form-urlencoded</code>.
      */
     public void setEncodingType(String type) {
