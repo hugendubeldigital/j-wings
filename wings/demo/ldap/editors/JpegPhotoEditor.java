@@ -48,7 +48,7 @@ public class JpegPhotoEditor
         fos.close();
         
        
-        photo.setIcon(new FileImageIcon(tmp));
+        photo.setIcon(new SFileImageIcon(tmp));
         return;
       }
       catch(java.io.FileNotFoundException e) {
@@ -79,7 +79,7 @@ public class JpegPhotoEditor
         fis.read(b);
         fis.close();
         //photo.setIcon(new SImageIcon(new ImageIcon(b)));
-        photo.setIcon(new FileImageIcon(chooser.getSelectedFile()));
+        photo.setIcon(new SFileImageIcon(chooser.getSelectedFile()));
         attribute.add(b);
         return attribute;
       }

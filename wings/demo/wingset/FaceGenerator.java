@@ -64,17 +64,17 @@ public class FaceGenerator  {
     f = scaler.filter(f, null);
 
     result.hair = 
-      new FileImageIcon(storeImage(f.getSubimage(0,0,width, height/3),
+      new SFileImageIcon(storeImage(f.getSubimage(0,0,width, height/3),
                                    dir,
                                    name + "_hair"));
 
     result.eyes = 
-      new FileImageIcon(storeImage(f.getSubimage(0,height/3,width, height/3),
+      new SFileImageIcon(storeImage(f.getSubimage(0,height/3,width, height/3),
                                    dir,
                                    name + "_eyes"));
 
     result.mouth = 
-      new FileImageIcon(storeImage(f.getSubimage(0,2*height/3,width, height/3),
+      new SFileImageIcon(storeImage(f.getSubimage(0,2*height/3,width, height/3),
                                    dir,
                                    name + "_mouth"));
 
@@ -117,6 +117,9 @@ public class FaceGenerator  {
 
 /*
    $Log$
+   Revision 1.3  2004/01/16 13:34:20  arminhaaf
+   o use SFileImageIcon
+
    Revision 1.2  2002/05/15 12:19:09  hzeller
    o move pre1.0 branch to main
 
