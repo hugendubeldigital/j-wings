@@ -15,6 +15,7 @@
 package org.wings.header;
 
 import java.io.*;
+
 import org.wings.*;
 import org.wings.io.Device;
 
@@ -24,37 +25,61 @@ import org.wings.io.Device;
  * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class Meta implements Renderable
-{
-    protected String name = null;
-    protected String lang = null;
-    protected String content = null;
+public class Meta implements Renderable {
+    protected String httpEquiv;
+    protected String name;
+    protected String lang;
+    protected String content;
+
+    public Meta(String httpEquiv, String name, String lang, String content) {
+        this.httpEquiv = httpEquiv;
+        this.name = name;
+        this.lang = lang;
+        this.content = content;
+    }
 
     public Meta(String name, String lang, String content) {
-	this.name = name;
-	this.lang = lang;
-	this.content = content;
+        this(null, name, lang, content);
+
     }
 
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
-    public String getName() { return name; }
+
+    public String getName() {
+        return name;
+    }
 
     public void setLang(String lang) {
-	this.lang = lang;
+        this.lang = lang;
     }
-    public String getLang() { return lang; }
+
+    public String getLang() {
+        return lang;
+    }
 
     public void setContent(String content) {
-	this.content = content;
+        this.content = content;
     }
-    public String getContent() { return content; }
+
+    public String getContent() {
+        return content;
+    }
+
+    public String getHttpEquiv() {
+        return httpEquiv;
+    }
+
+    public void setHttpEquiv(String pHttpEquiv) {
+        httpEquiv = pHttpEquiv;
+    }
 
     public void write(Device d)
-        throws IOException
-    {
+        throws IOException {
         d.print("<meta");
+        if (httpEquiv != null)
+            d.print(" http-equiv=\"" + httpEquiv + "\"");
         if (name != null)
             d.print(" name=\"" + name + "\"");
         if (lang != null)
