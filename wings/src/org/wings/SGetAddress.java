@@ -156,7 +156,7 @@ public class SGetAddress
     public static void main(String args[]) {
         SGetAddress adr1 = new SGetAddress("test1");
         SGetAddress adr2 = (SGetAddress)adr1.clone();
-        adr2.add("geklont");
+        adr2.add("cloned");
         System.out.println("adr1 " + adr1);
         System.out.println("adr2 " + adr2);
     }
