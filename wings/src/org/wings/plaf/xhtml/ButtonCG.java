@@ -230,7 +230,7 @@ public class ButtonCG implements org.wings.plaf.ButtonCG, SConstants
         throws IOException
     {
 	if (button.isEnabled()) {
-	    d.append("</a>\n");
+	    d.append("</a>");
 	}
     }
     

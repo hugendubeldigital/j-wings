@@ -38,12 +38,18 @@ public class FlowLayoutCG implements LayoutCG
             for (int i=0;  i < components.size(); i++) {
                 SComponent comp = (SComponent)components.get(i);
                 if (comp.isVisible()) {
-                    if (orientation == SConstants.VERTICAL && count > 0)
-                        d.append("<br>\n");
+		    if (count == 0)
+			d.append("<table cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
+		    else if (orientation == SConstants.VERTICAL)
+                        d.append("</td></tr><tr><td>\n");
+		    else
+                        d.append("</td><td>\n");
                     ((SComponent)components.get(i)).write(d);
                     count++;
                 }
             }
+	    if (count > 0)
+		d.append("</td></tr></table>\n");
 
             switch (alignment) {
             case SConstants.RIGHT_ALIGN:

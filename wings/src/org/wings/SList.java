@@ -869,7 +869,6 @@ public class SList
     }
 
 
-    // PENDING(hmuller) this should move to BasicComboBoxUI
     /**
      * Selects the specified object from the list.
      *
@@ -877,7 +876,7 @@ public class SList
      * @param shouldScroll  true if the list should scroll to display
      *                      the selected object
      */
-    public void setSelectedValue(Object anObject,boolean shouldScroll) {
+    public void setSelectedValue(Object anObject) {
         if(anObject == null)
             setSelectedIndex(-1);
         else if(!anObject.equals(getSelectedValue())) {

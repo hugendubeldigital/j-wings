@@ -6,7 +6,6 @@ import org.wings.plaf.*;
 import org.wings.io.*;
 
 public final class LineBorderCG
-    extends DefaultComponentCG
-    implements org.wings.plaf.LineBorderCG
+    extends org.wings.plaf.xhtml.LineBorderCG
 {
 }

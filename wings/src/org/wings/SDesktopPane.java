@@ -206,6 +206,8 @@ public class SDesktopPane
         public SStackLayout() {
         }
 
+        public void updateCG() {}
+
         /**
          * TODO: documentation
          *

@@ -3,7 +3,7 @@ package org.wings.plaf.xhtml;
 import java.io.IOException;
 
 import java.awt.Color;
-import java.util.Iterator;
+import java.util.*;
 
 import org.wings.*;
 import org.wings.io.*;
@@ -37,7 +37,8 @@ public class FrameCG
     {
 	String language = "en"; // TODO: ???
 	String title = frame.getTitle();
-	Iterator metas = frame.metas();
+	List metas = frame.metas();
+	List headers = frame.headers();
 	
 	d.append("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
 	d.append("<!DOCTYPE html\n");
@@ -56,13 +57,20 @@ public class FrameCG
 	d.append("<meta http-equiv=\"expires\" content=\"0\" />\n");
 	d.append("<meta http-equiv=\"pragma\" content=\"no-cache\" />\n");
 	
-	while (metas.hasNext()) {
+	Iterator it = metas.iterator();
+	while (it.hasNext()) {
 	    d.append("<meta ");
-	    d.append(metas.next());
+	    d.append(it.next());
 	    d.append(" />\n");
 	}
 	
 	// JavaScript ist in Kommentaren nicht mehr erlaubt, weil xml-Parser Kommentare entfernen dürfen
+	
+	it = headers.iterator();
+	while (it.hasNext()) {
+	    d.append(it.next());
+	    d.append("\n");
+	}
 	
 	writeAdditionalHeaders(d, frame);
 	

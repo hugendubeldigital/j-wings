@@ -18,8 +18,7 @@ import java.awt.Color;
 import java.beans.*;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 import javax.swing.Icon;
 
@@ -98,7 +97,12 @@ public class SFrame extends SContainer implements PropertyChangeListener
     /**
      * TODO: documentation
      */
-    protected final ArrayList meta = new ArrayList(2);
+    protected final ArrayList metas = new ArrayList(2);
+
+    /**
+     * TODO: documentation
+     */
+    protected final ArrayList headers = new ArrayList(2);
 
     /**
      * TODO: documentation
@@ -361,21 +365,22 @@ public class SFrame extends SContainer implements PropertyChangeListener
      * nur der Inhalt des Tags, also z.B. <PRE>name="keywords" lang="de"
      * content="Ferien, Griechenland, Sonnenschein"<PRE>
      */
+
     /**
      * TODO: documentation
      *
      * @param m
      */
     public void addMeta(String m) {
-        meta.add(m);
+        metas.add(m);
     }
 
     /**
      * TODO: documentation
      *
      */
-    public void clearMeta() {
-        meta.clear();
+    public void clearMetas() {
+        metas.clear();
     }
 
     /**
@@ -383,26 +388,22 @@ public class SFrame extends SContainer implements PropertyChangeListener
      *
      * @return
      */
-    public Iterator metas() {
-        return meta.iterator();
+    public List metas() {
+        return metas;
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param j
-     */
-    public void addJavaScript(String j) {
-        javaScript.add(j);
+    public void addHeader(String m) {
+	headers.add(m);
     }
 
-    /**
-     * TODO: documentation
-     *
-     */
-    public void clearJavaScript() {
-        javaScript.clear();
+    public void clearHeaders() {
+	headers.clear();
     }
+    
+    public List headers() {
+	return headers;
+    }
+
 
     /**
      * TODO: documentation

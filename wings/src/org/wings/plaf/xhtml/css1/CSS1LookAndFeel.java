@@ -90,6 +90,14 @@ public final class CSS1LookAndFeel
         };
 	
 	table.putDefaults(layoutCgDefaults);
+
+	Object[] borderCgDefaults = {
+	      "BevelBorderCG", css1PackageName + "BevelBorderCG",
+	       "LineBorderCG", css1PackageName + "LineBorderCG",
+	      "EmptyBorderCG", css1PackageName + "EmptyBorderCG",
+        };
+	
+	table.putDefaults(borderCgDefaults);
     }
     
     protected void initStyleDefaults(CGDefaults table)

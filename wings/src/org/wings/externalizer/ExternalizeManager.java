@@ -40,7 +40,8 @@ public class ExternalizeManager
     /**
      * TODO: documentation
      */
-    protected final Map objectHandler = new HashMap();
+    protected final Map handlerByClass = new HashMap();
+    protected final Map handlerByMimeType = new HashMap();
 
     private static ExternalizeManager sharedInstance = null;
 
@@ -102,6 +103,17 @@ public class ExternalizeManager
         return name;
     }
 
+    public String externalize(Object obj, String mimeType)
+        throws java.io.IOException
+    {
+        String name = null;
+        ObjectHandler handler = getObjectHandler(mimeType);
+        if (obj != null && handler != null) {
+            Session session = SessionManager.getSession();
+            name = externalizer.externalize(obj, handler, session);
+        }
+        return name;
+    }
 
     /**
      * Adds an object handler. If an object handler is already
@@ -111,10 +123,19 @@ public class ExternalizeManager
     {
         if ( handler != null ) {
             Class c = handler.getSupportedClass();
-            if ( c != null ) {
-                objectHandler.put( c, handler );
-            }
+            if ( c != null )
+                handlerByClass.put( c, handler );
+
+            String mimeType = handler.getMimeType(null);
+            if (mimeType != null)
+                handlerByMimeType.put(mimeType, handler);
         }
+    }
+
+    public void addObjectHandler(ObjectHandler handler, String mimeType)
+    {
+        if (handler != null && mimeType != null)
+	    handlerByMimeType.put(mimeType, handler);
     }
 
     /**
@@ -126,9 +147,23 @@ public class ExternalizeManager
     {
         ObjectHandler handler = null;
         if ( c != null ) {
-            handler = (ObjectHandler) objectHandler.get(c);
+            handler = (ObjectHandler) handlerByClass.get(c);
             if ( handler == null )
                 handler = getObjectHandler( c.getSuperclass() );
+        }
+        return handler;
+    }
+
+    /**
+     * returns an object handler for a mime type
+     */
+    public ObjectHandler getObjectHandler(String mimeType)
+    {
+        ObjectHandler handler = null;
+        if (mimeType != null && mimeType.length() > 0) {
+            handler = (ObjectHandler)handlerByMimeType.get(mimeType);
+            if (handler == null)
+                handler = getObjectHandler(mimeType.substring(0, mimeType.indexOf('/')));
         }
         return handler;
     }

@@ -25,8 +25,9 @@ public final class BevelBorderCG
 
 	String borderStyle = (bevelType == SBevelBorder.RAISED) ? "outset" : "inset";
 
-	d.append("<span style=\"border-style: ")
-	    .append(borderStyle);
+	d.append("<div style=\"border: ")
+	    .append(borderStyle)
+	    .append(" 1px");
 	if (insets != null && !none.equals(insets))
 	    d.append("; padding: ")
 		.append(insets.top).append(" ")
@@ -35,6 +36,8 @@ public final class BevelBorderCG
 		.append(insets.left)
 		.append(borderStyle)
 		.append("\">");
+	else
+	    d.append("\">");
     }
 
     public void writePostfix(Device d, SBorder b)
@@ -44,38 +47,6 @@ public final class BevelBorderCG
 	int bevelType = border.getBevelType();
 	Insets insets = b.getInsets();
 
-	if (insets != null && none.equals(insets))
-	    d.append("\n</td></tr></table>");
-
-	d.append("</td>\n");
-	writeTD(d, bevelType != SBevelBorder.RAISED, 1);
-	writeIMG(d);
-	d.append("</td></tr>\n<tr>");
-	writeTD(d, bevelType == SBevelBorder.RAISED, 1);
-	d.append("</td>");
-	writeTD(d, bevelType != SBevelBorder.RAISED, 2);
-	writeIMG(d);
-	d.append("</td></tr></table>\n");
-    }
-
-    public void writeTD(Device d, boolean color, int colspan)
-	throws IOException
-    {
-	if (color == WHITE)
-	    d.append("<td bgcolor=\"white\"");
-	else
-	    d.append("<td bgcolor=\"BLACK\"");
-	if (colspan > 1)
-	    d.append(" colspan=\"")
-		.append(colspan)
-		.append("\">");
-	else
-	    d.append(">");
-    }
-
-    public void writeIMG(Device d)
-	throws IOException
-    {
-	d.append("<img height=\"1\" width=\"1\">");
+	d.append("</div>");
     }
 }

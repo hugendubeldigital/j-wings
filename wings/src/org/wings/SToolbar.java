@@ -29,7 +29,6 @@ public class SToolbar
      */
     public SToolbar() {
         super(null);
-        super.setLayout(new SFlowLayout());
     }
 
     /**
