@@ -13,7 +13,7 @@ fun:
 	make -C src $@
 	make -C demo $@
 
-doc: dummy
+javadoc: dummy
 	rm -rf doc/api ; mkdir doc/api ; \
 	${JAVA_HOME}/bin/javadoc -d doc/api -windowtitle 'wingS API' `find . -name "*.java" -exec dirname {} \; | sort | uniq | sed 's/\.\/\(src\/\|demo\/\)\?//g' | sed 's/\//./g'`
 
@@ -25,11 +25,11 @@ demojar: dummy
 	rm wings-demo.jar ; cd demo ; \
 	${JAVA_HOME}/bin/jar cvf ../wings-demo.jar `find . -name "*.class" -o -name "*.gif" -o -name "*.css"`
 
-htdocs: dummy doc dist
-	cd htdocs
-	ln -s ../doc/api
+htdocs: dummy javadoc
+	cd htdocs ;\
+	ln -s ../doc/api .
 
-dist: fun doc jar demojar
+dist: fun javadoc jar demojar
 	mkdir dist
 	mkdir dist/lib
 	mkdir dist/doc
