@@ -622,10 +622,8 @@ public abstract class SessionServlet
 
         try {
             SFrame f = getFrame();
-            if ( f != null ) {
+            if ( f != null )
                 f.getContentPane().removeAll();
-                f.getOptionPaneContainer().removeAll();
-            }
         }
         catch ( Exception e ) {
             e.printStackTrace();
