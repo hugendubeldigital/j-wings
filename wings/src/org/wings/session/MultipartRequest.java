@@ -418,7 +418,8 @@ class MultipartRequest
                 if (current == '-' && mimeStream.read() != '-')
                     System.err.println("na so was: " + current);
             }
-        } catch ( IOException ex ) {
+        }
+        catch (IOException ex) {
             // cleanup and store the exception for notification of SFileChooser
             logger.log(Level.WARNING, "upload", ex);
             try { fileStream.close(); } catch (Exception ign) {}
@@ -436,6 +437,10 @@ class MultipartRequest
          * @return
          */
         public byte charAt(int index) {
+            if (count + index < 0) {
+                logger.log(Level.WARNING, "count: " + count + ", index: " + index + ", buffer: " + new String(buf));
+                return -1;
+            }
             if (index < 0)
                 return buf[count + index];
             if (index < count)
