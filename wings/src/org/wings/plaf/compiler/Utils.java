@@ -22,6 +22,7 @@ import org.wings.SConstants;
 import org.wings.RequestURL;
 import org.wings.io.Device;
 import org.wings.SIcon;
+import org.wings.style.Style;
 
 /**
  * Utility functions to be used in generated plaf's.
@@ -73,6 +74,22 @@ public final class Utils implements SConstants {
     public static void write(Device d, String s) throws IOException {
 	//d.print(s);
 	quote(d, s);
+    }
+
+    /**
+     * Prints an optional attribute. If the String value has a content
+     * (value != null && value.length > 0), the attrib is added otherwise
+     * it is left out
+     */
+    public static void optAttribute(Device d, String attr, Style value) 
+        throws IOException {
+        if (value != null) {
+            d.write( SPACE );
+            d.print( attr );
+            d.write( EQUALS_QUOT );
+            d.print(value.getName());
+            d.write( QUOT );
+        }
     }
     
     /**
