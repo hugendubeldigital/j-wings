@@ -48,7 +48,7 @@
 
             %><td><div class="<%=menuClass%>"<%
             %> onmousedown="toggle_menu(document.getElementById('<%=id%>'))"><%
-            %>&nbsp;&nbsp;<%=menu.getText()%>&nbsp;&nbsp;</div><%
+            %>&nbsp;&nbsp;<a ref="#"><%=menu.getText()%></a>&nbsp;&nbsp;</div><%
             %><div id="<%=id%>" class="pdmenu" style="display:none"><%
 
             int micount = menu.getMenuComponentCount();
