@@ -17,6 +17,7 @@
         %><%|class=Utils.style(comboBox)%><%
         %><%|name=comboBox.getNamePrefix()%><%
         %><%|style=comboBox.getPreferredSize()%><%
+        %><%|tabindex=list.getFocusTraversalIndex()%><%
 	if ( !comboBox.isEnabled() ) {
 	    %> disabled="1"<% // ="1" needed for XHTML
         }	
