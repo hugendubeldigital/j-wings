@@ -23,6 +23,7 @@ import javax.swing.tree.*;
 import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
+import org.wings.util.CGUtil;
 
 public class TreeCG
     extends org.wings.plaf.AbstractCG
@@ -42,6 +43,7 @@ public class TreeCG
 
         int start = 0;
         int count = tree.getRowCount();
+        java.awt.Color bgcolor = tree.getBackground();
         Rectangle viewport = tree.getViewportSize();
         if (viewport != null) {
             start = viewport.y;
@@ -49,9 +51,24 @@ public class TreeCG
         }
 
         int depth = tree.getMaximumExpandedDepth();
-        d.append("<table cellpadding=\"0\">");
+        d.append("<table border=\"0\" cellpadding=\"0\"");
+		CGUtil.writeSize( d, tree );
+        if ( bgcolor != null )
+         {
+			d.append( " bgcolor=\"#" );
+            d.append( Utils.toColorString( bgcolor ) );
+            d.append( "\"");
+         }
+        d.append(">");
+        
         for (int i=start; i < count; i++)
             writeTreeNode(tree, d, tree.getPathForRow(i), depth);
+		
+        // expandable last row to fit preferred table size on IE
+		d.append("<tr><td colspan=\"");
+        d.append(depth);
+        d.append("\"></td></tr>");
+        
         d.append("</table>");
     }
 
@@ -59,7 +76,7 @@ public class TreeCG
         throws IOException
     {
         int nodeIndentDepth = tree.getNodeIndentDepth();
-        d.append("<tr>");
+        d.append("<tr height=\"1\">");
         for (int i=0; i<path.getPathCount()-1; i++)
             d.append("<td width=\"" + nodeIndentDepth + "\"></td>");
         d.append("\n<td colspan=\"" + (depth - (path.getPathCount()-1)) + "\">");
