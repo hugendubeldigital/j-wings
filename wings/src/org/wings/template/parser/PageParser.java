@@ -65,19 +65,17 @@ public class PageParser
      * The key is the canonical name of the Data
      * Source.
      */
-    private final Map/*<String, TemplateSourceInfo>*/ pages;
+    private final Map/*<String, TemplateSourceInfo>*/ pages = new HashMap();
 
     /**
      * a Hashtable with key/value=tagname/handlerClass
      */
-    private final Map/*<String,Class>*/ handlerClasses;
+    private final Map/*<String,Class>*/ handlerClasses = new HashMap();
 
     /** 
      * Constructs a new PageParser.
      */
     public PageParser () {
-	pages = new HashMap();
-	handlerClasses = new HashMap();
     }
 
     /**
@@ -387,11 +385,12 @@ public class PageParser
      * may be interesting for administrative
      * frontends
      */
-    private final class TemplateSourceInfo {
+    private static final class TemplateSourceInfo {
 	ArrayList parts;
 	Map       labels;
 	long      lastModified;
 	long      parseTime;
+
 	public TemplateSourceInfo () {}
     }
 }
