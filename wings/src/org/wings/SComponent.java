@@ -36,6 +36,7 @@ import org.wings.session.Session;
 import org.wings.session.SessionManager;
 import org.wings.style.*;
 import org.wings.util.*;
+import org.wings.script.JavaScriptListener;
 
 /**
  * The basic component implementation for all components in this package.
@@ -116,6 +117,9 @@ public abstract class SComponent
 
     /** Preferred size of component in pixel. */
     protected SDimension preferredSize;
+    
+    
+
 
 
     /**
@@ -316,6 +320,8 @@ public abstract class SComponent
     public final void addScriptListener(ScriptListener listener) {
         addEventListener(ScriptListener.class, listener);
     }
+    
+   
 
     /**
      * Removes the specified component listener so that it no longer
@@ -918,7 +924,7 @@ public abstract class SComponent
         if (getParentFrame() != null)
             if (!(this instanceof LowLevelEventListener) ||
                 ((LowLevelEventListener)this).checkEpoch()) {
-                return (getParentFrame().getEventEpoch()
+                return ( getParentFrame().getEventEpoch()
                     + SConstants.UID_DIVIDER
                     + lowLevelEventId);
             }
@@ -959,7 +965,7 @@ public abstract class SComponent
      */
     public String getNamePrefix() {
         if (this instanceof LowLevelEventListener) {
-            return getEncodedLowLevelEventId();
+            return encodeLowLevelEventId(this.getLowLevelEventId());
         }
         return getComponentId();
     }
@@ -1639,6 +1645,16 @@ public abstract class SComponent
             parent.scrollRectToVisible(aRect);
         }
     }
+    
+    /**
+     * requests the focus for this component
+     */
+    public void requestFocus(){  
+        if(getParentFrame() != null){
+            getParentFrame().focusRequest(this); 
+        }
+    }
+
 }
 
 /*

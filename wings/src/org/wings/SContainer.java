@@ -24,6 +24,7 @@ import org.wings.style.StyleConstants;
 import org.wings.event.SContainerListener;
 import org.wings.event.SContainerEvent;
 
+
 /**
  * This is a container which can hold several other <code>SComponents</code>.
  *
@@ -58,6 +59,8 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * The constraints for the components.
      */
     private ArrayList constraintList;
+    
+     
 
     /**
      * creates a new container with the given layout
@@ -522,6 +525,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
         }
     }
 
+   
 }
 
 /*

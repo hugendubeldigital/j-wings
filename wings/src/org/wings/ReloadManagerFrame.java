@@ -42,6 +42,8 @@ public class ReloadManagerFrame
     extends SFrame
 {
     private final static Logger logger = Logger.getLogger("org.wings");
+    
+    
     public ReloadManagerFrame() {}
 
     public final SContainer getContentPane() {
@@ -144,6 +146,7 @@ public class ReloadManagerFrame
                 while (it.hasNext()) {
                     DynamicResource resource = (DynamicResource)it.next();
                     resource.invalidate();
+                    
                 }
             }
             else {
@@ -151,7 +154,8 @@ public class ReloadManagerFrame
                 while (it.hasNext()) {
                     DynamicResource resource = (DynamicResource)it.next();
                     resource.invalidate();
-
+                    
+                    
                     d.print("parent.frame");
                     d.print(resource.getFrame().getComponentId());
                     d.print(".location.href='");
@@ -172,7 +176,10 @@ public class ReloadManagerFrame
 	d.print("</script>\n");
 	d.print("</head>\n");
 	d.print("<body onload=\"reload()\"></body>");
+        
     }
+    
+   
 }
 
 /*

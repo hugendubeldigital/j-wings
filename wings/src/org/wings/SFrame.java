@@ -25,6 +25,9 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.wings.script.JavaScriptListener;
+import java.util.Vector;
+import org.wings.script.ScriptListener;
 
 /**
  * The frame is the root component in every component hierarchie.
@@ -85,6 +88,10 @@ public class SFrame
     private String targetResource;
 
     private HashMap dynamicResources;
+    
+    private SComponent focusComponent = null;                //Component which requests the focus
+    
+    private JavaScriptListener focus = null;          //Listener which sets the focus onload
 
     /**
      * TODO: documentation
@@ -440,6 +447,58 @@ public class SFrame
     {
         visitor.visit(this);
     }
+    
+    /*
+     * Adds a scriptListener to the body-tag, which sets the focus to the Component 
+     * of the frame which requests the focus at last.
+     **/
+    public void setFocus(){
+        StringBuffer formId,
+                     compId;
+        if (focusComponent != null){
+            try{
+                this.removeScriptListener(focus);
+            }
+            catch(Exception e){
+            }
+        
+            SForm form = (SForm)focusComponent.getParent();
+            formId = new StringBuffer(form.getEncodedLowLevelEventId());
+           /* int i = Integer.parseInt(formId.substring(1,2));
+            formId.replace(1,2, Integer.toString(i + 1));*/
+        
+            compId = new StringBuffer(focusComponent.getEncodedLowLevelEventId());
+           /* i = Integer.parseInt(compId.substring(1,2));
+            compId.replace(1,2, Integer.toString(i + 1));*/
+        
+            focus = new JavaScriptListener("onload","document."+formId + "."+ compId + ".focus()");
+            addScriptListener(focus);
+            
+            focusComponent = null;
+        }
+        
+    }
+    
+    /*
+     * This function is called by SComponent.requestFocus(). 
+     * @param c the component which requests the focus.
+     *
+     **/
+    public void focusRequest(SComponent c){
+        focusComponent = c;
+    }
+    
+    /*
+     * Everytime a frame ist reloaded, this Method is called 
+     * by org.wings.plaf.css1.Util. Then setFocus must be called, 
+     * bacause the ids of the Components change at that time. 
+     */
+     public ScriptListener[] getScriptListeners() {
+         setFocus();
+         return (ScriptListener[])super.getListeners(ScriptListener.class);
+    }
+    
+ 
 }
 
 /*

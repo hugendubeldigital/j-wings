@@ -4,11 +4,12 @@
    %><form method="<% 
    if (component.isPostMethod()) { %>post<% } else { %>get<% }
    %>"<%
+   %>name="<%=Utils.event(component)%>"<%
    Utils.writeEvents(device, component);
    %><%|class=Utils.style(component)%><%
    %><%|enctype=component.getEncodingType()%><%
    %><%|action=component.getRequestURL()%><%
-   %>><input type="hidden" name="<%=Utils.event(component)%>" \
+   %>><input type="hidden" name="<%%>" \
 value="<%?componentId%><%=org.wings.SConstants.UID_DIVIDER%>" /><%
    Utils.renderContainer(device, component);
    %></form><%

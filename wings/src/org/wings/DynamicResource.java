@@ -51,7 +51,7 @@ public abstract class DynamicResource
      * that is as short as possible. This is done once whenever the epoch
      * changes to do this conversion only once.
      */
-    private String epochCache=StringUtil.toShortestAlphaNumericString(epoch);
+    private String epochCache= "W" + StringUtil.toShortestAlphaNumericString(epoch);
 
     /**
      * The frame, to which this resource belongs.
@@ -99,13 +99,14 @@ public abstract class DynamicResource
      * dynamic resource is to be externalized with a new version-number.
      */
     public final void invalidate() {
-        epochCache = StringUtil.toShortestAlphaNumericString(++epoch);
+        epochCache = "W" + StringUtil.toShortestAlphaNumericString(++epoch);
         if (logger.isLoggable(Level.FINE)) {
             String name = getClass().getName();
             name = name.substring(name.lastIndexOf(".") + 1);
             logger.fine("[" + name + "] " +
                         "invalidate - epoch: " + epochCache);
         }
+        
     }
 
     /**
