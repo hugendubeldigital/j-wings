@@ -9,7 +9,7 @@
     %><%|cols=component.getColumns()%><%
     %><%|rows=component.getRows()%><%
 	if (dim != null) {
-		%>style="height:<%
+		%> style="height:<%
 		device.print(dim.getHeight());
 		%>;width:<%
 		device.print(dim.getWidth());
