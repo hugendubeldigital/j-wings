@@ -124,6 +124,7 @@ public abstract class WingServlet extends HttpServlet
         extManager.addObjectHandler(new ImageIconObjectHandler());
         extManager.addObjectHandler(new ResourceImageIconObjectHandler());
         extManager.addObjectHandler(new StyleSheetObjectHandler());
+        extManager.addObjectHandler(new JavascriptObjectHandler());
     }
 
     /**

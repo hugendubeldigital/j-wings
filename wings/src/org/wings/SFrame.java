@@ -189,6 +189,22 @@ public class SFrame
         throw new IllegalArgumentException("use getContentPane().addComponent()");
     }
 
+
+    /**
+     * Add Javascript to header
+     */
+    public void addJavascript(Javascript js) {
+        javaScript.add(js);
+    }
+    
+    /**
+      * Get all javascripts included in this frame.
+      * @return {@link java.util.ArrayList} of {@link org.wings.Javascript}
+      */
+    public ArrayList getJavascript() {
+        return javaScript;
+    }
+
     /**
      * Use getContentPane().removeComponent(c) instead.
      */
