@@ -133,6 +133,26 @@ public class STitledBorder extends SAbstractBorder
     }
 
     /**
+      * Set the border color.
+      */
+    public void setColor(Color color)
+    {
+        if (fBorder != null)
+            fBorder.setColor(color);
+    }
+
+    /**
+      * Get the border color.
+      * @return the color or <code>null</code>,
+      *     if border is <code>null</code>
+      * @see #setBorder(SBorder)
+      */
+    public Color getColor()
+    {
+        return fBorder!=null?fBorder.getColor():null;
+    }
+
+    /**
      * Gets the title.
      * @return Returns a String
      */

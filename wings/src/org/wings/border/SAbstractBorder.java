@@ -150,7 +150,7 @@ public abstract class SAbstractBorder
      * sets the foreground color of the border
      * @param color
      */
-    public final Color getColor() {
+    public Color getColor() {
         return color;
     }
 

@@ -67,7 +67,7 @@ public class DefaultBorderCG
             .print(style)
             .print(" ")
             .print(border.getThickness())
-            .print("px;color:")
+            .print("px;color: #")
             .print(Utils.toColorString(border.getColor()))
             .print(";");
     }
