@@ -166,18 +166,23 @@ public class IdeSession
      */
     public void addNewFrame(final SInternalFrame frame) {
         desktop.add(frame);
-        desktop.invite(new ComponentVisitor() {
-                public void visit(SComponent c) {
-                    if (! (c instanceof SInternalFrame))
-                        return;
-                    SInternalFrame ff = (SInternalFrame) c;
-                    if (ff != frame && ff.isMaximized()) {
-                        ff.setMaximized(false);
-                        // set _our_ frame maximized, then.
-                        frame.setMaximized(true);
+        try {
+            desktop.invite(new ComponentVisitor() {
+                    public void visit(SComponent c) {
+                        if (! (c instanceof SInternalFrame))
+                            return;
+                        SInternalFrame ff = (SInternalFrame) c;
+                        if (ff != frame && ff.isMaximized()) {
+                            ff.setMaximized(false);
+                            // set _our_ frame maximized, then.
+                            frame.setMaximized(true);
+                        }
                     }
-                }
-            });
+                });
+        }
+        catch (Exception e) {
+            System.err.println(e);
+        }
     }
 
     class TreeSelectionAdapter
@@ -228,18 +233,23 @@ public class IdeSession
                          * if some other frame is maximized, then we want
                          * to toggle this maximization..
                          */
-                        d.invite(new ComponentVisitor() {
-                                public void visit(SComponent c) {
-                                    if (! (c instanceof SInternalFrame))
-                                        return;
-                                    SInternalFrame ff = (SInternalFrame) c;
-                                    if (ff != frame && ff.isMaximized()) {
-                                        ff.setMaximized(false);
-                                        // set _our_ frame maximized, then.
-                                        frame.setMaximized(true);
+                        try {
+                            d.invite(new ComponentVisitor() {
+                                    public void visit(SComponent c) {
+                                        if (! (c instanceof SInternalFrame))
+                                            return;
+                                        SInternalFrame ff = (SInternalFrame) c;
+                                        if (ff != frame && ff.isMaximized()) {
+                                            ff.setMaximized(false);
+                                            // set _our_ frame maximized, then.
+                                            frame.setMaximized(true);
+                                        }
                                     }
-                                }
-                            });
+                                });
+                        }
+                        catch (Exception e) {
+                            System.err.println(e);
+                        }
                     }
                 });
         }

@@ -287,7 +287,7 @@ public class LafPanel
 	}
     }
 
-    Method findCGSetter(Class clazz)
+    public static Method findCGSetter(Class clazz)
 	throws Exception
     {
 	Method[] methods = clazz.getMethods();
@@ -300,11 +300,16 @@ public class LafPanel
     }
 
     TestFrame showTestFrame() {
+	final SFrame frame = getParentFrame();
+
+	boolean firstTime = false;
 	if (testFrame == null) {
-	    testFrame = new TestFrame("test");
-	    testFrame.setRequestURL(getParentFrame().getRequestURL());
+	    testFrame = new TestFrame("test", modules);
+	    testFrame.setRequestURL(frame.getRequestURL());
 	    DynamicCodeResource codeResource = new DynamicCodeResource(testFrame);
 	    testFrame.addDynamicResource(codeResource);
+
+	    testFrame.setTargetResource(codeResource.getId());
 
 	    PropertyPanel propertyPanel = (PropertyPanel)modules.get("properties");
 	    // eigentlich sollte man einen property change listener bei der test component
@@ -314,8 +319,9 @@ public class LafPanel
 			test();
 		    }
 		});
+	    firstTime = true;
 	}
-	
+
 	DynamicCodeResource codeResource = (DynamicCodeResource)testFrame.getDynamicResource(DynamicCodeResource.class);
 	String url = codeResource.getURL();
 	if (url.indexOf("?") > -1)
@@ -325,22 +331,22 @@ public class LafPanel
 	logger.fine("TEST FRAME URL: " + url);
 
 	final ScriptListener script = new JavaScriptListener("onload", "test=window.open('" + url + "', 'test','toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=400,height=300,left=20,top=20');test.focus()");
-	final SFrame frame = getParentFrame();
 	frame.addScriptListener(script);
 
-	// register a request listener, that handles the named event "clear"
-	getSession().getDispatcher().register(new RequestListener() {
-                public void processRequest(String name, String[] values) {
-                    logger.info("remove java script");
-                    frame.removeScriptListener(script);
-                }
-
-                public String getName() { return "clear"; }
-                public String getNamePrefix() { return ""; }
-                public void fireIntermediateEvents() {}
-                public void fireFinalEvents() {}
-            });
-
+	if (firstTime) {
+	    // register a request listener, that handles the named event "clear"
+	    getSession().getDispatcher().register(new RequestListener() {
+		    public void processRequest(String name, String[] values) {
+			logger.info("remove java script");
+			frame.removeScriptListener(script);
+		    }
+		    
+		    public String getName() { return "clear"; }
+		    public String getNamePrefix() { return ""; }
+		    public void fireIntermediateEvents() {}
+		    public void fireFinalEvents() {}
+		});
+	}
 	return testFrame;
     }
 }
