@@ -53,12 +53,15 @@ public class MenuBarCG
                 int micount = menu.getMenuComponentCount();
                 for ( int mi = 0; mi < micount; mi++ ) {
                     SComponent menuitem = menu.getMenuComponent( mi );
-                    d.append("&nbsp;");
-                    if (menuitem instanceof SSeparator) {
-                        d.append("<table class=\"menuseparator\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"><tr><td></td></tr></table>");
+                    if (menuitem instanceof SSeparator)
+                    {
+                        d.append("<br><img src=\"\" class=\"menuseparator\" width=\"");
+                        d.append(((SSeparator) menuitem).getWidth());
+                        d.append("\" height=\"1\"><br>");
                     }
                     else {
-                        menuitem.write(d);
+                       d.append("&nbsp;");
+                       menuitem.write(d);
                         if ((mi + 1) < micount) {
                             if (!(menu.getMenuComponent(mi + 1) instanceof SSeparator))
                                 d.append("&nbsp;<br>");

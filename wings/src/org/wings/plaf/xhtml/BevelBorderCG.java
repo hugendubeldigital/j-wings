@@ -58,11 +58,11 @@ public class BevelBorderCG
         if ( insets == null ) return;
         d.append( "padding-top: " );
         d.append( insets.top );
-        d.append( "px; padding-right: " );
+        d.append( "px;padding-right: " );
         d.append( insets.right );
-        d.append( "px; padding-left: " );
+        d.append( "px;padding-left: " );
         d.append( insets.left );
-        d.append( "px; padding-bottom: " );
+        d.append( "px;padding-bottom: " );
         d.append( insets.bottom );
         d.append( "px;" );
      }

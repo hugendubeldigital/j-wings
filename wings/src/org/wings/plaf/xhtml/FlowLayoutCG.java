@@ -38,6 +38,7 @@ public class FlowLayoutCG
 	List components = layout.getComponents();
 	int orientation = layout.getOrientation();
 	int alignment = layout.getAlignment();
+	SComponent container = ( SComponent ) layout.getContainer();
 
         if (components.size() > 0) {
             switch (alignment) {
@@ -54,7 +55,17 @@ public class FlowLayoutCG
                 SComponent comp = (SComponent)components.get(i);
                 if (comp.isVisible()) {
 		    if (count == 0)
-			d.append("<table cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
+             {
+				d.append("<table cellpadding=\"0\" cellspacing=\"0\"");
+        		if ( Utils.hasSpanAttributes( container ) )
+        		 {
+         			d.append("style=\"");
+        			Utils.writeSpanAttributes( d, (SComponent) container );
+            		d.append("\" ");
+				 }
+
+                d.append("><tr><td>");
+			 }
 		    else if (orientation == SConstants.VERTICAL)
                         d.append("</td></tr><tr><td>\n");
 		    else

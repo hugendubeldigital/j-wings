@@ -33,11 +33,27 @@ public class CardLayoutCG implements LayoutCG
     public void write(Device d, SLayoutManager l)
         throws IOException
     {
-	SCardLayout layout = (SCardLayout)l;
+		SCardLayout layout = (SCardLayout)l;
+		SComponent component = (SComponent) layout.getContainer();
         SComponent c = layout.getVisibleComponent();
 
-        if (c != null)
-            c.write(d);
+        if (c == null) return;
+		
+        if ( Utils.hasSpanAttributes( component ) )
+         {
+         	d.append("<span style=\"");
+        	Utils.writeSpanAttributes( d, component );
+            d.append("\">");
+		 }
+
+        c.write(d);
+
+        if ( Utils.hasSpanAttributes( component ) )
+         {
+         	d.append("</span>");
+		 }
+
+        
     }
 }
 

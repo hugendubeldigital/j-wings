@@ -49,7 +49,14 @@ public class GridLayoutCG
         int cols = layout.getColumns();
         int rows = layout.getRows();
 
-        d.append("\n<table");
+        d.append("\n<table ");
+        if ( Utils.hasSpanAttributes( container ) )
+         {
+         	d.append("style=\"");
+        	Utils.writeSpanAttributes( d, (SComponent) container );
+            d.append("\" ");
+		 }
+
         if (cellSpacing >= 0)
             d.append(" cellspacing=\"").append(cellSpacing).append("\"");
         else

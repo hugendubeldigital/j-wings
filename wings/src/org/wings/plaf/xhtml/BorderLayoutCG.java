@@ -53,6 +53,14 @@ public class BorderLayoutCG
 
         d.append("\n<table cellpadding=\"0\" cellspacing=\"0\"");
 		CGUtil.writeSize( d, container );
+
+        if ( Utils.hasSpanAttributes( container ) )
+         {
+         	d.append("style=\"");
+        	Utils.writeSpanAttributes( d, (SComponent) container );
+            d.append("\" ");
+		 }
+
         if (border > 0)
             d.append(" border=\"").append(border).append("\"");
         if (container != null && container.getBackground() != null)
@@ -63,7 +71,7 @@ public class BorderLayoutCG
 
         if (north != null) {
             d.append("\n<tr><td height=\"1\" colspan=\"").append(cols).append("\"");
-            writeComponentAlignment(d, north);
+            Utils.appendTableCellAlignment(d, north);
             d.append(">");
             writeComponent(d, north);
             d.append("</td></tr>");
@@ -72,7 +80,7 @@ public class BorderLayoutCG
 
         if (west != null) {
             d.append("<td width=\"1\"");
-            writeComponentAlignment(d, west);
+            Utils.appendTableCellAlignment(d, west);
             d.append(">");
             writeComponent(d, west);
             d.append("</td>");
@@ -80,7 +88,7 @@ public class BorderLayoutCG
 
         if (center != null) {
             d.append("<td");
-            writeComponentAlignment(d, center);
+            Utils.appendTableCellAlignment(d, center);
             d.append(">");
             writeComponent(d, center);
             d.append("</td>");
@@ -88,7 +96,7 @@ public class BorderLayoutCG
 
         if (east != null) {
             d.append("<td width=\"1\"");
-            writeComponentAlignment(d, east);
+            Utils.appendTableCellAlignment(d, east);
             d.append(">");
             writeComponent(d, east);
             d.append("</td>");
@@ -97,7 +105,7 @@ public class BorderLayoutCG
 	
         if (south != null) {
             d.append("\n<tr><td height=\"1\" colspan=\"").append(cols).append("\"");
-            writeComponentAlignment(d, south);
+            Utils.appendTableCellAlignment(d, south);
             d.append(">");
             writeComponent(d, south);
             d.append("</td></tr>");
@@ -109,25 +117,6 @@ public class BorderLayoutCG
 	throws IOException
     {
         c.write(d);
-    }
-
-    // TODO: move this to Utils.java
-    protected String[] alignments = { "left", "right", "center", "block", "top", "bottom", "baseline" };
-
-    protected void writeComponentAlignment(Device d, SComponent c)
-        throws IOException
-    {
-        int horizontalAlignment = c.getHorizontalAlignment();
-        int verticalAlignment   = c.getVerticalAlignment();
-
-        if (horizontalAlignment > -1)
-            d.append(" align=\"")
-                .append(alignments[horizontalAlignment])
-                .append("\"");
-        if (verticalAlignment > -1)
-            d.append(" valign=\"")
-                .append(alignments[verticalAlignment])
-                .append("\"");
     }
 }
 

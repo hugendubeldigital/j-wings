@@ -37,11 +37,11 @@ public class PanelCG
         SBorder border = c.getBorder();
         SPanel panel = (SPanel)c;
 
-        Utils.writeBorderPrefix(d, border);
+        //Utils.writeBorderPrefix(d, border);
         writePrefix(d, panel);
         Utils.writeContainerContents(d, panel);
         writePostfix(d, panel);
-        Utils.writeBorderPostfix(d, border);
+        //Utils.writeBorderPostfix(d, border);
     }
 
     protected void writePrefix(Device d, SPanel panel)

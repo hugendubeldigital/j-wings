@@ -17,6 +17,7 @@ package org.wings.plaf.xhtml;
 import java.io.IOException;
 import org.wings.SLayoutManager;
 import org.wings.STemplateLayout;
+import org.wings.SComponent;
 import org.wings.io.Device;
 import org.wings.plaf.LayoutCG;
 import org.wings.template.TemplateParseContext;
@@ -57,6 +58,7 @@ public class TemplateLayoutCG
         throws IOException {
 
         final DataSource source = layout.getDataSource();
+        SComponent container = ( SComponent ) layout.getContainer();
 
         if(source == null) {
             device.append("Unable to open template-file <b>'");
@@ -64,8 +66,22 @@ public class TemplateLayoutCG
             device.append("'</b>");
         }
 	else {
+
+        	if ( Utils.hasSpanAttributes( container ) )
+         	 {
+         		device.append("<span style=\"");
+        		Utils.writeSpanAttributes( device, container );
+            	device.append("\">");
+			 }
+
             PARSER.process(source,
                            new TemplateParseContext(device, layout));
+
+        	if ( Utils.hasSpanAttributes( container ) )
+         	 {
+         		device.append("</span>");
+			 }
+
         }
     }
 
