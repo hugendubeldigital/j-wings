@@ -116,19 +116,6 @@ public class SFileChooser
     }
 
     /**
-     * Find the form, this FileChooser is embedded in.
-     */
-    protected final SForm getParentForm() {
-        SComponent parent = getParent();
-
-        while (parent != null && !(parent instanceof SForm)) {
-            parent = parent.getParent();
-        }
-
-        return (SForm) parent;
-    }
-
-    /**
      * notifies the parent form, to fire action performed. This is necessary,
      * if an exception in parsing a MultiPartRequest occurs, e.g. upload
      * file is too big.

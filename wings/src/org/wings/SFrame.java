@@ -25,7 +25,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+import java.util.logging.Logger;
 import org.wings.script.JavaScriptListener;
 
 import java.util.Vector;
@@ -47,6 +47,8 @@ import org.wings.script.ScriptListener;
 public class SFrame
     extends SRootContainer
     implements PropertyChangeListener {
+    private static final Logger LOG = Logger.getLogger("org.wings");
+
     /**
      * @see #getCGClassID
      */
@@ -468,12 +470,16 @@ public class SFrame
             } catch (Exception e) {
             }
 
-            SForm form = (SForm) focusComponent.getParent();
+            SForm form = (SForm) focusComponent.getParentForm();
             formName = form.getName();
+            
+            if (formName == null) {
+                LOG.warning("attempt to request focus on element that is within an SForm without a name. Call setName(String) on that SForm first.");
+            }
 
             compId = new StringBuffer(focusComponent.getEncodedLowLevelEventId());
 
-            focus = new JavaScriptListener("onload", "document." + formName + "." + compId + ".focus()");
+            focus = new JavaScriptListener("onload", "document." + formName + "." + compId + ".focus();");
             addScriptListener(focus);
 
             focusComponent = null;

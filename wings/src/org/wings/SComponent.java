@@ -987,14 +987,17 @@ public abstract class SComponent
      * @return true, if this component resides in a form, false otherwise
      */
     public final boolean getResidesInForm() {
+        return (getParentForm() != null);
+    }
+
+    public final SForm getParentForm() {
         SComponent parent = getParent();
 
-        boolean actuallyDoes = false;
-        while (parent != null && !(actuallyDoes = (parent instanceof SForm))) {
+        while (parent != null && !(parent instanceof SForm)) {
             parent = parent.getParent();
         }
 
-        return actuallyDoes;
+        return (SForm) parent;
     }
 
     /**
@@ -1652,11 +1655,10 @@ public abstract class SComponent
      * requests the focus for this component
      */
     public void requestFocus(){  
-        if(getParentFrame() != null){
+        if (getParentFrame() != null) {
             getParentFrame().focusRequest(this); 
         }
     }
-
 }
 
 /*
