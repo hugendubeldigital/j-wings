@@ -64,9 +64,6 @@
             }
         }
 
-/*    %><script language="JavaScript" src="<%=DateChooserCG.CALENDAR_SCRIPT.getURL()%>" type="text/javascript"></script><%
-*/
-
         %></head><%
 
         %><body<%
