@@ -471,7 +471,6 @@ public class DelegatingHttpServletRequest
 
 
     // the following methods are required for j2ee 1.3
-
     public void setCharacterEncoding(String enc)
         throws java.io.UnsupportedEncodingException
     {
@@ -487,7 +486,6 @@ public class DelegatingHttpServletRequest
         return null;
         // return req.getRequestURL();
     }
-
 }
 
 /*
