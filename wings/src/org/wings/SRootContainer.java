@@ -28,7 +28,7 @@ import org.wings.io.Device;
  * visible then. This emulates the behaviour of modal dialogs in a windowing
  * system.
  *
- * @author <a href="mailto:Engels@mercatis.de">Holger Engels</a>
+ * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @author <a href="mailto:Haaf@mercatis.de">Armin Haaf</a>
  */
@@ -56,7 +56,7 @@ public abstract class SRootContainer extends SContainer {
     public void pushDialog(SDialog dialog) {
         super.addComponent(dialog, null);
         int count = getComponentCount();
-        System.err.println("pushDialog: " + count);
+        logger.info("pushDialog: " + count);
         dialog.setFrame(this);
         reload(ReloadManager.RELOAD_CODE);
     }
@@ -74,7 +74,7 @@ public abstract class SRootContainer extends SContainer {
         SDialog dialog = (SDialog)getComponent(count - 1);
         super.removeComponent(dialog);
         dialog.setFrame((SFrame)null);
-        System.err.println("popDialog: " + count);
+        logger.info("popDialog: " + count);
 
         reload(ReloadManager.RELOAD_CODE);
         return dialog;

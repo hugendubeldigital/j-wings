@@ -57,7 +57,6 @@ public class DefaultReloadManager
     }
 
     public synchronized void markDirty(DynamicResource d) {
-        //new Exception().printStackTrace(System.err);
         dirtyResources.add(d);
     }
 
@@ -70,23 +69,13 @@ public class DefaultReloadManager
     }
 
     public synchronized void invalidateResources() {
-        //new Exception().printStackTrace(System.err);
-
         //Set frames = new HashSet();
         Iterator it = dirtyResources.iterator();
         while (it.hasNext()) {
             DynamicResource resource = (DynamicResource)it.next();
             resource.invalidate();
             it.remove();
-            //frames.add(resource.getFrame());
         }
-        /*
-        it = frames.iterator();
-        while (it.hasNext()) {
-            SFrame frame = (SFrame)it.next();
-            frame.invalidate();
-        }
-        */
     }
 }
 

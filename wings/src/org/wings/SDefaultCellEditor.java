@@ -18,6 +18,7 @@ import java.awt.AWTEvent;
 import java.awt.event.*;
 import java.lang.Boolean;
 import java.util.EventObject;
+import java.util.logging.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import javax.swing.tree.*;
@@ -114,7 +115,6 @@ public class SDefaultCellEditor
                     else {
                         bool = false;
                     }
-                    System.err.println("setValue(" + bool + ")");
                     ((SCheckBox)editorComponent).setSelected(bool);
                     ((SCheckBox)editorComponent).setSelected(!bool);
                 }

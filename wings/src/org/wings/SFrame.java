@@ -19,6 +19,7 @@ import java.beans.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.logging.*;
 
 import org.wings.*;
 import org.wings.io.Device;
@@ -38,7 +39,7 @@ import org.wings.util.*;
  * the contentPane. When dialogs are to be shown, they are stacked on top of
  * it.
  *
- * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>,
+ * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>,
  *         <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
@@ -471,13 +472,10 @@ public class SFrame
     public void propertyChange(PropertyChangeEvent pe) {
         if ("lookAndFeel".equals(pe.getPropertyName())) {
             updateComponentTreeCG(getContentPane());
-            System.err.println("lookAndFeel Change: " + pe.getPropertyName());
         }
         if ("request.url".equals(pe.getPropertyName())) {
             setRequestURL((RequestURL)pe.getNewValue());
         }
-        else
-            System.err.println("propertyChange: " + pe.getPropertyName());
     }
 
     private void updateComponentTreeCG(SComponent c) {

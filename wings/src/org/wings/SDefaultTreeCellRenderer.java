@@ -78,7 +78,7 @@ public class SDefaultTreeCellRenderer
             setStyle(textNonSelectionStyle);
         }
 
-        if (value == null) {
+        if (value == null || value.toString() == null || value.toString().length() == 0) {
             setText("&nbsp;");
             return this;
         }

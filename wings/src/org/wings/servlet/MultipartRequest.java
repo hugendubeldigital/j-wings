@@ -300,7 +300,6 @@ public class MultipartRequest
                             }
                         }
                         if (i == blength) {             // end of part ..
-                            //System.err.println("buffer: " + buffer.toString());
                             putParameter((String)headers.get("name"),
                                          (buffer.toString()).substring(0, buffer.length()-
                                                                        boundary.length()-4));
@@ -347,7 +346,6 @@ public class MultipartRequest
                             break;
                     }
                     bytes = byteArray.toByteArray();
-                    System.err.println("length: " + (bytes.length - blength - 4));
                     fileStream.write(bytes, 0, bytes.length - blength - 4);
                     fileStream.close();
 

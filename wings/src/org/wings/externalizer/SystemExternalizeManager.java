@@ -14,10 +14,8 @@
 
 package org.wings.externalizer;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.WeakHashMap;
-import java.util.Collections;
+import java.util.*;
+import java.util.logging.*;
 
 /**
  * This singleton externalizes 
@@ -33,11 +31,6 @@ import java.util.Collections;
 
 public class SystemExternalizeManager extends AbstractExternalizeManager
 {
-    /**
-     * TODO: documentation
-     */
-    private static final boolean DEBUG = true;
-
     /**
      * singleton implementation
      */
@@ -74,13 +67,14 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
         return MY_PREFIX_TIMESLICE_STRING;
     }
 
-    protected void storeExternalizedInfo(String identifier,
-                                         ExternalizedInfo extInfo) {
-        //        debug("store identifier " + identifier + " " + extInfo.getObject().getClass());
-        //        debug("flags " + extInfo.getFlags());
+    protected void storeExternalizedInfo(String identifier, ExternalizedInfo extInfo) {
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer("store identifier " + identifier + " " + extInfo.getObject().getClass());
+            logger.finer("flags " + extInfo.getFlags());
+        }
 
         externalized.put(identifier, extInfo);
-   }
+    }
 
     public ExternalizedInfo getExternalizedInfo(String identifier) {
         return (ExternalizedInfo)externalized.get(identifier);
@@ -89,15 +83,7 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
     protected final void removeExternalizedInfo(String identifier) {
         externalized.remove(identifier);
     }
-
-    
-    private static final void debug(String msg) {
-        if (DEBUG) {
-            org.wings.util.DebugUtil.printDebugMessage(ExternalizeManager.class, msg);
-        }
-    }
-  
-}// SystemExternalizeManager
+}
 
 /*
  * Local variables:

@@ -17,6 +17,7 @@ package org.wings.plaf;
 import java.beans.*;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.logging.*;
 import java.io.IOException;
 import javax.swing.*;
 
@@ -33,17 +34,17 @@ import org.wings.style.*;
  */
 public abstract class AbstractComponentCG implements ComponentCG, SConstants
 {
+    protected static Logger logger = Logger.getLogger("org.wings.plaf");
+
     protected static final Map cache = new HashMap();
 
     protected AbstractComponentCG() {
         CGManager manager = SessionManager.getSession().getCGManager();
         String name = getClass().getName();
-        name = name.substring(name.lastIndexOf("."));
+        name = name.substring(name.lastIndexOf(".") + 1);
         long start = System.currentTimeMillis();
         configure(this, name, manager);
-        if ((System.currentTimeMillis()-start) > 50)
-            System.err.println("configure CG done in " +
-                               (System.currentTimeMillis()-start) + " ms");
+        logger.fine("configure CG done in " + (System.currentTimeMillis()-start) + " ms");
     }
 
     /**
@@ -57,9 +58,7 @@ public abstract class AbstractComponentCG implements ComponentCG, SConstants
         className = className.substring(className.lastIndexOf(".") + 1);
 
         configure(component, className, manager);
-        if ((System.currentTimeMillis()-start) > 50)
-            System.err.println("install CG done in " +
-                               (System.currentTimeMillis()-start) + " ms");
+        logger.fine("install CG done in " + (System.currentTimeMillis()-start) + " ms");
     }
 
     /**
@@ -80,9 +79,8 @@ public abstract class AbstractComponentCG implements ComponentCG, SConstants
                     }
                 }
             }
-            if ((System.currentTimeMillis()-introspection_time) > 50)
-                System.err.println(objectClass.getName() + " introspection_time " +
-                               (System.currentTimeMillis()-introspection_time) + " ms");
+            logger.finer(objectClass.getName() + " introspection_time " +
+                          (System.currentTimeMillis()-introspection_time) + " ms");
 
             long configuration_time = System.currentTimeMillis();
             for (int i=0; i < setters.length; i++) {
@@ -95,6 +93,8 @@ public abstract class AbstractComponentCG implements ComponentCG, SConstants
                 value = manager.getObject(lookupName, propertyType);
                 boolean configurable = !propertyType.isPrimitive();
 
+                logger.finest(lookupName + "=" + value);
+
                 if (value != null) {
                     setters[i].invoke(object, new Object[] { value });
                     if (configurable) {
@@ -102,13 +102,11 @@ public abstract class AbstractComponentCG implements ComponentCG, SConstants
                     }
                 }
             }
-            if ((System.currentTimeMillis()-configuration_time) > 50)
-                System.err.println(objectClass.getName() + " configuration_time " +
-                               (System.currentTimeMillis()-configuration_time) + " ms");
+            logger.finer(objectClass.getName() + " configuration_time " +
+                           (System.currentTimeMillis()-configuration_time) + " ms");
         }
         catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
+            logger.log(Level.SEVERE, null, e);
         }
     }
 
@@ -148,8 +146,6 @@ public abstract class AbstractComponentCG implements ComponentCG, SConstants
             }
             if (!present)
                 it.remove();
-            //else
-            //    System.err.println(setter.toString());
         }
         return (Method[])setterList.toArray(new Method[setterList.size()]);
     }

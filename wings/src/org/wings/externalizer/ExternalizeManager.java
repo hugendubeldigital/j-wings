@@ -14,10 +14,8 @@
 
 package org.wings.externalizer;
 
-import java.util.Set;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Collections;
+import java.util.*;
+import java.util.logging.*;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,11 +27,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ExternalizeManager extends AbstractExternalizeManager
 {
-    /**
-     * TODO: documentation
-     */
-    private static final boolean DEBUG = true;
-
     /**
      *
      */
@@ -90,13 +83,14 @@ public class ExternalizeManager extends AbstractExternalizeManager
         }
     }
 
-    protected final void storeExternalizedInfo(String identifier,
-                                               ExternalizedInfo extInfo) {
-        //debug("store identifier " + identifier + " " + extInfo.getObject().getClass());
-        //debug("flags " + extInfo.getFlags());
+    protected final void storeExternalizedInfo(String identifier, ExternalizedInfo extInfo) {
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer("store identifier " + identifier + " " + extInfo.getObject().getClass());
+            logger.finer("flags " + extInfo.getFlags());
+        }
         externalized.put(identifier, extInfo);
     }
-    
+
     public final Object getExternalizedObject(String identifier) {
         ExternalizedInfo info = getExternalizedInfo(identifier);
 
@@ -169,9 +163,9 @@ public class ExternalizeManager extends AbstractExternalizeManager
             throw new IllegalStateException("no externalizer");
 
         Externalizer externalizer = getExternalizer(obj.getClass());
-        if ( externalizer == null ) {
-            System.err.println("could not find externalizer for " +
-                               obj.getClass().getName());
+        if (externalizer == null) {
+            logger.warning("could not find externalizer for " +
+                           obj.getClass().getName());
             return NOT_FOUND_IDENTIFIER;
         }
 
@@ -224,8 +218,8 @@ public class ExternalizeManager extends AbstractExternalizeManager
 
         Externalizer externalizer = getExternalizer(mimeType);
         if ( externalizer == null ) {
-            System.err.println("could not find externalizer for " +
-                               obj.getClass().getName());
+            logger.warning("could not find externalizer for " +
+                           obj.getClass().getName());
             return NOT_FOUND_IDENTIFIER;
         }
 
@@ -324,13 +318,6 @@ public class ExternalizeManager extends AbstractExternalizeManager
         }
         return externalizer;
     }
-
-    private static final void debug(String msg) {
-        if (DEBUG) {
-            org.wings.util.DebugUtil.printDebugMessage(ExternalizeManager.class, msg);
-        }
-    }
-
 }
 
 /*

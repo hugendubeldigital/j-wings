@@ -24,6 +24,7 @@ import java.util.Collections;
 
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.logging.*;
 import org.wings.RequestURL;
 import org.wings.util.StringUtil;
 
@@ -35,10 +36,7 @@ import org.wings.util.StringUtil;
  */
 public abstract class AbstractExternalizeManager
 {
-    /**
-     * TODO: documentation
-     */
-    private static final boolean DEBUG = true;
+    protected static Logger logger = Logger.getLogger("org.wings.externalizer");
 
     /**
      * The identifier generated, if the {@link ExternalizeManager} did not find
@@ -93,8 +91,8 @@ public abstract class AbstractExternalizeManager
         StringUtil.toShortestAlphaNumericString(PREFIX_TIMESLICE, 2);
 
     static {
-        debug("final scope expires in " + FINAL_EXPIRES_STRING + " seconds");
-        debug("use prefix " + PREFIX_TIMESLICE_STRING);
+        logger.info("final scope expires in " + FINAL_EXPIRES_STRING + " seconds");
+        logger.info("use prefix " + PREFIX_TIMESLICE_STRING);
     }
     
     // Flags
@@ -405,7 +403,7 @@ public abstract class AbstractExternalizeManager
         ExternalizedInfo extInfo = getExternalizedInfo(identifier);
 
         if ( extInfo == null ) {
-            debug("identifier " + identifier + " not found");
+            logger.warning("identifier " + identifier + " not found");
             response.sendError(response.SC_NOT_FOUND);
             return;
         }
@@ -442,12 +440,6 @@ public abstract class AbstractExternalizeManager
         extInfo.getExternalizer().write(extInfo.getObject(), out);
         out.flush();
         out.close();
-    }
-
-    private static final void debug(String msg) {
-        if (DEBUG) {
-            org.wings.util.DebugUtil.printDebugMessage(ExternalizeManager.class, msg);
-        }
     }
 }
 

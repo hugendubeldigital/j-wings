@@ -198,7 +198,6 @@
       </fileset>
       <fileset dir="${lib}">
         <include name="css1.jar"/>
-        <include name="old.jar"/>
       </fileset>
     </war>
 

@@ -51,8 +51,7 @@ public final class LabelCG
             if (noBreak)
                 d.append("</nobr>");
 
-            if (style != null)
-                d.append("</span>");
+            d.append("</span>");
         }
     }
 }

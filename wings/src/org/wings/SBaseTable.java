@@ -26,17 +26,16 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import org.wings.plaf.*;
 import org.wings.io.Device;
+import org.wings.plaf.*;
+import org.wings.style.*;
 
 /**
  * This is a base implementation from which all other tables are derived.
  * This base table is a simple table. It is used if selection is not
- * required and the table is only used to arrange stuff.
+ * required and the table is only used to present tabular data.
  * <p>
  * The advanced stuff like selection is implemented in {@link STable}.
- * <p>
- * Most API calls are based of Swing.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -76,11 +75,16 @@ public class SBaseTable
     protected final HashMap renderer = new HashMap();
 
     /**
-     * header visible. <p>
      * The header is not (yet) implemented like in Swing. But maybe someday.
      * So you can disable it if you like.
      */
     protected boolean headerVisible = true;
+
+    /** The style of header cells */
+    protected Style headerStyle = null;
+
+    /** The dynamic attributes of header cells */
+    protected AttributeSet headerAttributes = new SimpleAttributeSet();
 
     /**
      * TODO: documentation
@@ -162,6 +166,77 @@ public class SBaseTable
      */
     public boolean isHeaderVisible() {
         return headerVisible;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public void setHeaderStyle(Style style) {
+        this.headerStyle = style;
+    }
+
+    /**
+     * TODO: documentation
+     */
+    public Style getHeaderStyle() { return headerStyle; }
+
+    /**
+     * Set the headerAttributes.
+     * @param headerAttributes the headerAttributes
+     */
+    public void setHeaderAttributes(AttributeSet headerAttributes) {
+        if (headerAttributes == null)
+            throw new IllegalArgumentException("null not allowed");
+
+        if (!this.headerAttributes.equals(headerAttributes)) {
+            this.headerAttributes = headerAttributes;
+            reload(ReloadManager.RELOAD_STYLE);
+        }
+    }
+
+    /**
+     * @return the current headerAttributes
+     */
+    public AttributeSet getHeaderAttributes() {
+        return headerAttributes;
+    }
+
+    /**
+     * Set the background color.
+     * @param c the new background color
+     */
+    public void setHeaderBackground(Color color) {
+        boolean changed = headerAttributes.putAttributes(CSSStyleSheet.getAttributes(color, "background-color"));
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * Return the background color.
+     * @return the background color
+     */
+    public Color getHeaderBackground() {
+        return CSSStyleSheet.getBackground(headerAttributes);
+    }
+
+    /**
+     * Set the foreground color.
+     * @param c the new foreground color
+     */
+    public void setHeaderForeground(Color color) {
+        boolean changed = headerAttributes.putAttributes(CSSStyleSheet.getAttributes(color, "color"));
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * Return the foreground color.
+     * @return the foreground color
+     */
+    public Color getHeaderForeground() {
+        return CSSStyleSheet.getForeground(headerAttributes);
     }
 
     /**

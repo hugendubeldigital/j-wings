@@ -17,6 +17,7 @@ package org.wings.plaf;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.logging.*;
 
 import org.wings.plaf.*;
 import org.wings.session.*;
@@ -34,7 +35,6 @@ public class LookAndFeelFactory
         LookAndFeel lookAndFeel = new LookAndFeel(classLoader);
 
 	if (lafs.put(lookAndFeel.getName(), lookAndFeel) != null) {
-	    System.err.println("redeploy");
 	    notifySessions(lookAndFeel);
 	}
     }

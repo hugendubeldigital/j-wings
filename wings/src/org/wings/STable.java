@@ -25,9 +25,10 @@ import javax.swing.event.*;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableModel;
 
-import org.wings.plaf.*;
-import org.wings.io.Device;
 import org.wings.externalizer.ExternalizeManager;
+import org.wings.io.Device;
+import org.wings.plaf.*;
+import org.wings.style.*;
 
 
 /**
@@ -81,18 +82,15 @@ public class STable
     protected HashMap editors = new HashMap();
 
     /** Icon used for buttons that start editing in a cell. */
-    transient protected SIcon editIcon = null;
+    transient protected SIcon editIcon;
 
-    /**
-     * TODO: documentation
-     */
-    protected Color selForeground = null;
 
-    /**
-     * TODO: documentation
-     */
-    protected Color selBackground = null;
-    
+    /** The style of selected cells */
+    protected Style selectionStyle;
+
+    /** The dynamic attributes of selected cells */
+    protected AttributeSet selectionAttributes = new SimpleAttributeSet();
+
     /**
       * Show/hide selectables. Default is "show".
       */
@@ -892,40 +890,76 @@ public class STable
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param c
+     * @param style the style of selected cells
      */
-    public void setSelectionBackground(Color c) {
-        selBackground=c;
+    public void setSelectionStyle(Style selectionStyle) {
+        this.selectionStyle = selectionStyle;
+        System.err.println("SSSSSSSSelectionStyle " + getSelectionStyle());
     }
 
     /**
-     * TODO: documentation
-     *
-     * @return
+     * @return the style of selected cells.
+     */
+    public Style getSelectionStyle() { return selectionStyle; }
+
+
+    /**
+     * Set the selectionAttributes.
+     * @param selectionAttributes the selectionAttributes
+     */
+    public void setSelectionAttributes(AttributeSet selectionAttributes) {
+        if (selectionAttributes == null)
+            throw new IllegalArgumentException("null not allowed");
+
+        if (!this.selectionAttributes.equals(selectionAttributes)) {
+            this.selectionAttributes = selectionAttributes;
+            reload(ReloadManager.RELOAD_STYLE);
+        }
+    }
+
+    /**
+     * @return the current selectionAttributes
+     */
+    public AttributeSet getSelectionAttributes() {
+        return selectionAttributes;
+    }
+
+    /**
+     * Set the background color.
+     * @param c the new background color
+     */
+    public void setSelectionBackground(Color color) {
+        boolean changed = selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, "background-color"));
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * Return the background color.
+     * @return the background color
      */
     public Color getSelectionBackground() {
-        return selBackground;
+        return CSSStyleSheet.getBackground(selectionAttributes);
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param c
+     * Set the foreground color.
+     * @param color the foreground color of selected cells
      */
-    public void setSelectionForeground(Color c) {
-        selForeground=c;
+    public void setSelectionForeground(Color color) {
+        boolean changed = selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, "color"));
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
     }
 
     /**
-     * TODO: documentation
-     *
-     * @return
+     * Return the foreground color.
+     * @return the foreground color
      */
     public Color getSelectionForeground() {
-        return selForeground;
+        return CSSStyleSheet.getForeground(selectionAttributes);
     }
+
 
     /**
      * TODO: documentation

@@ -17,6 +17,7 @@ package org.wings.servlet;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.logging.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -52,15 +53,13 @@ public abstract class SessionServlet
     extends HttpServlet
     implements HttpSessionBindingListener
 {
-    /**
-     * TODO: documentation
-     */
-    public static final boolean DEBUG = true;
+    private static Logger logger = Logger.getLogger("org.wings.servlet");
 
     /**
-     * TODO: documentation
+     * Assembly of some messages is expensive. Thus it should not be done, if
+     * the message is discarded anyway.
      */
-    private SRequestDispatcher dispatcher = null;
+    public static final boolean DEBUG = logger.isLoggable(Level.FINE);
 
     /**
      * format to write out profiling information. Is only used, if
@@ -68,6 +67,8 @@ public abstract class SessionServlet
      */
     protected final TimeMeasure measure =
         new TimeMeasure(new MessageFormat("<b>{0}</b>: {1} <i>{2}</i><br />"));
+
+    private SRequestDispatcher dispatcher = null;
 
     /**
      * Maximum length of post-/get-submissions in kByte
@@ -156,8 +157,7 @@ public abstract class SessionServlet
             try {
                 setLocaleFromHeader(new Boolean(args[i]).booleanValue());
             } catch (Exception e) {
-                if (DEBUG)
-                    log(e.getMessage());
+                logger.throwing(SessionServlet.class.getName(), "setLocaleFromHeader", e);
             }
         }
     }
@@ -196,8 +196,7 @@ public abstract class SessionServlet
                 setLocale(getLocale(tokenizer.nextToken()));
                 return;
             } catch (IllegalArgumentException e) {
-                if (DEBUG)
-                    log(e.getMessage());
+                logger.throwing(SessionServlet.class.getName(), "setLocale", e);
             }
         }
     }
@@ -214,8 +213,7 @@ public abstract class SessionServlet
                 setLocale(locales[i]);
                 return;
             } catch (IllegalArgumentException e) {
-                if (DEBUG)
-                    log(e.getMessage());
+                logger.throwing(SessionServlet.class.getName(), "setLocale", e);
             }
         }
     }
@@ -250,7 +248,7 @@ public abstract class SessionServlet
              supportedLocales.length==0 ||
              ASUtil.inside(l, supportedLocales)) {
             session.setLocale(l);
-            debug("Set Locale " + l);
+            logger.config("Set Locale " + l);
         } else
             throw new IllegalArgumentException("Locale " + l +" not supported");
     }
@@ -511,12 +509,12 @@ public abstract class SessionServlet
 
             try {
                 if (DEBUG) {
-                    log("\nHEADER:");
+                    logger.finer("\nHEADER:");
                     for (Enumeration en = req.getHeaderNames(); en.hasMoreElements();) {
                         String header = (String)en.nextElement();
-                        log("   " + header + ": " + req.getHeader(header));
+                        logger.finer("   " + header + ": " + req.getHeader(header));
                     }
-                    log("");
+                    logger.finer("");
                 }
 
                 handleLocale(req);
@@ -540,7 +538,7 @@ public abstract class SessionServlet
                 while (en.hasMoreElements()) {
                     String paramName = (String)en.nextElement();
                     String[] value = req.getParameterValues(paramName);
-                    System.err.println("dispatching " + paramName + " = " + value[0]);
+                    logger.fine("dispatching " + paramName + " = " + value[0]);
 
                     // was soll das???
                     if (!getDispatcher().dispatch(paramName, value))
@@ -597,7 +595,7 @@ public abstract class SessionServlet
                 // the externalizer is able to handle static and dynamic resources
                 ExternalizeManager extManager = getSession().getExternalizeManager();
                 String pathInfo = req.getPathInfo().substring(1);
-                System.err.println("pathInfo: " + pathInfo);
+                logger.fine("pathInfo: " + pathInfo);
 
                 // no pathInfo .. getFrame()
                 if (pathInfo == null || pathInfo.length() == 0 || firstRequest) {
@@ -672,7 +670,7 @@ public abstract class SessionServlet
         }
         catch (Exception ex) {
             // Ok, seems that we have no luck: write this to the error-Log.
-            e.printStackTrace();
+            logger.throwing(SessionServlet.class.getName(), "doGet", e);
         }
     }
 
@@ -756,7 +754,7 @@ public abstract class SessionServlet
             // remove all elements in ExternalizerCache ?
         }
         catch (Exception e) {
-            e.printStackTrace();
+            logger.throwing(SessionServlet.class.getName(), "destroy", e);
         }
         finally {
             Runtime rt = Runtime.getRuntime();

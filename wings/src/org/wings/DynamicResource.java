@@ -16,6 +16,7 @@ package org.wings;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.logging.*;
 
 import org.wings.SFrame;
 import org.wings.externalizer.ExternalizeManager;
@@ -80,7 +81,7 @@ public abstract class DynamicResource
         if (id == null) {
             ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
             id = ext.getId(ext.externalize(this));
-            System.err.println("new " + getClass().getName() + " with id " + id);
+            logger.fine("new " + getClass().getName() + " with id " + id);
         }
         return id;
     }
@@ -95,8 +96,8 @@ public abstract class DynamicResource
         if (org.wings.servlet.SessionServlet.DEBUG) {
             String name = getClass().getName();
             name = name.substring(name.lastIndexOf(".") + 1);
-            System.err.println("[" + name + "] " +
-                               "invalidate - epoch: " + epochCache);
+            logger.fine("[" + name + "] " +
+                        "invalidate - epoch: " + epochCache);
         }
     }
 

@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.*;
+import java.util.logging.*;
 
 import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
@@ -302,13 +303,13 @@ public class SForm
 
     public SComponent addComponent(SComponent c, Object constraint) {
         if (c instanceof SForm)
-            System.err.println("WARNING: attempt to nest forms; won't work. ");
+            logger.warning("WARNING: attempt to nest forms; won't work. ");
         return super.addComponent(c, constraint);
     }
 
     public SComponent addComponent(SComponent c, Object constraint, int index){
         if (c instanceof SForm)
-            System.err.println("WARNING: attempt to nest forms; won't work.");
+            logger.warning("WARNING: attempt to nest forms; won't work.");
         return super.addComponent(c, constraint, index);
     }
 

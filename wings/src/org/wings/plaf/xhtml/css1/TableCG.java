@@ -29,6 +29,12 @@ import org.wings.style.*;
 public final class TableCG
     extends org.wings.plaf.xhtml.TableCG
 {
+    private Style style;
+    public void setStyle(Style style) {
+        this.style = style;
+    }
+    public Style getStyle() { return style; }
+
     public void writePrefix(Device d, STable table)
         throws IOException
     {
@@ -38,7 +44,6 @@ public final class TableCG
         boolean showVerticalLines = table.getShowVerticalLines();
         SDimension intercellPadding = table.getIntercellPadding();
         SDimension intercellSpacing = table.getIntercellSpacing();
-        Style style = table.getStyle();
 
         d.append("<table");
         CGUtil.writeSize( d, table );
@@ -123,22 +128,17 @@ public final class TableCG
 
         SCellRendererPane rendererPane = table.getCellRendererPane();
         if (table.isHeaderVisible()) {
-            d.append("<tr");
-            if (style != null)
-                style.write(d);
-            d.append(">\n");
+            d.append("<tr>\n");
             for (int c = originCol; c < colCount; c++) {
                 writeHeaderCell(d, table, rendererPane, c);
             }
             d.append("</tr>\n");
         }
+
+        table.checkSelectables();
+
         for (int r = originRow; r < rowCount; r++) {
-            d.append("<tr");
-            if (style != null)
-                style.write(d);
-            if (table.isRowSelected(r))
-                d.append(" style=\"color:#990000\"");
-            d.append(">\n");
+            d.append("<tr>\n");
             for (int c = originCol; c < colCount; c++) {
                 writeCell(d, table, rendererPane, r, c);
             }
@@ -146,11 +146,10 @@ public final class TableCG
         }
     }
 
-    protected void writeCell(Device d, STable table, int row, int col)
+    protected void writeCell(Device d, STable table,
+                             SCellRendererPane rendererPane, int row, int col)
         throws IOException
     {
-        table.checkSelectables();
-
         SComponent comp = null;
         boolean isEditingCell = table.isEditing()
             && row == table.getEditingRow()
@@ -161,16 +160,30 @@ public final class TableCG
         else
             comp = table.prepareRenderer(table.getCellRenderer(row, col), row, col);
 
-        Style style = comp.getStyle();
+        Style cellStyle = table.isRowSelected(row) ? table.getSelectionStyle() : table.getStyle();
+
         d.append("<td");
-        if (style != null)
-            style.write(d);
+        if (cellStyle != null)
+            cellStyle.write(d);
         d.append(">");
-        comp.write(d);
+
+        if (!isEditingCell && table.isCellEditable(row, col)) {
+            RequestURL editAddr = table.getRequestURL();
+            editAddr.addParameter(table.getEditParameter(row, col));
+
+            d.append("<a href=\"").append(editAddr.toString()).
+                append("\">");
+            org.wings.plaf.xhtml.Utils.appendIcon(d, editIcon, null);
+            d.append("</a>&nbsp;");
+        }
+
+        rendererPane.writeComponent(d, comp, table);
         d.append("</td>");
     }
 
-    protected void writeHeaderCell(Device d, STable table, int c)
+    protected void writeHeaderCell(Device d, STable table,
+                                   SCellRendererPane rendererPane,
+                                   int c)
         throws IOException
     {
         if (c >= table.getModel().getColumnCount()
@@ -179,12 +192,12 @@ public final class TableCG
         else {
             SComponent comp = table.prepareHeaderRenderer(c);
 
-            Style style = comp.getStyle();
+            Style headerStyle = table.getHeaderStyle();
             d.append("<th");
-            if (style != null)
-                style.write(d);
+            if (headerStyle != null)
+                headerStyle.write(d);
             d.append(">");
-            comp.write(d);
+            rendererPane.writeComponent(d, comp, table);
             d.append("</th>");
         }
     }

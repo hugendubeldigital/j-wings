@@ -18,6 +18,7 @@ import java.awt.*;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.logging.*;
 import javax.servlet.ServletOutputStream;
 
 import org.wings.*;
@@ -34,6 +35,8 @@ import org.wings.style.*;
  */
 public class LookAndFeel
 {
+    private static Logger logger = Logger.getLogger("org.wings.plaf");
+
     private static Map wrappers = new HashMap();
     static {
         wrappers.put(Boolean.TYPE, Boolean.class);
@@ -58,7 +61,6 @@ public class LookAndFeel
     public LookAndFeel(Properties properties) {
 	this.properties = properties;
 	this.classLoader = getClass().getClassLoader();
-        System.err.println("new LookAndFeel");
         defaults = new ResourceFactory();
     }
 
@@ -126,8 +128,7 @@ public class LookAndFeel
                 ((CSSStyleSheet)styleSheet).read(in);
             }
             catch (Exception e) {
-                System.err.println(e.getMessage());
-                e.printStackTrace(System.err);
+                logger.log(Level.WARNING, null, e);
             }
         }
         if (styleSheet == null)
@@ -142,22 +143,18 @@ public class LookAndFeel
      * @return a new CG instance
      */
     public Object makeCG(String className) {
-        //        System.err.print("LookAndFeel.makeCG(" + className + ")");
         try {
             Class cgClass = Class.forName(className, true, classLoader);
             return cgClass.newInstance();
         }
         catch (ClassNotFoundException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
+            logger.log(Level.SEVERE, null, e);
         }
         catch (InstantiationException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
+            logger.log(Level.SEVERE, null, e);
         }
         catch (IllegalAccessException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
+            logger.log(Level.SEVERE, null, e);
         }
         return null;
     }
@@ -247,8 +244,7 @@ public class LookAndFeel
             return styleSheet;
         }
         catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
+            logger.log(Level.WARNING, null, e);
             return null;
         }
     }
@@ -262,8 +258,8 @@ public class LookAndFeel
     public Style makeStyle(String name) {
         Style style = getStyleSheet().getStyle(name);
         if (style == null)
-            System.err.println("the style specification '" + name +
-                               "' has no corresponding style definition in the 'lookandfeel.stylesheet'");
+            logger.warning("the style specification '" + name +
+                           "' has no corresponding style definition in the 'lookandfeel.stylesheet'");
         return style;
     }
 
@@ -277,7 +273,6 @@ public class LookAndFeel
      */
     public static Object makeObject(ClassLoader classLoader, String value, Class clazz) {
         try {
-            //System.err.println("makeObject of type " + clazz.getName() + " with " + value);
             if (value.startsWith("new ")) {
                 int bracket = value.indexOf("(");
                 String name = value.substring("new ".length(), bracket);
@@ -292,12 +287,11 @@ public class LookAndFeel
             }
         }
         catch (NoSuchMethodException e) {
-            System.err.println(clazz.getName() + " doesn't have a single String arg constructor");
+            logger.log(Level.SEVERE, clazz.getName() + " doesn't have a single String arg constructor", e);
             return null;
         }
         catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
+            logger.log(Level.SEVERE, null, e);
             return null;
         }
     }
@@ -335,13 +329,10 @@ public class LookAndFeel
 
             String property = properties.getProperty(id);
             if (property == null) {
-                //System.err.println("no property for id " + id);
                 put(id, null);
                 return null;
             }
 
-            //System.err.print("make " + type.getName() + " for id " + id);
-            long millis = System.currentTimeMillis();
             if (ComponentCG.class.isAssignableFrom(type))
                 value = makeCG(property);
             else if (LayoutCG.class.isAssignableFrom(type))
@@ -360,7 +351,6 @@ public class LookAndFeel
                 value = makeAttributeSet(property);
             else
                 value = makeObject(property, type);
-            //System.err.println(" " + (System.currentTimeMillis() - millis));
 
             put(id, value);
             return value;

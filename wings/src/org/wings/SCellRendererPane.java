@@ -15,6 +15,7 @@
 package org.wings;
 
 import java.io.IOException;
+import java.util.logging.*;
 import javax.swing.UIManager;
 
 import org.wings.io.Device;
@@ -66,10 +67,10 @@ public class SCellRendererPane
         throws IOException
     {
         if ( getParent() == null )
-            System.err.println("SCellRendererPane: parent == null!");
+            logger.warning("SCellRendererPane: parent == null!");
 
         if ( getParentFrame() == null )
-            System.err.println("SCellRendererPane: parentFrame == null!");
+            logger.warning("SCellRendererPane: parentFrame == null!");
 
         if ( c == null ) {
             return;

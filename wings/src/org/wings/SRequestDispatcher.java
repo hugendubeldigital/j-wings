@@ -17,31 +17,24 @@ package org.wings;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.util.logging.*;
 
 import org.wings.session.SessionManager;
 
 /**
- * PENDING (dynamic resources) the reloadmanager shou
- * This implementation of a {@link SRequestDispatcher} saves the listeners
- * in a HashMap and is therefore much faster than the
- * {@link DefaultGetDispatcher}.
- *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public final class SRequestDispatcher
 {
-    public static final boolean DEBUG = false;
+    // the name is not the package name but that of the event dispatcher subsystem
+    private static Logger logger = Logger.getLogger("org.wings.event");
 
     private final HashMap listener = new HashMap();
 
     protected boolean namedEvents = true;
 
-    /**
-     * creates a new fast dispatcher
-     */
-    public SRequestDispatcher() {
-    }
+    public SRequestDispatcher() {}
 
     private final void addRequestListener(RequestListener gl, String namePrefix) {
         ArrayList l = (ArrayList)listener.get(namePrefix);
@@ -81,13 +74,13 @@ public final class SRequestDispatcher
         String key = gl.getNamePrefix();
         key = key.substring(key.indexOf(SConstants.UID_DIVIDER) + 1);
 
-        debug("register   '" + key + "'");
+        logger.finer("dispatcher: register '" + key + "'");
         addRequestListener(gl, key);
 
-        if ( namedEvents ) {
+        if (namedEvents) {
             key = gl.getName();
             if ( key!=null && key.trim().length()>0 ) {
-                debug("register named   '" + key +"'");
+                logger.finer("dispatcher: register named '" + key +"'");
                 addRequestListener(gl, key);
             }
         }
@@ -109,12 +102,12 @@ public final class SRequestDispatcher
         String key = gl.getNamePrefix();
         key = key.substring(key.indexOf(SConstants.UID_DIVIDER)+1);
 
-        debug("unregister '" + key + "'");
+        logger.finer("unregister '" + key + "'");
         removeRequestListener(gl, key);
 
         key = gl.getName();
         if ( key!=null && key.trim().length()>0 ) {
-            debug("unregister named '" + key + "'");
+            logger.finer("unregister named '" + key + "'");
             removeRequestListener(gl, key);
         }
 
@@ -140,14 +133,14 @@ public final class SRequestDispatcher
             if (epoch.endsWith(".x") || epoch.endsWith(".X"))
                 epoch = epoch.substring(0, epoch.length()-2);
 
-            if ( DEBUG ) {
-                debug("dispatch " + epoch +
-                      SConstants.UID_DIVIDER + name + " : ");
-                System.err.print(" ..... epoch " + epoch + " , ");
-                System.err.print("name " + name + " ;values[ ");
-                for ( int i=0; i<values.length; i++ )
-                    System.out.print(values[i] + " , ");
-                System.out.println("]");
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer("dispatch " + epoch +
+                             SConstants.UID_DIVIDER + name + " : ");
+                logger.finer(" ..... epoch " + epoch + " , ");
+                logger.finer("name " + name + "; values[ ");
+                for (int i=0; i<values.length; i++)
+                    logger.finer(values[i] + " , ");
+                logger.finer("]");
             }
         }
 
@@ -155,19 +148,15 @@ public final class SRequestDispatcher
         if (l != null) {
             RequestListener gl = (RequestListener)l.get(0);
             SFrame frame = ((SComponent)gl).getParentFrame();
-            if (epoch != null && !epoch.equals(frame.getEventEpoch())) {
-                // do not fire those outdated events but enforce immediate reload of the frame
-                debug("got outdated event '" + epoch + "_" + name + "' from frame '" +
-                      frame.getTitle() + "' (" + frame.getUnifiedId() + ") " + frame.getEventEpoch());
 
-                // make sure, the outdated frame is reloaded
-                // this hack should not be required anymore, since the externalizer supports
-                // dynamic resources now
-                // SessionManager.getSession().getReloadManager().markDirty(frame.getDynamicResource(DynamicCodeResource.class));
+            if (epoch != null && !epoch.equals(frame.getEventEpoch())) {
+                if (logger.isLoggable(Level.FINE))
+                    logger.fine("got outdated event '" + epoch + "_" + name + "' from frame '" +
+                                frame.getUnifiedId() + " " + frame.getEventEpoch());
                 return false;
             }
 
-            debug("process event '" + epoch + "_" + name + "'");
+            logger.finer("process event '" + epoch + "_" + name + "'");
             for (int i=0; i<l.size(); i++) {
                 gl = (RequestListener)l.get(i);
                 gl.processRequest(name, values);
@@ -178,13 +167,7 @@ public final class SRequestDispatcher
     }
 
     protected void finalize() {
-        debug("finalize");
-    }
-
-    private static final void debug(String mesg) {
-        if ( DEBUG ) {
-            System.out.println("[" + SRequestDispatcher.class.getName() + "] " + mesg);
-        }
+        logger.fine(SRequestDispatcher.class.getName() + ".finalize");
     }
 }
 

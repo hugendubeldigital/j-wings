@@ -17,6 +17,7 @@ package org.wings;
 import java.io.File;
 import java.io.FilterOutputStream;
 import java.util.Hashtable;
+import java.util.logging.*;
 
 import javax.servlet.http.HttpUtils;
 
@@ -270,7 +271,6 @@ public class SFileChooser
     // -- Implementation of RequestListener
     public void processRequest(String action, String[] values) {
         String value = values[0];
-        //System.out.println( action + "-> '" + value + "'");
         try {
             Hashtable params = HttpUtils.parseQueryString(value);
             String[] arr;
@@ -286,8 +286,8 @@ public class SFileChooser
                 currentFile = new TempFile(filedir, fileid);
             }
         }
-        catch ( Exception ex ) {
-            ex.printStackTrace(System.err);
+        catch ( Exception e ) {
+            logger.log(Level.SEVERE, null, e);
         }
     }
     public void fireIntermediateEvents() {

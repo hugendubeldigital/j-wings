@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.*;
+import java.util.logging.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
@@ -45,6 +46,17 @@ import org.wings.externalizer.ExternalizedInfo;
  */
 public abstract class WingServlet extends HttpServlet
 {
+    static {
+        /*
+        try {
+            LogManager.getLogManager().readConfiguration();
+        }
+        catch (Throwable t) {}
+        */
+    }
+
+    private static Logger logger = Logger.getLogger("org.wings.servlet");
+
     /**
      * TODO: documentation
      */
@@ -84,23 +96,6 @@ public abstract class WingServlet extends HttpServlet
      */
     protected void preInit(ServletConfig config) throws ServletException {}
 
-    /**
-     * TODO: documentation
-     *
-     * @param config
-     */
-    protected void initMaxContentLength(ServletConfig config) {
-        String maxCL = config.getInitParameter("content.maxlength");
-        if (maxCL != null) {
-            try {
-                maxContentLength = Integer.parseInt(maxCL);
-            }
-            catch (NumberFormatException e) {
-                System.err.println("invalid content.maxlength: " + maxCL);
-            }
-            debug("content.maxlength: " + maxContentLength);
-        }
-    }
 
     /*
      * The following init parameters are known by wings.
@@ -125,15 +120,24 @@ public abstract class WingServlet extends HttpServlet
         super.init(config);
         lookupName = "SessionServlet:" + getClass().getName();
 
-        if (DEBUG) {
-            debug("Init Parameter");
-            for (Enumeration en=config.getInitParameterNames(); en.hasMoreElements();) {
+        if (logger.isLoggable(Level.CONFIG)) {
+            logger.config("init-params:");
+            for (Enumeration en = config.getInitParameterNames(); en.hasMoreElements();) {
                 String param = (String)en.nextElement();
-                debug(param + " = " + config.getInitParameter(param));
+                logger.config(param + " = " + config.getInitParameter(param));
             }
         }
 
-        initMaxContentLength(config);
+        String maxCL = config.getInitParameter("content.maxlength");
+        if (maxCL != null) {
+            try {
+                maxContentLength = Integer.parseInt(maxCL);
+            }
+            catch (NumberFormatException e) {
+                logger.fine("invalid content.maxlength: " + maxCL);
+                logger.throwing(SessionServlet.class.getName(), "init", e);
+            }
+        }
 
         servletConfig = config;
         postInit(config);
@@ -173,45 +177,39 @@ public abstract class WingServlet extends HttpServlet
         if (session != null)
             sessionServlet = (SessionServlet)session.getAttribute(lookupName);
 
-        if (sessionServlet!=null)
-            debug("sessionServlet: " + sessionServlet.getClass().getName());
-        else
-            debug("no session yet...");
+        if (logger.isLoggable(Level.FINE))
+            logger.fine((sessionServlet != null) ?
+                        "sessionServlet: " + sessionServlet.getClass().getName() :
+                        "no session yet ..");
 
         // Wrap with MultipartRequest which can handle multipart/form-data
         // (file - upload), otherwise behaves like normal HttpServletRequest
         try {
             req = new MultipartRequest(req, maxContentLength * 1024);
         }
-        catch (IOException e) {
-            //res.getOutputStream().println(e.getMessage());
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
-        }
         catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
+            logger.log(Level.SEVERE, null, e);
         }
 
-        if (DEBUG) {
+        if (logger.isLoggable(Level.FINER)) {
             if (req instanceof MultipartRequest) {
                 MultipartRequest multi = (MultipartRequest)req;
-                debug("Files:");
+                logger.finer("Files:");
                 Enumeration files = multi.getFileNames();
                 while (files.hasMoreElements()) {
                     String name = (String)files.nextElement();
                     String filename = multi.getFilename(name);
                     String type = multi.getContentType(name);
                     File f = multi.getFile(name);
-                    debug("name: " + name);
-                    debug("filename: " + filename);
-                    debug("type: " + type);
+                    logger.finer("name: " + name);
+                    logger.finer("filename: " + filename);
+                    logger.finer("type: " + type);
                     if (f != null) {
-                        debug("f.toString(): " + f.toString());
-                        debug("f.getName(): " + f.getName());
-                        debug("f.exists(): " + f.exists());
-                        debug("f.length(): " + f.length());
-                        debug("\n");
+                        logger.finer("f.toString(): " + f.toString());
+                        logger.finer("f.getName(): " + f.getName());
+                        logger.finer("f.exists(): " + f.exists());
+                        logger.finer("f.length(): " + f.length());
+                        logger.finer("\n");
                     }
                 }
             }
@@ -225,8 +223,7 @@ public abstract class WingServlet extends HttpServlet
         throws ServletException
     {
         try {
-            log("generating new Session Servlet");
-            debug("generating new Session Servlet");
+            logger.fine("new session");
 
             HttpSession session = request.getSession(true);
 
@@ -311,7 +308,7 @@ public abstract class WingServlet extends HttpServlet
              * We need a '/' at the
              * end of the servlet, so that relative requests work. Relative
              * requests are either externalization requests, providing the
-             * wanted resource name in the path info (like 'abc_121.gif')
+             * required resource name in the path info (like 'abc_121.gif')
              * or 'normal' requests which are just an empty URL with the 
              * request parameter (like '?12_22=121').
              * The browser assembles the request URL from the current context
@@ -326,6 +323,8 @@ public abstract class WingServlet extends HttpServlet
                 if (req.getQueryString() != null) {
                     pathUrl.append('?').append(req.getQueryString());
                 }
+
+                logger.fine("redirect to " + pathUrl.toString());
                 response.sendRedirect(pathUrl.toString());
                 return;
             }
@@ -337,46 +336,40 @@ public abstract class WingServlet extends HttpServlet
              */
             if (isSystemExternalizeRequest(req)) {
                 String identifier = pathInfo.substring(1);
-                System.err.println("system externalizer: " + identifier);
+                logger.fine("system externalizer: " + identifier);
 
                 int pos = identifier.indexOf(".");
                 if (pos > -1)
                     identifier = identifier.substring(0, pos);
 
+                logger.fine("system externalizer " + identifier);
                 SystemExternalizeManager.getSharedInstance().deliver(identifier, response);
                 return;
             }
 
-            if (DEBUG)
-                log("session servlet");
-            
+            logger.fine("session servlet");
+
             SessionServlet sessionServlet = null;
             synchronized (initializer) {
                 sessionServlet = getSessionServlet(req, response);
             }
 
             if (DEBUG) {
-                if (req.getParameterValues("exit")!=null) {
+                if (req.getParameterValues("exit") != null) {
                     req.getSession(false).invalidate();
                     sessionServlet.destroy();
                     sessionServlet = null;
                     System.gc();
-                    try {Thread.sleep(1000);} catch (Exception e){}
+                    try { Thread.sleep(1000); } catch (Exception e) {}
                     System.exit(0);
                 }
             }
 
             sessionServlet.doGet(req, response);
-
-        } finally {
-            m.stop();
-            debug(m.print());
         }
-    }
-
-    private static final void debug(String msg) {
-        if (DEBUG) {
-            DebugUtil.printDebugMessage(WingServlet.class, msg);
+        finally {
+            m.stop();
+            logger.fine(m.print());
         }
     }
 }

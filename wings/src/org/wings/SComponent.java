@@ -20,6 +20,7 @@ import java.beans.*;
 import java.io.IOException;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.logging.*;
 
 import org.wings.io.Device;
 import org.wings.io.StringBufferDevice;
@@ -41,7 +42,7 @@ import org.wings.util.*;
 public abstract class SComponent
     implements SConstants, Cloneable
 {
-    private static final boolean DEBUG = false;
+    protected static Logger logger = Logger.getLogger("org.wings");
 
     /* */
     private transient String unifiedId = null;
@@ -934,9 +935,9 @@ public abstract class SComponent
      */
     public void updateCG() {
         if (getSession() == null)
-            System.err.println("no session yet.");
+            logger.warning("no session yet.");
         if (getSession().getCGManager() == null)
-            System.err.println("no CGManager");
+            logger.warning("no CGManager");
 
         setCG((ComponentCG)getSession().getCGManager().getCG(this));
 

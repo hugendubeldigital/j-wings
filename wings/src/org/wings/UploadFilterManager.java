@@ -17,6 +17,7 @@ package org.wings;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.Hashtable;
+import java.util.logging.*;
 
 /**
  * TODO: documentation
@@ -26,6 +27,8 @@ import java.util.Hashtable;
  */
 public class UploadFilterManager
 {
+    private static Logger logger = Logger.getLogger("org.wings.servlet");
+
     private static Hashtable filterMappings = new Hashtable();
 
     /**
@@ -69,7 +72,7 @@ public class UploadFilterManager
             else {
                 Class filterClass = entry.filterClass;
                 if (filterClass != null) {
-                    System.err.println("using " + filterClass.getName() + " for " + name);
+                    logger.info("using " + filterClass.getName() + " for " + name);
                     Constructor constructor = filterClass.getConstructor(new Class[] { OutputStream.class });
                     filter = (FilterOutputStream)constructor.newInstance(new Object[] { out });
                     entry.filterInstance = filter;
@@ -77,8 +80,7 @@ public class UploadFilterManager
             }
         }
         catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
+            logger.log(Level.SEVERE, null, e);
         }
         return filter;
     }
@@ -93,8 +95,7 @@ public class UploadFilterManager
             return filterInstance;
         }
         catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
+            logger.log(Level.SEVERE, null, e);
             return null;
         }
     }

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.logging.*;
 
 import org.wings.session.*;
 import org.wings.externalizer.ExternalizeManager;
@@ -139,7 +140,7 @@ public class StaticResource
         if (id == null) {
             ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
             id = ext.getId(ext.externalize(this, AbstractExternalizeManager.GLOBAL));
-            System.err.println("new " + getClass().getName() + " with id " + id);
+            logger.fine("new " + getClass().getName() + " with id " + id);
         }
         return id;
     }

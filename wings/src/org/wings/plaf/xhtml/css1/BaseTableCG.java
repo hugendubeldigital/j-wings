@@ -16,6 +16,7 @@ package org.wings.plaf.xhtml.css1;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.*;
 
 import org.wings.*;
 import org.wings.externalizer.ExternalizeManager;
@@ -28,6 +29,12 @@ import org.wings.style.*;
 public final class BaseTableCG
     extends org.wings.plaf.xhtml.BaseTableCG
 {
+    private Style style;
+    public void setStyle(Style style) {
+        this.style = style;
+    }
+    public Style getStyle() { return style; }
+
     public void writePrefix(Device d, SBaseTable table)
         throws IOException
     {
@@ -37,7 +44,6 @@ public final class BaseTableCG
         boolean showVerticalLines = table.getShowVerticalLines();
         SDimension intercellPadding = table.getIntercellPadding();
         SDimension intercellSpacing = table.getIntercellSpacing();
-        Style style = table.getStyle();
 
         d.append("<table");
         CGUtil.writeSize( d, table );
@@ -97,8 +103,9 @@ public final class BaseTableCG
                 .append(intercellPadding.width)
                 .append("\""); 
 
+        if (style != null)
+            style.write(d);
 
-        Utils.writeStyleAttribute(d, style);
         d.append(">\n");
     }
 
@@ -121,23 +128,54 @@ public final class BaseTableCG
 
         SCellRendererPane rendererPane = baseTable.getCellRendererPane();
         if (baseTable.isHeaderVisible()) {
-            d.append("<tr");
-            Utils.writeStyleAttribute(d, "", style, "header");
-            d.append(">\n");
+            d.append("<tr>\n");
             for (int c = originCol; c < colCount; c++) {
                 writeHeaderCell(d, baseTable, rendererPane, c);
             }
             d.append("</tr>\n");
         }
+
+
+
         for (int r = originRow; r < rowCount; r++) {
-            d.append("<tr");
-            Utils.writeStyleAttribute(d, "", style, "cell");
-            d.append(">\n");
+            d.append("<tr>\n");
             for (int c = originCol; c < colCount; c++) {
                 writeCell(d, baseTable, rendererPane, r, c);
             }
             d.append("</tr>\n");
         }
+    }
+
+    protected void writeCell(Device d, SBaseTable baseTable,
+                             SCellRendererPane rendererPane, int row, int col)
+        throws IOException
+    {
+        SComponent comp = baseTable.prepareRenderer(baseTable.getCellRenderer(row, col), row, col);
+        Style style = baseTable.getStyle();
+
+        d.append("<td");
+        if (style != null)
+            style.write(d);
+        d.append(">");
+
+        rendererPane.writeComponent(d, comp, baseTable);
+        d.append("</td>");
+    }
+
+    protected void writeHeaderCell(Device d, SBaseTable baseTable,
+                                   SCellRendererPane rendererPane, int c)
+        throws IOException
+    {
+        SComponent comp = baseTable.prepareHeaderRenderer(c);
+        Style style = baseTable.getHeaderStyle();
+
+        d.append("<th");
+        if (style != null)
+            style.write(d);
+        d.append(">");
+
+        rendererPane.writeComponent(d, comp, baseTable);
+        d.append("</th>");
     }
 }
 

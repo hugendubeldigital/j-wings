@@ -57,7 +57,7 @@ public class TableCG
 
     private final static String propertyPrefix = "Table";
 
-    private SIcon editIcon = EDIT_ICON;
+    protected SIcon editIcon = EDIT_ICON;
 
     public void setEditIcon(SIcon i) {
         editIcon = i;

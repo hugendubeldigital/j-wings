@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.logging.*;
 
 import org.wings.session.*;
 import org.wings.externalizer.ExternalizeManager;
@@ -39,6 +40,8 @@ import org.wings.externalizer.ExternalizeManager;
  */
 public abstract class Resource
 {
+    protected static Logger logger = Logger.getLogger("org.wings.externalizer");
+
     /**
      *
      */
