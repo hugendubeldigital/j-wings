@@ -2,7 +2,24 @@ var dom = document.getElementById?1:0;
 var ns4 = (document.layers && !dom)?1:0;
 var ns6 = (dom && !document.all)?1:0;
 var ie5 = (dom && document.all)?1:0;
+var konqueror = checkUserAgent('konqueror')?1:0;
 
+function checkUserAgent(string) {
+	return navigator.userAgent.toLowerCase().indexOf(string) + 1;
+}
+
+function concatArrays(array1, array2) {
+    var result = new Array(array1.length+array2.length);
+    var index = 0;
+    for ( var i=0; i<array1.length; i++ ) {
+        result[index++]=array1[i];
+    }
+    for ( var i=0; i<array2.length; i++ ) {
+        result[index++]=array2[i];
+    }
+
+    return result;
+}
 
 var MENUS = new Array();
 
@@ -141,7 +158,16 @@ function toggleFormElements(elementBounds) {
 
 //    var string = "";
 
-    var selects = document.getElementsByTagName('select')
+    var selects = document.getElementsByTagName('select');
+
+    if ( konqueror ) {
+        // konqueror needs to hide all form elements
+        var inputs = document.getElementsByTagName('input');
+        selects = concatArrays(selects, inputs);
+        var textAreas = document.getElementsByTagName('textarea');
+        selects = concatArrays(selects, textAreas);
+    }
+
     for ( var i=0; i<selects.length; i++ ) {
 	var select = selects[i];
         var selectBounds = new Bounds(select);
