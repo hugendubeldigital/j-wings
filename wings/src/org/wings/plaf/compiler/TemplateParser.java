@@ -367,6 +367,9 @@ public class TemplateParser {
                    + "final org.wings.io.Device device,\n" + INDENT
                    + "                  final org.wings.SComponent _c)\n"
                    + INDENT + INDENT + "throws java.io.IOException {\n");
+
+        out.println(INDENT + INDENT + "if ( !_c.isVisible() ) return;");
+
         out.println(INDENT + INDENT
                     + "final " + forClassName + " component = ("
                     + forClassName + ") _c;");
