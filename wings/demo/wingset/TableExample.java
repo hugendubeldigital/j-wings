@@ -38,12 +38,15 @@ public class TableExample
         super(new SGridLayout(1));
 
         add(new SLabel("<h4>Table outside a form with multiple selection</h4>"));
-
+        table.setShowGrid(true);
+        table.setBorderLines(new Insets(1,1,1,1));
         table.setSelectionMode(MULTIPLE_SELECTION);
         // table.setShowGrid(false);
         add(table);
 
         form.add(new SLabel("<h4>Table inside a form with single selection</h4>"));
+        formTable.setShowGrid(true);
+        formTable.setBorderLines(new Insets(1,1,1,1));
         formTable.setSelectionMode(SINGLE_SELECTION);
         form.add(formTable);
         form.add(new SButton("SUBMIT"));
@@ -90,7 +93,7 @@ public class TableExample
 
             for (int c=0; c < COLS; c++) {
                 for (int r=0; r < ROWS; r++)
-                    data[r][c] = "CELL " + r + ":" + c;
+                    data[r][c] = "cell " + r + ":" + c;
             }
             for (int r=0; r < ROWS; r++)
                 data[r][2] = createColor(r);

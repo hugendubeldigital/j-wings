@@ -86,7 +86,7 @@ public class ScrollPaneExample
 
             for (int c=0; c < COLS; c++) {
                 for (int r=0; r < ROWS; r++)
-                    data[r][c] = "CELL " + r + ":" + c;
+                    data[r][c] = "cell " + r + ":" + c;
             }
             for (int r=0; r < ROWS; r++)
                 data[r][2] = createColor(r);
