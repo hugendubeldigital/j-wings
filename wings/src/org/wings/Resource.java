@@ -47,11 +47,6 @@ public abstract class Resource implements Serializable, URLResource, Renderable
     protected String id;
 
     /**
-     *
-     */
-    protected RequestURL requestURL = new RequestURL();
-
-    /**
      * TODO: documentation
      */
     protected String extension; 
@@ -116,7 +111,6 @@ public abstract class Resource implements Serializable, URLResource, Renderable
     public String toString() {
         return getId();
     }
-
 
     public static final class HeaderEntry implements Map.Entry {
         final Object key;
