@@ -487,7 +487,6 @@ public class SScrollPane
         // we cannot determine what to scroll...
         if ( viewport==null ) return;
         
-        System.out.println("scrollRectToVisible called with "+aRect);
         Adjustable hbar = getHorizontalScrollBar();
         if ( hbar!=null &&
              getHorizontalScrollBarPolicy()!=HORIZONTAL_SCROLLBAR_NEVER ) {
@@ -495,7 +494,6 @@ public class SScrollPane
                                    aRect.x, aRect.width,
                                    hbar.getUnitIncrement());
             if (nval != hbar.getValue()) {
-                System.out.println("scrolling hbar from "+hbar.getValue()+" to "+nval);
                 hbar.setValue(nval);
             }
         } 
@@ -507,8 +505,6 @@ public class SScrollPane
                                    aRect.y, aRect.height,
                                    vbar.getUnitIncrement());
             if (nval != vbar.getValue()) {
-                System.out.println("scrolling vbar from "+vbar.getValue()+" to "+nval+
-                                   " (inc="+vbar.getUnitIncrement()+")");
                 vbar.setValue(nval);
             }
         }
