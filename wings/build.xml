@@ -64,7 +64,7 @@
 
 
   <!-- ==================== Build wingS ==================== -->
-  <target name="build" depends="jar,plaf" />
+  <target name="build" depends="wings.jar,plaf" />
 
   <target name="compile" depends="prepare">
     <javac srcdir="${src}" destdir="${classes}" debug="on" deprecation="off">
@@ -80,8 +80,8 @@
     </copy>
   </target>
 
-
-  <target name="jar" depends="compile">
+  <target name="jar" depends="wings.jar" />
+  <target name="wings.jar" depends="compile">
     <jar jarfile="${distlib}/wings.jar" basedir="${classes}">
       <exclude name="org/wings/plaf/xhtml/**" />
     </jar>
@@ -97,9 +97,18 @@
 
 
   <!-- ==================== LookAndFeel Jars ==================== -->
-  <target name="plaf" depends="css1" />
+  <target name="plaf" depends="css1.jar" />
 
-  <target name="css1" depends="compile">
+  <target name="plaf-compiler" 
+          description="builds the compiler that converts JSP-plaf to Java">
+     <!-- compile plaf compiler -->
+  </target>
+
+  <target name="css1.jar" depends="compile,plaf-compiler">
+    <!-- this will once generate org.wings.plaf.css1 from *.plaf: -->
+    <!-- 1) invoke org.wings.plaf.compiler.PlafCompiler *.plaf -->
+    <!-- 2) compile generated files -->
+    <!-- 3) generate jar file -->
     <jar jarfile="${distlib}/css1.jar">
       <fileset dir="${classes}">
         <include name="org/wings/plaf/xhtml/*.class" />
@@ -132,7 +141,7 @@
     </javac>
   </target>
 
-  <target name="testcompile" depends="jar,css1">
+  <target name="testcompile" depends="wings.jar,css1.jar">
     <javac srcdir="${testsrc}" destdir="${testclasses}"
 	   debug="true"
 	   deprecation="${build.deprecation}"
