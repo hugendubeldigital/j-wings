@@ -3,8 +3,9 @@
 
 <property type="SIcon" name="clickableFallbackIcon">org/wings/icons/Pencil.gif</property>
 
-public void writeIcon(Device device, SIcon icon, SLabel label) throws IOException {
+public void writeIcon(Device device, SIcon icon, SLabel label, AnchorProperties anchor) throws IOException {
     if (icon != null) {
+        writeAnchorStart(device, anchor);
         %><img border="0"<%
         if (label.isImageAbsBottom()) {
             %> align="absbottom"<%
@@ -16,12 +17,14 @@ public void writeIcon(Device device, SIcon icon, SLabel label) throws IOExceptio
         %><%|height=icon.getIconHeight()%><%
         Utils.writeEvents(device, label);
         %> /><%
+        writeAnchorEnd(device, anchor);
     }
 }
 
-public void writeText(Device device, SLabel label) throws IOException {
+public void writeText(Device device, SLabel label, AnchorProperties anchor) throws IOException {
     final String text = label.getText();
     if (text != null) {
+        writeAnchorStart(device, anchor);
         final boolean noBreak = label.isNoBreak();
 
         if (noBreak) {
@@ -31,6 +34,23 @@ public void writeText(Device device, SLabel label) throws IOException {
         if (noBreak) {
             %></nobr><%
         }
+        writeAnchorEnd(device, anchor);
+    }
+}
+
+public void writeAnchorStart(Device device, AnchorProperties anchor) throws IOException {
+    if ( anchor!=null ) {
+        if ( anchor.isFormAnchor() ) {
+            %><a href="" onclick="return submitForm(event, '<%=anchor.getFormEventName()%>','<%=anchor.getFormEventValue()%>')"><%
+        } else {
+            %><a href="<%=anchor.getURL().toString()%>"><%
+        }
+    }
+}
+
+public void writeAnchorEnd(Device device, AnchorProperties anchor) throws IOException {
+   if ( anchor!=null ) {
+        %></a><%
     }
 }
 
@@ -43,15 +63,6 @@ public void writeText(Device device, SLabel label) throws IOException {
     final int verticalTextPosition   = component.getVerticalTextPosition();
     final boolean noBreak = component.isNoBreak();
     final AnchorProperties anchor = AnchorRenderStack.get();
-
-    if ( anchor!=null ) {
-        if ( anchor.isFormAnchor() ) {
-            %><a href="" onclick="return submitForm(event, '<%=anchor.getFormEventName()%>','<%=anchor.getFormEventValue()%>')"><%
-        } else {
-            %><a href="<%=anchor.getURL().toString()%>"><%
-        }
-    }
-
 
     /*
     * fallback icon in case we are clickable, but there is nothing
@@ -68,7 +79,7 @@ public void writeText(Device device, SLabel label) throws IOException {
         if (style != null) {
             %><span class="<%=style%>"><%
         }
-        writeText(device, component);
+        writeText(device, component, anchor);
         if (style != null) {
             %></span><%
         }
@@ -76,7 +87,7 @@ public void writeText(Device device, SLabel label) throws IOException {
         if (style != null) {
         %><span class="<%=style%>"><%
         }
-        writeIcon(device, icon, component);
+        writeIcon(device, icon, component, anchor);
         if (style != null) {
             %></span><%
         }
@@ -88,7 +99,7 @@ public void writeText(Device device, SLabel label) throws IOException {
         // if we are on the top, create a top row
         if (horizontalTextPosition == CENTER && verticalTextPosition == TOP) {
             %><tr><td><%
-            writeText(device, component);
+            writeText(device, component, anchor);
             %></td></tr><%
         }
 
@@ -102,7 +113,7 @@ public void writeText(Device device, SLabel label) throws IOException {
                 %> valign="bottom"<%
             }
             %>><%
-            writeText(device, component);
+            writeText(device, component, anchor);
             %></td><%
         }
 
@@ -119,7 +130,7 @@ public void writeText(Device device, SLabel label) throws IOException {
             }
         }
         %>><%
-        writeIcon(device, icon, component); %></td><%
+        writeIcon(device, icon, component, anchor); %></td><%
 
         if (horizontalTextPosition == RIGHT) {
             %><td<%
@@ -129,7 +140,7 @@ public void writeText(Device device, SLabel label) throws IOException {
                 %> valign="bottom"<%
             }
             %>><%
-            writeText(device, component);
+            writeText(device, component, anchor);
             %></td><%
         }
 
@@ -138,14 +149,10 @@ public void writeText(Device device, SLabel label) throws IOException {
         // if we are on the top, create a top row
         if (horizontalTextPosition == CENTER && verticalTextPosition==BOTTOM) {
             %><tr><td><%
-            writeText(device, component);
+            writeText(device, component, anchor);
             %></td></tr><%
         }
         %></table><%
-    }
-
-    if ( anchor!=null ) {
-        %></a><%
     }
 
 %></write>
