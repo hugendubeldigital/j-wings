@@ -459,8 +459,9 @@ public class SFrame
      * of the frame which requests the focus at last.
      **/
     public void setFocus() {
-        StringBuffer formId,
-            compId;
+        StringBuffer compId;
+        String formName;
+        
         if (focusComponent != null) {
             try {
                 this.removeScriptListener(focus);
@@ -468,15 +469,11 @@ public class SFrame
             }
 
             SForm form = (SForm) focusComponent.getParent();
-            formId = new StringBuffer(form.getEncodedLowLevelEventId());
-            /* int i = Integer.parseInt(formId.substring(1,2));
-             formId.replace(1,2, Integer.toString(i + 1));*/
+            formName = form.getName();
 
             compId = new StringBuffer(focusComponent.getEncodedLowLevelEventId());
-            /* i = Integer.parseInt(compId.substring(1,2));
-             compId.replace(1,2, Integer.toString(i + 1));*/
 
-            focus = new JavaScriptListener("onload", "document." + formId + "." + compId + ".focus()");
+            focus = new JavaScriptListener("onload", "document." + formName + "." + compId + ".focus()");
             addScriptListener(focus);
 
             focusComponent = null;
