@@ -70,23 +70,22 @@ public class WingSet
                 long totalmem = Runtime.getRuntime().totalMemory();
                 long freemem = Runtime.getRuntime().freeMemory();
 
-                int requestCount = WingServlet.getRequestCount();
-                int sessionCount = Session.getOverallSessions();
+                WingsStatistics stats = WingsStatistics.getStatistics();
 
                 result.append(System.currentTimeMillis()).append(' ')
-                    .append(System.currentTimeMillis()-birthday).append(' ')
-                    .append(sessionCount).append(' ')
-                    .append(sessionCount-oldSessionCount).append(' ')
-                    .append(Session.getActiveSessions()).append(' ')
-                    .append(Session.getAllocatedSessions()).append(' ')
-                    .append(requestCount).append(' ')
-                    .append(requestCount-oldRequestCount).append(' ')
+                    .append(stats.getUptime()).append(' ')
+                    .append(stats.getOverallSessionCount()).append(' ')
+                    .append(stats.getOverallSessionCount()-oldSessionCount).append(' ')
+                    .append(stats.getActiveSessionCount()).append(' ')
+                    .append(stats.getAllocatedSessionCount()).append(' ')
+                    .append(stats.getRequestCount()).append(' ')
+                    .append(stats.getRequestCount()-oldRequestCount).append(' ')
                     .append(totalmem).append(' ')
                     .append(freemem).append(' ')
                     .append(totalmem-freemem).append('\n');
 
-                oldRequestCount = requestCount;
-                oldSessionCount = sessionCount;
+                oldRequestCount = stats.getRequestCount();
+                oldSessionCount = stats.getOverallSessionCount();
 
                 try {
                     infoWriter.write(result.toString());
