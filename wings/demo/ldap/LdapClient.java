@@ -90,12 +90,15 @@ public class LdapClient
     public LdapClient()
         throws Exception
     {
+        
+
         frame = new SFrame("LDAP Client");
 
         stats = ResourceBundle.getBundle("ldap.AttributeResources", crtLocale);
         SContainer contentPane = frame.getContentPane();
         tabbedPane = new STabbedPane();
         contentPane.setLayout(new SFlowLayout());
+        //contentPane.setLayout(new STemplateLayout(getClass().getResource("ldapclient.html")));
 	
         settingsForm = new SForm(new SGridLayout(2));
         tabbedPane.add(settingsForm, CONNECTIONSETTINGS);
@@ -203,6 +206,8 @@ public class LdapClient
 	    });
 
         frame.show();
+        System.out.println(SessionManager.getSession().getServletRequest().getAuthType());
+        
     }
     
     
@@ -217,8 +222,11 @@ public class LdapClient
 
     private void createTreeModel(final LdapWorker c) {
 	TreeNode root = null;
-	if (c != null)
+
+        
+	if (c != null) {
 	    root = new LdapTreeNode(c.getContext(), null, c.getBaseDN());
+        }
 	else
 	    root = new DefaultMutableTreeNode(NOT_CONNECTED);
 
@@ -229,6 +237,10 @@ public class LdapClient
 	tree = new STree(treeModel);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(this);
+        //in der session einbinden
+        SessionManager.getSession().setProperty("tree",tree);
+
+        
     }
 
     public void actionPerformed(ActionEvent evt) {

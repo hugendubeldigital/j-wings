@@ -126,11 +126,14 @@ public class LdapBrowser
 	//searchFrame = new SFrame();
 	//frame.getContentPane().add(searchFrame);
 	searchFrame = new SInternalFrame();
+        searchFrame.setClosable(false);
+        searchFrame.setTitle("PGD");
 	desktop.add(searchFrame);
         
 	//detailFrame = new SFrame();
 	//frame.getContentPane().add(detailFrame);
 	detailFrame = new SInternalFrame();
+        detailFrame.setTitle("PGD");
 	desktop.add(detailFrame);
         
 	SForm searchForm = new SForm(new SFlowLayout());
@@ -148,7 +151,6 @@ public class LdapBrowser
         
         namesList.addListSelectionListener(new ListSelectionListener () { 
                 public void valueChanged(ListSelectionEvent e) {
-                    System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhh");
                 }
             }); 
         namesList.setVisibleRowCount(3);
@@ -167,7 +169,6 @@ public class LdapBrowser
        namesForm = new SForm();
         //namesForm.add(namesList);
 	table = new STable(overviewModel);
-        System.out.println("tabelle ohne grid!!!!!!!!!!!!");
         table.setShowGrid(false);
         table.setShowHorizontalLines(false);
         table.setShowVerticalLines(false);
@@ -199,7 +200,6 @@ public class LdapBrowser
         try {
             
             System.err.println(getClass().getResource("ldapbrowser.html"));
-
             detailPanel = new SPanel(new
                 STemplateLayout(getClass().getResource("ldapbrowser.html")));
             detailFrame.getContentPane().add(detailPanel, "Center");
@@ -235,8 +235,27 @@ public class LdapBrowser
                 if (attribute!=null) {
                     if (attribute.get().getClass().getName().equals("[B")) {
                         if (attribute.getID().equals("jpegPhoto")) {
-                            SImageIcon icon = new SImageIcon(new ImageIcon((byte[])attribute.get()));
-                            detailPanel.add(new SLabel(icon),detailviewTemplateLabels[i]+"_"+ value);
+                            SLabel iconL = new SLabel();
+                            try {
+                                File tmp = File.createTempFile("photo","tmp",null);
+                                FileOutputStream fos = new FileOutputStream(tmp);
+                                fos.write((byte[])attribute.get());
+                                fos.close();
+                                iconL.setIcon(new FileImageIcon(tmp));
+                            }
+                            catch(java.io.FileNotFoundException e) {
+                                e.printStackTrace();
+                                iconL.setText("photo kann nicht angezeigt werden");
+                            }
+                            catch(java.io.IOException e) {
+                                e.printStackTrace();
+                                iconL.setText("photo kann nicht angezeigt werden");
+                            }
+                           
+                            
+                                //SImageIcon icon = new SImageIcon(new ImageIcon((byte[])attribute.get()));
+                                //detailPanel.add(new SLabel(icon),detailviewTemplateLabels[i]+"_"+ value);
+                            detailPanel.add(iconL,detailviewTemplateLabels[i]+"_"+ value);
                         }
                         else if (attribute.getID().equals("userPassword")) {
                             detailPanel.add(new
@@ -255,6 +274,7 @@ public class LdapBrowser
                             SLabel(buffer.toString()),detailviewTemplateLabels[i] + "_" + value);
                     }
                 }
+                else detailPanel.add(new SLabel("-"),detailviewTemplateLabels[i] + "_" + value);
 	    }
 	    catch (NullPointerException e) {
                 e.printStackTrace();
@@ -281,7 +301,6 @@ public class LdapBrowser
             fB.append("(objectclass=PGDPerson)");
             fB.append(")");
 	    String filter = fB.toString();
-            System.out.println( filter);
             overviewModel.setFilter(filter);
             //da 
             populateList(filter);
@@ -308,8 +327,7 @@ public class LdapBrowser
             i++;
             SearchResult searchResult = (SearchResult)enum.next();
             namesVector.add(searchResult.getAttributes().get(searchAttribute).toString());
-            System.out.println(searchResult.getAttributes().get(searchAttribute));
-            
+                        
         } 
             enum.close();
             //namesList.setListData(namesVector);

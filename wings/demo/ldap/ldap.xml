@@ -94,7 +94,7 @@
     </init-param>
     <init-param>
       <param-name>overview.labels</param-name>
-      <param-value>Name,Vorname,mail,erreichbar unter</param-value>
+      <param-value>Vorname,Nachname,mail,erreichbar unter</param-value>
     </init-param>
     <init-param>
       <param-name>detailview.attributes</param-name>
@@ -125,6 +125,12 @@
       /LdapBrowser/*
     </url-pattern>
   </servlet-mapping>
+
+
+  
+
+  
+
 </web-app>
 
 

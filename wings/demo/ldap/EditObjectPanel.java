@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.util.*;
 import java.util.logging.*;
 import javax.naming.*;
+import javax.swing.tree.*;
 import javax.naming.directory.*;
 
 import org.wings.*;
@@ -141,8 +142,22 @@ public class EditObjectPanel
 
     protected void remove() {
 	try {
-	    getContext().destroySubcontext(dn);
-            editor.clearClassDefinitions();
+            STree tree = (STree)SessionManager.getSession().getProperty("tree");
+            
+            LdapTreeNode node =
+                (LdapTreeNode)tree.getLastSelectedPathComponent();
+                        
+            if (node.isLeaf()) {
+                DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
+                model.removeNodeFromParent(node);
+                //model.nodesWereInserted(parentNode, new int[]
+                //  {parentNode.getChildCount()-1});
+                
+                getContext().destroySubcontext(dn);
+                editor.clearClassDefinitions();
+            }
+            else
+                System.out.println("bitte child auswaehlen");
 	}
 	catch (NamingException e) {
 	    logger.log(Level.WARNING, "remove failed", e);

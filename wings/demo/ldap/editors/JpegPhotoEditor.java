@@ -1,3 +1,4 @@
+
 package ldap.editors;
 
 import java.util.*;
@@ -17,6 +18,8 @@ public class JpegPhotoEditor
   BasicAttribute oldAttribute;
   
   public SComponent createComponent(Attributes attributes) {
+    this.oldAttribute = null;
+
     
       SPanel photoPanel = new SPanel();
       SFileChooser chooser = new SFileChooser();
@@ -29,21 +32,39 @@ public class JpegPhotoEditor
     public void setValue(SComponent component, Attribute attribute)
 	throws NamingException
     {
+      this.oldAttribute = null;
       this.oldAttribute = (BasicAttribute)attribute;
 
-      SPanel panel = (SPanel)component;
-      SLabel photo = (SLabel)panel.getComponent(1);
+      SPanel panel = (SPanel)
+      SLabel photo = (SLabel)panel.getComponent(
       if (attribute == null) {
         photo.setText("kein Photo vorhanden");
         return;
       }
-      SImageIcon icon = new SImageIcon(new
-        ImageIcon((byte[])attribute.get()));
-      photo.setIcon(icon);
+      try {
+        File tmp = File.createTempFile("photo","tmp",null);
+        FileOutputStream fos = new FileOutputStream(tmp);
+        fos.write((byte[])attribute.get());
+        fos.close();
+        
+       
+        photo.setIcon(new FileImageIcon(tmp));
+        return;
+      }
+      catch(java.io.FileNotFoundException e) {
+        e.printStackTrace();
+      }
+      catch(java.io.IOException ){
+        e.printStackTrace();
+      }
+      photo.setText("photo kann nicht angezeigt werden");
+      
     }
+      
+      
   
   public Attribute getValue(SComponent component, String id) {
-        
+    
     SPanel panel = (SPanel)component;
     SLabel photo = (SLabel)panel.getComponent(1);
     SFileChooser chooser = (SFileChooser)panel.getComponent(0);
@@ -57,15 +78,18 @@ public class JpegPhotoEditor
         
         fis.read(b);
         fis.close();
-        photo.setIcon(new SImageIcon(new ImageIcon(b)));
+        //photo.setIcon(new SImageIcon(new ImageIcon(b)));
+        photo.setIcon(new FileImageIcon(chooser.getSelectedFile()));
         attribute.add(b);
         return attribute;
       }
+
     }
     catch(java.io.IOException e ) {
       e.printStackTrace();
     }
-    System.out.println("old" + oldAttribute);
+  
     return oldAttribute;
   }
 }
+

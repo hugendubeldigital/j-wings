@@ -14,7 +14,7 @@ public class SingleLineTextEditor
 {
   private final static Logger logger = Logger.getLogger("ldap.editors");
   
-  private final String DELIM = ",";
+  private final String DELIM = "$";
   
   public SComponent createComponent(Attributes attributes) {
     STextField c = new STextField();
