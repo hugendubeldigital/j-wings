@@ -70,6 +70,13 @@ public abstract class WingServlet
 
 
     /**
+     * preInit, called by init before doing something
+     */
+    protected void preInit(ServletConfig config) throws ServletException {
+    }
+
+
+    /**
      * TODO: documentation
      *
      * @param config
@@ -121,7 +128,8 @@ public abstract class WingServlet
      * @param config
      * @throws ServletException
      */
-    public void init(ServletConfig config) throws ServletException {
+    public final void init(ServletConfig config) throws ServletException {
+        preInit(config);
         super.init(config);
         lookupName = "SessionServlet:" + getClass().getName();
 
@@ -141,6 +149,13 @@ public abstract class WingServlet
             uploaddir = "/tmp";
 
         servletConfig = config;
+        postInit(config);
+    }
+
+    /**
+     * postInit, called by init after it's finished
+     */
+    protected void postInit(ServletConfig config) throws ServletException {
     }
 
 
@@ -149,7 +164,7 @@ public abstract class WingServlet
      *
      * @return
      */
-    public ExternalizeManager getExternalizeManager() {
+    public final ExternalizeManager getExternalizeManager() {
         return extManager;
     }
 
@@ -164,6 +179,7 @@ public abstract class WingServlet
      */
     public abstract SessionServlet generateSessionServlet(HttpServletRequest req)
         throws Exception;
+
 
     /**
      * TODO: documentation
@@ -281,6 +297,7 @@ public abstract class WingServlet
 
         sessionServlet.doGet(req, response);
     }
+
 
     private static final void debug(String mesg) {
         if ( DEBUG ) {

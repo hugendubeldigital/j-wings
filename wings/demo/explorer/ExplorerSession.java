@@ -42,10 +42,8 @@ public class ExplorerSession
         super(session);
     }
 
-    public void init(ServletConfig config) throws ServletException
+    public void postInit(ServletConfig config) throws ServletException
     {
-        super.init( config );
-
         String dir = config.getInitParameter("ExploreBaseDir");
         if (dir == null)
             mainPanel = new ExplorerPanel(new String("."));
@@ -57,7 +55,6 @@ public class ExplorerSession
 
     void initGUI() {
         frame.getContentPane().add(mainPanel, SBorderLayout.CENTER);
-
     }
 
     /**

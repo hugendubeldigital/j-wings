@@ -120,7 +120,7 @@ public abstract class SessionServlet
             parent = p;
     }
 
-    public Session getSession() { return session; }
+    public final Session getSession() { return session; }
 
     /**
      * TODO: documentation
@@ -366,20 +366,35 @@ public abstract class SessionServlet
      *
      * @return the frame for this session
      */
-    public SFrame getFrame() {
+    public final SFrame getFrame() {
         return frame;
     }
 
 
     /**
-     * init static variables and DB connetion
+     * preInit, called by init before doing something
      */
-    public void init(ServletConfig config) throws ServletException {
+    protected void preInit(ServletConfig config) throws ServletException {
+    }
+
+    /**
+     * init
+     */
+    public final void init(ServletConfig config) throws ServletException {
+        preInit(config);
         session.init(config);
         SessionManager.setSession(session);
         initErrorTemplate(config);
         frame.setDispatcher(getDispatcher());
+        postInit(config);
     }
+
+    /**
+     * postInit, called by init after it's finished
+     */
+    protected void postInit(ServletConfig config) throws ServletException {
+    }
+
 
     /**
      * TODO: documentation
@@ -424,6 +439,7 @@ public abstract class SessionServlet
         // sollte man den obigen Block nicht durch folgende Zeile ersetzen?
         //throw new RuntimeException("this method must never be called!");
     }
+
 
     /**
      * Verarbeitet Informationen vom Browser:
@@ -523,6 +539,19 @@ public abstract class SessionServlet
         }
     }
 
+    protected void prepareRequest(HttpServletRequest req,
+                                  HttpServletResponse response) {
+    }
+
+    protected void processRequest(HttpServletRequest req,
+                                  HttpServletResponse response)
+        throws ServletException, IOException {
+    }
+
+    protected void finalizeRequest(HttpServletRequest req,
+                                   HttpServletResponse response) {
+    }
+
     // Exception Handling
 
     SFrame errorFrame;
@@ -561,25 +590,6 @@ public abstract class SessionServlet
         }
     }
 
-    protected void prepareRequest(HttpServletRequest req,
-                                  HttpServletResponse response) {
-    }
-
-    protected void finalizeRequest(HttpServletRequest req,
-                                   HttpServletResponse response) {
-    }
-
-    protected void processRequest(HttpServletRequest req,
-                                  HttpServletResponse response)
-        throws ServletException, IOException {
-    }
-
-    private static final void debug(String mesg) {
-        if ( DEBUG ) {
-            System.out.println("[" + SessionServlet.class.getName() + "] " + mesg);
-        }
-    }
-
     /** --- HttpSessionBindingListener --- **/
 
     /**
@@ -605,6 +615,13 @@ public abstract class SessionServlet
      */
     public void destroy() {
         System.gc();
+    }
+
+
+    private static final void debug(String mesg) {
+        if ( DEBUG ) {
+            System.out.println("[" + SessionServlet.class.getName() + "] " + mesg);
+        }
     }
 }
 

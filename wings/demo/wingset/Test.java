@@ -43,11 +43,8 @@ public class Test
         System.err.println("I`m starting now");
     }
 
-    /**
-     * init static variables and DB connetion
-     */
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
+
+    public void postInit(ServletConfig config) {
         initGUI();
     }
 

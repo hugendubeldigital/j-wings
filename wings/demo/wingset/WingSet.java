@@ -31,10 +31,7 @@ import org.wings.session.*;
 public class WingSet
     extends WingServlet
 {
-    public void init(ServletConfig config)
-        throws ServletException
-    {
-        super.init(config);
+    public void postInit(ServletConfig config) {
         getExternalizeManager().setExternalizer(new ServletExternalizer(config));
     }
 
