@@ -93,6 +93,7 @@ public class WingSetSession
         tab.add(new Faces(), "Faces");
         tab.add(new FileChooserExample(), "FileChooser");
         tab.add(new ScrollPaneExample(), "ScrollPane");
+        tab.add(new PageScrollerExample(), "PageScroller");
         //tab.add(new LayoutExample(), "Simple Layout");
         tab.addTab("Template Layout", 
                    new ResourceImageIcon(WingSetSession.class.getClassLoader(),
