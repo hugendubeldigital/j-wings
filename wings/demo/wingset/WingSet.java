@@ -14,9 +14,11 @@
 
 package wingset;
 
+import java.awt.Color;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Properties;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -66,9 +68,11 @@ public class WingSet
             except.printStackTrace();
         }
         
+        //SForm form = new SForm();
         STabbedPane tab = new STabbedPane();
-        tab.setMaxTabsPerLine(8);
-        tab.setBackgroundImage(brushedMetal);
+        // tab.setMaxTabsPerLine(9);
+        tab.setTabPlacement(STabbedPane.TOP);
+		tab.setBackgroundImage(brushedMetal);
 
         tab.add(new WingsImage(), "wingS!");
         tab.add(new LabelExample(), "Label");
@@ -87,12 +91,14 @@ public class WingSet
         tab.add(new FileChooserExample(), "FileChooser");
         tab.add(new ScrollPaneExample(), "ScrollPane");
         tab.add(new PageScrollerExample(), "PageScroller");
+        tab.add(new TabbedPaneExample(), "Tabbed Pane");
         //tab.add(new LayoutExample(), "Simple Layout");
         tab.addTab("Template Layout", 
                    new ResourceImageIcon(cl, "wingset/icons/cowSmall.gif"), 
                    new TemplateExample(), "Template Layout Manager");
         //tab.add(new DateChooserExample(), "DateChooser");
-
+        //form.add(tab);
+        // contentPane.add(form, "WingSetApp");
         contentPane.add(tab, "WingSetApp");
 
         contentPane.add(timeMeasure, "TimeLabel");
