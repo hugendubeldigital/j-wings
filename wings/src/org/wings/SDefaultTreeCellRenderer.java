@@ -33,7 +33,9 @@ import org.wings.style.*;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SDefaultTreeCellRenderer extends SContainer implements STreeCellRenderer
+public class SDefaultTreeCellRenderer
+    extends SContainer
+    implements STreeCellRenderer
 {
     /** Color to use for the foreground for selected nodes. */
     protected Color textSelectionColor = null;

@@ -192,11 +192,7 @@ public class STable
         }
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param p
-     */
+
     public void setParent(SContainer p) {
         super.setParent(p);
 
@@ -207,7 +203,6 @@ public class STable
             for ( int i=0; i<selects.length; i++ )
                 selects[i].setParent(p);
     }
-
 
 
     public void getPerformed(String action, String value) {
@@ -231,7 +226,7 @@ public class STable
             return super.prepareRenderer(r, row, col);
     }
 
-    /*
+    /**
      * Set a default editor to be used if no editor has been set in
      * a TableColumn. If no editing is required in a table, or a
      * particular column in a table, use the isCellEditable()

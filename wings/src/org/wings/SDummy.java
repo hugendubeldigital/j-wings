@@ -42,7 +42,8 @@ public final class SDummy
      * TODO: documentation
      *
      */
-    public SDummy() {}
+    public SDummy() {
+    }
 
     /**
      * TODO: documentation
@@ -50,9 +51,8 @@ public final class SDummy
      * @param d
      * @throws IOException
      */
-    public void write(Device d)
-        throws IOException
-    {}
+    public void write(Device d) {
+    }
 }
 
 /*

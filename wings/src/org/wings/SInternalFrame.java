@@ -23,7 +23,8 @@ import org.wings.plaf.*;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class SInternalFrame extends SContainer
+public class SInternalFrame
+    extends SContainer
 {
     /**
      * @see #getCGClassID

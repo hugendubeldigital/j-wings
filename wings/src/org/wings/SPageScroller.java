@@ -34,7 +34,8 @@ import javax.swing.event.ChangeEvent;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SPageScroller extends AbstractAdjustable
+public class SPageScroller
+    extends AbstractAdjustable
 {
     /**
      * Default maximum amount of page buttons.

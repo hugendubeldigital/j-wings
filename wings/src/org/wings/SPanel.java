@@ -34,7 +34,8 @@ public class SPanel
      * TODO: documentation
      *
      */
-    public SPanel() {}
+    public SPanel() {
+    }
 
     /**
      * TODO: documentation

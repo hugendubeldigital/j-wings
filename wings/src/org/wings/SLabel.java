@@ -28,7 +28,9 @@ import org.wings.externalizer.ExternalizeManager;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SLabel extends SComponent implements SConstants
+public class SLabel
+    extends SComponent
+    implements SConstants
 {
     private static final String cgClassID = "LabelCG";
 
