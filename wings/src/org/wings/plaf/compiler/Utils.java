@@ -63,9 +63,13 @@ public final class Utils implements SConstants {
             // write special characters as code ..
             if (c < 32 || c > 127) {
                 d.print(chars, last, (pos-last));
-                d.print("&#");
-                d.print((int) c);
-                d.print(";");
+                if ( c=='\n' ) {
+                    d.print("<br>");
+                } else {
+                    d.print("&#");
+                    d.print((int) c);
+                    d.print(";");
+                } // end of if ()
                 last = pos+1;
             }
 	    else switch (c) {
@@ -180,7 +184,7 @@ public final class Utils implements SConstants {
      * Prints an optional, renderable attribute.
      */
     public static void optAttribute(Device d, String attr, Renderable r) 
-    throws IOException {
+        throws IOException {
         if (r != null) {
             d.write( SPACE );
             d.print( attr );
