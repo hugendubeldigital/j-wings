@@ -302,8 +302,7 @@ public class SBaseTable
     }
 
     /**
-     * TODO: documentation
-     *
+     * Set the table model used to handle the data
      * @param tm
      */
     public void setModel(TableModel tm) {

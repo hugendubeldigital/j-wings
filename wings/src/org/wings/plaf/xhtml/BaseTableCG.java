@@ -182,6 +182,7 @@ public class BaseTableCG
         throws IOException
     {
         SComponent comp = baseTable.prepareRenderer(baseTable.getCellRenderer(row, col), row, col);
+        org.wings.style.Style style = baseTable.getStyle();
 
         d.append("<td>");
         rendererPane.writeComponent(d, comp, baseTable);

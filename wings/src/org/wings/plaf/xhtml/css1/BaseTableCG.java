@@ -102,6 +102,41 @@ public final class BaseTableCG
         d.append(">\n");
     }
 
+    /**
+      * Write a table cell header with stylesheet-class
+      */
+    protected void writeHeaderCell(Device d, SBaseTable baseTable,
+                                   SCellRendererPane rendererPane, int c)
+        throws IOException
+    {
+        SComponent comp = baseTable.prepareHeaderRenderer(c);
+        org.wings.style.Style style = baseTable.getStyle();
+
+        d.append("<th");
+        Utils.writeStyleAttribute(d, style, "header");
+        d.append(">");
+        rendererPane.writeComponent(d, comp, baseTable);
+        d.append("</th>");
+    }
+
+
+    /**
+      * Write a table cell with stylesheet-class
+      */
+    protected void writeCell(Device d, SBaseTable baseTable,
+                             SCellRendererPane rendererPane, int row, int col)
+        throws IOException
+    {
+        SComponent comp = baseTable.prepareRenderer(baseTable.getCellRenderer(row, col), row, col);
+        org.wings.style.Style style = baseTable.getStyle();
+
+        d.append("<td");
+        Utils.writeStyleAttribute(d, style, "cell");
+        d.append(">");
+        rendererPane.writeComponent(d, comp, baseTable);
+        d.append("</td>");
+    }
+
     public void writeBody(Device d, SBaseTable baseTable)
         throws IOException
     {

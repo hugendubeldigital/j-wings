@@ -55,11 +55,17 @@ public class ScrollPaneCG
         verticalScroller.setBlockIncrement( scrollPane.getVerticalExtent() - 1 );
         
         int policy = 0;
-        
+        int extent = 0;
         Dimension dim = scrollable.getScrollableViewportSize();
-        if (dim.width != horizontalScroller.getMaximum()) {
+        
+        System.out.println(":::SP.extent=" + scrollPane.getHorizontalExtent() + ", HSB.extents="+horizontalScroller.getVisibleAmount());
+        
+        // HORIZONTAL ScrollBar
+        extent = scrollPane.getHorizontalExtent();
+        if (dim.width != horizontalScroller.getMaximum() ||
+            extent != horizontalScroller.getVisibleAmount())
+        {
             int maximum = dim.width;
-            int extent = scrollPane.getHorizontalExtent();
             if (maximum < extent)
                 extent = maximum;
             int value = horizontalScroller.getValue();
@@ -68,14 +74,17 @@ public class ScrollPaneCG
                 value = maxValue;
             
             horizontalScroller.setValues(value, extent, 0, maximum);
-            policy = scrollPane.getHorizontalScrollBarPolicy();
-            horizontalScroller.setVisible((maximum > extent || 
-                                           policy == scrollPane.HORIZONTAL_SCROLLBAR_ALWAYS) &&
-                                          policy != scrollPane.HORIZONTAL_SCROLLBAR_NEVER );
         }
+        // decide, whether to display or not
+        policy = scrollPane.getHorizontalScrollBarPolicy();
+        horizontalScroller.setVisible((dim.width > extent ||
+                                       policy == scrollPane.HORIZONTAL_SCROLLBAR_ALWAYS) &&
+                                       policy != scrollPane.HORIZONTAL_SCROLLBAR_NEVER );
+        
+        // VERTICAL ScrollBar
+        extent = scrollPane.getVerticalExtent();
         if (dim.height != verticalScroller.getMaximum()) {
             int maximum = dim.height;
-            int extent = scrollPane.getVerticalExtent();
             if (maximum < extent)
                 extent = maximum;
             int value = verticalScroller.getValue();
@@ -84,14 +93,12 @@ public class ScrollPaneCG
                 value = maxValue;
             
             verticalScroller.setValues(value, extent, 0, maximum);
-            policy = scrollPane.getVerticalScrollBarPolicy();
-            verticalScroller.setVisible(
-                                        ( 
-                                         maximum > extent || 
-                                         policy == scrollPane.VERTICAL_SCROLLBAR_ALWAYS
-                                         ) &&
-                                        policy != scrollPane.VERTICAL_SCROLLBAR_NEVER );
         }
+        // decide, whether to display or not
+        policy = scrollPane.getVerticalScrollBarPolicy();
+        verticalScroller.setVisible((dim.height > extent ||
+                                     policy == scrollPane.VERTICAL_SCROLLBAR_ALWAYS) &&
+                                     policy != scrollPane.VERTICAL_SCROLLBAR_NEVER );
     }
 
     protected void writePrefix(Device d, SScrollPane scrollPane)

@@ -144,7 +144,7 @@ public final class Utils
     {
         if (
         	component.getStyle() == null && 
-        	org.wings.plaf.xhtml.Utils.hasSpanAttributes( component )
+        	!org.wings.plaf.xhtml.Utils.hasSpanAttributes( component )
            )
             return;
 
