@@ -203,6 +203,7 @@ private int writeSubTree(STree tree, Device device, Object[] path, int depth,
   int maxDepth = getMaxDepth(component);
 
   %><table border="0" cellpadding="0" cellspacing="0"<%
+  %><%|id=component.getComponentId()%><%
   final SDimension dim = component.getPreferredSize();
   if (dim != null) {
       %><%|width=dim.width%><%
@@ -219,7 +220,7 @@ private int writeSubTree(STree tree, Device device, Object[] path, int depth,
 
   // expandable last row to fit preferred table size on IE
   %>
-<tr><td<%
+<tr><td width="100%"<%
   %><%|colspan=maxDepth+2%><%
   %>>&nbsp;</td></tr></table><%
 

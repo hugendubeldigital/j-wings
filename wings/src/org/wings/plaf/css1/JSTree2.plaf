@@ -93,7 +93,7 @@ private void writeScriptNode(STree tree, Device device,
                              int depth, ScriptResult result, 
                              StringBufferDevice deviceBuffer) throws IOException {
 
-    String nodeId = treeId + Integer.toString(result.row);
+    final String nodeId = treeId + Integer.toString(result.row);
     final TreeModel model = tree.getModel();
     final Object node = path[depth];
     final String isExpanded = tree.isExpanded(new MyTreePath(path,depth+1)) ? "true" : "false";
@@ -105,7 +105,7 @@ private void writeScriptNode(STree tree, Device device,
                   result.row);
 
 
-%>TREE_NODES["<%=nodeId%>"] = new TreeNode("<%=nodeId%>", <%=isExpanded%>,"<%=tree.getSelectionParameter(result.row, true)%>","<%=tree.getExpansionParameter(result.row, true)%>", "<%#deviceBuffer.toString().replace('"', '\'')%>");
+%>TREE_NODES["<%=nodeId%>"]=new TreeNode("<%=nodeId%>",<%=isExpanded%>,"<%=tree.getSelectionParameter(result.row, true)%>","<%=tree.getExpansionParameter(result.row, true)%>","<%#deviceBuffer.toString().replace('"','\'')%>");
 <%
 
     result.row++;
@@ -129,7 +129,7 @@ private void writeScriptNode(STree tree, Device device,
   int maxDepth = getMaxDepth(tree);
 
   %><table border="0" cellpadding="0" cellspacing="0"<%
-  %><%=tree.getComponentId()%><%
+  %><%|id=tree.getComponentId()%><%
   final SDimension dim = tree.getPreferredSize();
   if (dim != null) {
       %><%|width=dim.width%><%
@@ -143,8 +143,7 @@ private void writeScriptNode(STree tree, Device device,
 
   StringBufferDevice deviceBuffer = new StringBufferDevice();
 
-  %>
-<script language="JavaScript" type="text/javascript">
+  %><script language="JavaScript" type="text/javascript">
   <%
       path[0] = tree.getModel().getRoot();
       ScriptResult result = new ScriptResult();
@@ -159,11 +158,9 @@ TREE_NODES["<%=result.nodeId%>"].writeSubTree();
 TREE_NODES["<%=result.nodeId%>"].expand();
 
 
-</script>
-  <%
+</script><%
   // expandable last row to fit preferred table size on IE
-  %>
-<tr><td<%
+  %><tr><td width="100%"<%
   %><%|colspan=maxDepth+2%><%
   %>>&nbsp;</td></tr></table><%
 
