@@ -309,9 +309,6 @@ public class SForm
         if ( getAction()!=null )
             addr.add(getAction().toString());
 
-        addr.add(getNamePrefix() + "=" +
-                 getUnifiedIdString() + SConstants.UID_DIVIDER);
-
         return addr;
     }
 
