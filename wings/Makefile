@@ -34,6 +34,9 @@ demo: dummy
 	cp wings.jar demo/tomcat/WEB-INF/lib ;\
 	cd demo ;\
 	cp -P `find wingset explorer ldap -name "*.class" -o -name "*.gif" -o -name "*.css" -o -name "*.thtml"` ../demo/tomcat/WEB-INF/classes ;\
+	cd jsp ;\
+	cp -P `find . -name "*.jsp"` ../../demo/tomcat ;\
+	cd .. ;\
 	cd .. ;\
 	cp demo/demo.xml demo/tomcat/WEB-INF/web.xml
 
