@@ -223,6 +223,7 @@ public class SImage
         if ( width>0 )
             s.append(width);
         else
+        if ( image != null )
             s.append(image.getIconWidth());
 
         s.append("\"");
@@ -230,6 +231,7 @@ public class SImage
         if ( height>0 )
             s.append(height);
         else
+        if ( image != null )
             s.append(image.getIconHeight());
 
         s.append("\"");
