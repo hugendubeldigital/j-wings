@@ -27,28 +27,41 @@ import org.wings.*;
 public class RadioButtonExample
     extends WingSetPane
 {
-    SForm form = new SForm();
-    SPanel panel= new SPanel();
-    javax.swing.Icon icon = null;
+    static final ClassLoader cl = WingSet.class.getClassLoader();
+    static final SIcon sel = 
+        new ResourceImageIcon(cl, "wingset/icons/RadioButtonSelectedIcon.gif");
+    static final SIcon nsel = 
+        new ResourceImageIcon(cl, "wingset/icons/RadioButtonIcon.gif");
+    static final SIcon pressed = 
+        new ResourceImageIcon(cl, "wingset/icons/RadioButtonPressedIcon.gif");
+    static final SIcon dissel = 
+        new ResourceImageIcon(cl, "wingset/icons/RadioButtonDisabledSelectedIcon.gif");
+    static final SIcon disnsel = 
+        new ResourceImageIcon(cl, "wingset/icons/RadioButtonDisabledIcon.gif");
+    static final SIcon rollsel = 
+        new ResourceImageIcon(cl, "wingset/icons/RadioButtonRolloverSelectedIcon.gif");
+    static final SIcon rollnsel = 
+        new ResourceImageIcon(cl, "wingset/icons/RadioButtonRolloverIcon.gif");
+
 
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));
-        p.add(new SLabel("<h4>RadioButtons outside forms</h4>"));
-        p.add(new SLabel("<h4>Image RadioButtons outside forms</h4>"));
+        p.add(htmlLabel("<h4>RadioButtons outside forms</h4>"));
+        p.add(htmlLabel("<h4>Image RadioButtons outside forms</h4>"));
         p.add(createRadioButtonExample());
         p.add(createImageRadioButtonExample());
 
         SForm form = new SForm();
-        form.add(new SLabel("<h4>RadioButtons in a form</h4>"));
+        form.add(htmlLabel("<h4>RadioButtons in a form</h4>"));
         form.add(createRadioButtonExample());
-        form.add(new SLabel("<br />"));
+        form.add(htmlLabel("<br />"));
         form.add(new SButton("submit"));
         p.add(form);
 
         form = new SForm();
-        form.add(new SLabel("<h4>Image RadioButtons in a form</h4>"));
+        form.add(htmlLabel("<h4>Image RadioButtons in a form</h4>"));
         form.add(createImageRadioButtonExample());
-        form.add(new SLabel("<br />"));
+        form.add(htmlLabel("<br />"));
         form.add(new SButton("submit"));
         p.add(form);
         return p;
@@ -68,13 +81,17 @@ public class RadioButtonExample
         return text;
     }
 
+    /**
+     * creates a label, that contains HTML formatting information.
+     */
+    private SLabel htmlLabel(String text) {
+        SLabel label = new SLabel(text);
+        label.setEscapeSpecialChars(false);
+        return label;
+    }
+
     SContainer createImageRadioButtonExample() {
         SButtonGroup group = new SButtonGroup();
-
-        Icon sel = new ResourceImageIcon(SRadioButton.class, "icons/radioSelected.gif");
-        Icon nsel = new ResourceImageIcon(SRadioButton.class, "icons/radio.gif");
-        Icon dissel = new ResourceImageIcon(SRadioButton.class, "icons/radioDisabledSelected.gif");
-        Icon disnsel = new ResourceImageIcon(SRadioButton.class, "icons/radioDisabled.gif");
 
         SRadioButton[] boxes = new SRadioButton[9];
         boxes[0] = new SRadioButton("testTL");
@@ -90,6 +107,13 @@ public class RadioButtonExample
         for ( int i=0; i<boxes.length; i++ ) {
             group.add(boxes[i]);
             boxes[i].setToolTipText("RadioButton " + i);
+            boxes[i].setIcon(nsel);
+            boxes[i].setSelectedIcon(sel);
+            boxes[i].setDisabledIcon(disnsel);
+            boxes[i].setDisabledSelectedIcon(dissel);
+            boxes[i].setRolloverIcon(rollnsel);
+            boxes[i].setRolloverSelectedIcon(rollsel);
+            boxes[i].setPressedIcon(pressed);
         }
 
         boxes[0].setVerticalTextPosition(SConstants.TOP);
@@ -142,5 +166,6 @@ public class RadioButtonExample
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

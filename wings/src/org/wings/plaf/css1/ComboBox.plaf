@@ -1,0 +1,84 @@
+<template name="ComboBoxCG" for="org.wings.SComboBox">
+
+<comp-property name="renderer" type="org.wings.SDefaultListCellRenderer">
+   new org.wings.SDefaultListCellRenderer()
+</comp-property>
+
+    protected void writeFormComboBox(Device device, SComboBox comboBox)
+        throws IOException
+    {
+        %><select size="1"<%
+        %><%|class=Utils.style(comboBox)%><%
+        %><%|name=comboBox.getNamePrefix()%><%
+
+	// writeEvents();
+        %>><%
+
+        javax.swing.ComboBoxModel model = comboBox.getModel();
+        int size = model.getSize();
+
+        if (model != null) {
+            SListCellRenderer cellRenderer = comboBox.getRenderer();
+
+            for (int i=0; i < size; i++) {
+                %><option<%
+                %><%|value=comboBox.getSelectionParameter(i)%><%
+
+                if (comboBox.getSelectedIndex() == i) {
+                    %> selected="selected"><%
+                }
+                else {
+                    %>><%
+                }
+
+                SComponent renderer = cellRenderer.getListCellRendererComponent(comboBox,
+                                                                                model.getElementAt(i),
+                                                                                false, i);
+                // Hack: remove all tags, because in form selections, looks ugly.
+                org.wings.io.StringBufferDevice string = getStringBufferDevice();
+                renderer.write(string);
+                char[] chars = string.toString().toCharArray();
+                int pos = 0;
+                for (int c=0; c < chars.length; c++) {
+                    switch (chars[c]) {
+                    case '<':
+                        device.print(chars, pos, c - pos);
+                        break;
+                    case '>':
+                        pos = c+1;
+                    }
+                }
+                device.print(chars, pos, chars.length - pos);
+
+                %></option><%
+            }
+        }
+
+        %></select><%
+
+        // util method
+        %><input type="hidden"<%
+        %><%|name=comboBox.getNamePrefix()%><%
+        %><%|value=-1%><%
+        %>/><%
+    }
+
+    private org.wings.io.StringBufferDevice stringBufferDevice = null;
+    protected org.wings.io.StringBufferDevice getStringBufferDevice() {
+        if (stringBufferDevice == null)
+            stringBufferDevice = new org.wings.io.StringBufferDevice();
+        stringBufferDevice.reset();
+        return stringBufferDevice;
+    }
+
+<write>
+<%
+    SComboBox comboBox = (SComboBox)component;
+    // TODO: implement anchor combobox
+    //if (comboBox.getShowAsFormComponent())
+        writeFormComboBox(device, comboBox);
+    //else
+    //    writeAnchorComboBox(device, comboBox);
+%>
+</write>
+</template>

@@ -17,7 +17,7 @@ package org.wings.plaf.xhtml;
 import java.io.IOException;
 import java.util.*;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.util.CGUtil;
@@ -44,10 +44,10 @@ public class FlowLayoutCG
         if (components.size() > 0) {
             switch (alignment) {
             case SConstants.RIGHT_ALIGN:
-                d.append("\n<div align=\"right\">");
+                d.print("\n<div align=\"right\">");
                 break;
             case SConstants.CENTER_ALIGN:
-                d.append("\n<div align=\"center\">");
+                d.print("\n<div align=\"center\">");
                 break;
             }
 
@@ -55,34 +55,32 @@ public class FlowLayoutCG
             for (int i=0;  i < components.size(); i++) {
                 SComponent comp = (SComponent)components.get(i);
                 if (comp.isVisible()) {
-		    if (count == 0)
-             {
-                d.append("<table cellpadding=\"0\" cellspacing=\"0\"");
-                CGUtil.writeSize( d, container );
-                if ( Utils.hasSpanAttributes( container ) )
-                 {
-                    d.append(" style=\"");
-                    Utils.writeSpanAttributes( d, (SComponent) container );
-                    d.append("\" ");
-                 }
-
-                d.append("><tr><td>");
-			 }
+		    if (count == 0) {
+                        d.print("<table cellpadding=\"0\" cellspacing=\"0\"");
+                        CGUtil.writeSize( d, container );
+                        if ( Utils.hasSpanAttributes( container ) ) {
+                            d.print(" style=\"");
+                            Utils.writeSpanAttributes( d, (SComponent) container );
+                            d.print("\" ");
+                        }
+                        
+                        d.print("><tr><td>");
+                    }
 		    else if (orientation == SConstants.VERTICAL)
-                        d.append("</td></tr><tr><td>\n");
+                        d.print("</td></tr>\n<tr><td>");
 		    else
-                        d.append("</td><td>\n");
+                        d.print("</td><td>");
                     ((SComponent)components.get(i)).write(d);
                     count++;
                 }
             }
 	    if (count > 0)
-		d.append("</td></tr></table>\n");
+		d.print("</td></tr></table>\n");
 
             switch (alignment) {
             case SConstants.RIGHT_ALIGN:
             case SConstants.CENTER_ALIGN:
-                d.append("\n</div>");
+                d.print("\n</div>");
                 break;
             }
 
@@ -94,5 +92,6 @@ public class FlowLayoutCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

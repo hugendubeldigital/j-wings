@@ -32,12 +32,16 @@ public class ScrollPaneExample
     public SComponent createExample() {
         SPanel p = new SPanel();
 
-        p.add(new SLabel("<h4>Table in a ScrollPane</h4>"));
+        SLabel label = new SLabel("<h4>Table in a ScrollPane</h4>");
+        label.setEscapeSpecialChars(false);
+        p.add(label);
 
         // table.setShowGrid(true);
-        SBaseTable table = new SBaseTable(new MyTableModel());
+        STable table = new STable(new MyTableModel());
         table.setDefaultRenderer(new TableExample.MyCellRenderer());
         SScrollPane scroller = new SScrollPane(table);
+        scroller.getHorizontalScrollBar().setBlockIncrement(3);
+        scroller.getVerticalScrollBar().setBlockIncrement(3);
         p.add(scroller);
         return p;
     }
@@ -60,12 +64,12 @@ public class ScrollPaneExample
     };
 
 
-    class MyTableModel extends AbstractTableModel implements TableSorter
+    class MyTableModel extends AbstractTableModel // implements TableSorter
     {
         final int COLS = 15;
         final int ROWS = 15;
 
-        Icon image = new ResourceImageIcon(SLabel.class, "icons/JavaCup.gif");
+        SIcon image = new ResourceImageIcon("org/wings/icons/JavaCup.gif");
 
         Object[][] data = new Object[ROWS][COLS];
 
@@ -131,13 +135,7 @@ public class ScrollPaneExample
                 asc[col] = !ascending;
         }
 
-        public boolean isCellEditable(int row, int col) {
-            if (getColumnClass(col).isAssignableFrom(String.class) ||
-                getColumnClass(col).isAssignableFrom(Boolean.class))
-                return true;
-            else
-                return false;
-        }
+        public boolean isCellEditable(int row, int col) { return false; }
     }
 }
 
@@ -145,5 +143,6 @@ public class ScrollPaneExample
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

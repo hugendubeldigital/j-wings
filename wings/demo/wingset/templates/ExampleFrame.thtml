@@ -6,7 +6,7 @@ This <a href="http://www.wings.to.com/">wingS</a>
 example demonstrates some wingS properties, similar to the 
 Java SwingSet example.
 
-<hr noshade=1>
+<hr noshade="noshade" />
 
 <table align=center width="90%">
 <tr><td>
@@ -14,16 +14,10 @@ Java SwingSet example.
 </td></tr>
 </table>
 
-<hr noshade=1>
-<form>
-<table align=center bgcolor="white" width="50%">
+<hr noshade="noshade" />
+<table align="center" bgcolor="white" width="50%">
 <tr>
    <td><object name="TimeLabel"></object></td>
-   <td colspan=2>control the style of
-                <a href="http://www.wings.to.com/">wingS</a></td></tr>
-<tr><td>&nbsp;</td>
-    <td><input type=radio name="style" value="old"></td>
-    <td><input type=radio name="style" value="css1"></td></tr>
+</tr>
 </table>
-</form>
-Generated with <a href="http://www.wings.to.com/">wingS</a>
+Generated with <a href="http://wingS.mercatis.de/">wingS</a>

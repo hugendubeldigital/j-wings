@@ -18,78 +18,141 @@ import java.util.ArrayList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-// import javax.swing.event.EventListenerList;
+import javax.swing.event.EventListenerList;
 
 import org.wings.*;
-import org.wings.event.*;
 import org.wings.plaf.*;
+import org.wings.session.*;
 
 /**
- * Show an dialog.
- *
+ * As opposed to Swing, wingS dialogs are non modal. However, the dismission of
+ * the dialog is propagated by means of ActionEvents. The action command of the
+ * event tells, what kind of user activity caused the dialog to dismiss.
+ * 
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
- * @author <a href="mailto:andre@lison.de">Andre Lison</a>
  * @version $Revision$
  */
-public class SDialog
-    extends SWindow
-    implements SGetListener
+public class SDialog extends SForm
 {
     /**
      * @see #getCGClassID
      */
     private static final String cgClassID = "DialogCG";
 
-    /*
-     * Alle die es interessiert, wann der OptionPane fertig ist. Z.B. um
-     * das Ergebnis zu bekommen.
-     */
     /**
-     * TODO: documentation
+     * Action command if dialog window was closed
      */
-    // protected EventListenerList listenerList = new EventListenerList();
+    public static final String CLOSE_ACTION = "CLOSE";
+
+    /**
+     * Action command if user hit return
+     */
+    public static final String DEFAULT_ACTION = "DEFAULT";
+
+    /**
+     * The Title of the Dialog Frame
+     */
+    protected String title;
 
     /**
      * TODO: documentation
      */
-    protected SContainer frame = null;
+    protected SIcon icon = null;
+
+    private boolean closable = true;
+    private boolean closed = false;
+
+    /**
+     * The parent of the Dialog
+     */
+    protected SRootContainer owner = null;
+
+
+    /**
+     * Creates a Dialog without parent <code>SFrame</code> or <code>SDialog</code>
+     * and without Title
+     */
+    public SDialog() {}
+
+
+    /**
+     * Creates a dialog with the specifed parent <code>SFrame</code> as its owner.
+     *
+     * @param owner the parent <code>SFrame</code> 
+     */
+    public SDialog(SFrame owner) {
+        this.owner = owner;
+    }
+
+    /**
+     * Creates a dialog with the specified title and the specified owner frame.
+     *
+     * @param owner the parent <code>SFrame</code> 
+     * @param title  the <code>String</code> to display as titke
+     */
+    public SDialog(SFrame owner, String title) {
+        this.owner = owner;
+        this.title = title;
+    }
+
+    public void setTitle(String t) {
+        String oldTitle = title;
+        title = t;
+        if ((title == null && oldTitle != null) ||
+            (title != null && !title.equals(oldTitle)))
+            reload(ReloadManager.RELOAD_CODE);
+    }
+
+    public String getTitle() { 
+      return title; 
+    }
 
     /**
      * TODO: documentation
      *
-     * @param layout
+     * @param i
      */
-    public SDialog(SLayoutManager layout) {
-        super(layout);
+    public void setIcon(SIcon i) {
+        if ( i!=icon || i!=null && !i.equals(icon) ) {
+            icon = i;
+            reload(ReloadManager.RELOAD_CODE);
+        }
     }
 
     /**
      * TODO: documentation
      *
+     * @return
      */
-    public SDialog() {
-        super();
+    public SIcon getIcon() {
+        return icon;
+    }
+
+    public void setClosable(boolean v) {
+        boolean old = closable;
+        closable = v;
+        if (old != closable)
+            reload(ReloadManager.RELOAD_CODE);
+    }
+    public boolean isClosable() { return closable; }
+
+    public void setClosed(boolean v) {
+        v &= isClosable();
+        boolean old = closed;
+        closed = v;
+        if (old != closed)
+            reload(ReloadManager.RELOAD_CODE);
+    }
+    public boolean isClosed() { return closed; }
+
+    // fireFinalEvents() somewhere up the stack
+    protected void fireActionPerformed(String state) {
+        setActionCommand(state);
+        fireActionPerformed();
     }
 
     /**
-      * Gets the contentPane object for this dialog.
-      * return a {@link org.wings.SContainer}.
-      */
-    public SContainer getContentPane() {
-        return this;
-    }
-
-    /**
-     * Add a component to this dialog.
-     * @deprecated use getContentPane().addComponent(c) instead.
-     */
-    public SComponent addComponent(SComponent c, Object constraint) {
-        return super.addComponent(c, constraint);
-        // throw new IllegalArgumentException("use getContentPane().addComponent()");
-    }
-    
-    /**
-     * TODO: documentation
+     * Removes all <code>SComponents</code> from the pane
      *
      */
     public void dispose() {
@@ -100,90 +163,80 @@ public class SDialog
      * Remove this dialog from its frame.
      */
     public void hide() {
-        if (frame != null) {
-            processEvent(new SWindowEvent(this, SWindowEvent.WINDOW_CLOSING));
-
-            if (frame instanceof SFrame)
-                ((SFrame)frame).popDialog(this);
-            else
-                ((SInternalFrame)frame).popDialog(this);
-
-            processEvent(new SWindowEvent(this, SWindowEvent.WINDOW_CLOSED));
+        if (owner != null) {
+            owner.popDialog();
         }
-        else
-            throw new IllegalStateException("SDialog.frame == null!");
     }
 
+    public void setVisible(boolean visible) {
+      super.setVisible(visible);
+      if (visible) {
+        if (owner != null) show(owner);
+      } else {
+        if (isVisible()) hide();
+      }
+    }
+    
     /**
-     * sets the frame in which the option pane is displayed
+     * sets the root container in which this dialog is to be displayed.
      */
-    protected void setFrame(SFrame f) {
-        frame = f;
+    protected void setFrame(SRootContainer f) {
+        owner = f;
     }
 
     /**
-     * sets the frame in which the option pane is displayed
-     */
-    protected void setFrame(SInternalFrame f) {
-        frame = f;
-    }
-
-    /**
-     * Shows the dialog
+     * shows this dialog in the given SRootContainer. If the component is
+     * not a root container, then the root container the component is in
+     * is used.
+     * If the component is null, the root frame of the session is used. If there
+     * is no root frame in the session, a NullPointerException is thrown (this
+     * should not happen ;-).
      *
-     * @param c the parent component for this dialog
+     * @param c
      */
     public void show(SComponent c) {
+        if ( c==null ) {
+            c = SessionManager.getSession().getRootFrame();
+        }
+
+        SContainer frame = null;
         if (c instanceof SContainer)
             frame = (SContainer)c;
         else
             frame = c.getParent();
 
-        while (frame != null && !(frame instanceof SFrame || frame instanceof SInternalFrame))
+        // find RootContainer
+        while (frame != null && !(frame instanceof SRootContainer)) {
             frame = frame.getParent();
-
+        }
+        
         if (frame == null) {
-            throw new IllegalArgumentException("Component has no parent frame");
+            throw new IllegalArgumentException("Component has no root container");
         }
+        owner = (SRootContainer) frame;
 
-        if (frame instanceof SFrame)
-            ((SFrame)frame).pushDialog(this);
-        else
-            ((SInternalFrame)frame).pushDialog(this);
+        owner.pushDialog(this);
+    }
+
+    // LowLevelEventListener interface. Handle own events.
+    public void processLowLevelEvent(String name, String[] values) {
+        switch (new Integer(values[0]).intValue()) {
+        case org.wings.event.SInternalFrameEvent.INTERNAL_FRAME_CLOSED:
+            setClosed(true);
+            actionCommand = CLOSE_ACTION;
+            break;
             
-        processEvent(new SWindowEvent(this, SWindowEvent.WINDOW_OPENED));
-    }
-
-    private SWindowEvent event;
-    
-    public void getPerformed(String name, String value)
-    {
-        System.out.println("SDialog.getPerformed("+name+","+value+")");
-        int id = new Integer(value).intValue();
-        switch (id) {
-            case SWindowEvent.WINDOW_CLOSED:
-                this.hide();
-                break;
+        default:
+            // form event
+            actionCommand = DEFAULT_ACTION;
         }
-        event = new SWindowEvent(this, id);
+        SForm.addArmedComponent(this); // trigger later invocation of fire*()
     }
-
-    public void fireIntermediateEvents() {}
 
     public void fireFinalEvents() {
-        processEvent(event);
-        event = null;
+        super.fireFinalEvents();
     }
 
-
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "DialogCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -191,12 +244,12 @@ public class SDialog
     public void setCG(DialogCG cg) {
         super.setCG(cg);
     }
-
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -10,8 +10,45 @@
       ServerExplorer
     </servlet-name>
     <servlet-class>
-      explorer.Explorer
+      org.wings.session.WingServlet
     </servlet-class>
+    <init-param>
+      <param-name>wings.mainclass</param-name>
+      <param-value>explorer.Explorer</param-value>
+    </init-param>
+    <init-param>
+      <param-name>wings.lookandfeel.factory</param-name>
+      <param-value>org.wings.plaf.LookAndFeelFactory$Default</param-value>
+    </init-param>
+    <init-param>
+      <param-name>wings.lookandfeel.default</param-name>
+      <param-value>/css1.jar</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ExplorerBaseDir</param-name>
+      <param-value>/var</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>
+      FExplorer
+    </servlet-name>
+    <servlet-class>
+      explorer.FExplorer
+    </servlet-class>
+    <init-param>
+      <param-name>wings.mainclass</param-name>
+      <param-value>explorer.FExplorer</param-value>
+    </init-param>
+    <init-param>
+      <param-name>wings.lookandfeel.deploy</param-name>
+      <param-value>/css1.jar</param-value>
+    </init-param>
+    <init-param>
+      <param-name>wings.lookandfeel.name</param-name>
+      <param-value>xhtml/css1</param-value>
+    </init-param>
     <init-param>
       <param-name>ExplorerBaseDir</param-name>
       <param-value>/var</param-value>
@@ -26,6 +63,15 @@
     </servlet-name>
     <url-pattern>
       /Explorer/*
+    </url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>
+      FExplorer
+    </servlet-name>
+    <url-pattern>
+      /FExplorer/*
     </url-pattern>
   </servlet-mapping>
 </web-app>

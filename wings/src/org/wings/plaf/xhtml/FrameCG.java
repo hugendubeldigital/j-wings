@@ -20,14 +20,24 @@ import java.awt.Color;
 import java.util.*;
 
 import org.wings.*;
+import org.wings.util.AnchorRenderStack;
+import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 
 public class FrameCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.FrameCG
 {
     private final static String propertyPrefix = "Frame";
+
+    public void installCG(SComponent component) {
+        super.installCG(component);
+
+        SFrame frame = (SFrame)component;
+
+        frame.addDynamicResource(new DynamicCodeResource(frame));
+    }
 
     protected String getPropertyPrefix() {
         return propertyPrefix;
@@ -36,9 +46,18 @@ public class FrameCG
     public void write(Device d, SComponent c)
         throws IOException
     {
-        SFrame frame = (SFrame)c;
-        writeHeader(d, frame);
-        writeBody(d, frame);
+        SFrame frame = (SFrame)c; 
+        try {
+            writeHeader(d, frame);
+            writeBody(d, frame);
+        }
+        finally {
+            /*
+             * cleanup, in case someone didn't do this
+             * correctly.
+             */
+            AnchorRenderStack.reset();
+        }
     }
 
     protected void writeHeader(Device d, SFrame frame)
@@ -49,81 +68,69 @@ public class FrameCG
         List metas = frame.metas();
         List headers = frame.headers();
 
-        /*
-        d.append("<?xml version=\"1.0\" encoding=\"");
-        d.append(frame.getSession().getCharSet());
-        d.append("\"?>\n");
-        d.append("<!DOCTYPE html\n");
-        d.append("   PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n");
-        d.append("   \"DTD/xhtml1-transitional.dtd\">\n");
-        d.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"");
-        d.append(language);
-        d.append("\" lang=\"");
-        d.append(language);
-        d.append("\">\n");
-        */
-        d.append("<html>\n");
-        d.append("<head>\n<title>");
-        d.append(title);
-        d.append("</title>\n");
-
-        if (frame.getBaseTarget() != null)
-            d.append("<base target=\"")
-                .append(frame.getBaseTarget())
-                // .append("\" />");
-                .append("\">");
-
-        d.append("<meta http-equiv=\"Content-type\" content='text/html; charset=\"");
-        d.append(frame.getSession().getCharSet());
-        /*
-        d.append("\"' />\n");
-        d.append("<meta http-equiv=\"expires\" content=\"0\" />\n");
-        d.append("<meta http-equiv=\"pragma\" content=\"no-cache\" />\n");
-        */
-        d.append("\"'>\n");
-        d.append("<meta http-equiv=\"expires\" content=\"0\">\n");
-        d.append("<meta http-equiv=\"pragma\" content=\"no-cache\">\n");
-        
-        Iterator it = metas.iterator();
-        while (it.hasNext()) {
-            d.append("<meta ");
-            d.append(it.next());
-            // d.append(" />\n");
-            d.append(">\n");
+        d.print("<?xml version=\"1.0\" encoding=\"");
+        d.print(charSetFor(frame.getSession().getLocale()));
+        d.print("\"?>\n");
+        d.print("<!DOCTYPE html\n");
+        d.print("   PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n");
+        d.print("   \"DTD/xhtml1-transitional.dtd\">\n");
+        d.print("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"");
+        d.print(language);
+        d.print("\" lang=\"");
+        d.print(language);
+        d.print("\">\n");
+        d.print("<head>\n");
+        if (title != null) {
+            d.print("<title>").print(title).print("</title>\n");
         }
 
-        // JavaScript ist in Kommentaren nicht mehr erlaubt, weil xml-Parser Kommentare entfernen dürfen
+        if (frame.getBaseTarget() != null)
+            d.print("<base target=\"")
+                .print(frame.getBaseTarget())
+                .print("\" />");
 
-        it = frame.getJavascript().iterator();
-        while (it.hasNext())
-            ((Javascript) it.next()).write(d, frame);
+        d.print("<meta http-equiv=\"Content-type\" content='text/html; charset=\"");
+        d.print(charSetFor(frame.getSession().getLocale()));
+        d.print("\"' />\n");
+        d.print("<meta http-equiv=\"expires\" content=\"1000\" />\n");
+        d.print("<meta http-equiv=\"pragma\" content=\"no-cache\" />\n");
+
+        Iterator it = metas.iterator();
+        while (it.hasNext()) {
+            d.print("<meta ");
+            d.print(it.next());
+            d.print(" />\n");
+        }
 
         it = headers.iterator();
         while (it.hasNext()) {
-            d.append(it.next());
-            d.append("\n");
+            d.print(it.next());
+            d.print("\n");
         }
 
         writeAdditionalHeaders(d, frame);
 
-        d.append("</head>\n");
+        d.print("</head>\n");
+    }
+
+    private String charSetFor(Locale locale) {
+        final String language = locale.getLanguage();
+
+        if(language.equals("pl"))
+            return "iso-8859-2";
+
+        return "iso-8859-1";
     }
 
     protected void writeAdditionalHeaders(Device d, SFrame frame)
-        throws IOException
-    {
-        ListIterator it = frame.getFrameModifiers().listIterator();
-        while(it.hasNext()) {
-            ((SFrameModifier) it.next()).writeHead(d, frame);
-        }
-    }
+        throws IOException {}
 
     protected void writeBody(Device d, SFrame frame)
         throws IOException
     {
-        d.append("<body>");
+        d.print("<body>");
         writeContents(d, frame);
-        d.append("\n</body>\n</html>");
+        d.print("\n</body>\n</html>");
     }
 
     protected void writeContents(Device d, SFrame frame)
@@ -139,5 +146,6 @@ public class FrameCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

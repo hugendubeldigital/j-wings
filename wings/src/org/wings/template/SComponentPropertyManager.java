@@ -20,7 +20,6 @@ import java.util.StringTokenizer;
 
 import org.wings.SComponent;
 import org.wings.SFont;
-import org.wings.style.Style;
 
 /**
  * TODO: documentation
@@ -37,20 +36,19 @@ public class SComponentPropertyManager
     }
 
     public void setProperty(SComponent comp, String name, String value) {
-        if ( name.equals("BACKGROUND") )
+        if ( "BACKGROUND".equals(name) )
             comp.setBackground(Color.decode(value));
-        else if ( name.equals("FOREGROUND") )
+        else if ( "FOREGROUND".equals(name) )
             comp.setForeground(Color.decode(value));
-        else if ( name.equals("FONT") )
+        else if ( "FONT".equals(name) )
             comp.setFont(parseFont(value));
-        else if ( name.equals("CLASS") )
-            comp.setStyle(new Style(value));
+        else if ( "TABINDEX".equals(name) )
+            comp.setFocusTraversalIndex(Integer.parseInt(value));
     }
 
     public Class[] getSupportedClasses() {
         return classes;
     }
-
 
     protected final SFont parseFont(String value) {
         StringTokenizer s = new StringTokenizer(value, ",");
@@ -76,5 +74,6 @@ public class SComponentPropertyManager
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -22,7 +22,7 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * This is a grid layout
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -35,83 +35,88 @@ public class SGridLayout
      */
     private static final String cgClassID = "GridLayoutCG";
 
-    private static final boolean DEBUG = false;
-
-    // nur zu Debug Zwecken, macht den HTML Code uebersichtlicher !!
-    /**
-     * TODO: documentation
-     */
-    protected final int id = SComponent.createUnifiedId();
+    private static final boolean DEBUG = true;
 
     /**
      * TODO: documentation
      */
     protected ArrayList components = new ArrayList(2);
 
-    int rows = 0;
-    int cols = 0;
+    protected int rows = 0;
+    protected int cols = 0;
 
-    int border = 0;
+    protected int border = 0;
 
-    boolean header = false;
-    boolean relative = false;
+    protected boolean header = false;
+    protected boolean relative = false;
 
-    int width = -1;
-    int cellPadding = -1;
-    int cellSpacing = -1;
+    protected int width = -1;
+    protected int cellPadding = -1;
+    protected int cellSpacing = -1;
 
     /**
-     * TODO: documentation
+     * creats a new grid layout with the given number of columns
      *
-     * @param cols
+     * @param cols number of columns
      */
     public SGridLayout(int cols) {
         setColumns(cols);
     }
 
+    /**
+     * creats a new grid layout with the given number of columns and rows
+     *
+     * @param rows number of rows
+     * @param cols number of columns
+     */
     public SGridLayout(int rows, int cols) {
         setRows(rows);
         setColumns(cols);
     }
 
     /**
-     * TODO: documentation
+     * sets the number of columns
      *
-     * @param c
+     * @param c number of columns
      */
     public void setColumns(int c) {
         cols = c;
     }
+
+    /**
+     * returns the number of columns
+     *
+     * @return number of columns
+     */
     public int getColumns() { return cols; }
 
     /**
-     * TODO: documentation
+     * sets the number of rows
      *
-     * @param r
+     * @param r number of rows
      */
     public void setRows(int r) {
         rows = r;
     }
-    public int getRows() { return rows; }
-
-    public void addComponent(SComponent c, Object constraint) {
-        components.add(c);
-    }
 
     /**
-     * TODO: documentation
+     * returns the number of rows
      *
-     * @param c
+     * @returns number of rows
      */
+    public int getRows() { return rows; }
+
+    public void addComponent(SComponent c, Object constraint, int index) {
+        components.add(index, c);
+    }
+
     public void removeComponent(SComponent c) {
         components.remove(c);
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param i
-     * @return
+     * returns a list of all components
+     * @return all components
      */
     public List getComponents() {
         return components;
@@ -177,14 +182,6 @@ public class SGridLayout
     }
     public boolean getHeader() { return header; }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this layout.
-     *
-     * @return "GridLayoutCG"
-     * @see SLayoutManager#getCGClassID
-     * @see org.wings.plaf.CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -194,5 +191,6 @@ public class SGridLayout
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

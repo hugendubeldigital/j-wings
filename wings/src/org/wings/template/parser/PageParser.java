@@ -1,58 +1,16 @@
 /*
- * Copyright (c) 1997-1999 The Java Apache Project.  All rights reserved.
+ * $Id$
+ * (c) Copyright 2001 wingS development team.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
+ * This file is part of wingS (http://wings.mercatis.de).
  *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * wingS is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
+ * of the License, or (at your option) any later version.
  *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. All advertising materials mentioning features or use of this
- *    software must display the following acknowledgment:
- *    "This product includes software developed by the Java Apache 
- *    Project for use in the Apache JServ servlet engine project
- *    (http://java.apache.org/)."
- *
- * 4. The names "Apache JServ", "Apache JServ Servlet Engine" and 
- *    "Java Apache Project" must not be used to endorse or promote products 
- *    derived from this software without prior written permission.
- *
- * 5. Products derived from this software may not be called "Apache JServ"
- *    nor may "Apache" nor "Apache JServ" appear in their names without 
- *    prior written permission of the Java Apache Project.
- *
- * 6. Redistributions of any form whatsoever must retain the following
- *    acknowledgment:
- *    "This product includes software developed by the Java Apache 
- *    Project for use in the Apache JServ servlet engine project
- *    (http://java.apache.org/)."
- *    
- * THIS SOFTWARE IS PROVIDED BY THE JAVA APACHE PROJECT "AS IS" AND ANY
- * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE JAVA APACHE PROJECT OR
- * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This software consists of voluntary contributions made by many
- * individuals on behalf of the Java Apache Group. For more information
- * on the Java Apache Project and the Apache JServ Servlet Engine project,
- * please see <http://java.apache.org/>.
- *
+ * Please see COPYING for the complete licence.
  */
-
 package org.wings.template.parser;
 
 import java.io.*;
@@ -76,9 +34,7 @@ import org.wings.template.*;
  * pluggable handlers (e.g. called servlets) are printed,
  * enclosed in comments ("&lt;!-- ... --&gt;"), in the HTML output.
  *
- * @author Roger Zeng
- * @author Tim Williams
- * @author current maintainer <A href="mailto:zeller@think.de">Henner Zeller</A>
+ * @author <A href="mailto:zeller@think.de">Henner Zeller</A>
  * @version $Revision$ $Date$
  * @see javax.servlet.http.HttpServlet
  */
@@ -87,6 +43,11 @@ public class PageParser
 {
     private static PageParser sharedInstance = null;
 
+    /**
+     * returns a singleton instance of this PageParser.
+     * You usually want to use the singleton instance to make
+     * use of a central cache.
+     */
     public static PageParser getInstance() {
 	if (sharedInstance == null) {
 	    synchronized(PageParser.class) {
@@ -99,28 +60,24 @@ public class PageParser
     }
 	
     /**
-     * This hashtable contains the cached parsed
+     * This Map contains the cached parsed
      * pages, saved in DataSourceInfo-Objects.
      * The key is the canonical name of the Data
      * Source.
-     * @see DataSource
-     * This may be considered to be replaced by 
-     * a WeakHashMap when JDK1.2 is available on 
-     * all Platforms
      */
-    private Hashtable pages = null;
+    private final Map/*<String, DataSourceInfo>*/ pages;
 
     /**
      * a Hashtable with key/value=tagname/handlerClass
      */
-    private Hashtable handlerClasses = null;
+    private final Map/*<String,Class>*/ handlerClasses;
 
     /** 
      * Constructs a new PageParser.
      */
     public PageParser () {
-	pages = new Hashtable();
-	handlerClasses = new Hashtable();
+	pages = new HashMap();
+	handlerClasses = new HashMap();
     }
 
     /**
@@ -196,11 +153,11 @@ public class PageParser
     }
 
     /**
-     * @return Enumeration of all Tags which are special to
+     * @return Itearator of all Tags which are special to
      *         this PageParser
      */
-    public Enumeration getRegisteredTags () {
-	return handlerClasses.keys();
+    public Iterator getRegisteredTags () {
+	return handlerClasses.keySet().iterator();
     }
 
     /**
@@ -211,7 +168,7 @@ public class PageParser
      * @return list of page sections, as described in parsePage().
      * @see #parsePage
      */
-    private Vector getPageParts (DataSource source, ParseContext context)
+    private List getPageParts (DataSource source, ParseContext context)
 	throws IOException {
 	// first, check to see if we have cached version
 	String cName = source.getCanonicalName();
@@ -245,7 +202,7 @@ public class PageParser
      * @see #parsePage
      */
     private void interpretPage(DataSource source, 
-			       Vector parts, ParseContext context)
+			       List parts, ParseContext context)
 	throws IOException {
 
 	OutputStream out = context.getOutputStream();
@@ -273,7 +230,7 @@ public class PageParser
 	  
 	    for (int i = 0; i < parts.size(); i++) {
 		/** <critical-path> **/
-		SpecialTagHandler part = (SpecialTagHandler)parts.elementAt(i);
+		SpecialTagHandler part = (SpecialTagHandler)parts.get(i);
 		// copy DataSource content till the beginning of the Tag:
 		copy(inStream, out, part.getTagStart()-inPos, buf);
 
@@ -377,7 +334,7 @@ public class PageParser
 	try {
 	    // scan through page parsing SpecialTag statements
 	    sourceInfo.lastModified = source.lastModified();
-	    sourceInfo.parts = new Vector();
+	    sourceInfo.parts = new ArrayList();
 	    sourceInfo.labels = new HashMap();
 	    long startPos;
 	    SGMLTag tag, endTag;
@@ -404,7 +361,7 @@ public class PageParser
 				LabelTagHandler labelHandler = (LabelTagHandler)handler;
 				sourceInfo.labels.put(labelHandler.getFor(), labelHandler.getContent());
 			    }
-			    sourceInfo.parts.addElement(handler);
+			    sourceInfo.parts.add(handler);
 			}
 		    }
 		}
@@ -431,10 +388,10 @@ public class PageParser
      * frontends
      */
     private final class DataSourceInfo {
-	Vector parts;
-	Map    labels;
-	long   lastModified;
-	long   parseTime;
+	ArrayList parts;
+	Map       labels;
+	long      lastModified;
+	long      parseTime;
 	public DataSourceInfo () {}
     }
 }
@@ -442,6 +399,7 @@ public class PageParser
 /* 
  * Local variables:
  * c-basic-offset: 4
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */
 

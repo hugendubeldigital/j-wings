@@ -16,11 +16,40 @@ package org.wings.plaf;
 
 import java.io.IOException;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
+import org.wings.style.*;
 
-public class DefaultComponentCG implements ComponentCG
+
+public class DefaultComponentCG implements ComponentCG, SConstants
 {
+
+    public void reload(SComponent comp, int aspect) {
+        if ( comp==null )
+            return;
+
+        SFrame parent = comp.getParentFrame();
+
+        if ( parent==null )
+            return;
+
+        ReloadManager reloadManager = comp.getSession().getReloadManager();
+
+        switch ( aspect ) {
+        case ReloadManager.RELOAD_CODE: 
+            reloadManager.markDirty(parent.getDynamicResource(DynamicCodeResource.class));
+            break;
+        case ReloadManager.RELOAD_STYLE: 
+            reloadManager.markDirty(parent.getDynamicResource(DynamicStyleSheetResource.class));
+            break;
+        case ReloadManager.RELOAD_SCRIPT: 
+            // TODO
+            //            reloadManager.markDirty(parent.getDynamicResource(DynamicScriptResource.class));
+            break;
+                                    
+        }
+    }
+
     public void installCG(SComponent c) {
     }
 
@@ -28,11 +57,7 @@ public class DefaultComponentCG implements ComponentCG
     }
 
     public void write(Device d, SComponent c) throws IOException {
-        c.appendBorderPrefix(d);
-        c.appendPrefix(d);
-        c.appendBody(d);
-        c.appendPostfix(d);
-        c.appendBorderPostfix(d);
+        d.print("no plaf for component " + c.getClass());
     }
 }
 
@@ -40,5 +65,6 @@ public class DefaultComponentCG implements ComponentCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

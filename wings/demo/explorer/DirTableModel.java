@@ -20,8 +20,8 @@ import java.text.*;
 
 import javax.swing.event.*;
 import javax.swing.table.*;
-import javax.swing.Icon;
 import org.wings.ResourceImageIcon;
+import org.wings.*;
 
 /**
  * TODO: documentation
@@ -31,13 +31,8 @@ import org.wings.ResourceImageIcon;
  */
 public class DirTableModel
     extends AbstractTableModel
+    implements FileRendererIcons
 {
-    final static Icon DIR_ICON =
-        new ResourceImageIcon(DirTableModel.class, "/explorer/Directory.gif");
-
-    final static Icon FILE_ICON =
-        new ResourceImageIcon(DirTableModel.class, "/explorer/File.gif");
-
     private static FilenameFilter DEFAULT_FILENAMEFILTER =
         new FilenameFilter() {
             public boolean accept(File d, String name) {
@@ -93,19 +88,26 @@ public class DirTableModel
         if ( d==null || !d.isDirectory() ) {
             directory = null;
             filenames = new String[0];
-        } else {
-            if ( f!=null )
+        } 
+        else {
+            if ( f!=null ) {
                 filenameFilter = f;
+            }
             
             directory = d;
             filenames = directory.list(filenameFilter);
-            dirType = new boolean[filenames.length];
-            for (int i=0; i < filenames.length; ++i) {
-                // I hate generating objects like this..
-                dirType[i] = (new File(d, filenames[i])).isDirectory();
+            if (filenames != null) { // cannot access directory ?
+                Arrays.sort(filenames);
+                dirType = new boolean[filenames.length];
+                for (int i=0; i < filenames.length; ++i) {
+                    // I hate generating objects like this..
+                    dirType[i] = (new File(d, filenames[i])).isDirectory();
+                }
+            }
+            else {
+                filenames = new String[0];
             }
         }
-
         fireTableStructureChanged();
     }
 
@@ -152,10 +154,14 @@ public class DirTableModel
     }
 
     public File getFile(String filename) {
-        File f = (File)filenameCache.get(filename);
+        File f = (File) filenameCache.get(filename);
 
         if ( f==null ) {
-            f = new File(directory.getAbsolutePath() + File.separator + filename);
+            try {
+                f = (new File(directory, filename)).getCanonicalFile();
+            }
+            catch (IOException e) {}
+            //f = new File(directory.getAbsolutePath() + File.separator + filename);
             filenameCache.put(filename, f);
         }
 
@@ -163,7 +169,7 @@ public class DirTableModel
     }
 
     public File getFileAt(int row) {
-        return (File)filenameCache.get(filenames[row]);
+        return (File) filenameCache.get(filenames[row]);
     }
 
     public int getRowCount() {
@@ -177,7 +183,7 @@ public class DirTableModel
     public Class getColumnClass(int col) {
         switch ( col ) {
         case 0:
-            return Icon.class;
+            return SIcon.class;
         case 2:
             return Date.class;
         case 3:
@@ -192,5 +198,6 @@ public class DirTableModel
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

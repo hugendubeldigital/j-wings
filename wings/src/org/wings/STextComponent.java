@@ -24,12 +24,12 @@ import org.wings.io.Device;
 /**
  * TODO: documentation
  *
- * @author Dominik Bartenstein
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public abstract class STextComponent
     extends SComponent
-    implements RequestListener //SGetListener
+    implements LowLevelEventListener
 {
     private boolean editable = true;
 
@@ -82,7 +82,7 @@ public abstract class STextComponent
         boolean oldEditable = editable;
         editable = ed;
         if (editable != oldEditable)
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -105,7 +105,7 @@ public abstract class STextComponent
         text = t;
         if ((text == null && oldText != null) ||
             (text != null && !text.equals(oldText)))
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -117,13 +117,13 @@ public abstract class STextComponent
         return text;
     }
 
-    public void getPerformed(String action, String value) {
+    public void processLowLevelEvent(String action, String[] values) {
         if ( isEditable() && isEnabled() ) {
             // System.out.println("getPerformed " + action + " : " + value);
-            if ( value != null )
-                value = value.trim();
-            if ( getText() == null || !getText().equals( value ) ) {
-                setText( value );
+            if ( values[0] != null )
+                values[0] = values[0].trim();
+            if ( getText() == null || !getText().equals( values[0] ) ) {
+                setText( values[0] );
                 SForm.addArmedComponent(this);
             }
         }
@@ -174,5 +174,6 @@ public abstract class STextComponent
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

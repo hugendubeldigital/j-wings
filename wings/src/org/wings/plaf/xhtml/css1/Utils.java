@@ -18,7 +18,8 @@ import java.io.IOException;
 
 import java.awt.Color;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
+import org.wings.border.*;
 import org.wings.style.*;
 import org.wings.io.Device;
 
@@ -63,9 +64,7 @@ public final class Utils
     {
         if (style == null)
             return;
-        String id = style.getID();
-        if (id != null)
-            writeStyleAttribute(d, prefix + id);
+        writeStyleAttribute(d, prefix, style, "");
     }
 
     public static void writeStyleAttribute(Device d, String prefix, Style style, String postfix)
@@ -73,19 +72,7 @@ public final class Utils
     {
         if (style == null)
             return;
-        String id = style.getID();
-        if (id != null)
-            writeStyleAttribute(d, prefix + id + postfix);
-    }
-
-    public static void writeStyleAttribute(Device d, Style style, String postfix)
-        throws IOException
-    {
-        if (style == null)
-            return;
-        String id = style.getID();
-        if (id != null)
-            writeStyleAttribute(d, id + postfix);
+        writeStyleAttribute(d, prefix + style.getName() + postfix);
     }
 
     public static void writeStyleAttribute(Device d, Style style)
@@ -93,18 +80,18 @@ public final class Utils
     {
         if (style == null)
             return;
-        writeStyleAttribute(d, style.getID());
+        writeStyleAttribute(d, style.getName());
     }
 
-    public static void writeStyleAttribute(Device d, String id)
+    public static void writeStyleAttribute(Device d, String style)
         throws IOException
     {
-        if (id == null)
+        if (style == null)
             return;
 
-        d.append(" class=\"");
-        d.append(id);
-        d.append("\"");
+        d.print(" class=\"");
+        d.print(style);
+        d.print("\"");
     }
 
 	/**
@@ -121,15 +108,14 @@ public final class Utils
         if ( style == null && ! hasAttr )
             return;
 
-        d.append("<span " );
-        if ( hasAttr )
-         {
-         	d.append( "style=\"");
-			org.wings.plaf.xhtml.Utils.writeSpanAttributes( d, component );
-        	d.append( "\" " );
-		 }
-        writeStyleAttribute( d, style );
-        d.append(">");
+        d.print("<span ");
+        if (hasAttr) {
+            d.print( "style=\"");
+            org.wings.plaf.xhtml.Utils.writeSpanAttributes(d, component);
+            d.print( "\" ");
+        }
+        writeStyleAttribute(d, style);
+        d.print(">");
     }
 
 
@@ -144,11 +130,11 @@ public final class Utils
     {
         if (
         	component.getStyle() == null && 
-        	!org.wings.plaf.xhtml.Utils.hasSpanAttributes( component )
+        	org.wings.plaf.xhtml.Utils.hasSpanAttributes( component )
            )
             return;
 
-        d.append("</span>");
+        d.print("</span>");
     }
 
     public static void writeSpanWithStyleAttributePrefix(Device d, Style style)
@@ -157,9 +143,9 @@ public final class Utils
         if (style == null)
             return;
 
-        d.append("<span");
+        d.print("<span");
         Utils.writeStyleAttribute(d, style);
-        d.append(">");
+        d.print(">");
     }
 
     public static void writeSpanWithStyleAttributePostfix(Device d, Style style)
@@ -168,7 +154,7 @@ public final class Utils
         if (style == null)
             return;
 
-        d.append("</span>");
+        d.print("</span>");
     }
 
     public static void writeDivWithStyleAttributePrefix(Device d, Style style)
@@ -177,9 +163,9 @@ public final class Utils
         if (style == null)
             return;
  
-        d.append("<div");
+        d.print("<div");
         Utils.writeStyleAttribute(d, style);
-        d.append(">");
+        d.print(">");
     }
  
     public static void writeDivWithStyleAttributePostfix(Device d, Style style)
@@ -188,14 +174,14 @@ public final class Utils
         if (style == null)
             return;
  
-        d.append("</div>");
+        d.print("</div>");
     }                                                                                                             
     static void writeHiddenComponent(Device d, String name, String value)
         throws IOException
     {
-        d.append("<input type=\"hidden\" name=\"").
-	  append(name).append("\" value=\"").
-	  append(value).append("\" />\n");
+        d.print("<input type=\"hidden\" name=\"").
+	  print(name).print("\" value=\"").
+	  print(value).print("\" />\n");
     }
 
     public static String toHexString(int rgb) {
@@ -233,27 +219,27 @@ public final class Utils
             style = font.getStyle();
             size = font.getSize();
         }
-        d.append("<font");
+        d.print("<font");
 
         if (face != null)
-            d.append(" face=\"").append(face).append("\"");
+            d.print(" face=\"").print(face).print("\"");
 
         if (size > Integer.MIN_VALUE) {
-            d.append(" size=");
+            d.print(" size=");
             if (size > 0)
-                d.append("+");
-            d.append(size);
+                d.print("+");
+            d.print(size);
         }
 
         if (color != null)
-            d.append(" color=#").append(toColorString(color));
+            d.print(" color=#").print(toColorString(color));
 
-        d.append(">");
+        d.print(">");
 
         if ((style & ITALIC) != 0)
-            d.append("<i>");
+            d.print("<i>");
         if ((style & BOLD) != 0)
-            d.append("<b>");
+            d.print("<b>");
     }
 
     public static void writeFontPostfix(Device d, SFont font)
@@ -273,10 +259,10 @@ public final class Utils
             style = font.getStyle();
 
         if ((style & BOLD) != 0)
-            d.append("</b>");
+            d.print("</b>");
         if ((style & ITALIC) != 0)
-            d.append("</i>");
-        d.append("</font>");
+            d.print("</i>");
+        d.print("</font>");
     }
 }
 
@@ -284,5 +270,6 @@ public final class Utils
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -14,8 +14,6 @@
 
 package wingset;
 
-import javax.swing.Icon;
-
 import org.wings.*;
 
 /**
@@ -27,27 +25,39 @@ import org.wings.*;
 public class CheckBoxExample
     extends WingSetPane
 {
-    javax.swing.Icon icon = null;
+    static final ClassLoader cl = WingSet.class.getClassLoader();
+    static final SIcon sel = 
+        new ResourceImageIcon(cl, "wingset/icons/ComboBoxSelectedIcon.gif");
+    static final SIcon nsel = 
+        new ResourceImageIcon(cl, "wingset/icons/ComboBoxIcon.gif");
+    static final SIcon dissel = 
+        new ResourceImageIcon(cl, "wingset/icons/ComboBoxDisabledSelectedIcon.gif");
+    static final SIcon disnsel = 
+        new ResourceImageIcon(cl, "wingset/icons/ComboBoxDisabledIcon.gif");
+    static final SIcon rollsel = 
+        new ResourceImageIcon(cl, "wingset/icons/ComboBoxRolloverSelectedIcon.gif");
+    static final SIcon rollnsel = 
+        new ResourceImageIcon(cl, "wingset/icons/ComboBoxRolloverIcon.gif");
 
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));
-        p.add(new SLabel("<h4>CheckBoxes outside forms</h4>"));
-        p.add(new SLabel("<h4>Image CheckBoxes outside forms</h4>"));
+        p.add(htmlLabel("<h4>CheckBoxes outside forms</h4>"));
+        p.add(htmlLabel("<h4>Image CheckBoxes outside forms</h4>"));
 
         p.add(createCheckBoxExample());
         p.add(createImageCheckBoxExample());
 
         SForm form = new SForm();
-        form.add(new SLabel("<h4>CheckBoxes in a form</h4>"));
+        form.add(htmlLabel("<h4>CheckBoxes in a form</h4>"));
         form.add(createCheckBoxExample());
-        form.add(new SLabel("<br />"));
+        form.add(htmlLabel("<br />"));
         form.add(new SButton("submit"));
         p.add(form);
 
         form = new SForm();
-        form.add(new SLabel("<h4>Image CheckBoxes in a form</h4>"));
+        form.add(htmlLabel("<h4>Image CheckBoxes in a form</h4>"));
         form.add(createImageCheckBoxExample());
-        form.add(new SLabel("<br />"));
+        form.add(htmlLabel("<br />"));
         form.add(new SButton("submit"));
         p.add(form);
         return p;
@@ -66,11 +76,16 @@ public class CheckBoxExample
         return text;
     }
 
+    /**
+     * creates a label, that contains HTML formatting information.
+     */
+    private SLabel htmlLabel(String text) {
+        SLabel label = new SLabel(text);
+        label.setEscapeSpecialChars(false);
+        return label;
+    }
+
     SContainer createImageCheckBoxExample() {
-        Icon sel = new ResourceImageIcon(SCheckBox.class, "icons/bulb2.gif");
-        Icon nsel = new ResourceImageIcon(SCheckBox.class, "icons/bulb1.gif");
-        Icon dissel = new ResourceImageIcon(SCheckBox.class, "icons/bulb3.gif");
-        Icon disnsel = new ResourceImageIcon(SCheckBox.class, "icons/bulb3.gif");
 
         SCheckBox[] boxes = new SCheckBox[9];
         boxes[0] = new SCheckBox("testTL");
@@ -88,6 +103,9 @@ public class CheckBoxExample
             boxes[i].setSelectedIcon(sel);
             boxes[i].setDisabledIcon(disnsel);
             boxes[i].setDisabledSelectedIcon(dissel);
+            boxes[i].setRolloverIcon(rollnsel);
+            boxes[i].setRolloverSelectedIcon(rollsel);
+            boxes[i].setPressedIcon(sel);
             boxes[i].setToolTipText("CheckBox " + i);
         }
 
@@ -141,5 +159,6 @@ public class CheckBoxExample
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

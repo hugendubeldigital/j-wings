@@ -1,6 +1,6 @@
 /*
  * $Id$
- * (c) Copyright 2000 wingS development team.
+
  *
  * This file is part of wingS (http://wings.mercatis.de).
  *
@@ -18,21 +18,26 @@ import java.awt.*;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.logging.*;
 import javax.servlet.ServletOutputStream;
-import javax.swing.ImageIcon;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.style.*;
 
+/**
+ * A Look-and-Feel consists of a bunch of CGs and resource properties.
+ * wingS provides a pluggable look-and-feel (laf or plaf) concept similar to that of Swing.
+ * A certain plaf implementation normally adresses a specific browser.
+ * 
+ * @see org.wings.plaf.ComponentCG
+ */
 public class LookAndFeel
 {
+    private final static Logger logger = Logger.getLogger("org.wings.plaf");
+
     private static Map wrappers = new HashMap();
-
-    protected Properties properties;
-    protected ClassLoader classLoader;
-
     static {
         wrappers.put(Boolean.TYPE, Boolean.class);
         wrappers.put(Character.TYPE, Character.class);
@@ -44,26 +49,40 @@ public class LookAndFeel
         wrappers.put(Double.TYPE, Double.class);
     }
 
+    protected final ClassLoader classLoader;
+    protected Properties properties;
+    protected StyleSheet styleSheet;
 
+    /**
+     * Instantiate a laf using the war's classLoader.
+     * @param properties the configuration of the laf
+     */
     public LookAndFeel(Properties properties) {
 	this.properties = properties;
 	this.classLoader = getClass().getClassLoader();
     }
 
+    /**
+     * Instantiate a laf using the specified classLoader.
+     * The properties are read from the classLoader's classpath as a resource
+     * with name <i>default.properties</i>.
+     * @param classLoader the classLoader that will load the CGs
+     */
     public LookAndFeel(ClassLoader classLoader)
         throws IOException
     {
         this.classLoader = classLoader;
         this.properties = new Properties();
         InputStream in = classLoader.getResourceAsStream("default.properties");
-        if (in == null)
-            throw new IOException ("'default.properties' not found in toplevel package in classpath. Look-and-Feel jar included ?");
+        if (in == null) {
+            throw new IOException ("'default.properties' not found in toplevel package in classpath.");
+        }
         this.properties.load(in);
     }
 
     /**
-     * Return a short string that identifies this look and feel, e.g.
-     * "XHTML".
+     * Return a unique string that identifies this look and feel, e.g.
+     * "konqueror"
      */
     public String getName() {
         return properties.getProperty("lookandfeel.name");
@@ -71,172 +90,184 @@ public class LookAndFeel
 
     /**
      * Return a one line description of this look and feel implementation,
-     * e.g. "XHTML Look and Feel".
+     * e.g. "Optimized for KDE's Konqueror Browser".
      */
     public String getDescription() {
         return properties.getProperty("lookandfeel.description");
     }
 
+    /**
+     * Return the ClassLoader, that is used to load the CGs.
+     * @return the ClassLoader
+     */
     public ClassLoader getClassLoader() {
         return classLoader;
     }
 
     /**
-     * This method is called once by CGManager.setLookAndFeel to create
-     * the look and feel specific defaults table.  Other applications,
-     * for example an application builder, may also call this method.
+     * create a fresh CGDefaults map. One defaults map per Session is generated
+     * in its CGManager. It is necessary to create a fresh defaults map, since
+     * it caches values that might be modified within the sessions. A prominent
+     * example of changed values per sessions are the CG's themselves: 
+     * CG-properties might be changed per session...
      *
-     * @see #initialize
-     * @see #uninitialize
-     * @see CGManager#setLookAndFeel
+     * @return the laf's defaults
      */
-    public CGDefaults getDefaults() {
-        CGDefaults table = new CGDefaults();
-        table.setLookAndFeel(this);
-	table.putAll(properties);
-        return table;
+    public CGDefaults createDefaults() {
+        return new ResourceFactory();
     }
 
     /**
-     * Return an appropriate Device for code generation.
-     * Some lafs can deal with a stream, others rely on a buffered
-     * Device, because they produce code that must appear in the header.
-     *
-     * In fact, this feature was never used, yet. Should we de deprecate it?
-     *
-     * @return a Device that is suitable for this laf
+     * Return the <code>lookandfeel.stylesheet</code>
+     * @return the laf's style sheet
      */
-    public Device createDevice(javax.servlet.ServletOutputStream stream) {
+    public StyleSheet getStyleSheet() {
+        if (styleSheet == null) {
+            styleSheet = new CSSStyleSheet();
+
+            try {
+                InputStream in = classLoader.getResourceAsStream(properties.getProperty("lookandfeel.stylesheet"));
+                ((CSSStyleSheet)styleSheet).read(in);
+            }
+            catch (Exception e) {
+                logger.log(Level.WARNING, null, e);
+            }
+        }
+        if (styleSheet == null) {
+            throw new RuntimeException("a stylsheet is required");
+        }
+
+        return styleSheet;
+    }
+
+    /**
+     * Create a CG instance.
+     * @param className the full qualified class name of the CG
+     * @return a new CG instance
+     */
+    public Object makeCG(String className) {
+        try {
+            Class cgClass = Class.forName(className, true, classLoader);
+            return cgClass.newInstance();
+        }
+        catch (ClassNotFoundException e) {
+            logger.log(Level.SEVERE, null, e);
+        }
+        catch (InstantiationException e) {
+            logger.log(Level.SEVERE, null, e);
+        }
+        catch (IllegalAccessException e) {
+            logger.log(Level.SEVERE, null, e);
+        }
         return null;
     }
 
     /**
-     * CGManager.setLookAndFeel calls this method before the first
-     * call (and typically the only call) to getDefaults().
-     *
-     * @see #uninitialize
-     * @see CGManager#setLookAndFeel
-     */
-    public void initialize() {
-    }
-
-    /**
-     * CGManager.setLookAndFeel calls this method just before we're
-     * replaced by a new default look and feel.   Subclasses may
-     * choose to free up some resources here.
-     *
-     * @see #initialize
-     */
-    public void uninitialize() {
-    }
-
-    /**
-     * Utility method that creates an ImageIcon from a resource
-     * located realtive to the given base class.
-     * @param baseClass the ClassLoader of the baseClass will be used
-     * @param fileName of the image file
-     * @return a newly allocated ImageIcon
-     * @deprecated give the <code>classLoader</code> instead the <code>baseClass</code>
-     */
-    public static ImageIcon makeIcon(Class baseClass, String fileName) {
-        return new ResourceImageIcon(baseClass, fileName);
-    }
-
-    /**
-     * Utility method that creates an ImageIcon from a resource
+     * Utility method that creates an Icon from a resource
      * located realtive to the given base class.
      * @param classLoader the ClassLoader that should load the icon
      * @param fileName of the image file
-     * @return a newly allocated ImageIcon
+     * @return a newly allocated Icon
      */
-    public static ImageIcon makeIcon(ClassLoader classLoader, String fileName) {
+    public static SIcon makeIcon(ClassLoader classLoader, String fileName) {
         return new ResourceImageIcon(classLoader, fileName);
     }
 
     /**
-     * Utility method that creates an ImageIcon from a resource
+     * Utility method that creates an Icon from a resource
      * located realtive to the given base class. Uses the ClassLoader
      * of the LookAndFeel
      *
      * @see LookAndFeel.LookAndFeel(Properties p, ClassLoader cl)
      * @param fileName of the image file
-     * @return a newly allocated ImageIcon
+     * @return a newly allocated Icon
      */
-    public ImageIcon makeIcon(String fileName) {
+    public SIcon makeIcon(String fileName) {
         return makeIcon(classLoader, fileName);
     }
 
     /**
-     * Utility method that creates a font from a font spec
-     * @param spec attributes of the font
-     * @return a font with the given attributes
+     * Utility method that creates an AttributeSet from a String
+     *
+     * @param attributes attributes string
+     * @return a newly allocated AttributeSet
      */
-    public static SFont makeFont(String value) {
-        int pos1 = value.indexOf(",", 1); 
-        String name = value.substring(0, pos1);
-
-        int pos2 = value.indexOf(",", pos1 + 1); 
-        String styleString = value.substring(pos1, pos2);
-        int style = Font.PLAIN;
-        if (styleString.indexOf("ITALIC") != -1)
-            style |= Font.ITALIC;
-        if (styleString.indexOf("BOLD") != -1)
-            style |= Font.BOLD;
-
-        int size = new Integer(value.substring(pos2 + 1)).intValue();
-
-        return new SFont(name, style, size);
+    public AttributeSet makeAttributeSet(String string) {
+        AttributeSet attributes = new SimpleAttributeSet();
+        StringTokenizer tokens = new StringTokenizer(string, ";");
+        while (tokens.hasMoreTokens()) {
+            String token = tokens.nextToken();
+            int pos = token.indexOf(":");
+            if (pos >= 0) {
+                attributes.putAttribute(token.substring(0, pos), 
+                                        token.substring(pos + 1));
+            }
+        }
+        return attributes;
     }
 
     /**
-     * Utility method that creates a color from a hex string
-     * @param value color as a hex string
-     * @return the color
-     */
-    public static Color makeColor(String value) {
-        int r = Integer.parseInt(value.substring(1, 3), 16);
-        int g = Integer.parseInt(value.substring(3, 5), 16);
-        int b = Integer.parseInt(value.substring(5, 7), 16);
-        return new Color(r, g, b);
-    }
-
-    /**
-     * Utility method that creates a style from a string
-     * @param value style as a string
+     * Utility method that creates a styleSheet from a resource string
+     * @param value styleSheet as a string
      * @return the style
      */
-    public static Style makeStyle(String style) {
-        return new Style(style);
+    public static Resource makeResource(ClassLoader classLoader, String resourceName) {
+        return new ClasspathResource(classLoader, resourceName);
     }
 
     /**
      * Utility method that creates a styleSheet from a string
      * @param value styleSheet as a string
-     * @return the style
+     * @return the styleSheet
      */
-    public static StyleSheet makeStyleSheet(ClassLoader classLoader, String resourceName) {
-        return new ResourceStyleSheet(classLoader, resourceName);
+    public Resource makeResource(String resourceName) {
+        return makeResource(classLoader, resourceName);
     }
 
     /**
-     * Utility method that creates a styleSheet from a string
-     * @param value styleSheet as a string
-     * @return the style
+     * Utility method that creates a stylesheet object from a resource
+     * @param resourceName
+     * @return the styleSheet
      */
     public StyleSheet makeStyleSheet(String resourceName) {
-        return new ResourceStyleSheet(classLoader, resourceName);
+        try {
+            CSSStyleSheet styleSheet = new CSSStyleSheet();
+            InputStream in = classLoader.getResourceAsStream(resourceName);
+            styleSheet.read(in);
+            return styleSheet;
+        }
+        catch (Exception e) {
+            logger.log(Level.WARNING, null, e);
+            return null;
+        }
+    }
+
+    /**
+     * Utility method that fetches the style with the specified <code>name</code>
+     * from the <code>lookandfeel.stylesheet</code>
+     * @param value styleSheet as a string
+     * @return the style
+     */
+    public Style makeStyle(String name) {
+        Style style = getStyleSheet().getStyle(name);
+        if (style == null)
+            logger.warning("the style specification '" + name +
+                           "' has no corresponding style definition in the 'lookandfeel.stylesheet'");
+        return style;
     }
 
     /**
      * Utility method that creates an Object of class <code>clazz</code>
      * using the single String arg constructor.
+     * @param classLoader the classLoader to be used
      * @param value object as a string
-     * @param value class of the object
+     * @param clazz class of the object
      * @return the object
      */
-    public static Object makeObject(ClassLoader classLoader, String value, Class clazz) {
+    public static Object makeObject(ClassLoader classLoader, String value, 
+                                    Class clazz) 
+    {
         try {
-            System.err.println("makeObject of type " + clazz.getName() + " with " + value);
             if (value.startsWith("new ")) {
                 int bracket = value.indexOf("(");
                 String name = value.substring("new ".length(), bracket);
@@ -250,13 +281,25 @@ public class LookAndFeel
                 return constructor.newInstance(new Object[] { value });
             }
         }
+        catch (NoSuchMethodException e) {
+            logger.log(Level.SEVERE, value + " : " + clazz.getName() 
+                       + " doesn't have a single String arg constructor", e);
+            return null;
+        }
         catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
+            logger.log(Level.SEVERE, 
+                       e.getClass().getName() + " : " + value, e);
             return null;
         }
     }
 
+    /**
+     * Utility method that creates an Object of class <code>clazz</code>
+     * using the single String arg constructor.
+     * @param value object as a string
+     * @param clazz class of the object
+     * @return the object
+     */
     public Object makeObject(String value, Class clazz) {
         return makeObject(classLoader, value, clazz);
     }
@@ -270,11 +313,61 @@ public class LookAndFeel
     public String toString() {
         return "[" + getDescription() + " - " + getClass().getName() + "]";
     }
+
+    class ResourceFactory extends CGDefaults {
+        public ResourceFactory() { super(null); }
+        
+        public Object get(String id, Class type) {
+            Object value = get(id);
+            if (value != null)
+                return value;
+
+            String property = properties.getProperty(id);
+            if (property == null) {
+                put(id, null);
+                return null;
+            }
+            
+            if (ComponentCG.class.isAssignableFrom(type)
+                || LayoutCG.class.isAssignableFrom(type)
+                || BorderCG.class.isAssignableFrom(type)) {
+                /*
+                 * some CG is requested. We do not check, whether the
+                 * value returned actually fulfills
+                 * type.isAssignableFrom(value.getClass());
+                 */
+                value = makeCG(property);
+            }
+            else if (type.isAssignableFrom(SIcon.class))
+                value = makeIcon(property);
+            else if (type.isAssignableFrom(Resource.class))
+                value = makeResource(property);
+            else if (type.isAssignableFrom(AttributeSet.class))
+                value = makeAttributeSet(property);
+            else if (type.isAssignableFrom(Style.class))
+                value = makeStyle(property);
+            else if (type.isAssignableFrom(StyleSheet.class))
+                value = makeStyleSheet(property);
+            else
+                value = makeObject(property, type);
+            
+            /*
+             * cache the object requested here for future use. A property,
+             * whose name ends with '.nocache' is not cached, thus always
+             * a new instance is created.
+             */
+            if (!id.endsWith(".nocache")) {
+                put(id, value);
+            }
+            return value;
+        }
+    }
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

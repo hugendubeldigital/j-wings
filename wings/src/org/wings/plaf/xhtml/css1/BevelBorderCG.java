@@ -14,49 +14,26 @@
 
 package org.wings.plaf.xhtml.css1;
 
-import java.awt.Insets;
 import java.io.IOException;
 
-import org.wings.*;
-import org.wings.io.*;
-import org.wings.plaf.*;
-import org.wings.plaf.xhtml.*;
-import org.wings.style.Style;
+import org.wings.border.SBorder;
+import org.wings.border.SBevelBorder;
+import org.wings.io.Device;
 
 public final class BevelBorderCG
-    extends org.wings.plaf.xhtml.BevelBorderCG
+    extends DefaultBorderCG
 {
-    private final static boolean BLACK = false;
-    private final static boolean WHITE = true;
-    private final static Insets none = new Insets(0,0,0,0);
 
-    public void writePrefix(Device d, SBorder b)
-	throws IOException
+    public void writeSpanAttributes(Device d, SBorder b )
+        throws IOException
     {
 	SBevelBorder border = (SBevelBorder)b;
-	int bevelType = border.getBevelType();
-	Insets insets = b.getInsets();
 
-	String borderStyle = (bevelType == SBevelBorder.RAISED) ? "outset" : "inset";
+        writeBorderStyle(d, b, border.getBevelType()==SBevelBorder.RAISED ? 
+                         "outset" : "inset");
 
-	d.append("<div style=\"border: ")
-	    .append(borderStyle)
-	    .append(" 1px");
-	if (insets != null && !none.equals(insets))
-	    d.append("; padding: ")
-		.append(insets.top).append(" ")
-		.append(insets.right).append(" ")
-		.append(insets.bottom).append(" ")
-		.append(insets.left)
-		.append("\">");
-	else
-	    d.append("\">");
-    }
-
-    public void writePostfix(Device d, SBorder b)
-	throws IOException
-    {
-	d.append("</div>");
+        // write insets/padding
+        super.writeSpanAttributes(d, b);
     }
 }
 
@@ -64,5 +41,6 @@ public final class BevelBorderCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

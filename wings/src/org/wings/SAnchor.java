@@ -19,13 +19,14 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * Creates a 'normal' 
+ * &lt;a href=&quothttp://whatever/&quot&gt;...&lt;/a&gt;
+ * HTML link around some components that are stored in the container.
  *
- * @author Dominik Bartenstein
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
-public class SAnchor
-    extends SContainer
+public class SAnchor extends SContainer
 {
     /**
      * @see #getCGClassID
@@ -33,68 +34,129 @@ public class SAnchor
     private static final String cgClassID = "AnchorCG";
 
     /**
-     * TODO: documentation
+     * the URL to link to.
      */
-    protected String reference = null;
-
+    protected SimpleURL url;
 
     /**
-     * TODO: documentation
-     *
+     * the target frame/window.
+     */
+    protected String target;
+
+    /**
+     * creates an anchor with emtpy URL and target.
      */
     public SAnchor() {
-        this(null);
+        this((SimpleURL) null, null);
     }
 
     /**
-     * TODO: documentation
+     * create an anchor that points to the URL url.
      *
-     * @param reference
+     * @param url the url to point to.
      */
-    public SAnchor(String reference) {
-        setReference(reference);
+    public SAnchor(String url) {
+        this(url, null);
     }
 
     /**
-     * TODO: documentation
+     * creates an anchor that points to the URL and is openend
+     * in the frame or window named target.
      *
-     * @param ref
+     * @param url the url to link to.
+     * @param target the target window or frame.
      */
-    public void setReference(URL ref) {
-        if (ref != null)
-            setReference(ref.toString());
+    public SAnchor(String url, String target) {
+        setURL(url);
+        setTarget(target);
     }
 
     /**
-     * TODO: documentation
+     * creates an anchor that points to the URL and is openend
+     * in the frame or window named target.
      *
+     * @param url the url to link to.
+     * @param target the target window or frame.
+     */
+    public SAnchor(SimpleURL url, String target) {
+        setURL(url);
+        setTarget(target);
+    }
+
+    /**
+     * set the url this anchor points to.
+     *
+     * @param ref the url.
+     */
+    public void setURL(URL ref) {
+        if (ref != null) {
+            setURL(ref.toString());
+        }
+        else {
+            setURL((SimpleURL) null);
+        }
+    }
+
+    /**
+     * set the url this anchor points to.
+     *
+     * @param ref the url.
+     */
+    public void setURL(SimpleURL r) {
+        SimpleURL oldURL = url;
+        url = r;
+        if (url == null && oldURL != null
+            || (url != null && !url.equals(oldURL))) {
+            reload(ReloadManager.RELOAD_CODE);
+        }
+    }
+
+    /**
+     * set the url this anchor points to.
+     *
+     * @param ref the url.
+     */
+    public void setURL(String url) {
+        setURL(new SimpleURL(url));
+    }
+
+    /**
+     * set the url this anchor points to.
+     *
+     * @deprecated use setURL() instead.
      * @param r
      */
     public void setReference(String r) {
-        String oldReference = reference;
-        reference = r;
-        if (reference == null && oldReference != null ||
-            reference != null && !reference.equals(oldReference))
-            reload();
+        setURL(r);
+    }
+
+    /**
+     * set the name of the target frame/window.
+     */
+    public void setTarget(String t) {
+        target = t;
+    }
+
+    /**
+     * get the name of the target frame/window.
+     */
+    public String getTarget() {
+        return target;
     }
 
     /**
      * TODO: documentation
-     *
+     * @deprecated use getURL() instead.
      * @return
      */
     public String getReference() {
-        return reference;
+        return url.toString();
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "AnchorCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
+    public SimpleURL getURL() {
+        return url;
+    }
+
     public String getCGClassID() {
         return cgClassID;
     }
@@ -108,5 +170,6 @@ public class SAnchor
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

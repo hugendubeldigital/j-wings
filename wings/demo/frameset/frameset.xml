@@ -10,8 +10,20 @@
       FrameSet
     </servlet-name>
     <servlet-class>
-      frameset.FrameSet
+      org.wings.session.WingServlet
     </servlet-class>
+    <init-param>
+      <param-name>wings.mainclass</param-name>
+      <param-value>frameset.FrameSet</param-value>
+    </init-param>
+    <init-param>
+      <param-name>wings.lookandfeel.factory</param-name>
+      <param-value>org.wings.plaf.LookAndFeelFactory$Default</param-value>
+    </init-param>
+    <init-param>
+      <param-name>wings.lookandfeel.default</param-name>
+      <param-value>/css1.jar</param-value>
+    </init-param>
   </servlet>
 
 <!-- url mappings -->

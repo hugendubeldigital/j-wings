@@ -22,7 +22,7 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * This is a card layout
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -41,23 +41,17 @@ public class SCardLayout
     protected HashMap tab = new HashMap();
 
     /**
-     * TODO: documentation
-     *
+     * Creates a new card layout
      */
     public SCardLayout() {
     }
 
-    public void addComponent(SComponent c, Object constraint) {
+    public void addComponent(SComponent c, Object constraint, int index) {
         if (tab.size() > 0)
             c.setVisible(false);
         tab.put(constraint, c);
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
     public void removeComponent(SComponent c) {
         for (Iterator e = tab.keySet().iterator() ; e.hasNext() ; ) {
             Object key = e.next();
@@ -223,14 +217,6 @@ public class SCardLayout
         return null;
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this layout.
-     *
-     * @return "CardLayoutCG"
-     * @see SLayoutManager#getCGClassID
-     * @see org.wings.plaf.CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -240,5 +226,6 @@ public class SCardLayout
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

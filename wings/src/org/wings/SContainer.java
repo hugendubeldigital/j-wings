@@ -14,24 +14,25 @@
 
 package org.wings;
 
-import java.awt.event.ContainerListener;
-import java.awt.event.ContainerEvent;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
+import org.wings.util.*;
+import org.wings.style.StyleConstants;
+import org.wings.event.SContainerListener;
+import org.wings.event.SContainerEvent;
 
 /**
- * TODO: documentation
+ * This is a container which can hold several other <code>SComponents</code>.
  *
  * @see SLayoutManager
  * @see SComponent
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SContainer
-    extends SComponent
+public class SContainer extends SComponent implements ClickableRenderComponent
 {
     /**
      * @see #getCGClassID
@@ -39,24 +40,42 @@ public class SContainer
     private static final String cgClassID = "ContainerCG";
 
     /**
-     * The constraints for the components.
+     * The constraints for the component.
      */
     protected ArrayList containerListener;
 
-    SLayoutManager layout;
+    /**
+     * The layout for the component.
+     */
+    protected SLayoutManager layout;
 
     /**
-     * TODO: documentation
+     * background image, that is rendered for this container.
+     */
+    private SIcon backgroundImage;
+
+    /**
+     * The components in this container.
+     */
+    private ArrayList componentList;
+
+    /**
+     * The constraints for the components.
+     */
+    private ArrayList constraintList;
+
+    /**
+     * creates a new container with the given layout
      *
-     * @param l
+     * @param l the layout for this container
      */
     public SContainer(SLayoutManager l) {
         setLayout(l);
     }
 
     /**
-     * TODO: documentation
-     *
+     * creates a new container with no layout manager, i.e. the components
+     * are simply written in the same order they were added.
      */
     public SContainer() {}
 
@@ -69,22 +88,23 @@ public class SContainer
     }
 
     /**
-     * TODO: documentation
+     * Sets a new layout manager.
      *
-     * @param l
+     * @param l new layout manager
      */
     public void setLayout(SLayoutManager l) {
         if (layout != null) {
             for ( int i=0; i<getComponentCount(); i++ ) {
                 layout.removeComponent(getComponentAt(i));
             }
+            layout.setContainer(null);
         }
 
         layout = l;
 
         if ( layout!=null ) {
             for ( int i=0; i<getComponentCount(); i++ ) {
-                layout.addComponent(getComponentAt(i), getConstraintAt(i));
+                layout.addComponent(getComponentAt(i), getConstraintAt(i), i);
             }
 
             layout.setContainer(this);
@@ -92,11 +112,36 @@ public class SContainer
     }
 
     /**
-     * TODO: documentation
+     * Set the background image.
      *
-     * @return
+     * @param icon the SIcon representing the background image.
      */
-    public SLayoutManager getLayout() {
+    public void setBackgroundImage(SIcon img) {
+        backgroundImage = img;
+        if (img == null) {
+            removeAttribute(StyleConstants.BACKGROUND_IMAGE);
+        }
+        else {
+            setAttribute(StyleConstants.BACKGROUND_IMAGE, 
+                         "url(" + img.getURL().toString() + ")");
+        }
+    }
+
+    /**
+     * return the background image for this frame.
+     *
+     * @return the background image as SIcon.
+     */
+    public SIcon getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    /**
+     * Returns the current layout
+     *
+     * @return current layout
+     */
+    public final SLayoutManager getLayout() {
         return layout;
     }
 
@@ -107,7 +152,7 @@ public class SContainer
      *
      * @param    l the container listener
      */
-    public void addContainerListener(ContainerListener l) {
+    public final void addContainerListener(SContainerListener l) {
         if (l == null) {
             return;
         }
@@ -125,8 +170,8 @@ public class SContainer
      *
      * @param 	l the container listener
      */
-    public void removeContainerListener(ContainerListener l) {
-        if (l == null) {
+    public final void removeContainerListener(SContainerListener l) {
+        if (l == null || containerListener==null ) {
             return;
         }
         containerListener.remove(l);
@@ -140,49 +185,33 @@ public class SContainer
      * following occurs:
      * a) A ContainerListener object is registered via addContainerListener()
      * b) Container events are enabled via enableEvents()
-     * @see Component#enableEvents
      * @param e the container event
      */
-    protected void processContainerEvent(ContainerEvent e) {
+    protected void processContainerEvent(SContainerEvent e) {
         if (containerListener != null && containerListener.size()>0) {
+            Iterator it=containerListener.iterator();
             switch(e.getID()) {
-            case ContainerEvent.COMPONENT_ADDED:
-                {
-                    Object[] cls = containerListener.toArray();
-                    for ( int i=0; i<cls.length; i++ )
-                        ((ContainerListener)cls[i]).componentAdded(e);
-                    break;
-                }
+            case SContainerEvent.COMPONENT_ADDED:
+                while (it.hasNext())
+                    ((SContainerListener)it.next()).componentAdded(e);
+                break;
 
-            case ContainerEvent.COMPONENT_REMOVED:
-                {
-                    Object[] cls = containerListener.toArray();
-                    for ( int i=0; i<cls.length; i++ )
-                        ((ContainerListener)cls[i]).componentRemoved(e);
-                    break;
-                }
+            case SContainerEvent.COMPONENT_REMOVED:
+                while (it.hasNext())
+                    ((SContainerListener)it.next()).componentRemoved(e);
+                break;
             }
         }
     }
 
-
-    /**
-     * The components in this container.
-     */
-    private ArrayList componentList;
-
-    protected ArrayList getComponentList() {
-        if ( componentList == null )
+    protected final ArrayList getComponentList() {
+        if ( componentList == null ) {
             componentList = new ArrayList(3);
+        }
         return componentList;
     }
 
-    /**
-     * The constraints for the components.
-     */
-    private ArrayList constraintList;
-
-    protected ArrayList getConstraintList() {
+    protected final ArrayList getConstraintList() {
         if ( constraintList == null )
             constraintList = new ArrayList(3);
         return constraintList;
@@ -190,61 +219,60 @@ public class SContainer
 
 
     /**
-     * TODO: documentation
+     * returns the number of components in this container
      *
-     * @return
+     * @return number of components
      */
-    public int getComponentCount() {
+    public final int getComponentCount() {
         return getComponentList().size();
     }
 
     /**
-     * TODO: documentation
+     * returns the component at the given position
      *
-     * @param i
-     * @return
+     * @param i position
+     * @return component at given pos
      */
-    public SComponent getComponentAt(int i) {
+    public final SComponent getComponentAt(int i) {
         return (SComponent)getComponentList().get(i);
     }
 
     /**
-     * TODO: documentation
+     * returns the component at the given position
      *
-     * @param i
-     * @return
+     * @param i position
+     * @return component at given pos
+     * @deprecated use {@link #getComponentAt}
      */
-    public SComponent getComponent(int i) {
+    public final SComponent getComponent(int i) {
         return getComponentAt(i);
     }
 
-    public SComponent[] getComponents() {
+    public final SComponent[] getComponents() {
         // vorsichtig mit Threads ( eigentlich TreeLock!!!)
         return (SComponent[])getComponentList().toArray(new SComponent[getComponentCount()]);
     }
 
 
     /**
-     * TODO: documentation
+     * returns the constraint for the given component position
      *
-     * @param i
-     * @return
+     * @param i position
+     * @return constraint for component at given position
      */
-    public Object getConstraintAt(int i) {
+    public final Object getConstraintAt(int i) {
         return getConstraintList().get(i);
     }
 
 
 
-    /*
-     * Entfernt die Komponente gleichzeitig aus dem LayoutManager,
-     * aus dem internen ArrayList und vom Dispatcher.
-     */
     /**
-     * TODO: documentation
+     * Removes the given component from the container. This includes removing
+     * it from the LayoutManager (if set), the internal list and
+     * the dispatcher.
      *
-     * @param c
-     * @return
+     * @param c the component to remove
+     * @return true if the component was found and removed; false otherwise.
      */
     public boolean removeComponent(SComponent c) {
         if ( c==null )
@@ -253,144 +281,179 @@ public class SContainer
         if ( layout!=null )
             layout.removeComponent(c);
 
-        c.setParent(null);
-
         int index = getComponentList().indexOf(c);
-        boolean erg = getComponentList().remove(c);
-        if ( erg ) {
+        boolean isRemoved = getComponentList().remove(c);
+        if ( isRemoved ) {
             getConstraintList().remove(index);
 
-            // processContainerEvent(new ContainerEvent(this,
-            // ContainerEvent.COMPONENT_REMOVED, c));
+            processContainerEvent(new SContainerEvent(this,
+                                  SContainerEvent.COMPONENT_REMOVED, c));
+            c.setParent(null);
         }
-        if (c instanceof SFrameModifier)
-            getParentFrame().removeFrameModifier((SFrameModifier)c);
-        return erg;
+        return isRemoved;
     }
 
     /**
-     * Remove the component at given index from this container.
-     * Components are index by the order of adding them.
+     * Removes the component at the given position from the container.
      *
-     * @param i index of Component starting with 0
-     * @return the removed component if found, <tt>null</tt> otherwise
-     * @deprecated use {@link remove(int)}
+     * @param i the position of the component to remove
+     * @return the removed component
+     * @see #removeComponent(org.wings.SComponent)
      */
-    public SComponent removeComponentAt(int i) {
+    public final SComponent removeComponentAt(int i) {
         SComponent c = getComponentAt(i);
         removeComponent(c);
         return c;
     }
 
     /**
-     * TODO: documentation
+     * Removes the component at the given position from the container.
      *
      * @param c
+     * @see #removeComponent(org.wings.SComponent)
      */
-    public void remove(SComponent c) {
+    public final void remove(SComponent c) {
         removeComponent(c);
     }
 
     /**
-     * Remove the component at given index from this container.
-     * Components are index by the order of adding them.
+     * Removes the component at the given position from the container.
      *
-     * @param i index of Component starting with 0
+     * @param i
+     * @see #removeComponentAt
+     * @deprecated use {@link #removeComponentAt(int)}
      */
-    public void remove(int i) {
+    public final void remove(int i) {
         removeComponentAt(i);
     }
 
     /**
-     * TODO: documentation
-     *
+     * Removes all components from the container.
      */
-    public void removeAllComponents() {
+    public final void removeAllComponents() {
         removeAll();
     }
 
     /**
-     * TODO: documentation
-     *
+     * Removes all components from the container.
      */
-    public void removeAll() {
-        while ( getComponentCount() > 0 )
+    public final void removeAll() {
+        while ( getComponentCount() > 0 ) {
             removeComponentAt(0);
+        }
     }
 
 
     /**
-     * TODO: documentation
+     * Adds a component to the container with null constraint at the end
+     * of the internal list.
      *
-     * @param c
-     * @return
+     * @param c the component to add
+     * @return the added component
      */
-    public SComponent add(SComponent c) {
+    public final SComponent add(SComponent c) {
         return addComponent(c, null);
     }
 
-    public void add(SComponent c, Object constraint) {
+    /**
+     * Adds a component to the container with the given constraint at the end
+     * of the internal list.
+     *
+     * @param c the component to add
+     * @param constraint the constraint for this component
+     * @return the added component
+     */
+    public final void add(SComponent c, Object constraint) {
         addComponent(c, constraint);
     }
 
-    public SComponent add(SComponent c, int index) {
+    /**
+     * Adds a component to the container with null constraint at the given
+     * index.
+     *
+     * @param c the component to add
+     * @param index the index of the component
+     * @return the added component
+     */
+    public final SComponent add(SComponent c, int index) {
         return addComponent(c, null, index);
     }
 
-    public void add(SComponent c, Object constraint, int index) {
+    /**
+     * Adds a component to the container with the given constraint at
+     * the given index.
+     *
+     * @param c the component to add
+     * @param index the index of the component
+     * @return the added component
+     */
+    public final void add(SComponent c, Object constraint, int index) {
         addComponent(c, constraint, index);
     }
 
     /**
-     * TODO: documentation
+     * Adds a component to the container with null constraint at the end
+     * of the internal list.
      *
-     * @param c
-     * @return
+     * @param c the component to add
+     * @return the added component
      */
     public SComponent addComponent(SComponent c) {
         return addComponent(c, null);
     }
 
+    /**
+     * Adds a component to the container with the given constraint at the end
+     * of the internal list.
+     *
+     * @param c the component to add
+     * @param constraint the constraint for this component
+     * @return the added component
+     */
     public SComponent addComponent(SComponent c, Object constraint) {
-        if (c != null) {
-            if (layout != null)
-                layout.addComponent(c, constraint);
-
-            getComponentList().add(c);
-            getConstraintList().add(constraint);
-            c.setParent(this);
-
-            // processContainerEvent(new ContainerEvent(this,
-            // ContainerEvent.COMPONENT_ADDED, c));
-        }
-
-        return c;
+        return addComponent(c, constraint, getComponentList().size());
     }
 
-    public SComponent addComponent(SComponent c, int index) {
+    /**
+     * Adds a component to the container with the given constraint at
+     * the given index.
+     *
+     * @param c the component to add
+     * @param index the index of the component
+     * @return the added component
+     */
+    public final SComponent addComponent(SComponent c, int index) {
         return addComponent(c, null, index);
     }
 
+    /**
+     * Adds a component to the container with the given constraint at
+     * the given index.
+     *
+     * @param c the component to add
+     * @param index the index of the component
+     * @return the added component
+     */
     public SComponent addComponent(SComponent c, Object constraint, int index){
         if (c != null) {
             if (layout != null)
-                layout.addComponent(c, constraint);
+                layout.addComponent(c, constraint, index);
 
             getComponentList().add(index, c);
             getConstraintList().add(index, constraint);
             c.setParent(this);
 
-            // processContainerEvent(new ContainerEvent(this,
-            // ContainerEvent.COMPONENT_ADDED, c));
+            processContainerEvent(new SContainerEvent(this,
+                                  SContainerEvent.COMPONENT_ADDED, c));
         }
 
         return c;
     }
 
     /**
-     * TODO: documentation
+     * Sets the parent frame.
      *
-     * @param f
+     * @param f parent frame
      */
     protected void setParentFrame(SFrame f) {
         if ( f!=parentFrame ) {
@@ -402,17 +465,18 @@ public class SContainer
     }
 
     /**
-     * TODO: documentation
-     *
-     * @return
+     * CAVEAT this did not work yet... We need to clone the layout manager as
+     * well, so SLayoutManager must be Cloneable
      */
     public Object clone() {
         try {
             SContainer erg = (SContainer)super.clone();
+            // uiuiui, layout manager must be cloned as well,...
+            
             // componentList and constraintList contain references to the
             // original components / constraints
-            erg.componentList.clear();
-            erg.constraintList.clear();
+            erg.getComponentList().clear();
+            erg.getConstraintList().clear();
             for ( int i=0; i<getComponentCount(); i++ ) {
                 erg.addComponent((SComponent)getComponentAt(i).clone());
             }
@@ -424,14 +488,6 @@ public class SContainer
         }
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "ContainerCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -439,11 +495,48 @@ public class SContainer
     public void setCG(ContainerCG cg) {
         super.setCG(cg);
     }
+
+    /**
+     * Invite a ComponentVisitor.
+     * Invokes visit(SContainer) on the ComponentVisitor.
+     * @param visitor the visitor to be invited 
+     */
+    public void invite(ComponentVisitor visitor)
+        throws Exception
+    {
+        visitor.visit(this);
+    }
+    
+    /**
+     * Calls the visitor on each SComponent this container has. You might
+     * want to call this in your visitor in visit(SContainer).
+     *
+     * @param visitor an implementation of the {@link ComponentVisitor}
+     *                interface.
+     */
+    public final void inviteEachComponent(ComponentVisitor visitor) 
+        throws Exception {
+	Iterator iterator = getComponentList().iterator();
+	while (iterator.hasNext()) {
+	    ((SComponent)iterator.next()).invite(visitor);
+        }
+    }
+
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */
+
+
+
+
+
+
+
+
+

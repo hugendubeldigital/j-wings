@@ -35,13 +35,7 @@ import org.wings.*;
 public class ExplorerPanel
     extends SPanel
 {
-    private final DirTableModel dirTableModel = new DirTableModel();
-
-    private final STable dirTable = new STable(dirTableModel);
-
-    private final STree explorerTree = new STree();
-
-    private final SLabel currentDirectory = new SLabel();
+    private final ExplorerComponents components = new ExplorerComponents();
 
     public ExplorerPanel(String dir) {
         try {
@@ -55,160 +49,25 @@ public class ExplorerPanel
             setLayout(new SFlowLayout());
         }
 
-	add(createTree(), "DirTree");
-	add(createTable(), "FileTable");
-	add(createUpload(), "UploadForm");
-	add(createDeleteButton(), "DeleteButton");
-        add(currentDirectory, "currentDir");
+	add(components.getTree(), "DirTree");
+	add(components.getTable(), "FileTable");
+	add(components.createUpload(), "UploadForm");
+	add(components.createDeleteButton(), "DeleteButton");
+        add(components.getCurrentDirLabel(), "currentDir");
         
-        currentDirectory.setText("- no dir -");
-        setExplorerBaseDir(dir);
+        components.setExplorerBaseDir(dir);
     }
 
     public void setExplorerBaseDir(String dir) {
-        explorerTree.setModel(createModel(dir));
-        if ( explorerTree.getRowCount()>0 )
-            explorerTree.setSelectionRow(0);
+        components.setExplorerBaseDir(dir);
     }
 
-    /**
-     *
-     */
-    private void deleteFiles() {
-        int selected[] = dirTable.getSelectedRows();
-
-        for (int i=0; i<selected.length; i++)
-            dirTableModel.getFileAt(selected[i]).delete();
-
-        dirTableModel.reset();
-    }
-
-    protected SComponent createTable() {
-        dirTable.setSelectionMode(STable.MULTIPLE_SELECTION);
-
-        // timestamp and filesize are displayed with special renderers
-
-	dirTable.setDefaultRenderer(Date.class, new DateTableCellRenderer());
-	dirTable.setDefaultRenderer(Long.class, new SizeTableCellRenderer());
-
-	return dirTable; 
-    }
-
-    protected SComponent createDeleteButton() {
-        SButton delete = new SButton("delete selected");
-        delete.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                deleteFiles();
-            } 
-        });
-
-        return delete;
-    }
-
-    protected SComponent createUpload() {
-        SForm p = new SForm();
-        p.setEncodingType("multipart/form-data");
-
-        final SFileChooser chooser = new SFileChooser();
-        p.add(chooser);
-
-        SButton submit = new SButton("upload");
-        submit.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                writeFile(chooser.getSelectedFile(), chooser.getFilename());
-            }
-        });
-        p.add(submit);
-
-        return p;
-    }
-
-    /**
-     *
-     */
-    private void writeFile(File file, String fileName) {
-        try {
-            FileInputStream fin = new FileInputStream(file);
-            FileOutputStream fout =
-                new FileOutputStream(dirTableModel.getDirectory().getAbsolutePath() +
-                                     File.separator + fileName);
-            int val;
-
-            while ((val = fin.read()) != -1)
-                fout.write(val);
-
-            fin.close();
-            fout.close();
-
-            dirTableModel.reset();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    protected SComponent createTree() {
-
-        // wenn ein Verzeichnis selektiert wird, wird die Tabelle
-        // aktualisiert
-        explorerTree.addTreeSelectionListener(new TreeSelectionListener() {
-            public void valueChanged(TreeSelectionEvent e) {
-
-                TreePath tpath = e.getNewLeadSelectionPath();
-
-                if ( tpath!=null ) {
-                    DefaultMutableTreeNode selectedNode =
-                        (DefaultMutableTreeNode)tpath.getLastPathComponent();
-                    
-                    File newDir = (File)selectedNode.getUserObject();
-                    dirTableModel.setDirectory(newDir);
-                    currentDirectory.setText(newDir.toString());
-                } else {
-                    dirTableModel.setDirectory(null);
-                    currentDirectory.setText("- no dir -");
-                }
-            } 
-        });
-
-        explorerTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-
-        return explorerTree;
-    }
-
-    protected TreeModel createModel(String dir) {
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(new File(dir));
-        appendDirTree(root);
-	return new DefaultTreeModel(root);
-    }
-
-    /**
-     * Build the directory tree. For simplicity a static model.
-     */
-    private void appendDirTree(DefaultMutableTreeNode root) {
-        File entries[] = ((File)root.getUserObject()).listFiles();
-        if (entries == null)
-            return;
-
-        for ( int i=0; i<entries.length; i++) {
-            DefaultMutableTreeNode nextNode = new DefaultMutableTreeNode(entries[i]) {
-                    public String toString() {
-                        return ((File) userObject).getName();
-                    }
-                };
-            
-            if (entries[i].isDirectory()) {
-                root.add(nextNode);
-                appendDirTree(nextNode);
-            }
-        }
-
-        return;
-    }
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

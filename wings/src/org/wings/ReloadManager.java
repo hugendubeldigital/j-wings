@@ -31,18 +31,45 @@ import org.wings.style.Style;
 import org.wings.externalizer.ExternalizeManager;
 
 /**
- * 
+ * The reload manager interface.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
 public interface ReloadManager
 {
-    void markDirty(SComponent component);
+    final int RELOAD_CODE   = 0x01;
+    final int RELOAD_STYLE  = 0x02;
+    final int RELOAD_SCRIPT = 0x04;
+    final int RELOAD_ALL    = RELOAD_CODE | RELOAD_STYLE | RELOAD_SCRIPT;
 
-    SComponent[] getDirtyComponents();
-    void clearDirtyComponents();
+    void reload(SComponent component, int aspect);
 
-    SComponent getManagerComponent();
-    String getTarget();
+    /**
+     * Mark a <code>component</code> dirty.
+     * Frames that contain dirty components have to be reloaded.
+     * @param component the dirty component
+     */
+    void markDirty(DynamicResource d);
+
+    /**
+     * Return a set of all dynamic resources that are marked dirty.
+     * @return a set all dynamic resource that have been marked dirty.
+     */
+    Set getDirtyResources();
+
+    /**
+     * Clear dirty components collection.
+     */
+    void clear();
+
+    void invalidateResources();
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

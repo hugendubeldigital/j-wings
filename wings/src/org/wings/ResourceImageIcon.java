@@ -14,10 +14,17 @@
 
 package org.wings;
 
-import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
+
+import org.wings.session.SessionManager;
+import org.wings.externalizer.ExternalizeManager;
 
 /*
  * Diese Klasse ist nur ein Wrapper, um Eingabestroeme von Grafiken mit dem
@@ -28,18 +35,24 @@ import javax.swing.ImageIcon;
  * benutzen und implementiert schon alles was benoetigt wird...
  */
 /**
- * TODO: documentation
+ * An SIcon of this type is externalized globally. It is not bound to a session.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class ResourceImageIcon
-    extends ImageIcon
+    extends ClasspathResource
+    implements SIcon
 {
-    protected ClassLoader classLoader;
+    /**
+     * TODO: documentation
+     */
+    private int width = -1;
 
-    protected String resourceFileName;
-    protected String extension; 
+    /**
+     * TODO: documentation
+     */
+    private int height = -1;
 
     /**
      * TODO: documentation
@@ -50,99 +63,48 @@ public class ResourceImageIcon
         this(ResourceImageIcon.class.getClassLoader(), resourceFileName);
     }
 
-    public ResourceImageIcon(Class baseClass, String resourceFileName) {
-        this(baseClass.getClassLoader(), resolveName(baseClass, resourceFileName));
-    }
+    public ResourceImageIcon(ClassLoader classLoader, String resourceFileName){
+        super(classLoader, resourceFileName);
 
-    public ResourceImageIcon(ClassLoader classLoader, String resourceFileName) {
-        super(getImageData(classLoader, resourceFileName));
-        this.classLoader = classLoader;
-        this.resourceFileName = resourceFileName;
-        extension = resourceFileName.substring(resourceFileName.lastIndexOf('.') + 1);
-        if (extension == null || extension.length() == 0)
-            extension = "png";
-        if (extension.equals("jpg"))
-            extension = "jpeg";
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public InputStream getInputStream() {
-        return classLoader.getResourceAsStream(resourceFileName);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getExtension() {
-        return extension;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String toString() {
-        return resourceFileName;
-    }
-
-    private static String resolveName(Class baseClass, String fileName) {
-        if (fileName == null) {
-            return fileName;
+        if (extension == null || extension.length() == 0) {
+            extension = "";
+            mimeType = "image/png";
         }
-        if (!fileName.startsWith("/")) {
-            while (baseClass.isArray()) {
-                baseClass = baseClass.getComponentType();
-            }
-            String baseName = baseClass.getName();
-            int index = baseName.lastIndexOf('.');
-            if (index != -1) {
-                fileName = baseName.substring(0, index).replace('.', '/')
-                    + "/" + fileName;
-            }
-        } else {
-            fileName = fileName.substring(1);
-        }
-        return fileName;
+        else if (extension.toUpperCase().equals("JPG"))
+            mimeType = "image/jpeg";
+        else
+            mimeType = "image/" + extension;
+
+        calcDimensions();
     }
 
-    private static byte[] getImageData(ClassLoader classLoader, String resourceFileName) {
-        InputStream resource = null;
+    /**
+     *
+     */
+    protected void calcDimensions() {
         try {
-            resource = classLoader.getResourceAsStream(resourceFileName);
-            if (resource == null) {
-                // not found
-                System.err.println("resource not found: " + resourceFileName);
-                return new byte[0];
+            bufferResource();
+            
+            if ( buffer!=null && buffer.isValid()) {
+                BufferedImage image = 
+                    ImageIO.read(new ByteArrayInputStream(buffer.getBytes()));
+                width = image.getWidth();
+                height = image.getHeight();
             }
-
-            byte[] buffer = new byte[resource.available()];
-            resource.read(buffer);
-
-            if ( buffer==null )
-                buffer = new byte[0];
-
-            return buffer;
+        } catch ( Throwable e ) {
+            // is not possible to calc Dimensions
+            // maybe it is not possible to buffer resource, 
+            // or resource is not a
+            // supported image type
         }
-        catch (java.io.IOException ioe) {
-            System.err.println(ioe.toString());
-            return new byte[0];
-        }
-        finally {
-            try {
-                if (resource != null)
-                    resource.close();
-            }
-            catch(Exception e) {
-                System.err.println("Cannot close " + resourceFileName);
-            } // ignore
-        }
+    }
+
+    public int getIconWidth() {
+        return width;
+    }
+
+    public int getIconHeight() {
+        return height;
     }
 }
 
@@ -150,5 +112,6 @@ public class ResourceImageIcon
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -14,14 +14,12 @@
 
 package org.wings;
 
-import java.awt.AWTEvent;
 import java.awt.event.*;
-import java.lang.Boolean;
 import java.util.EventObject;
-import javax.swing.Icon;
+
 import javax.swing.event.*;
-import javax.swing.table.*;
-import javax.swing.tree.*;
+
+import org.wings.table.STableCellEditor;
 
 /**
  * TODO: documentation
@@ -115,7 +113,6 @@ public class SDefaultCellEditor
                     else {
                         bool = false;
                     }
-                    System.err.println("setValue(" + bool + ")");
                     ((SCheckBox)editorComponent).setSelected(bool);
                     ((SCheckBox)editorComponent).setSelected(!bool);
                 }
@@ -146,19 +143,19 @@ public class SDefaultCellEditor
     }
 
     /** Icon used for the commit button.*/
-    transient protected Icon commitIcon = null;
+    transient protected SIcon commitIcon = null;
 
     /**
      * Sets the icon used for the commit button.
      */
-    public void setCommitIcon(Icon newIcon) {
+    public void setCommitIcon(SIcon newIcon) {
         commitIcon = newIcon;
     }
 
     /**
      * Returns the icon used for the commit button.
      */
-    public Icon getCommitIcon() {
+    public SIcon getCommitIcon() {
         return commitIcon;
     }
 
@@ -344,7 +341,7 @@ public class SDefaultCellEditor
     //
 
     // implements javax.swing.table.TableCellEditor
-    public SComponent getTableCellEditorComponent(SBaseTable table, Object value,
+    public SComponent getTableCellEditorComponent(STable table, Object value,
                                                   boolean isSelected,
                                                   int row, int column) {
 
@@ -446,5 +443,6 @@ public class SDefaultCellEditor
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

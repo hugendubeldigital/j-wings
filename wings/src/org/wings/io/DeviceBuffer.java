@@ -18,13 +18,13 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 /**
- * TODO: documentation
+ * A Device, that buffers the data written to it to be
+ * written to some other Device later (see {@link writeTo(Device)})
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public final class DeviceBuffer
-    implements Device
+public final class DeviceBuffer implements Device
 {
     //  private static final byte[] NULL_STRING = "null".getBytes();
 
@@ -38,6 +38,8 @@ public final class DeviceBuffer
         buffer = new byte[initialCapacity];
         this.capacityIncrement = capacityIncrement;
     }
+
+    public boolean isSizePreserving() { return true; }
 
     /**
      * TODO: documentation
@@ -58,11 +60,8 @@ public final class DeviceBuffer
         this(2000);
     }
 
-    /**
-     * Flush this Stream.
-     */
-    public void flush () throws IOException {
-    }
+    public void flush () { }
+    public void close() { }
 
     /**
      * Print a String.
@@ -85,9 +84,7 @@ public final class DeviceBuffer
         return this;
 
         /*
-         Eigentlich muesste hier das Encoding der HTMLSeite bekannt sein!!!
-         Dann koennte man es auch korrekt implementieren !
-
+          correct implementation would be someting like
          byte[] bytes = NULL_STRING;
          if ( s!=null )
          bytes = s.getBytes();
@@ -106,8 +103,9 @@ public final class DeviceBuffer
     /**
      * Print a character array.
      */
-    public Device print (char[] c, int start, int end) throws IOException {
-        for (int i=start; i <= end; i++)
+    public Device print (char[] c, int start, int len) throws IOException {
+        final int end = start + len;
+        for (int i=start; i < end; i++)
             print(c[i]);
         return this;
     }
@@ -127,42 +125,6 @@ public final class DeviceBuffer
             return print(o.toString());
         else
             return print("null");
-    }
-
-    /**
-     * Print a String. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (String s) {
-        try {
-            print (s);
-        }
-        catch (IOException ignore) {}
-        return this;
-    }
-
-    /**
-     * Print an Integer. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (int i) {
-        try {
-            print (i);
-        }
-        catch (IOException ignore) {}
-        return this;
-    }
-
-    /**
-     * Print any Object. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (Object o) {
-        try {
-            print (o);
-        }
-        catch (IOException ignore) {}
-        return this;
     }
 
     /**
@@ -251,5 +213,6 @@ public final class DeviceBuffer
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

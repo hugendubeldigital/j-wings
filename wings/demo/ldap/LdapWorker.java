@@ -1,5 +1,7 @@
 package ldap;
 
+// uebergangsweise ..
+import org.wings.session.*;
 
 import javax.naming.*;
 import javax.naming.directory.*;
@@ -20,6 +22,9 @@ public class LdapWorker
     private String bindDN;
     private String password;
     private String server;
+    private final static String DELIM = ":";
+
+    private boolean addOp = false;
 
     public LdapWorker (String s, String base, String bind, String p) {
 	setBaseDN(base);
@@ -28,19 +33,23 @@ public class LdapWorker
 	setPassword(p);
 
 	this.password = p;
-	Hashtable env = new Hashtable();
-	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-	env.put(Context.PROVIDER_URL, "ldap://" + getServer());
-	env.put(Context.SECURITY_PRINCIPAL, getBindDN());
-	env.put(Context.SECURITY_CREDENTIALS, getPassword());
-
+	Hashtable env = new Hashtable(SessionManager.getSession().getProperties());
 	try {
 	    ctx = new InitialDirContext(env);
 	}
 	catch(NamingException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace(System.err);
 	    setSuccess(false);
-	    System.err.println("Problem " + e);
-	}
+        }
+    }
+
+    public boolean getAddOp() {
+        return addOp;
+    }
+
+    public void setAddOp(boolean status) {
+        addOp = status;
     }
 
     private void setBaseDN(String b) {
@@ -81,6 +90,7 @@ public class LdapWorker
 	return success;
     }
 
+    public DirContext getContext() { return ctx; }
 
     //veraendert attribute eines entry's mit dem DN=dn
     public boolean modifyAttributes(String dn, BasicAttributes attributes) {
@@ -96,6 +106,7 @@ public class LdapWorker
 
     //gibt einen Vector der unterstuetzten objektklassen zurueck
     public ArrayList getObjects() {
+
 	ArrayList ol = null;
 	try {
 	    String [] attrs = null;
@@ -111,13 +122,11 @@ public class LdapWorker
 	    Attribute attr = null;
 	    while (answer.hasMore()) {
 		SearchResult sr = (SearchResult)answer.next();
-		System.out.println(">>>" + sr.getName());
-		Attributes attribs = sr.getAttributes();
+                Attributes attribs = sr.getAttributes();
 		for (NamingEnumeration ae = attribs.getAll();
 		     ae.hasMore();) {
 		    attr = (Attribute)ae.next();
-		    System.out.println("attribute: " + attr.getID());
-		}
+                }
 
 		NamingEnumeration ne = attr.getAll();
 		ol = getObjNames(ne);
@@ -151,8 +160,7 @@ public class LdapWorker
   		}
   		if (sup!=null && !sup.equals("top")) {
   		    obj = obj + " SUP " +"(" + sup + ")";
-  		    System.out.println("obj is" + obj );
-  		}
+                }
 		
   		objArray.add(obj);
   	    }
@@ -425,10 +433,14 @@ public class LdapWorker
     
     public void addNewEntry(String dn, Hashtable vals) {
 	try {
-	System.out.println("ein neues Entry");
-	Attributes attrs = getAttributes(vals);
-	ctx.createSubcontext(dn,attrs);
-	}
+            System.err.println("die dn ist " + dn);
+            System.err.println("die Attribute " + vals);
+            Attributes attrs = getAttributes(vals);
+            System.err.println("die bearbeiteten Attribute  " + attrs);
+            ctx.createSubcontext(dn,attrs);
+            addOp = true;
+            
+        }
 	catch (NamingException e){
 	    e.printStackTrace();
 	}
@@ -436,16 +448,16 @@ public class LdapWorker
     
     
     private Attributes getAttributes(Hashtable vals) {
-	Attributes attrs = new BasicAttributes();
+        Attributes attrs = new BasicAttributes();
 	Enumeration e;
 	e = vals.keys();
 	while (e!=null && e.hasMoreElements()) {
 	    Object key = e.nextElement();
 	    Attribute attr = new BasicAttribute((String)key);
 	    String values = (String)vals.get(key);
-	    StringTokenizer parser = new StringTokenizer(values, ",");
+            	    StringTokenizer parser = new StringTokenizer(values, DELIM);
 	    while (parser.hasMoreTokens()) {
-		attr.add(parser.nextToken());
+                attr.add(parser.nextToken());
 	    }
 	    attrs.put(attr);
 	}
@@ -455,8 +467,7 @@ public class LdapWorker
     //remove the entry
     public void removeEntry(String dn) {
 	try { 
-	    System.out.println("entry " + dn + "removed");
-	    ctx.destroySubcontext(dn);
+            ctx.destroySubcontext(dn);
 	}
 	catch (NamingException exc) {
 	    System.out.println("entry to remove not found");
@@ -464,3 +475,11 @@ public class LdapWorker
     }
     
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

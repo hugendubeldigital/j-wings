@@ -18,14 +18,14 @@ import java.io.IOException;
 
 import javax.swing.Icon;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.util.*;
 import org.wings.externalizer.ExternalizeManager;
 
 public class MenuBarCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.MenuBarCG, SConstants
 {
     private final static String propertyPrefix = "MenuBar";
@@ -41,44 +41,44 @@ public class MenuBarCG
         SMenuBar mbar = (SMenuBar) c;
         int mcount = mbar.getMenuCount();
         
-        d.append("<div class=\"menubar\">");
-        d.append("<table cellspacing=\"0\" cellpadding=\"0\" vspace=\"0\" hspace=\"0\"><tr align=\"left\">");
+        d.print("<div class=\"menubar\">");
+        d.print("<table cellspacing=\"0\" cellpadding=\"0\" vspace=\"0\" hspace=\"0\"><tr align=\"left\">");
         for (int i = 0; i < mcount; i++) {
             SMenu menu = (SMenu) mbar.getComponentAtIndex( i );
             if ( menu.isActive() ) {
-                d.append("<td class=\"amenu\">");
+                d.print("<td class=\"amenu\">");
                 menu.write(d);
-                d.append("<div id=\"MenuBarLayer\" class=\"pdmenu\">");
+                d.print("<div id=\"MenuBarLayer\" class=\"pdmenu\">");
 
                 int micount = menu.getMenuComponentCount();
                 for ( int mi = 0; mi < micount; mi++ ) {
                     SComponent menuitem = menu.getMenuComponent( mi );
                     if (menuitem instanceof SSeparator)
                     {
-                        d.append("<br><img src=\"\" class=\"menuseparator\" width=\"");
-                        d.append(((SSeparator) menuitem).getWidth());
-                        d.append("\" height=\"1\"><br>");
+                        d.print("<br><img src=\"\" class=\"menuseparator\" width=\"");
+                        d.print(((SSeparator) menuitem).getWidth());
+                        d.print("\" height=\"1\"><br>");
                     }
                     else {
-                       d.append("&nbsp;");
+                       d.print("&nbsp;");
                        menuitem.write(d);
                         if ((mi + 1) < micount) {
                             if (!(menu.getMenuComponent(mi + 1) instanceof SSeparator))
-                                d.append("&nbsp;<br>");
+                                d.print("&nbsp;<br>");
                         }
                     }
                 }
-                d.append("</div>");
-                d.append("</td>");
+                d.print("</div>");
+                d.print("</td>");
             }
             else {
-                d.append("<td class=\"menu\">");
+                d.print("<td class=\"menu\">");
                 menu.write(d);
-                d.append("</td>");
+                d.print("</td>");
             }
         }
-        d.append("</tr></table>");
-        d.append("</div>");
+        d.print("</tr></table>");
+        d.print("</div>");
     }
 }
 
@@ -86,5 +86,6 @@ public class MenuBarCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

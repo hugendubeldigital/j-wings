@@ -15,14 +15,15 @@
 package wingset;
 
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Properties;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.wings.*;
-import org.wings.externalizer.*;
-import org.wings.servlet.*;
+import org.wings.plaf.*;
 import org.wings.session.*;
+import org.wings.util.*;
 
 /**
  * TODO: documentation
@@ -31,25 +32,107 @@ import org.wings.session.*;
  * @version $Revision$
  */
 public class WingSet
-    extends WingServlet
 {
+    static final ClassLoader cl = WingSet.class.getClassLoader();
+    private final static SIcon brushedMetal = 
+        new ResourceImageIcon(cl, "wingset/icons/brushedMetal.gif");
 
-    public SessionServlet generateSessionServlet(HttpServletRequest req)
-        throws Exception
-    {
-        // create new default session and set plaf
-        DefaultSession session = new DefaultSession();
-        URL url = getServletConfig().getServletContext().getResource("/css1.jar");
-        session.getCGManager().setLookAndFeel(url);
+    private SFrame frame;
+    /*
+     * time measurement (a little hacky)
+     */
+    private SLabel timeMeasure;
+    private final TimeMeasure stopWatch;
 
-        // return a new wingset session
-        return new WingSetSession(session);
+    public WingSet() {
+        frame = new SFrame("WingSet");
+
+        System.out.println("new WingSet");
+        stopWatch = new TimeMeasure(new MessageFormat("<b>{0}</b>: {1} (<i>x {2}</i>)<br/>"));
+
+        timeMeasure = new SLabel();
+        timeMeasure.setEscapeSpecialChars(false);
+        frame.setTitle("WingSet Demo");
+
+        SContainer contentPane = frame.getContentPane();
+        try {
+            java.net.URL templateURL = 
+                getClass().getResource("/wingset/templates/ExampleFrame.thtml");
+            if( templateURL == null ){
+                contentPane.add(new SLabel("Sorry, can't find ExampleFrame.thtml. Are you using a JAR-File?"));
+            }
+            STemplateLayout layout = new STemplateLayout( templateURL );
+            contentPane.setLayout( layout );
+        }
+        catch ( java.io.IOException except ) {
+            except.printStackTrace();
+        }
+        
+        STabbedPane tab = new STabbedPane();
+        tab.setMaxTabsPerLine(8);
+        tab.setBackgroundImage(brushedMetal);
+
+        tab.add(new WingsImage(), "wingS!");
+        tab.add(new LabelExample(), "Label");
+        tab.add(new BorderExample(), "Border");
+        tab.add(new TextComponentExample(), "Text Component");
+         // a Tab with icon..
+        tab.addTab("Tree", new ResourceImageIcon("org/wings/icons/JavaCup.gif"), 
+                   new TreeExample(), "Tree Tool Tip");
+        tab.add(new OptionPaneExample(frame), "OptionPane");
+        tab.add(new TableExample(), "Table");
+        tab.add(new ListExample(), "List");
+        tab.add(new ButtonExample(), "Button");
+        tab.add(new CheckBoxExample(), "CheckBox");
+        tab.add(new RadioButtonExample(), "RadioButton");
+        tab.add(new Faces(), "Faces");
+        tab.add(new FileChooserExample(), "FileChooser");
+        tab.add(new ScrollPaneExample(), "ScrollPane");
+        tab.add(new PageScrollerExample(), "PageScroller");
+        //tab.add(new LayoutExample(), "Simple Layout");
+        tab.addTab("Template Layout", 
+                   new ResourceImageIcon(cl, "wingset/icons/cowSmall.gif"), 
+                   new TemplateExample(), "Template Layout Manager");
+        //tab.add(new DateChooserExample(), "DateChooser");
+
+        contentPane.add(tab, "WingSetApp");
+
+        contentPane.add(timeMeasure, "TimeLabel");
+
+        frame.show();
     }
+
+    /*
+    public void beforeEventDispatching(SessionEvent event)
+        throws DispatchVetoException
+    {
+        
+    }
+
+    public void afterEventDispatching(SessionEvent event) {
+        
+    }
+
+    public void beforeResourceDelivery(SessionEvent event)
+        throws DeliveryVetoException
+    {
+        
+    }
+
+    public void afterResourceDelivery(SessionEvent event) {
+        
+    }
+
+    public void beforeDestroy(SessionEvent event) {
+        
+    }
+    */
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

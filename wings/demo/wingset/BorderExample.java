@@ -19,6 +19,7 @@ import java.awt.event.*;
 import javax.swing.Icon;
 
 import org.wings.*;
+import org.wings.border.*;
 
 /**
  * TODO: documentation
@@ -44,8 +45,7 @@ public class BorderExample
         final SPanel c = new SPanel(new SBorderLayout());
         c.setBackground(new java.awt.Color(180, 180, 255));
         final SLabel borderLabel;
-        borderLabel = new SLabel(new ResourceImageIcon(SConstants.class, 
-                                                       "icons/Wait.gif"));
+        borderLabel = new SLabel(new ResourceImageIcon("org/wings/icons/Wait.gif"));
         c.add(borderLabel);
         p.add(c, "BorderExample");
 
@@ -95,5 +95,6 @@ public class BorderExample
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

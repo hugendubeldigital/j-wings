@@ -14,25 +14,12 @@
 
 package org.wings;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.beans.*;
-import java.io.IOException;
-import java.lang.reflect.*;
 import java.util.*;
-
-import org.wings.io.Device;
-import org.wings.io.StringBufferDevice;
-import org.wings.plaf.*;
-import org.wings.plaf.ComponentCG;
-import org.wings.session.Session;
-import org.wings.session.SessionManager;
-import org.wings.style.Style;
-import org.wings.externalizer.ExternalizeManager;
+import org.wings.style.DynamicStyleSheetResource;
+import org.wings.script.DynamicScriptResource;
 
 /**
- * This implementation assumes, that the whole document has to be reloaded
- * with every request.
+ * This is the default implementation of the reload manager.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
@@ -40,26 +27,61 @@ import org.wings.externalizer.ExternalizeManager;
 public class DefaultReloadManager
     implements ReloadManager
 {
-    private SFrame frame = null;
+    /**
+     * a set of all resources, manged by this ReloadManager, that are marked
+     * dirty.
+     */
+    protected final Set dirtyResources;
 
-    public void markDirty(SComponent component) {
-	if (component.getParentFrame() != null)
-	    frame = component.getParentFrame();
+    public DefaultReloadManager() {
+        dirtyResources = new HashSet();
     }
-    public SComponent[] getDirtyComponents() {
-	if (frame != null)
-	    return new SComponent[] { frame };
-	else
-	    return null;
+    
+    public void reload(SComponent component, int aspect) {
+        SFrame parent = component.getParentFrame();
+
+        if (parent == null) {
+            return;
+        }
+
+        if ( (aspect & RELOAD_CODE) != 0 ) {
+            markDirty(parent.getDynamicResource(DynamicCodeResource.class));
+        }  
+        if ( (aspect & RELOAD_STYLE) != 0 ) {
+            markDirty(parent.getDynamicResource(DynamicStyleSheetResource.class));
+        }
+        if ( (aspect & RELOAD_SCRIPT) != 0 ) {
+            markDirty(parent.getDynamicResource(DynamicScriptResource.class));
+        }
     }
 
-    public void clearDirtyComponents() {}
-
-    public SComponent getManagerComponent() {
-	return null;
+    public synchronized void markDirty(DynamicResource d) {
+        dirtyResources.add(d);
     }
 
-    public String getTarget() {
-	return null;
+    public Set getDirtyResources() {
+        return dirtyResources;
+    }
+
+    public synchronized void clear() {
+        dirtyResources.clear();
+    }
+
+    public synchronized void invalidateResources() {
+        //Set frames = new HashSet();
+        Iterator it = dirtyResources.iterator();
+        while (it.hasNext()) {
+            DynamicResource resource = (DynamicResource)it.next();
+            resource.invalidate();
+            it.remove();
+        }
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

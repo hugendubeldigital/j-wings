@@ -19,28 +19,58 @@ import java.io.IOException;
 /**
  * A general interface for a Output-Device.
  * A Device is the destination, where the HTML-code is written to. This is
- * the 'Graphics' - device.
+ * like the 'Graphics' - device in GUI applications.
  *
- * @author <a href="mailto:hzeller@to.com">Henner Zeller</a>
+ * <p>All the printing methods return the Device itself, to allow simple
+ * chaining:
+ * <hr /><pre>
+ *    someDevice.print("foo").print("bar");
+ * </pre><hr />
+ *
+ * <p>Usually, the underlying data sink of a Device would be some OutputStream,
+ * as it finally writes through some socket to the client browser.
+ * The Device, however, offers basically two methods for writing to the 
+ * output: with print() and write() like methods. The print() like 
+ * methods get character input that has to be converted to a byte-stream
+ * before it actually can be written to the underlying OutputStream, while 
+ * the write() like methods directly handle arrays of bytes to do this. So 
+ * if possible, try to always use the write() methods, if you can 
+ * pre-calculate the byte-representation of the output (if you have some
+ * static Strings, for instance, consider using String.getBytes()).
+ *
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
 public interface Device
 {
     /**
-     * Flush this Stream.
+     * Flush this Device.
      */
     void flush () throws IOException;
+    
+    /**
+     * close the Device.
+     */
+    void close() throws IOException;
+
+    /**
+     * returns, whether this the size of data put into this device is
+     * the same as comes out. This is necessary to know if we want to send the
+     * content size: if we know the content size, but this device changes
+     * the size, we must not send it.
+     *
+     * @return 'true', if this device leaves the size of the data going through
+     *         it, untouched. This is usually true.
+     */
+    boolean isSizePreserving();
 
     // ------------*
     // Methods which deal with characers using the platform's
     // default character encoding to convert characters into bytes.
     // much like a PrintWriter
     // ------------*/
-
-    /**
-     * Print a String.
-     */
-    Device print (String s) throws IOException;
+    
+    // -- print basic characters --
 
     /**
      * Print a character.
@@ -53,9 +83,17 @@ public interface Device
     Device print (char[] c) throws IOException;
 
     /**
-     * Print a character array.
+     * Print len characters from the specified char array starting at offset
+     * off to this Device.
      */
-    Device print (char[] c, int start, int end) throws IOException;
+    Device print (char[] c, int start, int len) throws IOException;
+
+    //-- print basic objects --
+
+    /**
+     * Print a String.
+     */
+    Device print (String s) throws IOException;
 
     /**
      * Print an integer.
@@ -67,35 +105,8 @@ public interface Device
      */
     Device print (Object o) throws IOException;
 
-    /*------------*
-     ** Compatibility methods which allow an easy transition between
-     ** StringBuffer and Device.
-     ** They notably do _not_ throw Exceptions
-     ** !! These methods are supposed to be removed after full
-     **    transition; this is just for convenience reasons !
-     **------------*/
-
-    /**
-     * Print a String. For compatibility.
-     * @Xdeprecated use print() instead
-     */
-    Device append (String s);
-
-    /**
-     * Print an Integer. For compatibility.
-     * @Xdeprecated use print() instead
-     */
-    Device append (int i);
-
-    /**
-     * Print an Object. For compatibility.
-     * @Xdeprecated use print() instead
-     */
-    Device append (Object o);
-
-
     /*-------------*
-     ** Methods which write bytes to the stream. Much like an OutputStream.
+     ** Methods which write raw bytes to the Device. Much like an OutputStream.
      **-------------*/
 
     /**
@@ -111,7 +122,7 @@ public interface Device
 
     /**
      * Writes len bytes from the specified byte array starting at offset
-     * off to this output stream.
+     * off to this Device.
      */
     Device write(byte b[], int off, int len) throws IOException;
 }
@@ -120,5 +131,6 @@ public interface Device
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -22,7 +22,10 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * This is a border layout. You can add up to 5 components to a
+ * container with this layout at the following positions:
+ * <code>NORTH</code>, <code>SOUTH</code>, <code>EAST</code>,
+ * <code>WEST</code> and <code>CENTER</code>.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -35,56 +38,30 @@ public class SBorderLayout
      */
     private static final String cgClassID = "BorderLayoutCG";
 
-    private static final boolean DEBUG = false;
-
-    /**
-     * TODO: documentation
-     */
-    protected final int id = SComponent.createUnifiedId();
+    private static final boolean DEBUG = true;
 
     Map components = new HashMap(5);
 
-    /**
-     * TODO: documentation
-     */
     public static final String NORTH = "North";
-    /**
-     * TODO: documentation
-     */
     public static final String SOUTH = "South";
-    /**
-     * TODO: documentation
-     */
     public static final String EAST = "East";
-    /**
-     * TODO: documentation
-     */
     public static final String WEST = "West";
-    /**
-     * TODO: documentation
-     */
     public static final String CENTER = "Center";
 
     int border = 0;
 
     /**
-     * TODO: documentation
-     *
+     * creates a new border layout
      */
     public SBorderLayout() {}
 
-    public void addComponent(SComponent c, Object constraint) {
+    public void addComponent(SComponent c, Object constraint, int index) {
         if (constraint == null)
             constraint = CENTER;
 
         components.put(constraint, c);
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
     public void removeComponent(SComponent c) {
         if (c == null)
             return;
@@ -112,16 +89,16 @@ public class SBorderLayout
     public void setBorder(int pixel) {
         border = pixel;
     }
-    public int getBorder() { return border; }
 
     /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this layout.
+     * Returns the thickness of the border.
      *
-     * @return "BorderLayoutCG"
-     * @see SLayoutManager#getCGClassID
-     * @see org.wings.plaf.CGDefaults#getCG
+     * @return thickness of the border
      */
+    public int getBorder() {
+        return border;
+    }
+
     public String getCGClassID() {
         return cgClassID;
     }
@@ -131,5 +108,6 @@ public class SBorderLayout
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -17,7 +17,7 @@ package org.wings.plaf.xhtml;
 import java.io.IOException;
 import java.util.*;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 
@@ -39,9 +39,9 @@ public class FullScreenLayoutCG
     public void write(Device d, SLayoutManager l)
         throws IOException
     {
-        d.append("\n<div style=\"position:absolute; z-index:1; left: 0; top: 0; width: 100%; height: 100%\">");
+        d.print("\n<div style=\"position:absolute; z-index:1; left: 0; top: 0; width: 100%; height: 100%\">");
         super.write( d, l );
-        d.append("</div>");
+        d.print("</div>");
     }
 }
 
@@ -49,5 +49,6 @@ public class FullScreenLayoutCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

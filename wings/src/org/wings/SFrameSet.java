@@ -24,8 +24,6 @@ import javax.swing.Icon;
 
 import org.wings.*;
 import org.wings.io.Device;
-import org.wings.io.StringBufferDevice;
-import org.wings.io.DeviceBuffer;
 import org.wings.plaf.*;
 import org.wings.style.StyleSheet;
 import org.wings.session.Session;
@@ -51,7 +49,7 @@ public class SFrameSet
     /**
      * Only SFrameSets or SFrames are allowed.
      */
-    public SComponent addComponent(SComponent c, Object constraint) {
+    public SComponent addComponent(SComponent c, Object constraint, int index) {
 	if (c == null)
 	    return null;
 
@@ -59,10 +57,10 @@ public class SFrameSet
 	    throw new IllegalArgumentException("Only SFrameSets or SFrames are allowed.");
 
 	if (layout != null)
-	    layout.addComponent(c, constraint);
+	    layout.addComponent(c, constraint, index);
 
-	getComponentList().add(c);
-	getConstraintList().add(constraint);
+	getComponentList().add(index, c);
+	getConstraintList().add(index, constraint);
 	c.setParent(this);
 
         return c;
@@ -122,29 +120,6 @@ public class SFrameSet
     }
 
     /**
-     * TODO: documentation
-     */
-    public void setServer(String path) {
-	super.setServer(path);
-	setServerAddress(serverAddress);
-    }
-
-    /**
-     * Set server address and propagate it to all frames
-     */
-    protected void setServerAddress(SGetAddress serverAddress) {
-        this.serverAddress = serverAddress;
-
-	// propagate it to all frame(set)s
-	Iterator iterator = getComponentList().iterator();
-	while (iterator.hasNext()) {
-	    Object object = iterator.next();
-	    if (object instanceof SFrame)
-		((SFrame)object).setServerAddress(serverAddress);
-	}
-    }
-
-    /**
      * Set the base target and propagate it to all frames
      */
     public void setBaseTarget(String baseTarget) {
@@ -170,3 +145,11 @@ public class SFrameSet
 	layout.write(s);
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

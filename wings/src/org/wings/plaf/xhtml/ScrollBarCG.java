@@ -15,17 +15,15 @@
 package org.wings.plaf.xhtml;
 
 import java.awt.*;
-import javax.swing.Icon;
 import java.util.*;
 import java.io.IOException;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
-import org.wings.externalizer.*;
 
 public class ScrollBarCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.ScrollBarCG
 {
     public static final int SCROLLBAR_STEPS        = 15;
@@ -39,12 +37,12 @@ public class ScrollBarCG
     public static final String SCROLLER_BACKGROUND = "\"#FFFFFF\" ";
     public static final String BUTTON_BACKGROUND   = "\"#C6C6C6\" ";
 
-    Icon transIcon;
+    SIcon transIcon;
 
     public void installCG(SComponent component) {
         super.installCG(component);
-        transIcon = LookAndFeel.makeIcon(ScrollBarCG.class, 
-                                         "/org/wings/icons/transdot.gif");
+        transIcon = LookAndFeel.makeIcon(ScrollBarCG.class.getClassLoader(),
+                                         "org/wings/icons/transdot.gif");
     }
 
     public void uninstallCG(SComponent component)
@@ -57,8 +55,10 @@ public class ScrollBarCG
         
         SScrollBar sb = (SScrollBar)c;
 
+        d.print("<table cellspacing=\"2\" cellpadding=\"0\" border=\"0\"><tr>");
         writePrefix(d, sb);
         writePostfix(d, sb);
+        d.print("</tr></table>");
     }
 
     protected void writePrefix(Device d, SContainer container)
@@ -84,18 +84,6 @@ public class ScrollBarCG
          String el_s;
          String fwalign;
          String bwalign;
-         String dummyIconAdr = null;
-         
-         ExternalizeManager ext = sb.getExternalizeManager();
-         if (ext != null &&  transIcon != null) {
-             try {
-                 dummyIconAdr = ext.externalize(transIcon);
-             }
-             catch (java.io.IOException e) {
-                 System.err.println(e.getMessage());
-                 e.printStackTrace(System.err);
-             }
-         }
          
          if ( sb.getOrientation() == SConstants.HORIZONTAL ) {
              el_pre    = "";
@@ -113,24 +101,25 @@ public class ScrollBarCG
          }
          
          // bw
-         d.append( "<td bgcolor=").append( BUTTON_BACKGROUND );
-         d.append( bwalign );
-         d.append( el_s );
-         d.append( "0\">" );
+         d.print( "<td bgcolor=").print( BUTTON_BACKGROUND );
+         d.print( bwalign );
+         d.print( el_s );
+         d.print( "1%\">" );
          sb.getComponentAt(0).write( d );
-         d.append( "</td>" );
-         d.append( el_post );
+         d.print( "</td>" );
+         d.print( el_post );
          
-         writeSBBackground( d, sb, dummyIconAdr, el_pre, el_post, el_s + p );
+         writeSBBackground( d, sb, transIcon!=null ? transIcon.getURL().toString() : null,
+                            el_pre, el_post, el_s + p );
          
          // fw
-         d.append( el_pre );
-         d.append( "<td bgcolor=").append( BUTTON_BACKGROUND );
-         d.append( fwalign );
-         d.append( el_s );
-         d.append( "0\">" );
+         d.print( el_pre );
+         d.print( "<td bgcolor=").print( BUTTON_BACKGROUND );
+         d.print( fwalign );
+         d.print( el_s );
+         d.print( "1%\">" );
          sb.getComponentAt(1).write( d );
-         d.append( "</td>" );
+         d.print( "</td>" );
      }
     
     
@@ -174,23 +163,23 @@ public class ScrollBarCG
         if ( mark > ( SCROLLBAR_STEPS - 1 ) ) mark = SCROLLBAR_STEPS - 1;
         if ( len < 1) len = 1;
         for ( int i = 0; i < SCROLLBAR_STEPS; ++i ) {
-            d.append( prefix );
+            d.print( prefix );
             if ( i >= mark && len-- > 0 ) {
-                d.append( "<td style=\"border-width: 1px; border-style: outset;\" bgcolor=").append( SCROLLER_COLOR );
+                d.print( "<td style=\"border-width: 1px; border-style: outset;\" bgcolor=").print( SCROLLER_COLOR );
                 bordercorrection = 2;
             }
             else {
-                d.append( "<td bgcolor=").append( SCROLLER_BACKGROUND );
+                d.print( "<td bgcolor=").print( SCROLLER_BACKGROUND );
                 bordercorrection = 0;
             }
-            d.append( size ).append("%");
-            d.append( "\"><img src=\"").append(fillIcon)
-                .append("\" width=\"")
-                .append((int) (scrollerWidth * (i+1)) - (int) (scrollerWidth * i) - bordercorrection)
-                .append("\" height=\"")
-                .append((int) (scrollerHeight * (i+1)) - (int) (scrollerHeight * i) - bordercorrection)
-                .append("\"></td>" );
-            d.append( postfix );
+            d.print( size ).print("%");
+            d.print( "\"><img src=\"").print(fillIcon)
+                .print("\" width=\"")
+                .print((int) (scrollerWidth * (i+1)) - (int) (scrollerWidth * i) - bordercorrection)
+                .print("\" height=\"")
+                .print((int) (scrollerHeight * (i+1)) - (int) (scrollerHeight * i) - bordercorrection)
+                .print("\"></td>" );
+            d.print( postfix );
         }
     }
     
@@ -205,14 +194,14 @@ public class ScrollBarCG
             int c = scrollerp.getComponentCount();
             if (sb.getOrientation() == SConstants.HORIZONTAL ) {
                 for (int i = 0; i < c; i++ ) {
-                    Icon icon = ((SButton) scrollerp.getComponentAt(i)).getIcon();
+                    SIcon icon = ((SClickable) scrollerp.getComponentAt(i)).getIcon();
                     width+=icon.getIconWidth();
                     height=Math.max(icon.getIconHeight(), height);
                 }
             }
             else {
                 for (int i = 0; i < c; i++ ) {
-                    Icon icon = ((SButton) scrollerp.getComponentAt(i)).getIcon();
+                    SIcon icon = ((SClickable) scrollerp.getComponentAt(i)).getIcon();
                     width=Math.max(icon.getIconWidth(), width);
                     height+=icon.getIconHeight();
                 }
@@ -227,5 +216,6 @@ public class ScrollBarCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -14,63 +14,18 @@
 
 package org.wings;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.*;
-import java.net.URL;
-import javax.swing.*;
-
-import java.util.ArrayList;
+import javax.swing.Action;
 
 import org.wings.plaf.*;
-import org.wings.io.Device;
-import org.wings.externalizer.ExternalizeManager;
 
 /**
  * TODO: documentation
  *
- * @author Dominik Bartenstein
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class SButton extends SAbstractButton
 {
-    private static final String cgClassID = "ButtonCG";
-
-    /**
-     * TODO: documentation
-     */
-    protected Icon icon = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected String iconAddress = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected Icon disabledIcon = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected String disabledIconAddress = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected int verticalTextPosition = CENTER;
-    /**
-     * TODO: documentation
-     */
-    protected int horizontalTextPosition = RIGHT;
-
-    /**
-     * TODO: documentation
-     */
-    protected  int iconTextGap = 1;
-
     /**
      * TODO: documentation
      *
@@ -83,9 +38,18 @@ public class SButton extends SAbstractButton
     /**
      * TODO: documentation
      *
+     * @param text
+     */
+    public SButton(Action action) {
+        super(action);
+    }
+
+    /**
+     * TODO: documentation
+     *
      */
     public SButton() {
-        super(null);
+        super();
     }
 
     /**
@@ -93,307 +57,49 @@ public class SButton extends SAbstractButton
      *
      * @param i
      */
-    public SButton(Icon i) {
-        super(null);
+    public SButton(SIcon i) {
+        super();
         setIcon(i);
     }
 
-    public SButton(String text, Icon i) {
+    public SButton(String text, SIcon i) {
         super(text);
         setIcon(i);
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param textPosition
+     * 
      */
-    public void setHorizontalTextPosition(int textPosition) {
-        horizontalTextPosition = textPosition;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public int getHorizontalTextPosition() {
-        return horizontalTextPosition;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param textPosition
-     */
-    public void setVerticalTextPosition(int textPosition) {
-        verticalTextPosition = textPosition;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public int getVerticalTextPosition() {
-        return verticalTextPosition;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param gap
-     */
-    public void setIconTextGap(int gap) {
-        iconTextGap = gap;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public int getIconTextGap() {
-        return iconTextGap;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setIcon(Icon i) {
-        Icon oldIcon = icon;
-        icon = i;
-        if ((icon == null && oldIcon != null) ||
-            icon != null && !icon.equals(oldIcon))
-            reload();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setIcon(URL i) {
-        if ( i!=null)
-            setIcon(i.toString());
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param url
-     */
-    public void setIcon(String url) {
-        String oldIconAddress = iconAddress;
-        iconAddress = url;
-        if ((iconAddress == null && oldIconAddress != null) ||
-            iconAddress != null && !iconAddress.equals(oldIconAddress))
-            reload();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public Icon getIcon() {
-        return icon;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getIconAddress() {
-        return iconAddress;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setDisabledIcon(Icon i) {
-        Icon oldDisabledIcon = disabledIcon;
-        disabledIcon = i;
-        if ((disabledIcon == null && oldDisabledIcon != null) ||
-            disabledIcon != null && !disabledIcon.equals(oldDisabledIcon))
-            reload();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setDisabledIcon(URL i) {
-        if ( i!=null)
-            setDisabledIcon(i.toString());
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param url
-     */
-    public void setDisabledIcon(String url) {
-        String oldDisabledIconAddress = disabledIconAddress;
-        disabledIconAddress = url;
-        if ((disabledIconAddress == null && oldDisabledIconAddress != null) ||
-            disabledIconAddress != null && !disabledIconAddress.equals(oldDisabledIconAddress))
-            reload();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public Icon getDisabledIcon() {
-        if(disabledIcon == null)
-            if(icon != null && icon instanceof ImageIcon)
-                disabledIcon = new ImageIcon(GrayFilter.createDisabledImage(((ImageIcon)icon).getImage()));
-        return disabledIcon;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getDisabledIconAddress() {
-        return disabledIconAddress;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    protected boolean showIcon() {
-        return ( icon!=null || iconAddress!=null );
-    }
-
-
-    private Action action;
-    private PropertyChangeListener actionPropertyChangeListener;
-
-    public void setAction(Action a) {
-	Action oldValue = getAction();
-	if (action == null || !action.equals(a)) {
-	    action = a;
-	    if (oldValue != null) {
-		removeActionListener(oldValue);
-		oldValue.removePropertyChangeListener(actionPropertyChangeListener);
-		actionPropertyChangeListener = null;
-	    }
-	    configurePropertiesFromAction(action);
-	    if (action != null) {		
-		// Don't add if it is already a listener
-		if (!isListener(ActionListener.class, action)) {
-		    addActionListener(action);
-		}
-		// Reverse linkage:
-		actionPropertyChangeListener = createActionPropertyChangeListener(action);
-		action.addPropertyChangeListener(actionPropertyChangeListener);
-	    }
-	    firePropertyChange("action", oldValue, action);
-	}
-    }
-
-    private boolean isListener(Class c, ActionListener a) {
-	boolean isListener = false;
-	Object[] listeners = listenerList.getListenerList();
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i] == c && listeners[i+1] == a) {
-                isListener = true;
-	    }
-	}
-	return isListener;
-    }
-
-    public Action getAction() {
-	return action;
-    }
-
-    protected void configurePropertiesFromAction(Action a) {
-        // uncomment if compiled against < jdk 1.3
-        //	setActionCommand((a != null 
-        //                  ? (String)a.getValue(Action.ACTION_COMMAND_KEY) 
-        //                  : null));
-	setText((a != null ? (String)a.getValue(Action.NAME) : null));
-	setIcon((a != null ? (Icon)a.getValue(Action.SMALL_ICON) : null));
-	setEnabled((a != null ? a.isEnabled() : true));
- 	setToolTipText((a != null ? (String)a.getValue(Action.SHORT_DESCRIPTION) : null));	
-    }
-
-    protected PropertyChangeListener createActionPropertyChangeListener(Action a) {
-        return new ButtonActionPropertyChangeListener(this, a);
-    }
-
-    private static class ButtonActionPropertyChangeListener
-        extends AbstractActionPropertyChangeListener
-    {
-	ButtonActionPropertyChangeListener(SButton b, Action a) {
-	    super(b, a);
-	}
-
-	public void propertyChange(PropertyChangeEvent e) {	    
-	    String propertyName = e.getPropertyName();
-	    SButton button = (SButton)getTarget();
-	    if (button == null) {
-		Action action = (Action)e.getSource();
-		action.removePropertyChangeListener(this);
-            }
-            else {
-                if (e.getPropertyName().equals(Action.NAME)) {
-                    String text = (String)e.getNewValue();
-                    button.setText(text);
-                }
-                else if (e.getPropertyName().equals(Action.SHORT_DESCRIPTION)) {
-                    String text = (String)e.getNewValue();
-                    button.setToolTipText(text);
-                }
-                else if (propertyName.equals("enabled")) {
-                    Boolean enabled = (Boolean)e.getNewValue();
-                    button.setEnabled(enabled.booleanValue());
-                }
-                else if (e.getPropertyName().equals(Action.SMALL_ICON)) {
-                    Icon icon = (Icon)e.getNewValue();
-                    button.setIcon(icon);
-                }
-                // uncomment if compiled against jdk < 1.3
-                /*                else if (e.getPropertyName().equals(Action.ACTION_COMMAND_KEY)) {
-                    String actionCommand = (String)e.getNewValue();
-                    button.setActionCommand(actionCommand);
-                    }*/
-            }
+    public void setSelected(boolean b) {
+        // set in group as selected
+        if ( getGroup()!=null ) {
+            getGroup().setSelected(this, b);
         }
+
+        // button is never in a selected state...
+        super.setSelected(false);
     }
 
     /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "ButtonCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
+     * in form components the parameter value of an button is the button
+     * text. So just toggle selection, in process request, if it is a request
+     * for me.
      */
-    public String getCGClassID() {
-        return cgClassID;
+    protected boolean parseSelectionToggle(String toggleParameter) {
+        return true;
     }
 
-    public void setCG(ButtonCG cg) {
-        super.setCG(cg);
-    }
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */
+
+
+
+
+

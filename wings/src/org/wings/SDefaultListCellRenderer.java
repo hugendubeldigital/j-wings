@@ -14,11 +14,6 @@
 
 package org.wings;
 
-import java.awt.Color;
-import java.io.IOException;
-import javax.swing.*;
-
-import org.wings.io.Device;
 import org.wings.style.Style;
 
 /**
@@ -31,28 +26,12 @@ public class SDefaultListCellRenderer
     extends SLabel
     implements SListCellRenderer
 {
-    /** Color to use for the foreground for selected nodes. */
-    protected Color textSelectionColor = null;
-
-    /** Color to use for the foreground for non-selected nodes. */
-    protected Color textNonSelectionColor = null;
-
-    /** Color to use for the background when a node is selected. */
-    protected Color backgroundSelectionColor = Color.cyan;
-
-    /** Color to use for the background when the node isn't selected. */
-    protected Color backgroundNonSelectionColor = null;
 
     /** Style to use for the foreground for selected nodes. */
-    protected Style textSelectionStyle = null;
+    protected Style selectionStyle = null;
 
     /** Style to use for the foreground for non-selected nodes. */
-    protected Style textNonSelectionStyle = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected SGetAddress addr = null;
+    protected Style nonSelectionStyle = null;
 
     /**
      * Create a SDefaultListCellRenderer with default properties.
@@ -60,170 +39,79 @@ public class SDefaultListCellRenderer
     public SDefaultListCellRenderer() {}
 
 
+    /**
+     * Sets the style the cell is drawn with when the cell is selected.
+     *
+     * @param newStyle
+     */
+    public void setSelectionStyle(Style newStyle) {
+        selectionStyle = newStyle;
+    }
+
+    /**
+     * Returns the style the cell is drawn with when the cell is selected.
+     *
+     * @return
+     */
+    public Style getSelectionStyle() {
+        return selectionStyle;
+    }
+
+    /**
+     * Sets the style the cell is drawn with when the cell isn't selected.
+     *
+     * @param newStyle
+     */
+    public void setNonSelectionStyle(Style newStyle) {
+        nonSelectionStyle = newStyle;
+    }
+
+    /**
+     * Returns the style the cell is drawn with when the cell isn't selected.
+     *
+     * @return
+     */
+    public Style getNonSelectionStyle() {
+        return nonSelectionStyle;
+    }
+
+
+
+
     public SComponent getListCellRendererComponent(SComponent list,
                                                    Object value,
                                                    boolean selected,
                                                    int index)
     {
-        if (list.isEnabled()) {
-            addr = list.getServerAddress();
-            addr.add(list.getNamePrefix() + "=" + index);
-        }
-        else
-            addr = null;
-        
-        if (selected) {
-            setBackground(backgroundSelectionColor);
-            setForeground(textSelectionColor);
-            setStyle(textSelectionStyle);
-        }
+        setText(null);
+        setIcon(null);
+
+        if (value == null)
+            setText("");
+        else if (value instanceof SIcon)
+            setIcon((SIcon)value);
+        else if ( value instanceof SComponent ) {
+            SComponent result = (SComponent)value;
+
+            if ( selected && selectionStyle!=null ) {
+                result.setStyle(selectionStyle);
+            } else {
+                result.setStyle(nonSelectionStyle);
+            }
+            
+            return result;
+        } 
         else {
-            setBackground(backgroundNonSelectionColor);
-            setForeground(textNonSelectionColor);
-            setStyle(textNonSelectionStyle);
+            setText(value.toString());
         }
-        
-        if (value instanceof Icon) {
-            setText(null);
-            setIcon((Icon)value);
+
+        if ( selected && selectionStyle!=null ) {
+            setStyle(selectionStyle);
+        } else {
+            setStyle(nonSelectionStyle);
         }
-        else {
-            setText((value != null) ? value.toString() : "");
-            setIcon((Icon)null);
-        }
+
         return this;
-    }
-
-    public String toString() {
-        return getText();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param d
-     * @throws IOException
-     */
-    public void write(Device d)
-        throws IOException
-    {
-        if (addr != null) {
-            d.append("<a href=\"");
-            addr.write(d);
-            d.append("\">");
-        }
-        super.write(d);
-        if (addr != null)
-            d.append("</a> ");
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param newColor
-     */
-    public void setTextSelectionColor(Color newColor) {
-        textSelectionColor = newColor;
-    }
-
-    /**
-     * Returns the color the text is drawn with when the node is selected.
-     *
-     * @return
-     */
-    public Color getTextSelectionColor() {
-        return textSelectionColor;
-    }
-
-    /**
-     * Sets the color the text is drawn with when the node isn't selected.
-     *
-     * @param newColor
-     */
-    public void setTextNonSelectionColor(Color newColor) {
-        textNonSelectionColor = newColor;
-    }
-
-    /**
-     * Returns the color the text is drawn with when the node isn't selected.
-     *
-     * @return
-     */
-    public Color getTextNonSelectionColor() {
-        return textNonSelectionColor;
-    }
-
-    /**
-     * Sets the color to use for the background if node is selected.
-     *
-     * @param newColor
-     */
-    public void setBackgroundSelectionColor(Color newColor) {
-        backgroundSelectionColor = newColor;
-    }
-
-
-    /**
-     * Returns the color to use for the background if node is selected.
-     *
-     * @return
-     */
-    public Color getBackgroundSelectionColor() {
-        return backgroundSelectionColor;
-    }
-
-    /**
-     * Sets the background color to be used for non selected nodes.
-     *
-     * @param newColor
-     */
-    public void setBackgroundNonSelectionColor(Color newColor) {
-        backgroundNonSelectionColor = newColor;
-    }
-
-    /**
-     * Returns the background color to be used for non selected nodes.
-     *
-     * @return
-     */
-    public Color getBackgroundNonSelectionColor() {
-        return backgroundNonSelectionColor;
-    }
-
-    /**
-     * Sets the style the text is drawn with when the node is selected.
-     *
-     * @param newStyle
-     */
-    public void setTextSelectionStyle(Style newStyle) {
-        textSelectionStyle = newStyle;
-    }
-
-    /**
-     * Returns the style the text is drawn with when the node is selected.
-     *
-     * @return
-     */
-    public Style getTextSelectionStyle() {
-        return textSelectionStyle;
-    }
-
-    /**
-     * Sets the style the text is drawn with when the node isn't selected.
-     *
-     * @param newStyle
-     */
-    public void setTextNonSelectionStyle(Style newStyle) {
-        textNonSelectionStyle = newStyle;
-    }
-
-    /**
-     * Returns the style the text is drawn with when the node isn't selected.
-     *
-     * @return
-     */
-    public Style getTextNonSelectionStyle() {
-        return textNonSelectionStyle;
     }
 }
 
@@ -231,5 +119,6 @@ public class SDefaultListCellRenderer
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -19,7 +19,7 @@ import org.wings.plaf.*;
 /**
  * TODO: documentation
  *
- * @author Dominik Bartenstein
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class SResetButton
@@ -34,6 +34,8 @@ public class SResetButton
      */
     public SResetButton(String text) {
         super(text);
+        
+        setType(RESET_BUTTON);
     }
 
     /**
@@ -50,17 +52,12 @@ public class SResetButton
      * @param t
      */
     public void setType(String t) {
-        super.setType(SConstants.RESET_BUTTON);
+        if ( !RESET_BUTTON.equals(t) )
+            throw new IllegalArgumentException("type change not supported, type is fix: resetbutton");
+        
+        super.setType(t);
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "ResetButtonCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -74,5 +71,6 @@ public class SResetButton
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import org.wings.io.Device;
+import org.wings.io.DeviceOutputStream;
 
 import org.wings.SComponent;
 import org.wings.STemplateLayout;
@@ -28,39 +29,19 @@ import org.wings.template.parser.*;
 /**
  * TODO: documentation
  *
- * @author
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
 public final class TemplateParseContext implements ParseContext
 {
-    private OutputStream myOut;
-    private Device sink;
-    private STemplateLayout layout;
+    private final OutputStream myOut;
+    private final Device sink;
+    private final STemplateLayout layout;
 
     public TemplateParseContext (final Device sink, STemplateLayout layout) {
         this.sink = sink;
         this.layout = layout;
-        /**
-         * implement an OutputStream on top
-         * of a sink.
-         */
-        myOut = new OutputStream () {
-            public final void close() {}
-            public final void flush() throws IOException {
-                sink.flush();
-            }
-            public final void write(byte b[],
-                                    int off,
-                                    int len) throws IOException {
-                sink.write (b, off, len);
-            }
-            public final void write(byte b[]) throws IOException {
-                sink.write (b);
-            }
-            public final void write(int b) throws IOException {
-                sink.write (b);
-            }
-        };
+        myOut = new DeviceOutputStream (sink);
     }
 
     public OutputStream getOutputStream () {
@@ -75,13 +56,13 @@ public final class TemplateParseContext implements ParseContext
 
     /*
      * important for the template: the components write to this sink
-    */
+     */
     public Device getDevice () {
         return sink;
     }
 
     public SComponent getComponent (String name) {
-        return (SComponent) layout.getComponents().get (name);
+        return (SComponent) layout.getComponentMap().get (name);
     }
 }
 
@@ -89,5 +70,6 @@ public final class TemplateParseContext implements ParseContext
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

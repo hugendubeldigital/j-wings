@@ -20,7 +20,7 @@ import org.wings.io.Device;
 /**
  * TODO: documentation
  *
- * @author Dominik Bartenstein
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class STextField
@@ -61,7 +61,7 @@ public class STextField
         int oldColumns = columns;
         columns = c;
         if (columns != oldColumns)
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -83,7 +83,7 @@ public class STextField
         int oldMaxColumns = maxColumns;
         maxColumns = mc;
         if (maxColumns != oldMaxColumns)
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -95,14 +95,6 @@ public class STextField
         return maxColumns;
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "TextFieldCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -116,5 +108,6 @@ public class STextField
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

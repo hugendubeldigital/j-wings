@@ -100,8 +100,8 @@ import java.util.*;
  */
 
 public class SGMLTag {
-  public final char singleQuote = '\'';
-  public final char doubleQuote = '\"';
+    public final static char singleQuote = '\'';
+    public final static char doubleQuote = '\"';
 
     /**
      * Name of this SGML tag, in uppercase format.
@@ -400,14 +400,15 @@ public class SGMLTag {
         attr_ready = true;
 
         if (values == null && wellFormed) {
-            String key, token;
+            String key = null, token;
             wellFormed = false;
             attrs = new Vector();
             values = new Hashtable();
 
             while (true) {
 		// check for valid value tag (or end delimiter)
-		key = nextToken(input);
+		if (key == null)
+		    key = nextToken(input);
 
 		// close-Tag
 		if (key != null && key.equals(closeTag)) {
@@ -428,10 +429,15 @@ public class SGMLTag {
 		    || key.charAt(0) == singleQuote)
 		    break;
 
-		// now insure that we have an equals sign
+		// ok, we have a key. Now insure that we have an equals sign
 		token = nextToken(input);
-		if (token == null || token.charAt(0) != '=')
-		    break;
+		if (token == null || token.charAt(0) != '=') {
+		    attrs.addElement(key);
+		    if (token == null)
+			break;
+		    key = token; // this token is the next key
+		    continue;
+		}
 
 		// read value of tag
 		token = nextToken(input);
@@ -449,6 +455,7 @@ public class SGMLTag {
 
 		// store assignment in case-insensitive manner
 		values.put(upperCase, token);
+		key = null; // clear this key; next token is our next key.
             }
         }
         return wellFormed && values != null;
@@ -638,3 +645,11 @@ public class SGMLTag {
     }
 }
 
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

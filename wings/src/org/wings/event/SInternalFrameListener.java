@@ -25,6 +25,7 @@ import java.util.EventListener;
  * @author Holger Engels
  */
 public interface SInternalFrameListener extends EventListener {
+
     /**
      * Invoked when a internal frame has been opened.
      * @see org.wings.SInternalFrame#show
@@ -61,3 +62,11 @@ public interface SInternalFrameListener extends EventListener {
      */
     public void internalFrameUnmaximized(SInternalFrameEvent e);
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

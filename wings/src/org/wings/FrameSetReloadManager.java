@@ -39,12 +39,15 @@ import org.wings.externalizer.ExternalizeManager;
  * @version $Revision$
  */
 public class FrameSetReloadManager
-    implements ReloadManager
 {
     private final Set dirtyFrames = new HashSet();
     private ReloadManagerFrame reloadManagerFrame = null;
 
-    public void markDirty(SComponent component) {
+    /**
+     * Marking a component dirty effectively marks the component's
+     * parent frame dirty.
+     */
+    public void markDirty(SComponent component, int aspect) {
 	if (component instanceof SFrameSet) {
 	    SFrameSet frameSet = (SFrameSet)component;
 	    while (frameSet.getParent() != null)
@@ -55,21 +58,28 @@ public class FrameSetReloadManager
 	    dirtyFrames.add(component.getParentFrame());
     }
 
-    public SComponent[] getDirtyComponents() {
+    public SComponent[] getDirtyComponents(int aspect) {
 	return (SComponent[])dirtyFrames.toArray(new SFrame[dirtyFrames.size()]);
     }
 
-    public void clearDirtyComponents() {
+    public void clearDirtyComponents(int aspect) {
 	dirtyFrames.clear();
     }
 
+    /**
+     * The manager component is the invisible target frame.
+     */
     public SComponent getManagerComponent() {
 	if (reloadManagerFrame == null)
 	    reloadManagerFrame = new ReloadManagerFrame();
 	return reloadManagerFrame;
     }
-
-    public String getTarget() {
-	return "frame" + ((ReloadManagerFrame)getManagerComponent()).getUnifiedIdString();
-    }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

@@ -14,43 +14,63 @@
 
 package org.wings.style;
 
+import java.io.*;
+import java.util.*;
+
+import org.wings.io.*;
+
 /**
  * TODO: documentation
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class Style
+public final class Style
+    extends SimpleAttributeSet implements StyleConstants
 {
-    private String id;
+    private StyleSheet sheet;
+    private String selector;
+    private String name;
 
-    /**
-     * TODO: documentation
-     *
-     * @param id
-     */
-    public Style(String id) {
-        this.id = id;
+    public Style(String selector, AttributeSet attributes) {
+        super(attributes);
+        this.selector = selector;
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getID() { return id; }
+    public void setSelector(String selector) {
+        this.selector = selector;
+        name = null;
+    }
+    public String getSelector() { return selector; }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String toString() { return id; }
+    public String getName() {
+        if (name == null && selector != null)
+            name = selector.substring(selector.indexOf(".") + 1);
+        return name;
+    }
+
+    public void setSheet(StyleSheet sheet) {
+        this.sheet = sheet;
+    }
+    public StyleSheet getSheet() { return sheet; }
+
+    public void write(Device d)
+        throws IOException
+    {
+        d.print(selector).print("{");
+        super.write(d);
+        d.print("}\n");
+    }
+
+    public String toString() {
+        return selector + " { " + super.toString() + "}";
+    }
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

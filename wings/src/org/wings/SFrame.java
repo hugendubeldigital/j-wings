@@ -19,19 +19,19 @@ import java.beans.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-
-import javax.swing.Icon;
+import java.util.logging.*;
 
 import org.wings.*;
 import org.wings.io.Device;
-import org.wings.io.StringBufferDevice;
-import org.wings.io.DeviceBuffer;
 import org.wings.plaf.*;
 import org.wings.style.StyleSheet;
+import org.wings.session.LowLevelEventDispatcher;
 import org.wings.session.Session;
 import org.wings.session.SessionManager;
+import org.wings.session.PropertyService;
+import org.wings.util.*;
 
-/*
+/**
  * The frame is the root component in every component hierarchie.
  * A SessionServlet requires an instance of SFrame to render the page.
  * SFrame consists of some header informaton (metas, headers, style sheet)
@@ -39,12 +39,12 @@ import org.wings.session.SessionManager;
  * the contentPane. When dialogs are to be shown, they are stacked on top of
  * it.
  *
- * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>,
+ * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>,
  *         <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class SFrame
-    extends SWindow
+    extends SRootContainer
     implements PropertyChangeListener
 {
     /**
@@ -52,46 +52,33 @@ public class SFrame
      */
     private static final String cgClassID = "FrameCG";
 
-    private static final boolean DEBUG = false;
-
     /**
-     * The container for the contentPane.
+     *  The Title of the Frame.
      */
-    protected final SContainer contentPane = new SContainer();
-
-    SGetAddress serverAddress = new SGetAddress();
+    protected String title;
 
     protected String baseTarget = null;
 
     /**
      * A List containing meta tags for the html header.
      */
-    protected final ArrayList metas = new ArrayList(2);
+    protected ArrayList metas;
 
     /**
      * A List containing additional tags for the html header.
      */
-    protected final ArrayList headers = new ArrayList(2);
+    protected ArrayList headers;
 
     /**
-     * A List containing JavaScript code snippets to be included in the html header.
+     * A List containing links for the html header.
      */
-    protected final ArrayList javaScript = new ArrayList(2);
+    protected ArrayList links;
 
-
-    /**
-      * List of headModifieres which add code during writing of page code
-      * @see org.wings.SFrameModifier
-      */
-    private final ArrayList framemodifiers = new ArrayList(2);
-    
-    private Color textColor = null;
-    private Color linkColor = null;
-    private Color vLinkColor = null;
-    private Color aLinkColor = null;
-
-    private Icon backgroundImage = null;
-    private String backgroundURL = null;
+    // do not initialize with null
+    private Color textColor;
+    private Color linkColor;
+    private Color vLinkColor;
+    private Color aLinkColor;
 
     /**
      * TODO: documentation
@@ -99,28 +86,29 @@ public class SFrame
     protected boolean resizable = true;
 
     /** the style sheet used in certain look and feels. */
-    protected StyleSheet styleSheet;  // IMPORTANT: initialization with null causes errors
+    protected StyleSheet styleSheet;  // IMPORTANT: initialization with null causes errors; what errors ?
+    // These: all properties, that are installed by the plaf, are installed during the initialization of
+    // SComponent. The null initializations happen afterwards and overwrite the plaf installed values.
+    // However: null is the default initialization value, so this is not a problem!
+    // The same applies to all descendants of SComponent!
 
     /**
      * TODO: documentation
      */
-    protected String statusLine = null;
+    protected String statusLine;
 
-    /**
-     * TODO: documentation
-     */
-    private transient SGetDispatcher dispatcher = null;
+    private RequestURL requestURL = null;
+    private String targetResource;
 
-    private Session session;
+    private HashMap dynamicResources;
 
     /**
      * TODO: documentation
      *
      */
     public SFrame() {
-        super.setLayout(new SStackLayout());
-        super.addComponent(getContentPane(), null);
         getSession().addPropertyChangeListener("lookAndFeel", this);
+        getSession().addPropertyChangeListener("request.url", this);
     }
 
     /**
@@ -131,6 +119,28 @@ public class SFrame
     public SFrame(String title) {
         this();
         setTitle(title);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     */
+    public void addDynamicResource(DynamicResource d) {
+        if (dynamicResources == null) {
+            dynamicResources = new HashMap();
+        }
+        dynamicResources.put(d.getClass(), d);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     */
+    public DynamicResource getDynamicResource(Class c) {
+        if (dynamicResources == null) {
+            dynamicResources = new HashMap();
+        }
+        return (DynamicResource) dynamicResources.get(c);
     }
 
     /**
@@ -152,110 +162,9 @@ public class SFrame
     }
 
     /**
-     * Set the URL of the background image.
-     */
-    public void setBackgroundURL(String url) {
-        backgroundURL = url;
-    }
-
-    /**
-     * TODO: documentation
+     * Return <code>this</code>.
      *
-     * @return
-     */
-    public String getBackgroundURL() {
-        return backgroundURL;
-    }
-
-    /**
-     * Set the background image.
-     */
-    public void setBackgroundImage(Icon icon) {
-        backgroundImage = icon;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public Icon getBackgroundImage() {
-        return backgroundImage;
-    }
-
-    /**
-     * Use getContentPane().addComponent(c) instead.
-     */
-    public SComponent addComponent(SComponent c, Object constraint) {
-        throw new IllegalArgumentException("use getContentPane().addComponent()");
-    }
-
-
-    /**
-     * Add Javascript to header
-     */
-    public void addJavascript(Javascript js) {
-        javaScript.add(js);
-    }
-    
-    /**
-      * Get all javascripts included in this frame.
-      * @return {@link java.util.ArrayList} of {@link org.wings.Javascript}
-      */
-    public ArrayList getJavascript() {
-        return javaScript;
-    }
-
-    /**
-      * Add FrameModifier
-      * @param mod add this modifier
-      */
-    public void addFrameModifier(SFrameModifier mod) {
-        framemodifiers.add(mod);
-    }
-
-    /**
-      * Get all FrameModifiers
-      * @return ArrayList of {@link org.wings.SFrameModifier}
-      */
-    public ArrayList getFrameModifiers() {
-        return framemodifiers;
-    }
-
-    /**
-      * Remove given FrameModifier
-      * @param mod remove this modifier
-      * @return <code>true</code>, if modifier was found, <code>false</code> otherwise
-      */
-    public boolean removeFrameModifier(SFrameModifier mod) {
-        int i = framemodifiers.indexOf(mod);
-        if (i == -1) return false;
-        framemodifiers.remove(i);
-        return true;
-    }
-
-    /**
-     * Use getContentPane().removeComponent(c) instead.
-     */
-    public boolean removeComponent(SComponent c) {
-        throw new IllegalArgumentException("use getContentPane().removeComponent()");
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public SGetDispatcher getDispatcher() {
-        if (dispatcher == null)
-            dispatcher = getSession().getDispatcher();
-        return dispatcher;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
+     * @return this.
      */
     public SFrame getParentFrame() {
         return this;
@@ -266,27 +175,40 @@ public class SFrame
      *
      * @return
      */
-    public Session getSession() {
-        if (session == null)
-            session = SessionManager.getSession();
-        return session;
+    public String getEventEpoch() {
+        return getDynamicResource(DynamicCodeResource.class).getEpoch();
     }
 
-    private int uniquePrefix = 0;
-
-    private String uniquePrefixString = "0";
+    /**
+     * Set server address.
+     */
+    public final void setRequestURL(RequestURL requestURL) {
+        this.requestURL = requestURL;
+    }
 
     /**
-     * TODO: documentation
-     *
+     * Returns the base URL for a request to the WingsServlet. This URL
+     * is used to assemble an URL that trigger events. In order to be used
+     * for this purpose, you've to add your parameters here.
      */
-    public void dispatchDone() {
-        System.err.println("frame " + getTitle() + " dispatch done");
-        uniquePrefix++;
-        if (uniquePrefix < 0)
-            uniquePrefix = 0;
+    public final RequestURL getRequestURL() {
+        RequestURL result = null;
+        // first time we are called, and we didn't get any change yet
+        if (requestURL == null) {
+            requestURL =(RequestURL)SessionManager.getSession().getProperty("request.url");
+        }
+        if (requestURL != null) {
+            result = (RequestURL)requestURL.clone();
+            result.setResource(getTargetResource());
+        }
+        return result;
+    }
 
-        uniquePrefixString = Long.toString(uniquePrefix);
+    /**
+     * Set the target resource
+     */
+    public void setTargetResource(String targetResource) {
+        this.targetResource = targetResource;
     }
 
     /**
@@ -294,109 +216,30 @@ public class SFrame
      *
      * @return
      */
-    public String getUniquePrefix() {
-        return uniquePrefixString;
+    public String getTargetResource() {
+        if (targetResource == null) {
+            targetResource = getDynamicResource(DynamicCodeResource.class).getId();
+        }
+        return targetResource;
     }
 
     /**
-     * TODO: documentation
-     */
-    public final void pushDialog(SDialog dialog) {
-        super.addComponent(dialog, null);
-        int count = getComponentCount();
-        System.err.println("pushDialog: " + count +", "+dialog.getTitle());
-        dialog.setFrame(this);
-        reload();
-    }
-
-    /**
-     * Remove the dialog from this frame.
-     * @param dialog remove this dialog
-     * @return the removed dialog
-     */
-    public final SDialog popDialog(SDialog dialog) {
-        int count = getComponentCount();
-        if (count <= 1)
-            throw new IllegalStateException("there's no dialog left!");
-
-        // SDialog dialog = (SDialog)getComponent(count - 1);
-        super.removeComponent(dialog);
-        dialog.setFrame((SFrame)null);
-        System.err.println("popDialog: " + count+", "+dialog.getTitle());
-
-        reload();
-        return dialog;
-    }
-
-    /**
-     * TODO: documentation
-     */
-    public SContainer getContentPane() {
-        return contentPane;
-    }
-
-    /**
-     * TODO: documentation
-     */
-    public final void setServer(String server, int port, String path) {
-        setServer("http", server, port, path);
-    }
-
-    /**
-     * TODO: documentation
-     */
-    public final void setServer(String scheme, String server, int port,
-                                String path) {
-        String addr = scheme + "://"+server;
-
-        if ( port>0 && port!=80 )
-            addr += ":" + port;
-
-        addr += path;
-
-        setServer(addr);
-    }
-
-    /**
-     * TODO: documentation
-     */
-    public void setServer(String path) {
-        serverAddress.clear();
-        serverAddress.setAbsoluteAddress(path);
-    }
-
-    /**
-     * Set server address.
-     */
-    protected void setServerAddress(SGetAddress serverAddress) {
-        this.serverAddress = serverAddress;
-    }
-
-    /**
-     * TODO: documentation
-     */
-    public final SGetAddress getServerAddress() {
-        if  ( DEBUG && serverAddress.getRelativeAddress()==null && getParent()!=null )
-            System.out.println("Frame " + serverAddress);
-
-        return (SGetAddress)serverAddress.clone();
-    }
-
-    /**
-     * TODO: documentation
-     */
-    public final SGetAddress getServerAddress(boolean target) {
-        if ( DEBUG && serverAddress.getRelativeAddress()==null && getParent()!=null )
-            System.out.println("Frame " + serverAddress);
-
-        return (SGetAddress)serverAddress.clone();
-    }
-
-    /**
-     * Set the base target
+     * Set the base target. This is the target of any link pressed.
      */
     public void setBaseTarget(String baseTarget) {
         this.baseTarget = baseTarget;
+    }
+    
+    /**
+     * set the base target frame. This frame will receive all klicks
+     * in this frame. Usually you want to use this for the ReloadManager
+     * frame.
+     */
+    public void setBaseTarget(SFrame otherFrame) {
+        /*
+         * this knows, that the frames are usually named "frame" + ID
+         */
+        setBaseTarget("frame" + otherFrame.getComponentId());
     }
 
     /**
@@ -416,7 +259,7 @@ public class SFrame
      * @param m
      */
     public void addMeta(String m) {
-        metas.add(m);
+        metas().add(m);
     }
 
     /**
@@ -424,7 +267,7 @@ public class SFrame
      *
      */
     public void clearMetas() {
-        metas.clear();
+        metas().clear();
     }
 
     /**
@@ -433,20 +276,53 @@ public class SFrame
      * @return
      */
     public List metas() {
+        if (metas == null)
+            metas = new ArrayList(2);
         return metas;
     }
 
     public void addHeader(String m) {
-	headers.add(m);
+	headers().add(m);
     }
 
     public void clearHeaders() {
-	headers.clear();
+	headers().clear();
     }
     
     public List headers() {
+        if (headers == null)
+            headers = new ArrayList(2);
 	return headers;
     }
+
+    public void addLink(SLink link) {
+	links().add(link);
+    }
+
+    public void clearLinks() {
+	links().clear();
+    }
+    
+    public List links() {
+        if (links == null)
+            links = new ArrayList(2);
+	return links;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param t
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public String getTitle() { return title; }
 
     /**
      * TODO: documentation
@@ -557,29 +433,30 @@ public class SFrame
         return statusLine;
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String show() {
-        StringBufferDevice erg = new StringBufferDevice();
-        try {
-            write(erg);
-        }
-        catch (IOException e) {
-        }
-        return erg.toString();
+    public void show() {
+        setVisible(true);
     }
 
+    public void hide() {
+        setVisible(false);
+    }
+
+    public void setVisible(boolean b) {
+        if ( b ) {
+            getSession().addFrame(this);
+        } else {
+            getSession().removeFrame(this);
+        }
+        super.setVisible(b);
+    }
 
     public void propertyChange(PropertyChangeEvent pe) {
         if ("lookAndFeel".equals(pe.getPropertyName())) {
             updateComponentTreeCG(getContentPane());
-            System.err.println("lookAndFeel Change: " + pe.getPropertyName());
         }
-        else
-            System.err.println("propertyChange: " + pe.getPropertyName());
+        if ("request.url".equals(pe.getPropertyName())) {
+            setRequestURL((RequestURL)pe.getNewValue());
+        }
     }
 
     private void updateComponentTreeCG(SComponent c) {
@@ -595,14 +472,6 @@ public class SFrame
         updateCG();
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "FrameCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -614,11 +483,11 @@ public class SFrame
         public SStackLayout() {}
 
         public void updateCG() {}
-        public void addComponent(SComponent c, Object constraint) {}
+        public void addComponent(SComponent c, Object constraint, int index) {}
         public void removeComponent(SComponent c) {}
 
         public SComponent getComponentAt(int i) {
-            return (SComponent)container.getComponent(i);
+            return (SComponent)SFrame.this.getComponentAt(i);
         }
 
         public void setContainer(SContainer c) {
@@ -635,7 +504,7 @@ public class SFrame
             throws IOException
         {
             int topmost = container.getComponentCount() - 1;
-            SComponent comp = (SComponent)container.getComponent(topmost);
+            SComponent comp = (SComponent)SFrame.this.getComponentAt(topmost);
             comp.write(s);
         }
     }
@@ -643,11 +512,20 @@ public class SFrame
     public void setCG(FrameCG cg) {
         super.setCG(cg);
     }
+
+    public void invite(ComponentVisitor visitor)
+        throws Exception
+    {
+        visitor.visit(this);
+        getContentPane().invite(visitor);
+    }
+
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

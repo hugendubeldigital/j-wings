@@ -20,7 +20,7 @@ import org.wings.io.Device;
 /**
  * TODO: documentation
  *
- * @author Dominik Bartenstein
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class SPasswordField
@@ -29,20 +29,14 @@ public class SPasswordField
     private static final String cgClassID = "PasswordFieldCG";
 
     /**
-     * TODO: documentation
+     * Creates a new password field. This is basicly a textfield, but
+     * the input from the user is not displayed; instead stars (*) are shown.
      *
+     * @see org.wings.STextField
      */
     public SPasswordField() {
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "PasswordFieldCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -56,5 +50,6 @@ public class SPasswordField
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

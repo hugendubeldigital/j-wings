@@ -15,7 +15,6 @@
 package org.wings;
 
 import java.awt.Color;
-import javax.swing.Icon;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
@@ -27,29 +26,9 @@ import org.wings.io.Device;
  * @version $Revision$
  */
 public class SToggleButton
-    extends SRadioButton
+    extends SAbstractButton
 {
     private static final String cgClassID = "ToggleButtonCG";
-
-    /**
-     * TODO: documentation
-     */
-    protected Color selectedForeground = Color.red;
-
-    /**
-     * TODO: documentation
-     */
-    protected Color selectedBackground = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected Color backupForeground;
-
-    /**
-     * TODO: documentation
-     */
-    protected Color backupBackground;
 
     /**
      * TODO: documentation
@@ -58,11 +37,6 @@ public class SToggleButton
      */
     public SToggleButton(String text) {
         super(text);
-
-        setIcon((Icon)null);
-        setDisabledIcon((Icon)null);
-        setSelectedIcon((Icon)null);
-        setDisabledSelectedIcon((Icon)null);
     }
 
     /**
@@ -70,71 +44,8 @@ public class SToggleButton
      *
      */
     public SToggleButton() {
-        this(null);
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
-    public void setSelectedForeground(Color c) {
-        selectedForeground = c;
-        if ( selected )
-            setForeground(c);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
-    public void setSelectedBackground(Color c) {
-        selectedBackground = c;
-        if ( selected )
-            setBackground(c);
-    }
-
-    /*
-     * Da gibt es ein Problem mit der Interpretation von getForeground und
-     * getBackground. Sind dies die gerade aktiven Farben, oder die default
-     * Farben?? Auf alle Faelle
-     * werden diese Methoden von verschiedenen Layoutmanagern benutzt (alle, die
-     * eine Table zum layouten nutzen) um die
-     * Farben mit Hilfe eines Zell Attributes setzen, um so das FONT bzw STYLE Tag
-     * zu umgehen. Eventuell muss um das eindeutig zu bekommen in SComponent
-     * die Farben um 2 weitere Farben ergaenzt werden, ActualForeground und
-     * ActualBackground.
-     */
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void setSelected(boolean s) {
-        if ( selected != s ) {
-            if ( s ) {
-                backupForeground = getForeground();
-                backupBackground = getBackground();
-                setForeground(selectedForeground);
-                setBackground(selectedBackground);
-            }
-            else {
-                setForeground(backupForeground);
-                setBackground(backupBackground);
-            }
-        }
-        super.setSelected(s);
-    }
-
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "ToggleButtonCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -148,5 +59,6 @@ public class SToggleButton
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

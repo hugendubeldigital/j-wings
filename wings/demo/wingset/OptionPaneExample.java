@@ -29,7 +29,6 @@ public class OptionPaneExample
     implements SConstants
 {
     public OptionPaneExample(SFrame f) {
-        add(new SSpacer(1, VERTICAL));
 
         final SFrame frame = f;
         SButton msg = new SButton("show Message");
@@ -51,7 +50,7 @@ public class OptionPaneExample
 
         question.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SOptionPane.showQuestionDialog(frame, "Do you want to go on?",
+                SOptionPane.showQuestionDialog(frame, "Continue this example?",
                                                "A Question", comment);
             }});
         add(question);
@@ -61,15 +60,14 @@ public class OptionPaneExample
             public void actionPerformed(ActionEvent e) {
                 if ( e.getActionCommand()==SOptionPane.NO_ACTION ) {
                     SPanel p = new SPanel(new SFlowDownLayout());
-                    p.add(new SLabel("That's poor !"));
-                    p.add(new SSpacer(1, VERTICAL));
-                    SHRef sendMail =  new SHRef("Please send me why");
-                    sendMail.setReference("mailto:ahaaf@mercatis.de");
+                    p.add(new SLabel("That's sad !"));
+                    SAnchor sendMail = new SAnchor("mailto:ahaaf@mercatis.de");
+                    sendMail.add(new SLabel("Please send my why!")); 
                     p.add(sendMail);
                     SOptionPane.showMessageDialog(frame, p);
                 }
                 else
-                    SOptionPane.showMessageDialog(frame, "Fine, we too !");
+                    SOptionPane.showMessageDialog(frame, "Fine, so do we!");
             }
         };
 
@@ -81,13 +79,6 @@ public class OptionPaneExample
             }});
 
         add(yesno);
-        add(new SLabel("<br />"));
-        add(new SSeparator());
-
-        SHRef href =  new SHRef("View Source Code");
-        href.setReference("/demo/wingset/" +
-                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
-        add(href);
     }
 }
 
@@ -95,5 +86,6 @@ public class OptionPaneExample
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -32,9 +32,9 @@ public class CGUtil
 	
 	if (dim != null) {
 	    if (dim.width != null)
-		d.append(" width=\"").append(dim.width).append("\"");
+		d.print(" width=\"").print(dim.width).print("\"");
 	    if (dim.height != null)
-		d.append(" height=\"").append(dim.height).append("\"");
+		d.print(" height=\"").print(dim.height).print("\"");
 	}
     }
     
@@ -45,9 +45,17 @@ public class CGUtil
 	
         if (dim != null) {
 	    if (dim.width != null) 
-		d.append(" width=\"").append(dim.width).append("\"");
+		d.print(" width=\"").print(dim.width).print("\"");
 	    if (dim.height != null) 
-		d.append(" height=\"").append(dim.height).append("\"");
+		d.print(" height=\"").print(dim.height).print("\"");
 	}
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

@@ -18,13 +18,12 @@ import java.io.IOException;
 import javax.servlet.ServletOutputStream;
 
 /**
- * A Device encapsulating a ServletOutputStream
+ * A Device encapsulating a ServletOutputStream.
  *
- * @author <a href="mailto:hzeller@to.com">Henner Zeller</a>
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
-public final class ServletDevice
-    implements Device
+public final class ServletDevice implements Device
 {
     private ServletOutputStream out;
 
@@ -38,11 +37,17 @@ public final class ServletDevice
         this.out = out;
     }
 
+    public boolean isSizePreserving() { return true; }
+
     /**
      * Flush this Stream.
      */
     public void flush () throws IOException {
         out.flush();
+    }
+
+    public void close() throws IOException { 
+        out.close(); 
     }
 
     /**
@@ -76,42 +81,6 @@ public final class ServletDevice
     }
 
     /**
-     * Print a String. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (String s) {
-        try {
-            print (s);
-        }
-        catch (IOException ignore) {}
-        return this;
-    }
-
-    /**
-     * Print an Integer. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (int i) {
-        try {
-            print (i);
-        }
-        catch (IOException ignore) {}
-        return this;
-    }
-
-    /**
-     * Print any Object. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (Object o) {
-        try {
-            print (o);
-        }
-        catch (IOException ignore) {}
-        return this;
-    }
-
-    /**
      * Print a character.
      */
     public Device print (char c) throws IOException {
@@ -129,8 +98,9 @@ public final class ServletDevice
     /**
      * Print a character array.
      */
-    public Device print (char[] c, int start, int end) throws IOException {
-        for (int i=start; i <= end; i++)
+    public Device print (char[] c, int start, int len) throws IOException {
+        final int end = start + len;
+        for (int i=start; i < end; ++i)
             out.print(c[i]);
         return this;
     }
@@ -166,5 +136,6 @@ public final class ServletDevice
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -25,16 +25,18 @@ import org.wings.STable;
  * @version $Revision$
  */
 public class STablePropertyManager
-    extends SBaseTablePropertyManager
+    extends SComponentPropertyManager
 {
-    static final Class[] classes = {STable.class};
+    static final Class[] classes = { STable.class };
 
     public STablePropertyManager() {
     }
 
     public void setProperty(SComponent comp, String name, String value) {
         STable t = (STable)comp;
-        if ( name.equals("SELECTION_FOREGROUND") )
+        if ( name.equals("GRID") )
+            t.setShowGrid(Boolean.valueOf(value).booleanValue());
+        else if ( name.equals("SELECTION_FOREGROUND") )
             t.setSelectionForeground(Color.decode(value));
         else if ( name.equals("SELECTION_BACKGROUND") )
             t.setSelectionBackground(Color.decode(value));
@@ -51,5 +53,6 @@ public class STablePropertyManager
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import javax.swing.Icon;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 
@@ -31,5 +31,6 @@ public class EtchedBorderCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

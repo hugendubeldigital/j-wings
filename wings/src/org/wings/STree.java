@@ -14,17 +14,20 @@
 
 package org.wings;
 
+import java.util.logging.Logger;
+import java.util.ArrayList;
+
 import java.awt.Dimension;
 import java.awt.Rectangle;
-
-import java.util.Enumeration;
-import java.util.ArrayList;
+import java.awt.Color;
 
 import javax.swing.tree.*;
 import javax.swing.event.*;
 
+import org.wings.tree.*;
 import org.wings.plaf.*;
 import org.wings.io.Device;
+import org.wings.style.*;
 
 /**
  * TODO: documentation
@@ -34,8 +37,9 @@ import org.wings.io.Device;
  */
 public class STree
     extends SComponent
-    implements SGetListener, TreeSelectionListener, Scrollable
+    implements LowLevelEventListener, Scrollable
 {
+    private final static Logger logger = Logger.getLogger("org.wings");
     private static final String cgClassID = "TreeCG";
 
     /**
@@ -74,7 +78,7 @@ public class STree
     /**
      * TODO: documentation
      */
-    protected TreeModel model = null;
+    protected TreeModel model;
 
     /**
      * TODO: documentation
@@ -89,10 +93,23 @@ public class STree
     /**
      * TODO: documentation
      */
-    protected TreeSelectionModel selectionModel;
+    protected STreeSelectionModel selectionModel;
 
-    private ArrayList selectionListener = null;
-    private ArrayList expansionListener = null;
+    /** 
+     * the event listeners
+     */
+    protected final EventListenerList listenerList = new EventListenerList();
+
+    /**
+     * store here all delayed expansion events
+     */
+    private ArrayList delayedExpansionEvents;
+
+    /**
+     * store here expansion paths that will be processed after procession the
+     * request. 
+     */
+    protected final ArrayList requestedExpansionPaths = new ArrayList();
 
     /**
      * TODO: documentation
@@ -105,9 +122,23 @@ public class STree
     protected AbstractLayoutCache treeState = new VariableHeightLayoutCache();
 
     /**
-     * TODO: documentation
+     * Implementation of the  {@link Scrollable} interface.
      */
-    protected Rectangle viewport = null;
+    protected Rectangle viewport;
+
+    /** The style of selected cells */
+    protected Style selectionStyle;
+
+    /** The dynamic attributes of selected cells */
+    protected AttributeSet selectionAttributes = new SimpleAttributeSet();
+
+    /** used to forward the selection to the selection Listeners of the tree */
+    private final TreeSelectionListener forwardSelectionEvent = 
+        new TreeSelectionListener() {
+                public void valueChanged(TreeSelectionEvent e) {
+                    fireTreeSelectionEvent(e);
+                }
+            };
 
     /**
      * TODO: documentation
@@ -118,7 +149,7 @@ public class STree
         super();
         setModel(model);
         setRootVisible(true);
-        setSelectionModel(new DefaultTreeSelectionModel());
+        setSelectionModel(new SDefaultTreeSelectionModel());
     }
 
     /**
@@ -136,9 +167,7 @@ public class STree
      * @param tsl
      */
     public void addTreeSelectionListener(TreeSelectionListener tsl) {
-        if ( selectionListener == null )
-            selectionListener = new ArrayList(2);
-        selectionListener.add(tsl);
+        listenerList.add(TreeSelectionListener.class, tsl);
     }
 
     /**
@@ -147,33 +176,78 @@ public class STree
      * @param tsl
      */
     public void removeTreeSelectionListener(TreeSelectionListener tsl) {
-        if ( selectionListener == null )
-            return;
-        selectionListener.remove(tsl);
+        listenerList.remove(TreeSelectionListener.class, tsl);
+    }
+
+
+
+    protected void fireTreeSelectionEvent(TreeSelectionEvent e) {
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i] == TreeSelectionListener.class) {
+                ((TreeSelectionListener)listeners[i+1]).valueChanged(e);
+            }
+        }
+        reload(ReloadManager.RELOAD_CODE);
+    }
+
+    /**
+     * Adds a listener for <code>TreeWillExpand</code> events.
+     *
+     * @param tel a <code>TreeWillExpandListener</code> that will be notified 
+     *            when a tree node will be expanded or collapsed (a "negative
+     *            expansion")
+     */
+    public void addTreeWillExpandListener(TreeWillExpandListener tel) {
+        listenerList.add(TreeWillExpandListener.class, tel);
+    }
+
+    /**
+     * Removes a listener for <code>TreeWillExpand</code> events.
+     *
+     * @param tel the <code>TreeWillExpandListener</code> to remove
+     */
+    public void removeTreeWillExpandListener(TreeWillExpandListener tel) {
+        listenerList.remove(TreeWillExpandListener.class, tel);
     }
 
 
     /**
-     * Notify all listeners that have registered interest for
-     * notification on this event type.  The event instance
-     * is lazily created using the parameters passed into
-     * the fire method.
+     * Notifies all listeners that have registered interest for
+     * notification on this event type.  The event instance 
+     * is lazily created using the <code>path</code> parameter.
      *
-     * @param e the TreeSelectionEvent generated by the TreeSelectionModel
-     *          when a node is selected or deselected
+     * @param path the <code>TreePath</code> indicating the node that was
+     *		expanded
      * @see EventListenerList
      */
-    public void valueChanged(TreeSelectionEvent e) {
-        //    System.out.println("VALUE CHANGED " + e);
+     public void fireTreeWillExpand(TreePath path, boolean expand) 
+         throws ExpandVetoException {
 
-        if (selectionListener != null) {
-            for (int i=selectionListener.size()-1; i>=0; i-- ) {
-                ((TreeSelectionListener)selectionListener.get(i)).valueChanged(e);
-            }
-        }
-        reload();
-    }
+         // Guaranteed to return a non-null array
+         Object[] listeners = listenerList.getListenerList();
+         TreeExpansionEvent e = null;
+         // Process the listeners last to first, notifying
+         // those that are interested in this event
+         for (int i = listeners.length-2; i>=0; i-=2) {
+             if (listeners[i]==TreeWillExpandListener.class) {
+                 // Lazily create the event:
+                 if (e == null)
+                     e = new TreeExpansionEvent(this, path);
 
+                 if ( expand ) {
+                     ((TreeWillExpandListener)listeners[i+1]).
+                         treeWillExpand(e);
+                 } else {
+                     ((TreeWillExpandListener)listeners[i+1]).
+                         treeWillCollapse(e);
+                 }
+             }          
+         }
+     }   
 
     /**
      * TODO: documentation
@@ -181,9 +255,7 @@ public class STree
      * @param tel
      */
     public void addTreeExpansionListener(TreeExpansionListener tel) {
-        if ( expansionListener == null )
-            expansionListener = new ArrayList(2);
-        expansionListener.add(tel);
+        listenerList.add(TreeExpansionListener.class, tel);
     }
 
     /**
@@ -192,9 +264,41 @@ public class STree
      * @param tel
      */
     public void removeTreeExpansionListener(TreeExpansionListener tel) {
-        if ( expansionListener == null )
-            return;
-        expansionListener.remove(tel);
+        listenerList.remove(TreeExpansionListener.class, tel);
+    }
+
+
+    private class DelayedExpansionEvent {
+        TreeExpansionEvent expansionEvent;
+        boolean expansion;
+
+        DelayedExpansionEvent(TreeExpansionEvent e, boolean b) {
+            expansionEvent = e;
+            expansion = b;
+        }
+                    
+    }
+
+    protected void addDelayedExpansionEvent(TreeExpansionEvent e, 
+                                            boolean expansion) {
+        if ( delayedExpansionEvents==null ) {
+            delayedExpansionEvents = new ArrayList();
+        }
+
+        delayedExpansionEvents.add(new DelayedExpansionEvent(e, expansion));
+    }
+
+    protected void fireDelayedExpansionEvents() {
+        if ( delayedExpansionEvents!=null &&
+             !getSelectionModel().getDelayEvents() ) {
+            for ( int i=0; i<delayedExpansionEvents.size(); i++ ) {
+                DelayedExpansionEvent e = 
+                    (DelayedExpansionEvent)delayedExpansionEvents.get(i);
+
+                fireTreeExpansionEvent(e.expansionEvent, e.expansion);
+            }
+            delayedExpansionEvents.clear();
+        }
     }
 
 
@@ -207,20 +311,26 @@ public class STree
      * @param path the TreePath indicating the node that was expanded
      * @see EventListenerList
      */
-    public void fireTreeExpanded(TreePath path) {
-        // System.out.println("Tree Expanded " + path);
+    protected void fireTreeExpanded(TreePath path) {
+        fireTreeExpansionEvent(new TreeExpansionEvent(this, path), true);
+    }
 
-        if ( expansionListener == null )
-            return;
-
-        TreeExpansionEvent e = null;
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        for ( int i=expansionListener.size()-1; i>=0; i-- ) {
-            // Lazily create the event:
-            if ( e == null )
-                e = new TreeExpansionEvent(this, path);
-            ((TreeExpansionListener)expansionListener.get(i)).treeExpanded(e);
+    protected void fireTreeExpansionEvent(TreeExpansionEvent e, boolean expansion) {
+        if ( getSelectionModel().getDelayEvents() ) {
+            addDelayedExpansionEvent(e, expansion);
+        } else {
+            // Guaranteed to return a non-null array
+            Object[] listeners = listenerList.getListenerList();
+            // Process the listeners last to first, notifying
+            // those that are interested in this event
+            for (int i = listeners.length-2; i>=0; i-=2) {
+                if (listeners[i] == TreeExpansionListener.class) {
+                if ( expansion ) 
+                    ((TreeExpansionListener)listeners[i+1]).treeExpanded(e);
+                else
+                    ((TreeExpansionListener)listeners[i+1]).treeCollapsed(e);
+                }
+            }
         }
     }
 
@@ -234,18 +344,34 @@ public class STree
      * @see EventListenerList
      */
     public void fireTreeCollapsed(TreePath path) {
-        if ( expansionListener == null )
-            return;
-        TreeExpansionEvent e = null;
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        for ( int i=expansionListener.size()-1; i>=0 ;i-- ) {
-            if ( e == null )
-                e = new TreeExpansionEvent(this, path);
-            ((TreeExpansionListener)expansionListener.get(i)).treeCollapsed(e);
-        }
+        fireTreeExpansionEvent(new TreeExpansionEvent(this, path), false);
     }
 
+    protected void processRequestedExpansionPaths() {
+        getSelectionModel().setDelayEvents(true);
+        
+        for ( int i=0; i<requestedExpansionPaths.size(); i++ ) {
+            try {
+                TreePath path = (TreePath)requestedExpansionPaths.get(i);
+                togglePathExpansion(path);
+            } catch ( ExpandVetoException ex ) {
+                // do not expand...
+            }
+        }
+        requestedExpansionPaths.clear();
+        getSelectionModel().setDelayEvents(false);
+    }
+
+    public void fireIntermediateEvents() {
+        processRequestedExpansionPaths();
+
+        getSelectionModel().fireDelayedIntermediateEvents();
+    }
+
+    public void fireFinalEvents() {
+        fireDelayedExpansionEvents();
+        getSelectionModel().fireDelayedFinalEvents();
+    }
 
     /**
      * TODO: documentation
@@ -329,15 +455,15 @@ public class STree
      *        bound: true
      *  description: The tree's selection model.
      */
-    public void setSelectionModel(TreeSelectionModel selectionModel) {
+    public void setSelectionModel(STreeSelectionModel selectionModel) {
         if ( this.selectionModel != null )
-            this.selectionModel.removeTreeSelectionListener(this);
+            this.selectionModel.removeTreeSelectionListener(forwardSelectionEvent);
 
         if ( selectionModel != null )
-            selectionModel.addTreeSelectionListener(this);
+            selectionModel.addTreeSelectionListener(forwardSelectionEvent);
 
         if ( selectionModel == null )
-            this.selectionModel = EmptySelectionModel.sharedInstance();
+            this.selectionModel = SDefaultTreeSelectionModel.NO_SELECTION_MODEL;
         else
             this.selectionModel = selectionModel;
     }
@@ -351,7 +477,7 @@ public class STree
      * @param the TreeSelectionModel in use
      * @see #setSelectionModel
      */
-    public TreeSelectionModel getSelectionModel() {
+    public STreeSelectionModel getSelectionModel() {
         return selectionModel;
     }
 
@@ -666,27 +792,6 @@ public class STree
     /**
      * TODO: documentation
      *
-     * @param node
-     * @return
-     */
-    protected TreePath getTreePath(TreeNode node) {
-        ArrayList v = new ArrayList(2);
-
-        TreeNode n = node;
-        while ( n!=null ) {
-            v.add(n);
-            n = n.getParent();
-        }
-
-        Object path[] = new Object[v.size()];
-        v.toArray(path);
-
-        return new TreePath(path);
-    }
-
-    /**
-     * TODO: documentation
-     *
      * @param hash
      * @return
      */
@@ -729,7 +834,7 @@ public class STree
          }
         */
         fireTreeExpanded(p);
-        reload();
+        reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -749,7 +854,7 @@ public class STree
     public void collapseRow(TreePath p) {
         treeState.setExpandedState(p, false);
         fireTreeCollapsed(p);
-        reload();
+        reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -812,29 +917,63 @@ public class STree
      *
      * @param path
      */
-    protected void togglePathExpansion(TreePath path) {
+    protected void togglePathExpansion(TreePath path) 
+        throws ExpandVetoException
+    {
         if ( path != null ) {
             if ( treeState.isExpanded(path) ) {
+                fireTreeWillExpand(path, false);
                 collapseRow(path);
             }
             else {
+                fireTreeWillExpand(path, true);
                 expandRow(path);
             }
         }
     }
 
+    /**
+     * This is for plafs only! 
+     * With this parameter the tree expands the given node 
+     * ({@link #processRequest})
+     */
+    public String getExpansionParameter(Object node) {
+        return "h" + node.hashCode();
+    } 
 
-    public void getPerformed(String action, String value) {
-        boolean handle = value.charAt(0) == 'h';
-        value = value.substring(1);
-        TreePath path = getPathForRow(getRow(value));
-        if ( path != null )
-            if ( ((TreeNode)path.getLastPathComponent()).isLeaf() || !handle ) {
-                togglePathSelection(path);
+    /**
+     * This is for plafs only! 
+     * With this parameter the tree selects the given node 
+     * ({@link #processLowLevelEvent})
+     */
+    public String getSelectionParameter(Object node) {
+        return "b" + node.hashCode();
+    } 
+
+    public void processLowLevelEvent(String action, String[] values) {
+        getSelectionModel().setDelayEvents(true);
+        for ( int i=0; i<values.length; i++ ) {
+            if ( values[i].length()<2 ) continue; // incorrect format
+
+            String nodeHash = values[i].substring(1);
+            int row = getRow(nodeHash);
+
+            if ( row<0 ) continue; // row not found...
+
+            TreePath path = getPathForRow(row);
+
+            if (path != null) {
+                if ( values[i].charAt(0)=='b' ) {
+                    //selection
+                    togglePathSelection(path);
+                } else if ( values[i].charAt(0)=='h' ) {
+                    requestedExpansionPaths.add(path);
+                    //                    togglePathExpansion(path);
+                }
             }
-            else {
-                togglePathExpansion(path);
-            }
+        }
+        SForm.addArmedComponent(this);
+        getSelectionModel().setDelayEvents(false);
     }
 
     /**
@@ -896,7 +1035,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeNodesChanged(e);
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
         }
 
         /**
@@ -908,7 +1047,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeNodesInserted(e);
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
         }
 
         /**
@@ -920,7 +1059,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeStructureChanged(e);
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
         }
 
         /**
@@ -932,41 +1071,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeNodesRemoved(e);
-            reload();
-        }
-    }
-
-    /**
-     * EmptySelectionModel is a TreeSelectionModel that does not allow
-     * anything to be selected.
-     */
-    protected static class EmptySelectionModel extends DefaultTreeSelectionModel
-    {
-        /**
-         * Unique shared instance.
-         */
-        protected static final EmptySelectionModel sharedInstance =
-            new EmptySelectionModel();
-
-        /**
-         * Returns a shared instance of an empty selection model
-         *
-         * @return
-         */
-        static public EmptySelectionModel sharedInstance() {
-            return sharedInstance;
-        }
-
-        /** A null implementation that selects nothing */
-        public void setSelectionPaths(TreePath[] pPaths) {
-        }
-
-        /** A null implementation that adds nothing */
-        public void addSelectionPaths(TreePath[] paths) {
-        }
-
-        /** A null implementation that removes nothing */
-        public void removeSelectionPaths(TreePath[] paths) {
+            reload(ReloadManager.RELOAD_CODE);
         }
     }
 
@@ -1003,14 +1108,6 @@ public class STree
         return cellRendererPane;
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "TreeCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -1020,8 +1117,8 @@ public class STree
      *
      * @return maximum size
      */
-    public Dimension getScrollableViewportSize() {
-        return new Dimension(1, getRowCount());
+    public Rectangle getScrollableViewportSize() {
+        return new Rectangle(0,0, 1, getRowCount());
     }
 
     /*
@@ -1037,7 +1134,7 @@ public class STree
         viewport = d;
         if ((viewport == null && oldViewport != null) ||
             (viewport != null && !viewport.equals(oldViewport)))
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -1049,6 +1146,82 @@ public class STree
         return viewport;
     }
 
+    public Dimension getPreferredExtent() {
+        return null;
+    }
+
+    /**
+     * @param style the style of selected cells
+     */
+    public void setSelectionStyle(Style selectionStyle) {
+        this.selectionStyle = selectionStyle;
+    }
+
+    /**
+     * @return the style of selected cells.
+     */
+    public Style getSelectionStyle() { return selectionStyle; }
+
+
+    /**
+     * Set the selectionAttributes.
+     * @param selectionAttributes the selectionAttributes
+     */
+    public void setSelectionAttributes(AttributeSet selectionAttributes) {
+        if (selectionAttributes == null)
+            throw new IllegalArgumentException("null not allowed");
+
+        if (!this.selectionAttributes.equals(selectionAttributes)) {
+            this.selectionAttributes = selectionAttributes;
+            reload(ReloadManager.RELOAD_STYLE);
+        }
+    }
+
+    /**
+     * @return the current selectionAttributes
+     */
+    public AttributeSet getSelectionAttributes() {
+        return selectionAttributes;
+    }
+
+    /**
+     * Set the background color.
+     * @param c the new background color
+     */
+    public void setSelectionBackground(Color color) {
+        boolean changed = 
+            selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, Style.BACKGROUND_COLOR));
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * Return the background color.
+     * @return the background color
+     */
+    public Color getSelectionBackground() {
+        return CSSStyleSheet.getBackground(selectionAttributes);
+    }
+
+    /**
+     * Set the foreground color.
+     * @param color the foreground color of selected cells
+     */
+    public void setSelectionForeground(Color color) {
+        boolean changed = 
+            selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, Style.COLOR));
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * Return the foreground color.
+     * @return the foreground color
+     */
+    public Color getSelectionForeground() {
+        return CSSStyleSheet.getForeground(selectionAttributes);
+    }
+
     public void setCG(TreeCG cg) {
         super.setCG(cg);
     }
@@ -1058,5 +1231,6 @@ public class STree
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

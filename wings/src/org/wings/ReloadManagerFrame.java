@@ -19,29 +19,30 @@ import java.beans.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.logging.*;
 
 import javax.swing.Icon;
 
 import org.wings.*;
 import org.wings.externalizer.*;
 import org.wings.io.Device;
-import org.wings.io.StringBufferDevice;
-import org.wings.io.DeviceBuffer;
 import org.wings.plaf.*;
 import org.wings.style.StyleSheet;
 import org.wings.session.Session;
 import org.wings.session.SessionManager;
 
 /**
+ * An invisible frame, that executes a javascript function <code>onload</code>,
+ * that reloads all dirty frames.
+ *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
 public class ReloadManagerFrame
     extends SFrame
 {
-    public ReloadManagerFrame() {
-	getSession().getDispatcher().setTarget(getUnifiedIdString());
-    }
+    private final static Logger logger = Logger.getLogger("org.wings");
+    public ReloadManagerFrame() {}
 
     public final SContainer getContentPane() {
         return null; // heck :-)
@@ -50,7 +51,7 @@ public class ReloadManagerFrame
     /**
      * This frame stays invisible
      */
-    public SComponent addComponent(SComponent c, Object constraint) {
+    public SComponent addComponent(SComponent c, Object constraint, int index) {
 	throw new IllegalArgumentException("Adding Components is not allowed");
     }
 
@@ -67,7 +68,7 @@ public class ReloadManagerFrame
      * @param p the container
      */
     public void setParent(SContainer p) {
-	if (!(p instanceof ReloadManagerFrame))
+	if (!(p == null || p instanceof SFrameSet))
 	    throw new IllegalArgumentException("The ReloadManagerFrame can only be added to SFrameSets.");
 
         parent = p;
@@ -90,64 +91,94 @@ public class ReloadManagerFrame
     }
 
     /**
-     * TODO: documentation
+     * No LayoutManager allowed.
      */
-    public void setServer(String path) {
-	super.setServer(path);
-	setServerAddress(serverAddress);
-    }
-
-    /**
-     * Set server address.
-     */
-    protected void setServerAddress(SGetAddress serverAddress) {
-        this.serverAddress = serverAddress;
-    }
-
     public void setLayout(SLayoutManager l) {
 	throw new IllegalArgumentException("No LayoutManager allowed");
     }
 
+    private Set dirtyResources;
+    public void setDirtyResources(Set dirtyResources) {
+        this.dirtyResources = dirtyResources;
+    }
+
+    /**
+     * Generate a minimal document with a javascript function, that reloads
+     * all dirty frames. The list of dirty frames is obtained from the ReloadManager.
+     * After the code has been generated, the dirty components list is cleared.
+     *** create a PLAF for this ***
+     */
     public void write(Device d) throws IOException {
 	ExternalizeManager externalizer = getSession().getExternalizeManager();
 
-	d.append("<head><title>ReloadManager</title>\n");
-	d.append("<script language=\"javascript\">\n");
-	d.append("function reload() {\n");
-	SComponent[] components = getReloadManager().getDirtyComponents();
-	SFrameSet toplevel = null;
-	for (int i=0; i < components.length; i++)
-	    if (components[i].getParent() == null)
-		toplevel = (SFrameSet)components[i];
-	if (toplevel != null) {
-	    System.err.println("reload the whole frameset");
-	    d.append("parent.location='");
-	    d.append(toplevel.getServerAddress());
-	    d.append("';\n");
-	}
-	else {
-	    for (int i=0; i < components.length; i++) {
-		String src = externalizer.externalize(((SFrame)components[i]).show(), "text/html");
-		d.append("parent.frame");
-		d.append(components[i].getUnifiedIdString());
-		d.append(".location='");
-		d.append(src);
-		d.append("';\n");
-	    }
-	}
-	d.append("}\n");
-	d.append("</script>\n");
-	d.append("</head>\n");
-	d.append("<body onload=\"reload()\"></body>");
-	getReloadManager().clearDirtyComponents();
-    }
+	d.print("<head><title>ReloadManager</title>\n");
+	d.print("<script language=\"javascript\">\n");
+	d.print("function reload() {\n");
 
-    private ReloadManager reloadManager = null;
-    protected ReloadManager getReloadManager() {
-	if (reloadManager == null)
-	    reloadManager = getSession().getReloadManager();
-	return reloadManager;
-    }
+        if (dirtyResources != null) {
+            boolean all = false;
+            DynamicResource toplevel = null;
+            {
+                Iterator it = dirtyResources.iterator();
+                while (it.hasNext()) {
+                    DynamicResource resource = (DynamicResource)it.next();
+                    if (!(resource.getFrame() instanceof ReloadManagerFrame) &&
+                        resource.getFrame().getParent() == null) {
+                        toplevel = resource;
+                        all = true;
+                    }
+                }
+            }
 
-    public void updateCG() {}
+            if (all) {
+                // reload the _whole_ document
+                d.print("parent.location.href='");
+                d.print(toplevel.getURL());
+                d.print("';\n");
+
+                if (logger.isLoggable(Level.FINER))
+                    logger.finer("parent.location.href='" + toplevel.getURL() + "';\n");
+
+                // invalidate resources
+                Iterator it = dirtyResources.iterator();
+                while (it.hasNext()) {
+                    DynamicResource resource = (DynamicResource)it.next();
+                    resource.invalidate();
+                }
+            }
+            else {
+                Iterator it = dirtyResources.iterator();
+                while (it.hasNext()) {
+                    DynamicResource resource = (DynamicResource)it.next();
+                    resource.invalidate();
+
+                    d.print("parent.frame");
+                    d.print(resource.getFrame().getComponentId());
+                    d.print(".location.href='");
+                    d.print(resource.getURL());
+                    d.print("';\n");
+
+                    if (logger.isLoggable(Level.FINER))
+                        logger.finer("parent.frame" +
+                                     resource.getFrame().getComponentId() +
+                                     ".location.href='" +
+                                     resource.getURL() +
+                                     "';\n");
+                }
+            }
+        }
+
+	d.print("}\n");
+	d.print("</script>\n");
+	d.print("</head>\n");
+	d.print("<body onload=\"reload()\"></body>");
+    }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

@@ -17,7 +17,7 @@ package org.wings.plaf.xhtml;
 import java.io.IOException;
 import java.util.*;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 
@@ -33,27 +33,27 @@ public class CardLayoutCG implements LayoutCG
     public void write(Device d, SLayoutManager l)
         throws IOException
     {
-		SCardLayout layout = (SCardLayout)l;
-		SComponent component = (SComponent) layout.getContainer();
+        SCardLayout layout = (SCardLayout)l;
+        SComponent component = (SComponent) layout.getContainer();
         SComponent c = layout.getVisibleComponent();
 
         if (c == null) return;
-		
+	/*	
         if ( Utils.hasSpanAttributes( component ) )
          {
-         	d.append("<span style=\"");
+         	d.print("<span style=\"");
         	Utils.writeSpanAttributes( d, component );
-            d.append("\">");
+            d.print("\">");
 		 }
-
+        */
         c.write(d);
-
+        /*
         if ( Utils.hasSpanAttributes( component ) )
          {
-         	d.append("</span>");
-		 }
+         	d.print("</span>");
+         }
 
-        
+        */
     }
 }
 
@@ -61,5 +61,6 @@ public class CardLayoutCG implements LayoutCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -39,103 +39,81 @@ import org.wings.io.Device;
  * @version $Revision$
  */
 public class SScrollBar
-    extends SContainer
-    implements Adjustable, SConstants
+    extends SAbstractAdjustable
 {
     /**
      * @see #getCGClassID
      */
     private static final String cgClassID = "ScrollBarCG";
 
-    /**
-     * TODO: documentation
-     */
-    public static final int UNIT = 0;
 
     /**
-     * TODO: documentation
+     * Access to the default Icons for buttons
      */
-    public static final int BLOCK = 1;
+    public static final int FORWARD = 0;
+    public static final int BACKWARD = 1;
+    public static final int FORWARD_BLOCK = 2;
+    public static final int BACKWARD_BLOCK = 3;
+    public static final int FIRST = 4;
+    public static final int LAST = 5;
 
-    /**
-     * TODO: documentation
-     */
-    public static final int MARGIN = 2;
+    /** contains the clickables forward, backward, blockforward, blockbackward, 
+        first, last */
+    protected SClickable[] clickables = new SClickable[6];
 
-    // for access of the icons
-    private static final int DISABLED = 0;
-    private static final int ENABLED = 1;
-
-    // for access of the icons
-    private static final int FORWARD = 0;
-    private static final int BACKWARD = 1;
-	
-    /**
-     * All changes from the model are treated as though the user moved
-     * the scrollbar knob.
-     */
-    private ChangeListener fwdAdjustmentEvents = new ModelListener();
-
-    /**
-     * The model that represents the scrollbar's minimum, maximum, extent
-     * (aka "visibleAmount") and current value.
-     * @see #setModel
-     */
-    protected BoundedRangeModel model;
-
-    /**
-     * @see #setOrientation
-     */
-    protected int orientation;
-
-    /**
-     * @see #setUnitIncrement
-     */
-    protected int unitIncrement;
-
-    /**
-     * @see #setBlockIncrement
-     */
-    protected int blockIncrement;
-
-    /**
-     * TODO: documentation
-     */
-    protected final ArrayList adjustmentListener = new ArrayList(2);
-
-    // Jeweils 3 Buttons fuer jede Richtung (FORWARD und BACKWARD)
-    transient protected SButton[][] buttons = new SButton[3][2];
-
-    // 2 Orientierungen, 3 Typen (Unit, Block, Margin), 2 Richtungen (FORWARD,
-    // BACKWARD) und jeweils enabled und disabled.
-    private final static ResourceImageIcon[][][][] DEFAULT_ICONS =
-        new ResourceImageIcon[2][3][2][2];
+    // 2 orientations, 6 directions (FORWARD, BACKWARD,...) 
+    // and the Icons
+    private final static SIcon[][][] DEFAULT_ICONS =
+        new SIcon[2][6][SClickable.ICON_COUNT];
 
     // Initialisiert (laedt) die Default Images
     static {
-        String[] prefixes = {"", "Block", "Margin"};
-        String[] postfixes = new String[2];
+        String[] postfixes = new String[6];
+        String[] prefixes = new String[6];
         for ( int orientation=0; orientation<2; orientation++ ) {
-            for ( int style=0; style<prefixes.length; style++ ) {
-                if ( orientation==SConstants.VERTICAL ) {
-                    postfixes[BACKWARD] = "Up";
-                    postfixes[FORWARD] = "Down";
-                }
-                else {
-                    postfixes[BACKWARD] = "Left";
-                    postfixes[FORWARD] = "Right";
-                }
+            prefixes[BACKWARD] = "";
+            prefixes[FORWARD] = "";
+            prefixes[FIRST] = "Margin";
+            prefixes[LAST] = "Margin";
+            prefixes[FORWARD_BLOCK] = "Block";
+            prefixes[BACKWARD_BLOCK] = "Block";
+            if ( orientation==SConstants.VERTICAL ) {
+                postfixes[BACKWARD] = "Up";
+                postfixes[FORWARD] = "Down";
+                postfixes[FIRST] = "Up";
+                postfixes[LAST] = "Down";
+                postfixes[BACKWARD_BLOCK] = "Up";
+                postfixes[FORWARD_BLOCK] = "Down";
+            } else {
+                postfixes[BACKWARD] = "Left";
+                postfixes[FORWARD] = "Right";
+                postfixes[FIRST] = "Left";
+                postfixes[LAST] = "Right";
+                postfixes[BACKWARD_BLOCK] = "Left";
+                postfixes[FORWARD_BLOCK] = "Right";
+            }
 
-                for ( int direction=0; direction<postfixes.length; direction++ ) {
-                    DEFAULT_ICONS[orientation][style][direction][ENABLED] =
-                        new ResourceImageIcon("org/wings/icons/" + prefixes[style] +
-                                              "Scroll" + postfixes[direction] +
-                                              ".gif");
-                    DEFAULT_ICONS[orientation][style][direction][DISABLED] =
-                        new ResourceImageIcon("org/wings/icons/Disabled" + prefixes[style] +
-                                              "Scroll" + postfixes[direction] +
-                                              ".gif");
-                }
+            for ( int direction=0; direction<postfixes.length; direction++ ) {
+                DEFAULT_ICONS[orientation][direction][SClickable.ENABLED_ICON] =
+                    new ResourceImageIcon("org/wings/icons/"
+                                          + prefixes[direction]
+                                          + "Scroll"
+                                          + postfixes[direction] + ".gif");
+                DEFAULT_ICONS[orientation][direction][SClickable.DISABLED_ICON] =
+                    new ResourceImageIcon("org/wings/icons/Disabled" 
+                                          + prefixes[direction]
+                                          + "Scroll"
+                                          + postfixes[direction] + ".gif");
+                DEFAULT_ICONS[orientation][direction][SClickable.PRESSED_ICON] =
+                    new ResourceImageIcon("org/wings/icons/Pressed"
+                                          + prefixes[direction]
+                                          + "Scroll"
+                                          + postfixes[direction] + ".gif");
+                DEFAULT_ICONS[orientation][direction][SClickable.ROLLOVER_ICON] =
+                    new ResourceImageIcon("org/wings/icons/Rollover"
+                                          + prefixes[direction]
+                                          + "Scroll"
+                                          + postfixes[direction] + ".gif");
             }
         }
     }
@@ -160,19 +138,14 @@ public class SScrollBar
      * @see #setMaximum
      */
     public SScrollBar(int orientation, int value, int extent, int min, int max) {
-        super( );
-        this.unitIncrement = 1;
-        this.blockIncrement = (extent == 0) ? 1 : extent;
-        this.orientation = orientation;
-        this.model = new DefaultBoundedRangeModel(value, extent, min, max);
-        this.model.addChangeListener(fwdAdjustmentEvents);
+        super(value, extent, min, max);
 
-        initScrollers();
-        checkOrientation(orientation);
+        for ( int i=0; i<clickables.length; i++ ) {
+            clickables[i] = new SClickable();
+            clickables[i].setEventTarget(this);
+        }
 
-        // removeStyle(UNIT);
-        // removeStyle(BLOCK);
-        // removeStyle(MARGIN);
+        setOrientation(orientation);
     }
 
     /**
@@ -208,93 +181,90 @@ public class SScrollBar
      *
      */
     public void resetIcons() {
-        for ( int style=0; style<DEFAULT_ICONS[orientation].length; style++ ) {
-            for ( int direction=0; direction<DEFAULT_ICONS[orientation][style].length;
-                  direction++ ) {
-                buttons[style][direction].setIcon(DEFAULT_ICONS[orientation][style][direction][ENABLED]);
-                buttons[style][direction].setDisabledIcon(DEFAULT_ICONS[orientation][style][direction][DISABLED]);
-            }
-        }
+        for ( int i=0; i<clickables.length; i++ ) {
+            clickables[i].setIcons(DEFAULT_ICONS[orientation][i]);
+        } 
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param style
-     */
-    public void addStyle(int style) {
-        for ( int i=0; i<buttons[style].length; i++ )
-            buttons[style][i].setVisible(true);
+     * to set your favorite icons and text of the clickable. Icons will be
+     * reset to default, if you change the orientation {@link #setOrientation}
+     * @see #FORWARD
+     * @see #BACKWARD
+     * @see #FORWARD_BLOCK
+     * @see #BACKWARD_BLOCK
+     * @see #FIRST
+     * @see #LAST
+     **/
+    public SClickable getClickable(int clickable) {
+        return clickables[clickable];
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param style
-     */
-    public void removeStyle(int style) {
-        for ( int i=0; i<buttons[style].length; i++ )
-            buttons[style][i].setVisible(false);
-    }
-
-    private void checkOrientation(int orientation) {
-        switch (orientation) {
-        case SConstants.VERTICAL:
-        case SConstants.HORIZONTAL:
-            resetIcons();
-            break;
-        default:
-            throw new IllegalArgumentException("orientation must be one of: VERTICAL, HORIZONTAL");
-        }
+     * Are margin buttons visible
+     * @see #FIRST
+     * @see #LAST
+     **/
+    public final boolean isMarginVisible() {
+        return clickables[FIRST].isVisible()  ||
+            clickables[LAST].isVisible();
     }
 
     /**
-     * TODO: documentation
-     */
-    transient protected ActionListener scrollerAction = new ActionListener() {
-        /**
-         * TODO: documentation
-         *
-         * @param e
-         */
-        public void actionPerformed(ActionEvent e) {
-            model.setValueIsAdjusting(true);
-            int change = 0;
-            if ( e.getSource() == buttons[UNIT][FORWARD] ) {
-                change = unitIncrement;
-            }
-            else if ( e.getSource() == buttons[BLOCK][FORWARD] ) {
-                change = blockIncrement;
-            }
-            else if ( e.getSource() == buttons[MARGIN][FORWARD] ) {
-                model.setValue(model.getMaximum()-model.getExtent());
-            }
-            else if ( e.getSource() == buttons[UNIT][BACKWARD] ) {
-                change = -unitIncrement;
-            }
-            else if ( e.getSource() == buttons[BLOCK][BACKWARD] ) {
-                change = -blockIncrement;
-            }
-            else if ( e.getSource() == buttons[MARGIN][BACKWARD] ) {
-                model.setValue(model.getMinimum());
-            }
+     * Are margin buttons visible
+     * @see #FIRST
+     * @see #LAST
+     **/
+    public final void setMarginVisible(boolean b) {
+        clickables[FIRST].setVisible(b);
+        clickables[LAST].setVisible(b);
+    }
 
-            model.setValue(model.getValue()+change);
-            model.setValueIsAdjusting(false);
-        }
-    };
 
     /**
-     * TODO: documentation
-     *
-     */
-    protected void initScrollers() {
-        for ( int i=0; i<buttons.length; i++ ) {
-            buttons[i][FORWARD] = new SButton();
-            buttons[i][FORWARD].addActionListener(scrollerAction);
-            buttons[i][BACKWARD] = new SButton();
-            buttons[i][BACKWARD].addActionListener(scrollerAction);
-        }
+     * Are step buttons visible
+     * @see #FORWARD
+     * @see #BACKWARD
+     **/
+    public final boolean isStepVisible() {
+        return clickables[BACKWARD].isVisible()  ||
+            clickables[FORWARD].isVisible();
+    }
+
+
+    /**
+     * Are step buttons visible
+     * @see #FORWARD
+     * @see #BACKWARD
+     **/
+    public final void setStepVisible(boolean b) {
+        clickables[FORWARD].setVisible(b);
+        clickables[BACKWARD].setVisible(b);
+    }
+
+    /**
+     * Are block buttons visible
+     * @see #FORWARD_BLOCK
+     * @see #BACKWARD_BLOCK
+     **/
+    public final void setBlockVisible(boolean b) {
+        clickables[FORWARD_BLOCK].setVisible(b);
+        clickables[BACKWARD_BLOCK].setVisible(b);
+    }
+
+    /**
+     * Are block buttons visible
+     * @see #FORWARD_BLOCK
+     * @see #BACKWARD_BLOCK
+     **/
+    public final boolean isBlockVisible() {
+        return clickables[BACKWARD_BLOCK].isVisible()  ||
+            clickables[FORWARD_BLOCK].isVisible();
+    }
+
+    public void setOrientation(int orientation) {
+        super.setOrientation(orientation);
+        resetIcons();
         initLayout();
     }
 
@@ -304,443 +274,65 @@ public class SScrollBar
      */
     protected void initLayout()
     {
-    /*
-	*/
         removeAllComponents();
+
+
         SPanel backward = null;
         SPanel forward = null;
         if ( orientation == SConstants.VERTICAL) {
             backward = new SPanel(new SFlowDownLayout() );
             add( backward );
-
+            
             forward = new SPanel(new SFlowDownLayout() );
             add( forward );
-        }
-        else {
+        } else {
             backward = new SPanel(new SFlowLayout() );
             add( backward );
-
+            
             forward = new SPanel(new SFlowLayout() );
             add( forward );
         }
 
-        for ( int i=0; i<buttons.length; i++ )
-        {
-            forward.add(buttons[i][FORWARD]);
-            backward.add(buttons[buttons.length-i-1][BACKWARD]);
-        }
+        backward.add(clickables[FIRST]);
+        backward.add(clickables[BACKWARD_BLOCK]);
+        backward.add(clickables[BACKWARD]);
+
+        forward.add(clickables[FORWARD]);
+        forward.add(clickables[FORWARD_BLOCK]);
+        forward.add(clickables[LAST]);
     }
 
     /**
      * TODO: documentation
      *
      */
-    protected void setScrollButtonStatus() {
-        for ( int i=0; i<buttons.length; i++ ) {
-            if ( model.getValue() == model.getMinimum() ) {
-                buttons[i][BACKWARD].setEnabled(false);
-            }
-            else {
-                buttons[i][BACKWARD].setEnabled(true);
-            }
+    protected void refreshComponents() {
+        // lower bound
+        clickables[BACKWARD].setEnabled(getValue() > getMinimum());
+        clickables[FIRST].setEnabled(clickables[BACKWARD].isEnabled());
+        clickables[BACKWARD_BLOCK].setEnabled(clickables[BACKWARD].isEnabled());
 
-            if ( model.getValue()+model.getExtent() == model.getMaximum() ) {
-                buttons[i][FORWARD].setEnabled(false);
-            }
-            else {
-                buttons[i][FORWARD].setEnabled(true);
-            }
+        if ( clickables[BACKWARD].isEnabled() ) {
+            clickables[BACKWARD].setEvent(getEventParameter(getValue()-1));
+            int first = getMinimum();
+            clickables[FIRST].setEvent(getEventParameter(first));
+            int blockValue = Math.min(first,
+                                      getValue()-getBlockIncrement());
+            clickables[BACKWARD_BLOCK].setEvent(getEventParameter(blockValue));
         }
-    }
 
+        // upper bound: maximum - extent
+        clickables[FORWARD].setEnabled(getValue() < getMaximum()-getExtent());
+        clickables[LAST].setEnabled(clickables[FORWARD].isEnabled());
+        clickables[FORWARD_BLOCK].setEnabled(clickables[FORWARD].isEnabled());
 
-    /**
-     * Returns the component's orientation (horizontal or vertical).
-     *
-     * @return VERTICAL or HORIZONTAL
-     * @see #setOrientation
-     * @see java.awt.Adjustable#getOrientation
-     */
-    public int getOrientation() {
-        return orientation;
-    }
-
-
-    /**
-     * Set the scrollbar's orientation to either VERTICAL or
-     * HORIZONTAL.
-     *
-     * @exception IllegalArgumentException if orientation is not one of VERTICAL, HORIZONTAL
-     * @see #getOrientation
-     * @beaninfo
-     *    preferred: true
-     *        bound: true
-     *    attribute: visualUpdate true
-     *  description: The scrollbar's orientation.
-     *         enum: VERTICAL JScrollBar.VERTICAL
-     *               HORIZONTAL JScrollBar.HORIZONTAL
-     */
-    public void setOrientation(int orientation)
-    {
-        checkOrientation(orientation);
-        this.orientation = orientation;
-    }
-
-
-    /**
-     * Returns data model that handles the scrollbar's four
-     * fundamental properties: minimum, maximum, value, extent.
-     *
-     * @see #setModel
-     */
-    public BoundedRangeModel getModel() {
-        return model;
-    }
-
-
-    /**
-     * Sets the model that handles the scrollbar's four
-     * fundamental properties: minimum, maximum, value, extent.
-     *
-     * @see #getModel
-     * @beaninfo
-     *       bound: true
-     *       expert: true
-     * description: The scrollbar's BoundedRangeModel.
-     */
-    public void setModel(BoundedRangeModel newModel) {
-        if ( model != null ) {
-            model.removeChangeListener(fwdAdjustmentEvents);
-        }
-        model = newModel;
-        if ( model != null ) {
-            model.addChangeListener(fwdAdjustmentEvents);
-        }
-    }
-
-
-    /**
-     * Returns the amount to change the scrollbar's value by,
-     * given a unit up/down request.  A ScrollBarUI implementation
-     * typically calls this method when the user clicks on a scrollbar
-     * up/down arrow and uses the result to update the scrollbar's
-     * value.   Subclasses my override this method to compute
-     * a value, e.g. the change required to scroll up or down one
-     * (variable height) line text or one row in a table.
-     * <p>
-     * The JScrollPane component creates scrollbars (by default)
-     * that override this method and delegate to the viewports
-     * Scrollable view, if it has one.  The Scrollable interface
-     * provides a more specialized version of this method.
-     *
-     * @param direction is -1 or 1 for up/down respectively
-     * @return the value of the unitIncrement property
-     * @see #setUnitIncrement
-     * @see #setValue
-     * @see Scrollable#getScrollableUnitIncrement
-     */
-    public int getUnitIncrement(int direction) {
-        return unitIncrement;
-    }
-
-
-    /**
-     * Sets the unitIncrement property.
-     * @see #getUnitIncrement
-     * @beaninfo
-     *   preferred: true
-     *       bound: true
-     * description: The scrollbar's unit increment.
-     */
-    public void setUnitIncrement(int unitIncrement) {
-        this.unitIncrement = unitIncrement;
-    }
-
-
-    /**
-     * Returns the amount to change the scrollbar's value by,
-     * given a block (usually "page") up/down request.  A ScrollBarUI
-     * implementation typically calls this method when the user clicks
-     * above or below the scrollbar "knob" to change the value
-     * up or down by large amount.  Subclasses my override this
-     * method to compute a value, e.g. the change required to scroll
-     * up or down one paragraph in a text document.
-     * <p>
-     * The JScrollPane component creates scrollbars (by default)
-     * that override this method and delegate to the viewports
-     * Scrollable view, if it has one.  The Scrollable interface
-     * provides a more specialized version of this method.
-     *
-     * @param direction is -1 or 1 for up/down respectively
-     * @return the value of the blockIncrement property
-     * @see #setBlockIncrement
-     * @see #setValue
-     * @see Scrollable#getScrollableBlockIncrement
-     */
-    public int getBlockIncrement(int direction) {
-        return blockIncrement;
-    }
-
-
-    /**
-     * Sets the blockIncrement property.
-     * @see #getBlockIncrement()
-     * @beaninfo
-     *   preferred: true
-     *       bound: true
-     * description: The scrollbar's block increment.
-     */
-    public void setBlockIncrement(int blockIncrement) {
-        this.blockIncrement = blockIncrement;
-    }
-
-
-    /**
-     * For backwards compatibility with java.awt.Scrollbar.
-     * @see Adjustable#getUnitIncrement
-     * @see #getUnitIncrement(int)
-     */
-    public int getUnitIncrement() {
-        return unitIncrement;
-    }
-
-
-    /**
-     * For backwards compatibility with java.awt.Scrollbar.
-     * @see Adjustable#getBlockIncrement
-     * @see #getBlockIncrement(int)
-     */
-    public int getBlockIncrement() {
-        return blockIncrement;
-    }
-
-
-    /**
-     * Returns the scrollbar's value.
-     * @return the model's value property
-     * @see #setValue
-     */
-    public int getValue() {
-        return getModel().getValue();
-    }
-
-
-    /**
-     * Sets the scrollbar's value.  This method just forwards the value
-     * to the model.
-     *
-     * @see #getValue
-     * @see BoundedRangeModel#setValue
-     * @beaninfo
-     *   preferred: true
-     *       bound: true
-     * description: The scrollbar's current value.
-     */
-    public void setValue(int value) {
-        BoundedRangeModel m = getModel();
-        m.setValue(value);
-    }
-
-
-    /**
-     * Returns the scrollbar's extent, aka its "visibleAmount".  In many
-     * scrollbar look and feel implementations the size of the
-     * scrollbar "knob" or "thumb" is proportional to the extent.
-     *
-     * @return the value of the model's extent property
-     * @see #setVisibleAmount
-     */
-    public int getVisibleAmount() {
-        return getModel().getExtent();
-    }
-
-
-    /**
-     * Set the model's extent property.
-     *
-     * @see #getVisibleAmount
-     * @see BoundedRangeModel#setExtent
-     * @beaninfo
-     *   preferred: true
-     * description: The amount of the view that is currently visible.
-     */
-    public void setVisibleAmount(int extent) {
-        getModel().setExtent(extent);
-    }
-
-
-    /**
-     * Returns the minimum value supported by the scrollbar
-     * (usually zero).
-     *
-     * @return the value of the model's minimum property
-     * @see #setMinimum
-     */
-    public int getMinimum() {
-        return getModel().getMinimum();
-    }
-
-
-    /**
-     * Sets the model's minimum property.
-     *
-     * @see #getMinimum
-     * @see BoundedRangeModel#setMinimum
-     * @beaninfo
-     *   preferred: true
-     * description: The scrollbar's minimum value.
-     */
-    public void setMinimum(int minimum) {
-        getModel().setMinimum(minimum);
-    }
-
-
-    /**
-     * The maximum value of the scrollbar is maximum - extent.
-     *
-     * @return the value of the model's maximum property
-     * @see #setMaximum
-     */
-    public int getMaximum() {
-        return getModel().getMaximum();
-    }
-
-
-    /**
-     * Sets the model's maximum property.  Note that the scrollbar's value
-     * can only be set to maximum - extent.
-     *
-     * @see #getMaximum
-     * @see BoundedRangeModel#setMaximum
-     * @beaninfo
-     *   preferred: true
-     * description: The scrollbar's maximum value.
-     */
-    public void setMaximum(int maximum) {
-        getModel().setMaximum(maximum);
-    }
-
-
-    /**
-     * True if the scrollbar knob is being dragged.
-     *
-     * @return the value of the model's valueIsAdjusting property
-     * @see #setValueIsAdjusting
-     */
-    public boolean getValueIsAdjusting() {
-        return getModel().getValueIsAdjusting();
-    }
-
-
-    /**
-     * Sets the model's valueIsAdjusting property.  Scrollbar look and
-     * feel implementations should set this property to true when
-     * a knob drag begins, and to false when the drag ends.  The
-     * scrollbar model will not generate ChangeEvents while
-     * valueIsAdjusting is true.
-     *
-     * @see #getValueIsAdjusting
-     * @see BoundedRangeModel#setValueIsAdjusting
-     * @beaninfo
-     *      expert: true
-     *       bound: true
-     * description: True if the scrollbar thumb is being dragged.
-     */
-    public void setValueIsAdjusting(boolean b) {
-        BoundedRangeModel m = getModel();
-        m.setValueIsAdjusting(b);
-    }
-
-
-    /**
-     * Sets the four BoundedRangeModel properties after forcing
-     * the arguments to obey the usual constraints:
-     * <pre>
-     * minimum <= value <= value+extent <= maximum
-     * </pre>
-     * <p>
-     *
-     * @see BoundedRangeModel#setRangeProperties
-     * @see #setValue
-     * @see #setVisibleAmount
-     * @see #setMinimum
-     * @see #setMaximum
-     */
-    public void setValues(int newValue, int newExtent, int newMin, int newMax)
-    {
-        BoundedRangeModel m = getModel();
-        m.setRangeProperties(newValue, newExtent, newMin, newMax, m.getValueIsAdjusting());
-    }
-
-
-    /**
-     * Adds an AdjustmentListener.  Adjustment listeners are notified
-     * each time the scrollbar's model changes.  Adjustment events are
-     * provided for backwards compatability with java.awt.Scrollbar.
-     * <p>
-     * Note that the AdjustmentEvents type property will always have a
-     * placeholder value of AdjustmentEvent.TRACK because all changes
-     * to a BoundedRangeModels value are considered equivalent.  To change
-     * the value of a BoundedRangeModel one just sets its value property,
-     * i.e. model.setValue(123).  No information about the origin of the
-     * change, e.g. it's a block decrement, is provided.  We don't try
-     * fabricate the origin of the change here.
-     *
-     * @param l the AdjustmentLister to add
-     * @see #removeAdjustmentListener
-     * @see BoundedRangeModel#addChangeListener
-     */
-    public void addAdjustmentListener(AdjustmentListener l) {
-        adjustmentListener.add(l);
-    }
-
-
-    /**
-     * Removes an AdjustmentEvent listener.
-     *
-     * @param l the AdjustmentLister to remove
-     * @see #addAdjustmentListener
-     */
-    public void removeAdjustmentListener(AdjustmentListener l) {
-        adjustmentListener.remove(l);
-    }
-
-
-    /*
-     * Notify listeners that the scrollbar's model has changed.
-     *
-     * @see #addAdjustmentListener
-     * @see EventListenerList
-     */
-    protected void fireAdjustmentValueChanged(int id, int type, int value) {
-        AdjustmentEvent e = null;
-        for ( int i=0; i<adjustmentListener.size(); i++ ) {
-            if ( e == null ) {
-                e = new AdjustmentEvent(this, id, type, value);
-            }
-            ((AdjustmentListener)adjustmentListener.get(i)).adjustmentValueChanged(e);
-        }
-    }
-
-
-    /**
-     * This class listens to ChangeEvents on the model and forwards
-     * AdjustmentEvents for the sake of backwards compatibility.
-     * Unfortunately there's no way to determine the proper
-     * type of the AdjustmentEvent as all updates to the model's
-     * value are considered equivalent.
-     */
-    private class ModelListener implements ChangeListener, Serializable {
-        /**
-         * TODO: documentation
-         *
-         * @param e
-         */
-        public void stateChanged(ChangeEvent e)   {
-            int id = AdjustmentEvent.ADJUSTMENT_VALUE_CHANGED;
-            int type = AdjustmentEvent.TRACK;
-            fireAdjustmentValueChanged(id, type, getValue());
-            setScrollButtonStatus();
+        if ( clickables[FORWARD].isEnabled() ) {
+            clickables[FORWARD].setEvent(getEventParameter(getValue()+1));
+            int last = getMaximum()-getExtent();
+            clickables[LAST].setEvent(getEventParameter(last));
+            int blockValue = Math.min(last,
+                                      getValue()+getBlockIncrement());
+            clickables[FORWARD_BLOCK].setEvent(getEventParameter(blockValue));
         }
     }
 
@@ -759,26 +351,6 @@ public class SScrollBar
         }
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void write(Device d)
-        throws IOException
-    {
-        if (visible)
-            cg.write(d, this);
-    }
-
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "ContainerCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -787,16 +359,17 @@ public class SScrollBar
         super.setCG(cg);
     }
 
-	public String toString()
-     {
-		return "SScrollBar[orientation=" + ((orientation == SComponent.HORIZONTAL)?"horizontal":"vertical") + "]";
-     }
-
+    public String toString()
+    {
+        return "SScrollBar[orientation=" +
+            ((orientation == SComponent.HORIZONTAL)?"horizontal":"vertical") + "]";
+    }
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -14,8 +14,6 @@
 
 package wingset;
 
-import javax.swing.Icon;
-
 import java.awt.event.*;
 import org.wings.*;
 
@@ -25,9 +23,29 @@ import org.wings.*;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class LabelExample
-    extends WingSetPane
+public class LabelExample extends WingSetPane
 {
+    static final String directions[] = 
+    { "nw", "n", "ne",
+      "w",        "e",
+      "sw", "s", "se" };
+
+    static final SIcon onIcons[];
+    static final SIcon offIcons[];
+    
+    static {
+        ClassLoader cl = WingSet.class.getClassLoader();
+        onIcons  = new SIcon [ directions.length ];
+        offIcons = new SIcon [ directions.length ];
+        for (int i=0; i < directions.length; ++i) {
+            String d = directions[i];
+            onIcons[i] = new ResourceImageIcon(cl, "wingset/icons/Label"
+                                               + d + "On.gif");
+            offIcons[i] = new ResourceImageIcon(cl, "wingset/icons/Label"
+                                                + d + "Off.gif");
+        }
+    }
+
     public SComponent createExample() {
         SPanel all = new SPanel();
         SGridLayout layout = new SGridLayout(2);
@@ -36,11 +54,13 @@ public class LabelExample
         layout.setCellSpacing(10);
         all.setLayout(layout);
 
-        Icon icon = new ResourceImageIcon(SConstants.class, "icons/Wait.gif");
+        SIcon icon = new ResourceImageIcon("org/wings/icons/Wait.gif");
 
         final SLabel testLabel = new SLabel("LabelText");
         testLabel.setHorizontalAlignment(LEFT);
         testLabel.setIcon(icon);
+        testLabel.setAttribute("color", "#AA0000");
+        testLabel.setAttribute("font-weight", "bold");
 
         all.add(new SLabel("Control the LabelText's position"));
         all.add(new SLabel("Result"));
@@ -50,58 +70,31 @@ public class LabelExample
         return all;
     }
 
+    private SRadioButton createRadio(SPanel p, String constraint,
+                                     SButtonGroup buttonGroup,
+                                     String toolTip, int icon) {
+        SRadioButton button = new SRadioButton();
+        button.setIcon(offIcons[icon]);
+        button.setSelectedIcon(onIcons[icon]);
+        button.setToolTipText( toolTip );
+        p.add(button, constraint);
+        buttonGroup.add(button);
+        return button;
+    }
+
     SContainer createRoundRadio(final SLabel label) {
-        SPanel b = createResourceTemplatePanel("/wingset/templates/roundRadio.thtml");
+        SPanel b = new SPanel(new SGridLayout(3));
 
         SButtonGroup g = new SButtonGroup();
-        final SRadioButton n = new SRadioButton();
-        n.setToolTipText("North");
-        b.add(n, "p=n");
-        g.add(n);
-
-        final SRadioButton s = new SRadioButton();
-        s.setToolTipText("South");
-        b.add(s, "p=s");
-        g.add(s);
-
-        final SRadioButton w = new SRadioButton();
-        w.setToolTipText("West");
-        b.add(w, "p=w");
-        g.add(w);
-
-        final SRadioButton e = new SRadioButton();
-        e.setToolTipText("East");
-        b.add(e, "p=e");
-        g.add(e);
-
-        final SRadioButton nw = new SRadioButton();
-        nw.setToolTipText("North West");
-        b.add(nw, "p=nw");
-        g.add(nw);
-
-        final SRadioButton ne = new SRadioButton();
-        ne.setToolTipText("North East");
-        b.add(ne, "p=ne");
-        g.add(ne);
-
-        final SRadioButton sw = new SRadioButton();
-        sw.setToolTipText("South West");
-        b.add(sw, "p=sw");
-        g.add(sw);
-
-        final SRadioButton se = new SRadioButton();
-        se.setToolTipText("South East");
-        b.add(se, "p=se");
-        g.add(se);
-
-        final SRadioButton cc = new SRadioButton();
-        cc.setToolTipText("Center");
-        /*
-         * don't place this button in the page; a center/center does not 
-         * make sense with layerless HTML
-         */
-        //b.add(cc, "p=cc");
-        g.add(cc);
+        final SRadioButton nw = createRadio(b,"p=nw", g, "North West", 0);
+        final SRadioButton n  = createRadio(b,"p=n",  g, "North", 1);
+        final SRadioButton ne = createRadio(b,"p=ne", g, "North East", 2);
+        final SRadioButton w  = createRadio(b,"p=w",  g, "West", 3);
+        b.add(new SDummy());
+        final SRadioButton e  = createRadio(b,"p=e",  g, "East", 4);
+        final SRadioButton sw = createRadio(b,"p=sw", g, "South West", 5);
+        final SRadioButton s  = createRadio(b,"p=s",  g, "South", 6);
+        final SRadioButton se = createRadio(b,"p=se", g, "South East", 7);
 
         g.addActionListener (new ActionListener() {
                 public void actionPerformed(ActionEvent ev) {
@@ -139,10 +132,12 @@ public class LabelExample
                         label.setVerticalTextPosition(BOTTOM);
                         label.setHorizontalTextPosition(CENTER);
                     }
+                    /*
                     else if (button == cc) {
                         label.setVerticalTextPosition(CENTER);
                         label.setHorizontalTextPosition(CENTER);
                     }
+                    */
 
                 }
             });
@@ -158,5 +153,6 @@ public class LabelExample
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

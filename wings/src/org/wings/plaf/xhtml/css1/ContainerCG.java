@@ -16,7 +16,7 @@ package org.wings.plaf.xhtml.css1;
 
 import java.io.IOException;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.plaf.xhtml.*;
@@ -28,13 +28,13 @@ public final class ContainerCG
     protected void writePrefix(Device d, SContainer c)
         throws IOException
     {
-        //Utils.writeDivWithStyleAttributePrefix(d, c.getStyle());
+	Utils.writeDivWithStyleAttributePrefix(d, c.getStyle());
     }
 
     protected void writePostfix(Device d, SContainer c)
         throws IOException
     {
-        //Utils.writeDivWithStyleAttributePostfix(d, c.getStyle());
+	Utils.writeDivWithStyleAttributePostfix(d, c.getStyle());
     }
 }
 
@@ -42,5 +42,6 @@ public final class ContainerCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -124,7 +124,6 @@ public final class Timer
      * notification on this event type.  The event instance
      * is lazily created using the parameters passed into
      * the fire method.
-     * @see EventListenerList
      */
     protected void fireActionPerformed(ActionEvent e) {
         // Process the listeners last to first, notifying
@@ -311,5 +310,6 @@ public final class Timer
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

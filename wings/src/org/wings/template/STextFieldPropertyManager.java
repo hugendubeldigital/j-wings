@@ -35,9 +35,11 @@ public class STextFieldPropertyManager
         STextField c = (STextField)comp;
         if ( name.equals("COLS") )
             c.setColumns(Integer.parseInt(value));
-        if ( name.equals("SIZE") )
+        else if ( name.equals("SIZE") )
             c.setColumns(Integer.parseInt(value));
-        if ( name.equals("MAXSIZE") )
+        else if ( name.equals("MAXSIZE") )
+            c.setMaxColumns(Integer.parseInt(value));
+        else if ( name.equals("MAXLENGTH") )
             c.setMaxColumns(Integer.parseInt(value));
         else
             super.setProperty(comp, name, value);
@@ -52,5 +54,6 @@ public class STextFieldPropertyManager
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

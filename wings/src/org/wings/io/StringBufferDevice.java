@@ -24,30 +24,21 @@ import java.io.ByteArrayOutputStream;
  * @author <a href="mailto:hzeller@to.com">Henner Zeller</a>
  * @version $Revision$
  */
-public final class StringBufferDevice
-    implements Device
+public final class StringBufferDevice implements Device
 {
     private StringBuffer buffer;
     private ByteArrayOutputStream byteStream = null;
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
     public StringBufferDevice () {
         buffer = new StringBuffer();
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
     public String toString() {
         flush();
         return buffer.toString();
     }
+
+    public boolean isSizePreserving() { return true; }
 
     /**
      * Flush this Stream.
@@ -57,6 +48,10 @@ public final class StringBufferDevice
             buffer.append (byteStream.toString());
             byteStream = null;
         }
+    }
+
+    public void close() { 
+        flush();
     }
 
     public void reset() {
@@ -101,9 +96,9 @@ public final class StringBufferDevice
     /**
      * Print a character array.
      */
-    public Device print (char[] c, int start, int end) throws IOException {
+    public Device print (char[] c, int start, int len) throws IOException {
         if (byteStream != null) flush();
-        buffer.append(c, start, end-start);
+        buffer.append(c, start, len);
         return this;
     }
 
@@ -123,30 +118,6 @@ public final class StringBufferDevice
         if (byteStream != null) flush();
         buffer.append (o);
         return this;
-    }
-
-    /**
-     * Print a String. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (String s) {
-        return print (s);
-    }
-
-    /**
-     * Print an Integer. For compatibility.
-     * @*deprecated use print() instead
-     */
-    public Device append (int i) {
-        return print (i);
-    }
-
-    /**
-     * Print an Object. For compatibility.
-     * @Xdeprecated use print() instead
-     */
-    public Device append (Object o) {
-        return print (o);
     }
 
     /**
@@ -180,5 +151,6 @@ public final class StringBufferDevice
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -16,8 +16,8 @@ package explorer;
 
 import org.wings.SComponent;
 import org.wings.SLabel;
-import org.wings.SBaseTable;
-import org.wings.STableCellRenderer;
+import org.wings.STable;
+import org.wings.table.STableCellRenderer;
 
 /**
  * TODO: documentation
@@ -36,9 +36,10 @@ public class SizeTableCellRenderer extends SLabel
      */
     public SizeTableCellRenderer() {
         setHorizontalAlignment(RIGHT);
+        setEscapeSpecialChars(false);
     }
   
-    public SComponent getTableCellRendererComponent(SBaseTable table,
+    public SComponent getTableCellRendererComponent(STable table,
                                                     Object value,
                                                     boolean isSelected,
                                                     int row,
@@ -68,6 +69,7 @@ public class SizeTableCellRenderer extends SLabel
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */
 

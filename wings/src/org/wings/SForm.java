@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.*;
+import java.util.logging.*;
 
 import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
@@ -36,14 +37,15 @@ import org.wings.io.Device;
 /**
  * TODO: documentation
  *
- * @author Dominik Bartenstein
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class SForm
     extends SContainer
-    implements RequestListener //SGetListener
+    implements LowLevelEventListener
 {
+    private final static Logger logger = Logger.getLogger("org.wings");
+
     /**
      * @see #getCGClassID
      */
@@ -68,34 +70,24 @@ public class SForm
     /**
      * TODO: documentation
      */
-    protected EventListenerList listenerList = new EventListenerList();
+    protected final EventListenerList listenerList = new EventListenerList();
 
     /**
      * TODO: documentation
      */
     protected String actionCommand = null;
 
-    /*
-     * In dieser Map werden die Eventqueues der verschiedenen
-     * Threads verwaltet. Das ist deshlab noetig, weil ein Thread sonst
-     * die EventQueue eines anderen leeren (feuern) koennte, obwohl noch
-     * kein konsistener Zustand der {@link SComponent} erreicht ist.
-     * <P>
-     * Beispiel: Ein Thread haelt ein Button und eine Liste. In der
-     * Liste wird ein Element selektiert, der Button wird gedrueckt. Im
-     * Extremfall werden diese Get Aktionen vom Dispatcher bearbeitet
-     * und eventuell zuerst die Aktion des Buttons und dann erst die
-     * Selektion. Der Anwendungsprogrammierer reagiert auf den Button
-     * Event und liest den Zustand der Liste aus. Sind alle Get Aktionen
-     * bearbeitet worden, kein Problem. Wird aber der Event des Buttons
-     * von einem anderen Thread, der zufaellig gerade seine Events
-     * feuert, gefeuert, kann es sein dass die Listen Selektion noch
-     * nicht bearbeitet ist und der Zustand der Liste nicht mit dem der
-     * Liste auf HTML Seite uebereinstimmt. Das darf nicht
-     * passieren. Also koennen Events nur vom erzeugenden Thread
-     * gefeuert werden.
+    /**
+     * the WingS event thread is the servlet doGet()/doPost() context
+     * thread. Within this thread, we collect all armed components. A
+     * 'armed' component is a component, that will 'fire' an event after the
+     * first processRequest() stage is completed.
      */
-    private static final HashMap threads = new HashMap();
+    private static ThreadLocal threadArmedComponents = new ThreadLocal() {
+            protected synchronized Object initialValue() {
+                return new ArrayList(2);
+            }
+        };
 
     /**
      * TODO: documentation
@@ -141,7 +133,21 @@ public class SForm
     }
 
     /**
-     * TODO: documentation
+     * Add a listener for Form events. A Form event is always triggered, when
+     * a form has been submitted. Usually, this happens, whenever a submit
+     * button is pressed or some other mechanism triggered the posting of the
+     * form. Other mechanisms are
+     * <ul>
+     * <li> Java Script submit() event</li>
+     * <li> If a form contains a single text input, then many browsers
+     *      submit the form, if the user presses RETURN in that field. In that
+     *      case, the submit button will <em>not</em> receive any event but
+     *      only the form.
+     * <li> The {@link SFileChooser} will trigger a form event, if the file 
+     *      size exceeded the allowed size. In that case, even if the submit
+     *      button has been pressed, no submit-button event will be triggered.
+     *      (For details, see {@link SFileChooser}).
+     * </ul>
      *
      * @param listener
      */
@@ -150,7 +156,8 @@ public class SForm
     }
 
     /**
-     * TODO: documentation
+     * Remove a form action listener, that has been added in
+     * {@link #addActionListener(ActionListener)}
      *
      * @param listener
      */
@@ -159,37 +166,44 @@ public class SForm
     }
 
     /**
-      * This is hot!
-      */
-    public void removeAllListeners() {
-        listenerList = new EventListenerList();
-    }
-
-    /**
      * Fire a ActionEvent at each registered listener.
      */
     protected void fireActionPerformed() {
-        ActionEvent e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, actionCommand);
+        ActionEvent e = null;
         // Guaranteed to return a non-null array
         Object[] listeners = listenerList.getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
             if (listeners[i] == ActionListener.class) {
+                // lazy create ActionEvent
+                if ( e==null ) {
+                    e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, 
+                                        actionCommand);
+                }
                 ((ActionListener)listeners[i+1]).actionPerformed(e);
             }
         }
     }
 
-    public final static void addArmedComponent(RequestListener component) {
-        Thread thread = Thread.currentThread();
+    /*
+     * fixme: the following static function should go in some global
+     * class.
+     */
 
-        List armedComponents = (List)threads.get(thread);
-        if (armedComponents == null) {
-            armedComponents = new ArrayList(2);
-            threads.put(thread, armedComponents);
-        }
+    public final static void addArmedComponent(LowLevelEventListener component) {
+        List armedComponents = (List) threadArmedComponents.get();
         armedComponents.add(component);
+    }
+
+    /**
+     * clear armed components. This is usually not necessary, since sessions
+     * clear clear their armed components. But if there was some Exception, it
+     * might well be, that this does not happen.
+     */
+    public static void clearArmedComponents() {
+        List armedComponents = (List) threadArmedComponents.get();
+        armedComponents.clear();
     }
 
     /*
@@ -201,66 +215,100 @@ public class SForm
      * der verschiedenen Threads werden in einer Map verwaltet.
      * Beim feuern wird dann die Queue, die dem aktuellen Thread
      * entspricht gefeuert und aus der Map entfernt.
-     * <P> <EM>VORSICHT:</EM><BR>
-     * Die Map verwaltet natuerlich die Threads und haelt Zeiger
-     * auf diese. Im Normalfall werden diese Zeiger durch das feuern
-     * geloescht, aber falls nicht, werden die Threads nicht
-     * aufgeraeumt!!!
      */
     /**
      * TODO: documentation
      */
     public static void fireEvents() {
-        Thread thread = Thread.currentThread();
-
-        List armedComponents = (List)threads.remove(thread);
-        if (armedComponents != null) {
-            RequestListener component;
+        List armedComponents = (List) threadArmedComponents.get();
+        try {
+            LowLevelEventListener component;
+            // handle form special, form event should be fired last
+            // hopefully there is only one form ;-)
+            LowLevelEventListener form = null;
             Iterator iterator = armedComponents.iterator();
             while (iterator.hasNext()) {
-                component = (RequestListener)iterator.next();
-                component.fireIntermediateEvents();
+                component = (LowLevelEventListener)iterator.next();
+
+                if ( component instanceof SForm ) {
+                    form = component;
+                } else {
+                    component.fireIntermediateEvents();
+                }
             }
+            if ( form!=null ) {
+                form.fireIntermediateEvents();
+                form = null;
+            }
+
             iterator = armedComponents.iterator();
             while (iterator.hasNext()) {
-                component = (RequestListener)iterator.next();
-                component.fireFinalEvents();
+                component = (LowLevelEventListener)iterator.next();
+                if ( component instanceof SForm ) {
+                    form = component;
+                } else {
+                    component.fireFinalEvents();
+                }
             }
+            if ( form!=null ) {
+                form.fireFinalEvents();
+                form = null;
+            }
+        }
+        finally {
+            armedComponents.clear();
         }
     }
 
 
     /**
-     * TODO: documentation
+     * Set, whether this form is to be transmitted via <code>POST</code> (true)
+     * or <code>GET</code> (false). The default, and this is what you 
+     * usually want, is <code>POST</code>.
      *
      * @param postMethod
      */
-    public void setMethod(boolean postMethod) {
+    public void setPostMethod(boolean postMethod) {
         this.postMethod = postMethod;
     }
 
     /**
-     * TODO: documentation
+     * Returns, whether this form is transmitted via <code>POST</code> (true)
+     * or <code>GET</code> (false).
      *
      * @return
      */
-    public boolean getMethod() {
+    public boolean isPostMethod() {
         return postMethod;
     }
 
     /**
-     * TODO: documentation
+     * Set the encoding of this form. This actually is an HTML interna
+     * that bubbles up here. By default, the encoding type of any HTML-form
+     * is <code>application/x-www-form-urlencoded</code>, and as such, needn't
+     * be explicitly set with this setter. However, if you've included a
+     * file upload element (as represented by {@link SFileChooser}) in your
+     * form, this must be set to <code>multipart/form-data</code>, since only
+     * then, files are transmitted correctly. In 'normal' forms without
+     * file upload, it is not necessary to set it to
+     * <code>multipart/form-data</code>; actually it enlarges the data to
+     * be transmitted, so you probably don't want to do this, then.
      *
-     * @param type
+     * @param type the encoding type; one of <code>multipart/form-data</code>,
+     *             <code>application/x-www-form-urlencoded</code>.
      */
     public void setEncodingType(String type) {
         encType = type;
     }
 
     /**
-     * TODO: documentation
+     * Get the current encoding type, as set with 
+     * {@link #setEncodingType(String)}
      *
-     * @return
+     * @return string containting the encoding type. This is something like
+     *         <code>multipart/form-data</code>, 
+     *         <code>application/x-www-form-urlencoded</code> .. or 'null'
+     *         by default.
      */
     public String getEncodingType() {
         return encType;
@@ -289,15 +337,17 @@ public class SForm
      *
      * @return
      */
-    public SGetAddress getServerAddress() {
-        SGetAddress addr = super.getServerAddress();
-        if ( getAction()!=null )
-            addr.add(getAction().toString());
-
+    public RequestURL getRequestURL() {
+        RequestURL addr = super.getRequestURL();
+        if ( getAction()!=null ) {
+            addr.addParameter(getAction().toString()); // ??
+        }
         return addr;
     }
 
-    public void getPerformed(String name, String value) {
+    public void processLowLevelEvent(String name, String[] values) {
+        // we have to wait, until all changed states of our form have
+        // changed, before we anything can happen.
         SForm.addArmedComponent(this);
     }
 
@@ -307,26 +357,12 @@ public class SForm
         fireActionPerformed();
     }
 
-    public SComponent addComponent(SComponent c, Object constraint) {
-        if (c instanceof SForm)
-            System.err.println("WARNING: attempt to nest forms; won't work. ");
-        return super.addComponent(c, constraint);
-    }
-
     public SComponent addComponent(SComponent c, Object constraint, int index){
         if (c instanceof SForm)
-            System.err.println("WARNING: attempt to nest forms; won't work.");
+            logger.warning("WARNING: attempt to nest forms; won't work.");
         return super.addComponent(c, constraint, index);
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "FormCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -340,5 +376,6 @@ public class SForm
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

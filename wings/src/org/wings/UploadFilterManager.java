@@ -15,18 +15,21 @@
 package org.wings;
 
 import java.io.*;
+import java.util.HashMap;
 import java.lang.reflect.*;
-import java.util.Hashtable;
+import java.util.logging.*;
 
 /**
  * TODO: documentation
  *
- * @author
+ * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
 public class UploadFilterManager
 {
-    private static Hashtable filterMappings = new Hashtable();
+    private final static Logger logger = Logger.getLogger("org.wings.servlet");
+
+    private static HashMap filterMappings = new HashMap();
 
     /**
      * TODO: documentation
@@ -69,7 +72,7 @@ public class UploadFilterManager
             else {
                 Class filterClass = entry.filterClass;
                 if (filterClass != null) {
-                    System.err.println("using " + filterClass.getName() + " for " + name);
+                    logger.info("using " + filterClass.getName() + " for " + name);
                     Constructor constructor = filterClass.getConstructor(new Class[] { OutputStream.class });
                     filter = (FilterOutputStream)constructor.newInstance(new Object[] { out });
                     entry.filterInstance = filter;
@@ -77,8 +80,7 @@ public class UploadFilterManager
             }
         }
         catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
+            logger.log(Level.SEVERE, null, e);
         }
         return filter;
     }
@@ -93,8 +95,7 @@ public class UploadFilterManager
             return filterInstance;
         }
         catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
+            logger.log(Level.SEVERE, null, e);
             return null;
         }
     }
@@ -136,5 +137,6 @@ public class UploadFilterManager
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -15,11 +15,13 @@
 package org.wings.plaf;
 
 import java.io.IOException;
+import java.io.Serializable;
 
-import org.wings.*;
-import org.wings.io.*;
+import org.wings.border.SBorder;
+import org.wings.io.Device;
 
 public interface BorderCG
+    extends Serializable
 {
     void writePrefix(Device d, SBorder c) throws IOException;
     void writePostfix(Device d, SBorder c) throws IOException;
@@ -30,5 +32,6 @@ public interface BorderCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -24,9 +24,10 @@ import org.wings.*;
  * @version $Revision$
  */
 public class TemplateExample
-    extends SPanel
+    extends WingSetPane
     implements SConstants
 {
+    /*
     public TemplateExample () {
         add(createTemplateExample());
 
@@ -37,8 +38,9 @@ public class TemplateExample
                           getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
         add(href);
     }
+    */
 
-    SForm createTemplateExample() {
+    protected SComponent createExample() {
         SForm c = new SForm();
         
         try {
@@ -56,7 +58,7 @@ public class TemplateExample
             except.printStackTrace();
         }
         
-        c.add(new STextArea(), "DemoArea");
+        //c.add(new STextArea(), "DemoArea");
         c.add(new SLabel ((new java.util.Date()).toString()), "theLabel");
         c.add(new SButton ("Press Me"), "TESTBUTTON");
         c.add(new STextField (), "NAME");
@@ -78,5 +80,6 @@ public class TemplateExample
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

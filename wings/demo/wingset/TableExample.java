@@ -19,6 +19,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 import org.wings.*;
+import org.wings.table.*;
 
 /**
  * TODO: documentation
@@ -30,30 +31,50 @@ public class TableExample
     extends WingSetPane
 {
     public SComponent createExample() {
-        // Netscape 4.0 is dumb: it is very slow, so use default layout here.
         setLayout(null);
 
-        SPanel p = new SPanel (new SGridLayout(1));
-        
-        STable table = new STable(new MyTableModel());
-        p.add(new SLabel("<h4>Table outside a form with multiple selection</h4>"));
+        SPanel p = new SPanel (new SGridLayout(2));
+
+        SPanel left = new SPanel(null);
+        p.add(left);
+
+        SPanel panel = new SPanel();
+        STable table = new STable(new MyTableModel(7, 5));
+        SLabel label;
+        label = new SLabel("<h4>STable outside a form with multiple selection</h4>");
+        label.setEscapeSpecialChars(false);
+        panel.add(label);
         table.setShowGrid(true);
-        table.setBorderLines(new Insets(1,1,1,1));
         table.setSelectionMode(MULTIPLE_SELECTION);
         table.setDefaultRenderer(new MyCellRenderer());
-        // table.setShowGrid(false);
-        p.add(table);
+        panel.add(table);
+        left.add(panel);
 
         SForm form = new SForm();
-        STable formTable = new STable(new MyTableModel());
-        form.add(new SLabel("<h4>Table inside a form with single selection</h4>"));
+        STable formTable = new STable(new MyTableModel(7, 5));
+        label = new SLabel("<h4>STable inside a form with single selection</h4>");
+        label.setEscapeSpecialChars(false);
+        form.add(label);
         formTable.setShowGrid(true);
-        formTable.setBorderLines(new Insets(1,1,1,1));
         formTable.setSelectionMode(SINGLE_SELECTION);
         formTable.setDefaultRenderer(new MyCellRenderer());
         form.add(formTable);
         form.add(new SButton("SUBMIT"));
-        p.add(form);
+        left.add(form);
+
+        panel = new SPanel();
+        STable simple = new STable(new ROTableModel(7, 10));
+        simple.setAttribute("border", "1px solid black");
+        simple.setAttribute("bgcolor", "white");
+        label = new SLabel("<h4>STable without selection and no grid</h4>");
+        label.setEscapeSpecialChars(false);
+        panel.add(label);
+        simple.setSelectionMode(SListSelectionModel.NO_SELECTION);
+        simple.setDefaultRenderer(new MyCellRenderer());
+        simple.setHeaderVisible(false);
+        panel.add(simple);
+        p.add(panel);
+
         return p;
     }
 
@@ -77,58 +98,66 @@ public class TableExample
     static class MyCellRenderer extends SDefaultTableCellRenderer {
         SLabel colorOut = new SLabel();
 
-        public SComponent getTableCellRendererComponent(SBaseTable baseTable,
+        public SComponent getTableCellRendererComponent(STable table,
                                                         Object value,
                                                         boolean selected,
                                                         int row,
                                                         int col) {
             if (value instanceof Color) {
                 Color c = (Color) value;
-                colorOut.setText("[" + c.getRed() + "," 
-                                 + c.getGreen() + "," + c.getBlue() + "]");
-                colorOut.setForeground(c);
+
+                // unfortunately this does not work, because the style sheet visitor does
+                // not visit cellrenderers
+                // colorOut.setText("[" + c.getRed() + "," 
+                //                  + c.getGreen() + "," + c.getBlue() + "]");
+                // colorOut.setForeground(c);
+
+                colorOut.setEscapeSpecialChars(false);
+                colorOut.setText("<span style=\"color:" + colorToHex(c) +
+                                 "\">" +
+                                 colorToHex(c) +
+                                 "</span>");
                 return colorOut;
             }
             else
-                return super.getTableCellRendererComponent(baseTable,value,
+                return super.getTableCellRendererComponent(table,value,
                                                            selected,row,col);
         }
     }
 
-    class MyTableModel extends AbstractTableModel implements TableSorter
+    class MyTableModel extends AbstractTableModel
     {
-        final int COLS = 7;
-        final int ROWS = 5;
+        int cols, rows;
+        SIcon image = new ResourceImageIcon("org/wings/icons/JavaCup.gif");
 
-        ImageIcon image = new ResourceImageIcon(SLabel.class,
-                                                "icons/JavaCup.gif");
+        Object[][] data;
+        boolean asc[];
 
-        Object[][] data = new Object[ROWS][COLS];
+        MyTableModel(int cols, int rows) {
+            this.cols = cols;
+            this.rows = rows;
 
-        boolean asc[] = new boolean[COLS];
+            data = new Object[rows][cols];
+            asc = new boolean[cols];
 
-        MyTableModel() {
-            //color.setParent(TableExample.this);
-            //image.setParent(TableExample.this);
-
-            for (int c=0; c < COLS; c++) {
-                for (int r=0; r < ROWS; r++)
+            for (int c=0; c < cols; c++) {
+                for (int r=0; r < rows; r++)
                     data[r][c] = "cell " + r + ":" + c;
             }
-            for (int r=0; r < ROWS; r++)
+            for (int r=0; r < rows; r++)
                 data[r][2] = createColor(r);
-            for (int r=0; r < ROWS; r++)
+            for (int r=0; r < rows; r++)
                 data[r][3] = createImage(r);
-            for (int r=0; r < ROWS; r++)
+            for (int r=0; r < rows; r++)
                 data[r][4] = createBoolean(r);
         }
 
         public int getColumnCount() {
-            return COLS;
+            return cols;
         }
 
         public int getRowCount() {
-            return ROWS;
+            return rows;
         }
 
         public Object getValueAt(int row, int col) {
@@ -175,11 +204,54 @@ public class TableExample
                 return false;
         }
     }
+
+    class ROTableModel extends MyTableModel
+    {
+        public ROTableModel(int cols, int rows) {
+            super(cols, rows);
+        }
+
+        public boolean isCellEditable(int row, int col) { return false; }
+    }
+
+    static String colorToHex(Color color) {
+	String colorstr = new String("#");
+
+	// Red
+	String str = Integer.toHexString(color.getRed());
+	if (str.length() > 2)
+	    str = str.substring(0, 2);
+	else if (str.length() < 2)
+	    colorstr += "0" + str;
+	else
+	    colorstr += str;
+
+	// Green
+	str = Integer.toHexString(color.getGreen());
+	if (str.length() > 2)
+	    str = str.substring(0, 2);
+	else if (str.length() < 2)
+	    colorstr += "0" + str;
+	else
+	    colorstr += str;
+
+	// Blue
+	str = Integer.toHexString(color.getBlue());
+	if (str.length() > 2)
+	    str = str.substring(0, 2);
+	else if (str.length() < 2)
+	    colorstr += "0" + str;
+	else
+	    colorstr += str;
+
+	return colorstr;
+    }
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

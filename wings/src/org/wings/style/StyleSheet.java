@@ -11,11 +11,11 @@
  *
  * Please see COPYING for the complete licence.
  */
-
 package org.wings.style;
 
-import java.io.InputStream;
+import org.wings.Renderable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 
 /**
@@ -24,21 +24,22 @@ import java.util.Set;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public interface StyleSheet
+public interface StyleSheet extends Renderable
 {
-    Set styleSet();
+    void putStyle(Style style);
+    Style getStyle(String name);
+    Style removeStyle(String name);
 
-    InputStream getInputStream() throws IOException;
-
-    boolean isStable();
-
-    // we'll also need some getters for getting the Style associated
-    // with a key
+    Set styles();
+    boolean isFinal();
+    
+    void read(InputStream inStream) throws IOException;
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -17,14 +17,15 @@ package org.wings.session;
 import java.util.*;
 
 /**
- * TODO: documentation
+ * A global way to access the current session. FIXME: should this be
+ * called SessionManager, then ?
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
 public class SessionManager
 {
-    private static final Map sessions = new WeakHashMap();
+    private static final ThreadLocal currentSession = new ThreadLocal();
 
     /**
      * Get the Session that is currently associated with this Thread.
@@ -33,8 +34,7 @@ public class SessionManager
      */
     public static Session getSession() 
     {
-    	Session s = (Session)sessions.get(Thread.currentThread());
-        return s;
+        return (Session) currentSession.get();
     }
 
     /**
@@ -44,19 +44,15 @@ public class SessionManager
      *
      * @param session the Session
      */
-    public static synchronized void setSession(Session session) {
-        synchronized (sessions) {
-            sessions.put(Thread.currentThread(), session);
-        }
+    public static void setSession(Session session) {
+        currentSession.set(session);
     }
 
     /**
      * TODO: documentation
      */
-    public static final Session removeSession() {
-        synchronized (sessions) {
-            return (Session)sessions.remove(Thread.currentThread());
-        }
+    public static void removeSession() {
+        currentSession.set(null);
     }
 }
 
@@ -64,5 +60,6 @@ public class SessionManager
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

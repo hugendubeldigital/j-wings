@@ -1,0 +1,291 @@
+<template name="ButtonCG" for="org.wings.SAbstractButton">
+
+void writeText(final Device device, SAbstractButton abstractButton, String attr)
+    throws IOException
+{
+    if (abstractButton.getShowAsFormComponent() && abstractButton.isEnabled())
+        writeFormText(device, abstractButton, attr);
+    else
+        writeAnchorText(device, abstractButton, attr);
+}
+
+void writeIcon(final Device device, SAbstractButton abstractButton, String attr)
+    throws IOException
+{
+    if (abstractButton.getShowAsFormComponent() && abstractButton.isEnabled())
+        writeFormIcon(device, abstractButton, attr);
+    else
+        writeAnchorIcon(device, abstractButton, attr);
+}
+
+void writeAnchorText(final Device device, SAbstractButton abstractButton, String attr)
+    throws IOException
+{
+    boolean noBreak = abstractButton.isNoBreak();
+    String text = abstractButton.getText();
+    if (text == null || text.length() == 0) {
+	return;
+    }
+
+    if (abstractButton.isEnabled() 
+        && (!(abstractButton instanceof SRadioButton) 
+            || !abstractButton.isSelected())) 
+    {
+        %><a href="<%
+        writeAnchorAddress(device, abstractButton);
+        %>"<%
+        // writeEvents();
+    }
+    else {
+        %><span<%
+    }
+    %><%|class=attr%>><%
+
+    /*
+     * noBreak commented out, because it does not work together with
+     * styles and konqueror 3.0. (should be: white-space: nowrap)
+     */
+    /* if (noBreak) { %><nobr><% } */
+    if (abstractButton.isEscapeSpecialChars()) {
+        %><%=text%><%
+    }
+    else {
+	%><%#text%><% // write raw.
+    }
+    /* if (noBreak) { %></nobr><% } */
+
+    if (abstractButton.isEnabled() 
+        && (!(abstractButton instanceof SRadioButton) 
+            || !abstractButton.isSelected())) 
+    {
+        %></a><%
+    }
+    else {
+        %></span><%
+    }
+}
+
+void writeAnchorIcon(final Device device, SAbstractButton abstractButton, String attr)
+     throws IOException
+{
+    SIcon icon = abstractButton.isEnabled() 
+        ? abstractButton.getIcon() 
+        : abstractButton.getDisabledIcon();
+    if (icon == null) return;
+
+    if (abstractButton.isEnabled() 
+        && (!(abstractButton instanceof SRadioButton) 
+            || !abstractButton.isSelected())) {
+        %><a href="<%
+        writeAnchorAddress(device, abstractButton);
+        %>"<%
+    }
+    else {
+        %><span<%
+    }
+    %><%|class=attr%>><%
+
+    String tooltip = abstractButton.getToolTipText();
+    if (tooltip == null)
+        tooltip = abstractButton.getText();
+
+    %><img border="0" src="<%
+    %><%=icon.getURL()%>"<%
+    if ( abstractButton.isEnabled() ) {
+       // render rollover
+       SIcon rolloverIcon = abstractButton.getRolloverIcon();
+       SIcon pressedIcon = abstractButton.getPressedIcon();
+
+       if ( rolloverIcon!=null || pressedIcon!=null ) {
+           String iconName = "Icon_" + abstractButton.getComponentId();
+
+           %> name="<%=iconName%>"<%
+   
+           if ( rolloverIcon!=null ) {
+               %> onMouseover="if(document.images){document.<%=iconName
+               %>.src='<%=rolloverIcon.getURL()
+               %>';}" onMouseout="if(document.images){document.<%=iconName
+               %>.src='<%=icon.getURL()
+               %>';}"<%
+           }
+
+           if ( pressedIcon!=null ) {
+               %> onMousedown="if(document.images){document.<%=iconName
+               %>.src='<%=pressedIcon.getURL()
+               %>';}" onMouseUp="if(document.images){document.<%=iconName
+               %>.src='<%=rolloverIcon!=null ? rolloverIcon.getURL() : icon.getURL()
+               %>';}"<%
+           }
+        }
+    }
+
+    %><%|width=icon.getIconWidth()%><%
+    %><%|height=icon.getIconHeight()%><%
+    %><%|alt=tooltip%> /><%
+    // writeEvents();
+
+    if (abstractButton.isEnabled() && (!(abstractButton instanceof SRadioButton) || !abstractButton.isSelected())) {
+        %></a><%
+    }
+    else {
+        %></span><%
+    }
+}
+
+protected void writeAnchorAddress(Device d, SAbstractButton abstractButton) 
+    throws IOException
+{
+    RequestURL addr = abstractButton.getRequestURL();
+    addr.addParameter(abstractButton,
+                      abstractButton.getToggleSelectionParameter());
+    addr.write(d);
+}
+
+void writeFormText(final Device device, SAbstractButton abstractButton, String attr)
+    throws IOException
+{
+    %><input type="<%=abstractButton.getType()%>"<%
+    %> name="<%=abstractButton.getEncodedLowLevelEventId()%>"<%
+    %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
+    %><%|class=attr%><%
+    // writeEvents();
+    if (abstractButton instanceof SButton) {
+       String text = abstractButton.getText();
+       if (text != null && text.length() > 0) {
+          %> value="<%
+          if (abstractButton.isEscapeSpecialChars()) {
+            %><%=text%><%
+          }
+          else {
+	    %><%#text%><% // write raw.
+          }
+          %>"<%
+       }
+    }
+    else {  // some checkbox thing.
+        %><%|value=abstractButton.getSelectionParameter()%><%
+    }
+    if (abstractButton.isSelected()) {
+        %> checked="1" /><%
+    }
+    else {
+        %> /><%
+    }
+}
+
+void writeFormIcon(final Device device, SAbstractButton abstractButton, String attr)
+     throws IOException
+{
+    SIcon icon = abstractButton.isEnabled() 
+        ? abstractButton.getIcon() 
+        : abstractButton.getDisabledIcon();
+    if (icon == null) return;
+
+    String tooltip = abstractButton.getToolTipText();
+    if (tooltip == null)
+        tooltip = abstractButton.getText();
+
+    %><input type="image" border="0" src="<%
+    %><%=icon.getURL()%>"<%
+    %><%|class=attr%><%
+    %><%|width=icon.getIconWidth()%><%
+    %><%|height=icon.getIconHeight()%><%
+    %><%|name=abstractButton.getEncodedLowLevelEventId()%><%
+    %><%|value=tooltip%><%
+    %><%|alt=tooltip%><%
+    // writeEvents();
+    %><%|text=tooltip%>/><%
+}
+
+<write>
+<%
+    String style = Utils.style(component);
+
+    SIcon icon = null;
+    if ( component.isSelected() ) {
+        icon = (component.isEnabled() 
+	        ? component.getSelectedIcon()
+		: component.getDisabledSelectedIcon());
+    } else {
+        icon = (component.isEnabled() 
+	        ? component.getIcon()
+                : component.getDisabledIcon());
+    }
+    String  text = component.getText();
+    int     horizontalTextPosition = component.getHorizontalTextPosition();
+    int     verticalTextPosition   = component.getVerticalTextPosition();
+  
+    if (horizontalTextPosition == NO_ALIGN)
+	horizontalTextPosition = RIGHT;
+    if (verticalTextPosition == NO_ALIGN)
+	verticalTextPosition = CENTER;
+
+    if (icon == null) {
+         // fixme: this handles only one source of attributes
+         writeText(device, component, style);
+    } else if (text == null || text.length() == 0) {
+         // fixme: this handles only one source of attributes
+         writeIcon(device, component, style);
+    } else {
+        %><table cellspacing="0"><%
+        // if we are on the top, create a top row
+        if (verticalTextPosition == TOP) {
+ 	       %><tr><td><% 
+ 	       if (horizontalTextPosition == LEFT) { 
+ 		  writeText(device, component, style);
+ 	       }
+ 	       %></td><td><%
+ 	       if (horizontalTextPosition == CENTER) { 
+ 		    writeText(device, component, style);
+	       }
+	       %></td><td><%
+	       if (horizontalTextPosition == RIGHT) {
+		  writeText(device, component, style);
+	       }
+	       %></td></tr><%
+       }
+
+       // we always have a center row, since we have to write the icon
+       if (verticalTextPosition == CENTER) {
+	   %><tr><td><%
+	   if (horizontalTextPosition == LEFT) { 
+	       writeText(device, component, style);
+	   }
+	   %></td><td><% 
+	   if (horizontalTextPosition == CENTER) { 
+	      writeText(device, component, style);
+	   }
+	   // the rendered icon in the center
+	   writeIcon(device, component, style); 
+	   %></td><td><% 
+	   if (horizontalTextPosition == RIGHT) { 
+	      writeText(device, component, style);
+	   }
+	   %></td></tr><%
+       } else {
+	   %><tr><td></td><td><%
+	   writeIcon(device, component, style);
+	   %></td><td></td></tr><%
+       }
+
+       // ..
+       if (verticalTextPosition == BOTTOM) {
+	   %><tr><td><% 
+	   if (horizontalTextPosition == LEFT) {
+	     writeText(device, component, style);
+	   }
+	   %></td><td><% 
+	   if (horizontalTextPosition == CENTER) {
+	     writeText(device, component, style);
+	   }
+	   %></td><td><%
+	   if (horizontalTextPosition == RIGHT) {
+	      writeText(device, component, style);
+	   }
+	   %></td></tr><%
+       } 
+       %></table><%
+    }
+%>
+</write>
+</template>

@@ -16,9 +16,7 @@ package org.wings.plaf.xhtml;
 
 import java.io.IOException;
 
-import javax.swing.Icon;
-
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 
@@ -40,31 +38,31 @@ public class BevelBorderCG
         java.awt.Color color = b.getColor();
         
         /* thickness & type */
-		d.append( "border: ");
-        d.append( b.getThickness() );
-        d.append("px " );
+		d.print( "border: ");
+        d.print( b.getThickness() );
+        d.print("px " );
         writeBorderStyle( d, b );
-        d.append( ";" );
+        d.print( ";" );
         
         /* color */
-		d.append( "border-color: #" );
+		d.print( "border-color: #" );
         if ( color != null )
-			d.append( org.wings.plaf.xhtml.Utils.toColorString( b.getColor() ) );
+			d.print( org.wings.plaf.xhtml.Utils.toColorString( b.getColor() ) );
 		else
-        	d.append( "000000" );
-		d.append( ";" );
+        	d.print( "000000" );
+		d.print( ";" );
 		
         /* padding */
         if ( insets == null ) return;
-        d.append( "padding-top: " );
-        d.append( insets.top );
-        d.append( "px;padding-right: " );
-        d.append( insets.right );
-        d.append( "px;padding-left: " );
-        d.append( insets.left );
-        d.append( "px;padding-bottom: " );
-        d.append( insets.bottom );
-        d.append( "px;" );
+        d.print( "padding-top: " );
+        d.print( insets.top );
+        d.print( "px;padding-right: " );
+        d.print( insets.right );
+        d.print( "px;padding-left: " );
+        d.print( insets.left );
+        d.print( "px;padding-bottom: " );
+        d.print( insets.bottom );
+        d.print( "px;" );
      }
 
 	/**
@@ -73,7 +71,7 @@ public class BevelBorderCG
 	protected void writeBorderStyle( Device d, SBorder b )
     	throws IOException
      {
-		d.append( ( ((SBevelBorder) b).getBevelType() == SBevelBorder.RAISED) ? "outset" : "inset" );
+		d.print( ( ((SBevelBorder) b).getBevelType() == SBevelBorder.RAISED) ? "outset" : "inset" );
      }
 }
 
@@ -81,5 +79,6 @@ public class BevelBorderCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -20,7 +20,7 @@ import org.wings.io.Device;
 /**
  * TODO: documentation
  *
- * @author Dominik Bartenstein
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class STextArea
@@ -67,7 +67,7 @@ public class STextArea
         int oldRows = rows;
         rows = r;
         if (oldRows != rows)
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -89,7 +89,7 @@ public class STextArea
         int oldColumns = columns;
         columns = c;
         if (columns != oldColumns)
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -121,14 +121,6 @@ public class STextArea
         return lineWrap;
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "TextAreaCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -142,5 +134,6 @@ public class STextArea
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -15,81 +15,52 @@
 package org.wings;
 
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.Font;
 import java.beans.*;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.logging.*;
 
 import org.wings.io.Device;
 import org.wings.io.StringBufferDevice;
 import org.wings.plaf.*;
 import org.wings.event.*;
 import org.wings.plaf.ComponentCG;
+import org.wings.session.LowLevelEventDispatcher;
 import org.wings.session.Session;
 import org.wings.session.SessionManager;
-import org.wings.style.Style;
+import org.wings.style.*;
 import org.wings.externalizer.ExternalizeManager;
+import org.wings.util.*;
+import org.wings.script.ScriptListener;
+import org.wings.border.SBorder;
 
 /**
- * The basic component for all components in this package.
+ * The basic component implementation for all components in this package.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
- */
+  */
 public abstract class SComponent
-    implements SConstants, Cloneable
+    implements SConstants, Cloneable, Serializable, Renderable
 {
-    private static final boolean DEBUG = false;
+    private final static Logger logger = Logger.getLogger("org.wings");
 
-    /*
-     * Hieraus wird die eindeutige Id einer jeden Komponente pro VM
-     * generiert. Diese wird benoetigt um eindeutige Form Namen erzeugen
-     * zu koennen.
-     */
-    private static int UNIFIED_ID = 0;
+    /* */
+    private transient String componentId = null;
 
-    /*
-     * Hieraus wird die eindeutige Id einer jeden Komponente pro VM
-     * generiert. Diese wird benoetigt um cache Probleme zu umgehen.
-     * TO CHANGE: Um reload Probleme zu umgehen, sollte immer nur eine
-     * Menge von Prefixen Gueltigkeit haben, so dass vorneweg schon
-     * gefiltert werden kann.
-     */
-    private static int UNIFIED_PREFIX = 0;
-
-    /*
-     * Die eindeutige Id der Komponente.
-     */
-    private transient final int unifiedId = createUnifiedId();
-
-    /*
-     * Performance!!!
-     */
-    private transient String unifiedIdString = null;
-
-    /**
-     * @see #getCGClassID
-     */
+    /** @see #getCGClassID */
     private static final String cgClassID = "ComponentCG";
 
-    /**
-     *
-     */
+    /** the session */
     private transient Session session = null;
 
     /**
      * The code generation delegate, which is responsible for
-     * the visual representation of a component.
+     * the visual representation of this component.
      */
     protected transient ComponentCG cg;
-
-    /** Background color */
-    protected Color background;
-
-    /** Foreground color */
-    protected Color foreground;
 
     /** Vertical alignment */
     protected int verticalAlignment = NO_ALIGN;
@@ -97,80 +68,50 @@ public abstract class SComponent
     /** Horizontal alignment */
     protected int horizontalAlignment = NO_ALIGN;
 
-    /**
-     * TODO: documentation
-     */
-    protected int colSpan = 0;
-
-    /**
-     * TODO: documentation
-     */
-    protected int rowSpan = 0;
-
-    /** The style */
+    /** The style class */
     protected Style style;
 
-    /** The font */
-    protected SFont font;
+    /** The attributes */
+    protected AttributeSet attributes = new SimpleAttributeSet();
 
-    /**
-     * Visibility.
-     */
+    /** Visibility. */
     protected boolean visible = true;
 
-    /**
-     * Enabled / disabled.
-     */
+    /** Enabled / disabled. */
     protected boolean enabled = true;
 
-    /**
-     * The container, this component resides in.
-     */
+    /** The container, this component resides in. */
     protected SContainer parent = null;
 
-    /**
-     * The frame, this component resides in.
-     */
+    /** The frame, this component resides in. */
     protected SFrame parentFrame = null;
 
-    /**
-     * The name of the component.
-     */
+    /** The name of the component. */
     protected String name = null;
 
-    /**
-     * The border for the component.
-     */
+    /** The border for the component. */
     protected SBorder border = null;
 
-    /**
-     * The tooltip for this component.
-     */
+    /** The tooltip for this component. */
     protected String tooltip = null;
+    
+    /** The focus traversal Index */
+    protected int focusTraversalIndex = -1;
 
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+    /** */
+    private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
-    /**
-     * Preferred size of component in pixel.
-     */
-    protected SDimension preferredSize = null;
+    /** Preferred size of component in pixel. */
+    protected SDimension preferredSize;
 
-    transient ArrayList componentListeners;
-
-    /**
-      * x-position of the component.
-      * @see #getLocation
-      */
-    int x = -1;
-
-    /**
-      * y-position of the component.
-      * @see #getLocation
-      */
-    int y = -1;
+    /** */
+    protected ArrayList componentListeners;
+    
+    /** */
+    protected Map scriptListeners;
 
     /**
-     * Default constructor.
+     * Default constructor.cript
      * The method updateCG is called to get a cg delegate installed.
      */
     public SComponent() {
@@ -227,25 +168,12 @@ public abstract class SComponent
         }
     }
 
-    /**
-     * Return the server address of the frame.
-     *
-     * @return the server address
-     */
-    public SGetAddress getServerAddress() {
+    public RequestURL getRequestURL() {
         SFrame p = getParentFrame();
-        if ( p==null )
+        if (p == null)
             throw new IllegalStateException("no parent frame");
 
-        return p.getServerAddress();
-        // return new SGetAddress();
-    }
-
-    /**
-     * Create a unique id.
-     */
-    public static final synchronized int createUnifiedId() {
-        return UNIFIED_ID++;
+        return p.getRequestURL();
     }
 
     /**
@@ -263,9 +191,10 @@ public abstract class SComponent
     /**
      * Get the preferred size of this component.
      * @see SComponent#setPreferredSize
-     * @see org.wings.SComponent#setPreferredPercentageSize
      */
-    public final SDimension getPreferredSize() { return preferredSize; }
+    public final SDimension getPreferredSize() {
+        return preferredSize;
+    }
 
 
     /**
@@ -277,18 +206,22 @@ public abstract class SComponent
      * @see      org.wings.event.SComponentListener
      * @see      org.wings.SComponent#removeComponentListener
      */
-    public synchronized void addComponentListener(SComponentListener l) {
-	if (l == null) {
-	    return;
-	}
-    	if ( componentListeners == null ) componentListeners = new ArrayList();
+    public final synchronized void addComponentListener(SComponentListener l) {
+        if (l == null) {
+            return;
+        }
+
+        if ( componentListeners == null ) {
+            componentListeners = new ArrayList();
+        }
+
         componentListeners.add( l );
     }
 
     /**
      * Removes the specified component listener so that it no longer
-     * receives component events from this component. This method performs 
-     * no function, nor does it throw an exception, if the listener 
+     * receives component events from this component. This method performs
+     * no function, nor does it throw an exception, if the listener
      * specified by the argument was not previously added to this component.
      * If l is null, no exception is thrown and no action is performed.
      * @param    l   the component listener.
@@ -296,29 +229,29 @@ public abstract class SComponent
      * @see      org.wings.event.SComponentListener
      * @see      org.wings.SComponent#addComponentListener
      */
-    public synchronized void removeComponentListener(SComponentListener l) {
-	if (l == null) {
-	    return;
-	}
-    	if ( componentListeners == null ) return;
-        
-    	int index = componentListeners.indexOf( l );
+    public final synchronized void removeComponentListener(SComponentListener l) {
+        if (l == null) {
+            return;
+        }
+        if ( componentListeners == null ) return;
+
+        int index = componentListeners.indexOf( l );
         if ( index == -1 ) return;
         componentListeners.remove( index );
-        return; 
+        return;
     }
 
-	/**
-      * Reports a component change.
-      * @param aEvent report this event to all listeners
-      * @see org.wings.event.SComponentListener
-      */
-	protected void fireComponentChangeEvent( SComponentEvent aEvent )
-     {
-     	if ( componentListeners == null ) return;
-		for ( ListIterator it = componentListeners.listIterator(); it.hasNext(); )
-        	processComponentEvent( (SComponentListener) it.next(), aEvent );
-     }
+    /**
+     * Reports a component change.
+     * @param aEvent report this event to all listeners
+     * @see org.wings.event.SComponentListener
+     */
+    protected void fireComponentChangeEvent( SComponentEvent aEvent )
+    {
+        if ( componentListeners == null ) return;
+        for ( ListIterator it = componentListeners.listIterator(); it.hasNext(); )
+            processComponentEvent( (SComponentListener) it.next(), aEvent );
+    }
 
     /**
      * Processes component events occurring on this component by
@@ -331,30 +264,82 @@ public abstract class SComponent
      * <p><ul>
      * <li>A <code>SComponentListener</code> object is registered
      * via <code>addComponentListener</code>.
-     * <li>Component events are enabled via <code>enableEvents</code>.
      * </ul>
      * @param       e the component event.
      * @see         org.wings.event.SComponentEvent
      * @see         org.wings.event.SComponentListener
      * @see         org.wings.SComponent#addComponentListener
-     * @see         org.wings.SComponent#enableEvents
      */
     protected void processComponentEvent(SComponentListener listener, SComponentEvent e)
     {
-		int id = e.getID();
-		switch(id) {
-			case SComponentEvent.COMPONENT_RESIZED:
-				listener.componentResized(e);
-				break;
-			case SComponentEvent.COMPONENT_MOVED:
-                listener.componentMoved(e);
-                break;
-			case SComponentEvent.COMPONENT_SHOWN:
-                listener.componentShown(e);
-                break;
-			case SComponentEvent.COMPONENT_HIDDEN:
-                listener.componentHidden(e);
-                break;
+        int id = e.getID();
+        switch(id) {
+        case SComponentEvent.COMPONENT_RESIZED:
+            listener.componentResized(e);
+            break;
+        case SComponentEvent.COMPONENT_MOVED:
+            listener.componentMoved(e);
+            break;
+        case SComponentEvent.COMPONENT_SHOWN:
+            listener.componentShown(e);
+            break;
+        case SComponentEvent.COMPONENT_HIDDEN:
+            listener.componentHidden(e);
+            break;
+        }
+    }
+
+    /**
+     * Adds the specified component listener to receive component events from
+     * this component.
+     * If l is null, no exception is thrown and no action is performed.
+     * @param    l   the component listener.
+     * @see      org.wings.event.SComponentEvent
+     * @see      org.wings.event.SComponentListener
+     * @see      org.wings.SComponent#removeComponentListener
+     */
+    public final synchronized void addScriptListener(ScriptListener listener) {
+        if (listener == null)
+            return;
+
+        // lazyly create HashMap
+        if ( scriptListeners==null ) {
+            scriptListeners = new HashMap();
+        }
+
+        scriptListeners.put(listener.getEvent(), listener);
+        if (listener.getScript() != null) {
+            reload(ReloadManager.RELOAD_SCRIPT);
+        }
+    }
+
+    /**
+     * Removes the specified component listener so that it no longer
+     * receives component events from this component. This method performs
+     * no function, nor does it throw an exception, if the listener
+     * specified by the argument was not previously added to this component.
+     * If l is null, no exception is thrown and no action is performed.
+     * @param    l   the component listener.
+     * @see      org.wings.event.SComponentEvent
+     * @see      org.wings.event.SComponentListener
+     * @see      org.wings.SComponent#addComponentListener
+     */
+    public final synchronized void removeScriptListener(ScriptListener listener) {
+        if (listener == null)
+            return;
+
+        if ( scriptListeners != null
+             && scriptListeners.remove(listener.getEvent()) != null
+             && listener.getScript() != null ) {
+            reload(ReloadManager.RELOAD_SCRIPT);
+        }
+    }
+
+    public Collection getScriptListeners() { 
+        if ( scriptListeners!=null ) {
+            return scriptListeners.values(); 
+        } else {
+            return Collections.EMPTY_LIST;
         }
     }
 
@@ -362,18 +347,10 @@ public abstract class SComponent
      * Return a jvm wide unique id.
      * @return an id
      */
-    public final int getUnifiedId() {
-        return unifiedId;
-    }
-
-    /**
-     * Return a jvm wide unique id.
-     * @return an id
-     */
-    public final String getUnifiedIdString() {
-        if (unifiedIdString == null)
-            unifiedIdString = Integer.toString(unifiedId);
-        return unifiedIdString;
+    public final String getComponentId() {
+        if (componentId == null)
+            componentId = getSession().createUniqueId();
+        return componentId;
     }
 
     /**
@@ -381,9 +358,10 @@ public abstract class SComponent
      *
      * @return the session
      */
-    public Session getSession() {
-        if (session == null)
+    public final Session getSession() {
+        if (session == null) {
             session = SessionManager.getSession();
+        }
 
         return session;
     }
@@ -393,11 +371,8 @@ public abstract class SComponent
      *
      * @return the dispatcher
      */
-    public SGetDispatcher getDispatcher() {
-        if ( getParentFrame()==null )
-            return null;
-        else
-            return getParentFrame().getDispatcher();
+    public final LowLevelEventDispatcher getDispatcher() {
+        return getSession().getDispatcher();
     }
 
     /**
@@ -414,138 +389,140 @@ public abstract class SComponent
      *
      * @return the locale
      */
-    public Locale getLocale() {
+    public final Locale getLocale() {
         return getSession().getLocale();
     }
-    
-    
-    /**
-      * Moves this component to a new location.
-      * The top-left corner of the new location is specified by the x 
-      * and y  parameters in this component's browser window.
-      * Currently it is only implemented in {@link org.wings.SInternalFrame}!<br>
-      * Fires {@link org.wings.event.SComponentEvent}
-      * ({@link org.wings.event.SComponentEvent#COMPONENT_MOVED}).
-      * @param x The x-coordinate of the new location's top-left corner in the browser window.
-      * @param y The y-coordinate of the new location's top-left corner in the browser window.
-      */
-    public void setLocation(int x, int y) {
-        boolean moved = (this.x != x) || (this.y != y);
-        this.x = x;
-        this.y = y;
-		if (moved) {
-		    if (componentListeners != null)
-                fireComponentChangeEvent(
-                    new SComponentEvent( this, SComponentEvent.COMPONENT_MOVED ));
-		}
-    }
-    
-    /**
-      * Gets the location of this component in the form of a point 
-      * specifying the component's top-left corner. The location will 
-      * be absolute to the browser window's top-left corner.
-      * @see setLocation(int,int)
-      */
-    public Point getLocation() {
-        return new Point(this.x, this.y);
-    }
 
     /*
-     * If a subclass implements the {@link GetListener} interface,
+     * If a subclass implements the {@link LowLevelEventListener} interface,
      * it will be unregistered at the associated dispatcher.
      */
-    private void unregister() {
-        if (getDispatcher() != null && this instanceof SGetListener)
-            getDispatcher().unregister((SGetListener)this);
+    private final void unregister() {
+        if (getDispatcher() != null && this instanceof LowLevelEventListener) {
+            getDispatcher().unregister((LowLevelEventListener)this);
+        }
     }
 
     /*
-     * If a subclass implements the {@link GetListener} interface,
+     * If a subclass implements the {@link LowLevelEventListener} interface,
      * it will be registered at the associated dispatcher.
      */
-    private void register() {
-        if (getDispatcher() != null && this instanceof SGetListener)
-            getDispatcher().register((SGetListener)this);
+    private final void register() {
+        if (getDispatcher() != null && this instanceof LowLevelEventListener) {
+            getDispatcher().register((LowLevelEventListener)this);
+        }
     }
 
     /**
      * Watch components beeing garbage collected.
      */
+    /* comment out, unless explicitly debugged ..
     protected void finalize() {
-        if (DEBUG)
-            System.out.println("finalize " + getClass().getName());
+        System.out.println("finalize " + getClass().getName());
+    }
+    */
+
+    /**
+     * Set the class of the laf-provided style.
+     * @param style the new value for style
+     */
+    public void setStyle(Style style) {
+        this.style = style;
+    }
+    /**
+     * @return the current style
+     */
+    public final Style getStyle() { return style; }
+
+    /**
+     * Set a attribute.
+     * @param name the attribute name
+     * @param value the attribute value
+     */
+    public void setAttribute(String name, String value) {
+        String oldVal = attributes.putAttribute(name, value);
+        reloadIfChange(ReloadManager.RELOAD_STYLE, oldVal, value);
     }
 
     /**
-     * Set the style.
-     * The style is used by style based lafs like xhtml/css1.
-     *
-     * @param s the style
+     * return the value of an attribute.
+     * @param name the attribute name
      */
-    public void setStyle(Style s) {
-        Style old = style;
-        style = s;
-        if ((old == null && style != null) ||
-            (old != null && !old.equals(style)))
-            reload();
+    public final String getAttribute(String name) {
+        return attributes.getAttribute(name);
     }
 
     /**
-     * Return the style.
-     *
-     * @return the style
+     * remove an attribute
+     * @param name the attribute name
      */
-    public Style getStyle() {
-        return style;
+    public String removeAttribute(String name) {
+        if ( attributes.isDefined(name) ) {
+            String value = attributes.removeAttribute(name);
+
+            reload(ReloadManager.RELOAD_STYLE);
+
+            return value;
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Set the attributes.
+     * @param attributes the attributes
+     */
+    public void setAttributes(AttributeSet newAttributes) {
+        if (newAttributes == null) {
+            throw new IllegalArgumentException("null not allowed");
+        }
+        reloadIfChange(ReloadManager.RELOAD_STYLE, attributes, newAttributes);
+        attributes = newAttributes;
+    }
+
+    /**
+     * @return the current attributes
+     */
+    public AttributeSet getAttributes() {
+        return attributes;
     }
 
     /**
      * Set the background color.
-     *
      * @param c the new background color
      */
-    public void setBackground(Color c) {
-        Color old = background;
-        background = c;
-        if ((old == null && background != null) ||
-            (old != null && !old.equals(background)))
-            reload();
+    public void setBackground(Color color) {
+        setAttribute(Style.BACKGROUND_COLOR, 
+                     CSSStyleSheet.getAttribute(color));
     }
 
     /**
      * Return the background color.
-     *
      * @return the background color
      */
     public Color getBackground() {
-        return background;
+        return CSSStyleSheet.getBackground(attributes);
     }
 
     /**
      * Set the foreground color.
-     *
      * @param c the new foreground color
      */
-    public void setForeground(Color c) {
-        Color old = foreground;
-        foreground = c;
-        if ((old == null && foreground != null) ||
-            (old != null && !old.equals(foreground)))
-            reload();
+    public void setForeground(Color color) {
+        setAttribute(Style.COLOR, CSSStyleSheet.getAttribute(color));
     }
 
     /**
      * Return the foreground color.
-     *
      * @return the foreground color
      */
     public Color getForeground() {
-        return foreground;
+        return CSSStyleSheet.getForeground(attributes);
     }
 
     /**
      * Set the font.
-     *
      * @param f the new font
      */
     public void setFont(Font f) {
@@ -554,50 +531,44 @@ public abstract class SComponent
             return;
         }
 
-        SFont font = new SFont();
-
-        font.setFace(f.getName());
-        font.setStyle(f.getStyle());
-        font.setSize(f.getSize()-10);
-
+        SFont font = new SFont(f.getName(), f.getStyle(), f.getSize());
         setFont(font);
     }
 
     /**
      * Set the font.
-     *
      * @param f the new font
      */
-    public void setFont(SFont f) {
-        SFont old = font;
-        font = f;
-        if (!font.equals(old))
-            reload();
+    public void setFont(SFont font) {
+        boolean changed = attributes.putAttributes(CSSStyleSheet.getAttributes(font));
+        if (changed) {
+            reload(ReloadManager.RELOAD_STYLE);
+        }
     }
 
     /**
      * Return the font.
-     *
-     * @return f the font
+     * @return the font
      */
     public SFont getFont() {
-        return font;
+        return CSSStyleSheet.getFont(attributes);
     }
 
     /**
      * Set the visibility.
-     *
      * @param v wether this component wil show or not
      */
-    public void setVisible(boolean v) {
-        boolean old = visible;
-        visible = v;
-        if (old != visible)
-         {
-            reload();
-        	fireComponentChangeEvent(new SComponentEvent( this, 
-        				v ? SComponentEvent.COMPONENT_SHOWN : SComponentEvent.COMPONENT_HIDDEN ) );
-		 }
+    public void setVisible(boolean newVisible) {
+        boolean oldVisible = visible;
+        visible = newVisible;
+        if (oldVisible != newVisible) {
+            reload(ReloadManager.RELOAD_CODE);
+            SComponentEvent evt = 
+                new SComponentEvent(this,(visible
+                                          ? SComponentEvent.COMPONENT_SHOWN
+                                          : SComponentEvent.COMPONENT_HIDDEN));
+            fireComponentChangeEvent(evt);
+        }
     }
 
     /**
@@ -606,7 +577,7 @@ public abstract class SComponent
      * @return wether the component will show
      * @deprecated use isVisible instead
      */
-    public boolean getVisible() {
+    public final boolean getVisible() {
         return visible;
     }
 
@@ -615,7 +586,7 @@ public abstract class SComponent
      *
      * @return wether the component will show
      */
-    public boolean isVisible() {
+    public final boolean isVisible() {
         return visible;
     }
 
@@ -627,8 +598,9 @@ public abstract class SComponent
     public void setEnabled(boolean e) {
         boolean old = enabled;
         enabled = e;
-        if (old != enabled)
-            reload();
+        if (old != enabled) {
+            reload(ReloadManager.RELOAD_CODE);
+        }
     }
 
     /**
@@ -636,7 +608,7 @@ public abstract class SComponent
      *
      * @return true if component is enabled
      */
-    public boolean isEnabled() {
+    public final boolean isEnabled() {
         return enabled;
     }
 
@@ -645,7 +617,7 @@ public abstract class SComponent
      *
      * @return the name of this component
      */
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
@@ -659,95 +631,63 @@ public abstract class SComponent
     }
 
 
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendPrefix(Device s) {
-        if ( font!=null )
-            font.appendPrefix(s);
-        else if ( foreground!=null || background!=null )
-            s.append("<FONT");
-
-        if ( foreground!=null ) {
-            s.append(" COLOR=#").append(SUtil.toColorString(foreground));
-        }
-
-        // hab keine Idee, wie man das sonst machen kann !!!
-        // Mit Table wuerds funktionieren (siehe unten), aber...
-        if ( background!=null )
-            s.append(" STYLE=\"background-color:#").append(SUtil.toColorString(background)).append(";\"");
-
-
-        if ( font!=null )
-            font.appendBody(s);
-        else if ( foreground!=null || background!=null )
-            s.append(">");
-
-        //    if ( background!=null )
-        //      s.append("<TABLE BGCOLOR=#").append(SUtil.toColorString(background)).append(">");
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendPostfix(Device s) {
-        //    if ( background!=null )
-        //      s.append("</TABLE>");
-        if ( font!=null )
-            font.appendPostfix(s);
-        else if ( foreground!=null || background!=null )
-            s.append("</FONT>");
-
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendBody(Device s) {
-        //    s.append("&nbsp;");
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendBorderPrefix(Device s) { }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendBorderPostfix(Device s) { }
-
     /**
      * Mark the component as subject to reload.
      * The component will be registered with the ReloadManager.
+     *
+     * @param aspect the aspect to reload; this is one of the constants
+     *               defined in ReloadManager: 
+     *               <code>ReloadManager.RELOAD_*</code>
      */
-    public final void reload() {
-        getSession().getReloadManager().markDirty(this);
+    public final void reload(int aspect) {
+        getSession().getReloadManager().reload(this, aspect);
     }
 
     /**
-     * Let the delegate write the component's code to the device.
+     * Mark this component as subject to reload for the given
+     * aspect if the property, that is given in its old and new
+     * fashion, changed. Convenience method for {@link #reload(int)}
+     *
+     * @param aspect the aspect to reload; this is one of the constants
+     *               defined in ReloadManager: 
+     *               <code>ReloadManager.RELOAD_*</code>
+     * @param oldVal the old value of some property
+     * @param newVal the new value of some property
+     */
+    protected final void reloadIfChange(int aspect, 
+                                        Object oldVal, Object newVal) {
+        if (!((oldVal == newVal)||(oldVal != null && oldVal.equals(newVal)))) {
+            //System.err.println(getClass().getName() + ": reload. old:" + oldVal + "; new: "+ newVal);
+            reload(aspect);
+        }
+    }
+
+    /**
+     * Let the code generator deletate write the component's code 
+     * to the device. The code generator is the actual 'plaf'.
      *
      * @param s the Device to write into
-     * @throws IOException Thrown when the connection to the client gets broken,
+     * @throws IOException Thrown if the connection to the client gets broken,
      *         for example when the user stops loading
      */
     public void write(Device s) throws IOException {
-        if (visible)
-            cg.write(s, this);
+        try {
+            if (visible) {
+                cg.write(s, this);
+            }
+        }
+        catch (Throwable t) {
+            System.err.println(t.getMessage());
+            t.printStackTrace(System.err);
+            logger.log(Level.SEVERE, "exception during code generation for " +
+                       getClass().getName(), t);
+        }
     }
 
+    /**
+     * a string representation of this component. Just
+     * renders the component into a string.
+     */
     public String toString() {
         Device d = new StringBufferDevice();
         try {
@@ -760,8 +700,8 @@ public abstract class SComponent
 
 
     /**
-     * Generic implementation for generating a string that represents the components
-     * configuration.
+     * Generic implementation for generating a string that represents 
+     * the components configuration.
      * @return a string containing all properties
      */
     public String paramString() {
@@ -795,17 +735,48 @@ public abstract class SComponent
     }
 
     /**
-     * Return a unique name prefix.
-     *
-     * @return a unique name prefix
+     * Encodes a low level event id for using it in a request parameter. Every 
+     * {@link LowLevelEventListener} should encode its LowLevelEventId before
+     * using it in a request parameter. This encoding adds consistency checking
+     * for outtimed requests ("Back Button") 
+     */
+    public final String encodeLowLevelEventId(String lowLevelEventId) {
+        if (getParentFrame() != null)
+            return (getParentFrame().getEventEpoch() 
+                    + SConstants.UID_DIVIDER 
+                    + lowLevelEventId);
+        return lowLevelEventId;
+    }
+
+    /**
+     * Encodes a low level event id for using it in a request parameter. Every 
+     * {@link LowLevelEventListener} should encode its LowLevelEventId before
+     * using it in a request parameter. This encoding adds consistency checking
+     * for outtimed requests ("Back Button") 
+     */
+    public final String getEncodedLowLevelEventId() {
+        return encodeLowLevelEventId(getLowLevelEventId());
+    }
+
+    /**
+     * Default implementation of the method in 
+     * {@link LowLevelEventListener}.
+     */
+    public String getLowLevelEventId() {
+        return getComponentId();
+    }
+
+    /**
+     * @deprecated use encodeLowLevelEventId(getLowLevelEventId)
      */
     public String getNamePrefix() {
-        if (getParentFrame() != null)
-            return getParentFrame().getUniquePrefix() + SConstants.UID_DIVIDER
-                + getUnifiedIdString() + SConstants.UID_DIVIDER;
-        else
-            return getUnifiedIdString() + SConstants.UID_DIVIDER;
+        if ( this instanceof LowLevelEventListener ) {
+            return encodeLowLevelEventId(((LowLevelEventListener)this).
+                                         getLowLevelEventId());
+        }
+        return getComponentId();
     }
+
 
     /**
      * Return the parent frame.
@@ -821,23 +792,15 @@ public abstract class SComponent
      *
      * @return true, if this component resides in a form, false otherwise
      */
-    public boolean getResidesInForm() {
+    public final boolean getResidesInForm() {
         SComponent parent = getParent();
 
         boolean actuallyDoes = false;
-        while (parent != null && !(actuallyDoes = (parent instanceof SForm)))
+        while (parent != null && !(actuallyDoes = (parent instanceof SForm))) {
             parent = parent.getParent();
+        }
 
         return actuallyDoes;
-    }
-
-    /**
-     * Convenience method that return the externalize manager.
-     *
-     * @return the externalize manager
-     */
-    public ExternalizeManager getExternalizeManager() {
-        return getSession().getExternalizeManager();
     }
 
     /**
@@ -845,7 +808,7 @@ public abstract class SComponent
      *
      * @param t the new tooltip text
      */
-    public void setToolTipText(String t) {
+    public final void setToolTipText(String t) {
         tooltip = t;
     }
 
@@ -854,7 +817,31 @@ public abstract class SComponent
      *
      * @return the tooltip text
      */
-    public String getToolTipText() { return tooltip; }
+    public final String getToolTipText() { return tooltip; }
+
+    /**
+     * The index in which the focus is traversed using Tab. This is
+     * a very simplified notion of traversing the focus, but that is,
+     * what browser like interfaces currently offer. This has a bit rough
+     * edge, since you have to make sure, that the index is unique within
+     * the whole frame. You probably don't want to change this
+     * programmatically, but this is set usually by the template property
+     * manager.
+     *
+     * @param index the focus traversal index. Pressing the focus traversal
+     *              key (usually TAB) in the browser jumps to the next index.
+     */
+    public final void setFocusTraversalIndex(int index) {
+        focusTraversalIndex = index;
+    }
+
+    /**
+     * returns the focus traversal index.
+     * @see #setFocusTraversalIndex(int)
+     */
+    public final int getFocusTraversalIndex() {
+        return focusTraversalIndex;
+    }
 
     /**
      * Clone this component.
@@ -864,7 +851,8 @@ public abstract class SComponent
     public Object clone() {
         try {
             return super.clone();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -906,38 +894,10 @@ public abstract class SComponent
         return verticalAlignment;
     }
 
-    /**
-     * @deprecated use GridBagLayout instead
-     */
-    public final int getColSpan() {
-        return colSpan;
-    }
-
-    /**
-     * @deprecated use GridBagLayout instead
-     */
-    public final void setColSpan(int span) {
-        colSpan = span;
-    }
-
-    /**
-     * @deprecated use GridBagLayout instead
-     */
-    public final int getRowSpan() {
-        return rowSpan;
-    }
-
-    /**
-     * @deprecated use GridBagLayout instead
-     */
-    public final void setRowSpan(int span) {
-        rowSpan = span;
-    }
-
     private Map clientProperties;
 
     /**
-     * @return a small Hashtable
+     * @return a small HashMap
      * @see #putClientProperty
      * @see #getClientProperty
      */
@@ -994,10 +954,11 @@ public abstract class SComponent
 
         if (value != null) {
             getClientProperties().put(key, value);
-        } else {
+        } 
+        else {
             getClientProperties().remove(key);
         }
-
+        
         firePropertyChange(key.toString(), oldValue, value);
     }
 
@@ -1009,7 +970,7 @@ public abstract class SComponent
     public void addPropertyChangeListener(PropertyChangeListener l) {
 	propertyChangeSupport.addPropertyChangeListener(l);
     }
-    
+
     /**
      * Remove a PropertyChangeListener from the current list of listeners.
      *
@@ -1018,7 +979,7 @@ public abstract class SComponent
     public void removePropertyChangeListener(PropertyChangeListener l) {
 	propertyChangeSupport.removePropertyChangeListener(l);
     }
-    
+
     /**
      * Notify all listeners that a property change has occured.
      * @param propertyName the name of the property
@@ -1084,7 +1045,7 @@ public abstract class SComponent
 
         if ((cg == null && oldCG != null) ||
             (cg != null && !cg.equals(oldCG)))
-            reload();
+            reload(ReloadManager.RELOAD_ALL);
     }
 
     /**
@@ -1097,19 +1058,20 @@ public abstract class SComponent
     }
 
     /**
-     * Notification from the CGFactory that the L&F
-     * has changed.
+     * Notification from the CGFactory that the L&F has changed.
      *
      * @see SComponent#updateCG
      */
     public void updateCG() {
-        if (getSession() == null)
-            System.err.println("no session yet.");
-        if (getSession().getCGManager() == null)
-            System.err.println("no CGManager");
-
-        setCG((ComponentCG)getSession().getCGManager().getCG(this));
-
+        if (getSession() == null) {
+            logger.warning("no session yet.");
+        }
+        else if (getSession().getCGManager() == null) {
+            logger.warning("no CGManager");
+        }
+        else {
+            setCG((ComponentCG)getSession().getCGManager().getCG(this));
+        }
         if (border != null)
             border.updateCG();
     }
@@ -1118,12 +1080,38 @@ public abstract class SComponent
      * Returns the name of the CGFactory class that generates the
      * look and feel for this component.
      *
-     * @return "ComponentCG"
+     * @return content of private static final cgClassID attribute
      * @see SComponent#getCGClassID
      * @see org.wings.plaf.CGDefaults#getCG
      */
     public String getCGClassID() {
         return cgClassID;
+    }
+
+    /**
+     * Invite a ComponentVisitor.
+     * Invokes visit(SComponent) on the ComponentVisitor.
+     * @param visitor the visitor to be invited 
+     */
+    public void invite(ComponentVisitor visitor)
+        throws Exception
+    {
+        visitor.visit(this);
+    }
+
+    /**
+     * use this method for changing a variable. if a new value is different
+     * from the old value set the new one and notify e.g. the reloadmanager...
+     */
+    protected static final boolean isDifferent(Object oldObject, 
+                                               Object newObject) {
+        if ( oldObject==newObject )
+            return false;
+
+        if ( oldObject==null )
+            return true;
+
+        return !oldObject.equals(newObject);
     }
 }
 
@@ -1131,5 +1119,6 @@ public abstract class SComponent
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

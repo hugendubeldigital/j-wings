@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $id: SMenuBar.java,v 1.2.2.2 2001/11/26 08:52:58 hzeller Exp $
  * (c) Copyright 2000 wingS development team.
  *
  * This file is part of wingS (http://wings.mercatis.de).
@@ -18,7 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Insets;
 import java.beans.*;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.net.URL;
 import javax.swing.*;
 
@@ -54,10 +54,11 @@ public class SMenuBar extends SContainer
     private boolean paintBorder           = true;
     private Insets     margin             = null;
 
-	/**
-      * SMenu's
-      */
-	Vector fComponents = new Vector();
+    /**
+     * SMenu's
+     */
+    protected final ArrayList fComponents = new ArrayList();
+
     /**
      * Creates a new menu bar.
      */
@@ -98,8 +99,8 @@ public class SMenuBar extends SContainer
      * @param c the SMenu component to add
      */
     public SMenu add(SMenu c) {
-		super.add( c );
-		c.addActionListener( new MenuAction( this ) );
+        super.add( c );
+        c.addActionListener( new MenuAction( this ) );
         c.setShowAsFormComponent( false );
     	fComponents.add(c);
         return c;
@@ -113,7 +114,7 @@ public class SMenuBar extends SContainer
      * @return the SMenu at that position
      */
     public SMenu getMenu(int index) {
-        SComponent c = (SComponent) fComponents.elementAt(index);
+        SComponent c = (SComponent) fComponents.get(index);
         if (c instanceof SMenu) 
             return (SMenu) c;
         return null;
@@ -194,9 +195,9 @@ public class SMenuBar extends SContainer
         paintBorder = b;
         firePropertyChange("borderPainted", oldValue, paintBorder);
         if (b != oldValue) {
-        	/*
-            revalidate();
-            repaint();
+            /*
+              revalidate();
+              repaint();
             */
         }
     }
@@ -208,14 +209,14 @@ public class SMenuBar extends SContainer
      * @see SComponent#paint
      * @see SComponent#setBorder
      */
-	/*
-    protected void paintBorder(Graphics g) {    
+    /*
+    protected void paintBorder(Graphics g) {
         if (isBorderPainted()) {
             super.paintBorder(g);
         }
     }
-	*/
-    
+    */
+
     /**
      * Sets the margin between the menubar's border and
      * its menus. Setting to null will cause the menubar to
@@ -233,9 +234,9 @@ public class SMenuBar extends SContainer
         this.margin = m;
         firePropertyChange("margin", old, m);
         if (old == null || !m.equals(old)) {
-        	/*
-            revalidate();
-            repaint();
+            /*
+              revalidate();
+              repaint();
             */
         }
     }
@@ -256,14 +257,14 @@ public class SMenuBar extends SContainer
     }
 
 
-	/** 
+    /**
      * Implemented to be a MenuElement -- does nothing.
      *
      * @see #getSubElements
      */
     public void menuSelectionChanged(boolean isIncluded) {
     }
-    
+
     /**
      * Returns a string representation of this SMenuBar. This method 
      * is intended to be used only for debugging purposes, and the 
@@ -280,18 +281,10 @@ public class SMenuBar extends SContainer
 			       margin.toString() : "");
 
 	return super.paramString() +
-	",margin=" + marginString +
-	",paintBorder=" + paintBorderString;
+            ",margin=" + marginString +
+            ",paintBorder=" + paintBorderString;
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "MenuBarCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -299,39 +292,43 @@ public class SMenuBar extends SContainer
     public void setCG(MenuBarCG cg) {
         super.setCG(cg);
     }
-	
-	/**
-	  * Close all currently open menus.
-	  */
-	public void closeAllMenus()
-	 {
-		for ( int i = 0; i < fComponents.size(); i++ )
-			((SMenu) fComponents.elementAt(i)).setActive( false );
-	 }
 
-	/**
-	  * Handle open and close of menus
-	  */
-	class MenuAction
-		implements ActionListener
-	 {
-	 
-	 	private SMenuBar fMenuBar = null;
-		
-		public MenuAction( SMenuBar mbar )
-		 {
-			fMenuBar = mbar;
-		 }
+    /**
+     * Close all currently open menus.
+     */
+    public void closeAllMenus()
+    {
+        for ( int i = 0; i < fComponents.size(); i++ )
+            ((SMenu) fComponents.get(i)).setActive( false );
+    }
 
-		public void actionPerformed( ActionEvent e )
-		 {
-			SMenu menu = (SMenu) e.getSource();
-			boolean active = menu.isActive();
-			fMenuBar.closeAllMenus();
-			menu.setActive( ! active );
-		 }
-	 }
+    /**
+     * Handle open and close of menus
+     */
+    class MenuAction implements ActionListener
+    {
+        private SMenuBar fMenuBar = null;
 
+        public MenuAction( SMenuBar mbar )
+        {
+            fMenuBar = mbar;
+        }
+
+        public void actionPerformed( ActionEvent e )
+        {
+            SMenu menu = (SMenu) e.getSource();
+            boolean active = menu.isActive();
+            fMenuBar.closeAllMenus();
+            menu.setActive( ! active );
+        }
+    }
 
 }
 
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

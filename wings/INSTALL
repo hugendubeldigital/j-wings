@@ -1,25 +1,33 @@
 
 wingS demo installation with JServ and Apache under Linux
 
-0) make sure JServ is working
-   - try "http://localhost/jserv/" in your browser
+0) make sure JServ or tomcat is working
 
+1) compile wingS. Make sure, that you have the java servlet classes
+   in your classpath or in the lib/ directory as jar file.
+   You need JSDK 2.2.
+   To compile the wings.jar, just type ant:
+     $ ant
+   compile the demo
+     $ cd demo
+     $ ant
+   This creates the war files.
+   if you have the environment variable $TOMCAT_HOME set, then
+     $ ant deploy
+   will unpack them in your $TOMCAT_HOME/webapps
 
-1) compile it (this step is only required if you download wingS via CVS)
-   - customize Environment.sh
-   - source Environment.sh
-   - make
-   - make jar
+2) run it - just start you tomcat. Please note the following:
+ 2.1) if you have an JDK older than 1.4, you need to add the logging
+      api to your bootclasspath. So you need to modify your tomcat.sh
+      to include the logging.jar on the commandline
+      (you find in the lib/ directory):
+         -Xbootclasspath/p:/usr/src/wingS-1.0-alpha/lib/logging.jar
 
-
-2) edit <path_to_wings>/demo/zone.properties
-   - adjust "repositories"
-   - the rest should be OK
-
-
-3) edit jserv.properties (RedHat: /etc/httpd/conf/jserv/jserv.properties).
-   Please note that wingS requires access to an Xserver under Unix/Linux.
-   There are several possibilities to achieve this (you only need one!):
+  2.2)
+   To determine the size of images, wingS needs access to an Xserver under
+   Unix/Linux (However, it will work without it, but then image tags won't
+   contain width="xx" and height="xx" attributes).
+   There are several possibilities to achive the access to an XServer:
 
    - xhost:
      - add "wrapper.env=DISPLAY=localhost:0"
@@ -28,22 +36,6 @@ wingS demo installation with JServ and Apache under Linux
    - or Xvfb:
      - add "wrapper.env=DISPLAY=localhost:1"
      - start Xvfb on display 1 (/usr/X11R6/bin/Xvfb :1 -screen 0 640x480x8 &)
-
-   - add "wings" to "zones"
-   - add "wings.properties=<path_to_wings>/demo/zone.properties"
-
-
-4) edit jserv.conf (RedHat: /etc/httpd/conf/jserv/jserv.conf)
-   - add "ApJServMount /wings /wings"
-
-
-5) restart the httpd (don't forget the X server - see 3)
-
-
-6) go to http://localhost/wings/WingSet
-   - if you get an internal server error, have a look at jserv.log and
-     error.log (both can normally be found under /var/log/httpd).
-
 
 That's it!
 

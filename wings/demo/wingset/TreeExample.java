@@ -15,7 +15,12 @@
 package wingset;
 
 import javax.swing.tree.*;
-
+import javax.swing.event.*;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import org.wings.util.PropertyAccessor;
 import org.wings.*;
 
 /**
@@ -27,8 +32,190 @@ import org.wings.*;
 public class TreeExample
     extends WingSetPane
 {
+    private STree tree;
+    private static SIcon ARROW_DOWN = new ResourceImageIcon("org/wings/icons/ArrowDown.gif");
+    private static SIcon ARROW_RIGHT = new ResourceImageIcon("org/wings/icons/ArrowRight.gif");
+
+    private static SIcon PLUS = new ResourceImageIcon("org/wings/icons/plus.gif");
+    private static SIcon MINUS = new ResourceImageIcon("org/wings/icons/minus.gif");
+    
     public SComponent createExample() {
-        return new STree(new DefaultTreeModel(generateTree()));
+        SPanel p = new SPanel();
+        // generating the tree:
+        tree = new STree(new DefaultTreeModel(generateTree())); // thats it.
+
+
+        /* test code
+        p.add(createEventView(tree));
+        p.add(new SSeparator());
+        */
+        
+        p.add(createControlForm(tree));
+        p.add(new SSeparator());
+        p.add(tree);
+        return p;
+    }
+
+
+    private SComponent createEventView(final STree tree) {
+        SPanel panel = new SPanel();
+        final SForm form = new SForm();
+        final STextArea messages = new STextArea("");
+        
+        messages.setEditable(false);
+        messages.setColumns(80);
+        
+        tree.addTreeSelectionListener(new TreeSelectionListener() {
+                public void valueChanged(TreeSelectionEvent e) {
+                    messages.setText(messages.getText() + "\n" 
+                                     + "TreeSelectionEvent-"
+                                     + (e.isAddedPath()?"added ":"removed ")
+                                     + e.getPath().getLastPathComponent().toString());
+                }
+            });
+
+        tree.addTreeExpansionListener(new TreeExpansionListener() {
+                public void treeExpanded(TreeExpansionEvent e) {
+                    messages.setText(messages.getText() + "\n"
+                                     + "TreeExpansionEvent-treeExpanded "
+                                     + e.getPath().getLastPathComponent().toString());
+                }
+                public void treeCollapsed(TreeExpansionEvent e) {
+                    messages.setText(messages.getText() + "\n" 
+                                     + "TreeExpansionEvent-treeCollapsed "
+                                     + e.getPath().getLastPathComponent().toString());
+                }
+            });
+
+        tree.addTreeWillExpandListener(new TreeWillExpandListener() {
+                public void treeWillExpand(TreeExpansionEvent e)
+                    throws ExpandVetoException {
+                    messages.setText(messages.getText() + "\n"
+                                     + "TreeExpansionEvent-treeWillExpand "
+                                     +
+                                     e.getPath().getLastPathComponent().toString());
+                }
+
+                public void treeWillCollapse(TreeExpansionEvent e)
+                    throws ExpandVetoException {
+                    messages.setText(messages.getText() + "\n"
+                                     + "TreeExpansionEvent-treeWillCollapse "
+                                     +
+                                     e.getPath().getLastPathComponent().toString());
+                }
+            });
+
+        form.add(messages);
+
+
+        form.add(new SButton("Clear"));
+        form.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    messages.setText("");
+                }
+            });
+
+        final SCheckBox showDetails=new SCheckBox("show event details");
+        showDetails.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    form.setVisible(showDetails.isSelected());
+                }
+            });
+        showDetails.setSelected(false);
+        form.setVisible(false);
+        panel.add(showDetails);
+        panel.add(form);
+        return panel;
+    }
+
+    private SForm createControlForm(final STree tree) {
+        SForm controlForm = new SForm(new SGridLayout(6));
+        
+        /*
+         * modify the displayed indentation depth.
+         */
+        controlForm.add(new SLabel("Choose indentation width: "));
+        Object[] values = {new Integer(12), new Integer(24), new Integer(36), 
+                           new Integer(48), new Integer(60)};
+        final SComboBox comboBox = new SComboBox(values);
+        comboBox.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent e) {
+                    tree.setNodeIndentDepth(((Integer) comboBox.getSelectedItem()).intValue());
+                }
+            });
+
+        controlForm.add(comboBox);
+        
+        /*
+         * change properties of running CG ..
+         */
+        if (PropertyAccessor.hasProperty(tree.getCG(), "collapseControlIcon")){
+            SButtonGroup group = new SButtonGroup();
+            controlForm.add(new SLabel(" Folding icons: "));
+            final SRadioButton plusButton = new SRadioButton("plus/minus");
+            plusButton.setToolTipText("use [+] and [-] as expansion controls");
+            
+            final SRadioButton arrowButton = new SRadioButton("arrows");
+            arrowButton.setToolTipText("use right-arrow and down-arrow as expansion controls");
+            
+            group.add(plusButton);
+            group.add(arrowButton);
+            
+            group.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        if (plusButton.isSelected()) {
+                            PropertyAccessor.setProperty(tree.getCG(), 
+                                                         "collapseControlIcon",
+                                                         MINUS );
+                            PropertyAccessor.setProperty(tree.getCG(), 
+                                                         "expandControlIcon",
+                                                         PLUS );
+                        }
+                        else {
+                            PropertyAccessor.setProperty(tree.getCG(), 
+                                                         "collapseControlIcon",
+                                                         ARROW_DOWN );
+                            PropertyAccessor.setProperty(tree.getCG(), 
+                                                         "expandControlIcon",
+                                                         ARROW_RIGHT );
+                        }
+                    }
+                });
+                        
+            controlForm.add(plusButton);
+            controlForm.add(arrowButton);
+            plusButton.setSelected(true);
+        }
+
+
+        final SCheckBox blockExpansion = new SCheckBox("Block Expansion");
+        // just for testing
+        //        controlForm.add(blockExpansion);
+        final SCheckBox blockCollapse = new SCheckBox("Block Collapse");
+        // just for testing
+        //        controlForm.add(blockCollapse);
+
+        tree.addTreeWillExpandListener(new TreeWillExpandListener() {
+                public void treeWillExpand(TreeExpansionEvent e) 
+                    throws ExpandVetoException {
+                    if ( blockExpansion.isSelected() ) {
+                        throw new ExpandVetoException(e);
+                    }
+                }
+
+                public void treeWillCollapse(TreeExpansionEvent e)
+                    throws ExpandVetoException {
+                    if ( blockCollapse.isSelected() ) {
+                        throw new ExpandVetoException(e);
+                    }
+                }
+                                       
+            });
+
+        
+        SButton submit = new SButton("OK");
+        controlForm.add(submit);
+        return controlForm;
     }
 
     static TreeNode generateTree() {
@@ -650,5 +837,6 @@ public class TreeExample
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

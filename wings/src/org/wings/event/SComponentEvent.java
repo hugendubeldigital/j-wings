@@ -11,11 +11,12 @@
  *
  * Please see COPYING for the complete licence.
  */
-
 package org.wings.event;
 
-import org.wings.*;
 import java.awt.AWTEvent;
+
+import org.wings.SComponent;
+import org.wings.SDimension;
 
 /**
  * A low-level event which indicates that a component moved, changed
@@ -41,9 +42,9 @@ import java.awt.AWTEvent;
  * ComponentListener interface.) Each such listener object 
  * gets this ComponentEvent when the event occurs.
  *
- * @see org.wings.event.ComponentAdapter
- * @see org.wings.event.ComponentListener
- * @author <a href="mailto:andre@lison.de">Andre Lison</a>
+ * @see org.wings.event.SComponentAdapter
+ * @see org.wings.event.SComponentListener
+ * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
  * @version $Revision$, $Date$
  */
 public class SComponentEvent
@@ -52,40 +53,40 @@ public class SComponentEvent
     /**
      * The first number in the range of ids used for component events.
      */
-    public static final int COMPONENT_FIRST = 1 << 0;
+    public static final int COMPONENT_FIRST = 10000;
 
     /**
      * This event indicates that the component was rendered invisible.
      */
-    public static final int COMPONENT_HIDDEN = 1 << 1;
-
-    /**
-     * The last number in the range of ids used for component events.
-     */
-    public static final int COMPONENT_LAST = 1 << 2;
+    public static final int COMPONENT_HIDDEN = COMPONENT_FIRST;
     
     /**
      * This event indicates that the component's position changed.
      */
-    public static final int COMPONENT_MOVED = 1 << 3;
+    public static final int COMPONENT_MOVED =  COMPONENT_FIRST + 1;
 	
     /**
      * This event indicates that the component's size changed.
      */
-    public static final int COMPONENT_RESIZED = 1 << 4;
+    public static final int COMPONENT_RESIZED = COMPONENT_FIRST + 2;
 
     /**
      * This event indicates that the component was made visible.
      */
-    public static final int COMPONENT_SHOWN = 1 << 5;
-	
+    public static final int COMPONENT_SHOWN =   COMPONENT_FIRST + 3;
+
+    /**
+     * The last number in the range of ids used for component events.
+     */
+    public static final int COMPONENT_LAST = COMPONENT_SHOWN; // take last.
+
     /**
      * Constructs a ComponentEvent object.
      * @param aSource the Component object that originated the event
      * @param aId an integer indicating the type of event
      */
-    public SComponentEvent(SComponent aSource, int aId) {
-        super(aSource, aId);
+    public SComponentEvent(SComponent aSource, int anId) {
+        super(aSource, anId);
     }
 
     /**
@@ -96,15 +97,13 @@ public class SComponentEvent
         return (SComponent) source;
     }
 
-    public String toString() {
-        return "ComponentEvent[source=" + source + "; " + paramString() + "]";
-    }
-
     /**
      * Returns a string representing the state of this event. This 
      * method is intended to be used only for debugging purposes, and the 
-     * content and format of the returned string may vary between implementations.
-     * The returned string may be empty but may not be <tt>null</tt>.
+     * content and format of the returned string may vary between 
+     * implementations. The returned string may be empty but may 
+     * not be <tt>null</tt>.
+     *
      * @return a string representation of this event.          
      */
     public String paramString() {
@@ -132,11 +131,16 @@ public class SComponentEvent
         }
         return typeStr;
     }
+
+    public String toString() {
+        return "ComponentEvent[source=" + source + "; " + paramString() + "]";
+    }
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

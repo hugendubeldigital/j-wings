@@ -35,11 +35,6 @@ public final class SDummy
 {
     /**
      * TODO: documentation
-     */
-    public static final SDummy DUMMY = new SDummy();
-
-    /**
-     * TODO: documentation
      *
      */
     public SDummy() {
@@ -59,5 +54,6 @@ public final class SDummy
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

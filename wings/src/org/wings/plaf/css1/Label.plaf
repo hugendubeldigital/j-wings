@@ -1,0 +1,153 @@
+<!-- -*- html -*- -->
+<template name="LabelCG" for="org.wings.SLabel">
+
+<property type="SIcon" name="clickableFallbackIcon">org/wings/icons/Pencil.gif</property>
+
+void writeIcon(Device device, SIcon icon, SLabel label,
+	       AnchorProperties anchor) 
+     throws IOException {
+     if (icon != null) {
+        if (anchor != null) { 
+	    %><a href="<%=anchor.getURL()%>"<%|target=anchor.getTarget()%>><% 
+        }
+
+        %><img<%
+        if (label.isImageAbsBottom()) {
+	    %> align="absbottom"<%
+	}
+        /*
+	 * write optional attributes ..
+	 */
+        if (anchor != null) { %> border="0"<% }
+        %><%|src=icon.getURL()%><%
+        %><%|width=icon.getIconWidth()%><%
+        %><%|height=icon.getIconHeight()%><%
+        %> /><%
+
+        if (anchor != null) {
+	    %></a><%
+        }     
+     }
+}
+
+void writeText(Device device, SLabel label, AnchorProperties anchor)
+    throws IOException {
+    final String text = label.getText();
+    if (text != null) {
+       final boolean noBreak = label.isNoBreak();
+
+        if (noBreak) { %><nobr><% }
+        if (anchor != null) { 
+	    %><a href="<%=anchor.getURL()%>"<%|target=anchor.getTarget()%>><% 
+        }
+	if (label.isEscapeSpecialChars()) {
+            %><%=text%><%
+        }
+	else {
+	    %><%#text%><% // write raw.
+        }
+        if (anchor != null) { %></a><% }
+        if (noBreak) { %></nobr><% }
+   }
+}
+
+<write>
+<%
+   String text = component.getText();
+   SIcon  icon = component.getIcon();
+   String style = Utils.style(component);
+   final int horizontalTextPosition = component.getHorizontalTextPosition();
+   final int verticalTextPosition   = component.getVerticalTextPosition();
+   final boolean noBreak = component.isNoBreak();
+   final AnchorProperties anchor = AnchorRenderStack.get();
+
+   /*
+    * fallback icon in case we are clickable, but there is nothing
+    * to click on (no icon nor text).
+    */
+    if (icon == null) {
+	if (anchor != null && (text == null || text.length() == 0)) {
+	    // no text either.
+	    icon = clickableFallbackIcon;
+	}
+    }
+
+   if (icon == null) {
+      if (style != null) {
+          %><span class="<%=style%>"><%
+      }
+      writeText(device, component, anchor);
+      if (style != null) { %></span><% }
+   }
+   else if (text == null || text.length() == 0) {
+      if (style != null) {
+          %><span class="<%=style%>"><%
+      }
+      writeIcon(device, icon, component, anchor);
+      if (style != null) { %></span><% }
+   }
+   else {
+       %><table cellspacing="0"<%
+       %><%|class=style%><%
+       %>><%
+       // if we are on the top, create a top row
+       if (verticalTextPosition == TOP) {
+	       %><tr><td><%
+	       if (horizontalTextPosition == LEFT) { 
+                  writeText(device, component, anchor);
+	       }
+	       %></td><td><%
+	       if (horizontalTextPosition == CENTER) { 
+                  writeText(device, component, anchor);
+	       }
+	       %></td><td><%
+	       if (horizontalTextPosition == RIGHT) {
+                  writeText(device, component, anchor);
+	       }
+	       %></td></tr><%
+       }
+
+       // we always have a center row, since we have to write the icon
+       if (verticalTextPosition == CENTER) {
+	       %><tr><td><%
+	       if (horizontalTextPosition == LEFT) {
+                  writeText(device, component, anchor);
+	       }
+	       %></td><td align="center"><%
+	       if (horizontalTextPosition == CENTER) { 
+                  writeText(device, component, anchor);
+                  %><br/><%
+	       }
+	       // the rendered icon in the center
+	       writeIcon(device, icon, component, anchor);
+	       %></td><td><%
+	       if (horizontalTextPosition == RIGHT) { 
+                  writeText(device, component, anchor);
+	       }
+	       %></td></tr><%
+       } else {
+	       %><tr><td></td><td align="center"><%
+	       writeIcon(device, icon, component, anchor); 
+	       %></td><td></td></tr><%
+       }
+
+       // bottom row only, if text is there ..
+       if (verticalTextPosition == BOTTOM) {
+               %><tr><td><%
+	       if (horizontalTextPosition == LEFT) {
+                  writeText(device, component, anchor);
+	       }
+	       %></td><td><%
+	       if (horizontalTextPosition == CENTER) { 
+                  writeText(device, component, anchor);
+	       }
+	       %></td><td><%
+	       if (horizontalTextPosition == RIGHT) {
+                  writeText(device, component, anchor);
+	       }
+	       %></td></tr><%
+       } 
+       %></table><%
+   }
+%></write>
+</template>

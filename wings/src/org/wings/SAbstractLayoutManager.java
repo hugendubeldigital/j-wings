@@ -22,7 +22,7 @@ import org.wings.plaf.*;
 import org.wings.session.*;
 
 /**
- * TODO: documentation
+ * This is an abstract implementation of an layout manager.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
@@ -30,12 +30,7 @@ import org.wings.session.*;
 public abstract class SAbstractLayoutManager
     implements SLayoutManager
 {
-    private static final boolean DEBUG = false;
-
-    /**
-     * TODO: documentation
-     */
-    protected final int id = SComponent.createUnifiedId();
+    private static final boolean DEBUG = true;
 
     /**
      * @see #getCGClassID
@@ -55,20 +50,12 @@ public abstract class SAbstractLayoutManager
      * Preferred size of component in pixel.
      */
     protected SDimension preferredSize = null;
-    
+
 
     protected SAbstractLayoutManager() {
 	updateCG();
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this layout.
-     *
-     * @return "LayoutCG"
-     * @see SLayoutManager#getCGClassID
-     * @see org.wings.plaf.CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -99,31 +86,16 @@ public abstract class SAbstractLayoutManager
     public void write(Device d)
 	throws IOException
     {
-	String name = null;
-	
-        if (DEBUG) {
-	    name = getClass().getName();
-	    name = name.substring(name.lastIndexOf('.') + 1);
-	    
-            d.append("\n\n<!-- ")
-		.append(name)
-		.append(" ").append(id)
-		.append(" -->");
-	}
-
 	cg.write(d, this);
-	
-        if (DEBUG)
-            d.append("\n<!-- /")
-		.append(name)
-		.append(" ").append(id)
-		.append(" -->\n\n");
     }
 
     public void setContainer(SContainer c) {
 	container = c;
     }
-    public SContainer getContainer() { return container; }
+
+    public SContainer getContainer() {
+        return container;
+    }
 
     /**
      * Set the preferred size of the receiving {@link SLayoutManager} in pixel.
@@ -141,5 +113,15 @@ public abstract class SAbstractLayoutManager
      * Get the preferred size of this {@link SLayoutManager }.
      * @see #setPreferredSize
      */
-    public final SDimension getPreferredSize() { return this.preferredSize; }
+    public final SDimension getPreferredSize() {
+        return this.preferredSize;
+    }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

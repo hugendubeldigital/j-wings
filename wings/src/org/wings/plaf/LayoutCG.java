@@ -14,12 +14,13 @@
 
 package org.wings.plaf;
 
-import java.io.IOException;
+import java.io.*;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
 
 public interface LayoutCG
+    extends Serializable
 {
     void write(Device d, SLayoutManager c) throws IOException;
 }
@@ -28,5 +29,6 @@ public interface LayoutCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

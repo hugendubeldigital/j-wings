@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-
 <!DOCTYPE web-app
     PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
     "http://java.sun.com/j2ee/dtds/web-app_2.2.dtd">
@@ -10,19 +9,39 @@
       LdapClient
     </servlet-name>
     <servlet-class>
-      ldap.LdapClient
+      org.wings.session.WingServlet
     </servlet-class>
     <init-param>
-      <param-name>ldap.server.host</param-name>
-      <param-value>localhost:389</param-value>
+      <param-name>wings.mainclass</param-name>
+      <param-value>ldap.LdapClient</param-value>
     </init-param>
     <init-param>
-      <param-name>ldap.server.basedn</param-name>
-      <param-value>dc=engels, dc=de</param-value>
+      <param-name>wings.lookandfeel.factory</param-name>
+      <param-value>org.wings.plaf.LookAndFeelFactory$Default</param-value>
     </init-param>
     <init-param>
-      <param-name>ldap.server.binddn</param-name>
-      <param-value>cn=Manager, dc=engels, dc=de</param-value>
+      <param-name>wings.lookandfeel.default</param-name>
+      <param-value>/css1.jar</param-value>
+    </init-param>
+    <init-param>
+      <param-name>java.naming.factory.initial</param-name>
+      <param-value>com.sun.jndi.ldap.LdapCtxFactory</param-value>
+    </init-param>
+    <init-param>
+      <param-name>java.naming.provider.url</param-name>
+      <param-value>ldap://alladin:389</param-value>
+    </init-param>
+    <init-param>
+      <param-name>java.naming.provider.basedn</param-name>
+      <param-value>dc=mercatis,dc=de</param-value>
+    </init-param>
+    <init-param>
+      <param-name>java.naming.security.principal</param-name>
+      <param-value>cn=manager,dc=mercatis,dc=de</param-value>
+    </init-param>
+    <init-param>
+      <param-name>java.naming.security.credentials</param-name>
+      <param-value>secret</param-value>
     </init-param>
   </servlet>
 
@@ -31,19 +50,31 @@
       LdapBrowser
     </servlet-name>
     <servlet-class>
-      ldap.LdapBrowser
+      org.wings.session.WingServlet
     </servlet-class>
     <init-param>
+      <param-name>wings.mainclass</param-name>
+      <param-value>ldap.LdapBrowser</param-value>
+    </init-param>
+    <init-param>
+      <param-name>wings.lookandfeel.deploy</param-name>
+      <param-value>/css1.jar</param-value>
+    </init-param>
+    <init-param>
+      <param-name>wings.lookandfeel.name</param-name>
+      <param-value>xhtml/css1</param-value>
+    </init-param>
+    <init-param>
       <param-name>ldap.server.host</param-name>
-      <param-value>192.168.10.21:389</param-value>
+      <param-value>alladin:389</param-value>
     </init-param>
     <init-param>
       <param-name>ldap.server.basedn</param-name>
-      <param-value>dc=engels, dc=de</param-value>
+      <param-value>ou=users,dc=mercatis,dc=de</param-value>
     </init-param>
     <init-param>
       <param-name>ldap.server.binddn</param-name>
-      <param-value>cn=admin, dc=engels, dc=de</param-value>
+      <param-value>cn=manager,dc=mercatis,dc=de</param-value>
     </init-param>
     <init-param>
       <param-name>ldap.server.password</param-name>
@@ -59,19 +90,19 @@
     </init-param>
     <init-param>
       <param-name>overview.attributes</param-name>
-      <param-value>cn,mail,telephoneNumber</param-value>
+      <param-value>cn,sn,mail,telephoneNumber</param-value>
     </init-param>
     <init-param>
       <param-name>overview.labels</param-name>
-      <param-value>Name,EMail,Telephone</param-value>
+      <param-value>Name,Vorname,mail,erreichbar unter</param-value>
     </init-param>
     <init-param>
       <param-name>detailview.attributes</param-name>
-      <param-value>title,cn,mail,telephoneNumber,l,jpegPhoto</param-value>
+      <param-value>cn,sn,uid,mail,labeledURI,telephoneNumber,Geburtsjahr,Taetigkeitsbereiche,Zusatzausbildungen,BeruflicherWerdegang,Seit,Teamzugehoerigkeit,jpegPhoto</param-value>
     </init-param>
     <init-param>
       <param-name>detailview.labels</param-name>
-      <param-value>Title,Name,EMail,Telephone,Location,Photo</param-value>
+      <param-value>Vorname,Name,UID,EMail,WWW,Telefon,Geburtsjahr,Tätigkeitsbereiche,Zusatzausbildungen,BeruflicherWerdegang,Seit,Teamzugehoerigkeit,Foto</param-value>
     </init-param>
   </servlet>
 
@@ -95,3 +126,9 @@
     </url-pattern>
   </servlet-mapping>
 </web-app>
+
+
+
+
+
+

@@ -15,21 +15,24 @@
 package org.wings;
 
 import java.awt.Color;
-import java.awt.event.ActionListener;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.EventObject;
-import java.util.HashMap;
+import java.util.*;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.event.*;
 import javax.swing.table.TableModel;
-import javax.swing.table.TableModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.DefaultListSelectionModel;
 
-import org.wings.plaf.*;
-import org.wings.io.Device;
+import org.wings.table.*;
 import org.wings.externalizer.ExternalizeManager;
+import org.wings.plaf.*;
+import org.wings.style.*;
 
 
 /**
@@ -40,27 +43,43 @@ import org.wings.externalizer.ExternalizeManager;
  * @version $Revision$
  */
 public class STable
-    extends SBaseTable
-    implements ActionListener, CellEditorListener, SGetListener
+    extends SComponent
+    implements TableModelListener, Scrollable, CellEditorListener, LowLevelEventListener
 {
     /**
      * @see #getCGClassID
      */
     private static final String cgClassID = "TableCG";
 
-    protected int selectionMode = SConstants.NO_SELECTION;
+    /**
+     * The table model.
+     */
+    protected TableModel model = null;
+
+    /**
+     * The selection model.
+     */
+    protected SListSelectionModel selectionModel;
 
     /**
      * TODO: documentation
      */
-    protected EventListenerList listenerList = new EventListenerList();
-
-    protected Selectable[] selects = null;
+    protected final EventListenerList listenerList = new EventListenerList();
 
     /**
-     * TODO: documentation
+     * The default renderer is used if no other renderer is set for the
+     * content of a cell.
      */
-    protected SButtonGroup selectGroup = null;
+    protected STableCellRenderer defaultRenderer;
+
+    /** The header renderer is used for the header line */
+    protected STableCellRenderer headerRenderer;
+
+    /**
+     * The renderer for the different classes of cell content. The class is
+     * the key, the renderer the value.
+     */
+    protected final HashMap renderer = new HashMap();
 
     /** If editing, Component that is handling the editing. */
     transient protected SComponent editorComp;
@@ -80,25 +99,67 @@ public class STable
     /**
      * TODO: documentation
      */
-    protected HashMap editors = new HashMap();
+    protected final HashMap editors = new HashMap();
 
     /** Icon used for buttons that start editing in a cell. */
-    transient protected Icon editIcon = null;
+    transient protected SIcon editIcon;
+
+
+    /** The style of selected cells */
+    protected Style selectionStyle;
+
+    /** The dynamic attributes of selected cells */
+    protected AttributeSet selectionAttributes = new SimpleAttributeSet();
+
+    /**
+     * The header is not (yet) implemented like in Swing. But maybe someday.
+     * So you can disable it if you like.
+     */
+    protected boolean headerVisible = true;
+
+    /** The style of header cells */
+    protected Style headerStyle;
+
+    /** The dynamic attributes of header cells */
+    protected AttributeSet headerAttributes = new SimpleAttributeSet();
 
     /**
      * TODO: documentation
      */
-    protected Color selForeground = null;
+    protected boolean showHorizontalLines = false;
 
     /**
      * TODO: documentation
      */
-    protected Color selBackground = null;
-    
+    protected boolean showVerticalLines = false;
+
     /**
-      * Show/hide selectables. Default is "show".
-      */
-    protected boolean showSelectables = true;
+     * TODO: documentation
+     */
+    protected SDimension intercellSpacing;
+
+    /**
+     * TODO: documentation
+     */
+    protected SDimension intercellPadding = new SDimension("1", "1");
+
+    /**
+     * A special cell renderer, that displays the control used to select
+     * a table row; ususally, this would be some checkbox. The plaf is the
+     * last instance to decide this.
+     */
+    protected STableCellRenderer rowSelectionRenderer = null;
+
+    /**
+     * the column where the row selection element should be rendered. If
+     * negativ, no selection element is rendered.
+     */
+    protected int rowSelectionColumn = Integer.MAX_VALUE;
+
+    /**
+     * TODO: documentation
+     */
+    protected Rectangle viewport = null;
 
     /**
      * TODO: documentation
@@ -106,9 +167,9 @@ public class STable
      * @param tm
      */
     public STable(TableModel tm){
-        super(tm);
+        setModel(tm);
+        setSelectionModel(new SDefaultListSelectionModel());
         createDefaultEditors();
-        createDefaultIcons();
     }
 
     /**
@@ -117,173 +178,259 @@ public class STable
      * @param tm
      */
     public void setModel(TableModel tm) {
-        super.setModel(tm);
-        initSelectables();
+        if (model != null)
+            model.removeTableModelListener(this);
+
+        TableModel oldModel = model;
+        model = tm;
+        if (model == null)
+            model = new DefaultTableModel();
+
+        model.addTableModelListener(this);
+
+        if ((model == null && oldModel != null) ||
+            model != null && !model.equals(oldModel))
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
      * TODO: documentation
      *
-     */
-    protected void initSelectables() {
-        if (getSelectionMode() != SConstants.NO_SELECTION) {
-            if (selectGroup == null)
-                selectGroup = new SButtonGroup();
-            else
-                selectGroup.removeAll();
-
-            if (selects != null) {
-                for (int i=0; i < selects.length; i++)
-                    selects[i].setSelected(false);
-
-                if (selects.length<getRowCount()) {
-                    addSelectables(selects.length, getRowCount()-1);
-                }
-                else if (selects.length>getRowCount()) {
-                    deleteSelectables(getRowCount(), selects.length-1);
-                }
-            }
-            else {
-                selects = new Selectable[model.getRowCount()];
-                for (int i=0; i<model.getRowCount(); i++)
-                    selects[i] = generateSelectable(i);
-            }
-        }
-    }
-
-    /**
-     * TODO: documentation
-     *
-     */
-    public void checkSelectables() {
-        if (selects == null || getRowCount() != selects.length) {
-            // System.err.println("checkSelectables() wird tatsächlich gebraucht !!!");
-            initSelectables();
-        }
-    }
-
-	/**
-      * Adds the row from <i>index0</i> to <i>index0</i> inclusive to the current selection.
-      */
-	public void addRowSelectionInterval(int index0, int index1)
-     {
-     	int smode = getSelectionMode();
-     	if ( selects == null || smode == SConstants.NO_SELECTION ) return;
-        
-        if ( index0 > index1 )
-         {
-			int t = index0;
-            index0 = index1;
-            index1 = t;
-         }
-        
-        if ( smode == SConstants.SINGLE_SELECTION )
-         {
-         	clearSelection();
-			selects[ index0 ].setSelected( true );
-            fireSelectionValueChanged( index0 );
-            return;
-         }
-
-		if ( smode == SConstants.MULTIPLE_SELECTION )
-         {
-         	for ( ; index0 <= index1; index0++ )
-				selects[ index0 ].setSelected( true );
-			fireSelectionValueChanged( index0 );
-         }
-
-		return;
-	 }
-
-    /**
-     * TODO: documentation
-     *
-     * @param row
      * @return
      */
-    protected Selectable generateSelectable(int row) {
-        SCheckBox tmp = null;
-        if (getSelectionMode() == SConstants.SINGLE_SELECTION) {
-            tmp = new SRadioButton();
-            selectGroup.add(tmp);
-        }
-        else {
-            tmp = new SCheckBox();
-        }
-        tmp.setParent(getParent());
-
-        // hiermit werden ListSelectionEvents getriggert
-        tmp.addActionListener(this);
-        return tmp;
+    public TableModel getModel() {
+        return model;
     }
 
     /**
      * TODO: documentation
      *
-     * @param sel
+     * @return
      */
-    protected void deactivateSelectable(Selectable sel) {
-        if (sel != null) {
-            sel.setParent(null);
-            sel.removeActionListener(this);
-        }
+    public int getColumnCount() {
+        return model.getColumnCount();
     }
 
+    /**
+     * TODO: documentation
+     *
+     * @param col
+     * @return
+     */
+    public String getColumnName(int col) {
+        return model.getColumnName(col);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param col
+     * @return
+     */
+    public Class getColumnClass(int col) {
+        return model.getColumnClass(col);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public int getRowCount() {
+        return model.getRowCount();
+    }
+
+    public Object getValueAt(int row, int column) {
+        return model.getValueAt(row, column);
+    }
+
+    public void setValueAt(Object v, int row, int column) {
+        model.setValueAt(v, row, column);
+    }
+
+    /**
+     * Adds the row from <i>index0</i> to <i>index0</i> inclusive to the current selection.
+     */
+    public void addRowSelectionInterval(int index0, int index1)
+    {
+        selectionModel.addSelectionInterval(index0, index1);
+    }
 
     public void setParent(SContainer p) {
         super.setParent(p);
 
+        if (getCellRendererPane() != null)
+            getCellRendererPane().setParent(p);
+
         if (editorComp != null)
             editorComp.setParent(p);
-
-        if (selects != null)
-            for (int i=0; i<selects.length; i++)
-                selects[i].setParent(p);
     }
 
-	/**
-      * Show selectables (SRadioButton's) or not.
-      * This is usefull, if we don't want to realize selection 
-      * via radiobuttons (f.e. with {@link org.wings.SButton} in 
-      * table cells).
-      * @param show 
-      *		<li><code>true</code> show them, if selection mode do not equals <code>NO_SELECTION</code>
-      *		<li><code>false</code> hide them at all
-      * @see #getShowSelectables()
-      */
-	public void setShowSelectables( boolean show )
-     {
-		showSelectables = show;
-     }
+    protected void setParentFrame(SFrame f) {
+        super.setParentFrame(f);
+        if (getCellRendererPane() != null)
+            getCellRendererPane().setParentFrame(f);
+    }
 
-	/**
-      * Get display mode of selectables.
-      * @see #setShowSelectables(boolean)
-      */
-	public boolean getShowSelectables( )
-     {
-		return showSelectables;
-     }
+    public void processLowLevelEvent(String action, String[] values) {
+        // is it for me ?
+        if ( !action.startsWith(getLowLevelEventId()) ) { 
+            return; 
+        }
 
-    public void getPerformed(String action, String value) {
-        int row = new Integer(value.substring(0, value.indexOf(':'))).intValue();
-        int col = new Integer(value.substring(value.indexOf(':') + 1)).intValue();
-        editCellAt(row, col, null);
+        // delay events...
+        getSelectionModel().setDelayEvents(true);
+        getSelectionModel().setValueIsAdjusting(true);
+
+        for ( int i=0; i<values.length; i++ ) {
+            String value = values[i];
+            
+            if ( value.length()>1 ) {
+                
+                char modus = value.charAt(0);
+                value = value.substring(1);
+                
+                int colonIndex = value.indexOf(':');
+                if ( colonIndex<0 )
+                    return;
+                
+                try {
+                    int row = Integer.parseInt(value.substring(0, colonIndex));
+                    int col = Integer.parseInt(value.substring(colonIndex + 1));
+                    
+                    // editor event
+                    switch ( modus ) {
+                    case 'e':
+                        editCellAt(row, col, null);
+                        break;
+                    case 't':
+                        if ( getSelectionModel().isSelectedIndex(row) ) 
+                            getSelectionModel().removeSelectionInterval(row, row);
+                        else
+                            getSelectionModel().addSelectionInterval(row, row);
+                        break;
+                    case 's':
+                        getSelectionModel().addSelectionInterval(row, row);
+                        break;
+                    case 'd':
+                        getSelectionModel().removeSelectionInterval(row, row);
+                        break;
+                    }
+                } catch ( NumberFormatException ex ) {
+                    // hier loggen...
+                    ex.printStackTrace();
+                }
+            }
+        }
+ 
+        getSelectionModel().setValueIsAdjusting(false);
+        getSelectionModel().setDelayEvents(false);
+        SForm.addArmedComponent(this);
+
+    }
+
+    private SCellRendererPane cellRendererPane = new SCellRendererPane();
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public SCellRendererPane getCellRendererPane() {
+        return cellRendererPane;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param r
+     */
+    public void setDefaultRenderer(STableCellRenderer r) {
+        defaultRenderer = r;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public STableCellRenderer getDefaultRenderer() {
+        return defaultRenderer;
+    }
+
+    public void setDefaultRenderer(Class columnClass, STableCellRenderer r) {
+        renderer.remove(columnClass);
+        if (renderer != null)
+            renderer.put(columnClass, r);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param columnClass
+     * @return
+     */
+    public STableCellRenderer getDefaultRenderer(Class columnClass) {
+        if (columnClass == null) {
+            return defaultRenderer;
+        } else {
+            Object r = renderer.get(columnClass);
+            if (r != null) {
+                return (STableCellRenderer)r;
+            } else {
+                return getDefaultRenderer(columnClass.getSuperclass());
+            }
+        }
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param r
+     */
+    public void setHeaderRenderer(STableCellRenderer r) {
+        headerRenderer = r;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public STableCellRenderer getHeaderRenderer() {
+        return headerRenderer;
     }
 
     public STableCellRenderer getCellRenderer(int row, int column) {
-        if (column >= super.getColumnCount())
-            return defaultRenderer;
-        return super.getCellRenderer(row, column);
+        return getDefaultRenderer(getColumnClass(column));
     }
 
     public SComponent prepareRenderer(STableCellRenderer r, int row, int col) {
-        if (col >= super.getColumnCount()
-            && getSelectionMode() != SConstants.NO_SELECTION) {
-            return (SComponent)selects[row];
-        }
-        else
-            return super.prepareRenderer(r, row, col);
+        return r.getTableCellRendererComponent(this,
+                                               model.getValueAt(row,col),
+                                               isRowSelected(row),
+                                               row, col);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param col
+     * @return
+     */
+    public SComponent prepareHeaderRenderer(int col) {
+        return headerRenderer.getTableCellRendererComponent(this,
+                                                            model.getColumnName(col),
+                                                            false,
+                                                            -1, col);
+    }
+
+    public void setRowSelectionRenderer(STableCellRenderer r) {
+        rowSelectionRenderer = r;
+    }
+
+    public STableCellRenderer getRowSelectionRenderer() {
+        return rowSelectionRenderer;
     }
 
     /**
@@ -411,7 +558,7 @@ public class STable
      * @see #setValueAt
      */
     public boolean isCellEditable(int row, int col) {
-        if (col >= super.getColumnCount() || row == -1)
+        if (col >= getColumnCount() || row == -1)
             return false;
         else
             return getModel().isCellEditable(row, col);
@@ -488,7 +635,7 @@ public class STable
         int oldEditingColumn = editingColumn;
         editingColumn = aColumn;
         if (editingColumn != oldEditingColumn)
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -500,7 +647,7 @@ public class STable
         int oldEditingRow = editingRow;
         editingRow = aRow;
         if (editingRow != oldEditingRow)
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -570,7 +717,7 @@ public class STable
             Object value = editor.getCellEditorValue();
             setValueAt(value, editingRow, editingColumn);
             removeEditor();
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
         }
     }
 
@@ -582,14 +729,14 @@ public class STable
      */
     public void editingCanceled(ChangeEvent e) {
         removeEditor();
-        reload();
+        reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
      * Creates default cell editors for Objects, numbers, and boolean values.
      */
     protected void createDefaultEditors() {
-        editors = new HashMap();
+        editors.clear();
 
         // Objects
         STextField textField = new STextField();
@@ -613,13 +760,29 @@ public class STable
      *
      * @return
      */
-    public int getColumnCount() {
-        if (getSelectionMode() != SConstants.NO_SELECTION && showSelectables ) {
-            return super.getColumnCount()+1;
+    public SListSelectionModel getSelectionModel() {
+        return selectionModel;
+    }
+
+    /**
+     * Sets the row selection model for this table to <code>model</code>.
+     *
+     * @param   model        the new selection model
+     * @exception IllegalArgumentException    if <code>model</code> 
+     *                                        is <code>null</code>
+     * @see     #getSelectionModel
+     */
+    public void setSelectionModel(SListSelectionModel model) {
+        if ( getSelectionModel()!=null ) {
+            removeSelectionListener(reloadOnSelectionChangeListener);
         }
-        else {
-            return super.getColumnCount();
+
+        if (model == null) {
+            throw new IllegalArgumentException("cannot set a null SListSelectionModel");
         }
+        selectionModel = model;
+
+        addSelectionListener(reloadOnSelectionChangeListener);
     }
 
     /**
@@ -628,14 +791,14 @@ public class STable
      * @return
      */
     public int getSelectedRowCount() {
-        int count = 0;
-        if (selects != null && getSelectionMode() != SConstants.NO_SELECTION) {
-            for (int i=0; i<selects.length; i++) {
-                if (selects[i].isSelected())
-                    count++;
-            }
+        int result = 0;
+        for ( int i=getSelectionModel().getMinSelectionIndex(); 
+              i<=getSelectionModel().getMaxSelectionIndex(); i++ ) {
+            if ( getSelectionModel().isSelectedIndex(i) )
+                result++;
         }
-        return count;
+
+        return result;
     }
 
     /**
@@ -644,35 +807,27 @@ public class STable
      * @return
      */
     public int getSelectedRow() {
-        if (selects != null && getSelectionMode() != SConstants.NO_SELECTION) {
-            for (int i=0; i<selects.length; i++) {
-                if (selects[i].isSelected())
-                    return i;
-            }
-        }
-        return -1;
+        return getSelectionModel().getMinSelectionIndex();
     }
 
     public int[] getSelectedRows() {
-        int[] erg = new int[getSelectedRowCount()];
-        if (selects != null && getSelectionMode() != SConstants.NO_SELECTION) {
-            int index = 0;
-            for (int i=0; i<selects.length; i++) {
-                if (selects[i].isSelected())
-                    erg[index++]=i;
-            }
+        int[] result = new int[getSelectedRowCount()];
+
+        int index = 0;
+        for ( int i=getSelectionModel().getMinSelectionIndex(); 
+              i<=getSelectionModel().getMaxSelectionIndex(); i++ ) {
+            if ( getSelectionModel().isSelectedIndex(i) )
+                result[index++] = i;
         }
-        return erg;
+
+        return result;
     }
 
     /**
      * Deselects all selected columns and rows.
      */
     public void clearSelection() {
-        if (selects != null) {
-            for (int i=0; i<selects.length; i++)
-                selects[i].setSelected(false);
-        }
+        getSelectionModel().clearSelection();
     }
 
 
@@ -683,32 +838,40 @@ public class STable
      * @return
      */
     public boolean isRowSelected(int row) {
-        return getSelectionMode() != SConstants.NO_SELECTION &&
-            selects != null && selects[row] != null &&
-            selects[row].isSelected();
+        return getSelectionModel().isSelectedIndex(row);
     }
 
     /**
      * Sets the selection mode. Use one of the following values:
      * <UL>
      * <LI> {@link SConstants#NO_SELECTION}
-     * <LI> {@link SConstants#SINGLE_SELECTION}
-     * <LI> {@link SConstants#MULTIPLE_SELECTION}
+     * <LI> {@link ListSelectionModel#SINGLE_SELECTION} or 
+     *      {@link SConstants#SINGLE_SELECTION}
+     * <LI> {@link ListSelectionModel#SINGLE_INTERVAL_SELECTION} or 
+     *      {@link SConstants#SINGLE_INTERVAL_SELECTION}
+     * <LI> {@link ListSelectionModel#MULTIPLE_INTERVAL_SELECTION} or 
+     *      {@link SConstants#MULTIPLE_SELECTION}
      * </UL>
      */
     public void setSelectionMode(int s) {
-        clearSelection();
-        selectionMode = s;
-        initSelectables();
+        getSelectionModel().setSelectionMode(s);
     }
 
     /**
      * TODO: documentation
-     *
      * @return
+     * <UL>
+     * <LI> {@link SConstants#NO_SELECTION}
+     * <LI> {@link ListSelectionModel#SINGLE_SELECTION} or 
+     *      {@link SConstants#SINGLE_SELECTION}
+     * <LI> {@link ListSelectionModel#SINGLE_INTERVAL_SELECTION} or 
+     *      {@link SConstants#SINGLE_INTERVAL_SELECTION}
+     * <LI> {@link ListSelectionModel#MULTIPLE_INTERVAL_SELECTION} or 
+     *      {@link SConstants#MULTIPLE_SELECTION}
+     * </UL>
      */
     public int getSelectionMode() {
-        return selectionMode;
+        return getSelectionModel().getSelectionMode();
     }
 
     /**
@@ -717,7 +880,7 @@ public class STable
      * @param listener
      */
     public void addSelectionListener(ListSelectionListener listener) {
-        listenerList.add(ListSelectionListener.class, listener);
+        getSelectionModel().addListSelectionListener(listener);
     }
 
     /**
@@ -726,106 +889,16 @@ public class STable
      * @param listener
      */
     public void removeSelectionListener(ListSelectionListener listener) {
-        listenerList.remove(ListSelectionListener.class, listener);
+        getSelectionModel().removeListSelectionListener(listener);
     }
 
-    /**
-     * Fire a SelectionEvent at each registered listener.
-     */
-    protected void fireSelectionValueChanged(int index) {
-        ListSelectionEvent e = new ListSelectionEvent(this, index, index, false);
-        // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i] == ListSelectionListener.class) {
-                ((ListSelectionListener)listeners[i+1]).valueChanged(e);
-            }
-        }
-        reload();
+    public void fireIntermediateEvents() {
+        getSelectionModel().fireDelayedIntermediateEvents();
     }
 
-
-    /*
-     * Hier wird der SelectionPerformed Event gefeuert.
-     */
-    /**
-     * TODO: documentation
-     *
-     * @param e
-     */
-    public void actionPerformed(ActionEvent e) {
-        for (int i=0; i<getRowCount(); i++) {
-            if (selects[i] == e.getSource()) {
-                fireSelectionValueChanged(i);
-                return;
-            }
-        }
-    }
-
-    /*
-     * Fuegt eine Menge neuer Selectierbare Komponenten hinzu. Diese
-     * Methode wird aufgerufen, wenn im TableModel Daten(Zeilen)
-     * eingefuegt werden. Die Methode {@link #generateSelectable} wird
-     * benutzt um Selectables zu erzeugen.
-     */
-    /**
-     * TODO: documentation
-     */
-    protected final void addSelectables(int firstrow, int lastrow) {
-        if (getSelectionMode() != SConstants.NO_SELECTION) {
-            // System.out.println("add " + firstrow + " : " + lastrow);
-
-            firstrow = Math.max(firstrow, 0);
-            lastrow = Math.min(getRowCount(), lastrow);
-
-            Selectable[] newselects = new Selectable[(lastrow+1)-firstrow];
-            for (int i=0; i<=lastrow-firstrow; i++) {
-                // System.out.println("generate select " + (firstrow+i));
-                newselects[i] = generateSelectable(firstrow+i);
-            }
-
-            Selectable[] oldselects = selects;
-
-            selects = new Selectable[newselects.length+oldselects.length];
-
-            System.arraycopy(oldselects, 0, selects, 0, firstrow);
-            System.arraycopy(newselects, 0, selects, firstrow, newselects.length);
-            System.arraycopy(oldselects, firstrow, selects,
-                             firstrow+newselects.length,
-                             oldselects.length-firstrow);
-
-            // System.out.println(" Prior " + oldselects.length +
-            //                    " now Only " + selects.length + " selects");
-        }
-    }
-
-    /**
-     * TODO: documentation
-     */
-    protected final void deleteSelectables(int firstrow, int lastrow) {
-        if (getSelectionMode() != SConstants.NO_SELECTION) {
-            // System.out.println("delete " + firstrow + " : " +lastrow);
-            Selectable[] oldselects = selects;
-
-            firstrow = Math.max(firstrow, 0);
-            lastrow = Math.min(selects.length-1, lastrow);
-
-            selects = new Selectable[selects.length-(lastrow+1-firstrow)];
-
-            System.arraycopy(oldselects, 0, selects, 0, firstrow);
-            System.arraycopy(oldselects, lastrow+1, selects, firstrow,
-                             oldselects.length-(lastrow+1));
-
-            // die entfernten muessen natuerlich deactiviert werden.
-            for (int i=firstrow; i<=lastrow; i++) {
-                // System.out.println("deactivate select " + i);
-                deactivateSelectable(oldselects[i]);
-            }
-            // System.out.println(" Prior " + oldselects.length +
-            //                    " now Only " + selects.length + " selects");
-        }
+    public void fireFinalEvents() {
+        // fire selection events...
+        getSelectionModel().fireDelayedFinalEvents();
     }
 
     /**
@@ -837,74 +910,121 @@ public class STable
         // kill active editors
         editingCanceled(null);
 
-        // this could be null !!!
-        if ( e!=null ) {
+        if (e == null || e.getFirstRow() == TableModelEvent.HEADER_ROW) {
+            // The whole thing changed
+            clearSelection();
+        } else {
             switch ( e.getType() ) {
             case TableModelEvent.INSERT:
                 if (e.getFirstRow() >= 0)
-                    addSelectables(e.getFirstRow(), e.getLastRow());
+                    getSelectionModel().insertIndexInterval(e.getFirstRow(),
+                                                            e.getLastRow(), true);
                 break;
                 
             case TableModelEvent.DELETE:
                 if (e.getFirstRow() >= 0)
-                    deleteSelectables(e.getFirstRow(), e.getLastRow());
-                break;
-                
-            case TableModelEvent.UPDATE:
-                // Falls sich die Daten geaendert haben, sonst sind keine
-                // Aenderungen noetig.
-                if ( selects != null && 
-                    ( e.getFirstRow() <= 0 ||
-                      e.getLastRow()>selects.length ) )
-                    initSelectables();
+                    getSelectionModel().removeIndexInterval(e.getFirstRow(),
+                                                            e.getLastRow());
                 break;
             }
-        } else {
-            initSelectables();
         }
-        reload();
+        reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
      * Sets the icon used for the buttons that start editing in a cell.
      */
-    public void setEditIcon(Icon newIcon) {
-        System.err.println("STable.setEditIcon(" + newIcon + ")");
+    public void setEditIcon(SIcon newIcon) {
         editIcon = newIcon;
     }
 
     /**
      * Returns the icon used for the buttons that start editing in a cell.
      */
-    public Icon getEditIcon() {
+    public SIcon getEditIcon() {
         return editIcon;
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param c
+     * @param style the style of selected cells
      */
-    public void setSelectionBackground(Color c) {
-        selBackground=c;
+    public void setSelectionStyle(Style selectionStyle) {
+        this.selectionStyle = selectionStyle;
     }
 
     /**
-     * TODO: documentation
-     *
-     * @return
+     * @return the style of selected cells.
+     */
+    public Style getSelectionStyle() { return selectionStyle; }
+
+
+    /**
+     * Set the selectionAttributes.
+     * @param selectionAttributes the selectionAttributes
+     */
+    public void setSelectionAttributes(AttributeSet selectionAttributes) {
+        if (selectionAttributes == null)
+            throw new IllegalArgumentException("null not allowed");
+
+        if (!this.selectionAttributes.equals(selectionAttributes)) {
+            this.selectionAttributes = selectionAttributes;
+            reload(ReloadManager.RELOAD_STYLE);
+        }
+    }
+
+    /**
+     * @return the current selectionAttributes
+     */
+    public AttributeSet getSelectionAttributes() {
+        return selectionAttributes;
+    }
+
+    /**
+     * Set the background color.
+     * @param c the new background color
+     */
+    public void setSelectionBackground(Color color) {
+        boolean changed = selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, Style.BACKGROUND_COLOR));
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * Return the background color.
+     * @return the background color
      */
     public Color getSelectionBackground() {
-        return selBackground;
+        return CSSStyleSheet.getBackground(selectionAttributes);
+    }
+
+    /**
+     * Set the foreground color.
+     * @param color the foreground color of selected cells
+     */
+    public void setSelectionForeground(Color color) {
+        boolean changed = selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, Style.COLOR));
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * Return the foreground color.
+     * @return the foreground color
+     */
+    public Color getSelectionForeground() {
+        return CSSStyleSheet.getForeground(selectionAttributes);
     }
 
     /**
      * TODO: documentation
      *
-     * @param c
+     * @param hv
      */
-    public void setSelectionForeground(Color c) {
-        selForeground=c;
+    public void setHeaderVisible(boolean hv) {
+        boolean oldHeaderVisible = headerVisible;
+        headerVisible = hv;
+        if (oldHeaderVisible != headerVisible)
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -912,27 +1032,187 @@ public class STable
      *
      * @return
      */
-    public Color getSelectionForeground() {
-        return selForeground;
+    public boolean isHeaderVisible() {
+        return headerVisible;
     }
 
     /**
      * TODO: documentation
      *
+     * @return
      */
-    protected void createDefaultIcons() {
-        setEditIcon(new ResourceImageIcon(STable.class, 
-                                          "/org/wings/icons/Pencil.gif"));
+    public void setHeaderStyle(Style style) {
+        this.headerStyle = style;
     }
 
     /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "TableCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
+     * TODO: documentation
      */
+    public Style getHeaderStyle() { return headerStyle; }
+
+    /**
+     * Set the headerAttributes.
+     * @param headerAttributes the headerAttributes
+     */
+    public void setHeaderAttributes(AttributeSet headerAttributes) {
+        if (headerAttributes == null)
+            throw new IllegalArgumentException("null not allowed");
+
+        if (!this.headerAttributes.equals(headerAttributes)) {
+            this.headerAttributes = headerAttributes;
+            reload(ReloadManager.RELOAD_STYLE);
+        }
+    }
+
+    /**
+     * @return the current headerAttributes
+     */
+    public AttributeSet getHeaderAttributes() {
+        return headerAttributes;
+    }
+
+    /**
+     * Set the background color.
+     * @param c the new background color
+     */
+    public void setHeaderBackground(Color color) {
+        boolean changed = headerAttributes.putAttributes(CSSStyleSheet.getAttributes(color, "background-color"));
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * Return the background color.
+     * @return the background color
+     */
+    public Color getHeaderBackground() {
+        return CSSStyleSheet.getBackground(headerAttributes);
+    }
+
+    /**
+     * Set the foreground color.
+     * @param c the new foreground color
+     */
+    public void setHeaderForeground(Color color) {
+        boolean changed = headerAttributes.putAttributes(CSSStyleSheet.getAttributes(color, "color"));
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * Return the foreground color.
+     * @return the foreground color
+     */
+    public Color getHeaderForeground() {
+        return CSSStyleSheet.getForeground(headerAttributes);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param b
+     */
+    public void setShowGrid(boolean b) {
+        setShowHorizontalLines(b);
+        setShowVerticalLines(b);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param b
+     */
+    public void setShowHorizontalLines(boolean b) {
+        boolean oldShowHorizontalLines = showHorizontalLines;
+        showHorizontalLines = b;
+        if (showHorizontalLines != oldShowHorizontalLines)
+            reload(ReloadManager.RELOAD_CODE);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public boolean getShowHorizontalLines() {
+        return showHorizontalLines;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param b
+     */
+    public void setShowVerticalLines(boolean b) {
+        boolean oldShowVerticalLines = showVerticalLines;
+        showVerticalLines = b;
+        if (showVerticalLines != oldShowVerticalLines)
+            reload(ReloadManager.RELOAD_CODE);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public boolean getShowVerticalLines() {
+        return showVerticalLines;
+    }
+
+    /*
+     * Implementiert das cellspacing Attribut des HTML Tables. Da dieses
+     * nur eindimensional ist, wird nur der width Wert der Dimension in
+     * den HTML Code uebernommen.
+     */
+    /**
+     * TODO: documentation
+     *
+     * @param d
+     */
+    public void setIntercellSpacing(SDimension d) {
+        SDimension oldIntercellSpacing = intercellSpacing;
+        intercellSpacing = d;
+        if ((intercellSpacing == null && oldIntercellSpacing != null) ||
+            intercellSpacing != null && !intercellSpacing.equals(oldIntercellSpacing))
+            reload(ReloadManager.RELOAD_CODE);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public SDimension getIntercellSpacing() {
+        return intercellSpacing;
+    }
+
+    /*
+     * Implementiert das cellpadding Attribut des HTML Tables. Da dieses
+     * nur eindimensional ist, wird nur der width Wert der Dimension in
+     * den HTML Code uebernommen.
+     */
+    /**
+     * TODO: documentation
+     *
+     * @param d
+     */
+    public void setIntercellPadding(SDimension d) {
+        SDimension oldIntercellPadding = intercellPadding;
+        intercellPadding = d;
+        if ((intercellPadding == null && oldIntercellPadding != null) ||
+            intercellPadding != null && !intercellPadding.equals(oldIntercellPadding))
+            reload(ReloadManager.RELOAD_CODE);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public SDimension getIntercellPadding() {
+        return intercellPadding;
+    }
+
     public String getCGClassID() {
         return cgClassID;
     }
@@ -940,11 +1220,101 @@ public class STable
     public void setCG(TableCG cg) {
         super.setCG(cg);
     }
+    
+    public String getEditParameter(int row, int col) {
+        return "e" + row + ":" + col;
+    }
+
+    public String getToggleSelectionParameter(int row, int col) {
+        return "t" + row + ":" + col;
+    }
+
+    public String getSelectionParameter(int row, int col) {
+        return "s" + row + ":" + col;
+    }
+
+    public String getDeselectionParameter(int row, int col) {
+        return "d" + row + ":" + col;
+    }
+
+    /**
+     * Set the column, after which the selection control should be
+     * located. The selection control usually is the checkbox that is
+     * displayed for the user to select the row. Note, that the plaf
+     * may choose to provide other means to make selection accessible
+     * to the user.
+     *
+     * @param column The column, after which the selection control
+     *               should be placed. If this is less than 1, then
+     *               the selection control is not displayed at all. If
+     *               you set this to <code>Integer.MAX_VALUE</code>, the
+     *               selection control is always displayed as last element
+     *               in the row.
+     */
+    public void setRowSelectionColumn(int column) {
+        rowSelectionColumn = column;
+    }
+
+    /**
+     * returns the selection control position.
+     * @see #setRowSelectionColumn(int)
+     */
+    public int getRowSelectionColumn() {
+        return rowSelectionColumn;
+    }
+
+    /**
+     * Returns the maximum size of this table.
+     *
+     * @return maximum size
+     */
+    public Rectangle getScrollableViewportSize() {
+        return new Rectangle(0, 0, getColumnCount(), getRowCount());
+    }
+
+    /*
+     * Setzt den anzuzeigenden Teil
+     */
+    /**
+     * TODO: documentation
+     *
+     * @param d
+     */
+    public void setViewportSize(Rectangle d) {
+        if ( isDifferent(viewport, d) ) {
+            viewport = d;
+            reload(ReloadManager.RELOAD_CODE);
+        }
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public Rectangle getViewportSize() {
+        return viewport;
+    }
+
+    public Dimension getPreferredExtent() {
+        return null;
+    }
+
+    /**
+     * if selection changes, we have to reload code...
+     */
+    protected final ListSelectionListener reloadOnSelectionChangeListener =
+        new ListSelectionListener() {
+                public void valueChanged(ListSelectionEvent e) {
+                    reload(ReloadManager.RELOAD_CODE);
+                }
+            };
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

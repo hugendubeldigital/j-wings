@@ -15,6 +15,7 @@
 package org.wings;
 
 import java.io.IOException;
+import java.util.logging.*;
 import javax.swing.UIManager;
 
 import org.wings.io.Device;
@@ -28,6 +29,7 @@ import org.wings.io.Device;
 public class SCellRendererPane
     extends SContainer
 {
+    private final static Logger logger = Logger.getLogger("org.wings");
     /**
      * Construct a CellRendererPane object.
      */
@@ -46,14 +48,14 @@ public class SCellRendererPane
     /**
      * If the specified component is already a child of this then we don't
      * bother doing anything - stacking order doesn't matter for cell
-     * renderer components (CellRendererPane doesn't paint anyway).<
+     * renderer components (CellRendererPane doesn't paint anyway).
      */
-    public SComponent addComponent(SComponent c, Object constraints) {
+    public SComponent addComponent(SComponent c, Object constraints, int index) {
         if ( c.getParent() == this ) {
             return null;
         }
         else {
-            return super.addComponent(c, constraints);
+            return super.addComponent(c, constraints, index);
         }
     }
 
@@ -66,10 +68,10 @@ public class SCellRendererPane
         throws IOException
     {
         if ( getParent() == null )
-            System.err.println("SCellRendererPane: parent == null!");
+            logger.warning("SCellRendererPane: parent == null!");
 
         if ( getParentFrame() == null )
-            System.err.println("SCellRendererPane: parentFrame == null!");
+            logger.warning("SCellRendererPane: parentFrame == null!");
 
         if ( c == null ) {
             return;
@@ -87,5 +89,6 @@ public class SCellRendererPane
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

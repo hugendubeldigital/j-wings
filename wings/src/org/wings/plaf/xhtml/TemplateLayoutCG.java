@@ -41,6 +41,8 @@ public class TemplateLayoutCG
         PageParser parser = PageParser.getInstance();
         parser.addTagHandler(STemplateLayout.COMPONENT_TAG,
                              RangeTagHandler.class);
+        parser.addTagHandler("WINGSOBJECT",
+                             RangeTagHandler.class);
         parser.addTagHandler("TEXTAREA", RangeTagHandler.class);
         parser.addTagHandler("SELECT",   RangeTagHandler.class);
         parser.addTagHandler("INPUT",    SimpleTagHandler.class);
@@ -57,21 +59,21 @@ public class TemplateLayoutCG
         SComponent container = ( SComponent ) layout.getContainer();
 
         if(source == null) {
-            device.append("Unable to open template-file <b>'");
-            device.append(source);
-            device.append("'</b>");
+            device.print("Unable to open template-file <b>'");
+            device.print(source);
+            device.print("'</b>");
         }
 	else {
             if (Utils.hasSpanAttributes(container)) {
-                device.append("<span style=\"");
+                device.print("<span style=\"");
                 Utils.writeSpanAttributes( device, container );
-            	device.append("\">");
+            	device.print("\">");
             }
 
             PageParser.getInstance().process(source, new TemplateParseContext(device, layout));
 
             if ( Utils.hasSpanAttributes( container ) ) {
-                device.append("</span>");
+                device.print("</span>");
             }
         }
     }
@@ -94,5 +96,6 @@ public class TemplateLayoutCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

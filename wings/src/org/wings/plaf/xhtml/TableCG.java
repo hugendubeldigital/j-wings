@@ -18,17 +18,29 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 import javax.swing.Icon;
+import javax.swing.ListSelectionModel;
 
-import org.wings.*;
+import org.wings.*; 
+import org.wings.border.*;
+import org.wings.table.*;
 import org.wings.io.*;
 import org.wings.util.CGUtil;
+import org.wings.util.AnchorRenderStack;
 import org.wings.plaf.*;
 import org.wings.externalizer.ExternalizeManager;
 
 public class TableCG
-    extends org.wings.plaf.AbstractCG
+    extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.TableCG, SConstants
 {
+
+    protected static final SIcon EDIT_ICON = 
+        new ResourceImageIcon("org/wings/icons/Pencil.gif");
+
+    // this should somehow go into the plaf's properties.
+    protected static final STableCellRenderer DEFAULT_ROW_SELECTION_RENDERER = 
+        new SDefaultTableRowSelectionRenderer();
+
     protected static final byte LEFT   = 1;
     protected static final byte RIGHT  = 2;
     protected static final byte TOP    = 4;
@@ -53,6 +65,16 @@ public class TableCG
 
     private final static String propertyPrefix = "Table";
 
+    protected SIcon editIcon = EDIT_ICON;
+
+    public void setEditIcon(SIcon i) {
+        editIcon = i;
+    }
+
+    public SIcon getEditIcon() {
+        return editIcon;
+    }
+
     protected String getPropertyPrefix() {
         return propertyPrefix;
     }
@@ -70,77 +92,49 @@ public class TableCG
     public void writePrefix(Device d, STable table)
         throws IOException
     {
-        Insets borderLines = table.getBorderLines();
         boolean showHorizontalLines = table.getShowHorizontalLines();
         boolean showVerticalLines = table.getShowVerticalLines();
         SDimension intercellPadding = table.getIntercellPadding();
         SDimension intercellSpacing = table.getIntercellSpacing();
 
-        d.append("<table");
+        d.print("<table");
         CGUtil.writeSize(d, table);
 
         int thickness = 0;
-        if (borderLines != null) {
-            int lines
-                = ((borderLines.left   > 0) ? LEFT   : 0)
-                + ((borderLines.right  > 0) ? RIGHT  : 0)
-                + ((borderLines.top    > 0) ? TOP    : 0)
-                + ((borderLines.bottom > 0) ? BOTTOM : 0);
-
-            if (lines != 0) {
-                String border = (String)frameMap.get(new Byte((byte)lines));
-                if (border == null)
-                    border = "box";
-
-                d.append(" frame=\"")
-                    .append(border)
-                    .append("\"");
-
-                if (borderLines.top > 0)
-                    thickness = borderLines.top;
-                else if (borderLines.bottom > 0)
-                    thickness = borderLines.bottom;
-                else if (borderLines.left > 0)
-                    thickness = borderLines.left;
-                else
-                    thickness = borderLines.right;
-            }
-        }
-
-        if (thickness == 0 && showHorizontalLines || showVerticalLines)
+        if (showHorizontalLines || showVerticalLines)
             thickness = 1;
 
         if (showHorizontalLines && showVerticalLines)
-            d.append(" rules=\"all\"");
+            d.print(" rules=\"all\"");
         else if (showVerticalLines) 
-            d.append(" rules=\"cols\"");
+            d.print(" rules=\"cols\"");
         else if (showHorizontalLines)
-            d.append(" rules=\"rows\"");
+            d.print(" rules=\"rows\"");
         else
-            d.append(" rules=\"none\"");
+            d.print(" rules=\"none\"");
 
         if (thickness > 0)
-            d.append(" border=\"")
-                .append(thickness)
-                .append("\"");
+            d.print(" border=\"")
+                .print(thickness)
+                .print("\"");
 
         if (intercellSpacing != null && intercellSpacing.width != null)
-            d.append(" cellspacing=\"")
-                .append(intercellSpacing.width)
-                .append("\""); 
+            d.print(" cellspacing=\"")
+                .print(intercellSpacing.width)
+                .print("\""); 
 
         if (intercellPadding != null && intercellPadding.width != null)
-            d.append(" cellpadding=\"")
-                .append(intercellPadding.width)
-                .append("\""); 
+            d.print(" cellpadding=\"")
+                .print(intercellPadding.width)
+                .print("\""); 
 
-        d.append(">\n");
+        d.print(">\n");
     }
 
     public void writePostfix(Device d, STable table)
         throws IOException
     {
-        d.append("</table>\n");
+        d.print("</table>\n");
     }
 
     public void writeBody(Device d, STable table)
@@ -160,19 +154,51 @@ public class TableCG
 
         SCellRendererPane rendererPane = table.getCellRendererPane();
         if (table.isHeaderVisible()) {
-            d.append("<tr>\n");
+            d.print("<tr>\n");
+
+            boolean selectionWritten = table.getRowSelectionColumn()<0;
             for (int c = originCol; c < colCount; c++) {
+
+                if ( !selectionWritten && 
+                     c>=table.getRowSelectionColumn() ) {
+                    writeEmptyHeaderCell(table, d);
+                    selectionWritten = true;
+                }
+
                 writeHeaderCell(d, table, rendererPane, c);
             }
-            d.append("</tr>\n");
+            
+            if ( !selectionWritten ) {
+                writeEmptyHeaderCell(table, d);
+            }
+
+            d.print("</tr>\n");
         }
+
+
         for (int r = originRow; r < rowCount; r++) {
-            d.append("<tr>\n");
+            d.print("<tr>\n");
+
+            boolean selectionWritten = table.getRowSelectionColumn()<0;
+
             for (int c = originCol; c < colCount; c++) {
+
+                if ( !selectionWritten && 
+                     c>=table.getRowSelectionColumn() ) {
+                    writeRowSelection(d, table, rendererPane, r, c);
+                    selectionWritten = true;
+                }
+
                 writeCell(d, table, rendererPane, r, c);
             }
-            d.append("</tr>\n");
+
+            if ( !selectionWritten ) {
+                writeRowSelection(d, table, rendererPane, r, colCount);
+            }
+
+            d.print("</tr>\n");
         }
+
     }
 
     protected void writeCell(Device d, STable table, 
@@ -180,8 +206,6 @@ public class TableCG
                              int row, int col)
         throws IOException
     {
-        table.checkSelectables();
-
         SComponent comp = null;
         boolean isEditingCell = table.isEditing()
             && row == table.getEditingRow()
@@ -193,27 +217,140 @@ public class TableCG
             comp = table.prepareRenderer(table.getCellRenderer(row, col), 
                                          row, col);
 
-        d.append("<td");
-        Utils.appendTableCellAttributes(d, comp);
-        d.append(">");
+        d.print("<td");
+        Utils.printTableCellAttributes(d, comp);
+        d.print(">");
+
+        boolean pushedURL = false;
+        if ( !isEditingCell && table.isCellEditable(row, col) ) {
+            RequestURL editAddr = table.getRequestURL();
+            editAddr.addParameter(table.getLowLevelEventId(),
+                                  table.getEditParameter(row, col));
+            
+            if ( comp instanceof ClickableRenderComponent ) {
+                AnchorRenderStack.push(editAddr, null);
+                pushedURL = true;
+            } else {
+                d.print("<a href=\"").print(editAddr.toString()).
+                    print("\">");
+                Utils.printIcon(d, editIcon, null);
+                d.print("</a>&nbsp;");
+            }
+        }
 
         rendererPane.writeComponent(d, comp, table);
-        d.append("</td>");
+
+        if (pushedURL) {
+            AnchorRenderStack.pop();
+        }
+        d.print("</td>");
+    }
+
+    protected void writeDefaultFormRowSelection(Device d, STable table, 
+                                                SCellRendererPane rendererPane,
+                                                int row)
+        throws IOException
+    {
+
+        d.print("<td>");
+
+        d.print("<input type=\"hidden\"");
+        d.print(" name=\"").
+            print(table.encodeLowLevelEventId(table.getLowLevelEventId())).
+            print("\"").
+            print(" value=\"").print(table.getDeselectionParameter(row,-1)).print("\"");
+        d.print(">");
+
+
+        d.print("<input type=\"");
+
+        switch ( table.getSelectionMode() ) {
+        case ListSelectionModel.SINGLE_SELECTION:
+            d.print("radio");
+            break;
+        default:
+            d.print("checkbox");
+            break;
+        } 
+
+        d.print("\" ").
+            print("name=\"").
+            print(table.encodeLowLevelEventId(table.getLowLevelEventId())).
+            print("\"").
+            print("value=\"").print(table.getToggleSelectionParameter(row,-1)).print("\"");
+
+        if ( table.isRowSelected(row) )
+            d.print(" checked=\"checked\"");
+
+        d.print(">");
+        d.print("</td>");
+    }
+
+    protected void writeRowSelection(Device d, STable table, 
+                                     SCellRendererPane rendererPane,
+                                     int row, int col)
+        throws IOException
+    {
+        STableCellRenderer rowSelectionRenderer =
+            table.getRowSelectionRenderer();
+
+        if ( rowSelectionRenderer==null ) {
+            if ( table.getResidesInForm() ) {
+                writeDefaultFormRowSelection(d, table, rendererPane, row);
+                return;
+            }
+            rowSelectionRenderer = DEFAULT_ROW_SELECTION_RENDERER;
+        }
+
+        SComponent comp =  
+            rowSelectionRenderer.getTableCellRendererComponent(table,
+                                                               table.getToggleSelectionParameter(row, -1),
+                                                               table.isRowSelected(row),
+                                                               row, -1);
+        d.print("<td");
+        Utils.printTableCellAttributes(d, comp);
+        d.print(">");
+
+
+
+        RequestURL toggleSelectionAddr = table.getRequestURL();
+        toggleSelectionAddr.addParameter(table,
+                                         table.getToggleSelectionParameter(row,col));
+
+        if ( comp instanceof ClickableRenderComponent ) {
+            AnchorRenderStack.push(toggleSelectionAddr, null);
+        } else {
+            d.print("<a href=\"").
+                print(toggleSelectionAddr.toString()).print("\">");
+        }
+            
+        rendererPane.writeComponent(d, comp, table);
+
+        if ( comp instanceof ClickableRenderComponent ) {
+            AnchorRenderStack.pop();
+        } else {
+            d.print("</a>");
+        }
+
+        d.print("</td>");
     }
 
     protected void writeHeaderCell(Device d, STable table, 
                                    SCellRendererPane rendererPane, int col)
         throws IOException
     {
-        if (col >= table.getModel().getColumnCount()
-            && table.getSelectionMode() != SConstants.NO_SELECTION)
-            d.append("<th>&nbsp;</th>");
-        else {
-            SComponent comp = table.prepareHeaderRenderer(col);
-            d.append("<th>");
-            rendererPane.writeComponent(d, comp, table);
-            d.append("</th>");
-        }
+
+
+        SComponent comp = table.prepareHeaderRenderer(col);
+        d.print("<th>");
+        rendererPane.writeComponent(d, comp, table);
+        d.print("</th>");
+    }
+
+    protected void writeEmptyHeaderCell(STable table, Device d)
+        throws IOException
+    {
+        d.print("<th>&nbsp;</th>");
     }
 }
 
@@ -221,5 +358,6 @@ public class TableCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

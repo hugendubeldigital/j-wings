@@ -21,6 +21,7 @@ import java.util.*;
 import org.wings.io.Device;
 import org.wings.plaf.*;
 import org.wings.session.*;
+import org.wings.externalizer.ExternalizeManager;
 
 /**
  * TODO: documentation
@@ -63,7 +64,7 @@ public class SFrameSetLayout
     public void setColumns(String columns) {
 	this.columns = columns;
 	if (getContainer() != null)
-	    getContainer().reload();
+	    getContainer().reload(ReloadManager.RELOAD_CODE);
     }
 
     public String getColumns() { return columns; }
@@ -80,21 +81,16 @@ public class SFrameSetLayout
     public void setRows(String rows) {
 	this.rows = rows;
 	if (getContainer() != null)
-	    getContainer().reload();
+	    getContainer().reload(ReloadManager.RELOAD_CODE);
     }
 
     public String getRows() { return rows; }
 
-    public void addComponent(SComponent c, Object constraint) {
-        components.add(c);
+    public void addComponent(SComponent c, Object constraint, int index) {
+        components.add(index, c);
 	constraints.add(constraint);
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
     public void removeComponent(SComponent c) {
         if (c == null)
             return;
@@ -113,40 +109,38 @@ public class SFrameSetLayout
 	    String language = "en"; // TODO: ???
 	    String title = frameSet.getTitle();
 
-	    d.append("<?xml version=\"1.0\" encoding=\"");
-	    d.append(frameSet.getSession().getCharSet());
-	    d.append("\"?>\n");
-	    d.append("<!DOCTYPE html\n");
-	    d.append("   PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"\n");
-	    d.append("   \"DTD/xhtml1-frameset.dtd\">\n");
-	    d.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"");
-	    d.append(language);
-	    d.append("\" lang=\"");
-	    d.append(language);
-	    d.append("\">\n");
-	    d.append("<head>\n<title>");
-	    d.append(title);
-	    d.append("</title>\n");
-	    d.append("</head>\n");
-
-	    d.append("<frameset rows=\"*,10\" frameborder=\"0\" noresize=\"noresize\" scrolling=\"no\">\n");
+	    d.print("<?xml version=\"1.0\" encoding=\"");
+	    d.print(charSetFor(frameSet.getSession().getLocale()));
+	    d.print("\"?>\n");
+	    d.print("<!DOCTYPE html\n");
+	    d.print("   PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"\n");
+	    d.print("   \"DTD/xhtml1-frameset.dtd\">\n");
+	    d.print("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"");
+	    d.print(language);
+	    d.print("\" lang=\"");
+	    d.print(language);
+	    d.print("\">\n");
+	    d.print("<head>\n<title>");
+	    d.print(title);
+	    d.print("</title>\n");
+	    d.print("</head>\n");
 	}
 
-	d.append("<frameset");
+	d.print("<frameset");
 
 	if (columns != null && columns.length() > 0) {
-	    d.append(" cols=\"");
-	    d.append(columns);
-	    d.append("\"");
+	    d.print(" cols=\"");
+	    d.print(columns);
+	    d.print("\"");
 	}
 
 	if (rows != null && rows.length() > 0) {
-	    d.append(" rows=\"");
-	    d.append(rows);
-	    d.append("\"");
+	    d.print(" rows=\"");
+	    d.print(rows);
+	    d.print("\"");
 	}
 
-	d.append(">\n");
+	d.print(">\n");
 
 	Iterator iterator = components.iterator();
 	int i=0;
@@ -161,48 +155,43 @@ public class SFrameSetLayout
 	    i++;
 	}
 
-	d.append("</frameset>\n");
-
-	if (frameSet.getParent() == null) {
-	    frameSet.getSession().getReloadManager().clearDirtyComponents();
-	    writeFrame(d, (SFrame)frameSet.getSession().getReloadManager().getManagerComponent(), null);
-	    /*
-	    d.append("<frame name=\"")
-		.append(frameSet.getSession().getReloadManager().getTarget())
-		.append("\" />");
-	    */
-	    d.append("</frameset>\n");
-	}
+	d.print("</frameset>\n");
     }
 
     protected void writeFrame(Device d, SFrame frame, Properties properties)
 	throws IOException
     {
-	String src = getSession().getExternalizeManager()
-	    .externalize(frame.show(), "text/html");
-
-	d.append("<frame src=\"")
-	    .append(src)
-	    .append("\"");
-	d.append(" name=\"frame")
-	    .append(frame.getUnifiedIdString())
-	    .append("\"");
+	d.print("<frame src=\"");
+        d.print(frame.getDynamicResource(DynamicCodeResource.class).getURL());
+        d.print("\"");
+	d.print(" name=\"frame")
+	    .print(frame.getComponentId())
+	    .print("\"");
 
 	if (properties != null) {
 	    Iterator iterator = properties.entrySet().iterator();
 	    while (iterator.hasNext()) {
 		Map.Entry entry = (Map.Entry)iterator.next();
-		d.append(' ');
-		d.append((String)entry.getKey());
-		d.append("=\"");
-		d.append((String)entry.getValue());
-		d.append('"');
+		d.print(' ');
+		d.print((String)entry.getKey());
+		d.print("=\"");
+		d.print((String)entry.getValue());
+		d.print('"');
 	    }
 	}
-	d.append(" />\n");
+	d.print("/>\n");
     }
 
-    private Session session = null;
+    private String charSetFor(Locale locale) {
+        final String language = locale.getLanguage();
+
+        if(language.equals("pl"))
+            return "iso-8859-2";
+
+        return "iso-8859-1";
+    }
+
+    private transient Session session = null;
 
     protected Session getSession() {
 	if (session == null)
@@ -212,15 +201,15 @@ public class SFrameSetLayout
 
     public void updateCG() {}
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this layout.
-     *
-     * @return "BorderLayoutCG"
-     * @see SLayoutManager#getCGClassID
-     * @see org.wings.plaf.CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

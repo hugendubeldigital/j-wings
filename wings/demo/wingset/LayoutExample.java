@@ -33,11 +33,12 @@ public class LayoutExample
         add(createLayoutExample());
 
         add(new SSeparator());
-
+        /*
         SHRef href =  new SHRef("View Source Code");
         href.setReference("/demo/wingset/" +
                           getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
         add(href);
+        */
     }
 
     SPanel createLayoutExample() {
@@ -125,5 +126,6 @@ public class LayoutExample
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

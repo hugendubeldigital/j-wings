@@ -14,6 +14,7 @@
 
 package org.wings;
 
+import java.io.*;
 import org.wings.io.Device;
 
 /**
@@ -22,9 +23,11 @@ import org.wings.io.Device;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SFont implements SConstants
+public class SFont
+    implements SConstants, Serializable
+
 {
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     /**
      * TODO: documentation
@@ -126,81 +129,12 @@ public class SFont implements SConstants
         return size;
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendPrefix(Device s) {
-        switch ( type ) {
-        case BASEFONT:
-            s.append("<basefont");
-            break;
-
-        default:
-            s.append("<font");
-        }
-
-        if ( face!=null )
-            s.append(" face=\"").append(face).append("\"");
-
-        if ( size>Integer.MIN_VALUE ) {
-            s.append(" size=\"");
-            if (size>0)
-                s.append("+");
-            s.append(size);
-            s.append("\"");
-        }
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendBody(Device s) {
-        s.append(">");
-        switch ( style ) {
-        case ITALIC:
-            s.append("<i>");
-            break;
-
-        case BOLD:
-            s.append("<b>");
-            break;
-        }
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param s
-     */
-    public void appendPostfix(Device s) {
-        switch ( style ) {
-        case ITALIC:
-            s.append("</i>");
-            break;
-
-        case BOLD:
-            s.append("</b>");
-            break;
-        }
-
-        switch ( type ) {
-        case BASEFONT:
-            s.append("</basefont>");
-            break;
-
-        default:
-            s.append("</font>");
-        }
-    }
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

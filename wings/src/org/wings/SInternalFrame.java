@@ -16,8 +16,7 @@ package org.wings;
 
 import java.io.*;
 
-import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.EventListenerList;
 
 import org.wings.*;
 import org.wings.event.*;
@@ -31,8 +30,8 @@ import org.wings.plaf.*;
  * @version $Revision$
  */
 public class SInternalFrame
-    extends SContainer
-    implements SGetListener
+    extends SRootContainer
+    implements LowLevelEventListener
 {
     /**
      * @see #getCGClassID
@@ -46,13 +45,11 @@ public class SInternalFrame
     private boolean iconified = false;
     private boolean maximized = false;
     private boolean closed = false;
-    
-    private java.awt.Dimension normalsize = new java.awt.Dimension();
 
     /**
      * TODO: documentation
      */
-    protected Icon icon = null;
+    protected SIcon icon = null;
 
     /**
      * TODO: documentation
@@ -66,23 +63,17 @@ public class SInternalFrame
 
     /**
      * TODO: documentation
-     */
-    protected SContainer contentPane = new SContainer();
-
-    /**
-     * TODO: documentation
      *
      */
     public SInternalFrame() {
-        setLayout(new SStackLayout());
-        super.addComponent(getContentPane(), null);
+        super();
     }
 
     public void setIconifyable(boolean v) {
         boolean old = iconifyable;
         iconifyable = v;
         if (old != iconifyable)
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
     }
     public boolean isIconifyable() { return iconifyable; }
 
@@ -90,7 +81,7 @@ public class SInternalFrame
         boolean old = maximizable;
         maximizable = v;
         if (old != maximizable)
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
     }
     public boolean isMaximizable() { return maximizable; }
 
@@ -98,48 +89,40 @@ public class SInternalFrame
         boolean old = closable;
         closable = v;
         if (old != closable)
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
     }
     public boolean isClosable() { return closable; }
 
     public void setIconified(boolean v) {
-        if (iconified != v) {
-            // was iconified, restore normal size
-            if (iconified) {
-                iconified = false;
-                setPreferredSize(
-                    new SDimension(normalsize.width, normalsize.height));
-            }
-            // had normal size, save the size
-            else {
-                normalsize = new java.awt.Dimension( 
-                        getPreferredSize().getIntWidth(),
-                        getPreferredSize().getIntHeight());
-                setPreferredSize(
-                    new SDimension(getPreferredSize().getIntWidth(), 20));
-            }
-            reload();
-        }
+        v &= isIconifyable();
+        boolean old = iconified;
         iconified = v;
+        if (old != iconified) {
+            reload(ReloadManager.RELOAD_CODE);
+            if (iconified)
+                setMaximized(false);
+        }
     }
     public boolean isIconified() { return iconified; }
 
     public void setMaximized(boolean v) {
+        v &= isMaximizable();
         boolean old = maximized;
         maximized = v;
-        if (old != maximized)
-            reload();
-
-        if (maximized)
-            setIconified(false);
+        if (old != maximized) {
+            reload(ReloadManager.RELOAD_CODE);
+            if (maximized)
+                setIconified(false);
+        }
     }
     public boolean isMaximized() { return maximized; }
 
     public void setClosed(boolean v) {
+        v &= isClosable();
         boolean old = closed;
         closed = v;
         if (old != closed)
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
     }
     public boolean isClosed() { return closed; }
 
@@ -148,12 +131,11 @@ public class SInternalFrame
      *
      * @param i
      */
-    public void setIcon(Icon i) {
-        Icon oldIcon = icon;
-        icon = i;
-        if ((icon == null && oldIcon != null) ||
-            (icon != null && !icon.equals(oldIcon)))
-            reload();
+    public void setIcon(SIcon i) {
+        if ( i!=icon || i!=null && !i.equals(icon) ) {
+            icon = i;
+            reload(ReloadManager.RELOAD_CODE);
+        }
     }
 
     /**
@@ -161,7 +143,7 @@ public class SInternalFrame
      *
      * @return
      */
-    public Icon getIcon() {
+    public SIcon getIcon() {
         return icon;
     }
 
@@ -175,7 +157,7 @@ public class SInternalFrame
         title = t;
         if ((title == null && oldTitle != null) ||
             (title != null && !title.equals(oldTitle)))
-            reload();
+            reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -185,61 +167,6 @@ public class SInternalFrame
      */
     public String getTitle() {
         return title;
-    }
-
-    /**
-     * Use getContentPane().addComponent(c) instead.
-     */
-    public final SComponent addComponent(SComponent c, Object constraint) {
-        throw new IllegalArgumentException("use getContentPane().addComponent()");
-    }
-
-    /**
-     * Use getContentPane().removeComponent(c) instead.
-     */
-    public final boolean removeComponent(SComponent c) {
-        throw new IllegalArgumentException("use getContentPane().removeComponent()");
-    }
-
-    
-    /**
-     * @return the number of Dialogs that belong to this SInternalFrame
-     */
-    public final int getDialogCount() {
-        return getComponentCount() - 1;
-    }
-
-
-    /**
-     * TODO: documentation
-     */
-    public final void pushDialog(SDialog dialog) {
-        super.addComponent(dialog, null);
-        dialog.setFrame(this);
-    }
-
-    /**
-     * Remove the dialog from internal frame.
-     * @param dialog remove this dialog
-     */
-    public final SDialog popDialog(SDialog dialog) {
-        int count = getComponentCount();
-        if (count <= 1)
-            throw new IllegalStateException("there's no dialog left!");
-
-        // SDialog dialog = (SDialog)getComponent(count - 1);
-        super.removeComponent(dialog);
-        dialog.setFrame((SFrame)null);
-        return dialog;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public SContainer getContentPane() {
-        return contentPane;
     }
 
     /**
@@ -301,30 +228,9 @@ public class SInternalFrame
 
     private SInternalFrameEvent event;
 
-    public void getPerformed(String name, String value) {
-    System.out.println("SInternalFrame.getPerformed("+name+","+value+")");
-    
-        // cookie values
-        if (value.charAt(0) == 'i') {
-            String nvalue = value.substring(2);
-            switch(value.charAt(1)) {
-                case 'l':
-                    int x = 0,y = 0;
-                    x = new Integer(nvalue.substring(0,nvalue.indexOf("x"))).intValue();
-                    y = new Integer(nvalue.substring(nvalue.indexOf("x")+1)).intValue();
-                    setLocation(x,y);
-                    break;
-                case 's':
-                    int w = 0,h = 0;
-                    w = new Integer(nvalue.substring(0,nvalue.indexOf("x"))).intValue();
-                    h = new Integer(nvalue.substring(nvalue.indexOf("x")+1)).intValue();
-                    setPreferredSize(new SDimension(w,h));
-                    break;
-            }
-            return;
-        }
-    
-        switch (new Integer(value).intValue()) {
+    // LowLevelEventListener interface. Handle own events.
+    public void processLowLevelEvent(String name, String[] values) {
+        switch (new Integer(values[0]).intValue()) {
         case SInternalFrameEvent.INTERNAL_FRAME_CLOSED:
             setClosed(true);
             break;
@@ -346,10 +252,11 @@ public class SInternalFrame
             break;
 
         default:
-            throw new RuntimeException("unknown id: " + value);
+            throw new RuntimeException("unknown id: " + values[0]);
         }
 
-        event = new SInternalFrameEvent(this, new Integer(value).intValue());
+        event = new SInternalFrameEvent(this, new Integer(values[0]).intValue());
+        SForm.addArmedComponent(this); // trigger later invocation of fire*()
     }
 
     public void fireIntermediateEvents() {}
@@ -361,25 +268,27 @@ public class SInternalFrame
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
             if (listeners[i] == SInternalFrameListener.class) {
+                SInternalFrameListener listener;
+                listener = (SInternalFrameListener) listeners[i+1];
                 switch (event.getID()) {
                 case SInternalFrameEvent.INTERNAL_FRAME_CLOSED:
-                    ((SInternalFrameListener)listeners[i+1]).internalFrameClosed(event);
+                    listener.internalFrameClosed(event);
                     break;
                     
                 case SInternalFrameEvent.INTERNAL_FRAME_ICONIFIED:
-                    ((SInternalFrameListener)listeners[i+1]).internalFrameIconified(event);
+                    listener.internalFrameIconified(event);
                     break;
                     
                 case SInternalFrameEvent.INTERNAL_FRAME_DEICONIFIED:
-                    ((SInternalFrameListener)listeners[i+1]).internalFrameDeiconified(event);
+                    listener.internalFrameDeiconified(event);
                     break;
                     
                 case SInternalFrameEvent.INTERNAL_FRAME_MAXIMIZED:
-                    ((SInternalFrameListener)listeners[i+1]).internalFrameMaximized(event);
+                    listener.internalFrameMaximized(event);
                     break;
                     
                 case SInternalFrameEvent.INTERNAL_FRAME_UNMAXIMIZED:
-                    ((SInternalFrameListener)listeners[i+1]).internalFrameUnmaximized(event);
+                    listener.internalFrameUnmaximized(event);
                     break;
                 }
             }
@@ -388,62 +297,8 @@ public class SInternalFrame
         event = null;
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "InternalFrameCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
-    }
-
-    public void setPreferredSize(SDimension dim) {
-        /* if iconified, do not overwrite that size,
-           just save it for restoring the original size
-        */
-        if (!iconified)
-            super.setPreferredSize(dim);
-        else {
-            normalsize.width = dim.getIntWidth();
-            normalsize.height = dim.getIntHeight();
-        }
-        
-    }
-
-    private class SStackLayout extends SAbstractLayoutManager
-    {
-        private SContainer container = null;
-
-        public SStackLayout() {}
-
-        public void updateCG() {}
-        public void addComponent(SComponent c, Object constraint) {}
-        public void removeComponent(SComponent c) {}
-
-        public SComponent getComponentAt(int i) {
-            return (SComponent)getComponent(i);
-        }
-
-        public void setContainer(SContainer c) {
-            container = c;
-        }
-
-        /**
-         * Allways write code for the topmost component.
-         *
-         * @param s
-         * @throws IOException
-         */
-        public void write(Device s)
-            throws IOException
-        {
-            int topmost = getComponentCount() - 1;
-            SComponent comp = (SComponent)getComponent(topmost);
-            comp.write(s);
-        }
     }
 
     public void setCG(InternalFrameCG cg) {
@@ -455,5 +310,6 @@ public class SInternalFrame
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

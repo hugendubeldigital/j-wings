@@ -14,36 +14,63 @@
 
 package explorer;
 
-import java.io.IOException;
-import java.net.URL;
+import java.io.*;
+import java.util.Enumeration;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.wings.util.*;
 import org.wings.*;
-import org.wings.externalizer.*;
-import org.wings.servlet.*;
 import org.wings.session.*;
+
+import org.wings.io.Device;
+import org.wings.io.ServletDevice;
 
 /**
  * TODO: documentation
  *
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author Holger Engels
+ * @author Andreas Gruener
+ * @author Armin Haaf
  * @version $Revision$
  */
 public class Explorer
-    extends WingServlet
 {
-    public SessionServlet generateSessionServlet(HttpServletRequest req)
-        throws Exception
-    {
-        // create new default session and set plaf
-        DefaultSession session = new DefaultSession();
-        URL url = getServletConfig().getServletContext().getResource("/css1.jar");
-        session.getCGManager().setLookAndFeel(url);
+    private SFrame frame;
+    private ExplorerPanel mainPanel;
 
-        // return a new explorer session
-        return new ExplorerSession(session, req);
+    public Explorer() {
+        frame = new SFrame("Explorer");
+
+        String dir = (String)SessionManager.getSession().getProperty("ExplorerBaseDir");
+
+	mainPanel = new ExplorerPanel(dir);
+        frame.getContentPane().add(mainPanel);
+        frame.show();
+    }
+
+    protected void processRequest(HttpServletRequest req,
+                                  HttpServletResponse response)
+        throws ServletException, IOException {
+        
+        Enumeration en = req.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String)en.nextElement();
+
+            if ( "EXPLORERBASEDIR".equals(paramName.toUpperCase()) ) {
+                String[] values = req.getParameterValues(paramName);
+
+                mainPanel.setExplorerBaseDir(values[0]);
+            }
+        }            
+    }
+
+    /**
+     * Servletinfo
+     */
+    public String getServletInfo() {
+        return "Explorer ($Revision$)";
     }
 }
 
@@ -51,5 +78,6 @@ public class Explorer
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -77,7 +77,7 @@ abstract class TemplateTagHandler implements SpecialTagHandler
          */
         SComponent c = tcontext.getComponent (name);
         if (c == null) {
-            sink.append ("<!-- Template: '" + name + "' Component not given -->");
+            sink.print ("<!-- Template: '" + name + "' Component not given -->");
         }
         else {
             // set properties; the STemplateLayout knows how
@@ -103,5 +103,6 @@ abstract class TemplateTagHandler implements SpecialTagHandler
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

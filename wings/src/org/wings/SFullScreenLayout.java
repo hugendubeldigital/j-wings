@@ -39,7 +39,7 @@ public class SFullScreenLayout
      */
     private static final String _cgClassID = "FullScreenLayoutCG";
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     
     private final static SDimension fDim = new SDimension("100%", "100%");
 
@@ -48,14 +48,10 @@ public class SFullScreenLayout
         setPreferredSize(fDim);
     }
 
-    /**
-      * Add a component to this layout.
-      * Aligments are set if component has no aligment.
-      */
-    public void addComponent(SComponent c, Object constraint) {
+    public void addComponent(SComponent c, Object constraint, int index) {
         if (constraint == null)
             constraint = CENTER;
-		
+
         if (c.getHorizontalAlignment() == SConstants.NO_ALIGN) {
             if (constraint == WEST)
                 c.setHorizontalAlignment(SConstants.LEFT);
@@ -79,19 +75,11 @@ public class SFullScreenLayout
                     else
                         c.setVerticalAlignment(SConstants.CENTER);
         }
-         
-        super.addComponent(c, constraint);
-        setPreferredSize(fDim);
-     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this layout.
-     *
-     * @return "BorderLayoutCG"
-     * @see SLayoutManager#getCGClassID
-     * @see org.wings.plaf.CGDefaults#getCG
-     */
+        super.addComponent(c, constraint, index);
+        setPreferredSize(fDim);
+    }
+
     public String getCGClassID() {
         return _cgClassID;
     }
@@ -101,5 +89,6 @@ public class SFullScreenLayout
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -14,54 +14,34 @@
 
 package org.wings.plaf.xhtml.css1;
 
-import java.awt.Color;
-import java.awt.Insets;
 import java.io.IOException;
 
-import org.wings.*;
-import org.wings.io.*;
-import org.wings.plaf.*;
-import org.wings.plaf.xhtml.*;
-import org.wings.style.Style;
+import org.wings.border.SBorder;
+import org.wings.border.SLineBorder;
+import org.wings.io.Device;
 
 public final class LineBorderCG
-    extends org.wings.plaf.xhtml.LineBorderCG
+    extends DefaultBorderCG
 {
-    private final static Insets none = new Insets(0,0,0,0);
 
-    public void writePrefix(Device d, SBorder b)
+    public void writeSpanAttributes(Device d, SBorder b )
         throws IOException
     {
         SLineBorder border = (SLineBorder)b;
-        int thickness = border.getThickness();
-        Color color = border.getLineColor();
-        Insets insets = b.getInsets();
 
-        d.append("<div style=\"border: solid ")
-            .append(thickness)
-            .append("px; color: ")
-            .append(Utils.toColorString(color));
-        if (insets != null && !none.equals(insets))
-            d.append("; padding: ")
-                .append(insets.top).append(" ")
-                .append(insets.right).append(" ")
-                .append(insets.bottom).append(" ")
-                .append(insets.left)
-                .append("\">");
-        else
-            d.append("\">");
+        writeBorderStyle(d, b, border.getBorderStyle());
+        
+        // write insets/padding
+        super.writeSpanAttributes(d, b);
     }
 
-    public void writePostfix(Device d, SBorder b)
-        throws IOException
-    {
-        d.append("</div>");
-    }
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */
+

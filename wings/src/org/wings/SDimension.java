@@ -13,13 +13,19 @@
  */
 
 package org.wings;
+
+import java.io.*;
 import java.text.*;
+import java.util.logging.*;
 
 /**
  * TODO: parse units
  */
 public class SDimension
+    implements Serializable
 {
+    private final static Logger logger = Logger.getLogger("org.wings");
+
     public String width = null;
     public String height = null;
     private int iwidth = -1;
@@ -67,7 +73,7 @@ public class SDimension
     public void setWidth(int width) {
         this.iwidth= width;
         if ( width > -1 )
-            this.width = width+"px";
+            this.width = width + "px";
         else
             this.height=null;
     }
@@ -80,7 +86,7 @@ public class SDimension
     public void setHeight(int height) {
         this.iheight= height;
         if ( height > -1 )
-            this.height = height+"px";
+            this.height = height + "px";
         else
             this.height=null;
     }
@@ -93,9 +99,8 @@ public class SDimension
         try {
             return new DecimalFormat().parse(size,new ParsePosition(0)).intValue();
         }
-        catch(Exception ex)
-        {
-            System.err.println("Can not parse ["+size+"]");
+        catch(Exception e) {
+            logger.log(Level.WARNING, "Can not parse [" + size + "]", e);
             return -1;
         }
     }
@@ -143,8 +148,12 @@ public class SDimension
         setWidth(width);
         setHeight(height);
     }
-    
-    public String toString() {
-        return "SDimension[width="+width+", height="+height+"]";
-    }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

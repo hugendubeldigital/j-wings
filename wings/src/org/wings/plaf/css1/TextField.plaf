@@ -1,0 +1,17 @@
+<!-- $Id$ -->
+
+<template name="TextFieldCG" for="org.wings.STextField">
+<write>
+<%
+    // writeEvents();
+    %><input type="text"<%
+    %><%|size=component.getColumns()%><%
+    %><%|maxlength=component.getMaxColumns()%><%
+    %><%|class=Utils.style(component)%><%
+    if (!component.isEditable()) { %> readonly="1"<% }
+    if (component.isEnabled())   { %> name="<%?namePrefix%>"<% }
+    %><%|tabindex=component.getFocusTraversalIndex()%><%
+    %><%|value=component.getText()%>/><%
+%>
+</write>
+</template>

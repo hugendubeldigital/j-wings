@@ -1,0 +1,51 @@
+<template name="MenuBarCG" for="org.wings.SMenuBar">
+
+<write>
+<%
+        SButton b = null;
+        SMenuBar mbar = (SMenuBar)component;
+        int mcount = mbar.getMenuCount();
+        
+        %><div class="menubar"><%
+        %><table cellspacing="0" cellpadding="0" vspace="0" hspace="0"<%
+        %><%|class=Utils.style(component)%>><%
+        %><tr align="left"><%
+
+        for (int i = 0; i < mcount; i++) {
+            SMenu menu = (SMenu)mbar.getComponentAtIndex(i);
+            if (menu.isActive()) {
+                %><td class="amenu"><%
+                menu.write(device);
+                %><div id="MenuBarLayer" class="pdmenu"><%
+
+                int micount = menu.getMenuComponentCount();
+                for (int mi = 0; mi < micount; mi++) {
+                    SComponent menuitem = menu.getMenuComponent(mi);
+                    if (menuitem instanceof SSeparator) {
+                        %><br><img src="" class="menuseparator" width="<%
+                        %><%=((SSeparator)menuitem).getWidth()%><%
+                        %>" height="1"><br><%
+                    }
+                    else {
+                       %>&nbsp;<%
+                       menuitem.write(device);
+                        if ((mi + 1) < micount) {
+                            if (!(menu.getMenuComponent(mi + 1) instanceof SSeparator))
+                                %>&nbsp;<br><%
+                        }
+                    }
+                }
+                %></div><%
+                %></td><%
+            }
+            else {
+                %><td class="menu"><%
+                menu.write(device);
+                %></td><%
+            }
+        }
+        %></tr></table><%
+        %></div><%
+%>
+</write>
+</template>

@@ -14,8 +14,11 @@
 
 package org.wings;
 
-import java.util.Hashtable;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Iterator;
+import java.util.Collection;
 import java.net.URL;
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +58,7 @@ import org.wings.template.*;
  * templateContainer.addComponent(new SLabel("Neu-Ulm"), "WOHNORT");
  * </CODE>
  *
- * @author Armin Haaf, Jochen Woehrle
+ * @author Armin Haaf
  * @author Henner Zeller
  */
 
@@ -106,7 +109,7 @@ public class STemplateLayout
     /*
      * Alle Property Manager
      */
-    private static final Hashtable propertyManager = new Hashtable();
+    private static final HashMap propertyManager = new HashMap();
 
     /*
      * some default property Managers. Sets properties of components
@@ -114,14 +117,12 @@ public class STemplateLayout
      */
     static {
         addPropertyManager(new SComponentPropertyManager());
-        addPropertyManager(new SButtonPropertyManager());
+        addPropertyManager(new SAbstractButtonPropertyManager());
         addPropertyManager(new SLabelPropertyManager());
         addPropertyManager(new STextFieldPropertyManager());
         addPropertyManager(new STextAreaPropertyManager());
-        addPropertyManager(new SBaseTablePropertyManager());
         addPropertyManager(new STablePropertyManager());
-//        parser = new PageParser();
-//        parser.addTagHandler (COMPONENT, TemplateTagHandler.class);
+        addPropertyManager(new SFileChooserPropertyManager());
     }
 
     /**
@@ -130,7 +131,7 @@ public class STemplateLayout
     private DataSource dataSource = null;
 
 
-    private Hashtable components = new Hashtable();
+    private HashMap components = new HashMap();
 
     /**
      * TODO: documentation
@@ -231,7 +232,7 @@ public class STemplateLayout
      * @throws java.io.IOException
      */
     public void setTemplate(File templateFile) throws java.io.IOException {
-        dataSource = new CachedFileDataSource(templateFile);
+        setTemplate(new CachedFileDataSource(templateFile));
     }
 
     /**
@@ -242,22 +243,45 @@ public class STemplateLayout
      * @throws java.io.IOException
      */
     public void setTemplate(URL templateURL) throws java.io.IOException {
-        dataSource = new CachedFileDataSource(templateURL);
+        setTemplate(new CachedFileDataSource(templateURL));
     }
 
-    public void addComponent(SComponent c, Object constraint) {
+    /**
+     * Sets the template from the DataSource. Use this, if you hold your
+     * templates in databases etc. and write your own DataSource.
+     *
+     * @see org.wings.template.parser.DataSource
+     * @param source the datasourse this template is to be read.
+     */
+    public void setTemplate(DataSource source) {
+        dataSource = source;
+    }
+
+    /**
+     * add a component with the given constraint. The contstraint in the
+     * TemplateLayout is the value of the name attribute of the object in
+     * the HTML-template.
+     *
+     * @param c the component to be added
+     * @param constraint the string describing the
+     */
+    public void addComponent(SComponent c, Object constraint, int index) {
         if ( constraint == null )
             throw new IllegalArgumentException("null constraint not allowed here");
         components.put(constraint.toString(), c);
     }
     
     /**
-     * TODO: documentation
-     *
-     * @param c
+     * removes the given component.
+     * @param comp the component to be removed.
      */
-    public void removeComponent(SComponent c) {
-        // TODO: remove value from Hashtable
+    public void removeComponent(SComponent comp) {
+        Iterator it = components.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry e = (Map.Entry) it.next();
+            if (e.getValue() == comp)
+                it.remove();
+        }
     }
 
     /**
@@ -268,9 +292,9 @@ public class STemplateLayout
     }
 
     /**
-     *
+     * returns a map of the constraint/component.
      */
-    public Hashtable getComponents() {
+    public Map getComponentMap() {
         return components;
     }
 
@@ -278,25 +302,6 @@ public class STemplateLayout
         return PageParser.getInstance().getLabels(getDataSource());
     }
     
-    // testing purposes ..
-    /**
-     * TODO: documentation
-     */
-    public static void main(String[] arg) throws Exception {
-        STemplateLayout l =  new STemplateLayout("test.thtml");
-
-        SLabel wohnort = new SLabel("Ulm");
-        l.addComponent(new SLabel("Haaf"), "NAME");
-        l.addComponent(new SButton("Armin"), "VORNAME");
-        l.addComponent(wohnort, "WOHNORT");
-        // l.removeComponent(wohnort);
-        l.addComponent(new SLabel("Neu-Ulm"), "WOHNORT");
-
-        StringBufferDevice erg = new StringBufferDevice();
-        l.write(erg);
-        System.out.print(erg.toString());
-    }
-
     /**
      * TODO: documentation
      *
@@ -305,14 +310,6 @@ public class STemplateLayout
     public void setContainer(SContainer c) {
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this layout.
-     *
-     * @return "TemplateLayoutCG"
-     * @see SLayoutManager#getCGClassID
-     * @see org.wings.plaf.CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -322,5 +319,6 @@ public class STemplateLayout
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

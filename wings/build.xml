@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0"?><!-- -*-sgml-*- -->
 <!-- ant build file for wingS -->
 <!-- $Id$ -->
 
@@ -10,18 +10,41 @@
     </fileset>
   </path>
 
+  <path id="testcompile.classpath">
+    <path location="build/testclasses"/>
+    <fileset dir="build/dist/lib">
+      <include name="*.jar" />
+    </fileset>
+    <fileset dir="testlib">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+
+  <path id="test.classpath">
+    <path refid="build.classpath" />
+    <path location="build/testclasses"/>
+    <fileset dir="build/dist/lib">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+
   <!-- ==================== Properties ==================== -->
   <target name="init">
     <tstamp/>
     <!-- directories -->
     <property name="home"    value="." />
     <property name="src"     value="src" />
+    <property name="patches"     value="patches" />
     <property name="build"   value="build" />
     <property name="classes" value="${build}/classes" />
     <property name="dist"    value="${build}/dist" />
     <property name="doc"     value="${build}/doc" />
     <property name="distlib" value="${dist}/lib" />
     <property name="lib"     value="lib" />        <!-- external libraries -->
+    <property name="testsrc"     value="testsrc" />
+    <property name="testlib"     value="testlib" />
+    <property name="testclasses"     value="${build}/testclasses" />
+    <property name="testreport"     value="${build}/testreport" />
 
     <!-- read additional properties from file -->
     <property file="build.properties" />
@@ -36,50 +59,54 @@
     <mkdir dir="${doc}" />
     <mkdir dir="${doc}/api" />
     <mkdir dir="${lib}" />     <!-- avoid errors in case it does not exist -->
+    <mkdir dir="${testclasses}" />
+    <mkdir dir="${testreport}" />
   </target>
 
 
   <!-- ==================== Build wingS ==================== -->
-  <target name="build" depends="jar,plaf" />
+  <target name="build" depends="wings.jar,plaf" />
 
   <target name="compile" depends="prepare">
-    <javac srcdir="${src}" destdir="${classes}" debug="on" deprecation="on">
+    <javac srcdir="${src}" destdir="${classes}" debug="on" deprecation="off">
       <classpath refid="build.classpath" />
     </javac>
     <copy todir="${classes}">
       <fileset dir="${src}">
         <include name="**/*.properties" />
         <include name="**/*.gif" />
+        <include name="**/*.png" />
         <include name="**/*.css" />
-        <include name="**/*.js" />
       </fileset>
     </copy>
   </target>
 
-
-  <target name="jar" depends="compile">
+  <target name="jar" depends="wings.jar" />
+  <target name="wings.jar" depends="compile">
     <jar jarfile="${distlib}/wings.jar" basedir="${classes}">
       <exclude name="org/wings/plaf/xhtml/**" />
+      <exclude name="org/wings/plaf/css1/**" />
     </jar>
 
     <copy todir="${distlib}">
       <fileset dir="${lib}">
-        <!-- usual names for jsdk ..-->
+        <!-- usual names for jsdk ..>
         <exclude name="jsdk2.0.jar" />
-        <exclude name="servlet.jar" />
+        <exclude name="servlet.jar" /-->
       </fileset>
     </copy>
   </target>
 
 
   <!-- ==================== LookAndFeel Jars ==================== -->
-  <target name="plaf" depends="css1,old" />
+  <target name="plaf" depends="css1.jar" />
 
-  <target name="css1" depends="compile">
+  <target name="css1.jar" depends="compile,claf-compile">
     <jar jarfile="${distlib}/css1.jar">
       <fileset dir="${classes}">
         <include name="org/wings/plaf/xhtml/*.class" />
         <include name="org/wings/plaf/xhtml/css1/*" />
+        <include name="org/wings/plaf/css1/*" />  <!-- TEST: claf-compiled -->
         <exclude name="org/wings/plaf/xhtml/css1/default.properties" />
       </fileset>
       <fileset dir="${classes}/org/wings/plaf/xhtml/css1">
@@ -88,19 +115,66 @@
     </jar>
   </target>
 
-  <target name="old" depends="compile">
-    <jar jarfile="${distlib}/old.jar">
-      <fileset dir="${classes}">
-        <include name="org/wings/plaf/xhtml/*.class" />
-        <include name="org/wings/plaf/xhtml/old/*" />
-        <exclude name="org/wings/plaf/xhtml/old/default.properties" />
+  <target name="claf" depends="compile">
+    <taskdef name="claf"
+	     classpath="${classes}"
+	     classname="org.wings.plaf.compiler.ClafTask"/>
+    <claf destdir="build/src"
+	  package="org.wings.plaf.css1">
+      <fileset dir="src">
+        <include name="org/wings/plaf/css1/*.plaf"/>
       </fileset>
-      <fileset dir="${classes}/org/wings/plaf/xhtml/old">
-        <include name="default.properties" />
-      </fileset>
-    </jar>
+    </claf>
   </target>
 
+  <target name="claf-compile" depends="claf">
+    <javac srcdir="build/src" 
+           destdir="${classes}"
+           debug="on" 
+           deprecation="off">
+      <classpath refid="build.classpath" />
+    </javac>
+  </target>
+
+  <target name="testcompile" depends="wings.jar,css1.jar">
+    <javac srcdir="${testsrc}" destdir="${testclasses}"
+	   debug="true"
+	   deprecation="${build.deprecation}"
+	   encoding="ISO8859-1">
+      <classpath refid="testcompile.classpath"/>
+    </javac>
+    <copy file="${distlib}/css1.jar" todir="${testsrc}/org/wings/plaf"/>
+    <copy todir="${testclasses}">
+      <fileset dir="testres"/>
+    </copy>
+  </target>
+
+  <target name="test" depends="testcompile">
+    <taskdef name="junit"
+	     classpath="${testlib}/junit.jar"
+	     classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
+
+    <junit>
+      <formatter type="plain"/>
+      <classpath refid="test.classpath"/>
+      <batchtest fork="yes" todir="${testreport}">
+        <fileset dir="${testclasses}">
+          <include name="**/Test*.class"/>
+          <exclude name="**/*$$*"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- ==================== patches for other jdk versions ==================== -->
+  <target name="PatchForJDK1.3" depends="init">
+     <patch patchfile="${patches}/FileImageIcon_jdk1.3.patch"
+            originalFile="${src}/org/wings/FileImageIcon.java" 
+            backups="yes" />
+     <patch patchfile="${patches}/ResourceImageIcon_jdk1.3.patch" 
+            originalFile="${src}/org/wings/ResourceImageIcon.java" 
+            backups="yes" />
+  </target>
 
   <!-- ==================== Generate API Docs ==================== -->
   <target name="doc" depends="prepare">
@@ -114,7 +188,6 @@
              windowtitle="wingS ${wings.version}"
              doctitle="wingS ${wings.version}"
              bottom="wingS swings ;-)"
-             link="http://java.sun.com/j2se/1.3/docs/api/index.html"
     />
   </target>
   <target name="javadoc" depends="doc" description="create api-doc"/>
@@ -141,9 +214,9 @@
   <target name="main" depends="build" description="build changed files"/>
 
 
-  <!--target name="demo" depends="build" description="build demo">
+  <!-- target name="demo" depends="build" description="build demo">
     <ant dir="demo"/>
-  </target-->
+  </target -->
 
   <target name="dist" depends="init" description="create distribution tar.gz">
       <property name="distname" value="${ant.project.name}-${wings.version}"/>
@@ -158,14 +231,13 @@
 	    <include name="COPYING" />
 	    <include name="CREDITS" />
 	    <include name="INSTALL" />
-	    <include name="TODO" />
+	    <include name="README" />
 	    <include name="build.*" />
 	    <include name="src/" />
 	    <include name="demo/" />
+	    <include name="doc/" />
 	    <exclude name="demo/build" />
 	    <exclude name="**/CVS" />
-	    <!-- transition to a Makefile free world .. -->
-	    <exclude name="**/Makefile" />
          </fileset>
       </copy>
       <tar tarfile="${distname}.tar" basedir="." includes="${distname}/" />
@@ -174,3 +246,8 @@
       <delete dir="${distname}" />
   </target>
 </project>
+<!--
+ Local variables:
+ compile-command: "ant -emacs -find build.xml"
+ End:
+-->

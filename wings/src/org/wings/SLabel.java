@@ -14,115 +14,151 @@
 
 package org.wings;
 
-import java.net.URL;
-
-import javax.swing.*;
+//import javax.swing.*;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
 import org.wings.externalizer.ExternalizeManager;
 
 /**
- * TODO: documentation
+ * A display area for a short text string or an image, or both.
+ * You can specify where in the label's display area  the label's contents
+ * are aligned by setting the vertical and horizontal alignment.
+ * You can also specify the position of the text relative to the image.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class SLabel
     extends SComponent
-    implements SConstants
+    implements SConstants, ClickableRenderComponent
 {
     private static final String cgClassID = "LabelCG";
 
+    /**
+     * The text to be displayed
+     */
     protected String text;
 
     /**
-     * TODO: documentation
+     * The icon to be displayed
      */
-    protected Icon icon = null;
+    protected SIcon icon = null;
 
     /**
      * TODO: documentation
      */
-    protected String iconAddress = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected Icon disabledIcon = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected String disabledIconAddress = null;
+    protected SIcon disabledIcon = null;
 
     private int verticalTextPosition = CENTER;
     private int horizontalTextPosition = RIGHT;
     private int iconTextGap = 1;
     private boolean noBreak = false;
-    private boolean alignText = false;
+    private boolean imageAbsBottom = false;
 
-    // TODO: plaf has to escape the special chars...
-    // HEN: I think, this is not necessary here; The label's plaf should 
-    // _always_ escape the characters, otherwise the user feels tempted to
-    // output formatting information in Labels .. (s)he shouldn't!
-    private boolean escapeSpecialChars = false;
-
+    private boolean escapeSpecialChars = true;
 
     /**
-     * TODO: documentation
+     * Creates a new <code>SLabel</code> instance with the specified text
+     * (left alligned) and no icon.
      *
-     * @param t
+     * @param text The text to be displayed by the label.
      */
-    public SLabel(String t) {
-        this(t, null, LEFT);
+    public SLabel(String text) {
+        this(text, null, LEFT);
     }
 
     /**
-     * TODO: documentation
-     *
+     * Creates a new <code>SLabel</code> instance with no text and no icon.
      */
     public SLabel() {
         this((String)null);
     }
 
     /**
-     * TODO: documentation
+     * Creates a new <code>SLabel</code> instance with the specified icon
+     * (left alligned) and no text.
      *
-     * @param icon
+     * @param icon The image to be displayed by the label.
      */
-    public SLabel(Icon icon) {
+    public SLabel(SIcon icon) {
         this(icon, LEFT);
     }
 
-    public SLabel(Icon icon, int horizontalAlignment) {
+    /**
+     * Creates a new <code>SLabel</code> instance with the specified icon
+     * (alligned as specified) and no text.
+     *
+     * @param icon The image to be displayed by the label.
+     * @param horizontalAlignment One of the following constants defined in
+     *        <code>SConstants</code>:
+     *        <code>LEFT</code>, <code>CENTER</code>, <code>RIGHT</code>.
+     * @see SConstants
+     */
+    public SLabel(SIcon icon, int horizontalAlignment) {
         this(null, icon, horizontalAlignment);
     }
 
-    public SLabel(String text, Icon icon) {
+    /**
+     * Creates a new <code>SLabel</code> instance with the specified icon
+     * and the specified text (left alligned).
+     *
+     * @param text The text to be displayed by the label.
+     * @param icon The image to be displayed by the label.
+     */
+    public SLabel(String text, SIcon icon) {
         setText(text);
         setIcon(icon);
         setHorizontalAlignment(LEFT);
     }
 
-    public SLabel(String text, Icon icon, int horizontalAlignment) {
+    /**
+     * Creates a new <code>SLabel</code> instance with the specified icon
+     * and the specified text (alligned as specified).
+     *
+     * @param text The text to be displayed by the label.
+     * @param icon The image to be displayed by the label.
+     * @param horizontalAlignment One of the following constants defined in
+     *        <code>SConstants</code>:
+     *        <code>LEFT</code>, <code>CENTER</code>, <code>RIGHT</code>.
+     * @see SConstants
+     */
+    public SLabel(String text, SIcon icon, int horizontalAlignment) {
         setText(text);
         setIcon(icon);
         setHorizontalAlignment(horizontalAlignment);
     }
 
+    /**
+     * Creates a new <code>SLabel</code> instance with the specified text
+     * (alligned as specified) and no icon.
+     *
+     * @param text The text to be displayed by the label.
+     * @param horizontalAlignment One of the following constants defined in
+     *        <code>SConstants</code>:
+     *        <code>LEFT</code>, <code>CENTER</code>, <code>RIGHT</code>.
+     * @see SConstants
+     */
     public SLabel(String text, int horizontalAlignment) {
         this(text, null, horizontalAlignment);
     }
 
     /**
-     * TODO: documentation
      *
      * @param t
      */
-    public void setAlignText(boolean t) {
-        alignText = t;
+    public void setImageAbsBottom(boolean t) {
+        imageAbsBottom = t;
     }
+
+    /**
+     *
+     * @param t
+     */
+    public boolean isImageAbsBottom() {
+        return imageAbsBottom;
+    }
+
 
     /**
      * TODO: documentation
@@ -132,6 +168,7 @@ public class SLabel
     public void setNoBreak(boolean b) {
         noBreak = b;
     }
+
     /**
      * TODO: documentation
      *
@@ -140,36 +177,48 @@ public class SLabel
     public boolean isNoBreak() { return noBreak; }
 
     /**
-     * TODO: documentation
+     * Returns the horizontal position of the lable's text
      *
-     * @return
+     * @return the position
+     * @see SConstants
+     * @see #setHorizontalTextPosition
      */
     public int getHorizontalTextPosition() {
         return horizontalTextPosition;
     }
 
     /**
-     * TODO: documentation
+     * Sets the horizontal position of the lable's text, relative to its icon.
+     * <p>
+     * The default value of this property is CENTER.
      *
-     * @param textPosition
+     * @param textPosition One of the following constants defined in
+     *        <code>SConstants</code>:
+     *        <code>LEFT</code>, <code>CENTER</code>, <code>RIGHT</code>.
      */
     public void setHorizontalTextPosition(int textPosition) {
         horizontalTextPosition = textPosition;
     }
 
     /**
-     * TODO: documentation
+     * Sets the vertical position of the lable's text, relative to its icon.
+     * <p>
+     * The default value of this property is CENTER.
      *
-     * @param textPosition
+     * @param textPosition One of the following constants defined in
+     *        <code>SConstants</code>:
+     *        <code>TOP</code>, <code>CENTER</code>, <code>BOTTOM</code>.
      */
     public void setVerticalTextPosition(int textPosition) {
         verticalTextPosition = textPosition;
     }
 
     /**
-     * TODO: documentation
+     * Returns the vertical position of the label's text
      *
-     * @return
+     * @return the position
+     * @see SConstants
+     * @see #setVerticalTextPosition
      */
     public int getVerticalTextPosition() {
         return verticalTextPosition;
@@ -198,35 +247,9 @@ public class SLabel
      *
      * @param i
      */
-    public void setIcon(Icon i) {
-        Icon oldIcon = icon;
+    public void setIcon(SIcon i) {
+        reloadIfChange(ReloadManager.RELOAD_CODE, icon, i);
         icon = i;
-        if ((icon == null && oldIcon != null) ||
-            (icon != null && !icon.equals(oldIcon)))
-            reload();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setIcon(URL i) {
-        if ( i!=null)
-            setIcon(i.toString());
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param url
-     */
-    public void setIcon(String url) {
-        String oldIconAddress = iconAddress;
-        iconAddress = url;
-        if ((iconAddress == null && oldIconAddress != null) ||
-            (iconAddress != null && !iconAddress.equals(oldIconAddress)))
-            reload();
     }
 
     /**
@@ -234,53 +257,18 @@ public class SLabel
      *
      * @return
      */
-    public Icon getIcon() {
+    public SIcon getIcon() {
         return icon;
     }
 
     /**
      * TODO: documentation
      *
-     * @return
-     */
-    public String getIconAddress() {
-        return iconAddress;
-    }
-
-    /**
-     * TODO: documentation
-     *
      * @param i
      */
-    public void setDisabledIcon(Icon i) {
-        Icon oldDisabledIcon = disabledIcon;
+    public void setDisabledIcon(SIcon i) {
+        reloadIfChange(ReloadManager.RELOAD_CODE, disabledIcon, i);
         disabledIcon = i;
-        if ((disabledIcon == null && oldDisabledIcon != null) ||
-            (disabledIcon != null && !disabledIcon.equals(oldDisabledIcon)))
-            reload();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setDisabledIcon(URL i) {
-        if ( i!=null)
-            setDisabledIcon(i.toString());
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param url
-     */
-    public void setDisabledIcon(String url) {
-        String oldDisabledIconAddress = disabledIconAddress;
-        disabledIconAddress = url;
-        if ((disabledIconAddress == null && oldDisabledIconAddress != null) ||
-            (disabledIconAddress != null && !disabledIconAddress.equals(oldDisabledIconAddress)))
-            reload();
     }
 
     /**
@@ -288,24 +276,12 @@ public class SLabel
      *
      * @return
      */
-    public Icon getDisabledIcon() {
-        if(disabledIcon == null)
-            if(icon != null && icon instanceof ImageIcon)
-                disabledIcon = new ImageIcon(GrayFilter.createDisabledImage(((ImageIcon)icon).getImage()));
+    public SIcon getDisabledIcon() {
         return disabledIcon;
     }
 
     /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getDisabledIconAddress() {
-        return disabledIconAddress;
-    }
-
-    /**
-     * TODO: documentation
+     * Returns the text of the label
      *
      * @return
      */
@@ -314,47 +290,47 @@ public class SLabel
     }
 
     /**
-     * TODO: documentation
+     * Sets the text of the label. If the value of text is null or an empty
+     * string, nothing is displayed.
      *
-     * @param t
+     * @param t The new text
      */
     public void setText(String t) {
-        String oldText = text;
+        reloadIfChange(ReloadManager.RELOAD_CODE, text, t);
         text = t;
-        if ((text == null && oldText != null) ||
-            (text != null && !text.equals(oldText)))
-            reload();
     }
 
     /**
-     * TODO: documentation
+     * returns the setting of the escape character property
      *
-     * @return
+     * @see #setEscapeSpecialChars(boolean)
+     * @return 'true', if characters are quoted, 'false' if they
+     *         are passed raw to the backend Device.
      */
     public boolean isEscapeSpecialChars() {
 	return escapeSpecialChars;
     }
 
     /**
-     * TODO: documentation
+     * By default, all special characters are quoted in the
+     * output. This means for *ML like languages, that special 
+     * characters like &lt; &gt; or &amp; are replaced by their
+     * appropriate entities. Note, that the decision, what is
+     * quoted is done by the CG. If you set this to 'false', then
+     * they are not quoted - you might use this, if you want to
+     * sneak in HTML (XML, WML..PDF) formatting information in the
+     * raw String. Note, that in that case, your application might
+     * not be portable accross different backend CG's (think of
+     * WML).
      *
-     * @deprecated Never set this - characters are always escaped
-     *             in future and BTW, you shouldn't rely on an
-     *             HTML output, right ?
-     * @param escape
+     * @param escape boolean 'true', if characters are to be escaped
+     *               (the default), or 'false' if any character you
+     *               write here is passed 'raw' to the Device.
      */
     public void setEscapeSpecialChars(boolean escape) {
 	escapeSpecialChars = escape;
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "LabelCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -368,5 +344,6 @@ public class SLabel
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

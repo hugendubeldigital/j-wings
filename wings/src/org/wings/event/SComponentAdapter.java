@@ -32,36 +32,37 @@ package org.wings.event;
  *
  * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
  * @version $Revision$, $Date$
- * @see org.wings.event.ComponentEvent
- * @see org.wings.event.ComponentListener
+ * @see org.wings.event.SComponentEvent
+ * @see org.wings.event.SComponentListener
  */
 public abstract class SComponentAdapter
 	implements SComponentListener
 {
-	/**
-      * Invoked when the component has been made invisible.
-      */
-	public void componentHidden(SComponentEvent e) {} ;
+    /**
+     * Invoked when the component has been made invisible.
+     */
+    public void componentHidden(SComponentEvent e) {};
 
-	/**
-      * Invoked when the component's position changes.
-      */
-	public void componentMoved(SComponentEvent e) {} ;
-    
-	/**
-      * Invoked when the component's size changes.
-      */
-	public void componentResized(SComponentEvent e) {} ;
+    /**
+     * Invoked when the component's position changes.
+     */
+    public void componentMoved(SComponentEvent e) {};
 
-	/**
-      * Invoked when the component has been made visible.
-      */
-	public void componentShown(SComponentEvent e) {} ;
+    /**
+     * Invoked when the component's size changes.
+     */
+    public void componentResized(SComponentEvent e) {};
+
+    /**
+     * Invoked when the component has been made visible.
+     */
+    public void componentShown(SComponentEvent e) {};
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

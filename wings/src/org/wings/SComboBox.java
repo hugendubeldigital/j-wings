@@ -16,19 +16,12 @@ package org.wings;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.*;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Locale;
 import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.event.*;
 
 import org.wings.plaf.*;
-import org.wings.io.Device;
 
 /**
  * TODO: documentation
@@ -44,7 +37,7 @@ import org.wings.io.Device;
  */
 public class SComboBox
     extends SComponent
-    implements SGetListener, ListDataListener, ItemSelectable
+    implements LowLevelEventListener, ListDataListener, ItemSelectable
 {
     /**
      * @see #getCGClassID
@@ -55,21 +48,49 @@ public class SComboBox
      * The model.
      * @see javax.swing.ComboBoxModel
      */
-    protected ComboBoxModel    dataModel;
+    protected ComboBoxModel dataModel;
     
     /**
      * The renderer used for cell rendering each cell.
      * @see SListCellRenderer
      */
-    protected SListCellRenderer renderer = new SDefaultListCellRenderer();
+    protected SListCellRenderer renderer;
+
+    /**
+     * how many rows are displayed in the popup window
+     */
     protected int maximumRowCount = 8;
-    protected Object lastSelectedItem = null;
+
+    /**
+     * action command to fire
+     */
     protected String actionCommand = "comboBoxChanged";
     
-    transient protected EventListenerList listenerList = new EventListenerList();
+    /**
+     *
+     */
+    protected final EventListenerList listenerList = new EventListenerList();
     
-    boolean firedActionEventOnContentsChanged = false;
-    boolean firingActionEvent = false;
+    /**
+     * indicates if this component - if it is inside a {@link SForm} -  renders
+     * itself as form component or not.
+     */
+    private boolean showAsFormComponent = true;
+
+    // do not initalize with null!
+    private final SCellRendererPane cellRendererPane = new SCellRendererPane();
+
+    /**
+     * This protected field is implementation specific. Do not access directly
+     * or override.
+     */
+    protected Object selectedItemReminder;
+ 
+    // Flag to ensure that infinite loops do not occur with ActionEvents.
+    private boolean firingActionEvent = false;
+
+    // Flag to ensure the we don't get multiple ActionEvents on item selection.
+    private boolean selectingItem = false;
 
     /**
      * Creates a SComboBox that takes its items from an existing ComboBoxModel.
@@ -113,15 +134,19 @@ public class SComboBox
      *  description: Model that the combo box uses to get data to display.
      */
     public void setModel(ComboBoxModel model) {
-        ComboBoxModel oldModel = dataModel;
-        if (dataModel != null)
-            dataModel.removeListDataListener(this);
-        dataModel = model;
-        firePropertyChange("model", oldModel, dataModel);
-        dataModel.addListDataListener(this);
-        if (model == null && oldModel != null ||
-            model != null && !model.equals(oldModel))
-            reload();
+        if ( isDifferent(dataModel, model) ) {
+            if (dataModel != null)
+                dataModel.removeListDataListener(this);
+
+            dataModel = model;
+
+            dataModel.addListDataListener(this);
+        
+            // set the current selected item.
+            selectedItemReminder = dataModel.getSelectedItem();
+
+            reload(ReloadManager.RELOAD_CODE);
+        }
     }
 
     /**
@@ -129,7 +154,7 @@ public class SComboBox
      *
      * @return the ComboBoxModel that provides the displayed list of items
      */
-    public ComboBoxModel getModel() {
+    public final ComboBoxModel getModel() {
         return dataModel;
     }
 
@@ -142,11 +167,11 @@ public class SComboBox
      *    preferred: true
      */
     public void setMaximumRowCount(int count) {
-        int oldCount = maximumRowCount;
-        maximumRowCount = count;
-        firePropertyChange("maximumRowCount", oldCount, maximumRowCount);
-        if (maximumRowCount != oldCount)
-            reload();
+        if ( maximumRowCount!=count ) {
+            maximumRowCount = count;
+
+            reload(ReloadManager.RELOAD_CODE);
+        }
     }
 
     /**
@@ -167,9 +192,10 @@ public class SComboBox
      *  description: The renderer that generates the item's code
      */
     public void setRenderer(SListCellRenderer newRenderer) {
-        SListCellRenderer oldRenderer = renderer;
-        renderer = newRenderer;
-        firePropertyChange("renderer", oldRenderer, renderer);
+        if ( isDifferent(renderer, newRenderer) ) {
+            renderer = newRenderer;
+            reload(ReloadManager.RELOAD_CODE);
+        }
     }
 
     /**
@@ -189,9 +215,24 @@ public class SComboBox
      *    description: Sets the selected item in the SComboBox.
      */
     public void setSelectedItem(Object object) {
-        dataModel.setSelectedItem(object);
-        fireActionEvent();
-        reload();
+        if ( isDifferent(object, dataModel.getSelectedItem()) ) {
+
+	    // Must toggle the state of this flag since this method
+	    // call may result in ListDataEvents being fired.
+	    selectingItem = true;
+	    dataModel.setSelectedItem(object);
+	    selectingItem = false;
+
+	    if (selectedItemReminder != dataModel.getSelectedItem()) {
+		// in case a users implementation of ComboBoxModel
+		// doesn't fire a ListDataEvent when the selection
+		// changes.
+		selectedItemChanged();
+	    }
+
+            fireActionEvent();
+            reload(ReloadManager.RELOAD_CODE);
+	}
     }
 
     /**
@@ -218,7 +259,8 @@ public class SComboBox
         if (index == -1 )
             setSelectedItem( null );
         else if (index < -1 || index >= size)
-            throw new IllegalArgumentException("setSelectedIndex: " + index + " out of bounds");
+            throw new IllegalArgumentException("setSelectedIndex: " + index + 
+                                               " out of bounds");
         else
             setSelectedItem(dataModel.getElementAt(index));
     }
@@ -231,13 +273,13 @@ public class SComboBox
      */
     public int getSelectedIndex() {
         Object selected = dataModel.getSelectedItem();
-        int i,c;
-        Object obj;
 
-        for (i=0, c=dataModel.getSize(); i<c; i++) {
-            obj = dataModel.getElementAt(i);
-            if ((obj == null && selected == null) || (obj != null &&obj.equals(selected)))
+        if ( selected==null ) return -1;
+
+        for ( int i=0; i<getItemCount(); i++) {
+            if ( selected.equals(getItemAt(i)) ) {
                 return i;
+            }
         }
         return -1;
     }
@@ -386,62 +428,44 @@ public class SComboBox
         // those that are interested in this event
         for ( int i = listeners.length-2; i>=0; i-=2 ) {
             if ( listeners[i]==ItemListener.class ) {
-                // Lazily create the event:
-                // if (changeEvent == null)
-                // changeEvent = new ChangeEvent(this);
                 ((ItemListener)listeners[i+1]).itemStateChanged(e);
             }
         }
     }   
 
     /**
-     * Notify all listeners that have registered as ActionListeners.
+     * Notify all listeners that have registered as ActionListeners if the
+     * selected item has changed
      *  
      * @see EventListenerList
      */
     protected void fireActionEvent() {
-        if ( !firingActionEvent ) {
-            firingActionEvent = true;
+	if (!firingActionEvent) {
+	    // Set flag to ensure that an infinite loop is not created
+	    firingActionEvent = true;
+
             ActionEvent e = null;
+
             // Guaranteed to return a non-null array
             Object[] listeners = listenerList.getListenerList();
             // Process the listeners last to first, notifying
             // those that are interested in this event
             for ( int i = listeners.length-2; i>=0; i-=2 ) {
                 if ( listeners[i]==ActionListener.class ) {
-                    if ( e == null )
-                        e = new ActionEvent(this,ActionEvent.ACTION_PERFORMED,getActionCommand());
+                    if ( e==null )
+                        e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
+                                            getActionCommand());
                     ((ActionListener)listeners[i+1]).actionPerformed(e);
                 }
             }
-            firingActionEvent = false;
+	    firingActionEvent = false;
         }
-    }
-
-    /**
-     * This method is called when the selected item changes.
-     */
-    protected void selectedItemChanged() {
-        if (lastSelectedItem != null) {
-            fireItemStateChanged(new ItemEvent(this,ItemEvent.ITEM_STATE_CHANGED,
-                                               lastSelectedItem,
-                                               ItemEvent.DESELECTED));
-        }
-
-        lastSelectedItem = getModel().getSelectedItem();
-
-        if (lastSelectedItem != null)
-            fireItemStateChanged(new ItemEvent(this,ItemEvent.ITEM_STATE_CHANGED,
-                                               lastSelectedItem,
-                                               ItemEvent.SELECTED));
-        fireActionEvent();
-        reload();
     }
 
     /** 
      * Returns an array containing the selected item.
      *
-     * @returns an array of Objects containing the selected item
+     * @return an array of Objects containing the selected item
      */
     public Object[] getSelectedObjects() {
         Object selectedObject = getSelectedItem();
@@ -458,14 +482,15 @@ public class SComboBox
      * @see javax.swing.event.ListDataListener
      */
     public void contentsChanged(ListDataEvent e) {
-        Object newSelectedItem = dataModel.getSelectedItem();
-
-        if ((lastSelectedItem == null && newSelectedItem != null)
-            || (lastSelectedItem != null && !lastSelectedItem.equals(newSelectedItem)))
-            selectedItemChanged();
-        reload();
+        if ( isDifferent(selectedItemReminder, dataModel.getSelectedItem()) ) {
+	    selectedItemChanged();
+	    if (!selectingItem) {
+		fireActionEvent();
+	    }
+            reload(ReloadManager.RELOAD_CODE);
+	}
     }
-
+ 
     /**
      * Invoked when items have been added to the internal data model.
      * The "interval" includes the first and last values added. 
@@ -473,7 +498,7 @@ public class SComboBox
      * @see javax.swing.event.ListDataListener
      */
     public void intervalAdded(ListDataEvent e) {
-        contentsChanged(e);
+        reload(ReloadManager.RELOAD_CODE);
     }
 
     /**
@@ -483,7 +508,7 @@ public class SComboBox
      * @see javax.swing.event.ListDataListener
      */
     public void intervalRemoved(ListDataEvent e) {
-        contentsChanged(e);
+        reload(ReloadManager.RELOAD_CODE);
     }
 
 
@@ -508,17 +533,55 @@ public class SComboBox
         return dataModel.getElementAt(index);
     }
 
-    public void setShowAsFormComponent(boolean showAsFormComponent) {}
-    public boolean getShowAsFormComponent() { return true; }
+    /**
+     * This protected method is implementation specific. Do not access directly
+     * or override. 
+     */
+    protected void selectedItemChanged() {
+	if (selectedItemReminder != null ) {
+	    fireItemStateChanged(new ItemEvent(this,ItemEvent.ITEM_STATE_CHANGED,
+					       selectedItemReminder,
+					       ItemEvent.DESELECTED));
+	}
+	
+	// set the new selected item.
+	selectedItemReminder = dataModel.getSelectedItem();
 
-    public void getPerformed(String action, String value) {
-        try {
-            int sel = Integer.parseInt(value);
-            setSelectedIndex(sel);
+	if (selectedItemReminder != null ) {
+	    fireItemStateChanged(new ItemEvent(this,ItemEvent.ITEM_STATE_CHANGED,
+					       selectedItemReminder,
+					       ItemEvent.SELECTED));
+	}
+    }
+
+    /**
+     * 
+     */
+    public void setShowAsFormComponent(boolean b) {
+        if ( showAsFormComponent!=b ) {
+            showAsFormComponent = b;
+            reload(ReloadManager.RELOAD_CODE);
         }
-        catch (Exception e) {
-            System.err.println("Cannot parse expected integer");
-            e.printStackTrace();
+    }
+
+    public boolean getShowAsFormComponent() { 
+        return showAsFormComponent; 
+    }
+
+    public void processLowLevelEvent(String action, String[] values) {
+        int selectedIndex = -1;
+        // last will win!!
+        for ( int i=0; i<values.length; i++ ) {
+            try {
+                selectedIndex = Integer.parseInt(values[i]);
+            }
+            catch (Exception ex) {
+                // ignore, some illegal request.. (maybe log it)
+            }
+        }
+
+        if ( selectedIndex>=0 ) {
+            setSelectedIndex(selectedIndex);
         }
     }
 
@@ -536,28 +599,21 @@ public class SComboBox
     }
 
 
-    // do not initalize with null!
-    private SCellRendererPane cellRendererPane = new SCellRendererPane();
 
+    public void fireIntermediateEvents() {
+    }
+    public void fireFinalEvents() {
+    }
 
     /**
      * TODO: documentation
      *
      * @return
      */
-    public SCellRendererPane getCellRendererPane() {
+    public final SCellRendererPane getCellRendererPane() {
         return cellRendererPane;
     }
 
-
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "ComboBoxCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -565,11 +621,16 @@ public class SComboBox
     public void setCG(ComboBoxCG cg) {
         super.setCG(cg);
     }
+
+    public String getSelectionParameter(int index) {
+        return Integer.toString(index);
+    }
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -15,30 +15,118 @@
 package org.wings;
 
 import org.wings.plaf.*;
+import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * This is a separator. Example: <hr>
  *
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class SSeparator
-    extends SHorizontalRule
+    extends SComponent
 {
     private static final String cgClassID = "SeparatorCG";
 
     /**
-     * TODO: documentation
-     *
+     * shaded rule?
+     */
+    protected boolean shade = true;
+
+    /**
+     * width of the rule
+     */
+    protected int width = 0;
+
+    /**
+     * size of the rule (percent?)
+     */
+    protected int size = 0;
+
+    /**
+     * the aligment
+     */
+    protected int alignment = SConstants.NO_ALIGN;
+
+
+    /**
+     * Creates s new separator. Shade is enabled, width and size = 0.
      */
     public SSeparator() {
     }
 
+
     /**
-     * TODO: documentation
+     * sets the alignment
+     *
+     * @param al
+     */
+    public void setAlignment(int al) {
+        alignment = al;
+    }
+
+    /**
+     * returns the alignment
      *
      * @return
      */
+    public int getAlignment() {
+        return alignment;
+    }
+
+    /**
+     * sets the size of the rule
+     *
+     * @param s
+     */
+    public void setSize(int s) {
+        size = s;
+    }
+
+    /**
+     * returns the size of the rule
+     *
+     * @return the size
+     */
+    public int getSize() {
+        return size;
+    }
+
+    /**
+     * sets the width of the rule
+     *
+     * @param s the width
+     */
+    public void setWidth(int s) {
+        width = s;
+    }
+
+    /**
+     * returns the width of the rule
+     *
+     * @return the width
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * enable or disable shading of the rule
+     *
+     * @param s shade yes or no
+     */
+    public void setShade(boolean s) {
+        shade = s;
+    }
+
+    /**
+     * returns the shading
+     *
+     * @return yes or no
+     */
+    public boolean getShade() {
+        return shade;
+    }
+
     public String getCGClassID() {
         return cgClassID;
     }
@@ -52,5 +140,6 @@ public class SSeparator
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

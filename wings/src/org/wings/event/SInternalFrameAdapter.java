@@ -11,7 +11,6 @@
  *
  * Please see COPYING for the complete licence.
  */
-
 package org.wings.event;
 
 /**
@@ -54,3 +53,11 @@ public abstract class SInternalFrameAdapter
      */
     public void internalFrameUnmaximized(SInternalFrameEvent e) {}
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
+ * End:
+ */

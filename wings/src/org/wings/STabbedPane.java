@@ -17,26 +17,30 @@ package org.wings;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-import javax.swing.Icon;
 import javax.swing.SingleSelectionModel;
 import javax.swing.DefaultSingleSelectionModel;
+import javax.swing.GrayFilter;
+import javax.swing.ImageIcon;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.wings.plaf.*;
 import org.wings.style.*;
 
+// fixme: refactorize.
 /**
- * TODO: documentation
+ * A tabbed pane shows one tab (usually a panel) at a moment.
+ * The user can switch between the panels.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class STabbedPane
+public class STabbedPane 
     extends SContainer
-    implements SConstants, ActionListener
+    implements SConstants
 {
     /**
      * @see #getCGClassID
@@ -54,37 +58,36 @@ public class STabbedPane
 
     ArrayList pages = new ArrayList(2);
 
-    SCardLayout card = new SCardLayout();
-    SContainer contents = new SContainer(card);
-
-    protected SButtonGroup group;
+    /**
+     * layout used to render the tabs. Only one tab is on top at a time.
+     */
+    final SCardLayout card = new SCardLayout();
 
     /**
-     * TODO: documentation
+     * container for all tabs. The card layout shows always one on
+     * top.
      */
-    protected Color buttonOrigBackground;
+    final SContainer contents = new SPanel(card);
+
+    /**
+     * All tabs are buttons, that are handled in this button
+     * group.
+     */
+    protected SButtonGroup group;
+
 
     /** the maximum tabs per line */
     protected int maxTabsPerLine = -1;
 
-    SContainer buttons = new SContainer();
-
+    SContainer buttons = new SPanel();
     ArrayList changeListener = new ArrayList(2);
 
-    /**
-     * TODO: documentation
-     */
-    protected Color selectionForeground;
-
-    /**
-     * TODO: documentation
-     */
-    protected Color selectionBackground;
-
-    /**
-     * TODO: documentation
-     */
+    /** The style of selected tabs */
     protected Style selectionStyle;
+
+    /** The dynamic attributes of selected tabs */
+    protected AttributeSet selectionAttributes = new SimpleAttributeSet();
+
 
     /**
      * Creates a new empty Tabbed Pane with the tabs at the top.
@@ -109,50 +112,132 @@ public class STabbedPane
 
         setTabPlacement(tabPlacement);
 
-        super.add(contents, SBorderLayout.CENTER);
+        super.addComponent(contents, SBorderLayout.CENTER, 0);
 
         group = new SButtonGroup();
-        group.addActionListener(this);
+        group.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    SAbstractButton button = group.getSelection();
+                    for (int i=0; i < getTabCount(); i++) {
+                        Page page = getPageAt(i);
+                        if (button == page.button) {
+                            setSelectedIndex(i);
+                            fireStateChanged();
+                            return;
+                        }
+                    }
+                }
+            });
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param c
+     * @param style the style of selected cells
      */
-    public void setSelectionForeground(Color c) {
-        selectionForeground = c;
+    public void setSelectionStyle(Style selectionStyle) {
+        this.selectionStyle = selectionStyle;
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param c
-     */
-    public void setSelectionBackground(Color c) {
-        selectionBackground = c;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
-    public void setSelectionStyle(Style s) {
-        selectionStyle = s;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return selection style
+     * @return the style of selected cells.
      */
     public Style getSelectionStyle() { return selectionStyle; }
 
     /**
-     * TODO: documentation
+     * Set a selectionAttribute.
+     * @param name the selectionAttribute name
+     * @param value the selectionAttribute value
+     */
+    public void setSelectionAttribute(String name, String value) {
+        boolean changed = selectionAttributes.isDefined(name);
+        selectionAttributes.putAttribute(name, value);
+
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * return the value of an selectionAttribute.
+     * @param name the selectionAttribute name
+     */
+    public String getSelectionAttribute(String name) {
+        return selectionAttributes.getAttribute(name);
+    }
+
+    /**
+     * remove an selectionAttribute
+     * @param name the selectionAttribute name
+     */
+    public String removeSelectionAttribute(String name) {
+        if ( selectionAttributes.isDefined(name) ) {
+            String value = selectionAttributes.removeAttribute(name);
+
+            reload(ReloadManager.RELOAD_STYLE);
+
+            return value;
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Set the selectionAttributes.
+     * @param selectionAttributes the selectionAttributes
+     */
+    public void setSelectionAttributes(AttributeSet selectionAttributes) {
+        if (selectionAttributes == null)
+            throw new IllegalArgumentException("null not allowed");
+
+        if (!this.selectionAttributes.equals(selectionAttributes)) {
+            this.selectionAttributes = selectionAttributes;
+            reload(ReloadManager.RELOAD_STYLE);
+        }
+    }
+
+    /**
+     * @return the current selectionAttributes
+     */
+    public AttributeSet getSelectionAttributes() {
+        return selectionAttributes;
+    }
+
+    /**
+     * Set the background color.
+     * @param c the new background color
+     */
+    public void setSelectionBackground(Color color) {
+        setSelectionAttribute("background-color", CSSStyleSheet.getAttribute(color));
+    }
+
+    /**
+     * Return the background color.
+     * @return the background color
+     */
+    public Color getSelectionBackground() {
+        return CSSStyleSheet.getBackground(selectionAttributes);
+    }
+
+    /**
+     * Set the foreground color.
+     * @param c the new foreground color
+     */
+    public void setSelectionForeground(Color color) {
+        setSelectionAttribute("color", CSSStyleSheet.getAttribute(color));
+    }
+
+    /**
+     * Return the foreground color.
+     * @return the foreground color
+     */
+    public Color getSelectionForeground() {
+        return CSSStyleSheet.getForeground(selectionAttributes);
+    }
+
+    /**
+     * Add a listener to the list of change listeners.
+     * ChangeListeners are notified, when the tab selection changes.
      *
-     * @param cl
+     * @param cl add to listener list
      */
     public void addChangeListener(ChangeListener cl) {
         if ( !changeListener.contains(cl) )
@@ -160,17 +245,17 @@ public class STabbedPane
     }
 
     /**
-     * TODO: documentation
+     * Remove listener from the list of change listeners.
+     * ChangeListeners are notified, when the tab selection changes.
      *
-     * @param cl
+     * @param cl remove from listener list
      */
     public void removeChangeListener(ChangeListener cl) {
         changeListener.remove(cl);
     }
 
     /**
-     * TODO: documentation
-     *
+     * Fire ChangeEvents at all registered change listeners.
      */
     protected void fireStateChanged() {
         ChangeEvent ce = new ChangeEvent(this);
@@ -194,7 +279,7 @@ public class STabbedPane
      * <li>SConstants.LEFT
      * <li>SConstants.RIGHT
      * </ul>
-     * The default value, if not set, is TOP.
+     * The default value is TOP.
      *
      * @param tabPlacement the placement for the tabs relative to the content
      *
@@ -206,23 +291,23 @@ public class STabbedPane
         }
 
         this.tabPlacement = tabPlacement;
-        super.remove(buttons);
+        super.removeComponent(buttons);
 
         switch ( tabPlacement ) {
         case TOP:
-            super.add(buttons, SBorderLayout.NORTH);
+            super.addComponent(buttons, SBorderLayout.NORTH, 0);
             break;
 
         case BOTTOM:
-            super.add(buttons, SBorderLayout.SOUTH);
+            super.addComponent(buttons, SBorderLayout.SOUTH, 0);
             break;
 
         case LEFT:
-            super.add(buttons, SBorderLayout.WEST);
+            super.addComponent(buttons, SBorderLayout.WEST, 0);
             break;
 
         case RIGHT:
-            super.add(buttons, SBorderLayout.EAST);
+            super.addComponent(buttons, SBorderLayout.EAST, 0);
             break;
         }
     }
@@ -317,7 +402,7 @@ public class STabbedPane
      * @param component the component for the tab
      */
     public int indexOfComponent(SComponent component) {
-        for ( int i = 0; i < getTabCount(); i++ ) {
+        for ( int i = 0; i < getTabCount(); ++i ) {
             if ( contents.getComponentAt(i).equals(component) ) {
                 return i;
             }
@@ -348,22 +433,22 @@ public class STabbedPane
      * @see #addTab
      * @see #removeTabAt
      */
-    public void insertTab(String title, Icon icon,
+    public void insertTab(String title, SIcon icon,
                           SComponent component, String tip,
                           int index) {
 
-        Icon disabledIcon = null;
+        SIcon disabledIcon = null;
 
-        // if (icon != null && icon instanceof ImageIcon) {
-        //    disabledIcon = new ImageIcon(GrayFilter.createDisabledImage(((ImageIcon)icon).getImage()));
-        // }
+        if (icon != null && icon instanceof SImageIcon) {
+            disabledIcon = new SImageIcon(new ImageIcon(GrayFilter.createDisabledImage(((SImageIcon)icon).getImage())));
+        }
 
         String t = (title != null) ? title : "";
 
         Page p = new Page(this, t, icon, disabledIcon, component, tip);
         pages.add(index, p);
 
-        contents.addComponent(p.component, p.component.getUnifiedIdString());
+        contents.addComponent(p.component, p.component.getComponentId());
 
         if ( pages.size() == 1 ) {
             setSelectedIndex(0);
@@ -384,7 +469,7 @@ public class STabbedPane
      * @see #insertTab
      * @see #removeTabAt
      */
-    public void addTab(String title, Icon icon, SComponent component, String tip) {
+    public void addTab(String title, SIcon icon, SComponent component, String tip) {
         insertTab(title, icon, component, tip, pages.size());
     }
 
@@ -399,7 +484,7 @@ public class STabbedPane
      * @see #insertTab
      * @see #removeTabAt
      */
-    public void addTab(String title, Icon icon, SComponent component) {
+    public void addTab(String title, SIcon icon, SComponent component) {
         insertTab(title, icon, component, null, pages.size());
     }
 
@@ -416,19 +501,6 @@ public class STabbedPane
         insertTab(title, null, component, null, pages.size());
     }
 
-    /**
-     * Adds a <i>component</i> with a tab title defaulting to
-     * the name of the component.
-     * Cover method for insertTab().
-     * @param component The component to be displayed when this tab is clicked.
-     *
-     * @see #insertTab
-     * @see #removeTabAt
-     */
-    public SComponent add(SComponent component) {
-        addTab(component.getName(), component);
-        return component;
-    }
 
     /**
      * Adds a <i>component</i> with the specified tab title.
@@ -445,41 +517,20 @@ public class STabbedPane
     }
 
     /**
-     * Adds a <i>component</i> at the specified tab index with a tab
-     * title defaulting to the name of the component.
-     * Cover method for insertTab().
-     * @param component The component to be displayed when this tab is clicked.
-     * @param index the position to insert this new tab
-     *
-     * @see #insertTab
-     * @see #removeTabAt
-     */
-    public SComponent add(SComponent component, int index) {
-        insertTab(component.getName(), null, component, null, index);
-        return component;
-    }
-
-    /**
-     * Adds a <i>component</i> to the tabbed pane.  If constraints
+     * Adds a <i>component</i> at the specified tab index.  If constraints
      * is a String or an Icon, it will be used for the tab title,
      * otherwise the component's name will be used as the tab title.
      * Cover method for insertTab().
      * @param component The component to be displayed when this tab is clicked.
      * @constraints the object to be displayed in the tab
+     * @param index the position to insert this new tab
      *
      * @see #insertTab
      * @see #removeTabAt
      */
-    public void add(SComponent component, Object constraints) {
-        if (constraints instanceof String) {
-            addTab((String)constraints, component);
-        }
-        else if (constraints instanceof Icon) {
-            addTab(null, (Icon)constraints, component);
-        }
-        else {
-            add(component);
-        }
+    public SComponent addComponent(SComponent component, 
+                                   Object constraints) {
+        return addComponent(component, constraints, pages.size());
     }
 
     /**
@@ -494,10 +545,13 @@ public class STabbedPane
      * @see #insertTab
      * @see #removeTabAt
      */
-    public void add(SComponent component, Object constraints, int index) {
-        Icon icon = constraints instanceof Icon? (Icon)constraints : null;
-        String title = constraints instanceof String? (String)constraints : null;
-        insertTab(title, icon, component, null, index);
+    public SComponent addComponent(SComponent component, 
+                                   Object constraints, int index) {
+        SIcon icon = constraints instanceof SIcon ? (SIcon)constraints : null;
+        String title = constraints instanceof String ? (String)constraints : null;
+        insertTab(title, icon, component, null, Math.min(index, pages.size()));
+
+        return component;
     }
 
     /**
@@ -531,26 +585,15 @@ public class STabbedPane
      * @see #addTab
      * @see #removeTabAt
      */
-    public void remove(SComponent component) {
+    public boolean removeComponent(SComponent component) {
         int index = indexOfComponent(component);
         if ( index != -1 ) {
             removeTabAt(index);
+            return true;
         }
-    }
 
-    /**
-     * Removes all the tabs from the tabbedpane.
-     *
-     * @see #addTab
-     * @see #removeTabAt
-     */
-    public void removeAll() {
-        setSelectedIndex(-1);
-        buttons.removeAll();
-        contents.removeAll();
-        pages.clear();
+        return false;
     }
-
 
     /**
      * Sets the maximum tabs per line. tabs <= 0: No maximum.
@@ -580,7 +623,7 @@ public class STabbedPane
      *
      * @see #setIconAt
      */
-    public Icon getIconAt(int index) {
+    public SIcon getIconAt(int index) {
         return getPageAt(index).icon;
     }
 
@@ -589,7 +632,7 @@ public class STabbedPane
      *
      * @see #setDisabledIconAt
      */
-    public Icon getDisabledIconAt(int index) {
+    public SIcon getDisabledIconAt(int index) {
         return getPageAt(index).disabledIcon;
     }
 
@@ -659,7 +702,7 @@ public class STabbedPane
      *
      * @see #getIconAt
      */
-    public void setIconAt(int index, Icon icon) {
+    public void setIconAt(int index, SIcon icon) {
         getPageAt(index).icon = icon;
     }
 
@@ -671,7 +714,7 @@ public class STabbedPane
      *
      * @see #getDisabledIconAt
      */
-    public void setDisabledIconAt(int index, Icon disabledIcon) {
+    public void setDisabledIconAt(int index, SIcon disabledIcon) {
         getPageAt(index).disabledIcon = disabledIcon;
     }
 
@@ -739,15 +782,12 @@ public class STabbedPane
      */
     public void setComponentAt(int index, SComponent component) {
         Page page = getPageAt(index);
-        if ( component == page.component ) return;
-        
-        if ( page.component != null ) {
-            contents.removeComponent(page.component);
-        }
-        page.component = component;
-        contents.addComponent(page.component, page.component.getNamePrefix());
-        if ( getSelectedIndex() == index ) {
-            card.show(page.component);
+        if ( component != page.component ) {
+            if ( page.component != null ) {
+                contents.removeComponent(page.component);
+            }
+            page.component = component;
+            contents.addComponent(page.component, page.component.getComponentId());
         }
     }
 
@@ -770,7 +810,7 @@ public class STabbedPane
      * Returns -1 if no tab has this icon.
      * @param icon the icon for the tab
      */
-    public int indexOfTab(Icon icon) {
+    public int indexOfTab(SIcon icon) {
         for ( int i = 0; i < getTabCount(); i++ ) {
             if ( getIconAt(i).equals(icon) ) {
                 return i;
@@ -810,56 +850,22 @@ public class STabbedPane
         }
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param e
-     */
-    public void actionPerformed(ActionEvent e) {
-        System.err.println("actionPerformed");
-        SCheckBox checkbox = group.getSelection();
-        for (int i=0; i < getTabCount(); i++) {
-            Page page = getPageAt(i);
-            if (checkbox == page.button) {
-                setSelectedIndex(i);
-                fireStateChanged();
-                return;
-            }
-        }
-        /*
-        int oldIndex = getSelectedIndex();
-        // System.out.println("EVENT " +  e);
-        for ( int i=0; i<getTabCount(); i++ ) {
-            Page p = getPageAt(i);
-            if ( p.button==e.getSource() && p.isEnabled() &&
-                 p.isVisible() ) {
-                if ( i != oldIndex ) {
-                    setSelectedIndex(i);
-                    fireStateChanged();
-                }
-
-                // System.out.println("Select " +  i);
-                return;
-            }
-        }
-        */
-    }
-
-    private class Page {
+    private static class Page implements Serializable
+    {
         String title;
         Color background;
         Color foreground;
         Style style;
-        Icon icon;
-        Icon disabledIcon;
+        SIcon icon;
+        SIcon disabledIcon;
         STabbedPane parent;
         SComponent component;
-        SRadioButton button;
+        SAbstractButton button;
         String tip;
         boolean enabled = true;
 
-        public Page(STabbedPane parent, String title, Icon icon,
-                    Icon disabledIcon, SComponent component, String tip) {
+        public Page(STabbedPane parent, String title, SIcon icon,
+                    SIcon disabledIcon, SComponent component, String tip) {
             this.title = title;
             this.icon = icon;
             this.disabledIcon = disabledIcon;
@@ -867,7 +873,8 @@ public class STabbedPane
             this.component = component;
             this.tip = tip;
 
-            button = new SRadioButton(title);
+            // FIXME: this shouldn't be buttons.
+            button = new SToggleButton(title);
             button.setShowAsFormComponent(false);
             button.setSelectedIcon(icon);
             button.setDisabledSelectedIcon(disabledIcon);
@@ -968,14 +975,6 @@ public class STabbedPane
         }
     }
 
-    /**
-     * Returns the name of the CGFactory class that generates the
-     * look and feel for this component.
-     *
-     * @return "TabbedPaneCG"
-     * @see SComponent#getCGClassID
-     * @see CGDefaults#getCG
-     */
     public String getCGClassID() {
         return cgClassID;
     }
@@ -989,5 +988,6 @@ public class STabbedPane
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -1,0 +1,93 @@
+<template name="TabbedPaneCG" for="org.wings.STabbedPane">
+  <comp-property type="Style" name="selectionStyle">tabselected</comp-property>
+  <property type="Style" name="tabNonSelectedStyle">tabnotselected</property>
+
+  <property type="SIcon" name="firstIconNormal">org/wings/icons/TabbedPaneFirst.gif</property>
+  <property type="SIcon" name="connectIconNormal">org/wings/icons/TabbedPaneNormal.gif</property>
+  <property type="SIcon" name="lastIconNormal">org/wings/icons/TabbedPaneLast.gif</property>
+
+  <property type="SIcon" name="firstIconSelected">org/wings/icons/TabbedPaneFirstSelected.gif</property>
+  <property type="SIcon" name="connectIconSelectedLeft">org/wings/icons/TabbedPaneSelectedLeft.gif</property>
+  <property type="SIcon" name="connectIconSelectedRight">org/wings/icons/TabbedPaneSelectedRight.gif</property>
+  <property type="SIcon" name="lastIconSelected">org/wings/icons/TabbedPaneLast.gif</property>
+ 
+  <property type="String" name="imageAlign">absbottom</property>
+
+  <write>
+  <%
+      final int maxTabsPerLine = component.getMaxTabsPerLine();
+      SContainer buttons;
+      SContainer contents;
+      if (SBorderLayout.CENTER.equals(component.getConstraintAt(0))) {
+          buttons = (SContainer)component.getComponentAt(1);
+          contents = (SContainer)component.getComponentAt(0);
+      }
+      else {
+          buttons = (SContainer)component.getComponentAt(0);
+          contents = (SContainer)component.getComponentAt(1);
+      }
+
+      boolean newLine = true;      
+      boolean selected = false;
+      boolean selectedBefore = false;
+      final int loops = buttons.getComponentCount();
+      for (int i=0; i < loops; ++i) {
+	  selected = (i == component.getSelectedIndex());
+	  %><img<%
+          %><%|align=imageAlign%><%
+	  if (newLine) {
+	      if (selected) { %><%|src=firstIconSelected.getURL()%><% }
+	      else          { %><%|src=firstIconNormal.getURL()%><% }
+	      newLine = false;
+	  }
+	  else {
+	      if (selectedBefore) {
+		  %><%|src=connectIconSelectedRight.getURL()%><%
+	      }
+	      else if (selected) {
+		  %><%|src=connectIconSelectedLeft.getURL()%><%
+	      }
+	      else {
+		  %><%|src=connectIconNormal.getURL()%><%
+	      }
+	  }
+	  %> /><% // close image tag.
+          SAbstractButton button = (SAbstractButton)buttons.getComponentAt(i);
+          String text = button.getText();
+          if (text != null && !text.endsWith("&nbsp;")) {
+	       // HACK!
+               button.setText(text + "&nbsp;");
+	       button.setEscapeSpecialChars(false);
+	  }
+	  selected = (i == component.getSelectedIndex());
+	  button.setStyle(selected 
+	                  ? component.getSelectionStyle() 
+			  : tabNonSelectedStyle);
+	  
+	  button.write(device);
+	  
+	  if ( maxTabsPerLine > 0 && ((i+1) % maxTabsPerLine == 0) ) {
+      	      %><img<%
+              %><%|align=imageAlign%><%
+	      if (selected) { %><%|src=lastIconSelected.getURL()%><% }
+	      else          { %><%|src=lastIconNormal.getURL()%><% }
+	      %> /><br /><%
+	      newLine = true;
+	  }
+	  selectedBefore = selected;
+       }
+       if (!newLine) {
+             // closed tab if not already written..
+              %><img<%
+              %><%|align=imageAlign%><%
+	      if (selected) { %><%|src=lastIconSelected.getURL()%><% }
+	      else          { %><%|src=lastIconNormal.getURL()%><% }
+	      %> /><%
+       }
+      %>
+<table width="100%" cellpadding="0" cellspacing="0" border="1"><tr><%
+        %><td><%
+        contents.write(device);
+        %></td></tr></table>
+</write>
+</template>

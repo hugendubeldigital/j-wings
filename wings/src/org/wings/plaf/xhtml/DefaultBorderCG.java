@@ -18,7 +18,8 @@ import java.io.IOException;
 
 import javax.swing.Icon;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
+import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 
@@ -28,30 +29,31 @@ public class DefaultBorderCG
     public void writePrefix(Device d, SBorder b)
 	throws IOException
     {
-	d.append("<table><tr><td cellpadding=\"")
-	    .append(b.getInsets().left)
-	    .append("\">");
+	d.print("<table><tr><td cellpadding=\"")
+	    .print(b.getInsets().left)
+	    .print("\">");
     }
-
+    
     public void writePostfix(Device d, SBorder b)
 	throws IOException
     {
-	d.append("</td></tr></table>");
+	d.print("</td></tr></table>");
     }
     
-	public void writeSpanAttributes( Device d, SBorder border )
-    	throws IOException
-     {
+    public void writeSpanAttributes( Device d, SBorder border )
+        throws IOException
+    {
      	/* thickness & type */
-		d.append( "border: 1px solid;" );
+        d.print( "border: 1px solid;" );
         /* color */
-		d.append( "border-color: #000000;" );
-     }
+        d.print( "border-color: #000000;" );
+    }
 }
 
 /*
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

@@ -16,7 +16,6 @@ package wingset;
 
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
 
 import org.wings.*;
 
@@ -29,30 +28,45 @@ import org.wings.*;
 public class ButtonExample
     extends WingSetPane
 {
-    final Icon icon = new ResourceImageIcon(SButton.class, "icons/Warn.gif");
-    final Icon disabledIcon = new ResourceImageIcon(SButton.class,
-                                                    "icons/WarnDis.gif");
+    static final ClassLoader cl = WingSet.class.getClassLoader();
+    static final SIcon icon = 
+        new ResourceImageIcon(cl, "wingset/icons/ButtonIcon.gif");
+    static final SIcon disabledIcon = 
+        new ResourceImageIcon(cl, "wingset/icons/ButtonDisabledIcon.gif");
+    static final SIcon pressedIcon = 
+        new ResourceImageIcon(cl, "wingset/icons/ButtonPressedIcon.gif");
+    static final SIcon rolloverIcon = 
+        new ResourceImageIcon(cl, "wingset/icons/ButtonRolloverIcon.gif");
     
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));
         
-        p.add(new SLabel("<h4>Buttons outside forms</h4>"));
-        p.add(new SLabel("<h4>Image buttons outside forms</h4>"));
+        p.add(htmlLabel("<h4>Buttons outside forms</h4>"));
+        p.add(htmlLabel("<h4>Image buttons outside forms</h4>"));
         p.add(createButtonExample());
         p.add(createImageButtonExample());
         
         SForm form = new SForm();
-        form.add(new SLabel("<h4>Buttons in a form</h4>"));
+        form.add(htmlLabel("<h4>Buttons in a form</h4>"));
         form.add(createButtonExample());
         p.add(form);
             
         form = new SForm();
-        form.add(new SLabel("<h4>Image buttons in a form</h4>"));
+        form.add(htmlLabel("<h4>Image buttons in a form</h4>"));
         form.add(createImageButtonExample());
         p.add(form);
         return p;
     }
 
+
+    /**
+     * creates a label, that contains HTML formatting information.
+     */
+    private SLabel htmlLabel(String text) {
+        SLabel label = new SLabel(text);
+        label.setEscapeSpecialChars(false);
+        return label;
+    }
 
     SContainer createButtonExample() {
         SPanel text = new SPanel();
@@ -71,7 +85,7 @@ public class ButtonExample
             b.addActionListener(action);
             text.add(b);
         }
-        text.add(new SLabel("<br />"));
+        text.add(htmlLabel("<br />"));
         text.add(pressed);
 
         return text;
@@ -91,13 +105,15 @@ public class ButtonExample
         buttons[8] = new SButton("testBR");
 
         for ( int i=0; i<buttons.length; i++ ) {
-            buttons[i].setIcon(icon);
-            buttons[i].setDisabledIcon(disabledIcon);
-            buttons[i].setToolTipText("Button " + i);
+            if ( i!=4 ) {
+                buttons[i].setIcon(icon);
+                buttons[i].setDisabledIcon(disabledIcon);
+                buttons[i].setRolloverIcon(rolloverIcon);
+                buttons[i].setPressedIcon(pressedIcon);
+                buttons[i].setToolTipText("Button " + i);
+            }
         }
 
-        buttons[4].setIcon((Icon)null);
-        //buttons[4].setIcon("http://194.95.24.168/~armin/WingSet/swing-64.gif");
 
         buttons[0].setVerticalTextPosition(SConstants.TOP);
         buttons[0].setHorizontalTextPosition(SConstants.LEFT);
@@ -152,7 +168,7 @@ public class ButtonExample
             b.add(buttons[i]);
 
         erg.add(b);
-        erg.add(new SLabel("<br />"));
+        erg.add(htmlLabel("<br />"));
         erg.add(pressed);
 
         return erg;
@@ -163,5 +179,6 @@ public class ButtonExample
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

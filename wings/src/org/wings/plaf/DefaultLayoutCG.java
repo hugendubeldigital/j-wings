@@ -16,7 +16,7 @@ package org.wings.plaf;
 
 import java.io.IOException;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
 import org.wings.io.*;
 
 public class DefaultLayoutCG
@@ -33,5 +33,6 @@ public class DefaultLayoutCG
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

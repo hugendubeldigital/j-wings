@@ -15,9 +15,10 @@
 package org.wings;
 
 /**
- * TODO: documentation
+ * Cell Renderer for {@link SList}. This is similar (almost the same) to the renderer 
+ * approach in swing. 
  *
- * @author
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public interface SListCellRenderer
@@ -32,5 +33,6 @@ public interface SListCellRenderer
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

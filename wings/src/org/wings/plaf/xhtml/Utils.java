@@ -18,7 +18,8 @@ import java.io.IOException;
 
 import java.awt.Color;
 
-import org.wings.*;
+import org.wings.*; import org.wings.border.*;
+import org.wings.border.*;
 import org.wings.style.*;
 import org.wings.io.Device;
 
@@ -61,18 +62,17 @@ public final class Utils implements SConstants
           layout.write(d);
         }
         else {
-            for (int i=0; i < c.getComponentCount(); i++) {
+            for (int i=0; i < c.getComponentCount(); i++)
               c.getComponentAt(i).write(d);
-            }
         }
     }
 
     public static void writeHiddenComponent(Device d, String name, String value)
         throws IOException
     {
-        d.append("<input type=\"hidden\" name=\"").
-	  append(name).append("\" value=\"").
-	  append(value).append("\" />\n");
+        d.print("<input type=\"hidden\" name=\"")
+            .print(name).print("\" value=\"")
+            .print(value).print("\" />"); 
     }
 
 
@@ -89,28 +89,6 @@ public final class Utils implements SConstants
             default:   escaped.append(c);
             }
         }
-        return escaped.toString();
-    }
-
-    /**
-      * Changes a space to &amp;nbsp;.
-      * @return the escaped String.
-      */
-    public static String escapeSpace(String text) {
-        StringBuffer escaped = new StringBuffer(text.length());
-        char[] t = new char[text.length()];
-        int lastnonwhite = 0, i=0;
-        text.getChars(0, text.length(), t, 0);
-        for (; i<t.length; i++) {
-            if (t[i]==' ') {
-                if(lastnonwhite<i)
-                    escaped.append(t, lastnonwhite, i-lastnonwhite);
-                lastnonwhite=i+1;
-                escaped.append("&nbsp;");
-            }
-        }
-        if (lastnonwhite<i)
-            escaped.append(t, lastnonwhite, i-lastnonwhite);
         return escaped.toString();
     }
 
@@ -133,11 +111,7 @@ public final class Utils implements SConstants
 	}
     }
 
-    /**
-      * @deprecated use {@link org.wings.SColor#getHex()}
-      */
-    public static String toColorString(int rgb)
-    {
+    public static String toColorString(int rgb) {
         char[] buf = new char[6];
         int digits = 6;
         do {
@@ -153,21 +127,22 @@ public final class Utils implements SConstants
         return toColorString(c.getRGB());
     }
 
-    public static void appendTableCellAlignment(Device s, SComponent c) {
+    public static void printTableCellAlignment(Device s, SComponent c) 
+        throws IOException {
         switch (c.getHorizontalAlignment()) {
         case NO_ALIGN:
             break;
         case CENTER:
-            s.append(" align=\"center\"");
+            s.print(" align=\"center\"");
             break;
         case LEFT:
-            s.append(" align=\"left\"");
+            s.print(" align=\"left\"");
             break;
         case RIGHT:
-            s.append(" align=\"right\"");
+            s.print(" align=\"right\"");
             break;
         case JUSTIFY:
-            s.append(" align=\"justify\"");
+            s.print(" align=\"justify\"");
             break;
         }
     
@@ -176,40 +151,66 @@ public final class Utils implements SConstants
         case CENTER:
             break;
         case TOP:
-            s.append(" valign=\"top\"");
+            s.print(" valign=\"top\"");
             break;
         case BOTTOM:
-            s.append(" valign=\"bottom\"");
+            s.print(" valign=\"bottom\"");
             break;
         case BASELINE:
-            s.append(" valign=\"baseline\"");
+            s.print(" valign=\"baseline\"");
             break;
         }
     }
 
-    public static void appendTableCellColors(Device s, SComponent c) {
+    public static void printTableCellColors(Device s, SComponent c) 
+        throws IOException {
         // if (c.getForeground()!=null)
-        //     s.append(" COLOR=#").
-        //         append(toColorString(c.getForeground()));
+        //     s.print(" COLOR=#").
+        //         print(toColorString(c.getForeground()));
 
         if (c.getBackground()!=null)
-            s.append(" bgcolor=#").
-                append(toColorString(c.getBackground()));
+            s.print(" bgcolor=#")
+                .print(toColorString(c.getBackground()));
     }
 
-    public static void appendTableCellSpan(Device s, SComponent c) {
-        if (c.getRowSpan()>0)
-            s.append(" rowspan=").append(c.getRowSpan());
-
-        if (c.getColSpan()>0)
-            s.append(" colspan=").append(c.getColSpan());
+    public static void printTableCellSpan(Device s, SComponent c) {
     }
 
 
-    public static void appendTableCellAttributes(Device s, SComponent c) {
-        appendTableCellColors(s, c);
-        appendTableCellAlignment(s,c);
-        appendTableCellSpan(s,c);
+    public static void printTableCellAttributes(Device s, SComponent c) 
+        throws IOException {
+        printTableCellColors(s, c);
+        printTableCellAlignment(s,c);
+        printTableCellSpan(s,c);
+    }
+
+    public static void printIcon(Device d, SIcon icon, String align) 
+        throws IOException {
+        if ( icon==null )
+            return;
+
+        d.print("<img src=\"");
+        icon.getURL().write(d);
+        d.print("\"");
+        if (align != null)
+            d.print(" valign=\"").print(align).print("\"");
+        if ( icon.getIconWidth() > 0)
+            d.print(" width=\"").print(icon.getIconWidth()).print("\"");
+        if ( icon.getIconHeight() > 0)
+            d.print(" height=\"").print(icon.getIconHeight()).print("\"");
+        d.print(" border=\"0\">");
+
+    }
+
+    public static void printBlindIcon(Device d, SIcon icon, int height, 
+                                      int width) throws IOException {
+        d.print("<img src=\"").
+            print(icon.getURL()).
+            print("\"").
+            print(" width=\"").print(width).print("\"").
+            print(" height=\"").print(height).print("\"").
+            print(" border=\"0\">");
+
     }
     
     
@@ -245,28 +246,24 @@ public final class Utils implements SConstants
         SFont font = component.getFont();
         SBorder border = component.getBorder();
         SDimension dim = component.getPreferredSize();
-        java.awt.Point loc = component.getLocation();
         
-        if (bgcolor != null) d.append("background-color:#").append(toColorString(bgcolor)).append(";");
-        if (fgcolor != null) d.append("font-color:#").append(toColorString(fgcolor)).append(";");
+        if (bgcolor != null) d.print("background-color:#").print(toColorString(bgcolor)).print(";");
+        if (fgcolor != null) d.print("font-color:#").print(toColorString(fgcolor)).print(";");
         if (font != null) {
             int style = font.getStyle();
-            d.append("font-size:").append(font.getSize()).append("pt;");
-            d.append("font-style:").append((style & java.awt.Font.ITALIC) > 0 ?"italic;":"normal;");
-            d.append("font-weight:").append((style & java.awt.Font.BOLD) > 0 ?"bold;":"normal;");
-            d.append("font-family:").append(font.getFace()).append(";");
+            d.print("font-size:").print(font.getSize()).print("pt;");
+            d.print("font-style:").print((style & java.awt.Font.ITALIC) > 0 ?"italic;":"normal;");
+            d.print("font-weight:").print((style & java.awt.Font.BOLD) > 0 ?"bold;":"normal;");
+            d.print("font-family:").print(font.getFace()).print(";");
         }
         
         if (border != null)
             border.writeSpanAttributes(d);
 
         if (dim != null) {
-            if (dim.width != null) d.append("width:").append(dim.width).append(";");
-            if (dim.height != null) d.append("height:").append(dim.height).append(";");
+            if (dim.width != null) d.print("width:").print(dim.width).print(";");
+            if (dim.height != null) d.print("height:").print(dim.height).print(";");
         }
-
-        if (loc.x != -1) d.append("left:").append(loc.x).append("px;");
-        if (loc.y != -1) d.append("top:").append(loc.y).append("px;");
      }
 }
 
@@ -274,5 +271,6 @@ public final class Utils implements SConstants
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

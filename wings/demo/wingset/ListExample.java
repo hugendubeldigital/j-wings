@@ -46,7 +46,7 @@ public class ListExample
     }
 
     public SContainer createListSingleSelExample() {
-        SContainer cont = new SContainer(new SFlowDownLayout());
+        SContainer cont = new SPanel(new SFlowDownLayout());
         cont.add(new SLabel("List with single selection"));
         SList list = new SList();
         list.setSelectionMode(SINGLE_SELECTION);
@@ -57,7 +57,7 @@ public class ListExample
     }
 
     public SContainer createListMultSelExample() {
-        SContainer cont = new SContainer(new SFlowDownLayout());
+        SContainer cont = new SPanel(new SFlowDownLayout());
         cont.add(new SLabel("List with multiple selection"));
         SList list = new SList();
         list.setSelectionMode(MULTIPLE_SELECTION);
@@ -68,7 +68,7 @@ public class ListExample
     }
 
     public SContainer createComboBoxExample() {
-        SContainer cont = new SContainer(new SFlowDownLayout());
+        SContainer cont = new SPanel(new SFlowDownLayout());
         cont.add(new SLabel("ComboBox"));
         SComboBox comboBox = new SComboBox();
         addComboBoxElements(comboBox);
@@ -78,7 +78,7 @@ public class ListExample
     }
 
     public SContainer createAnchorListExample() {
-        SContainer cont = new SContainer(new SFlowDownLayout());
+        SContainer cont = new SPanel(new SFlowDownLayout());
         cont.add(new SLabel("List with showAsFormComponent = false"));
         SList list = new SList();
         list.setShowAsFormComponent(false);
@@ -90,8 +90,7 @@ public class ListExample
     }
 
     public void addListElements(SList list) {
-        SImage img = new SImage(new ResourceImageIcon(SLabel.class,
-                                                      "icons/JavaCup.gif"));
+        SLabel img = new SLabel(new ResourceImageIcon("org/wings/icons/JavaCup.gif"));
         SLabel color = new SLabel("");
         color.setForeground(Color.green);
         color.setText(Color.green.toString());
@@ -107,8 +106,7 @@ public class ListExample
     }
 
     public void addComboBoxElements(SComboBox comboBox) {
-        SImage img = new SImage(new ResourceImageIcon(SLabel.class,
-                                                      "icons/JavaCup.gif"));
+        SLabel img = new SLabel(new ResourceImageIcon("org/wings/icons/JavaCup.gif"));
         SLabel color = new SLabel("");
         color.setForeground(Color.green);
         color.setText(Color.green.toString());
@@ -124,9 +122,8 @@ public class ListExample
     }
 
     public void addAnchorElements(SList list) {
-        final SImage img =
-            new SImage(new ResourceImageIcon(SLabel.class,
-                                             "icons/JavaCup.gif"));
+        final SLabel img =
+            new SLabel(new ResourceImageIcon("org/wings/icons/JavaCup.gif"));
 
         final SLabel color = new SLabel("");
         color.setForeground(Color.green);
@@ -162,5 +159,6 @@ public class ListExample
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */
