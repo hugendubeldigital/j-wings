@@ -29,7 +29,7 @@ import org.wings.util.StringUtil;
 public final class SRequestDispatcher
     implements java.io.Serializable
 {
-    // the name is not the package name but that of the event dispatcher subsystem
+    // not the package name but event dispatcher subsystem:
     private final static Logger logger = Logger.getLogger("org.wings.event");
 
     private final HashMap listener = new HashMap();
@@ -38,7 +38,8 @@ public final class SRequestDispatcher
 
     public SRequestDispatcher() {}
 
-    private final void addRequestListener(RequestListener gl, String namePrefix) {
+    private final void addRequestListener(RequestListener gl, 
+                                          String namePrefix) {
         ArrayList l = (ArrayList)listener.get(namePrefix);
         if ( l==null ) {
             l = new ArrayList(2);
@@ -49,7 +50,8 @@ public final class SRequestDispatcher
             l.add(gl);
     }
     
-    private final void removeRequestListener(RequestListener gl, String namePrefix) {
+    private final void removeRequestListener(RequestListener gl,
+                                             String namePrefix) {
         ArrayList l = (ArrayList)listener.get(namePrefix);
         if ( l!=null ) {
             l.remove(gl);
