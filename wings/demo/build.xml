@@ -193,6 +193,9 @@
       <fileset dir="wingset">
         <include name="index.html"/>
       </fileset>
+      <fileset dir="wingset">
+        <include name="*.java"/>
+      </fileset>
       <fileset dir="${lib}">
         <include name="css1.jar"/>
         <include name="old.jar"/>
