@@ -13,6 +13,10 @@
  */
 package org.wings.plaf.compiler;
 
+/**
+ * Position in a file. This is a row and a column. This position is updated
+ * by the reader ..
+ */
 public final class Position {
     private int row;
     private int col;
@@ -24,6 +28,7 @@ public final class Position {
 	col = other.col; 
 	oldChar = other.oldChar;
     }
+
     /**
      * increment row, reset col.
      * The row-delimiter is given in the parameter to allow this class
