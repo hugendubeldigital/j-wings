@@ -95,7 +95,7 @@ public class FileChooserExample
         /*
          * modify the displayed indentation depth.
          */
-        controlForm.add(new SLabel("choose maximum Content Length (in kB): "));
+        controlForm.add(new SLabel("influence maximum accepted Content Length (in kB): "));
         Object[] values = {new Integer(1), new Integer(2), new Integer(4), 
                            new Integer(8), new Integer(16), new Integer(32), 
                            new Integer(64)};
@@ -251,7 +251,6 @@ public class FileChooserExample
                         message.setText("No file chosen");
                         message.setBackground( WARN_COLOR );
                     }
-                    chooser.reset();
                 } 
                 catch ( IOException ex ) {
                     message.setText(ex.getMessage());
@@ -262,6 +261,7 @@ public class FileChooserExample
                     size.setText("");
                     contentSwitcher.show(unknownLabel);
                 }
+                chooser.reset();
             }});
 
         form.setVerticalAlignment(TOP);
