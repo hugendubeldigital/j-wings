@@ -123,6 +123,8 @@ protected void writeAnchorIcon(final Device device, SAbstractButton abstractButt
         %>"<%|title=abstractButton.getToolTipText()%><%
         %><%|accesskey=abstractButton.getMnemonic()%><%
         %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
+        Utils.writeEvents(device, abstractButton);
+
 
     }
     else {
