@@ -202,14 +202,6 @@ public final class CSS1LookAndFeel
     public Device createDevice(javax.servlet.ServletOutputStream stream) {
         return null;
     }
-
-    public void setStyleSheet(StyleSheet styleSheet) {
-        this.styleSheet = styleSheet;
-    }
-
-    public StyleSheet getStyleSheet() {
-        return styleSheet;
-    }
 }
 
 /*
