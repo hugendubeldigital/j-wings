@@ -71,6 +71,14 @@ public class IncludingReader extends Reader {
         if (in == null) return "";
         return currentFile + ":" + ((LineNumberReader) in).getLineNumber();
     }
+    
+    public String getCurrentFile() {
+        return currentFile;
+    }
+
+    public int getCurrentLineNumber() {
+        return ((LineNumberReader) in).getLineNumber();
+    }
 
     public int read()  throws IOException {
         if (in == null) return -1; // run out of files.

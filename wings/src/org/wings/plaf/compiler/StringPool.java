@@ -29,15 +29,19 @@ public class StringPool {
     private Map    nameToString;
     private List   names;
     private String identPrefix;
+    private int    identLength;
 
     /**
      * 
      */
-    public StringPool(String prefix) {
+    public StringPool(String prefix, int maxLen) {
 	stringToName = new HashMap();
 	nameToString = new HashMap();
 	names = new Vector();
 	identPrefix = prefix;
+        identLength = maxLen - prefix.length();
+        if (identLength <= 0)
+            throw new IllegalArgumentException("identifier needs more length!");
     }
 
     /**
@@ -89,13 +93,13 @@ public class StringPool {
     }
 
     /**
-     * generates a Java variable name with at most 32 characters
+     * generates a Java variable name with at most identLength characters
      * (plus prefix).
      */
     private String generateName(String prefix, String s) {
 	StringBuffer buffer = new StringBuffer();
 	boolean justUnderscore = (prefix.charAt(prefix.length()-1) == '_');
-	for (int i = 0; i < s.length() && buffer.length() < 32; ++i) {
+	for (int i = 0; i < s.length() && buffer.length() < identLength; ++i) {
 	    if (Character.isJavaIdentifierPart(s.charAt(i))) {
 		buffer.append(s.charAt(i));
 		justUnderscore = false;
