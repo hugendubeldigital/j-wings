@@ -1,5 +1,6 @@
 package org.wingx.beans.beaneditor;
 
+import java.awt.event.*;
 import java.beans.*;
 import org.wings.*;
 import org.wingx.beans.*;
@@ -14,6 +15,9 @@ import org.wingx.beans.*;
 public abstract class AbstractEditorAdapter
     implements EditorAdapter, PropertyChangeListener
 {
+    private SPanel panel = null;
+    private SComponent component;
+    private SButton button = null;
     SPropertyEditor editor;
 
     public void setEditor(SPropertyEditor editor) {
@@ -30,5 +34,41 @@ public abstract class AbstractEditorAdapter
 
     public void setValue(Object obj) {
 	editor.setValue(obj);
+    }
+
+    protected void setComponent(SComponent component) {
+	this.component = component;
+    }
+
+    public SComponent getComponent() {
+	if (editor.supportsCustomEditor())
+	    return getPanel();
+	else
+	    return component;
+    }
+
+    private SComponent getPanel() {
+	if (panel == null) {
+	    panel = new SPanel();
+	    panel.add(component);
+	    button = new SButton("...");
+	    button.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent event) {
+			showCustomEditor();
+		    }
+		});
+	    panel.add(button);
+	}
+	return panel;
+    }
+
+    private void showCustomEditor() {
+	CustomEditorDialog dialog = new CustomEditorDialog(editor.getCustomEditor());
+	dialog.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent event) {
+		    setValue(editor.getValue());
+		}
+	    });
+	dialog.show(component.getParentFrame());
     }
 }

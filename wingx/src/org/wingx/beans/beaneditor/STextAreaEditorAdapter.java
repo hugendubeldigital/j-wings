@@ -23,12 +23,13 @@ public class STextAreaEditorAdapter
     implements BeanEditorConstants
 {
     public STextAreaEditorAdapter() {
-        component = new STextArea();
-	component.addTextListener(this);
+        textComponent = new STextArea();
+	textComponent.addTextListener(this);
+	setComponent(textComponent);
     }
 
     public void init(PropertyDescriptor descriptor) {
-        STextArea field = (STextArea)component;
+        STextArea field = (STextArea)textComponent;
         Integer val;
         if ((val = (Integer)descriptor.getValue(COLUMNS)) != null)
             field.setColumns(val.intValue());

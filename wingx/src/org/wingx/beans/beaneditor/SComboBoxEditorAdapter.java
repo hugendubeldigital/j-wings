@@ -22,39 +22,36 @@ public class SComboBoxEditorAdapter
     extends AbstractEditorAdapter
     implements ActionListener
 {
-    protected SComboBox component;
+    protected SComboBox comboBox;
 
     public SComboBoxEditorAdapter() {
-        component = new SComboBox();
-	component.addActionListener(this);
+        comboBox = new SComboBox();
+	comboBox.addActionListener(this);
+	setComponent(comboBox);
     }
 
     public void setEditor(SPropertyEditor editor) {
 	super.setEditor(editor);
-	component.setModel(new DefaultComboBoxModel(editor.getTags()));
+	comboBox.setModel(new DefaultComboBoxModel(editor.getTags()));
     }
 
     public void reset() {
-        component.setSelectedItem(null);
+        comboBox.setSelectedItem(null);
     }
 
     public void setValue(Object obj) {
 	editor.setValue(obj);
-	component.setSelectedItem(editor.getAsText());
+	comboBox.setSelectedItem(editor.getAsText());
     }
 
     public Object getValue() {
-        editor.setAsText((String)component.getSelectedItem());
+        editor.setAsText((String)comboBox.getSelectedItem());
 	return editor.getValue();
     }
 
-    public SComponent getComponent() {
-        return component;
-    }
-
     public void actionPerformed(ActionEvent e) {
-	if (component != e.getSource())
+	if (comboBox != e.getSource())
 	    return;
-	editor.setAsText((String)component.getSelectedItem());
+	editor.setAsText((String)comboBox.getSelectedItem());
     }
 }

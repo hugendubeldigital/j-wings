@@ -21,29 +21,26 @@ public abstract class STextComponentEditorAdapter
     extends AbstractEditorAdapter
     implements TextListener
 {
-    protected STextComponent component;
+    protected STextComponent textComponent;
+    protected SPanel panel;
 
     public void reset() {
-        component.setText(null);
+        textComponent.setText(null);
     }
 
     public void setValue(Object obj) {
 	editor.setValue(obj);
-	component.setText(editor.getAsText());
+	textComponent.setText(editor.getAsText());
     }
 
     public Object getValue() {
-        editor.setAsText(component.getText());
+        editor.setAsText(textComponent.getText());
 	return editor.getValue();
     }
 
-    public SComponent getComponent() {
-        return component;
-    }
-
     public void textValueChanged(TextEvent e) {
-	if (component != e.getSource())
+	if (textComponent != e.getSource())
 	    return;
-	editor.setAsText(component.getText());
+	editor.setAsText(textComponent.getText());
     }
 }
