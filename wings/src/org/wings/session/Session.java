@@ -53,11 +53,11 @@ public interface Session
 
     void removePropertyChangeListener(PropertyChangeListener listener);
 
-    void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
+    void addPropertyChangeListener(String propertyName,
+                                   PropertyChangeListener listener);
 
     void removePropertyChangeListener(String propertyName,
                                       PropertyChangeListener listener);
-
 
     void setLocale(Locale l);
 
