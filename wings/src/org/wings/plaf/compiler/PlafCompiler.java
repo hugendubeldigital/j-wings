@@ -140,11 +140,13 @@ public class PlafCompiler {
                 if (name == null || forClass == null) {
                     throw new IOException (file +": 'name' and 'for' as template attributes expected");
                 }
+                String extendsClass = tag.getAttribute("EXTENDS", null);
                 if (verbose) {
                     System.err.println ("template for " + name);
                 }
                 parser = new TemplateParser(name, baseDir, new File(file),
-                                            packageName, forClass);
+                                            packageName, forClass,
+                                            extendsClass);
                 parser.parse(input);
                 parser.generate(destDir, properties);
                 tag = new SGMLTag(input);

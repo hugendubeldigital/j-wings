@@ -21,6 +21,7 @@ final class Property implements Comparable {
     final String name;
     final String typeName;
     final Class  type;
+    boolean cached = true;
     String value;
 
     public Property(String typeName, String name) 
@@ -54,6 +55,12 @@ final class Property implements Comparable {
     public String getName() { return name; }
     public Class getType() { return type; }
     public String getTypeName() { return typeName; }
+    
+    /**
+     * set, whether the property manager should cache the value instantiated.
+     */
+    public void setCached(boolean c) { cached = c; }
+    public boolean shouldCache() { return cached; }
 
     public int compareTo(Object o) {
         Property other = (Property) o;

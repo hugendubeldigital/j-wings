@@ -108,6 +108,7 @@ public class TemplateParser {
     private final String templateName;
     private final String pkg;
     private final String forClassName;
+    private final String extendsClassName;
     private final Class  componentClass;
     private final Method  componentMethods[];
     private final JavaBuffer writeJavaCode;
@@ -133,11 +134,13 @@ public class TemplateParser {
 
     public TemplateParser(String name, 
                           File cwd, File sourcefile,
-                          String pkg, String forClass) 
+                          String pkg, String forClass,
+                          String extendsClass) 
         throws ClassNotFoundException {
 	this.templateName  = name;
 	this.pkg           = pkg;
 	this.forClassName  = forClass;
+        this.extendsClassName=extendsClass;
         this.componentClass  = Class.forName(forClassName);
         this.componentMethods = componentClass.getMethods();
         this.sourcefile    = sourcefile;
@@ -150,7 +153,12 @@ public class TemplateParser {
         this.writeJavaCode = new JavaBuffer(2, INDENT);
         this.commonJavaCode= new JavaBuffer(1, INDENT);
         this.stringPool    = new StringPool( VAR_PREFIX, VAR_LEN );
-        this.writeBorder  = true;
+        /*
+         * should we write the border automatically ?. Currently, we
+         * always generate code to write the border, unless we extend 
+         * some class.
+         */
+        this.writeBorder  = (extendsClass == null);
     }
 
     /**
@@ -187,6 +195,7 @@ public class TemplateParser {
         out.println ("import org.wings.border.*;");
         out.println ("import org.wings.style.*;");
         out.println ("import org.wings.util.*;");
+        out.println ("import org.wings.event.*;");
         out.println ("import org.wings.io.Device;");
 
         if (cgProperties.size() > 0 || compProperties.size() > 0 ) {
@@ -203,8 +212,12 @@ public class TemplateParser {
         }
 
         out.println();
-        out.print ("public final class " + templateName);
-        
+        out.print ("public class " + templateName);
+        // extend other CGs ?
+        if (extendsClassName != null) {
+            out.print(" extends " + extendsClassName);
+        }
+
         out.print (" implements SConstants");
         /*
          * find out the name of the interface to be implemented.
@@ -225,6 +238,7 @@ public class TemplateParser {
         else {
             out.print(", ComponentCG");
         }
+
         out.println(" {");
         
         // collected HTML snippets
@@ -267,7 +281,9 @@ public class TemplateParser {
             props = cgProperties.iterator();
             while (props.hasNext()) {
                 Property p = (Property) props.next();
-                String globalPropName = templateName + "." + p.getName();
+                // see LookAndFeel::ResourceFactory
+                String globalPropName = (templateName + "." + p.getName()
+                                         +(p.shouldCache() ? "" : ".nocache"));
                 out.print(INDENT + INDENT);
                 out.print("set" + capitalize(p.getName()));
                 out.print("((" + p.getTypeName() + ") ");
@@ -431,7 +447,9 @@ public class TemplateParser {
             if (setter == null) {
                 throw new IllegalArgumentException("<property>: there is no setter '" + setterName + "(" + p.getType().getName() + ")' in class " + setterClass.getName());
             }
-            String globalPropName = prefix + p.getName();
+            // see LookAndFeel::ResourceFactory
+            String globalPropName = (prefix + p.getName()
+                                     + (p.shouldCache() ? "" : ".nocache"));
             out.print(INDENT + INDENT + "value = manager.getObject(\"");
             out.print(globalPropName + "\", ");
             out.println(p.getTypeName() + ".class);");
@@ -546,6 +564,10 @@ public class TemplateParser {
                 seriousError("<property>: " + e.getMessage());
             }
         }
+        String cache= ap.getAttribute("cache");
+        p.setCached(cache == null 
+                    || "1".equals(cache)
+                    || cache.toLowerCase().startsWith("t"));
         StringBuffer defaultVal = new StringBuffer();
         if ((findTransitions(defaultVal, stateTransitionTags)) != endTag) {
             seriousError("unexpected tag in <property> area");
