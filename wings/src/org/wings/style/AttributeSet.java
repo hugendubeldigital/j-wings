@@ -97,6 +97,11 @@ public interface AttributeSet extends Renderable
     public void clear();
 
     /**
+     * @return true if size() == null
+     */
+    public boolean isEmpty();
+
+    /**
      * Write attribute definitions to the device
      */
     void write(Device d) throws IOException;

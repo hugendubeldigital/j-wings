@@ -218,16 +218,8 @@ public final class Utils implements SConstants
       * Test, if either background-, foreground color, font or border is set.
       * @return false, if no attribute was set, true otherwise.
       */
-    public static boolean hasSpanAttributes(SComponent component)
-     {
-         
-         return component != null && 
-             (component.getBackground() != null || 
-               component.getForeground() != null ||
-               component.getFont() != null ||
-               component.getBorder() != null ||
-               component.getPreferredSize() != null)
-             ;
+    public static boolean hasSpanAttributes(SComponent component) {
+         return component != null && !component.getAttributes().isEmpty();
      }
     
     /**
