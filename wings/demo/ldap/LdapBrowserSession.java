@@ -140,22 +140,86 @@ public class LdapBrowserSession
 	    tableForm.removeAll();
 	    peopleTable = new STable(new LdapTableModel());
 	    peopleTable.setBorderLines(new Insets(2,2,2,2));
-	    peopleTable.setSelectionMode(SINGLE_SELECTION);
-	    peopleTable.addSelectionListener(this);
-	    
+	    //peopleTable.addSelectionListener(this);
+        //[REMARK]
+	    //peopleTable.setSelectionMode(SINGLE_SELECTION);
+	    SelectableTableCellRenderer renderer = new SelectableTableCellRenderer();
+	    renderer.setSelectableColumns(new int[] {0});
+	    renderer.addCellSelectionListener(new CellSelectionListener() {
+		    public void cellSelected(CellSelectionEvent e) {
+			//viewPanel.removeAll();
+			System.out.println("Cell at position x="+e.getXPosition()+" y="+e.getYPosition());
+			
+			peopleDN = getLdapWorker().getAttributeDNValues(peopleName,baseDN);
+			//if (e.getSource() == peopleTable) {
+			//int row = peopleTable.getSelectedRow();
+			LdapTableModel model = (LdapTableModel)peopleTable.getModel();
+			String value = (String)model.getValueAt(e.getXPosition(),0);
+			System.out.println("value is" + value);
+			String dn = (String)peopleDN.get(value);
+			viewPanel.removeAll();
+			
+			BasicAttributes attrs = (BasicAttributes)getLdapWorker().getDNAttributes(dn + "," + baseDN);
+			try {
+				NamingEnumeration en = attrs.getAll();
+				while (en!=null && en.hasMoreElements()) {
+				    BasicAttribute attr = (BasicAttribute)en.nextElement();
+				    String label = attr.getID();
+				    if (viewAttributes.containsKey(label)) {
+					NamingEnumeration aValues = attr.getAll();
+					while (aValues!=null && aValues.hasMore()) {
+					    Object i = aValues.next();
+					    if (i.getClass().getName().equals("java.lang.String")) {
+						String values = "";
+						if(!values.equals("")) {
+						    values = values + "," + i;
+						}
+						else {
+						    values = (String)i;
+						}
+						viewPanel.add(new SLabel((String)viewAttributes.get(label) + "     "));
+						viewPanel.add(new SLabel(values));
+					    }
+					    if (i.getClass().getName().equals("[B")) {
+						if (label.equals("jpegPhoto")) {
+						    viewPanel.add(new SLabel((String)viewAttributes.get(label)));
+						    viewPanel.add(new SLabel(new ImageIcon((byte [])i)));
+						    System.out.println("auch ein photoooooooooooooooooooooo");
+						}
+						if (label.equals("userPassword")) {
+						    SLabel attrLabel = new SLabel((String)viewAttributes.get(label));
+						    STextField attrField = new STextField(i.toString());
+						    viewPanel.add(new SLabel(label));
+						    viewPanel.add(new SLabel("*******"));
+						}
+					    }
+					}
+				    }
+				}
+				
+			    }
+			    catch (NamingException exc){
+				System.out.println(exc);
+			    }
+			    viewPanel.setVisible(true);
+		    }
+		});
+	    peopleTable.setDefaultRenderer(renderer);
+	    //
 	    tableForm.add(peopleTable);
-	    viewPanel.removeAll();
+	    //viewPanel.removeAll();
+	    
 	}
     }
 
     private void setFilter(String f) {
 	filter = f;
     }
-    
+
     public String getFilter() {
 	return filter;
     }
-   
+
     private void setLdapWorker(LdapWorker worker) {
 	this.worker = worker;
     }
@@ -169,14 +233,14 @@ public class LdapBrowserSession
     }
 
     class LdapTableModel extends AbstractTableModel {
-	
-	
+
+
 	final String[] columnNames = {"cn","mail","telephoneNumber"};
 	final int COLS = columnNames.length;
 	int ROWS ;
-	Object[][] data; 
+	Object[][] data;
 	ArrayList dnList;
-	
+
 	LdapTableModel() {
 	    dnList = getLdapWorker().getFilteredAllDN(baseDN,getFilter());
 	    ROWS = dnList.size();
@@ -187,50 +251,44 @@ public class LdapBrowserSession
 		for (int c=0; c < COLS; c++) {
 		for (int r=0; r < ROWS; r++) {
 		    if (getLdapWorker()!=null)
-			data[r][c] = (String)getLdapWorker().getOAttributeValues((String)dnList.get(r) + "," + baseDN , columnNames[c]);
+    	        data[r][c] = (String)getLdapWorker().getOAttributeValues((String)dnList.get(r) + "," + baseDN , columnNames[c]);
 		}
 		}
 	    }
-	    else 
+	    else
 		System.out.println("mist");
-	} 
-	 
+	}
+
 	public int getRowCount() {
 	    return ROWS;
-	} 
-	
+	}
+
 	public int getColumnCount() {
 	    return COLS;
-	} 
-	
+	}
+
 	public Object getValueAt(int row, int column) {
 	    return data[row][column];
 	}
-	
+
 	public String getColumnName(int column) {
 	    return (String)viewAttributes.get(columnNames[column]);
 	}
-	
+
     }
-    
-        
-    
+
+
+
     public void valueChanged(ListSelectionEvent e) {
-	
-	
-	//ArrayList dnList = getLdapWorker().getFilteredAllDN(baseDN,getFilter());
+
 	peopleDN = getLdapWorker().getAttributeDNValues(peopleName,baseDN);
 	if (e.getSource() == peopleTable) {
-	    System.out.println("in row" + peopleTable.getSelectedRow());
 	    int row = peopleTable.getSelectedRow();
 	    LdapTableModel model = (LdapTableModel)peopleTable.getModel();
-	    System.out.println("value at(" + row+",0)");
 	    String value = (String)model.getValueAt(row,0);
 	    String dn = (String)peopleDN.get(value);
-	    System.out.println("die dn ist" + dn);
-	    System.out.println("base DN ist " + baseDN);
 	    viewPanel.removeAll();
-	    
+
 	    BasicAttributes attrs = (BasicAttributes)getLdapWorker().getDNAttributes(dn + "," + baseDN);
 		try {
 		    NamingEnumeration en = attrs.getAll();
@@ -253,11 +311,11 @@ public class LdapBrowserSession
 				    viewPanel.add(new SLabel(values));
 				}
 				if (i.getClass().getName().equals("[B")) {
-				    if (label.equals("jpegPhoto")) { 
+				    if (label.equals("jpegPhoto")) {
 					viewPanel.add(new SLabel((String)viewAttributes.get(label)));
 					viewPanel.add(new SLabel(new ImageIcon((byte [])i)));
 				    }
-				    if (label.equals("userPassword")) { 
+				    if (label.equals("userPassword")) {
 					SLabel attrLabel = new SLabel((String)viewAttributes.get(label));
 					STextField attrField = new STextField(i.toString());
 					viewPanel.add(new SLabel(label));

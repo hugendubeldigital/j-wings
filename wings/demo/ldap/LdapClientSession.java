@@ -29,7 +29,9 @@ import javax.servlet.http.*;
 import javax.swing.*;
 import javax.swing.tree.*;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.ListSelectionEvent;
 
 
 import org.wings.*;
@@ -42,7 +44,10 @@ import org.wings.util.*;
 
 public class LdapClientSession 
     extends SessionServlet
-    implements SConstants, TreeSelectionListener, ActionListener
+    implements SConstants, 
+	       TreeSelectionListener, 
+	       ActionListener,
+	       ListSelectionListener
 {
     private final static String NOT_CONNECTED = "not connected";
 
@@ -57,8 +62,11 @@ public class LdapClientSession
     private STree tree;
 
     private SDesktopPane cards;
-    private SPanel editorPanel;
+    private SList otherAttrsL;
     private SForm attrPanel;
+    private SForm existentAttrsF;
+    private SForm otherAttrsF;
+    private SButton select;
     private SButton commitButton;
     private AddObjectsPanel addPanel;
 
@@ -69,6 +77,9 @@ public class LdapClientSession
 
     private Hashtable textHashtable = new Hashtable();
     private Hashtable componentTable = new Hashtable();
+    
+    private ArrayList obj;
+    private Vector v;
 
 
     public LdapClientSession(Session session) {
@@ -130,15 +141,55 @@ public class LdapClientSession
 
 	attrPanel = new SForm();
 	attrPanel.setLayout(new SGridLayout(2));
-
+	
+	existentAttrsF = new SForm(new SGridLayout(2));
+	otherAttrsF = new SForm(new SFlowDownLayout());
+	
+	select = new SButton("select");
+	select.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+		    int i = 0;
+		    ArrayList remElem = new ArrayList();
+		    while (obj!=null && i< obj.size()) {
+			System.out.println(obj.get(i));
+			String o = (String)obj.get(i);
+			remElem.add(o);
+			SLabel attrLabel = new SLabel(o);
+			STextField attrField = new STextField("");
+			componentTable.put(attrLabel,attrField);
+			textHashtable.put(attrLabel,attrField.getText());
+		    }
+		    existentAttrsF.removeAll();
+		    Enumeration compEnum;
+		    compEnum = componentTable.keys();
+		    
+		    while (compEnum!=null && compEnum.hasMoreElements()) {
+			Object key = compEnum.nextElement();
+			existentAttrsF.add((SLabel)key);
+			existentAttrsF.add((SComponent)componentTable.get(key));
+		    }
+		   
+		    /*for (int l = 0;i<remElem.size();i++) {
+			int j = obj.indexOf(remElem.get(l));
+			obj.remove(j);
+		    }
+		    
+		    otherAttrsL.setListData(obj.toArray());*/
+		}
+		
+	    });
+	//otherAttrsF.add(select);
+	attrPanel.add(existentAttrsF);
+	attrPanel.add(otherAttrsF);
+	
 	mainPanel.add(attrPanel);
-
+	
 	commitButton = new SButton("Commit");
 	commitButton.addActionListener(this);
 	
 	addPanel = new AddObjectsPanel();
 	tabbedPane.add(addPanel, "Add new Object");
-
+	
 	connectButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		    worker = new LdapWorker(server.getText(),
@@ -278,7 +329,7 @@ public class LdapClientSession
 	attrHTable = new Hashtable();
 	attrHLTable = new Hashtable();
 
-	attrPanel.removeAll();
+	existentAttrsF.removeAll();
 
 	LdapWorker worker = getLdapWorker();
 	BasicAttributes attributes = (BasicAttributes)worker.getDNAttributes(getDN());
@@ -331,15 +382,33 @@ public class LdapClientSession
 		    objectAttributes.remove((String)keyString);
 	    }
 	
-	    Enumeration er  = objectAttributes.elements();
+	    /*  Enumeration er  = objectAttributes.elements();
 	    while (er!=null && er.hasMoreElements()) {
 		Object ob = er.nextElement();
 		SLabel sLabel = new SLabel((String)ob);
 		STextField tf = new STextField("");
 		componentTable.put(sLabel,tf);
 		textHashtable.put(sLabel,tf.getText());
-	    }
+		}*/
 	    
+		otherAttrsL = new SList();
+		otherAttrsL.setSelectionMode(MULTIPLE_SELECTION);
+		//otherAttrsL.addListSelectionListener(this);
+		otherAttrsL.setVisibleRowCount(12);
+		
+		
+		v = new Vector();
+		Enumeration er  = objectAttributes.elements();
+		while (er!=null && er.hasMoreElements()) {
+		    Object ob = er.nextElement();
+		    v.add((String)ob);
+		}  
+		otherAttrsL.setListData(v);
+		otherAttrsF.removeAll();
+		otherAttrsF.add(otherAttrsL);
+		otherAttrsF.add(select);
+		
+		
 	}
 	catch (NamingException ex) {
 	    System.out.println(ex);
@@ -349,10 +418,25 @@ public class LdapClientSession
 	compEnum = componentTable.keys();
 	while (compEnum!=null && compEnum.hasMoreElements()) {
 	    Object key = compEnum.nextElement();
-		attrPanel.add((SLabel)key);
-		attrPanel.add((SComponent)componentTable.get(key));
+		existentAttrsF.add((SLabel)key);
+		existentAttrsF.add((SComponent)componentTable.get(key));
 	}
-	attrPanel.add(commitButton);
+	existentAttrsF.add(commitButton);
+    }
+
+
+    public void valueChanged(ListSelectionEvent evt) {
+	SList source = (SList)evt.getSource();
+	Object [] elements = source.getSelectedValues();
+	System.out.println("valueChanged ...");
+	setSelectedObjects(elements);
+    }
+
+    private void setSelectedObjects(Object [] elements) {
+	obj.clear();
+	for (int i = 0; i < elements.length; i++) {
+	    obj.add(elements[i]);
+	}
     }
 
 
