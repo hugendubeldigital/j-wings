@@ -14,13 +14,13 @@
 
 package org.wings;
 
-import java.io.*;
-import java.util.logging.*;
-import java.util.*;
+import org.wings.session.Session;
+import org.wings.session.SessionManager;
 
-import org.wings.session.*;
-import org.wings.externalizer.ExternalizeManager;
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.Map;
+import java.util.logging.Logger;
 
 /*
  * Diese Klasse ist nur ein Wrapper, um Eingabestroeme von Grafiken mit dem
@@ -30,6 +30,7 @@ import java.util.Collection;
  * passen, also ein Image bzw. ImageIcon sein. ImageIcon ist einfacher zu
  * benutzen und implementiert schon alles was benoetigt wird...
  */
+
 /**
  * TODO: documentation
  *
@@ -37,8 +38,7 @@ import java.util.Collection;
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
-public abstract class Resource implements Serializable, URLResource, Renderable
-{
+public abstract class Resource implements Serializable, URLResource, Renderable {
     private final static Logger logger = Logger.getLogger("org.wings");
 
     /**
@@ -49,18 +49,21 @@ public abstract class Resource implements Serializable, URLResource, Renderable
     /**
      * TODO: documentation
      */
-    protected String extension; 
+    protected String extension;
 
     /**
      * TODO: documentation
      */
-    protected String mimeType; 
+    protected String mimeType;
 
     protected Collection headers;
 
     protected Resource(String extension, String mimeType) {
         this.extension = extension;
         this.mimeType = mimeType;
+    }
+
+    protected Resource() {
     }
 
     /**
@@ -94,12 +97,16 @@ public abstract class Resource implements Serializable, URLResource, Renderable
         this.headers = headers;
     }
 
-    public Collection getHeaders() { return headers; }
+    public Collection getHeaders() {
+        return headers;
+    }
 
     /**
      *
      */
-    public abstract String getId();
+    public String getId() {
+        return id;
+    }
 
     public abstract SimpleURL getURL();
 
@@ -112,6 +119,10 @@ public abstract class Resource implements Serializable, URLResource, Renderable
         return getId();
     }
 
+    public Session getSession() {
+        return SessionManager.getSession();
+    }
+
     public static final class HeaderEntry implements Map.Entry {
         final Object key;
         Object value;
@@ -121,7 +132,7 @@ public abstract class Resource implements Serializable, URLResource, Renderable
          */
         public HeaderEntry(Object k, Object v) {
             key = k;
-            value = v; 
+            value = v;
         }
 
         public Object getKey() {
@@ -131,36 +142,37 @@ public abstract class Resource implements Serializable, URLResource, Renderable
         public Object getValue() {
             return value;
         }
-    
+
         public Object setValue(Object newValue) {
             Object oldValue = value;
             value = newValue;
             return oldValue;
         }
-    
+
         public boolean equals(Object o) {
             if (!(o instanceof Map.Entry))
                 return false;
-            Map.Entry e = (Map.Entry)o;
+            Map.Entry e = (Map.Entry) o;
             Object k1 = getKey();
             Object k2 = e.getKey();
             if (k1 == k2 || (k1 != null && k1.equals(k2))) {
                 Object v1 = getValue();
                 Object v2 = e.getValue();
-                if (v1 == v2 || (v1 != null && v1.equals(v2))) 
+                if (v1 == v2 || (v1 != null && v1.equals(v2)))
                     return true;
             }
             return false;
         }
-    
+
         public int hashCode() {
-            return (key==null ? 0 : key.hashCode()) ^
-                   (value==null   ? 0 : value.hashCode());
+            return (key == null ? 0 : key.hashCode()) ^
+                   (value == null ? 0 : value.hashCode());
         }
-    
+
         public String toString() {
             return getKey() + "=" + getValue();
         }
+
     }
 
 }
