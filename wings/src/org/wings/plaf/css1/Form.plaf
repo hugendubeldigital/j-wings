@@ -2,6 +2,19 @@
 
 private static final SIcon BLIND_ICON = new SResourceIcon("org/wings/icons/blind.gif");
 
+/*
+ * we render two icons into the page that captures pressing simple 'return'
+ * in the page. Why ? Depending on the Browser, the Browser sends the 
+ * first or the last submit-button it finds in the page as 'default'-Submit
+ * when we simply press 'return' somewhere.
+ *
+ * However, we don't want to have this arbitrary behaviour in wingS.
+ * So we add these two (invisible image-) submit-Buttons, either of it
+ * gets triggered on simple 'return'. No real wingS-Button will then be
+ * triggered but only the ActionListener added to the SForm. So we have 
+ * a way to distinguish between Forms that have been sent as default and
+ * pressed buttons.
+ */
 <write>
 <%
    %><form method="<% 
