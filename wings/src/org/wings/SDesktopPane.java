@@ -207,7 +207,7 @@ public class SDesktopPane
                     d.append("</td></tr>\n");
                 }
             }
-            d.append("</td></tr></table>\n");
+            d.append("</table>\n");
         }
     }
 
