@@ -52,7 +52,8 @@ import org.wings.RequestURL;
  * that component then has to take care of the URL.
  * <p>Since multiple threads can render content in parallel, you must
  * make sure, that the internal variable is thread save - use a ThreadLocal
- * variable (see the {@link SLabel} implementation for an example).
+ * variable, or the utility class {@link ClickableRenderUtil}; it is used
+ * by the SLabel as well.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
