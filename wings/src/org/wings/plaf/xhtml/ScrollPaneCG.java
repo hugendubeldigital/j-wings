@@ -55,7 +55,6 @@ public class ScrollPaneCG
         updateScrollBars(scrollPane);
 
         writePrefix(d, scrollPane);
-        System.out.println("\t:::getScrollable is " + scrollPane.getScrollable().getClass() );
         ((SComponent) scrollPane.getScrollable()).write( d );
         writePostfix(d, scrollPane);
     }

@@ -712,12 +712,25 @@ public class STree
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param p
+     * Expand this tree row.
+     * If tree is inside a {@link SScrollPane} try to
+     * adjust pane, so that as much as possible new 
+     * nodes are visible.
+     * @param p the TreePath to expand
      */
     public void expandRow(TreePath p) {
         treeState.setExpandedState(p, true);
+        /*
+        if ( viewport != null )
+         {
+			int ccount = model.getChildCount( p.getLastPathComponent() );
+            if ( ccount + 1 <= viewport.height )
+				viewport.y += ccount;
+			else
+            	viewport.y = treeState.getRowForPath( p );
+			
+         }
+        */
         fireTreeExpanded(p);
         reload();
     }

@@ -31,7 +31,8 @@ public class TreeCG
 {
     private final static String propertyPrefix = "Tree";
     private final static String nodePropertyPrefix = "TreeNode";
-
+	private final SImage blindGif = new SImage( new ResourceImageIcon("org/wings/icons/blind.gif") );
+    
     protected String getPropertyPrefix() {
         return propertyPrefix;
     }
@@ -50,7 +51,10 @@ public class TreeCG
             count = viewport.height;
         }
 
-        int depth = tree.getMaximumExpandedDepth();
+		blindGif.setWidth( tree.getNodeIndentDepth() );
+		blindGif.setHeight( 1 );
+
+        int depth = tree.getMaximumExpandedDepth(); // - ( ( tree.isRootVisible() )?0:1 );
         d.append("<table border=\"0\" cellpadding=\"0\"");
 		CGUtil.writeSize( d, tree );
         if ( bgcolor != null )
@@ -65,10 +69,9 @@ public class TreeCG
             writeTreeNode(tree, d, tree.getPathForRow(i), depth);
 		
         // expandable last row to fit preferred table size on IE
-		d.append("<tr><td colspan=\"");
+        d.append("<tr><td colspan=\"");
         d.append(depth);
         d.append("\"></td></tr>");
-        
         d.append("</table>");
     }
 
@@ -77,9 +80,13 @@ public class TreeCG
     {
         int nodeIndentDepth = tree.getNodeIndentDepth();
         d.append("<tr height=\"1\">");
-        for (int i=0; i<path.getPathCount()-1; i++)
-            d.append("<td width=\"" + nodeIndentDepth + "\"></td>");
-        d.append("\n<td colspan=\"" + (depth - (path.getPathCount()-1)) + "\">");
+        for (int i=((tree.isRootVisible())?0:1); i<path.getPathCount()-1; i++)
+         {
+            d.append("<td width=\"" + nodeIndentDepth + "\">");
+            blindGif.write( d );
+            d.append("</td>");
+		 }
+        d.append("\n<td nowrap colspan=\"" + (depth - (path.getPathCount()-1)) + "\">");
 
         TreeNode node = (TreeNode)path.getLastPathComponent();
         STreeCellRenderer cellRenderer = tree.getCellRenderer();
@@ -92,7 +99,7 @@ public class TreeCG
         SCellRendererPane rendererPane = tree.getCellRendererPane();
         rendererPane.writeComponent(d, renderer, tree);
 
-        d.append("\n</td></tr>\n");
+		d.append("\n</td><td width=\"100%\"></td></tr>\n");
     }
 }
 

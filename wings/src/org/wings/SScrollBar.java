@@ -768,7 +768,6 @@ public class SScrollBar
     public void write(Device d)
         throws IOException
     {
-    	System.out.println(":::SScrollBar.write" );
         if (visible)
             cg.write(d, this);
     }

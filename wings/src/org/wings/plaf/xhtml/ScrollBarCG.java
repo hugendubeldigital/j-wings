@@ -38,7 +38,6 @@ public class ScrollBarCG
         throws IOException
     {
         
-        System.out.println(":::Writing ScrollBar");
         SScrollBar sb = (SScrollBar)c;
 
         writePrefix(d, sb);
@@ -117,7 +116,6 @@ public class ScrollBarCG
      	int mark = (int) ( ( (double) sb.getValue() ) / ( (double) ( sb.getMaximum() - sb.getMinimum() - sb.getVisibleAmount()) / (double) SCROLLBAR_STEPS ) );
         if ( mark < 0 ) mark = 0;
         if ( mark > ( SCROLLBAR_STEPS - 1 ) ) mark = SCROLLBAR_STEPS - 1;
-        // System.out.println(":::mark=" + mark );
 		for ( int i = 0; i < SCROLLBAR_STEPS; i++ )
          {
          	d.append( prefix );
