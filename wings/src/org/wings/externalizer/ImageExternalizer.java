@@ -48,7 +48,6 @@ public class ImageExternalizer
 
     public ImageExternalizer(String format) {
         this.format = format;
-
         checkFormat();
 
         supportedMimeTypes[0] = getMimeType(null);

@@ -13,20 +13,38 @@
  */
 package org.wings;
 
+import org.wings.externalizer.ImageExternalizer;
 import org.wings.session.SessionManager;
+
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.image.ColorModel;
+import java.awt.image.ImageObserver;
+
+import java.awt.image.IndexColorModel;
+import java.awt.image.PixelGrabber;
 
 import javax.swing.ImageIcon;
 
 public class SImageIcon implements SIcon {
 
-    private final ImageIcon img;
+	private final ImageIcon img;
     private final SimpleURL url;
+    private int width = -1;
+    private int height = -1;
 
     public SImageIcon(ImageIcon image) {
-	this.img = image;
+        this.img = image;
         url = new SimpleURL(SessionManager.getSession()
                             .getExternalizeManager()
-                            .externalize(img));
+                            .externalize(image, determineMimeType(image.getImage())));
+    }
+
+    public SImageIcon(java.awt.Image image) {
+		this.img = new ImageIcon(image);
+        url = new SimpleURL(SessionManager.getSession()
+                            .getExternalizeManager()
+                            .externalize(this.img, determineMimeType(image)));
     }
 
     public SImageIcon(String name) {
@@ -52,6 +70,26 @@ public class SImageIcon implements SIcon {
     // get the image e.g. if you want to grey it out
     public java.awt.Image getImage() {
         return img.getImage();
+    }
+    
+    protected String determineMimeType(Image image) {
+		PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
+		try
+		{
+	    	pg.grabPixels();
+		}
+		catch (InterruptedException e)
+		{
+	    	System.err.println("interrupted waiting for pixels!");
+		}
+		
+		String mimeType = "image/";
+		if (!(pg.getColorModel() instanceof IndexColorModel))
+			mimeType += ImageExternalizer.FORMAT_PNG;
+		else
+			mimeType += ImageExternalizer.FORMAT_GIF;
+		
+		return mimeType;
     }
 }
 
