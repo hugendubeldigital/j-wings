@@ -64,7 +64,7 @@ public abstract class SessionServlet
      * TODO: documentation
      */
     protected final TimeMeasure measure =
-        new TimeMeasure(new MessageFormat ("<b>{0}</b>: {1} <i>{2}</i><br>"));
+        new TimeMeasure(new MessageFormat("<b>{0}</b>: {1} <i>{2}</i><br />"));
 
     /**
      * Maximum length of post-/get-submissions in kByte
@@ -351,15 +351,15 @@ public abstract class SessionServlet
      */
     protected void initErrorTemplate(ServletConfig config) throws ServletException {
         if ( errorTemplateFile==null ) {
-            String errorTemplate = config.getInitParameter ("ErrorTemplateFile");
+            String errorTemplate = config.getInitParameter("ErrorTemplateFile");
         }
     }
 
     /**
      * set the externalize manager
      */
-    protected void setExternalizeManager( ExternalizeManager em ) {
-        session.setExternalizeManager( em );
+    protected void setExternalizeManager(ExternalizeManager em) {
+        session.setExternalizeManager(em);
     }
 
 
@@ -423,7 +423,7 @@ public abstract class SessionServlet
     /**
      * this method references to {@link doGet}
      */
-    public final void doPost (HttpServletRequest req, HttpServletResponse res)
+    public final void doPost(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException
     {
         //value chosen to limit denial of service
@@ -431,8 +431,8 @@ public abstract class SessionServlet
             res.setContentType("text/html");
             ServletOutputStream out = res.getOutputStream();
             out.println("<html><head><title>Too big</title></head>");
-            out.println("<body><h1>Error - content length &gt;" +
-                        maxContentLength + "k not ");
+            out.println("<body><h1>Error - content length &gt; " +
+                        maxContentLength + "k");
             out.println("</h1></body></html>");
         }
         else {
@@ -453,8 +453,8 @@ public abstract class SessionServlet
      * Ist synchronized, damit nur ein Frame gleichzeitig bearbeitet werden kann.
      * {@link org.wings.SFrameSet}
      */
-    public final synchronized void doGet (HttpServletRequest req,
-                                          HttpServletResponse response)
+    public final synchronized void doGet(HttpServletRequest req,
+                                         HttpServletResponse response)
         throws ServletException, IOException
     {
         try {
@@ -616,6 +616,12 @@ public abstract class SessionServlet
      *
      */
     public void destroy() {
+        SFrame f = getFrame();
+        if ( f != null ) {
+            f.getContentPane().removeAll();
+            f.getOptionPaneContainer().removeAll();
+        }
+
         System.gc();
     }
 
