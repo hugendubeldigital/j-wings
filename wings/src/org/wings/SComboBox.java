@@ -61,7 +61,7 @@ public class SComboBox
      * The renderer used for cell rendering each cell.
      * @see SListCellRenderer
      */
-    protected SListCellRenderer renderer;
+    protected SListCellRenderer renderer = new SDefaultListCellRenderer();
     protected int maximumRowCount = 8;
     protected Object lastSelectedItem = null;
     protected String actionCommand = "comboBoxChanged";
