@@ -139,7 +139,7 @@ public abstract class StaticResource extends Resource
      * @param classLoader the classLoader from which the resource is obtained
      * @param resourceFileName the resource relative to the baseClass
      */
-    public StaticResource(String extension, String mimeType) {
+    protected StaticResource(String extension, String mimeType) {
         super(extension, mimeType);
     }
 
@@ -245,11 +245,9 @@ public abstract class StaticResource extends Resource
     }
 
     public SimpleURL getURL() {
-        String name = null;
+        String name = getId();
         if (extension != null)
-            name = getId() + "." + extension;
-        else
-            name = getId();
+            name += "." + extension;
 
         // append the sessionid, if not global
         if ((externalizerFlags & ExternalizeManager.GLOBAL) > 0) {
