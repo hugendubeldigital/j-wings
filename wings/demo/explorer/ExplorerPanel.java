@@ -47,7 +47,7 @@ public class ExplorerPanel
             STemplateLayout layout = new STemplateLayout( templateURL );
             setLayout(new STemplateLayout(templateURL));
         }
-        catch ( java.io.IOException e ) {
+        catch ( Exception e ) {
             setLayout(new SFlowLayout());
         }
 
