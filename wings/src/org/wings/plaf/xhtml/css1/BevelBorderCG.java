@@ -34,7 +34,6 @@ public final class BevelBorderCG
 		.append(insets.right).append(" ")
 		.append(insets.bottom).append(" ")
 		.append(insets.left)
-		.append(borderStyle)
 		.append("\">");
 	else
 	    d.append("\">");
@@ -43,10 +42,6 @@ public final class BevelBorderCG
     public void writePostfix(Device d, SBorder b)
 	throws IOException
     {
-	SBevelBorder border = (SBevelBorder)b;
-	int bevelType = border.getBevelType();
-	Insets insets = b.getInsets();
-
 	d.append("</div>");
     }
 }

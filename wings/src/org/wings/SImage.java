@@ -245,8 +245,7 @@ public class SImage
         else if ( alignment==SConstants.BOTTOM_ALIGN )
             s.append(" ALIGN=BOTTOM");
 
-        s.append(" BORDER=\"" + border + "\"");
-        s.append(">");
+        s.append(" BORDER=\"" + border + "\">");
     }
 
     /**
@@ -257,7 +256,6 @@ public class SImage
     public void appendBody(Device s) {
         if ( descr!=null && descr.length()>0 )
             s.append(descr);
-        s.append("\n");
     }
 }
 

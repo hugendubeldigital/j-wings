@@ -35,7 +35,7 @@ public class BorderLayoutCG implements LayoutCG
         if (center != null) cols++;
         if (east != null) cols++;
 
-        d.append("\n<table");
+        d.append("\n<table cellpadding=\"0\" cellspacing=\"0\"");
         if (border > 0)
             d.append(" border=\"").append(border).append("\"");
         if (container != null && container.getBackground() != null)
@@ -45,33 +45,43 @@ public class BorderLayoutCG implements LayoutCG
 	    d.append(">");
 
         if (north != null) {
-            d.append("\n<tr> <td colspan=\"").append(cols).append("\">");
+            d.append("\n<tr><td colspan=\"").append(cols).append("\"");
+            writeComponentAlignment(d, north);
+            d.append(">");
             writeComponent(d, north);
             d.append("</td></tr>");
         }
         d.append("\n<tr>");
 
         if (west != null) {
-            d.append("<td>");
+            d.append("<td");
+            writeComponentAlignment(d, west);
+            d.append(">");
             writeComponent(d, west);
             d.append("</td>");
         }
 
         if (center != null) {
-            d.append("<td>");
+            d.append("<td");
+            writeComponentAlignment(d, center);
+            d.append(">");
             writeComponent(d, center);
             d.append("</td>");
         }
 
         if (east != null) {
-            d.append("<td>");
+            d.append("<td");
+            writeComponentAlignment(d, east);
+            d.append(">");
             writeComponent(d, east);
             d.append("</td>");
         }
         d.append("</tr>\n");
 	
         if (south != null) {
-            d.append("\n<tr><td colspan=\"").append(cols).append("\">");
+            d.append("\n<tr><td colspan=\"").append(cols).append("\"");
+            writeComponentAlignment(d, south);
+            d.append(">");
             writeComponent(d, south);
             d.append("</tr>");
         }
@@ -82,6 +92,25 @@ public class BorderLayoutCG implements LayoutCG
 	throws IOException
     {
         c.write(d);
+    }
+
+    // TODO: move this to Utils.java
+    protected String[] alignments = { "left", "right", "center", "block", "top", "bottom", "baseline" };
+
+    protected void writeComponentAlignment(Device d, SComponent c)
+        throws IOException
+    {
+        int horizontalAlignment = c.getHorizontalAlignment();
+        int verticalAlignment   = c.getVerticalAlignment();
+
+        if (horizontalAlignment > -1)
+            d.append(" align=\"")
+                .append(alignments[horizontalAlignment])
+                .append("\"");
+        if (verticalAlignment > -1)
+            d.append(" valign=\"")
+                .append(alignments[verticalAlignment])
+                .append("\"");
     }
 }
 

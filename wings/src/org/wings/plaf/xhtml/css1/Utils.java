@@ -19,6 +19,28 @@ import org.wings.io.Device;
  */
 public final class Utils implements SConstants
 {
+    final static char[] hexDigits = { 
+	'0' , '1' , '2' , '3' , '4' , '5' , 
+	'6' , '7' , '8' , '9' , 'a' , 'b' , 
+	'c' , 'd' , 'e' , 'f'};
+    
+    private Utils() {}
+    
+    public static String toHexString(int rgb) {
+	char[] buf = new char[6];
+	int digits = 6;
+	do {
+	    buf[--digits] = hexDigits[rgb & 15];
+	    rgb >>>= 4;
+	} while (digits!=0);
+	
+	return new String(buf);
+    }
+    
+    public static String toHexString(java.awt.Color c) {
+	return toHexString(c.getRGB());
+    }
+
     public static void writeStyleAttribute(Device d, String prefix, Style style)
         throws IOException
     {
