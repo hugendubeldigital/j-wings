@@ -707,10 +707,9 @@ public class TemplateParser {
                 .append(");\n");
             break;
 
-            /* not supported .. quoted characters */
-        case '\'':
+        case '#':
             input.deleteCharAt(0);
-            output.append("\torg.wings.plaf.compiler.Utils.quote( device, ")
+            output.append("\torg.wings.plaf.compiler.Utils.writeRaw( device, ")
                 .append(input)
                 .append(");\n");
             break;

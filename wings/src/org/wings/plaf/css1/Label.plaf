@@ -35,10 +35,10 @@ void writeText(Device device, SLabel label) throws IOException {
         if (noBreak) { %><nobr><% }
         if (eventURL!=null) { %><a href="<%=eventURL%>"><% }
 	if (label.isEscapeSpecialChars()) {
-	    %><%'text%><%
+            %><%=text%><%
         }
 	else {
-            %><%=text%><%
+	    %><%#text%><% // write raw.
         }
         if (eventURL!=null) { %></a><% }
         if (noBreak) { %></nobr><% }
