@@ -28,7 +28,7 @@ public class DefaultDocument implements SDocument
             return;
         }
         buffer.setLength(0);
-        buffer.append(text);
+        if (text != null) buffer.append(text);
         fireChangeUpdate(0, buffer.length());
     }
 
