@@ -20,7 +20,6 @@ import javax.swing.event.ChangeListener;
 import java.util.EventListener;
 
 
-
 /**
  * SPagingBoundedRangeModel.java
  *
@@ -30,8 +29,8 @@ import java.util.EventListener;
  * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SPagingBoundedRangeModel implements SBoundedRangeModel  {
-    
+public class SPagingBoundedRangeModel implements SBoundedRangeModel {
+
     /**
      * Only one <code>ChangeEvent</code> is needed per model instance since the
      * event's only (read-only) state is the source property.  The source
@@ -60,7 +59,7 @@ public class SPagingBoundedRangeModel implements SBoundedRangeModel  {
     protected boolean gotDelayedEvent = false;
 
     /**
-     * 
+     *
      */
     public SPagingBoundedRangeModel() {
         super();
@@ -74,10 +73,10 @@ public class SPagingBoundedRangeModel implements SBoundedRangeModel  {
      * Returns the model's current value.
      * @return the model's current value
      * @see #setValue
-     * @see BoundedRangeModel#getValue
+     * @see javax.swing.BoundedRangeModel#getValue
      */
     public int getValue() {
-      return value; 
+        return value;
     }
 
 
@@ -85,10 +84,10 @@ public class SPagingBoundedRangeModel implements SBoundedRangeModel  {
      * Returns the model's extent.
      * @return the model's extent
      * @see #setExtent
-     * @see BoundedRangeModel#getExtent
+     * @see javax.swing.BoundedRangeModel#getExtent
      */
     public int getExtent() {
-      return extent; 
+        return extent;
     }
 
 
@@ -96,10 +95,10 @@ public class SPagingBoundedRangeModel implements SBoundedRangeModel  {
      * Returns the model's minimum.
      * @return the model's minimum
      * @see #setMinimum
-     * @see BoundedRangeModel#getMinimum
+     * @see javax.swing.BoundedRangeModel#getMinimum
      */
     public int getMinimum() {
-      return min; 
+        return min;
     }
 
 
@@ -107,74 +106,74 @@ public class SPagingBoundedRangeModel implements SBoundedRangeModel  {
      * Returns the model's maximum.
      * @return  the model's maximum
      * @see #setMaximum
-     * @see BoundedRangeModel#getMaximum
+     * @see javax.swing.BoundedRangeModel#getMaximum
      */
     public int getMaximum() {
-        return max; 
+        return max;
     }
 
-    /** 
+    /**
      * Sets the current value of the model. For a slider, that
-     * determines where the knob appears. Ensures that the new 
+     * determines where the knob appears. Ensures that the new
      * value, <I>n</I> falls within the model's constraints:
      * <pre>
      *     minimum <= value <= maximum
      * </pre>
-     * 
-     * @see BoundedRangeModel#setValue
+     *
+     * @see javax.swing.BoundedRangeModel#setValue
      */
     public void setValue(int n) {
         setRangeProperties(n, extent, min, max, isAdjusting);
     }
 
 
-    /** 
-     * Sets the extent to <I>n</I> after ensuring that <I>n</I> 
-     * is greater than or equal to zero and falls within the model's 
+    /**
+     * Sets the extent to <I>n</I> after ensuring that <I>n</I>
+     * is greater than or equal to zero and falls within the model's
      * constraints:
      * <pre>
      *     minimum <= value <= maximum
      * </pre>
-     * @see BoundedRangeModel#setExtent
+     * @see javax.swing.BoundedRangeModel#setExtent
      */
     public void setExtent(int n) {
         setRangeProperties(value, n, min, max, isAdjusting);
     }
 
 
-    /** 
-     * Sets the minimum to <I>n</I> after ensuring that <I>n</I> 
+    /**
+     * Sets the minimum to <I>n</I> after ensuring that <I>n</I>
      * that the other three properties obey the model's constraints:
      * <pre>
      *     minimum <= value <= maximum
      * </pre>
      * @see #getMinimum
-     * @see BoundedRangeModel#setMinimum
+     * @see javax.swing.BoundedRangeModel#setMinimum
      */
     public void setMinimum(int n) {
-        setRangeProperties(value, extent, n, max, isAdjusting);
+        setRangeProperties(Math.max(value, n), extent, n, max, isAdjusting);
     }
 
 
-    /** 
-     * Sets the maximum to <I>n</I> after ensuring that <I>n</I> 
+    /**
+     * Sets the maximum to <I>n</I> after ensuring that <I>n</I>
      * that the other three properties obey the model's constraints:
      * <pre>
      *     minimum <= value <= maximum
      * </pre>
-     * @see BoundedRangeModel#setMaximum
+     * @see javax.swing.BoundedRangeModel#setMaximum
      */
     public void setMaximum(int n) {
-        setRangeProperties(value, extent, min, n, isAdjusting);
+        setRangeProperties(Math.min(value,n), extent, min, n, isAdjusting);
     }
 
 
     /**
      * Sets the <code>valueIsAdjusting</code> property.
-     * 
+     *
      * @see #getValueIsAdjusting
      * @see #setValue
-     * @see BoundedRangeModel#setValueIsAdjusting
+     * @see javax.swing.BoundedRangeModel#setValueIsAdjusting
      */
     public void setValueIsAdjusting(boolean b) {
         setRangeProperties(value, extent, min, max, b);
@@ -186,10 +185,10 @@ public class SPagingBoundedRangeModel implements SBoundedRangeModel  {
      *
      * @return the value of the <code>valueIsAdjusting</code> property
      * @see #setValue
-     * @see BoundedRangeModel#getValueIsAdjusting
+     * @see javax.swing.BoundedRangeModel#getValueIsAdjusting
      */
     public boolean getValueIsAdjusting() {
-        return isAdjusting; 
+        return isAdjusting;
     }
 
     /**
@@ -200,32 +199,32 @@ public class SPagingBoundedRangeModel implements SBoundedRangeModel  {
      * </pre>
      * <p>
      * At most, one <code>ChangeEvent</code> is generated.
-     * 
-     * @see BoundedRangeModel#setRangeProperties
+     *
+     * @see javax.swing.BoundedRangeModel#setRangeProperties
      * @see #setValue
      * @see #setExtent
      * @see #setMinimum
      * @see #setMaximum
      * @see #setValueIsAdjusting
      */
-    public void setRangeProperties(int newValue, 
-                                   int newExtent, 
-                                   int newMin, 
-                                   int newMax, 
+    public void setRangeProperties(int newValue,
+                                   int newExtent,
+                                   int newMin,
+                                   int newMax,
                                    boolean adjusting) {
         if (newMin > newMax) {
             newMin = newMax;
         }
         if (newValue > newMax) {
             newMax = newValue;
-	}
+        }
         if (newValue < newMin) {
             newMin = newValue;
-	}
+        }
         if (newExtent < 0) {
             newExtent = 0;
-	}
-        
+        }
+
         boolean isChange =
             (newValue != value) ||
             (newExtent != extent) ||
@@ -239,7 +238,7 @@ public class SPagingBoundedRangeModel implements SBoundedRangeModel  {
             min = newMin;
             max = newMax;
             isAdjusting = adjusting;
-            
+
             fireStateChanged();
         }
     }
@@ -259,19 +258,19 @@ public class SPagingBoundedRangeModel implements SBoundedRangeModel  {
      *
      * @param l the ChangeListener to add
      * @see #removeChangeListener
-     * @see BoundedRangeModel#addChangeListener
+     * @see javax.swing.BoundedRangeModel#addChangeListener
      */
     public void addChangeListener(ChangeListener l) {
         listenerList.add(ChangeListener.class, l);
     }
-    
+
 
     /**
      * Removes a <code>ChangeListener</code>.
      *
      * @param l the <code>ChangeListener</code> to remove
      * @see #addChangeListener
-     * @see BoundedRangeModel#removeChangeListener
+     * @see javax.swing.BoundedRangeModel#removeChangeListener
      */
     public void removeChangeListener(ChangeListener l) {
         listenerList.remove(ChangeListener.class, l);
@@ -282,7 +281,7 @@ public class SPagingBoundedRangeModel implements SBoundedRangeModel  {
      * Returns an array of all the change listeners
      * registered on this <code>DefaultBoundedRangeModel</code>.
      *
-     * @return all of this model's <code>ChangeListener</code>s 
+     * @return all of this model's <code>ChangeListener</code>s
      *         or an empty
      *         array if no change listeners are currently registered
      *
@@ -292,40 +291,39 @@ public class SPagingBoundedRangeModel implements SBoundedRangeModel  {
      * @since 1.4
      */
     public ChangeListener[] getChangeListeners() {
-        return (ChangeListener[])listenerList.getListeners(
-                ChangeListener.class);
+        return (ChangeListener[]) listenerList.getListeners(
+            ChangeListener.class);
     }
 
 
-    /** 
+    /**
      * Runs each <code>ChangeListener</code>'s <code>stateChanged</code> method.
-     * 
+     *
      * @see #setRangeProperties
      * @see EventListenerList
      */
-    protected void fireStateChanged() 
-    {
-        if ( delayEvents ) {
+    protected void fireStateChanged() {
+        if (delayEvents) {
             gotDelayedEvent = true;
         } else {
             Object[] listeners = listenerList.getListenerList();
-            for (int i = listeners.length - 2; i >= 0; i -=2 ) {
+            for (int i = listeners.length - 2; i >= 0; i -= 2) {
                 if (listeners[i] == ChangeListener.class) {
                     if (changeEvent == null) {
                         changeEvent = new ChangeEvent(this);
                     }
-                    ((ChangeListener)listeners[i+1]).stateChanged(changeEvent);
-                }          
+                    ((ChangeListener) listeners[i + 1]).stateChanged(changeEvent);
+                }
             }
         }
-    }   
+    }
 
-    
+
     /**
-     * Returns a string that displays all of the 
+     * Returns a string that displays all of the
      * <code>BoundedRangeModel</code> properties.
      */
-    public String toString()  {
+    public String toString() {
         String modelString =
             "value=" + getValue() + ", " +
             "extent=" + getExtent() + ", " +
@@ -371,28 +369,32 @@ public class SPagingBoundedRangeModel implements SBoundedRangeModel  {
      *
      * @since 1.3
      */
-    public EventListener[] getListeners(Class listenerType) { 
-	return listenerList.getListeners(listenerType); 
+    public EventListener[] getListeners(Class listenerType) {
+        return listenerList.getListeners(listenerType);
     }
-
 
 
     /**
      * fire event with isValueIsAdjusting true
      */
-    public void fireDelayedIntermediateEvents() {}
-    
+    public void fireDelayedIntermediateEvents() {
+    }
+
     public void fireDelayedFinalEvents() {
-        if ( !delayEvents && gotDelayedEvent ) {
+        if (!delayEvents && gotDelayedEvent) {
             fireStateChanged();
             gotDelayedEvent = false;
         }
     }
-    
+
 }// SPagingBoundedRangeModel
 
 /*
    $Log$
+   Revision 1.2  2004/03/09 15:01:23  arminhaaf
+   o fix bug setting maximum smaller then current value
+   o fix javadoc
+
    Revision 1.1  2002/11/19 14:58:55  ahaaf
    o add new default mode for page scroller
 
