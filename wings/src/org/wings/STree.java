@@ -125,14 +125,15 @@ public class STree
     public void valueChanged(TreeSelectionEvent e) {
         //    System.out.println("VALUE CHANGED " + e);
 
-        if ( selectionListener == null )
+        if (selectionListener == null)
             return;
 
-        if ( selectionListener != null ) {
+        if (selectionListener != null) {
             for (int i=selectionListener.size()-1; i>=0; i-- ) {
                 ((TreeSelectionListener)selectionListener.get(i)).valueChanged(e);
             }
         }
+        reload();
     }
 
 
@@ -677,6 +678,7 @@ public class STree
     public void expandRow(TreePath p) {
         treeState.setExpandedState(p, true);
         fireTreeExpanded(p);
+        reload();
     }
 
     /**
@@ -696,6 +698,7 @@ public class STree
     public void collapseRow(TreePath p) {
         treeState.setExpandedState(p, false);
         fireTreeCollapsed(p);
+        reload();
     }
 
     /**
@@ -842,6 +845,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeNodesChanged(e);
+            reload();
         }
 
         /**
@@ -853,6 +857,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeNodesInserted(e);
+            reload();
         }
 
         /**
@@ -864,6 +869,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeStructureChanged(e);
+            reload();
         }
 
         /**
@@ -875,6 +881,7 @@ public class STree
             if ( e == null )
                 return;
             treeState.treeNodesRemoved(e);
+            reload();
         }
     }
 
@@ -996,7 +1003,11 @@ public class STree
      * @param d
      */
     public void setViewportSize(Rectangle d) {
+        Rectangle oldViewport = viewport; 
         viewport = d;
+        if ((viewport == null && oldViewport != null) ||
+            (viewport != null && !viewport.equals(oldViewport)))
+            reload();
     }
 
     /**

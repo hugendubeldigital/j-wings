@@ -58,7 +58,10 @@ public class STextField
      * @param c
      */
     public void setColumns(int c) {
+        int oldColumns = columns;
         columns = c;
+        if (columns != oldColumns)
+            reload();
     }
 
     /**
@@ -77,7 +80,10 @@ public class STextField
      * @param mc
      */
     public void setMaxColumns(int mc) {
+        int oldMaxColumns = maxColumns;
         maxColumns = mc;
+        if (maxColumns != oldMaxColumns)
+            reload();
     }
 
     /**

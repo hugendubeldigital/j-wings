@@ -63,8 +63,11 @@ public class STextArea
      *
      * @param rows
      */
-    public void setRows(int rows) {
-        this.rows = rows;
+    public void setRows(int r) {
+        int oldRows = rows;
+        rows = r;
+        if (oldRows != rows)
+            reload();
     }
 
     /**
@@ -83,7 +86,10 @@ public class STextArea
      * @param c
      */
     public void setColumns(int c) {
+        int oldColumns = columns;
         columns = c;
+        if (columns != oldColumns)
+            reload();
     }
 
     /**

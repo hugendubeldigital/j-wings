@@ -315,10 +315,13 @@ public class SList
         if (model == null) {
             throw new IllegalArgumentException("model must be non null");
         }
-        ListModel oldValue = dataModel;
+        ListModel oldModel = dataModel;
         dataModel = model;
-        //firePropertyChange("model", oldValue, dataModel);
+        //firePropertyChange("model", oldModel, dataModel);
         clearSelection();
+        if ((model == null && oldModel != null) ||
+            (model != null && !model.equals(oldModel)))
+            reload();
     }
 
 
@@ -412,6 +415,7 @@ public class SList
             fireSelectionValueChanged(e.getFirstIndex(),
                                       e.getLastIndex(),
                                       e.getValueIsAdjusting());
+            reload();
         }
     }
 
@@ -578,7 +582,10 @@ public class SList
      * @see #addListSelectionListener
      */
     public void clearSelection() {
-        getSelectionModel().clearSelection();
+        if (!getSelectionModel().isSelectionEmpty()) {
+            getSelectionModel().clearSelection();
+            reload();
+        }
     }
 
 
@@ -937,7 +944,11 @@ public class SList
      * @param d the visible viewport size
      */
     public void setViewportSize(Rectangle d) {
+        Rectangle oldViewport = viewport; 
         viewport = d;
+        if ((viewport == null && oldViewport != null) ||
+            (viewport != null && !viewport.equals(oldViewport)))
+            reload();
     }
 
     /**

@@ -61,7 +61,7 @@ public class SAnchor
      * @param ref
      */
     public void setReference(URL ref) {
-        if ( ref!=null)
+        if (ref != null)
             setReference(ref.toString());
     }
 
@@ -71,7 +71,11 @@ public class SAnchor
      * @param r
      */
     public void setReference(String r) {
+        String oldReference = reference;
         reference = r;
+        if (reference == null && oldReference != null ||
+            reference != null && !reference.equals(oldReference))
+            reload();
     }
 
     /**

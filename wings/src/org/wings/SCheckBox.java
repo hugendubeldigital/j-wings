@@ -185,7 +185,7 @@ public class SCheckBox extends SButton
      * @param i
      */
     public void setSelectedIcon(URL i) {
-        if ( i!=null)
+        if (i != null)
             setSelectedIcon(i.toString());
     }
 

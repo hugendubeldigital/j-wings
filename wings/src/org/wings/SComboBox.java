@@ -119,6 +119,9 @@ public class SComboBox
         dataModel = model;
         firePropertyChange("model", oldModel, dataModel);
         dataModel.addListDataListener(this);
+        if (model == null && oldModel != null ||
+            model != null && !model.equals(oldModel))
+            reload();
     }
 
     /**
@@ -142,6 +145,8 @@ public class SComboBox
         int oldCount = maximumRowCount;
         maximumRowCount = count;
         firePropertyChange("maximumRowCount", oldCount, maximumRowCount);
+        if (maximumRowCount != oldCount)
+            reload();
     }
 
     /**
@@ -186,6 +191,7 @@ public class SComboBox
     public void setSelectedItem(Object object) {
         dataModel.setSelectedItem(object);
         fireActionEvent();
+        reload();
     }
 
     /**
@@ -429,6 +435,7 @@ public class SComboBox
                                                lastSelectedItem,
                                                ItemEvent.SELECTED));
         fireActionEvent();
+        reload();
     }
 
     /** 
@@ -456,6 +463,7 @@ public class SComboBox
         if ((lastSelectedItem == null && newSelectedItem != null)
             || (lastSelectedItem != null && !lastSelectedItem.equals(newSelectedItem)))
             selectedItemChanged();
+        reload();
     }
 
     /**
