@@ -67,7 +67,8 @@ public abstract class SessionServlet
     private SRequestDispatcher dispatcher = null;
 
     /**
-     * TODO: documentation
+     * format to write out profiling information. Is only used, if
+     * DEBUG is true.
      */
     protected final TimeMeasure measure =
         new TimeMeasure(new MessageFormat("<b>{0}</b>: {1} <i>{2}</i><br />"));
@@ -106,6 +107,14 @@ public abstract class SessionServlet
      * The session.
      */
     private Session session = null;
+
+    /**
+     * when the user exits the session with one of the exitSession() methods,
+     * this URL is set to the URL the browser should be redirected after
+     * the session. This is set in the exitSession(String) method and
+     * evaluated in doGet() after the event dispatching phase.
+     */
+    private String afterSessionURL = null;
 
     /**
      * TODO: documentation
@@ -213,8 +222,8 @@ public abstract class SessionServlet
         }
     }
 
-    /*
-     * Erzeugt aus einem Locale String (de, de-AT, en-US,...) ein Locale Object
+    /**
+     * creates a locale object from a string (de, de-AT, en-US,...).
      */
     private final Locale getLocale(String localeString) {
         String args[] = {"", "", ""};
@@ -229,15 +238,16 @@ public abstract class SessionServlet
         return new Locale(args[0], args[1], args[2]);
     }
 
-    /*
-     * Setzt ein neues Locale. Das Locale wird nur dann neu gesetzt, wenn es ein
-     * unterstuetztes Locale {@link #setSupportedLocales} ist, ansonsten wird eine
-     * IllegalArgumentException geworfen.
-     */
     /**
-     * TODO: documentation
+     * sets a new locale for this session. The locale is <em>only</em> set,
+     * if it is one of the supported locales {@link #setSupportedLocales},
+     * otherwise an IllegalArgumentException is thrown.
+     * 
+     * @param l the locale to be associated with this session.
+     * @throws IllegalArgumentException, if this locale is not supported, as
+     *         predefined with {@link #setSupportedLocales}.
      */
-    protected final void setLocale(Locale l) {
+    protected final void setLocale(Locale l) throws IllegalArgumentException {
         if (supportedLocales==null ||
              supportedLocales.length==0 ||
              ASUtil.inside(l, supportedLocales)) {
@@ -247,12 +257,9 @@ public abstract class SessionServlet
             throw new IllegalArgumentException("Locale " + l +" not supported");
     }
 
-    /*
-     * Setzt die unterstuetzten Locales. Falls null oder leer, werden alle Locales
-     * unterstuetzt.
-     */
     /**
-     * TODO: documentation
+     * sets the locales, supported by this application. If empty or 
+     * <em>null</em>, all locales are supported.
      */
     protected final void setSupportedLocales(Locale[] locales) {
         supportedLocales = locales;
@@ -531,7 +538,7 @@ public abstract class SessionServlet
                 RequestURL request = new RequestURL(req.getPathInfo());
 
                 debug("request " + request);
-
+                
                 DynamicResource context = null;
                 if ( request.getContext()==null && request.getEpoch()!=null )
                     context = getFrame().getDynamicResource(DynamicCodeResource.class);
@@ -565,6 +572,18 @@ public abstract class SessionServlet
                     SForm.fireEvents();
                 }
                     
+                // if the user chose to exit the session as an reaction on an
+                // event, we got an URL to redirect after the session.
+                if (afterSessionURL != null) {
+                    req.getSession().invalidate(); // calls destroy implicitly
+                    if (afterSessionURL.length() > 0)
+                        response.sendRedirect(afterSessionURL);
+                    else
+                        response.sendRedirect(HttpUtils.getRequestURL(req)
+                                              .toString());
+                    return;
+                }
+
                 if (DEBUG) {
                     measure.stop();
                     measure.start("time to process request");
@@ -676,6 +695,50 @@ public abstract class SessionServlet
     public void valueUnbound(HttpSessionBindingEvent event) {
         destroy();
     }
+
+    /**
+     * Exit the current session and redirect to other URL.
+     *
+     * This removes the session and its associated
+     * application from memory. The browser is redirected to the given
+     * URL. Note, that it is not even possible for the user to re-enter 
+     * the application with the BACK-button, since all information is 
+     * removed. 
+     *
+     * <em>Always</em> exit an application by calling an 
+     * <code>exitSession()</code> method, especially, if it is an application 
+     * that requires a login and thus handles sensitive information accessible
+     * through the session. Usually, you will call this on behalf of an 
+     * event within an <code>ActionListener.actionPerformed()</code> like for 
+     * a pressed 'EXIT'-Button.
+     *
+     * @param redirectAddress the address, the browser is redirected after
+     *                        removing this session. This must be a String
+     *                        containing the complete URL (no relative URL)
+     *                        to the place to be redirected. If 'null', nothing
+     *                        happens.
+     */
+    protected void exitSession(String redirectAddress) {
+        afterSessionURL = redirectAddress;
+    }
+
+    /**
+     * Exit the current session and redirect to new application instance.
+     *
+     * This removes the session and its associated
+     * application from memory. The browser is redirected to the same
+     * application with a fresh session. Note, that it is not even
+     * possible for the user to re-enter the old application with the 
+     * BACK-button, since all information is removed. 
+     * 
+     * <em>Always</em> exit an application by calling an 
+     * <code>exitSession()</code> method, especially, if it is an application 
+     * that requires an login and thus handles sensitive information accessible
+     * through the session. Usually, you will call this on behalf of an 
+     * event within an <code>ActionListener.actionPerformed()</code> like for 
+     * a pressed 'EXIT'-Button.
+     */
+    protected void exitSession() { exitSession(""); }
 
     /**
      * TODO: documentation
