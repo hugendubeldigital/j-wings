@@ -181,9 +181,9 @@
             selectionAddr.addParameter(component.getSelectionParameter(node));
             
             if ( cellComp instanceof ClickableRenderComponent ) {
-                ((ClickableRenderComponent)cellComp).setEventURL(selectionAddr);
+                ((ClickableRenderComponent)cellComp).pushEventURL(selectionAddr, null);
                 rendererPane.writeComponent(device, cellComp, component);
-                ((ClickableRenderComponent)cellComp).setEventURL(null);
+                ((ClickableRenderComponent)cellComp).popEventURL();
             } else {
 	        /*
 		 * if it is not a ClickableRenderComponent, then surround it with

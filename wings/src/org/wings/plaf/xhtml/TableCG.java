@@ -245,13 +245,15 @@ public class TableCG
         Utils.printTableCellAttributes(d, comp);
         d.print(">");
 
+        boolean pushedURL = false;
         if ( !isEditingCell && table.isCellEditable(row, col) ) {
             RequestURL editAddr = table.getRequestURL();
             editAddr.addParameter(table.getNamePrefix() + "=" + 
                                   table.getEditParameter(row, col));
             
             if ( comp instanceof ClickableRenderComponent ) {
-                ((ClickableRenderComponent)comp).setEventURL(editAddr);
+                ((ClickableRenderComponent)comp).pushEventURL(editAddr,null);
+                pushedURL = true;
             } else {
                 d.print("<a href=\"").print(editAddr.toString()).
                     print("\">");
@@ -262,8 +264,8 @@ public class TableCG
 
         rendererPane.writeComponent(d, comp, table);
 
-        if ( comp instanceof ClickableRenderComponent ) {
-            ((ClickableRenderComponent)comp).setEventURL(null);
+        if (pushedURL) {
+            ((ClickableRenderComponent)comp).popEventURL();
         }
         d.print("</td>");
     }
@@ -336,7 +338,8 @@ public class TableCG
                                          table.getSelectionToggleParameter(row,col));
 
         if ( comp instanceof ClickableRenderComponent ) {
-            ((ClickableRenderComponent)comp).setEventURL(toggleSelectionAddr);
+            ((ClickableRenderComponent)comp).pushEventURL(toggleSelectionAddr,
+                                                          null);
         } else {
             d.print("<a href=\"").
                 print(toggleSelectionAddr.toString()).print("\">");
@@ -345,7 +348,7 @@ public class TableCG
         rendererPane.writeComponent(d, comp, table);
 
         if ( comp instanceof ClickableRenderComponent ) {
-            ((ClickableRenderComponent)comp).setEventURL(null);
+            ((ClickableRenderComponent)comp).popEventURL();
         } else {
             d.print("</a>");
         }

@@ -42,11 +42,6 @@ public class ClickableRenderUtil
 		return new Stack( INITIAL_STACK_DEPTH );
 	    }
 	};
-    private final static ThreadLocal eventTargetStack = new ThreadLocal() {
-	    protected synchronized Object initialValue() {
-		return new Stack( INITIAL_STACK_DEPTH );
-	    }
-	};
 
     /**
      * reset the internal stacks. This should be done everytime a complete
@@ -55,56 +50,58 @@ public class ClickableRenderUtil
      */
     public static void reset() {
 	((Stack) eventURLStack.get()).clear();
-	((Stack) eventTargetStack.get()).clear();
     }
 
     /**
      * Set the request URL. A non-null value pushes the value onto the
-     * stack, while a null value pops the topmost element.
+     * stack, while a null value pops the topmost element. So make sure,
+     * that you are not accidently pushing 'null's on the stack.
      */
-    public static void setEventURL(RequestURL url) {
+    public static void pushEventURL(RequestURL url, String target) {
 	Stack s = (Stack) eventURLStack.get();
-	if (url == null) { 
-	    s.pop();
-	}
-	else {
-	    s.push(url);
-	}
+        URLTargetTuple tuple = new URLTargetTuple(url, target);
+        s.push(tuple);
     }
     
+    public static void popEventURL() {
+	Stack s = (Stack) eventURLStack.get();
+        s.pop();
+    }
+
     /**
      * returns the topmost request URL on the stack.
      */
     public static RequestURL getEventURL() {
 	Stack s = (Stack) eventURLStack.get();
-	return (RequestURL) s.peek();
+        URLTargetTuple tuple = (URLTargetTuple) s.peek();
+	return (tuple != null) ? tuple.url : null;
     }
 
     /**
-     * Set the target. A non-null value pushes the value onto the
-     * stack, while a null value pops the topmost element.
-     */
-    public static void setEventTarget(String targetName) {
-	Stack s = (Stack) eventTargetStack.get();
-	if (targetName == null) { 
-	    s.pop();
-	}
-	else {
-	    s.push(targetName);
-	}
-    }
-
-    /**
-     * returns the topmost target on the stack.
+     * returns the topmost request URL on the stack.
      */
     public static String getEventTarget() {
-	Stack s = (Stack) eventTargetStack.get();
-	return (String) s.peek();
+	Stack s = (Stack) eventURLStack.get();
+        URLTargetTuple tuple = (URLTargetTuple) s.peek();
+	return (tuple != null) ? tuple.target : null;
+    }
+
+    private final static class URLTargetTuple {
+        public RequestURL url;
+        public String     target;
+
+        URLTargetTuple(RequestURL url, String target) {
+            this.url = url;
+            this.target = target;
+        }
     }
 
     /**
      * Non synchronized, fast stack. This stack never shrinks its internal
-     * data structure.
+     * data structure. If you get Exceptions within this class, it is likely,
+     * that there is a programming error in one of the plafs. More precisely,
+     * that the plaf does a setEventURL(something), but fails to reset it
+     * to 'null': setEventURL(null). Or that 'something' is null.
      */
     private final static class Stack {
 	private Object[] elements;
@@ -123,9 +120,9 @@ public class ClickableRenderUtil
 	    ++pos;
 	    if (pos == elements.length) resize();
 	    /*
-	     * debugging hint: if you get an exception here, maybe the
-	     * last pop() operation was bogus in the first place ? It is
-	     * not checked there for speed reasons.
+	     * debugging hint: if you get an IndexOutOfBoundException here, 
+             * maybe the last pop() operation was bogus in the first place ?
+             * It is not checked there for speed reasons.
 	     */
 	    elements[pos] = o;
 	}

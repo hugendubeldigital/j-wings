@@ -66,12 +66,12 @@ public interface ClickableRenderComponent
      * by the plaf that wants this ClickableRenderComponent to sourround
      * its contents by an anchor (or more, if necessary).
      */
-    void setEventURL(RequestURL url);
-
+    void pushEventURL(RequestURL url, String target);
+    
     /**
-     * The target window or frame this URL is aimed for.
+     * pop the latest URL.
      */
-    void setEventTarget(String targetName);
+    void popEventURL();
 }
 
 /*

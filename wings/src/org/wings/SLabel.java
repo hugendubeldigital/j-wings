@@ -339,16 +339,16 @@ public class SLabel
 
     //--- implementation of the ClickableRenderComponent.
 
-    public void setEventURL(RequestURL url) {
-        ClickableRenderUtil.setEventURL(url);
+    public void pushEventURL(RequestURL url, String target) {
+        ClickableRenderUtil.pushEventURL(url, target);
+    }
+
+    public void popEventURL() {
+        ClickableRenderUtil.popEventURL();
     }
 
     public RequestURL getEventURL() {
         return ClickableRenderUtil.getEventURL();
-    }
-
-    public void setEventTarget(String target) {
-        ClickableRenderUtil.setEventTarget(target);
     }
 
     public String getEventTarget() {
