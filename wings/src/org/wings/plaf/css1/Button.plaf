@@ -28,11 +28,11 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
 
     boolean enabled = abstractButton.isEnabled() &&
 	(abstractButton.getGroup()==null || !abstractButton.isSelected());
-	
+
 
     //    boolean noBreak = abstractButton.isNoBreak();
 
-    if ( enabled ) 
+    if ( enabled )
     {
         %><a href="<%
         writeAnchorAddress(device, abstractButton);
@@ -40,7 +40,7 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
 	Utils.writeEvents(device, abstractButton);
         %><%|title=abstractButton.getToolTipText()%><%
         %><%|accesskey=abstractButton.getMnemonic()%><%
-	
+
     }
     else {
         %><span<%
@@ -60,7 +60,7 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
     }
     /* if (noBreak) { %></nobr><% } */
 
-    if ( enabled ) 
+    if ( enabled )
     {
         %></a><%
     }
@@ -71,11 +71,11 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
 
 protected SIcon getIcon(SAbstractButton abstractButton) {
     if ( abstractButton.isSelected() ) {
-        return abstractButton.isEnabled() 
+        return abstractButton.isEnabled()
 	        ? abstractButton.getSelectedIcon()
 		: abstractButton.getDisabledSelectedIcon();
     } else {
-	return abstractButton.isEnabled() 
+	return abstractButton.isEnabled()
 	        ? abstractButton.getIcon()
                 : abstractButton.getDisabledIcon();
     }
@@ -95,8 +95,8 @@ protected void writeDynamicIcons(final Device device, SAbstractButton abstractBu
 	   if ( renderNameAttribute) {
 	       %> name="<%=iconName%>"<%
 	   } // end of if ()
-	   
-   
+
+
            if ( rolloverIcon!=null ) {
                %> onMouseover="if(document.images){document.<%=iconName
                %>.src='<%=rolloverIcon.getURL()
@@ -155,7 +155,7 @@ protected void writeAnchorIcon(final Device device, SAbstractButton abstractButt
     }
 }
 
-protected void writeAnchorAddress(Device d, SAbstractButton abstractButton) 
+protected void writeAnchorAddress(Device d, SAbstractButton abstractButton)
     throws IOException
 {
     RequestURL addr = abstractButton.getRequestURL();
@@ -171,7 +171,7 @@ protected void writeFormText(final Device device, SAbstractButton abstractButton
     if ( text == null || text.length() == 0 ) {
 	return;
     }
-    
+
     if ( getIcon(abstractButton)!=null ) {
     %><label for="<%=abstractButton.getComponentId()%>"<%
     %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
@@ -186,7 +186,7 @@ protected void writeFormText(final Device device, SAbstractButton abstractButton
     }
     %></label><%
     } else {
-	 
+
     %><input type="<%=abstractButton.getType()%>"<%
     %> name="<%=Utils.event(abstractButton)%>"<%
     %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
@@ -229,7 +229,7 @@ protected void writeFormIcon(final Device device, SAbstractButton abstractButton
 		      false);
     %><%|alt=abstractButton.getToolTipText()%><%
     %><%|title=abstractButton.getToolTipText()%><%
-    // writeEvents();
+    Utils.writeEvents(device, abstractButton);
     %><%|text=abstractButton.getToolTipText()%><%
     if ( !abstractButton.isEnabled() ||
 	 abstractButton.getGroup()!=null && abstractButton.isSelected() ) {
@@ -251,7 +251,7 @@ protected boolean renderLayoutWithoutIcon() {
     String  text = component.getText();
     int     horizontalTextPosition = component.getHorizontalTextPosition();
     int     verticalTextPosition   = component.getVerticalTextPosition();
-  
+
     if (horizontalTextPosition == NO_ALIGN)
 	horizontalTextPosition = RIGHT;
     if (verticalTextPosition == NO_ALIGN)
@@ -277,13 +277,13 @@ protected boolean renderLayoutWithoutIcon() {
             case RIGHT:  x1=1; x2=0; break;
             default:     x1=0; x2=0; break;
         }
-        
+
         // now we got a 2x2 matrix, not a 3x3!
         if (x1+x2+y1+y2 == 0)
             throw new IllegalStateException(
                 "Come? Vertical and horizontal text-position is CENTER, "
                 + "don't know how to arrange this!");
-        
+
         // draw it
         final byte ri_max = y1==y2?(byte)1:(byte)2;
         final byte ci_max = x1==x2?(byte)1:(byte)2;
