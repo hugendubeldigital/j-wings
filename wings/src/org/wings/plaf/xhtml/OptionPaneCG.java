@@ -50,7 +50,7 @@ public class OptionPaneCG
         String encodingType = optionPane.getEncodingType();
 
         d.append("<form method=\"");
-        if (optionPane.getMethod())
+        if (optionPane.isPostMethod())
             d.append("post");
         else
             d.append("get");

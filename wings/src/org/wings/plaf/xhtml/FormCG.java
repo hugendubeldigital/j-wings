@@ -50,7 +50,7 @@ public class FormCG
         String encodingType = form.getEncodingType();
 
         d.append("<form method=\"");
-        if (form.getMethod())
+        if (form.isPostMethod())
             d.append("post");
         else
             d.append("get");

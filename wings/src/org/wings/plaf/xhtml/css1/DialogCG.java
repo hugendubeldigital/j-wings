@@ -90,7 +90,7 @@ public final class DialogCG
         String encodingType = dialog.getEncodingType();
 
         d.append("<form method=\"");
-        if (dialog.getMethod())
+        if (dialog.isPostMethod())
             d.append("post");
         else
             d.append("get");
