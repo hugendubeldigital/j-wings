@@ -71,4 +71,15 @@ public abstract class AbstractEditorAdapter
 	    });
 	dialog.show(component.getParentFrame());
     }
+
+    public void handleException(Exception e) {
+	SOptionPane.showMessageDialog(component.getParentFrame(), e, "ERROR setting property");
+    }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

@@ -10,7 +10,7 @@ import org.wings.*;
 import org.wingx.beans.*;
 
 /**
- * Base List Editor Adapter
+ * CustomAdapter
  *
  * @author Holger Engels
  * @version $Revision$
@@ -39,3 +39,10 @@ public class CustomEditorAdapter
 	return editor.getValue();
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

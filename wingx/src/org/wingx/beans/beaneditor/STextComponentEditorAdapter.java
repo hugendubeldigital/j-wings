@@ -41,6 +41,19 @@ public abstract class STextComponentEditorAdapter
     public void textValueChanged(TextEvent e) {
 	if (textComponent != e.getSource())
 	    return;
-	editor.setAsText(textComponent.getText());
+
+	try {
+	    editor.setAsText(textComponent.getText());
+	}
+	catch (Exception x) {
+	    handleException(x);
+	}
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

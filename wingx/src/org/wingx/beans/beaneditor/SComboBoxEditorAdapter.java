@@ -52,6 +52,19 @@ public class SComboBoxEditorAdapter
     public void actionPerformed(ActionEvent e) {
 	if (comboBox != e.getSource())
 	    return;
-	editor.setAsText((String)comboBox.getSelectedItem());
+
+	try {
+	    editor.setAsText((String)comboBox.getSelectedItem());
+	}
+	catch (Exception x) {
+	    handleException(x);
+	}
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

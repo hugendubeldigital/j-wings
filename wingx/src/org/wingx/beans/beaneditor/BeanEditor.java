@@ -306,7 +306,7 @@ public class BeanEditor
     public void propertyChange(PropertyChangeEvent evt) {
 	if (evt.getSource() instanceof SPropertyEditor) {
 	    SPropertyEditor editor = (SPropertyEditor)evt.getSource();
-	    
+
 	    Iterator iterator = properties.values().iterator();
 	    while (iterator.hasNext()) {
 		Property property = (Property)iterator.next();
@@ -316,7 +316,7 @@ public class BeanEditor
 		    try {
 			if (setter != null)
 			    setter.invoke(bean, new Object[] { value });
-			
+
 			property.value = value;
 		    }
 		    catch (InvocationTargetException ex) {
@@ -396,3 +396,10 @@ public class BeanEditor
 	}
     }
 }
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */
