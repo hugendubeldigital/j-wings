@@ -165,6 +165,8 @@ public class ButtonCG implements org.wings.plaf.ButtonCG, SConstants
 		}
 	    }
 	}
+        else if(icon != null)
+            ic = icon;
 	
 	if (iAdr != null) {
 	    writeAnchorPrefix(d, button);
@@ -368,6 +370,8 @@ public class ButtonCG implements org.wings.plaf.ButtonCG, SConstants
 		}
 	    }
 	}
+        else if(icon != null)
+            ic = icon;
 	
 	if (iAdr != null) {
 	    d.append("<input type=\"image\"");
