@@ -107,10 +107,10 @@ public class TabbedPaneExample extends WingSetPane
         grp = new SButtonGroup();
         choice.add(new SLabel("Color: "));
         final Object[] clrs = {
-                "Yellow",		Color.YELLOW,
-                "Green",		Color.GREEN,
+                "Yellow",		Color.yellow,
+                "Green",		Color.green,
                 "Lightblue",	new Color(200, 200, 255),
-                "Lightgray",	Color.LIGHT_GRAY,
+                "Lightgray",	Color.lightGray,
                 "Orange",		new Color(255, 153, 0)};
 
         for (int i = 0; i < clrs.length; i += 2)
