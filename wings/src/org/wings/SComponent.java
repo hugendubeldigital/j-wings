@@ -45,6 +45,7 @@ import org.wings.border.SBorder;
 public abstract class SComponent
     implements SConstants, Cloneable, Serializable, Renderable
 {
+
     private final static Logger logger = Logger.getLogger("org.wings");
 
     /* */
@@ -79,6 +80,9 @@ public abstract class SComponent
 
     /** Enabled / disabled. */
     protected boolean enabled = true;
+
+    /**  */
+    protected boolean opaque = true;
 
     /** The container, this component resides in. */
     protected SContainer parent = null;
@@ -1095,6 +1099,49 @@ public abstract class SComponent
         throws Exception
     {
         visitor.visit(this);
+    }
+
+
+    /**
+     * Returns true if this component is completely opaque.
+     * <p>
+     * An opaque component paints every pixel within its
+     * rectangular bounds. A non-opaque component paints only a subset of
+     * its pixels or none at all, allowing the pixels underneath it to
+     * "show through".  Therefore, a component that does not fully paint
+     * its pixels provides a degree of transparency.
+     * <p>
+     * Subclasses that guarantee to always completely paint their contents
+     * should override this method and return true.
+     *
+     * @return true if this component is completely opaque
+     * @see #setOpaque
+     */
+    public boolean isOpaque() {
+        return opaque;
+    }
+
+    /**
+     * If true the component paints every pixel within its bounds. 
+     * Otherwise, the component may not paint some or all of its
+     * pixels, allowing the underlying pixels to show through.
+     * <p>
+     * The default value of this property is false for <code>JComponent</code>.
+     * However, the default value for this property on most standard
+     * <code>JComponent</code> subclasses (such as <code>JButton</code> and
+     * <code>JTree</code>) is look-and-feel dependent.
+     *
+     * @param isOpaque  true if this component should be opaque
+     * @see #isOpaque
+     * @beaninfo
+     *        bound: true
+     *       expert: true
+     *  description: The component's opacity
+     */
+    public void setOpaque(boolean isOpaque) {
+        boolean oldValue = opaque;
+        opaque = isOpaque;
+        firePropertyChange("opaque", oldValue, isOpaque);
     }
 
     /**
