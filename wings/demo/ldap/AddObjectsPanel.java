@@ -24,31 +24,52 @@ public class AddObjectsPanel
     LdapWorker worker = null;
     STree tree = null;
     SForm attrForm;
+    SForm objForm;
     SButton addEntry;
     SButton submit;
+    SButton tisconUser;
+    SButton tisconOClasses;
     Hashtable comp  =new Hashtable();
     STextField dnText;
-
-    public AddObjectsPanel() {
-	setLayout(new SGridLayout(1,2));
+    SButton suspend = new SButton("suspend");
+    SForm tisconUserForm;
+    SForm tisconUserOClForm;
+    
+	public AddObjectsPanel() {
+	setLayout(new SFlowDownLayout());
 	SLabel objLabel = new SLabel("Object Classes");
 
-	SForm objForm = new SForm(new SFlowDownLayout());
+	objForm = new SForm();
+	objForm.setBorder(new SLineBorder());
+	tisconUserForm = new SForm();
+	tisconUserForm.setBorder(new SLineBorder());
+	tisconUserOClForm = new SForm();
+	tisconUserOClForm.setBorder(new SLineBorder());
 	objList = new SList();
 	objList.setSelectionMode(MULTIPLE_SELECTION);
 	objList.addListSelectionListener(this);
 	objList.setVisibleRowCount(9);
 
 	submit = new SButton("submit");
+	tisconUser = new SButton("tisconUser");
+	tisconUser.addActionListener(this);
+	tisconOClasses = new SButton("tisconUserAllAttributes");
+	tisconOClasses.addActionListener(this);
 	submit.addActionListener(this);
 	objForm.add(objLabel);
 	objForm.add(objList) ;
 	objForm.add(submit) ;
+	tisconUserForm.add(tisconUser);
+	tisconUserOClForm.add(tisconOClasses);
 	    
 	attrForm = new SForm(new SGridLayout(0,2));
     
 	add(objForm);
+	add(tisconUserForm);
+	add(tisconUserOClForm);
 	add(attrForm);
+
+	suspend.addActionListener(this);
     }
 
     public void setWorker(LdapWorker worker) {
@@ -67,6 +88,50 @@ public class AddObjectsPanel
 	}
     }
     
+    
+    private void fillTisconPanel () {
+	attrForm.removeAll();
+	attrForm.setLayout(new SGridLayout(0,2));
+	SLabel dnLabel = new SLabel();
+	dnText = new STextField("");
+	STextField val;
+	String tval;
+
+	attrForm.add(dnLabel);
+	attrForm.add(dnText);
+	
+	TisconUser tu = new TisconUser();
+	String [] attrs = tu.attributes;
+	String [] objectclasses  = tu.objectClasses;
+	for (int i =0; i<attrs.length;i++)
+	    {
+		SLabel label = new SLabel(attrs[i]);
+		if (attrs[i].toLowerCase().equals("objectclass")) {
+		    tval = "";
+		    String [] oc = tu.objectClasses;
+		    for (int j= 0; j< oc.length; j++) {
+			if (!tval.equals(""))
+			    tval = tval + "," + oc[j];
+			else tval = oc[j];
+		    }
+		    val = new STextField(tval); 
+		}
+		else
+		    val = new STextField("");
+		val.setColumns(35);
+		attrForm.add(label);
+		attrForm.add(val);
+		comp.put(label,val);
+	    }
+	
+	addEntry = new SButton("addEntry");
+	addEntry.addActionListener(this);
+	attrForm.add(addEntry);
+	attrForm.add(suspend);
+	
+	
+	
+    }
 
     private void fillAttributePanel(ArrayList selectedObjects) {
 	Hashtable attr;
@@ -115,6 +180,7 @@ public class AddObjectsPanel
 		STextField tf = new STextField(atv);
 		System.out.println("text field " + atv);
 		attrForm.add(al);
+		tf.setColumns(33);
 		attrForm.add(tf);
 		comp.put(al,tf);
 	    }
@@ -123,6 +189,7 @@ public class AddObjectsPanel
 	    addEntry = new SButton("addEntry");
 	    addEntry.addActionListener(this);
 	    attrForm.add(addEntry);
+	    attrForm.add(suspend);
 	}
     }
     
@@ -137,6 +204,44 @@ public class AddObjectsPanel
 	}
 	    
 	    fillAttributePanel(obj);
+	    objForm.setVisible(false);
+	    tisconUserForm.setVisible(false);
+	    tisconUserOClForm.setVisible(false);
+	    attrForm.setVisible(true);
+    }
+
+	if ((SButton)(evt.getSource()) == tisconUser) {
+	    fillTisconPanel();
+	    objForm.setVisible(false);
+	    tisconUserForm.setVisible(false);
+	    tisconUserOClForm.setVisible(false);
+	    attrForm.setVisible(true);
+	}
+	
+
+	if ((SButton)(evt.getSource()) == suspend) {
+	    
+	    objForm.setVisible(true);
+	    tisconUserForm.setVisible(true);
+	    tisconUserOClForm.setVisible(true);
+	    attrForm.setVisible(false);
+	}
+	
+	
+
+	if ((SButton)(evt.getSource()) == tisconOClasses) {
+	    TisconUser tu = new TisconUser();
+	    String [] objectclasses  = tu.objectClasses;
+	    ArrayList obj = new ArrayList();
+	    for (int i = 0;i < objectclasses.length;i++) {
+		obj.add(objectclasses[i]);
+	    }
+	    objForm.setVisible(false);
+	    tisconUserForm.setVisible(false);
+	    tisconUserOClForm.setVisible(false);
+		
+	    fillAttributePanel(obj);
+	    attrForm.setVisible(true);
 	}
 	
 
@@ -166,6 +271,11 @@ public class AddObjectsPanel
 	    parent.addChild(newNode);
 	    model.nodesWereInserted(parent, new int[] {parent.getChildCount()-1});
 	    worker.addNewEntry(dnText.getText().trim(),vals); 
+	    
+	    objForm.setVisible(true);
+	    tisconUserForm.setVisible(true);
+	    tisconUserOClForm.setVisible(true);
+	    attrForm.setVisible(false);
 	}
     }
 

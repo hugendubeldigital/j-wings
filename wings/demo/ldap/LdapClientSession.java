@@ -96,14 +96,14 @@ public class LdapClientSession
 	settingsForm.add(server);
 
 	SLabel descBaseDN = new SLabel("base DN");
-	final STextField baseDN = new STextField("");
+	final STextField baseDN = new STextField();
 	baseDN.setColumns(30);
 	baseDN.setText(((PropertyService)getSession()).getProperty("ldap.server.basedn"));
 	settingsForm.add(descBaseDN);
 	settingsForm.add(baseDN);
 
 	SLabel descBindDN = new SLabel("bind DN");
-	final STextField bindDN= new STextField("");
+	final STextField bindDN= new STextField("cn=admin,dC=tiscon,dc=de");
 	bindDN.setColumns(30);
 	settingsForm.add(descBindDN);
 	settingsForm.add(bindDN);
