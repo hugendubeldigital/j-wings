@@ -20,19 +20,44 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * The interface for the layout managers.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public interface SLayoutManager
 {
+    /**
+     * Adds a component to the layout manager
+     * @param c The new component
+     * @param constraint A (sometimes optional) constraint object
+     */
     void addComponent(SComponent c, Object constraint);
+
+    /**
+     * Removes a component from the layout manager
+     * @param c The new component
+     */
     void removeComponent(SComponent c);
+
+    /**
+     * Sets the corresponding container
+     * @param c The container
+     */
     void setContainer(SContainer c);
+
+    /**
+     * Returns the corresponding container
+     * @return The container
+     */
     SContainer getContainer();
 
+    /**
+     * Writes the layouted container to the given device.
+     * @param s The output device
+     */
     void write(Device s) throws IOException;
+
     String getCGClassID();
     void updateCG();
 }

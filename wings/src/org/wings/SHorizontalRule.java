@@ -18,7 +18,7 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * This is an horizontal rule. Example: <hr>
  *
  * @author
  * @version $Revision$
@@ -29,28 +29,28 @@ public class SHorizontalRule
     private static final String cgClassID = "HorizontalRuleCG";
 
     /**
-     * TODO: documentation
+     * shaded rule?
      */
     protected boolean shade = true;
 
     /**
-     * TODO: documentation
+     * width of the rule
      */
     protected int width = 0;
 
     /**
-     * TODO: documentation
+     * size of the rule (percent?)
      */
     protected int size = 0;
 
     /**
-     * TODO: documentation
+     * the aligment
      */
     protected int alignment = SConstants.NO_ALIGN;
 
 
     /**
-     * TODO: documentation
+     * Creates a new horizontal rule. Shade is enabled, width and size = 0.
      *
      */
     public SHorizontalRule() {
@@ -58,7 +58,7 @@ public class SHorizontalRule
 
 
     /**
-     * TODO: documentation
+     * sets the alignment
      *
      * @param al
      */
@@ -67,7 +67,7 @@ public class SHorizontalRule
     }
 
     /**
-     * TODO: documentation
+     * returns the alignment
      *
      * @return
      */
@@ -76,7 +76,7 @@ public class SHorizontalRule
     }
 
     /**
-     * TODO: documentation
+     * sets the size of the rule
      *
      * @param s
      */
@@ -85,45 +85,45 @@ public class SHorizontalRule
     }
 
     /**
-     * TODO: documentation
+     * returns the size of the rule
      *
-     * @return
+     * @return the size
      */
     public int getSize() {
         return size;
     }
 
     /**
-     * TODO: documentation
+     * sets the width of the rule
      *
-     * @param s
+     * @param s the width
      */
     public void setWidth(int s) {
         width = s;
     }
 
     /**
-     * TODO: documentation
+     * returns the width of the rule
      *
-     * @return
+     * @return the width
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * TODO: documentation
+     * enable or disable shading of the rule
      *
-     * @param s
+     * @param s shade yes or no
      */
     public void setShade(boolean s) {
         shade = s;
     }
 
     /**
-     * TODO: documentation
+     * returns the shading
      *
-     * @return
+     * @return yes or no
      */
     public boolean getShade() {
         return shade;

@@ -23,7 +23,10 @@ import org.wings.io.Device;
 import org.wings.externalizer.ExternalizeManager;
 
 /**
- * TODO: documentation
+ * A display area for a short text string or an image, or both.
+ * You can specify where in the label's display area  the label's contents
+ * are aligned by setting the vertical and horizontal alignment.
+ * You can also specify the position of the text relative to the image.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -34,10 +37,13 @@ public class SLabel
 {
     private static final String cgClassID = "LabelCG";
 
+    /**
+     * The text to be displayed
+     */
     protected String text;
 
     /**
-     * TODO: documentation
+     * The icon to be displayed
      */
     protected Icon icon = null;
 
@@ -70,47 +76,86 @@ public class SLabel
 
 
     /**
-     * TODO: documentation
+     * Creates a new <code>SLabel</code> instance with the specified text
+     * (left alligned) and no icon.
      *
-     * @param t
+     * @param text The text to be displayed by the label.
      */
-    public SLabel(String t) {
-        this(t, null, LEFT);
+    public SLabel(String text) {
+        this(text, null, LEFT);
     }
 
     /**
-     * TODO: documentation
-     *
+     * Creates a new <code>SLabel</code> instance with no text and no icon.
      */
     public SLabel() {
         this((String)null);
     }
 
     /**
-     * TODO: documentation
+     * Creates a new <code>SLabel</code> instance with the specified icon
+     * (left alligned) and no text.
      *
-     * @param icon
+     * @param icon The image to be displayed by the label.
      */
     public SLabel(Icon icon) {
         this(icon, LEFT);
     }
 
+    /**
+     * Creates a new <code>SLabel</code> instance with the specified icon
+     * (alligned as specified) and no text.
+     *
+     * @param icon The image to be displayed by the label.
+     * @param horizontalAlignment One of the following constants defined in
+     *        <code>SConstants</code>:
+     *        <code>LEFT</code>, <code>CENTER</code>, <code>RIGHT</code>.
+     * @see SConstants
+     */
     public SLabel(Icon icon, int horizontalAlignment) {
         this(null, icon, horizontalAlignment);
     }
 
+    /**
+     * Creates a new <code>SLabel</code> instance with the specified icon
+     * and the specified text (left alligned).
+     *
+     * @param text The text to be displayed by the label.
+     * @param icon The image to be displayed by the label.
+     */
     public SLabel(String text, Icon icon) {
         setText(text);
         setIcon(icon);
         setHorizontalAlignment(LEFT);
     }
 
+    /**
+     * Creates a new <code>SLabel</code> instance with the specified icon
+     * and the specified text (alligned as specified).
+     *
+     * @param text The text to be displayed by the label.
+     * @param icon The image to be displayed by the label.
+     * @param horizontalAlignment One of the following constants defined in
+     *        <code>SConstants</code>:
+     *        <code>LEFT</code>, <code>CENTER</code>, <code>RIGHT</code>.
+     * @see SConstants
+     */
     public SLabel(String text, Icon icon, int horizontalAlignment) {
         setText(text);
         setIcon(icon);
         setHorizontalAlignment(horizontalAlignment);
     }
 
+    /**
+     * Creates a new <code>SLabel</code> instance with the specified text
+     * (alligned as specified) and no icon.
+     *
+     * @param text The text to be displayed by the label.
+     * @param horizontalAlignment One of the following constants defined in
+     *        <code>SConstants</code>:
+     *        <code>LEFT</code>, <code>CENTER</code>, <code>RIGHT</code>.
+     * @see SConstants
+     */
     public SLabel(String text, int horizontalAlignment) {
         this(text, null, horizontalAlignment);
     }
@@ -132,6 +177,7 @@ public class SLabel
     public void setNoBreak(boolean b) {
         noBreak = b;
     }
+
     /**
      * TODO: documentation
      *
@@ -140,36 +186,48 @@ public class SLabel
     public boolean isNoBreak() { return noBreak; }
 
     /**
-     * TODO: documentation
+     * Returns the horizontal position of the lable's text
      *
-     * @return
+     * @return the position
+     * @see SConstants
+     * @see #setHorizontalTextPosition
      */
     public int getHorizontalTextPosition() {
         return horizontalTextPosition;
     }
 
     /**
-     * TODO: documentation
+     * Sets the horizontal position of the lable's text, relative to its icon.
+     * <p>
+     * The default value of this property is CENTER.
      *
-     * @param textPosition
+     * @param textPosition One of the following constants defined in
+     *        <code>SConstants</code>:
+     *        <code>LEFT</code>, <code>CENTER</code>, <code>RIGHT</code>.
      */
     public void setHorizontalTextPosition(int textPosition) {
         horizontalTextPosition = textPosition;
     }
 
     /**
-     * TODO: documentation
+     * Sets the vertical position of the lable's text, relative to its icon.
+     * <p>
+     * The default value of this property is CENTER.
      *
-     * @param textPosition
+     * @param textPosition One of the following constants defined in
+     *        <code>SConstants</code>:
+     *        <code>TOP</code>, <code>CENTER</code>, <code>BOTTOM</code>.
      */
     public void setVerticalTextPosition(int textPosition) {
         verticalTextPosition = textPosition;
     }
 
     /**
-     * TODO: documentation
+     * Returns the vertical position of the label's text
      *
-     * @return
+     * @return the position
+     * @see SConstants
+     * @see #setVerticalTextPosition
      */
     public int getVerticalTextPosition() {
         return verticalTextPosition;
@@ -305,7 +363,7 @@ public class SLabel
     }
 
     /**
-     * TODO: documentation
+     * Returns the text of the label
      *
      * @return
      */
@@ -314,9 +372,10 @@ public class SLabel
     }
 
     /**
-     * TODO: documentation
+     * Sets the text of the label. If the value of text is null or an empty
+     * string, nothing is displayed.
      *
-     * @param t
+     * @param t The new text
      */
     public void setText(String t) {
         String oldText = text;

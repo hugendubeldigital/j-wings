@@ -17,8 +17,9 @@ package org.wings;
 import org.wings.plaf.*;
 
 /**
- * TODO: documentation
+ * this is the same as a SHorizontalRule
  *
+ * @see SHorizontalRule
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
@@ -28,8 +29,7 @@ public class SSeparator
     private static final String cgClassID = "SeparatorCG";
 
     /**
-     * TODO: documentation
-     *
+     * creates a new separator
      */
     public SSeparator() {
     }

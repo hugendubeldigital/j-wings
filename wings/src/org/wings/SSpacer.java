@@ -18,7 +18,8 @@ import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * A horizontal or vertical spacer. The horizontal space is a
+ * &amp;nbsp;, the vertical a &lt;br /&gt;
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -27,41 +28,50 @@ public class SSpacer
     extends SComponent
     implements SConstants
 {
-    int spaces = 1;
-    int alignment = HORIZONTAL;
+    protected int spaces = 1;
+    protected int alignment = HORIZONTAL;
 
     /**
-     * TODO: documentation
-     *
+     * Creates a new horizontal spacer, one space long.
      */
     public SSpacer() {
     }
 
     /**
-     * TODO: documentation
+     * Creates a new horizontal spacer with the given number of spaces.
      *
-     * @param spaces
+     * @param spaces Number of spaces
      */
     public SSpacer(int spaces) {
         setSpaces(spaces);
     }
 
+    /**
+     * Creates a new spacer (horizontal or vertical) with the given number
+     * of spaces.
+     *
+     * @param spaces Number of spaces
+     * @param alignment One of the following constants from
+     *        <code>SConstants</code>:
+     *        <code>HORIZONTAL</code> or <code>VERTICAL</code>.
+     * @see SConstants
+     */
     public SSpacer(int spaces, int alignment) {
         setSpaces(spaces);
         setAlignment(alignment);
     }
 
     /**
-     * TODO: documentation
+     * Sets the number of spaces.
      *
-     * @param s
+     * @param s Number of spaces.
      */
     public void setSpaces(int s) {
         spaces = s;
     }
 
     /**
-     * TODO: documentation
+     * Sets the alignment? Why do we need an alignment???
      *
      * @param a
      */
@@ -70,7 +80,7 @@ public class SSpacer
     }
 
     /**
-     * TODO: documentation
+     * internal writing function
      *
      * @param s
      */
