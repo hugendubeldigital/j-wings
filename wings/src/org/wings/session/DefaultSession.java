@@ -253,18 +253,27 @@ public class DefaultSession
     }
 
     /**
+     * Get char set depending on a locale (i. e. iso-8859-1).
+     *
+     * @param locale Locale
+     * @return Char set depending on the locale.
+     */
+    static public String charSetOf(Locale locale) {
+        final String language = locale.getLanguage();
+
+        if(language.equals("pl"))
+            return "iso-8859-2";
+
+        return "iso-8859-1";
+    }
+
+    /**
      * Get char set of this session (i. e. iso-8859-1).
      *
      * @return Char set of this session
      */
     public String getCharSet() {
-        final String language = getLocale().getLanguage();
-
-        if(language.equals("pl")) {
-            return "iso-8859-2";
-        }
-
-        return "iso-8859-1";
+        return charSetOf(getLocale());
     }
 }
 
