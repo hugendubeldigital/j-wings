@@ -14,26 +14,47 @@
 
 package org.wings;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.io.IOException;
+import java.awt.Rectangle;
+import java.awt.Dimension;
+import java.awt.Color;
 import java.io.Serializable;
-import java.util.Locale;
 import java.util.Vector;
+import java.util.ArrayList;
 
-import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.ListModel;
+import javax.swing.AbstractListModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.EventListenerList;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-import org.wings.plaf.*;
-import org.wings.style.*;
-import org.wings.util.*;
+import org.wings.plaf.ListCG;
+import org.wings.style.Style;
+import org.wings.style.AttributeSet;
+import org.wings.style.SimpleAttributeSet;
+import org.wings.style.CSSStyleSheet;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * <em>CAVEAT</em>
+ * A list in a form has special implications to take care of:
+ * Problem with a form request
+ * is, that we should fire the selection change events not until the states
+ * of all components are consistent. Unfortunately we cannot avoid events
+ * before that
+ * entirely. Problem is, that we use Swing Models for selection and they
+ * don't know anything about asynchronous state change. They will fire their
+ * events just after we set a state. But inside a form we have to change
+ * many states of many components, all at once. And events should arise
+ * first, after we set the new state of all components. So as a trade-off we
+ * decided to use the setValueIsAdjusting in the ListSelectionModel as an
+ * indicator, 
+ * if components are consistent. That is, if you get an SelectionEvent with
+ * getValueIsAdjusting true, you cannot be sure, that component states are
+ * consistent, so don't use that events. But you will get an event without
+ * isValueAdjusting. You can work with that event. If you want to avoid that
+ * problem, just use the selection events from the list itself, register your
+ * listener at SList rather than at the ListSelectionModel...
  *
  * @see javax.swing.ListModel
  * @see SDefaultListModel
@@ -44,41 +65,56 @@ import org.wings.io.Device;
  *   attribute: isContainer false
  *
  * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class SList
     extends SComponent
     implements Scrollable, RequestListener
 {
-    public static final boolean DEBUG = true;
-
     /**
      * @see #getCGClassID
      */
     private static final String cgClassID = "ListCG";
 
+    /**
+     * indicates if this component - if it is inside a {@link SForm} -  renders
+     * itself as form component or not.
+     */
     private boolean showAsFormComponent = true;
+
+    /**
+     * The preferred extent of the list.
+     */
     private int visibleRowCount = 8;
-
-    private ListSelectionModel selectionModel;
-    private ListModel dataModel;
-    private SListCellRenderer cellRenderer;
-    private ListSelectionListener selectionListener;
-
-    /**
-     * Need this for determination, which selections have changed.
-     */
-    protected boolean[] selection = null;
-
-    /**
-     * Need this for determination, which selections have changed.
-     */
-    protected boolean[] oldSelection = null;
-
-    protected EventListenerList listenerList = new EventListenerList();
 
     /**
      *
+     */
+    private SListSelectionModel selectionModel;
+
+    /**
+     *
+     */
+    private ListModel dataModel;
+
+    /**
+     *
+     */
+    private SListCellRenderer cellRenderer;
+
+    /**
+     *
+     */
+    private ListSelectionHandler selectionHandler;
+
+    /**
+     *
+     */
+    protected final EventListenerList listenerList = new EventListenerList();
+
+    /**
+     * which extent of the component should be rendered
      */
     private Rectangle viewport = null;
 
@@ -161,10 +197,19 @@ public class SList
             } } );
     }
 
+    /**
+     * indicates if this component - if it is inside a {@link SForm} -  renders
+     * itself as form component or not.
+     */
     public void setShowAsFormComponent(boolean showAsFormComponent) {
         this.showAsFormComponent = showAsFormComponent;
     }
 
+    /**
+     * is this component rendered as form component. 
+     * @return true, if the component resides in a {@link SForm} and 
+     * {@link #setShowAsFormComponent} is set to true (the default)
+     */
     public boolean getShowAsFormComponent() {
         return showAsFormComponent && getResidesInForm();
     }
@@ -175,7 +220,7 @@ public class SList
      * @return the ListCellRenderer
      * @see #setCellRenderer
      */
-    public SListCellRenderer getCellRenderer() {
+    public final SListCellRenderer getCellRenderer() {
         return cellRenderer;
     }
 
@@ -191,7 +236,7 @@ public class SList
     public void setCellRenderer(SListCellRenderer cellRenderer) {
         SListCellRenderer oldValue = this.cellRenderer;
         this.cellRenderer = cellRenderer;
-        //firePropertyChange("cellRenderer", oldValue, cellRenderer);
+        reloadIfChange(ReloadManager.RELOAD_CODE, oldValue, cellRenderer);
     }
 
 
@@ -199,13 +244,16 @@ public class SList
      * @param style the style of selected cells
      */
     public void setSelectionStyle(Style selectionStyle) {
-        this.selectionStyle = selectionStyle;
+        if ( isDifferent(this.selectionStyle, selectionStyle) ) {
+            this.selectionStyle = selectionStyle;
+            reload(ReloadManager.RELOAD_STYLE);
+        }
     }
 
     /**
      * @return the style of selected cells.
      */
-    public Style getSelectionStyle() { return selectionStyle; }
+    public final Style getSelectionStyle() { return selectionStyle; }
 
     /**
      * Set a selectionAttribute.
@@ -214,17 +262,18 @@ public class SList
      */
     public void setSelectionAttribute(String name, String value) {
         boolean changed = selectionAttributes.isDefined(name);
-        selectionAttributes.putAttribute(name, value);
 
-        if (changed)
+        if (changed) {
+            selectionAttributes.putAttribute(name, value);
             reload(ReloadManager.RELOAD_STYLE);
+        }
     }
 
     /**
      * return the value of an selectionAttribute.
      * @param name the selectionAttribute name
      */
-    public String getSelectionAttribute(String name) {
+    public final String getSelectionAttribute(String name) {
         return selectionAttributes.getAttribute(name);
     }
 
@@ -262,7 +311,7 @@ public class SList
     /**
      * @return the current selectionAttributes
      */
-    public AttributeSet getSelectionAttributes() {
+    public final AttributeSet getSelectionAttributes() {
         return selectionAttributes;
     }
 
@@ -278,7 +327,7 @@ public class SList
      * Return the background color.
      * @return the background color
      */
-    public Color getSelectionBackground() {
+    public final Color getSelectionBackground() {
         return CSSStyleSheet.getBackground(selectionAttributes);
     }
 
@@ -294,7 +343,7 @@ public class SList
      * Return the foreground color.
      * @return the foreground color
      */
-    public Color getSelectionForeground() {
+    public final Color getSelectionForeground() {
         return CSSStyleSheet.getForeground(selectionAttributes);
     }
 
@@ -305,7 +354,7 @@ public class SList
      * @return the preferred number of rows to display
      * @see #setVisibleRowCount
      */
-    public int getVisibleRowCount() {
+    public final int getVisibleRowCount() {
         return visibleRowCount;
     }
 
@@ -322,9 +371,11 @@ public class SList
      * description: The preferred number of cells that can be displayed without a scrollbar.
      */
     public void setVisibleRowCount(int visibleRowCount) {
-        int oldValue = this.visibleRowCount;
-        this.visibleRowCount = Math.max(0, visibleRowCount);
-        //firePropertyChange("visibleRowCount", oldValue, visibleRowCount);
+        if ( this.visibleRowCount!=visibleRowCount ) {
+            this.visibleRowCount = Math.max(0, visibleRowCount);
+            reload(ReloadManager.RELOAD_CODE);
+            //firePropertyChange("visibleRowCount", oldValue, visibleRowCount);
+        }
     }
 
 
@@ -356,13 +407,11 @@ public class SList
         if (model == null) {
             throw new IllegalArgumentException("model must be non null");
         }
-        ListModel oldModel = dataModel;
-        dataModel = model;
-        //firePropertyChange("model", oldModel, dataModel);
-        clearSelection();
-        if ((model == null && oldModel != null) ||
-            (model != null && !model.equals(oldModel)))
+        if ( isDifferent(dataModel, model) ) {
+            clearSelection();
+            dataModel = model;
             reload(ReloadManager.RELOAD_CODE);
+        }
     }
 
 
@@ -402,20 +451,27 @@ public class SList
             } } );
     }
 
-
-    protected ListSelectionModel createSelectionModel() {
-        return new DefaultListSelectionModel();
+    /**
+     * creates the default selection model. It uses the swing
+     * DefaultListSelectionModel, and wraps some methods to support 
+     * {@link SConstants.NO_SELECTION}
+     */
+    protected SListSelectionModel createSelectionModel() {
+        return new SDefaultListSelectionModel();
     }
 
 
     /**
-     * Returns the current selection model.
+     * Returns the current selection model. If selection mode is 
+     * {@link SConstants.NO_SELECTION} it return <em>null</em>
      *
-     * @return the ListSelectionModel that implements list selections
+     * @return the ListSelectionModel that implements list selections. 
+     * If selection mode is {@link SConstants.NO_SELECTION} it return
+     * <em>null</em> 
      * @see #setSelectionModel
      * @see ListSelectionModel
      */
-    public ListSelectionModel getSelectionModel() {
+    public SListSelectionModel getSelectionModel() {
         return selectionModel;
     }
 
@@ -450,8 +506,10 @@ public class SList
      * A handler that forwards ListSelectionEvents from the selectionModel
      * to the SList ListSelectionListeners.
      */
-    private class ListSelectionHandler implements ListSelectionListener, Serializable 
+    private final class ListSelectionHandler 
+        implements ListSelectionListener, Serializable 
     {
+
         public void valueChanged(ListSelectionEvent e) {
             fireSelectionValueChanged(e.getFirstIndex(),
                                       e.getLastIndex(),
@@ -469,9 +527,9 @@ public class SList
      * @see #getSelectionModel
      */
     public void addListSelectionListener(ListSelectionListener listener) {
-        if (selectionListener == null) {
-            selectionListener = new ListSelectionHandler();
-            getSelectionModel().addListSelectionListener(selectionListener);
+        if (selectionHandler == null) {
+            selectionHandler = new ListSelectionHandler();
+            getSelectionModel().addListSelectionListener(selectionHandler);
         }
 
         listenerList.add(ListSelectionListener.class, listener);
@@ -502,17 +560,17 @@ public class SList
      *       bound: true
      * description: The selection model, recording which cells are selected.
      */
-    public void setSelectionModel(ListSelectionModel selectionModel) {
+    public void setSelectionModel(SListSelectionModel selectionModel) {
         if (selectionModel == null) {
             throw new IllegalArgumentException("selectionModel must be non null");
         }
 
-        if (selectionListener != null) {
-            this.selectionModel.removeListSelectionListener(selectionListener);
-            selectionModel.addListSelectionListener(selectionListener);
+        if (selectionHandler != null) {
+            this.selectionModel.removeListSelectionListener(selectionHandler);
+            selectionModel.addListSelectionListener(selectionHandler);
         }
 
-        ListSelectionModel oldValue = this.selectionModel;
+        SListSelectionModel oldValue = this.selectionModel;
         this.selectionModel = selectionModel;
         //firePropertyChange("selectionModel", oldValue, selectionModel);
     }
@@ -536,7 +594,7 @@ public class SList
      *              MULTIPLE_INTERVAL_SELECTION ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
      */
     public void setSelectionMode(int selectionMode) {
-        getSelectionModel().setSelectionMode(selectionMode);
+        selectionModel.setSelectionMode(selectionMode);
     }
 
     /**
@@ -907,38 +965,13 @@ public class SList
         return start;
     }
 
-
-    private void syncSelection() {
-	if (dataModel == null)
-            return;
-
-        if (selection == null || dataModel.getSize() != selection.length)
-            selection = new boolean[dataModel.getSize()];
-
-        for (int i=0; i < selection.length; i++)
-            selection[i] = false;
-    }
-
-    /**
-     * Commit selection changes to the model.
-     * The model will generate events.
-     */
-    protected void fireEvents() {
-        setValueIsAdjusting(true);
-        for (int i=0; i < selection.length; i++) {
-            if (selection[i] != isSelectedIndex(i)) {
-                if (selection[i])
-                    addSelectionInterval(i, i);
-                else
-                    removeSelectionInterval(i, i);
-            }
-        }
-        setValueIsAdjusting(false);
-    }
-
     public void fireIntermediateEvents() {
+        getSelectionModel().fireDelayedIntermediateEvents();
     }
+
     public void fireFinalEvents() {
+        // fire selection events...
+        getSelectionModel().fireDelayedFinalEvents();
     }
 
     /*
@@ -947,40 +980,73 @@ public class SList
      * @param value the value
      */
     public void processRequest(String action, String[] values) {
+        // is it for me ?
+        if ( !action.startsWith(getUnifiedId()) ) { 
+            return; 
+        }
+
+        // delay events...
+        getSelectionModel().setDelayEvents(true);
+
+        getSelectionModel().setValueIsAdjusting(true);
+        // in a form, we only get events for selected items, so for every
+        // selected item, which is not in values, deselect it...
         if (getShowAsFormComponent()) {
-            syncSelection();
 
+            ArrayList selectedIndices = new ArrayList();
             for ( int i=0; i<values.length; i++ ) {
-                try {
-                    int sel = Integer.parseInt(values[i]);
 
-                    if ( sel>=0 ) 
-                        selection[sel] = true;
-                } catch (Exception e) {
-                System.err.println("Cannot parse expected integer \"" +
-                                   values[i] + "\"");
-                e.printStackTrace();
+
+                if ( values[i].length()<2 ) continue; // false format
+
+                String indexString = values[i].substring(1);
+                try {
+                    int index = Integer.parseInt(indexString);
+                    
+                    // in a form all parameters are select parameters...
+                    if ( values[i].charAt(0)=='a' ) {
+                        selectedIndices.add(new Integer(index));
+                        addSelectionInterval(index, index);
+                    }
+                } catch (Exception ex) {
+                    // ignore, this is not the correct format...
                 }
             }
-
-            fireEvents();
+            // remove all selected indices, which are not explicitely selected
+            // by a parameter
+            for ( int i=0; i<getModel().getSize(); i++ ) {
+                if ( isSelectedIndex(i) && 
+                     !selectedIndices.contains(new Integer(i)) ) {
+                        removeSelectionInterval(i, i);
+                }
+            }
         } else {
+
             for ( int i=0; i<values.length; i++ ) {
+
+                if ( values[i].length()<2 ) continue; // false format
+
+                // first char is select/deselect operator
+                String indexString = values[i].substring(1);
                 try {
-                    int sel = Integer.parseInt(values[i]);
+                    int index = Integer.parseInt(indexString);
                     
-                    if (isSelectedIndex(sel))
-                        removeSelectionInterval(sel, sel);
-                    else
-                        addSelectionInterval(sel, sel);
-                } catch (Exception e) {
-                System.err.println("Cannot parse expected integer \"" +
-                                   values[i] + "\"");
-                e.printStackTrace();
+                    if ( values[i].charAt(0)=='a' ) {
+                        addSelectionInterval(index, index);
+                    } else if ( values[i].charAt(0)=='r' ) {
+                        removeSelectionInterval(index, index);
+                    } // else ignore, this is not the correct format...
+                } catch (Exception ex) {
                 }
 
             }
         }
+        getSelectionModel().setValueIsAdjusting(false);
+
+
+        getSelectionModel().setDelayEvents(false);
+
+        SForm.addArmedComponent(this);
     }
 
     /**
@@ -1059,12 +1125,19 @@ public class SList
         super.setCG(cg);
     }
 
-
-    private static final void debug(String msg) {
-        if ( DEBUG ) {
-            DebugUtil.printDebugMessage(SList.class, msg);
-        }
+    public String getSelectionToggleParameter(int index) {
+        return isSelectedIndex(index) ? getDeselectParameter(index) : 
+            getSelectParameter(index);
     }
+
+    public String getSelectParameter(int index) {
+        return "a" + Integer.toString(index);
+    }
+
+    public String getDeselectParameter(int index) {
+        return "r" + Integer.toString(index);
+    }
+
 }
 
 /*

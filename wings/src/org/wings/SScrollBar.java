@@ -337,24 +337,6 @@ public class SScrollBar
         }
     }
 
-    protected String getEventParameter(int value) {
-        return Integer.toString(value);
-    }
-
-    public void processRequest(String name, String[] values) {
-        for ( int i=0; i<values.length; i++ ) {
-            try {
-                setValue(Integer.parseInt(values[i]));
-            } catch ( NumberFormatException ex ) {
-                // ignore
-            }
-        }
-    }
-
-    public void fireIntermediateEvents() {}
-    
-    public void fireFinalEvents() {}
-
     /**
      * Enables the component so that the knob position can be changed.
      * When the disabled, the knob position cannot be changed.

@@ -295,12 +295,6 @@ public abstract class SAbstractButton
         }
     }
 
-    /**
-     *  store here the state after process request. The request will then be set
-     * in {@link #fireIntermediateEvents}
-     */
-    private boolean requestSelection;
-
     public void processRequest(String action, String[] values) {
         /*
           System.out.print("action " + action);
@@ -310,12 +304,11 @@ public abstract class SAbstractButton
         System.out.println();
         */
 
-        requestSelection = isSelected(); 
+        boolean requestSelection = isSelected(); 
         
         int eventCount = 0;
 
         if ( buttonGroup!=null ) {
-
             // button group prefix is shared, so maybe more than one value is
             // delivered in a form 
             for ( int i=0; i<values.length; i++ ) {
@@ -373,16 +366,29 @@ public abstract class SAbstractButton
         }
 
         if ( isSelected()!=requestSelection ) {
+            if ( buttonGroup!=null ) {
+                buttonGroup.setDelayEvents(true);
+                setSelected(requestSelection);
+                buttonGroup.setDelayEvents(false);
+            } else {
+                setSelected(requestSelection);
+            }
+            
             SForm.addArmedComponent(this);
         }
     }
 
     public void fireIntermediateEvents() {
-        setSelected(requestSelection);
+        if ( buttonGroup!=null ) {
+            buttonGroup.fireDelayedIntermediateEvents();
+        }
     }
 
     public void fireFinalEvents() {
         fireActionPerformed();
+        if ( buttonGroup!=null ) {
+            buttonGroup.fireDelayedFinalEvents();
+        }
     }
 
     /**

@@ -37,8 +37,7 @@ import org.wings.io.Device;
 /**
  * TODO: documentation
  *
- * @author Dominik Bartenstein
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class SForm
@@ -185,13 +184,18 @@ public class SForm
      * Fire a ActionEvent at each registered listener.
      */
     protected void fireActionPerformed() {
-        ActionEvent e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, actionCommand);
+        ActionEvent e = null;
         // Guaranteed to return a non-null array
         Object[] listeners = listenerList.getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length-2; i>=0; i-=2) {
             if (listeners[i] == ActionListener.class) {
+                // lazy create ActionEvent
+                if ( e==null ) {
+                    e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, 
+                                        actionCommand);
+                }
                 ((ActionListener)listeners[i+1]).actionPerformed(e);
             }
         }
@@ -234,15 +238,36 @@ public class SForm
         List armedComponents = (List) threadArmedComponents.get();
         try {
             RequestListener component;
+            // handle form special, form event should be fired last
+            // hopefully there is only one form ;-)
+            RequestListener form = null;
             Iterator iterator = armedComponents.iterator();
             while (iterator.hasNext()) {
                 component = (RequestListener)iterator.next();
-                component.fireIntermediateEvents();
+
+                if ( component instanceof SForm ) {
+                    form = component;
+                } else {
+                    component.fireIntermediateEvents();
+                }
             }
+            if ( form!=null ) {
+                form.fireIntermediateEvents();
+                form = null;
+            }
+
             iterator = armedComponents.iterator();
             while (iterator.hasNext()) {
                 component = (RequestListener)iterator.next();
-                component.fireFinalEvents();
+                if ( component instanceof SForm ) {
+                    form = component;
+                } else {
+                    component.fireFinalEvents();
+                }
+            }
+            if ( form!=null ) {
+                form.fireFinalEvents();
+                form = null;
             }
         }
         finally {

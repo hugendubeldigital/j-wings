@@ -68,11 +68,11 @@ public interface SConstants
     int CLEAR_RIGHT = 2;
     int CLEAR_ALL   = 3;
 
-    int NO_SELECTION              = -1;
-    int SINGLE_SELECTION          = ListSelectionModel.SINGLE_SELECTION;
-    int SINGLE_INTERVAL_SELECTION = ListSelectionModel.SINGLE_INTERVAL_SELECTION;
-    int MULTIPLE_SELECTION = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
-    int MULTIPLE_INTERVAL_SELECTION = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+    int NO_SELECTION              = SListSelectionModel.NO_SELECTION;
+    int SINGLE_SELECTION          = SListSelectionModel.SINGLE_SELECTION;
+    int SINGLE_INTERVAL_SELECTION = SListSelectionModel.SINGLE_INTERVAL_SELECTION;
+    int MULTIPLE_SELECTION = SListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+    int MULTIPLE_INTERVAL_SELECTION = SListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 
     int VERTICAL    = 1;
     int HORIZONTAL  = 0;

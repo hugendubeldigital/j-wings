@@ -37,7 +37,7 @@ import javax.swing.event.ChangeEvent;
  */
 public abstract class SAbstractAdjustable
     extends SContainer
-    implements Adjustable
+    implements Adjustable, RequestListener
 {
     /**
      * TODO: documentation
@@ -65,7 +65,7 @@ public abstract class SAbstractAdjustable
      * (aka "visibleAmount") and current value.
      * @see #setModel
      */
-    protected BoundedRangeModel model;
+    protected SBoundedRangeModel model;
 
     /**
      * @see #setUnitIncrement
@@ -109,7 +109,7 @@ public abstract class SAbstractAdjustable
     public SAbstractAdjustable(int value, int extent, int min, int max) {
         this.unitIncrement = 1;
         this.blockIncrement = (extent == 0) ? 1 : extent;
-        this.model = new DefaultBoundedRangeModel(value, extent, min, max);
+        this.model = new SDefaultBoundedRangeModel(value, extent, min, max);
         this.model.addChangeListener(fwdAdjustmentEvents);
     }
 
@@ -139,7 +139,7 @@ public abstract class SAbstractAdjustable
      *
      * @see #setModel
      */
-    public final BoundedRangeModel getModel() {
+    public final SBoundedRangeModel getModel() {
         return model;
     }
 
@@ -154,7 +154,7 @@ public abstract class SAbstractAdjustable
      *       expert: true
      * description: The scrollbar's BoundedRangeModel.
      */
-    public void setModel(BoundedRangeModel newModel) {
+    public void setModel(SBoundedRangeModel newModel) {
         if ( model != null ) {
             model.removeChangeListener(fwdAdjustmentEvents);
         }
@@ -450,6 +450,39 @@ public abstract class SAbstractAdjustable
     {
         BoundedRangeModel m = getModel();
         m.setRangeProperties(newValue, newExtent, newMin, newMax, m.getValueIsAdjusting());
+    }
+
+
+    // Request Listener
+    protected String getEventParameter(int value) {
+        return Integer.toString(value);
+    }
+
+    public void processRequest(String name, String[] values) {
+        // is it for me ?
+        if ( !name.startsWith(getUnifiedId()) ) { 
+            return; 
+        }
+
+        getModel().setDelayEvents(true);
+        for ( int i=0; i<values.length; i++ ) {
+            try {
+                setValue(Integer.parseInt(values[i]));
+            } catch ( NumberFormatException ex ) {
+                // ignore
+            }
+        }
+        getModel().setDelayEvents(false);
+
+        SForm.addArmedComponent(this);
+    }
+
+    public void fireIntermediateEvents() {
+        getModel().fireDelayedIntermediateEvents();
+    }
+    
+    public void fireFinalEvents() {
+        getModel().fireDelayedFinalEvents();
     }
 
 

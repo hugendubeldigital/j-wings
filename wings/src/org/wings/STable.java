@@ -87,7 +87,7 @@ public class STable
     /**
      * 
      */
-    protected ListSelectionModel selectionModel = new DefaultListSelectionModel();
+    protected SListSelectionModel selectionModel = new SDefaultListSelectionModel();
 
     /**
      * 
@@ -138,8 +138,14 @@ public class STable
     }
 
     public void processRequest(String action, String[] values) {
-        if ( values.length>1 ) 
-            getSelectionModel().setValueIsAdjusting(true);
+        // is it for me ?
+        if ( !action.startsWith(getUnifiedId()) ) { 
+            return; 
+        }
+
+        // delay events...
+        getSelectionModel().setDelayEvents(true);
+        getSelectionModel().setValueIsAdjusting(true);
 
         for ( int i=0; i<values.length; i++ ) {
             String value = values[i];
@@ -182,9 +188,10 @@ public class STable
             }
         }
  
-       if ( values.length>1 ) 
-            getSelectionModel().setValueIsAdjusting(false);
- 
+        getSelectionModel().setValueIsAdjusting(false);
+        getSelectionModel().setDelayEvents(false);
+        SForm.addArmedComponent(this);
+
     }
         
     public void setRowSelectionRenderer(STableCellRenderer r) {
@@ -522,7 +529,7 @@ public class STable
      *
      * @return
      */
-    public ListSelectionModel getSelectionModel() {
+    public SListSelectionModel getSelectionModel() {
         return selectionModel;
     }
 
@@ -531,7 +538,7 @@ public class STable
      *
      * @return
      */
-    public void setSelectionModel(ListSelectionModel m) {
+    public void setSelectionModel(SListSelectionModel m) {
         selectionModel = m;
     }
 
@@ -643,9 +650,12 @@ public class STable
     }
 
     public void fireIntermediateEvents() {
+        getSelectionModel().fireDelayedIntermediateEvents();
     }
 
     public void fireFinalEvents() {
+        // fire selection events...
+        getSelectionModel().fireDelayedFinalEvents();
     }
 
     /**

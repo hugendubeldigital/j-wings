@@ -50,7 +50,7 @@ import org.wings.session.SessionManager;
  * @version $Revision$
  * @see javax.swing.ButtonGroup
  */
-public class SButtonGroup
+public class SButtonGroup implements SDelayedEventModel
 {
     /**
      * TODO: documentation
@@ -74,6 +74,17 @@ public class SButtonGroup
      * TODO: documentation
      */
     protected final EventListenerList listenerList = new EventListenerList();
+
+    /**
+     * indicates if we should fire event immediately when they arise, or if we
+     * should collect them for a later delivery
+     */
+    private boolean delayEvents = false;
+
+    /**
+     * all delayed events are stored here. 
+     */
+    protected final ArrayList delayedEvents = new ArrayList(2);
 
     /**
      * TODO: documentation
@@ -245,15 +256,20 @@ public class SButtonGroup
      */
     protected void fireActionPerformed(String command) {
         fireActionEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-                                        command));
+                                            command));
     }
 
     /**
      * Fire an ActionEvent at each registered listener.
      */
-    protected final void fireActionEvent(ActionEvent e) {
-        if ( e==null )
+    protected void fireActionEvent(ActionEvent e) {
+        if ( e==null ) 
             return;
+
+        if ( delayEvents ) {
+            delayedEvents.add(e);
+            return;
+        }
 
         // Guaranteed to return a non-null array
         Object[] listeners = listenerList.getListenerList();
@@ -265,6 +281,27 @@ public class SButtonGroup
             }
         }
     }
+
+    public void setDelayEvents(boolean b) {
+        delayEvents = b;
+    }
+
+    public boolean getDelayEvents() {        
+        return delayEvents;
+    }
+
+
+    public void fireDelayedIntermediateEvents() {}
+
+    public void fireDelayedFinalEvents() {
+        for ( Iterator iter=delayedEvents.iterator(); iter.hasNext(); ) {
+            ActionEvent e = (ActionEvent)iter.next();
+
+            fireActionEvent(e);
+        }
+        delayedEvents.clear();
+    }
+
 
 }
 

@@ -17,6 +17,32 @@ package org.wings;
 /**
  * The request listener interface is implemented by all components
  * that take part at the event dispatching process.
+ * WingS event dispatching is complex. This is because we have to process many
+ * requests at once (asynchronous user interaction). There are three levels of
+ * dispatching:
+ * <ol>
+ * <li>process http requests ({@link #processRequest}): If a component is
+ * registered at the session specific {@link SRequestDispatcher} it gets all the
+ * parameters is is registered for. This parameter consists of a name-value
+ * pair. Most time the component itself has encoded this parameter, so it is
+ * able to decode it and change its internal state. This should be done in
+ * {@link #processRequest}. Be careful, the change of the internal state shold
+ * not trigger any events, because in case of a form request, many requests are
+ * processed and many states of components are changed, so if you trigger an
+ * event, the listener may access a component which has not yet processed its
+ * request parameters and so it is in an inconsistent state.
+ * </li>
+ * <li>fire intermediate events: fire events which describes a "in progress"
+ * state change, like TreeWillExpand, or ListSelectionEvent with
+ * getIsAdjusting() true, ...
+ * After this level are components must be in a consistant state
+ * </li>
+ * <li>fire final events: fire remaining events. In this level all events, which
+ * are important to an application should be fired. All listeners, which are
+ * notified in this level can assume that the components are in a consistent
+ * (considering user interaction) state.
+ * </li>
+ * </ol>
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -24,24 +50,35 @@ package org.wings;
 public interface RequestListener
 {
     /**
-     * Deliver low level event.
+     * Deliver low level/http events.
      * The name-value-pairs of the HTTPRequest are considered low level events.
      * @param name the name-value-pair's name
      * @param value the name-value-pair's value
      */
     void processRequest(String name, String[] values);
 
+    /**
+     *
+     */
     String getNamePrefix();
 
+    /**
+     * This is a relict
+     */
     String getName();
 
     /**
-     * TODO: explain, what an intermediate event is
+     * fire events which describes a "in progress"
+     * state change, like TreeWillExpand, or ListSelectionEvent with
+     * getIsAdjusting() true, ...
      */
     void fireIntermediateEvents();
 
     /**
-     * TODO: explain, what a final event is
+     * fire remaining events. In this level all events, which
+     * are important to an application should be fired. All listeners, which are
+     * notified in this level can assume that the components are in a consistent
+     * (considering user interaction) state.
      */
     void fireFinalEvents();
 }

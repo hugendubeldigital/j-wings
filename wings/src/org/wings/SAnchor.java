@@ -23,7 +23,7 @@ import org.wings.io.Device;
  * &lt;a href=&quothttp://whatever/&quot&gt;...&lt;/a&gt;
  * HTML link around some components that are stored in the container.
  *
- * @author Dominik Bartenstein
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
 public class SAnchor extends SContainer
