@@ -14,18 +14,11 @@
 
 package org.wings;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import javax.swing.ImageIcon;
-import javax.imageio.ImageIO;
-
-import org.wings.session.SessionManager;
-import org.wings.externalizer.ExternalizeManager;
+import java.io.IOException;
 
 /**
  * An SIcon of this type is externalized globally. It is not bound
@@ -34,17 +27,15 @@ import org.wings.externalizer.ExternalizeManager;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SFileImageIcon
-    extends FileResource
-    implements SIcon
-{
+public class SFileImageIcon extends FileResource implements SIcon {
+
     /**
-     * TODO: documentation
+     * The width to display the icon. This overwrites the real width of the icon. Ignored, if &lt;0
      */
     private int width = -1;
 
     /**
-     * TODO: documentation
+     * The height to display the icon. This overwrites the real height of the icon. Ignored, if &lt;0
      */
     private int height = -1;
 
@@ -53,7 +44,7 @@ public class SFileImageIcon
      * the extension from the file to be appended to the externalized resource
      * name.
      *
-     * @param resourceFileName
+     * @param fileName
      */
     public SFileImageIcon(String fileName) throws IOException {
         this(new File(fileName));
@@ -70,25 +61,23 @@ public class SFileImageIcon
      * @param mimetype  the user provided mimetype. If this is 'null', then
      *                  the mimetype is guessed from the extension.
      */
-    public SFileImageIcon(File file, String ext, String mt) {
-        super(file, ext, mt);
-        
+    public SFileImageIcon(File file, String extension, String mimetype) {
+        super(file, extension, mimetype);
+
         // if either of the extension or mimetype is missing, try to guess it.
-        if (mimeType == null || mimeType.length() == 0) {
-            if (extension == null || extension.length() == 0) {
-                extension = "";
-                mimeType = "image/png";
-            }
-            else if (extension.toUpperCase().equals("JPG"))
-                mimeType = "image/jpeg";
+        if (this.mimeType == null || this.mimeType.length() == 0) {
+            if (this.extension == null || this.extension.length() == 0) {
+                this.extension = "";
+                this.mimeType = "image/png";
+            } else if (this.extension.toUpperCase().equals("JPG"))
+                this.mimeType = "image/jpeg";
             else
-                mimeType = "image/" + extension;
-        }
-        else if (extension == null || extension.length() == 0) {
+                this.mimeType = "image/" + this.extension;
+        } else if (this.extension == null || this.extension.length() == 0) {
             int slashPos = -1;
-            if (mimeType != null 
-                && (slashPos = mimeType.lastIndexOf('/')) >= 0) {
-                extension = mimeType.substring(slashPos+1);
+            if (this.mimeType != null
+                && (slashPos = this.mimeType.lastIndexOf('/')) >= 0) {
+                this.extension = this.mimeType.substring(slashPos + 1);
             }
         }
         calcDimensions();
@@ -104,16 +93,16 @@ public class SFileImageIcon
     protected void calcDimensions() {
         try {
             bufferResource();
-            
-            if ( buffer!=null && buffer.isValid()) {
-                BufferedImage image = 
+
+            if (buffer != null && buffer.isValid()) {
+                BufferedImage image =
                     ImageIO.read(new ByteArrayInputStream(buffer.getBytes()));
                 width = image.getWidth();
                 height = image.getHeight();
             }
-        } catch ( Throwable e ) {
+        } catch (Throwable e) {
             // is not possible to calc Dimensions
-            // maybe it is not possible to buffer resource, 
+            // maybe it is not possible to buffer resource,
             // or resource is not a
             // supported image type
         }

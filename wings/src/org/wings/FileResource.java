@@ -14,11 +14,10 @@
 
 package org.wings;
 
-import org.wings.externalizer.AbstractExternalizeManager;
-import org.wings.externalizer.ExternalizeManager;
-import org.wings.session.SessionManager;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * TODO: documentation
@@ -26,43 +25,43 @@ import java.io.*;
  * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class FileResource
-    extends StaticResource
-{
+public class FileResource extends StaticResource {
+
     private final File file;
 
     public FileResource(String name)
-        throws IOException
-    {
+        throws IOException {
         this(new File(name));
     }
 
     public FileResource(File file) {
-	this(file, null, "unknown");
+        this(file, null, "unknown");
     }
-    
+
     public FileResource(File file, String ext, String mt) {
-	super(ext, mt);
+        super(ext, mt);
         this.file = file;
-	if (extension == null) {
-	    int dotIndex = file.getName().lastIndexOf('.');
-	    if (dotIndex > -1) {
-		extension = file.getName().substring(dotIndex + 1);
-	    }
-	}
-	try {
-	    size = (int) file.length();
-	}
-	catch (SecurityException ignore) {}
+        if (extension == null) {
+            int dotIndex = file.getName().lastIndexOf('.');
+            if (dotIndex > -1) {
+                extension = file.getName().substring(dotIndex + 1);
+            }
+        }
+        try {
+            size = (int) file.length();
+        } catch (SecurityException ignore) {
+        }
     }
 
     public String toString() {
         return getId() + (file != null ? " " + file.getName() : "");
     }
 
-    protected final InputStream getResourceStream()
-        throws IOException
-    {
+    public final File getFile() {
+        return file;
+    }
+
+    protected final InputStream getResourceStream() throws IOException {
         return new FileInputStream(file);
     }
 }
