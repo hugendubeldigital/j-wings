@@ -304,3 +304,9 @@ FORM {
 .textarea {
 	width: 100%;
 }
+
+.titledbordertitle {
+   font-family: sans-serif;
+   font-size: 12px;
+   color: #000000;
+}

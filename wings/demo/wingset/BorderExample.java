@@ -14,8 +14,10 @@
 
 package wingset;
 
+import java.awt.Color;
 import java.awt.Insets;
 import java.awt.event.*;
+
 import javax.swing.Icon;
 
 import org.wings.*;
@@ -37,7 +39,7 @@ public class BorderExample
         final SBorder raised  = new SBevelBorder(SBevelBorder.RAISED);
         final SBorder lowered = new SBevelBorder(SBevelBorder.LOWERED);
         final SBorder line    = new SLineBorder(3);
-        final SBorder empty   = new SEmptyBorder(new Insets(3,3,3,3));
+        final SBorder titled  = new STitledBorder("This is a title ...");
         
         /*
          * border layout allows to set the color
@@ -58,7 +60,7 @@ public class BorderExample
         group.add(lb); buttons.add(lb);
         final SRadioButton lineb = new SRadioButton("Line");
         group.add(lineb); buttons.add(lineb);
-        final SRadioButton eb = new SRadioButton("Empty");
+        final SRadioButton eb = new SRadioButton("Title");
         group.add(eb); buttons.add(eb);
         
         group.addActionListener (new ActionListener() {
@@ -78,8 +80,8 @@ public class BorderExample
                         c.setBorder(line);
                     }
                     else if (button == eb) {
-                        borderLabel.setText("No Border");
-                        c.setBorder(empty);
+                        borderLabel.setText("Titled Border");
+                        c.setBorder(titled);
                     }
                 }
             });

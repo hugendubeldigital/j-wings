@@ -248,7 +248,10 @@ public final class Utils implements SConstants
         SDimension dim = component.getPreferredSize();
         
         if (bgcolor != null) d.print("background-color:#").print(toColorString(bgcolor)).print(";");
-        if (fgcolor != null) d.print("font-color:#").print(toColorString(fgcolor)).print(";");
+        if (fgcolor != null) {
+            d.print("font-color:#").print(toColorString(fgcolor)).print(";");
+            d.print("color:#").print(toColorString(fgcolor)).print(";");
+        }
         if (font != null) {
             int style = font.getStyle();
             d.print("font-size:").print(font.getSize()).print("pt;");
