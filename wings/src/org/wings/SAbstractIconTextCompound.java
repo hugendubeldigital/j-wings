@@ -424,7 +424,7 @@ public abstract class SAbstractIconTextCompound
      *
      * @return
      */
-    public final boolean isSelected() {
+    public boolean isSelected() {
         return selected;
     }
 
