@@ -2,9 +2,9 @@
  * $Id$
  * (c) Copyright 2000 wingS development team.
  *
- * This file is part of wingS (http://wings.mercatis.de).
+ * This file is part of the wingS demo (http://wings.mercatis.de).
  *
- * wingS is free software; you can redistribute it and/or
+ * The wingS demo is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
