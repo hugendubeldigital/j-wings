@@ -18,6 +18,10 @@ public class SelectableTableCellRenderer
 
     protected EventListenerList listenerList = new EventListenerList();
 
+    /** @link dependency 
+     * @stereotype send*/
+    /*#CellSelectionEvent lnkCellSelectionEvent;*/
+
     public SComponent getTableCellRendererComponent(SBaseTable baseTable,
 						    Object value,
 						    boolean isSelected,

@@ -43,4 +43,8 @@ public class LdapBrowser
         // return a new wingset session
         return new LdapBrowserSession(session);        
     }
+
+    /** @link dependency 
+     * @stereotype instantiate*/
+    /*#LdapBrowserSession lnkLdapBrowserSession;*/
 }                                                                                                                   

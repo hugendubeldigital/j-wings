@@ -52,6 +52,14 @@ public class LdapBrowserSession
 
     private OverviewModel overviewModel;
 
+    /** @link dependency 
+     * @stereotype use*/
+    /*#CellSelectionListener lnkCellSelectionListener;*/
+
+    /** @link dependency 
+     * @stereotype use*/
+    /*#AttributesCellRenderer lnkAttributesCellRenderer;*/
+
     public LdapBrowserSession(Session session) {
 	super(session);
         System.out.println("launching session for ldap browser");

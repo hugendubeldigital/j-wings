@@ -10,6 +10,10 @@ import java.util.Collections;
 public class LdapTreeNode implements TreeNode {
     
     private String dn;
+
+    /**
+     * @label parent 
+     */
     private LdapTreeNode parent;
     ArrayList children = null;
     private LdapWorker worker;

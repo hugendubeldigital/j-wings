@@ -43,4 +43,8 @@ public class LdapClient
         // return a new wingset session
         return new LdapClientSession(session);        
     }
+
+    /** @link dependency 
+     * @stereotype instantiate*/
+    /*#LdapClientSession lnkLdapClientSession;*/
 }                                                                                                                   
