@@ -39,6 +39,7 @@ public class ResourceImageIcon
     protected Class baseClass;
 
     protected String resourceFileName;
+    protected String extension; 
 
     /**
      * TODO: documentation
@@ -53,6 +54,9 @@ public class ResourceImageIcon
         super(getImageData(baseClass, resourceFileName));
         this.baseClass = baseClass;
         this.resourceFileName = resourceFileName;
+        extension = resourceFileName.substring(resourceFileName.lastIndexOf('.')+1);
+        if (extension == null || extension.length() == 0)
+            extension = ".png";
     }
 
     /**
@@ -70,7 +74,7 @@ public class ResourceImageIcon
      * @return
      */
     public String getExtension() {
-        return ".gif";
+        return extension;
     }
 
     /**

@@ -229,7 +229,7 @@ public class SAbstractButton
     }
 
     /**
-     * Fire a ActionEvent at each registered listener.
+     * Fire an ActionEvent at each registered listener.
      */
     protected void fireActionPerformed() {
         if (actionCommand == null)
