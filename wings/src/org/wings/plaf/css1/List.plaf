@@ -9,108 +9,112 @@
 <comp-property type="String" name="style">list</comp-property>
 <comp-property type="String" name="selectionStyle">listselection</comp-property>
 
-    private static final JavaScriptListener selectListener = new JavaScriptListener(JavaScriptEvent.ON_CHANGE, "submit()");
+private static final JavaScriptListener selectListener = new JavaScriptListener(JavaScriptEvent.ON_CHANGE, "submit()");
 
-    protected void writeFormList(Device device, SList list)
-        throws IOException
-    {
-        %><select<%
-		if (list.getPreferredSize() != null) {
-			%><%|style=list.getPreferredSize().toString()%><%
-		}
-        %><%|class=Utils.style(list)%><%
-        %><%|name= Utils.event(list)%><%
-        %><%|size=list.getVisibleRowCount()%><%
-        %><%|tabindex=list.getFocusTraversalIndex()%><%
-        %><%|multiple=(list.getSelectionMode() == SConstants.MULTIPLE_SELECTION) ? "multiple" : null%><%
-	if ( !list.isEnabled() ) {
-	    %> disabled="1"<% // ="1" needed for XHTML
-        }	
+protected void writeFormList(Device device, SList list) throws IOException {
+    %><select<%
+    if (list.getPreferredSize() != null) {
+        %><%|style=list.getPreferredSize().toString()%><%
+    }
+    %><%|class=Utils.style(list)%><%
+    %><%|name= Utils.event(list)%><%
+    %><%|size=list.getVisibleRowCount()%><%
+    %><%|tabindex=list.getFocusTraversalIndex()%><%
+    %><%|multiple=(list.getSelectionMode() == SConstants.MULTIPLE_SELECTION) ? "multiple" : null%><%
+    if ( !list.isEnabled() ) {
+        %> disabled="1"<% // ="1" needed for XHTML
+    }
 
-        list.removeScriptListener(selectListener);
-        if (list.getListSelectionListeners().length>0) {
-             list.addScriptListener(selectListener);
-        }
+    list.removeScriptListener(selectListener);
+    if (list.getListSelectionListeners().length>0) {
+        list.addScriptListener(selectListener);
+    }
 
-	Utils.writeEvents(device, list);
-        %>><%
+    Utils.writeEvents(device, list);
+    %>><%
 
-        javax.swing.ListModel model = list.getModel();
-        int size = model.getSize();
+    javax.swing.ListModel model = list.getModel();
+    int size = model.getSize();
 
-        if (model != null) {
-            SListCellRenderer cellRenderer = list.getCellRenderer();
+    if (model != null) {
+        SListCellRenderer cellRenderer = list.getCellRenderer();
 
-            for (int i=0; i < size; i++) {
-                SComponent renderer = null;
-                if (cellRenderer != null) {
-                    renderer = cellRenderer.getListCellRendererComponent(list, model.getElementAt(i), false, i);
-                }
-
-                %><option<%
-                %><%|value=list.getSelectionParameter(i)%><%
-
-                if (list.isSelectedIndex(i)) {
-                    %> selected="selected"<%
-                }
-                if (renderer!=null) {
-                   if (renderer.getToolTipText() != null) {
-                      %> title="<%
-                      %><%=renderer.getToolTipText()%><%
-                      %>"<%
-                   }
-                   %> style="<%                   
-                   org.wings.plaf.xhtml.Utils.writeAttributes(device, renderer);
-                   %>"<%
-                }
-                %>><%
-
-                if (renderer != null) {
-                    // Hack: remove all tags, because in form selections, looks ugly.
-                    org.wings.io.StringBufferDevice string = getStringBufferDevice();
-                    renderer.write(string);
-                    char[] chars = string.toString().toCharArray();
-                    int pos = 0;
-                    for (int c=0; c < chars.length; c++) {
-                        switch (chars[c]) {
-                        case '<':
-                            device.print(chars, pos, c - pos);
-                            break;
-                        case '>':
-                            pos = c+1;
-                        }
-                    }
-                    device.print(chars, pos, chars.length - pos);
-                }
-                else {
-                    device.print(model.getElementAt(i).toString());
-                }
-                %></option><%
+        for (int i=0; i < size; i++) {
+            SComponent renderer = null;
+            if (cellRenderer != null) {
+                renderer = cellRenderer.getListCellRendererComponent(list, model.getElementAt(i), false, i);
             }
+
+            %>
+<option<%
+            %><%|value=list.getSelectionParameter(i)%><%
+
+            if (list.isSelectedIndex(i)) {
+                %> selected="selected"<%
+            }
+            if (renderer!=null) {
+                if (renderer.getToolTipText() != null) {
+                    %> title="<%
+                    %><%=renderer.getToolTipText()%><%
+                    %>"<%
+                }
+
+                org.wings.io.StringBufferDevice stringBufferDevice = getStringBufferDevice();
+                org.wings.plaf.xhtml.Utils.writeAttributes(stringBufferDevice, renderer);
+                String styleString = stringBufferDevice.toString();
+                if ( styleString!=null && styleString.length()>0) {
+                    %> style="<%=styleString%>"<%
+                }
+            }
+            %>><%
+
+            if (renderer != null) {
+                // Hack: remove all tags, because in form selections, looks ugly.
+                org.wings.io.StringBufferDevice string = getStringBufferDevice();
+                renderer.write(string);
+                char[] chars = string.toString().toCharArray();
+                int pos = 0;
+                for (int c=0; c < chars.length; c++) {
+                     switch (chars[c]) {
+                     case '<':
+                         device.print(chars, pos, c - pos);
+                         break;
+                     case '>':
+                         pos = c+1;
+                     }
+                }
+                device.print(chars, pos, chars.length - pos);
+            } else {
+                    device.print(model.getElementAt(i).toString());
+            }
+            %></option><%
         }
-
-        %></select><%
-
-        // util method
-        %><input type="hidden"<%
-        %><%|name= Utils.event(list)%><%
-        %><%|value=-1%><%
-        %>/><%
     }
 
-    private org.wings.io.StringBufferDevice stringBufferDevice = null;
-    protected org.wings.io.StringBufferDevice getStringBufferDevice() {
-        if (stringBufferDevice == null)
-            stringBufferDevice = new org.wings.io.StringBufferDevice();
-        stringBufferDevice.reset();
-        return stringBufferDevice;
+    %></select><%
+
+    // util method
+    %><input type="hidden"<%
+    %><%|name= Utils.event(list)%><%
+    %><%|value=-1%><%
+    %>/><%
+}
+
+private org.wings.io.StringBufferDevice stringBufferDevice = null;
+
+protected org.wings.io.StringBufferDevice getStringBufferDevice() {
+    if (stringBufferDevice == null) {
+        stringBufferDevice = new org.wings.io.StringBufferDevice();
     }
+    stringBufferDevice.reset();
+    return stringBufferDevice;
+}
 
     public void writeAnchorList(Device device, SList list)
         throws IOException
     {
-	String style = Utils.style(list);
-	String selectionStyle = Utils.selectionStyle(list);
+    String style = Utils.style(list);
+    String selectionStyle = Utils.selectionStyle(list);
         boolean renderSelection = list.getSelectionMode() != SConstants.NO_SELECTION;
         String orderType = list.getOrderType();
 
@@ -134,12 +138,12 @@
             if ( viewport != null) {
                 start = viewport.y;
                 end = start+viewport.height; 
-	    }
+        }
 
             for (int i=start; i < end; i++) {
                 Object o = model.getElementAt(i);
                 boolean selected = list.isSelectedIndex(i);
-		
+
                 if (renderSelection && selected) {
                     %><li<%
                     %><%|class=selectionStyle%>><%
@@ -152,35 +156,35 @@
                                                                                 model.getElementAt(i),
                                                                                 selected,
                                                                                 i);
-										
+
                 if ( renderSelection ) {
                    RequestURL selectionAddr = list.getRequestURL();
                    selectionAddr.addParameter(Utils.event(list),
                                               list.getToggleSelectionParameter(i));
 
-		   if ( renderer instanceof ClickableRenderComponent ) {
+           if ( renderer instanceof ClickableRenderComponent ) {
                       AnchorRenderStack.push(selectionAddr, null);
-  		      rendererPane.writeComponent(device, renderer, list);
+                rendererPane.writeComponent(device, renderer, list);
                       AnchorRenderStack.pop();
                    }
                    else {
-   		      /*
-		       * if it is not a ClickableRenderComponent, then surround it with
-		       * <a href=".."></a> and hope for the best...
-		       */
-		       %><a href="<%
-		       %><%=selectionAddr.toString()%>"<%
+                 /*
+               * if it is not a ClickableRenderComponent, then surround it with
+               * <a href=".."></a> and hope for the best...
+               */
+               %><a href="<%
+               %><%=selectionAddr.toString()%>"<%
                        if (selected) {
                            %><%|class=selectionStyle%>><%
                        }
                        else {
-		           %>><%
+                   %>><%
                        }
                        rendererPane.writeComponent(device, renderer, list);
                        %></a><%
-		   }
+           }
                 } else {
-		    rendererPane.writeComponent(device, renderer, list);
+            rendererPane.writeComponent(device, renderer, list);
                 }
 
                 %></li><%
@@ -198,12 +202,12 @@
     if (list.getShowAsFormComponent())
         writeFormList(device, list);
     else {
-	if ( anchor!=null ) {
-	    %><a href="<%=anchor.getURL()%>"<%|target=anchor.getTarget()%>><% 
+    if ( anchor!=null ) {
+        %><a href="<%=anchor.getURL()%>"<%|target=anchor.getTarget()%>><%
         }
         writeAnchorList(device, list);
         if (anchor != null) {
-	    %></a><%
+        %></a><%
         } 
    }    
 %>
