@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.logging.*;
 
 public class ExtendedFormatter
-    extends Formatter
+    extends java.util.logging.Formatter
 {
     private DateFormat dateFormatter;
 
