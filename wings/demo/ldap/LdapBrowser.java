@@ -3,7 +3,7 @@ package ldap;
 import org.wings.SButton;
 import org.wings.SConstants;
 import org.wings.SDesktopPane;
-import org.wings.SFileImageIcon;
+import org.wings.SFileIcon;
 import org.wings.SFlowLayout;
 import org.wings.SForm;
 import org.wings.SFrame;
@@ -256,7 +256,7 @@ public class LdapBrowser
                                 FileOutputStream fos = new FileOutputStream(tmp);
                                 fos.write((byte[]) attribute.get());
                                 fos.close();
-                                iconL.setIcon(new SFileImageIcon(tmp));
+                                iconL.setIcon(new SFileIcon(tmp));
                             } catch (java.io.FileNotFoundException e) {
                                 e.printStackTrace();
                                 iconL.setText("photo kann nicht angezeigt werden");

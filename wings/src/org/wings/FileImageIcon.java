@@ -8,9 +8,9 @@ import java.io.FileNotFoundException;
  * 
  * @author armin
  * created at 06.01.2004 13:32:57
- * @deprecated use {@link SFileImageIcon} instead
+ * @deprecated use {@link SFileIcon} instead
  */
-public class FileImageIcon extends SFileImageIcon {
+public class FileImageIcon extends SFileIcon {
     public FileImageIcon(String name) throws FileNotFoundException {
         super(name);
     }

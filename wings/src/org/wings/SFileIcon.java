@@ -28,7 +28,7 @@ import java.io.IOException;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SFileImageIcon extends FileResource implements SIcon {
+public class SFileIcon extends FileResource implements SIcon {
 
     /**
      * The width to display the icon. This overwrites the real width of the icon. Ignored, if &lt;0
@@ -41,28 +41,28 @@ public class SFileImageIcon extends FileResource implements SIcon {
     private int height = -1;
 
     /**
-     * Create a new SFileImageIcon from the File. This constructor extracts
+     * Create a new SFileIcon from the File. This constructor extracts
      * the extension from the file to be appended to the externalized resource
      * name.
      *
      * @param fileName
      */
-    public SFileImageIcon(String fileName) throws FileNotFoundException {
+    public SFileIcon(String fileName) throws FileNotFoundException {
         this(new File(fileName));
     }
 
     /**
-     * crates a new SFileImageIcon from the given file. The extension and
+     * crates a new SFileIcon from the given file. The extension and
      * mimetype are taken from the parameters given.
      *
-     * @param file      the file to construct a SFileImageIcon from
+     * @param file      the file to construct a SFileIcon from
      * @param extension user provided extension. The original extension of
      *                  the file is ignored, unless this paramter is
      *                  'null'.
      * @param mimetype  the user provided mimetype. If this is 'null', then
      *                  the mimetype is guessed from the extension.
      */
-    public SFileImageIcon(File file, String extension, String mimetype) throws FileNotFoundException {
+    public SFileIcon(File file, String extension, String mimetype) throws FileNotFoundException {
         super(file, extension, mimetype);
 
         ImageInfo tImageInfo = new ImageInfo();
@@ -88,7 +88,7 @@ public class SFileImageIcon extends FileResource implements SIcon {
         }
     }
 
-    public SFileImageIcon(File file) throws FileNotFoundException {
+    public SFileIcon(File file) throws FileNotFoundException {
         this(file, null, null);
     }
 
