@@ -49,9 +49,8 @@ public class LookAndFeel
         wrappers.put(Double.TYPE, Double.class);
     }
 
+    protected final ClassLoader classLoader;
     protected Properties properties;
-    protected ClassLoader classLoader;
-    protected CGDefaults defaults;
     protected StyleSheet styleSheet;
 
     /**
@@ -61,7 +60,6 @@ public class LookAndFeel
     public LookAndFeel(Properties properties) {
 	this.properties = properties;
 	this.classLoader = getClass().getClassLoader();
-        defaults = new ResourceFactory();
     }
 
     /**
@@ -80,8 +78,6 @@ public class LookAndFeel
             throw new IOException ("'default.properties' not found in toplevel package in classpath.");
         }
         this.properties.load(in);
-
-        defaults = new ResourceFactory();
     }
 
     /**
@@ -109,11 +105,16 @@ public class LookAndFeel
     }
 
     /**
-     * Return the CGDefaults, that hold the laf's defaults for CGs and resources
+     * create a fresh CGDefaults map. One defaults map per Session is generated
+     * in its CGManager. It is necessary to create a fresh defaults map, since
+     * it caches values that might be modified within the sessions. A prominent
+     * example of changed values per sessions are the CG's themselves: 
+     * CG-properties might be changed per session...
+     *
      * @return the laf's defaults
      */
-    public CGDefaults getDefaults() {
-        return defaults;
+    public CGDefaults createDefaults() {
+        return new ResourceFactory();
     }
 
     /**
@@ -281,12 +282,13 @@ public class LookAndFeel
             }
         }
         catch (NoSuchMethodException e) {
-            logger.log(Level.SEVERE, clazz.getName() 
+            logger.log(Level.SEVERE, value + " : " + clazz.getName() 
                        + " doesn't have a single String arg constructor", e);
             return null;
         }
         catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
+            logger.log(Level.SEVERE, 
+                       e.getClass().getName() + " : " + value, e);
             return null;
         }
     }
@@ -348,8 +350,15 @@ public class LookAndFeel
                 value = makeStyleSheet(property);
             else
                 value = makeObject(property, type);
-
-            put(id, value);
+            
+            /*
+             * cache the object requested here for future use. A property,
+             * whose name ends with '.nocache' is not cached, thus always
+             * a new instance is created.
+             */
+            if (!id.endsWith(".nocache")) {
+                put(id, value);
+            }
             return value;
         }
     }
