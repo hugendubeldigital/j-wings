@@ -43,6 +43,15 @@ public class SEmptyBorder
         setInsets(insets);
     }
 
+    /**
+     * TODO: documentation
+     *
+     * @param insets
+     */
+    public SEmptyBorder(int top, int left, int bottom, int right) {
+        this(new Insets(top, left, bottom, right));
+    }
+
     public String getCGClassID() {
         return cgClassID;
     }
