@@ -151,6 +151,8 @@ public class SForm
      *      button has been pressed, no submit-button event will be triggered.
      *      (For details, see {@link SFileChooser}).
      * </ul>
+     * Form events are guaranteed to be triggered <em>after</em> all
+     * Selection-Changes and Button ActionListeners.
      *
      * @param listener
      */

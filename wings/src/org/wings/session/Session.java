@@ -167,30 +167,36 @@ public final class Session
     static boolean collectStatistics = true;
 
     static final SRequestListener SESSION_STATISTIC_COLLECTOR = new SRequestListener() {
-        public void processRequest(SRequestEvent e) {
-            switch (e.getType()) {
+            public void processRequest(SRequestEvent e) {
+                Session session = SessionManager.getSession();
+                if (session == null) {
+                    /* while exiting or destroy() the session: it 
+                     * might already be null in the session manager.
+                     */
+                    return;
+                }
+                switch (e.getType()) {
                 case SRequestEvent.DISPATCH_START:
-                    SessionManager.getSession().getStatistics().startDispatching();
+                    session.getStatistics().startDispatching();
                     break;
                 case SRequestEvent.DISPATCH_DONE:
-                    SessionManager.getSession().getStatistics().endDispatching();
+                    session.getStatistics().endDispatching();
                     break;
                 case SRequestEvent.DELIVER_START:
-                    SessionManager.getSession().getStatistics().startDelivering();
+                    session.getStatistics().startDelivering();
                     break;
                 case SRequestEvent.DELIVER_DONE:
-                    SessionManager.getSession().getStatistics().endDelivering();
+                    session.getStatistics().endDelivering();
                     break;
                 case SRequestEvent.REQUEST_START:
-                    SessionManager.getSession().getStatistics().startRequest();
+                    session.getStatistics().startRequest();
                     break;
                 case SRequestEvent.REQUEST_END:
-                    SessionManager.getSession().getStatistics().endRequest();
+                    session.getStatistics().endRequest();
                     break;
-
+                }
             }
-        }
-    };
+        };
 
     /**
      * TODO: documentation
