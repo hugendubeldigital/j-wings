@@ -1,11 +1,15 @@
 <template name="ListCG" for="org.wings.SList">
 
+<import>org.wings.script.*</import>
+
 <comp-property name="cellRenderer" type="org.wings.SDefaultListCellRenderer">
    new org.wings.SDefaultListCellRenderer()
 </comp-property>
 
 <comp-property type="String" name="style">list</comp-property>
 <comp-property type="String" name="selectionStyle">listselection</comp-property>
+
+    private static final JavaScriptListener selectListener = new JavaScriptListener(JavaScriptEvent.ON_CHANGE, "submit()");
 
     protected void writeFormList(Device device, SList list)
         throws IOException
@@ -19,6 +23,12 @@
         %><%|size=list.getVisibleRowCount()%><%
         %><%|tabindex=list.getFocusTraversalIndex()%><%
         %><%|multiple=(list.getSelectionMode() == SConstants.MULTIPLE_SELECTION) ? "multiple" : null%><%
+
+        list.removeScriptListener(selectListener);
+        if (list.getListSelectionListeners().length>0) {
+             list.addScriptListener(selectListener);
+        }
+
 		Utils.writeEvents(device, list);
         %>><%
 
