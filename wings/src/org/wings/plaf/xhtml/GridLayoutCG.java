@@ -49,7 +49,6 @@ public class GridLayoutCG
 
         int cols = layout.getColumns();
         int rows = layout.getRows();
-        container.setPreferredSize(null);               /* Disable the Dimension, don't needed */
         
         d.print("\n<table ");
         if ( width >= 0 || Utils.hasSpanAttributes( container ) ) {
