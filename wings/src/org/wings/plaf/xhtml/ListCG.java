@@ -10,7 +10,7 @@ import org.wings.*;
 
 public class ListCG implements org.wings.plaf.ListCG
 {
-    private final static String propertyPrefix = "List" + ".";
+    private final static String propertyPrefix = "List";
     
     protected String getPropertyPrefix() {
         return propertyPrefix;
@@ -18,7 +18,7 @@ public class ListCG implements org.wings.plaf.ListCG
     
     public void installCG(SComponent component) {
 	SList list = (SList)component;
-	component.setStyle(component.getSession().getCGManager().getStyle(propertyPrefix + "style"));
+	component.setStyle(component.getSession().getCGManager().getStyle(propertyPrefix + ".style"));
 	list.add(new SCellRendererPane());
 	installCellRenderer(list);
     }
@@ -73,14 +73,17 @@ public class ListCG implements org.wings.plaf.ListCG
     protected void writeFormList(Device d, SList list)
 	throws IOException
     {
-	ListModel model = list.getModel();
+	writeFormPrefix(d, list);
+	writeFormBody(d, list);
+	writeFormPostfix(d, list);
+    }
+
+    public void writeFormPrefix(Device d, SList list)
+        throws IOException
+    {
 	int visibleRows = list.getVisibleRowCount();
-	int size = model.getSize();
 	int selectionMode = list.getSelectionMode();
-	//boolean submitOnChange = list.getSubmitOnChange();
-	SListCellRenderer cellRenderer = list.getCellRenderer();
-	
-	// hier font / style bei abgeleiteten klassen ...
+
 	d.append("<select name=\"");
 	d.append(list.getNamePrefix());
 	d.append("\"");
@@ -95,9 +98,19 @@ public class ListCG implements org.wings.plaf.ListCG
 	//    d.append(" onChange=\"submit()\"");
 	
 	d.append(">\n");
+    }	
+
+    public void writeFormBody(Device d, SList list)
+        throws IOException
+    {
+	ListModel model = list.getModel();
+	int size = model.getSize();
 	
 	if (model != null) {
-	    for (int i=0; i < model.getSize(); i++) {
+	    SListCellRenderer cellRenderer = list.getCellRenderer();
+	    SCellRendererPane rendererPane = getCellRendererPane(list);
+	    
+	    for (int i=0; i < size; i++) {
 		Object o = model.getElementAt(i);
 		boolean selected = list.isSelectedIndex(i);
 		
@@ -106,27 +119,25 @@ public class ListCG implements org.wings.plaf.ListCG
 		    d.append(" selected=\"selected\"");
 		d.append(">");
 		
-		d.append(cellRenderer.getListCellRendererComponent(list, o, selected, i));
+		SComponent renderer
+		    = cellRenderer.getListCellRendererComponent(list, o, false, i);
+		rendererPane.writeComponent(d, renderer, list);
 		
 		d.append("\n");
 	    }
 	}
-	
+    }
+
+    protected void writeFormPostfix(Device d, SList list)
+	throws IOException
+    {
 	d.append("</select>\n");
-	
 	Utils.writeHiddenComponent(d, list.getNamePrefix(), "-1");
     }
 
     protected void writeAnchorList(Device d, SList list)
 	throws IOException
     {
-	ListModel model = list.getModel();
-	int visibleRows = list.getVisibleRowCount();
-	int size = model.getSize();
-	int selectionMode = list.getSelectionMode();
-	//boolean submitOnChange = list.getSubmitOnChange();
-	SListCellRenderer cellRenderer = list.getCellRenderer();
-	
 	writeAnchorPrefix(d, list);
 	writeAnchorBody(d, list);
 	writeAnchorPostfix(d, list);
@@ -151,14 +162,20 @@ public class ListCG implements org.wings.plaf.ListCG
         throws IOException
     {
 	ListModel model = list.getModel();
+	int size = model.getSize();
 	SListCellRenderer cellRenderer = list.getCellRenderer();
 	
 	if (model != null) {
-	    for (int i=0; i < model.getSize(); i++) {
+	    SCellRendererPane rendererPane = getCellRendererPane(list);
+	    
+	    for (int i=0; i < size; i++) {
 		Object o = model.getElementAt(i);
+		boolean selected = list.isSelectedIndex(i);
 		
 		d.append("<li>");
-		d.append(cellRenderer.getListCellRendererComponent(list, o, false, i));
+		SComponent renderer
+		    = cellRenderer.getListCellRendererComponent(list, o, selected, i);
+		rendererPane.writeComponent(d, renderer, list);
 		d.append("</li>\n");
 	    }
 	}

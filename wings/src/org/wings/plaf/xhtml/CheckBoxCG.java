@@ -30,7 +30,7 @@ public class CheckBoxCG implements org.wings.plaf.CheckBoxCG, SConstants
 	SBorder border = checkBox.getBorder();
 	boolean selected = checkBox.isSelected();
 	boolean enabled = checkBox.isEnabled();
-	boolean anchor = checkBox.isAnchorButton();
+	boolean anchor = !checkBox.getShowAsFormComponent();
 	
         Utils.writeBorderPrefix(d, border);
 	

@@ -31,7 +31,7 @@ public class ButtonCG implements org.wings.plaf.ButtonCG, SConstants
 	
         Utils.writeBorderPrefix(d, border);
 	
-	if (button.isAnchorButton() || !button.isEnabled())
+	if (!button.getShowAsFormComponent() || !button.isEnabled())
 	    writeAnchorButton(d, button);
 	else
 	    writeFormButton(d, button);

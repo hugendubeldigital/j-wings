@@ -83,8 +83,7 @@ public class SDefaultTreeCellRenderer extends SContainer implements STreeCellRen
     protected SGetAddress bodyAddr = null;
 
     /**
-     * TODO: documentation
-     *
+     * Create a SDefaultTreeCellRenderer with default properties.
      */
     public SDefaultTreeCellRenderer() {
         setLayout(null);

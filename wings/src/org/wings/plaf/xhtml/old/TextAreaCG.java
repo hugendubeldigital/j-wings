@@ -17,17 +17,18 @@ public final class TextAreaCG
     {
 	SFont font = textArea.getFont();
 	Color foreground = textArea.getForeground();
-	
 	Utils.writeFontPrefix(d, font, foreground);
+
 	super.writePrefix(d, textArea);
     }
     
     public void writePostfix(Device d, STextArea textArea)
 	throws IOException
     {
-	SFont font = textArea.getFont();
-	
 	super.writePostfix(d, textArea);
-	Utils.writeFontPostfix(d, font);
+
+	SFont font = textArea.getFont();
+	Color foreground = textArea.getForeground();
+	Utils.writeFontPostfix(d, font, foreground);
     }
 }

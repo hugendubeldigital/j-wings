@@ -134,8 +134,15 @@ H3		{ font-size: 12pt;
    color: #000000;
 }
 
-.ulenum {
-   list-style-type: upper-roman;   
+.listselection {
+   text-decoration: none;
+   color: #000000;
+   background-color: #99cccc;
+}
+
+.listnonselection {
+   text-decoration: none;
+   color: #000000;
 }
 
 .topleft	{ text-align: left;

@@ -15,7 +15,10 @@
 package org.wings;
 
 import java.awt.Color;
+import java.io.IOException;
+import javax.swing.*;
 
+import org.wings.io.Device;
 import org.wings.style.Style;
 
 /**
@@ -48,18 +51,65 @@ public class SDefaultListCellRenderer
 
     /**
      * TODO: documentation
-     *
+     */
+    protected SGetAddress addr = null;
+
+    /**
+     * Create a SDefaultListCellRenderer with default properties.
      */
     public SDefaultListCellRenderer() {}
 
 
     public SComponent getListCellRendererComponent(SComponent list,
                                                    Object value,
-                                                   boolean isSelected,
+                                                   boolean selected,
                                                    int index)
     {
-        setText((value != null) ? value.toString() : "");
+        if (list.isEnabled()) {
+            addr = list.getServerAddress();
+            addr.add(list.getNamePrefix() + "=" + index);
+        }
+        else
+            addr = null;
+        
+        if (selected) {
+            setBackground(backgroundSelectionColor);
+            setForeground(textSelectionColor);
+            setStyle(textSelectionStyle);
+        }
+        else {
+            setBackground(backgroundNonSelectionColor);
+            setForeground(textNonSelectionColor);
+            setStyle(textNonSelectionStyle);
+        }
+        
+        if (value instanceof Icon) {
+            setText(null);
+            setIcon((Icon)value);
+        }
+        else {
+            setText((value != null) ? value.toString() : "");
+            setIcon((Icon)null);
+        }
         return this;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param d
+     * @throws IOException
+     */
+    public void write(Device d)
+        throws IOException
+    {
+        if (addr != null)
+            d.append("<a href=\"").
+                append(addr).
+                append("\">");
+        super.write(d);
+        if (addr != null)
+            d.append("</a> ");
     }
 
     /**

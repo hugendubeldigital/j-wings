@@ -17,17 +17,18 @@ public final class FileChooserCG
     {
 	SFont font = fileChooser.getFont();
 	Color foreground = fileChooser.getForeground();
-	
 	Utils.writeFontPrefix(d, font, foreground);
+
 	super.writePrefix(d, fileChooser);
     }
     
     public void writePostfix(Device d, SFileChooser fileChooser)
 	throws IOException
     {
-	SFont font = fileChooser.getFont();
-	
 	super.writePostfix(d, fileChooser);
-	Utils.writeFontPostfix(d, font);
+
+	SFont font = fileChooser.getFont();
+	Color foreground = fileChooser.getForeground();
+	Utils.writeFontPostfix(d, font, foreground);
     }
 }

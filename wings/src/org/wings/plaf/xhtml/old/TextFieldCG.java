@@ -56,6 +56,6 @@ public final class TextFieldCG
 	
 	d.append(" />");
 	
-	Utils.writeFontPostfix(d, font);
+	Utils.writeFontPostfix(d, font, foreground);
     }
 }

@@ -12,58 +12,53 @@ import org.wings.plaf.xhtml.*;
 public final class ListCG
     extends org.wings.plaf.xhtml.ListCG
 {
-    /*
-    public void write(Device d, SComponent c)
+    public void writeFormPrefix(Device d, SList list)
         throws IOException
     {
-	SList list = (SList)c;
-	ListModel model = list.getModel();
-	int visibleRows = list.getVisibleRowCount();
-	int size = list.getSize();
-	int selectionMode = list.getSelectionMode();
-	boolean submitOnChange = list.getSubmitOnChange();
-	SListCellRenderer cellRenderer = list.getCellRenderer();
-	
 	SFont font = list.getFont();
 	Color foreground = list.getForeground();
-	
 	Utils.writeFontPrefix(d, font, foreground);
 	
-	d.append("<select name=\"");
-	d.append(list.getNamePrefix());
-	d.append("\"");
-	
-	d.append(" size=\"").append(visibleRows);
-	d.append("\"");
-	
-	if (selectionMode == SConstants.MULTIPLE_SELECTION)
-	    d.append(" multiple=\"multiple\"");
-	
-	if (submitOnChange) 
-	    d.append(" onChange=\"submit()\"");
-	
-	d.append(">\n");
-	
+	super.writeFormPrefix(d, list);
+    }
+
+    public void writeFormPostfix(Device d, SList list)
+        throws IOException
+    {
+	super.writeFormPostfix(d, list);
+
+	SFont font = list.getFont();
+	Color foreground = list.getForeground();
+	Utils.writeFontPostfix(d, font, foreground);
+    }
+
+    public void writeAnchorBody(Device d, SList list)
+        throws IOException
+    {
+	ListModel model = list.getModel();
+	int size = model.getSize();
+	SListCellRenderer cellRenderer = list.getCellRenderer();
+
+	SFont font = list.getFont();
+	Color foreground = list.getForeground();
+
 	if (model != null) {
-	    for (int i=0; i < model.getSize(); i++) {
-		Object o = list.getElementAt(i);
+	    SCellRendererPane rendererPane = getCellRendererPane(list);
+	    
+	    for (int i=0; i < size; i++) {
+		Object o = model.getElementAt(i);
 		boolean selected = list.isSelectedIndex(i);
 		
-		d.append("<option value=\"").append(i).append("\"");
-		if (selected)
-		    d.append(" selected=\"selected\"");
-		d.append(">");
+		d.append("<li>");
+		Utils.writeFontPrefix(d, font, foreground);
 		
-		d.append(cellRenderer.getListCellRendererComponent(list, o, selected, i));
+		SComponent renderer
+		    = cellRenderer.getListCellRendererComponent(list, o, selected, i);
+		rendererPane.writeComponent(d, renderer, list);
 		
-		d.append("\n");
+		Utils.writeFontPostfix(d, font, foreground);
+		d.append("</li>\n");
 	    }
 	}
-	
-	d.append("</select>\n");
-	Utils.writeFontPostfix(d, font);
-	
-	writeHiddenComponent(d, list);
     }
-    */
 }

@@ -57,6 +57,6 @@ public final class PasswordFieldCG
 	
 	d.append(" />");
 	
-	Utils.writeFontPostfix(d, font);
+	Utils.writeFontPostfix(d, font, foreground);
     }
 }

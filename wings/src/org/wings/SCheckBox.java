@@ -340,7 +340,7 @@ public class SCheckBox extends SButton
 
         if ( value.startsWith(getUnifiedIdString()+SConstants.UID_DIVIDER) ) {
 
-            if (isAnchorButton()) {
+            if (!getShowAsFormComponent()) {
                 setSelected(!isSelected());
                 return;
             }

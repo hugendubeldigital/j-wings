@@ -40,7 +40,7 @@ public class SHRef
      *
      */
     public SHRef() {
-        setFormComponent(false);
+        super.setShowAsFormComponent(false);
     }
 
     /**
@@ -50,22 +50,22 @@ public class SHRef
      */
     public SHRef(String text) {
         super(text);
-        setFormComponent(false);
+        super.setShowAsFormComponent(false);
     }
 
     public SHRef(String text, String ref) {
         super(text);
         setReference(ref);
-        setFormComponent(false);
+        super.setShowAsFormComponent(false);
     }
 
     /**
      * TODO: documentation
      *
-     * @param f
+     * @param showAsFormComponent
      */
-    public void setFormComponent(boolean f) {
-        super.setFormComponent(false);
+    public void setShowAsFormComponent(boolean showAsFormComponent) {
+        super.setShowAsFormComponent(false);
     }
 
     /**

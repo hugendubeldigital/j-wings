@@ -90,7 +90,7 @@ public class SAbstractButton
      * button. Else the button is rendered as anchor button if it is disabled or if
      * it is not inside a Form.
      */
-    protected boolean isFormComponent = true;
+    private boolean showAsFormComponent = true;
 
     /**
      * Because the foreground color is reseted after a &lt;A&gt; Tag the
@@ -158,18 +158,17 @@ public class SAbstractButton
         return noBreak;
     }
 
-    /*
-     * Damit die Unterscheidung zwischen Anchor Button und Form Button
-     * auch getroffen werden kann, ohne dass ein Button zu einem Container
-     * gehoert (z.B. als Selection Component bei Table)
-     */
     /**
      * TODO: documentation
      *
-     * @param f
+     * @param showAsFormComponent
      */
-    public void setFormComponent(boolean f) {
-        isFormComponent = f;
+    public void setShowAsFormComponent(boolean showAsFormComponent) {
+        this.showAsFormComponent = showAsFormComponent;
+    }
+
+    public boolean getShowAsFormComponent() {
+        return showAsFormComponent && getResidesInForm();
     }
 
     /*
@@ -308,27 +307,6 @@ public class SAbstractButton
      * @param s
      */
     public void setSelected(boolean s) {
-    }
-
-    /*
-     * This method could be saved, if the ContainerListener functionality in
-     * {@link SContainer} is implemented.
-     */
-    /**
-     * TODO: documentation
-     */
-    public final boolean isAnchorButton() {
-        if ( isFormComponent ) {
-            SComponent parent = getParent();
-            while ( parent!=null && !(parent instanceof SForm) ) {
-                parent = parent.getParent();
-            }
-
-            if ( parent!=null && parent instanceof SForm )
-                return false;
-        }
-
-        return true;
     }
 
     public void getPerformed(String action, String value) {

@@ -34,7 +34,7 @@ import org.wings.io.Device;
  * TODO: documentation
  *
  * @see javax.swing.ListModel
- * @see javax.swing.DefaultListModel
+ * @see SDefaultListModel
  * @see javax.swing.ListSelectionModel
  * @see javax.swing.DefaultListSelectionModel
  * @see SListCellRenderer
@@ -1025,16 +1025,24 @@ public class SList
         try {
             int sel = Integer.parseInt(value);
 
-            if (hidden)
-                syncSelection();
-
-            if (sel < 0) {
-                hidden = true;
-                fireEvents();
+            if (getShowAsFormComponent()) {
+                if (hidden)
+                    syncSelection();
+                
+                if (sel < 0) {
+                    hidden = true;
+                    fireEvents();
+                }
+                else {
+                    selection[sel] = true;
+                    hidden = false;
+                }
             }
             else {
-                selection[sel] = true;
-                hidden = false;
+                if (isSelectedIndex(sel))
+                    removeSelectionInterval(sel, sel);
+                else
+                    addSelectionInterval(sel, sel);
             }
         }
         catch (Exception e) {
@@ -1091,7 +1099,7 @@ public class SList
      * Returns the name of the CGFactory class that generates the
      * look and feel for this component.
      *
-     * @return "BaseListCG"
+     * @return "ListCG"
      * @see SComponent#getCGClassID
      * @see CGDefaults#getCG
      */

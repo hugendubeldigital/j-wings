@@ -86,12 +86,18 @@ public final class Utils implements SConstants
     public static void writeFontPostfix(Device d, SFont font)
         throws IOException
     {
-	if (font == null)
+	writeFontPostfix(d, font, null);
+    }
+    
+    public static void writeFontPostfix(Device d, SFont font, Color color)
+        throws IOException
+    {
+	if (font == null && color == null)
 	    return;
 	
 	int style = PLAIN;
 	if (font != null)
-	    font.getStyle();
+	    style = font.getStyle();
 	
 	if ((style & BOLD) != 0)
 	    d.append("</b>");

@@ -27,7 +27,7 @@ public final class CheckBoxCG
 	d.append((text != null) ? text : "");
 	if (noBreak)
 	    d.append("</nobr>");
-	Utils.writeFontPostfix(d, font);
+	Utils.writeFontPostfix(d, font, foreground);
     }
     
     protected void writeFormText(Device d, SCheckBox checkBox)
@@ -38,18 +38,20 @@ public final class CheckBoxCG
 	
 	Utils.writeFontPrefix(d, font, foreground);
 	d.append(checkBox.getText());
-	Utils.writeFontPostfix(d, font);
+	Utils.writeFontPostfix(d, font, foreground);
     }
     
+    /*
     protected void writeFormIcon(Device d, SCheckBox checkBox)
         throws IOException
     {
 	SFont font = checkBox.getFont();
 	
-	Utils.writeFontPrefix(d, font);
+	//Utils.writeFontPrefix(d, font);
 	writeFormPrefix(d, checkBox);
 	writeFormBody(d, checkBox);
 	writeFormPostfix(d, checkBox);
-	Utils.writeFontPostfix(d, font);
+	//Utils.writeFontPostfix(d, font);
     }
+    */
 }
