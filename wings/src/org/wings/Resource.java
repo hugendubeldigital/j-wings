@@ -90,7 +90,7 @@ public abstract class Resource implements Serializable, URLResource, Renderable
         return mimeType;
     }
 
-    public void setHeaders(Collection headers) {
+    public void setHeaders(Collection/*<Map.Entry>*/ headers) {
         this.headers = headers;
     }
 

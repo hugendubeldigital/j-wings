@@ -150,7 +150,7 @@ public abstract class SAbstractButton
      * @see #setEscapeSpecialChars(boolean)
      * @return 'true', if characters are quoted, 'false' if they
      *         are passed raw to the backend Device.
-     * @deprecated please use the html tag instead
+     * @deprecated please use the &lt;html&gt; tag in the label instead
      */
     public boolean isEscapeSpecialChars() {
         return escapeSpecialChars;
@@ -171,7 +171,7 @@ public abstract class SAbstractButton
      * @param escape boolean 'true', if characters are to be escaped
      *               (the default), or 'false' if any character you
      *               write here is passed 'raw' to the Device.
-     * @deprecated please use the html tag instead
+     * @deprecated please use the &lt;html&gt; tag in the label instead
      */
     public void setEscapeSpecialChars(boolean escape) {
         escapeSpecialChars = escape;

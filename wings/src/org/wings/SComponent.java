@@ -1024,6 +1024,7 @@ public abstract class SComponent
      *
      * @param index the focus traversal index. Pressing the focus traversal
      *              key (usually TAB) in the browser jumps to the next index.
+     *              Must not be zero.
      */
     public void setFocusTraversalIndex(int index) {
         focusTraversalIndex = index;
