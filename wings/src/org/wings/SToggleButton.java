@@ -17,6 +17,7 @@ package org.wings;
 import java.awt.Color;
 
 import org.wings.plaf.*;
+import javax.swing.Action;
 import org.wings.io.Device;
 
 /**
@@ -36,6 +37,16 @@ public class SToggleButton extends SAbstractButton {
      */
     public SToggleButton(String text) {
         super(text);
+    }
+
+    /**
+     * Creates a button where properties are taken from the
+     * Action supplied.
+     *
+     * @param a the Action used to specify the new button
+     */
+    public SToggleButton(Action action) {
+        super(action);
     }
 
     /**
