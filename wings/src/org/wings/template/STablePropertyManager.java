@@ -17,6 +17,7 @@ package org.wings.template;
 import java.awt.Color;
 import org.wings.SComponent;
 import org.wings.STable;
+import org.wings.SDimension;
 
 /**
  * TODO: documentation
@@ -36,6 +37,10 @@ public class STablePropertyManager
         STable t = (STable)comp;
         if ( name.equals("GRID") )
             t.setShowGrid(Boolean.valueOf(value).booleanValue());
+        else if ( name.equals("CELLSPACING") )
+            t.setIntercellSpacing(new SDimension(value, value));
+        else if ( name.equals("CELLPADDING") )
+            t.setIntercellPadding(new SDimension(value, value));
         else if ( name.equals("SELECTION_FOREGROUND") )
             t.setSelectionForeground(Color.decode(value));
         else if ( name.equals("SELECTION_BACKGROUND") )
