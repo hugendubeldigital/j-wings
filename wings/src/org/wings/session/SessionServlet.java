@@ -49,6 +49,7 @@ import org.wings.plaf.LookAndFeelFactory;
 import org.wings.util.ComponentVisitor;
 import org.wings.util.DebugUtil;
 import org.wings.util.TimeMeasure;
+import org.wings.event.ExitVetoException;
 
 /**
  * TODO: documentation
