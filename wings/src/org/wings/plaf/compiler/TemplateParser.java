@@ -41,11 +41,15 @@ public class TemplateParser {
     private final static int    VAR_LEN      = 16;
     
     /*
-     * All tags, that are relevant for the parsing process. We are always
-     * considering all of them. If we encounter a tag, that is not expected,
-     * this is reported as an error. This is necessary, since the JSP like
+     * All tags, that are relevant for the parsing process. These tags
+     * in the input stream lead to state transitions. Of course, not
+     * all tags are valid at any given time, but we are always
+     * considering all of them in any state to detect errors.
+     * If we encounter a tag, that is not expected,
+     * it is reported as an error. This is necessary, since the JSP like
      * syntax is not very readable and it is likely, that the user will make
-     * mistakes .. thus we need to have much errorchecking.
+     * mistakes .. thus we need to have much errorchecking, and be nice
+     * to the user.
      *
      * The tags must be ordered according to their length.
      */
@@ -205,7 +209,7 @@ public class TemplateParser {
                 commonJavaCode.append(tempBuffer);
                 tempBuffer.setLength(0);                
                 switch (trans) {
-                case END_JAVA:  // %>
+                case END_JAVA:  // %>              --> COMMON: HTML
                     state = IN_COMMON_TMPL;
                     break;
                 case START_JAVA:  // ERROR <%  errornous start java
@@ -224,7 +228,7 @@ public class TemplateParser {
                         openBraces.clear();
                     }
                     skipWhitespace(reader);
-                    state = IN_WRITE_TMPL;         // --> WRITE
+                    state = IN_WRITE_TMPL;         // --> WRITE START (HTML)
                     break;
                 case END_WRITE: // </write>
                     reportError("encountered </write> that has not been opened");
@@ -235,22 +239,25 @@ public class TemplateParser {
                 case END_TEMPLATE:
                     return; // </template> -> done.
                 default:
-                    reportError("unexpected tag.");
+                    reportError("unexpected tag: "+stateTransitionTags[trans]);
                 }
                 break;
 
+                /*
+                 * common java code - in HTML-template
+                 */
             case IN_COMMON_TMPL: 
                 trans = findTransitions(reader, tempBuffer,
                                         stateTransitionTags);
                 generateTemplateWriteCalls(tempBuffer, commonJavaCode);
                 switch (trans) {
-                case START_JAVA: // <%
+                case START_JAVA: // <%             --> COMMON: JAVA
                     state = IN_COMMON_JAVA;
                     break;
                 case START_WRITE: // ERROR <write>  .. errorhandling
                     reportError("<write> while still reading "
                                 + "text-template; '<%' missing?!");
-                    state = IN_WRITE_TMPL;       // --> WRITE
+                    state = IN_WRITE_TMPL;       // --> WRITE START (HTML)
                     break;
                 case INCLUDE: // <include
                     handleIncludeTag(reader);
@@ -260,12 +267,15 @@ public class TemplateParser {
                                 + "text-template; '<%' missing?!");
                     return;
                 default:
-                    reportError("unexpected tag.");
+                    reportError("unexpected tag: "+stateTransitionTags[trans]);
                 }
                 break;
                 
                 /*
                  * states within the <write></write> area.
+                 */
+                /*
+                 * write - in HTML-template
                  */
             case IN_WRITE_TMPL:  // (initial Write)
                 trans = findTransitions(reader, tempBuffer,
@@ -274,7 +284,7 @@ public class TemplateParser {
                 // we flush the template at the
                 switch (trans) {
                 case START_JAVA:  // start java '<%'
-                    state = IN_WRITE_JAVA; 
+                    state = IN_WRITE_JAVA;        // --> WRITE: JAVA
                     skipWhitespace(reader);
                     break;
                 case END_JAVA: // end java '%>' // error
@@ -293,7 +303,7 @@ public class TemplateParser {
                         openBraces.clear();
                     }
                     skipWhitespace(reader);
-                    state = IN_COMMON_JAVA;      // --> COMMON
+                    state = IN_COMMON_JAVA;      // --> COMMON START (JAVA)
                     break;
                 case INCLUDE: // <include
                     handleIncludeTag(reader);
@@ -302,16 +312,19 @@ public class TemplateParser {
                     reportError("</template> occured; missing </write>");
                     return;
                 default:
-                    reportError("unexpected tag.");
+                    reportError("unexpected tag: "+stateTransitionTags[trans]);
                 }
                 break;
                 
+                /*
+                 * write - in java code.
+                 */
             case IN_WRITE_JAVA:
                 trans = findTransitions(reader, tempBuffer,
                                         stateTransitionTags);
                 execJava(reader, tempBuffer, writeJavaCode);
                 switch (trans) {
-                case END_JAVA:    // end java '%>' -> start template
+                case END_JAVA:    // end java '%>'      --> WRITE: HTML
                     writeJavaCode.removeTailNewline();
                     state = IN_WRITE_TMPL;
                     break;
@@ -322,7 +335,7 @@ public class TemplateParser {
                     reportError("</write> while still reading "
                                 + "java-code; '%>' missing?!");
                     generateTemplateWriteCalls(tempBuffer, writeJavaCode);
-                    state = IN_COMMON_JAVA;  // --> COMMON
+                    state = IN_COMMON_JAVA;          // --> COMMON START (JAVA)
                 case INCLUDE:   // <include
                     handleIncludeTag(reader);
                     break;
@@ -330,7 +343,7 @@ public class TemplateParser {
                     reportError("</template> occured; missing </write>");
                     return;
                 default:
-                    reportError("unexpected tag.");
+                    reportError("unexpected tag: "+stateTransitionTags[trans]);
                 }
             }
         }
@@ -404,9 +417,9 @@ public class TemplateParser {
     
     /**
      * reads from the reader until any of the given strings, given in
-     * the options array, occurs in the input stream. Store the text
-     * read up to that position in the StringBuffer 'buffer' and return
-     * the index in the options array of the found transition-tag.
+     * the options array, occurs in the input stream. Store the text, that
+     * has been read up to that position in the StringBuffer 'buffer' and
+     * return the index in the options array of the transition-tag found.
      */
     public int findTransitions(PlafReader in, StringBuffer buffer, 
                                String[] options)
@@ -416,26 +429,13 @@ public class TemplateParser {
             startChars[i] = options[i].charAt(0);
         String startSet = new String(startChars);
         int result = -1;
-        try {
-            do {
-                consumeTextUntil(in, buffer, startSet);
-                result = checkTransitions(in, options);
-                if (result == -1) // false alert; append matched char.
-                    buffer.append((char) in.read());
-            }
-            while (result < 0);
+        do {
+            consumeTextUntil(in, buffer, startSet);
+            result = checkTransitions(in, options);
+            if (result == -1) // false alert; append matched char.
+                buffer.append((char) in.read());
         }
-        catch (EOFException e) {
-            StringBuffer errList = new StringBuffer();
-            for (int i = 0; i < options.length; ++i) {
-                if (i != 0)
-                    errList.append(", ");
-                errList.append(options);
-            }
-            throw new IOException ("End-of-file while expecting "
-                                   + ((options.length > 1) ? "one of" : "")
-                                   + errList);
-        }
+        while (result < 0);
         return result;
     }
 
@@ -454,6 +454,8 @@ public class TemplateParser {
      * If any of the given options matches, the reader is placed after 
      * that token. This method assumes, that the options given are given 
      * in the order of their length.
+     * @return the index in options reporting the tag found or -1 if
+     *         nothing has been found.
      * @param in the reader to read from
      * @param options an array of all expected options, sorted by
      *                length, smallest first. Options must not
