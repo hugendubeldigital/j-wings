@@ -53,8 +53,19 @@ public class WingSetSession
 
     void initGUI() {
         SContainer contentPane = getFrame().getContentPane();
-        contentPane.setLayout(new SFlowDownLayout());
-
+        try {
+            java.net.URL templateURL = 
+                getClass().getResource("/wingset/ExampleFrame.thtml");
+            if( templateURL == null ){
+                contentPane.add(new SLabel("Sorry, can't find ExampleFrame.thtml. Are you using a JAR-File?"));
+            }
+            STemplateLayout layout = new STemplateLayout( templateURL );
+            contentPane.setLayout( layout );
+        }
+        catch ( java.io.IOException except ) {
+            except.printStackTrace();
+        }
+        
         STabbedPane tab = new STabbedPane();
         tab.setBackground(new java.awt.Color(206, 206, 206));
 
@@ -77,11 +88,9 @@ public class WingSetSession
                    new TemplateExample(), "Template Layout Manager");
         //tab.add(new DateChooserExample(), "DateChooser");
 
-        contentPane.add(tab);
-        contentPane.add(new SSeparator());
+        contentPane.add(tab, "WingSetApp");
 
-        SPanel south = new SPanel();
-        south.add(timeMeasure);
+        contentPane.add(timeMeasure, "TimeLabel");
 
         final SRadioButton old = new SRadioButton("xhtml/old");
         old.setSelected(false);
@@ -102,11 +111,8 @@ public class WingSetSession
         group.add(old);
         group.add(css1);
 
-        south.add(old);
-        south.add(new SSpacer(1));
-        south.add(css1);
-
-        contentPane.add(south);
+        contentPane.add(old,  "style=old");
+        contentPane.add(css1, "style=css1");
     }
 
     /**
