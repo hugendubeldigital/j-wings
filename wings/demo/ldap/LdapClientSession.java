@@ -19,6 +19,10 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 
+import javax.naming.*;
+import javax.naming.directory.*;
+
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -53,8 +57,8 @@ public class LdapClientSession
     private STree tree;
 
     private SDesktopPane cards;
-    private SForm editorPanel;
-    private SPanel attrPanel;
+    private SPanel editorPanel;
+    private SForm attrPanel;
     private SButton commitButton;
     private AddObjectsPanel addPanel;
 
@@ -123,16 +127,19 @@ public class LdapClientSession
 	createTree();
 	mainPanel.add(tree);
 
-	editorPanel = new SForm();
-	mainPanel.add(editorPanel);
+	//editorPanel = new SPanel();
+	//mainPanel.add(editorPanel);
 
-	attrPanel = new SPanel();
+	attrPanel = new SForm();
 	attrPanel.setLayout(new SGridLayout(2));
-	editorPanel.add(attrPanel);
+	//editorPanel.add(attrPanel);
+
+
+	mainPanel.add(attrPanel);
 
 	commitButton = new SButton("Commit");
 	commitButton.addActionListener(this);
-	editorPanel.add(commitButton);
+	//attrPanel.add(commitButton);
 
 	addPanel = new AddObjectsPanel();
 	tabbedPane.add(addPanel, "Add new Object");
@@ -211,41 +218,43 @@ public class LdapClientSession
 	String oValue;
 
 	System.out.println(">> commit <<");
+	
+	
+	Enumeration enumer = componentTable.keys();
+	while (enumer != null && enumer.hasMoreElements()) {
+	
+	
+	    SLabel key = (SLabel)enumer.nextElement();
+	    System.out.println(key.getText());
 
-	Iterator iterator = componentTable.entrySet().iterator();
-	while (iterator.hasNext()) {
-	    Map.Entry entry = (Map.Entry)iterator.next();
-	    SLabel key = (SLabel)entry.getKey();
+	    //Hashtable toBeChanged = new Hashtable();
 
-	    ArrayList modifiedTextF;
-	    ArrayList oldTextF;
-	    Hashtable toBeChanged = new Hashtable();
-
-	    modifiedTextF = (ArrayList)(componentTable.get(key));
-	    oldTextF = (ArrayList)(textHashtable.get(key));
-	    int i = 0;
-	    while (i < modifiedTextF.size()) {
-		oldValue = (String)(oldTextF.get(i));
-		newValue = ((STextField)modifiedTextF.get(i)).getText();
-		i++;
-		System.out.println("new value " +newValue);
-		System.out.println("old value " +oldValue);
-		if (!oldValue.equals(newValue)) {
-		    toBeChanged.put((key).getText(),newValue);
-		    System.out.println((key).getText() + "  " + newValue);
-		}
+	    oldValue = (String)(textHashtable.get(key));
+	    System.out.println("fuer " + key + " old value " +oldValue);
+	    
+	    newValue = ((STextField)componentTable.get(key)).getText();
+	    
+	    System.out.println("new value " +newValue);
+	    System.out.println("old value " +oldValue);
+	    
+	    if (!oldValue.equals(newValue)) {
+		BasicAttributes attributes = new BasicAttributes();
+		BasicAttribute attr = new BasicAttribute();
+		StringTokenizer st = new StringTokenizer(newValue,",");
+		if st
+		toBeChanged.put((key).getText(),newValue);
+		System.out.println((key).getText() + "  " + newValue);
 	    }
-
-	    if (!toBeChanged.isEmpty()) {
+	    
+	    
+	    /*if (!toBeChanged.isEmpty()) {
 		LdapWorker worker = getLdapWorker();
-		//System.out.println("einige attr. zu aendern");
 		System.out.println(getDN());
 		worker.modifyAttributes(getDN(), toBeChanged);
-		//LdapTreeNode newNode = new LdapTreeNode(c,(LdapTreeNode)node.getParent(),getDN());
-	    }
+		}*/
 	}
     }
-
+    
     private void setDN(String dn) {
 	this.dn = dn;
     }
@@ -280,56 +289,60 @@ public class LdapClientSession
 	attrPanel.removeAll();
 
 	LdapWorker worker = getLdapWorker();
-	Hashtable attributes = worker.getDNAttributes(getDN());
+	BasicAttributes attributes = (BasicAttributes)worker.getDNAttributes(getDN());
 
-	Enumeration enum = attributes.keys();
-	while (enum != null && enum.hasMoreElements()) {
-	    Object key = enum.nextElement();
-
-	    ArrayList textAl;
-	    ArrayList textFAl;
-	    textAl = (ArrayList)(attributes.get(key));
-	    textFAl =new ArrayList();
-	    int ii = 0;
-	    while (ii<textAl.size()) {
-		textFAl.add(new STextField((String)(textAl.get(ii))));
-		ii++;
+	try {
+	    NamingEnumeration en = attributes.getAll();
+	    while (en!=null && en.hasMoreElements()) {
+		BasicAttribute attr = (BasicAttribute)en.nextElement();
+		String label = attr.getID();
+	    String values = "";
+	    NamingEnumeration aValues = attr.getAll();
+	    while (aValues!=null && aValues.hasMore()) {
+		if ( !values.equals("")) 
+		    values = values + "," + aValues.next();
+		else 
+		    values = (String)aValues.next();
 	    }
-
-	    ArrayList textContentAl;
-	    SLabel label = new SLabel((String)key);
-	    boolean wAccess = false;
-
-	    textContentAl = new ArrayList();
-	    int i = 0;
-	    while (i<textAl.size()) {
-		System.out.println((String)(textAl.get(i)));
-		textContentAl.add((String)(textAl.get(i)));
-		i++;
-		
+	    SLabel attrLabel = new SLabel(label);
+	    STextField attrField = new STextField(values);
+	    componentTable.put(attrLabel,attrField);
+	    textHashtable.put(attrLabel,values);
+	    System.out.println("cT*" + label +"*");
+	    System.out.println(values);
+	    
+	    
 	    }
-	    componentTable.put(label,textFAl);
-	    textHashtable.put(label,textContentAl);
+	    Vector objectAttributes = worker.getObjectAttributes(getDN());
+	    Enumeration enum = componentTable.keys();
+	    while (enum != null && enum.hasMoreElements()) {
+		String keyString = (String)((SLabel)enum.nextElement()).getText();
+		if (objectAttributes.contains((String)keyString)) 
+		    objectAttributes.remove((String)keyString);
+	    }
+	
+	    Enumeration er  = objectAttributes.elements();
+	    while (er!=null && er.hasMoreElements()) {
+		Object ob = er.nextElement();
+		SLabel sLabel = new SLabel((String)ob);
+		STextField tf = new STextField("");
+		componentTable.put(sLabel,tf);
+		textHashtable.put(sLabel,tf.getText());
+	    }
 	    
 	}
-	
+	catch (NamingException ex) {
+	    System.out.println(ex);
+	}
+
 	Enumeration compEnum;
 	compEnum = componentTable.keys();
 	while (compEnum!=null && compEnum.hasMoreElements()) {
 	    Object key = compEnum.nextElement();
-	    //System.out.println("put in attrPanel " + ((SLabel)key).getText());
-	    //attrForm.add((SLabel)key);
-	    ArrayList textFAl = (ArrayList)componentTable.get(key);
-	    int i = 0;
-	    while (i< textFAl.size()) {
 		attrPanel.add((SLabel)key);
-		attrPanel.add((STextField)textFAl.get(i));
-		i++;
-	    }
-	    
-	    //attrForm.add((SComponent)componentTable.get(key));
-	    //if(componentTable.get(key).getClass().getName().equals("org.wings.STextField")) textList.add(((STextField)componentTable.get(key)).getText());
+		attrPanel.add((STextField)componentTable.get(key));
 	}
+	attrPanel.add(commitButton);
     }
 
 

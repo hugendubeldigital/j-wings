@@ -36,10 +36,10 @@ public class LdapWorker
 	env.put(Context.PROVIDER_URL, "ldap://" + server);
 	//env.put(Context.PROVIDER_URL, "ldap://192.168.10.21:389");
 	env.put(Context.SECURITY_PRINCIPAL,"cn=admin,dc=tiscon,dc=de");
-	//env.put(Context.SECURITY_PRINCIPAL,bindDN);
-	env.put(Context.SECURITY_PRINCIPAL,"cn=admin,dc=engels,dc=de");
-	//env.put(Context.SECURITY_CREDENTIALS,password);
-	env.put(Context.SECURITY_CREDENTIALS,"secret");
+	env.put(Context.SECURITY_PRINCIPAL,bindDN);
+	//env.put(Context.SECURITY_PRINCIPAL,"cn=admin,dc=engels,dc=de");
+	env.put(Context.SECURITY_CREDENTIALS,password);
+	//env.put(Context.SECURITY_CREDENTIALS,"secret");
 	try {
 	    ctx = new InitialDirContext(env);
 	}
@@ -227,7 +227,77 @@ public class LdapWorker
 
     
     //gibt die attribute eines dn's zurueck
-    public Hashtable getDNAttributes(String dn)
+    public Attributes getDNAttributes(String dn)
+    {
+	ArrayList attrList = new ArrayList();
+	Hashtable h = new Hashtable();
+	Attributes a = null;
+	NamingEnumeration e;
+	try {
+	    a = ctx.getAttributes(dn);
+	    e = a.getAll();
+	    /*while (e != null && e.hasMoreElements()) {
+		BasicAttribute ba = (BasicAttribute)e.next();
+		int i = 0;
+		int size = ba.size();
+		if (size > 1) {
+		    ArrayList al = new ArrayList();
+		    while (i < size) {
+			al.add(ba.get(i));
+			System.out.println("attribut" + ba.getID() + ba.get(i) + "bei " + i);
+			i++;
+		    }
+		    h.put(ba.getID(),al);
+		}
+		else {
+		    ArrayList al = new ArrayList();
+		    System.out.println("attribut " + ba);
+		    if (ba.get() == null)
+			al.add("");
+		    else
+			al.add(ba.get());
+		    h.put(ba.getID(),al);
+		}
+		}*/
+	}
+	catch (NamingException exc) {
+	}
+	/*Enumeration enum = h.keys();
+	while (enum !=null  && enum.hasMoreElements()) {
+	    Object key = enum.nextElement();
+	    ArrayList al = (ArrayList)(h.get(key));
+	    int index = 0;
+	    while (index<al.size()) {
+		System.out.println("das ist ein attr" + (String)key + al.get(index));
+		index++;
+	    }
+	}
+	
+	Vector objectAttributes = getObjectAttributes(dn);
+	
+	Enumeration en = h.keys();
+	while (en != null && en.hasMoreElements()) {
+	    Object key = en.nextElement();
+	    if (objectAttributes.contains((String)key)) 
+		objectAttributes.remove((String)key);
+	}
+	
+	Enumeration er  = objectAttributes.elements();
+	
+	
+	
+	while (er!=null && er.hasMoreElements()) {
+	    ArrayList al = new ArrayList();
+	    al.add("");
+	    h.put((String)er.nextElement(),al);
+	    }*/
+	
+	
+	
+	return (a);
+    }
+    
+    /*public Hashtable getDNAttributes(String dn)
     {
 	ArrayList attrList = new ArrayList();
 	Hashtable h = new Hashtable();
@@ -297,7 +367,7 @@ public class LdapWorker
 	return (h);
     }
     
-
+    */
 
     public Vector getObjectAttributes(String dn) {
 	
