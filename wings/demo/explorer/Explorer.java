@@ -42,7 +42,13 @@ public class Explorer
         DefaultSession session = new DefaultSession();
         if (!LookAndFeelFactory.isDeployed("xhtml/css1")) {
             try {
-                URL url = new URL(new URL(HttpUtils.getRequestURL(req).toString()), "../css1.jar");
+                URL url =
+                    // bug in tomcat 4.0.2 and 4.0.3, getResource returns jndi
+                    // URL, which ist not a supported protocol (maybe they
+                    // forgot the URLStreamHandler...)
+                    // servletConfig.getServletContext().getResource("/css1.jar");
+                    new URL("file:" + 
+                            servletConfig.getServletContext().getRealPath("/css1.jar"));
                 LookAndFeelFactory.deploy(url);
             }
             catch (Exception e) {

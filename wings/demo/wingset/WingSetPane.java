@@ -28,10 +28,10 @@ import org.wings.*;
 abstract public class WingSetPane
     extends SPanel
     implements SConstants {
-    private static final SLabel SOURCE_LABEL = 
-        new SLabel("view source code",
-                   new ResourceImageIcon("org/wings/icons/File.gif"));
-                                                          
+
+    private static final ResourceImageIcon SOURCE_LABEL_ICON = 
+        new ResourceImageIcon("org/wings/icons/File.gif");
+
     public WingSetPane() {
 	setLayout(createResourceTemplate("/wingset/templates/ContentLayout.thtml"));
 
@@ -40,7 +40,7 @@ abstract public class WingSetPane
         SAnchor anchor = new SAnchor("/wingset/" +
                                    getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
         anchor.setTarget("sourceWindow");
-        anchor.add( SOURCE_LABEL );
+        anchor.add( new SLabel("view source code", SOURCE_LABEL_ICON));
         add(anchor, "viewSource");
     }
 

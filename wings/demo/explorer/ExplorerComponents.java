@@ -122,7 +122,7 @@ public class ExplorerComponents {
             public void actionPerformed(ActionEvent e) {
                 try {
                     writeFile(chooser.getSelectedFile(), 
-                              chooser.getFilename());
+                              chooser.getFileName());
                 }
                 catch (IOException uploadProblem) {
                     // set message..
