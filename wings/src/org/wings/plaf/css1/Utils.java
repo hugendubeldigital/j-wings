@@ -264,23 +264,28 @@ public final class Utils {
             d.print("background-color:#").print(toColorString(bgcolor)).print(";");
 
         if (fgColor != null) {
-            d.print("font-color:#").print(toColorString(fgColor)).print(";");
+            // d.print("font-color:#").print(toColorString(fgColor)).print(";");
             d.print("color:#").print(toColorString(fgColor)).print(";");
         }
         if (font != null) {
             int style = font.getStyle();
-            d.print("font-size:").print(font.getSize()).print("pt;");
-            d.print("font-style:").print((style & java.awt.Font.ITALIC) > 0 ? "italic;" : "normal;");
+/*            d.print("font-style:").print((style & java.awt.Font.ITALIC) > 0 ? "italic;" : "normal;");
             d.print("font-weight:").print((style & java.awt.Font.BOLD) > 0 ? "bold;" : "normal;");
+            d.print("font-size:").print(font.getSize()).print("pt;");
             d.print("font-family:").print(font.getFace()).print(";");
+ */         d.print("font:").print((style & java.awt.Font.ITALIC) > 0 ? "italic " : "normal ");
+            d.print((style & java.awt.Font.BOLD) > 0 ? "bold " : "normal ");
+            d.print(font.getSize()).print("pt ");
+            d.print(font.getFace()).print(";");
+
         }
        if (border != null) {
           border.writeSpanAttributes(d);
         }
 
         if (dim != null) {
-            if (dim.width != null) d.print("width:").print(dim.width).print(";");
-            if (dim.height != null) d.print("height:").print(dim.height).print(";");
+            if ((dim.width != null) && (!"".equals(dim.width))) d.print("wIdth:").print(dim.width).print(";");
+            if ((dim.height != null) && (!"".equals(dim.height))) d.print("hEight:").print(dim.height).print(";");
         }
 
 
