@@ -65,7 +65,7 @@ public class BorderExample
         
         final SPanel c = new SPanel(new SBorderLayout());
 
-        c.setBackground(new java.awt.Color(100, 100, 255));
+        c.setBackground(new java.awt.Color(180, 180, 255));
         c.add(new SLabel(new ResourceImageIcon(SConstants.class, "icons/Wait.gif")),
               SBorderLayout.NORTH);
         c.add(new SLabel("This is the bordered content"));
