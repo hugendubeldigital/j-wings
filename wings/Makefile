@@ -27,7 +27,6 @@ demojar: dummy
 
 htdocs: dummy doc dist
 	cd htdocs
-	ln -s ../COPYING .
 	ln -s ../doc/api
 
 dist: fun doc jar demojar
@@ -42,6 +41,8 @@ dist: fun doc jar demojar
 	cp Rules.make dist
 	cp Environment.sh dist
 	cd ${DEVEL_HOME}/dist/doc ;\
+	ln -s ../../htdocs/faq.html . ;\
+	ln -s ../../htdocs/styles.css . ;\
 	ln -s ../../doc/api .
 	cp -r src/* ${DEVEL_HOME}/dist/src
 	make -C dist/src cvs-clean
