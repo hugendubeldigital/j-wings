@@ -30,22 +30,13 @@ import org.wings.io.Device;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SContainer extends SComponent
+public class SContainer
+    extends SComponent
 {
     /**
      * @see #getCGClassID
      */
     private static final String cgClassID = "ContainerCG";
-
-    /**
-     * The components in this container.
-     */
-    protected ArrayList components;
-
-    /**
-     * The constraints for the components.
-     */
-    protected ArrayList constraints;
 
     /**
      * The constraints for the components.
@@ -60,7 +51,6 @@ public class SContainer extends SComponent
      * @param l
      */
     public SContainer(SLayoutManager l) {
-        init();
         setLayout(l);
     }
 
@@ -70,27 +60,6 @@ public class SContainer extends SComponent
      */
     public SContainer() {
         this(null);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     */
-    protected void init() {
-        if (components != null)
-            return;
-        components = new ArrayList(3);
-        constraints = new ArrayList(3);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param newCG
-     */
-    protected void setCG(ComponentCG newCG) {
-        init();
-        super.setCG(newCG);
     }
 
 
@@ -107,16 +76,19 @@ public class SContainer extends SComponent
      * @param l
      */
     public void setLayout(SLayoutManager l) {
-        if (layout != null)
-            for ( int i=0; i<components.size(); i++ )
-                layout.removeComponent((SComponent)components.get(i));
+        if (layout != null) {
+            for ( int i=0; i<getComponentCount(); i++ ) {
+                layout.removeComponent(getComponentAt(i));
+            }
+        }
 
         layout = l;
 
         if ( layout!=null ) {
-            for ( int i=0; i<components.size(); i++ )
-                layout.addComponent((SComponent)components.get(i),
-                                    constraints.get(i));
+            for ( int i=0; i<getComponentCount(); i++ ) {
+                layout.addComponent(getComponentAt(i), getConstraintAt(i));
+            }
+
             layout.setContainer(this);
         }
     }
@@ -195,13 +167,37 @@ public class SContainer extends SComponent
         }
     }
 
+
+    /**
+     * The components in this container.
+     */
+    private ArrayList componentList = new ArrayList(3);
+
+    protected ArrayList getComponentList() {
+        // if ( componentList == null )
+        //    componentList = new ArrayList(3);
+        return componentList;
+    }
+
+    /**
+     * The constraints for the components.
+     */
+    private ArrayList constraintList = new ArrayList(3);
+
+    protected ArrayList getConstraintList() {
+        // if ( constraintList == null )
+        //    constraintList = new ArrayList(3);
+        return constraintList;
+    }
+
+
     /**
      * TODO: documentation
      *
      * @return
      */
     public int getComponentCount() {
-        return components.size();
+        return getComponentList().size();
     }
 
     /**
@@ -211,7 +207,7 @@ public class SContainer extends SComponent
      * @return
      */
     public SComponent getComponentAt(int i) {
-        return (SComponent)components.get(i);
+        return (SComponent)getComponentList().get(i);
     }
 
     /**
@@ -221,13 +217,25 @@ public class SContainer extends SComponent
      * @return
      */
     public SComponent getComponent(int i) {
-        return (SComponent)components.get(i);
+        return getComponentAt(i);
     }
 
     public SComponent[] getComponents() {
         // vorsichtig mit Threads ( eigentlich TreeLock!!!)
-        return (SComponent[])components.toArray(new SComponent[components.size()]);
+        return (SComponent[])getComponentList().toArray(new SComponent[getComponentCount()]);
     }
+
+
+    /**
+     * TODO: documentation
+     *
+     * @param i
+     * @return
+     */
+    public Object getConstraintAt(int i) {
+        return getConstraintList().get(i);
+    }
+
 
 
     /*
@@ -249,15 +257,13 @@ public class SContainer extends SComponent
 
         c.setParent(null);
 
-        int index = components.indexOf(c);
-        boolean erg = components.remove(c);
+        int index = getComponentList().indexOf(c);
+        boolean erg = getComponentList().remove(c);
         if ( erg ) {
-            constraints.remove(index);
-            /*
-             processContainerEvent(new ContainerEvent(this,
-             ContainerEvent.COMPONENT_REMOVED,
-             c));
-             */
+            getConstraintList().remove(index);
+
+            // processContainerEvent(new ContainerEvent(this,
+            // ContainerEvent.COMPONENT_REMOVED, c));
         }
         return erg;
     }
@@ -305,52 +311,10 @@ public class SContainer extends SComponent
      *
      */
     public void removeAll() {
-        while ( getComponentCount()>0 )
+        while ( getComponentCount() > 0 )
             removeComponentAt(0);
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     * @return
-     */
-    public SComponent addComponent(SComponent c) {
-        return addComponent(c, null);
-    }
-
-    public SComponent addComponent(SComponent c, Object constraint) {
-        if (c != null) {
-            if (layout != null)
-                layout.addComponent(c, constraint);
-            components.add(c);
-            constraints.add(constraint);
-            c.setParent(this);
-
-            /*
-             processContainerEvent(new ContainerEvent(this,
-             ContainerEvent.COMPONENT_ADDED,
-             c));
-             */
-
-        }
-
-        return c;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param f
-     */
-    protected void setParentFrame(SFrame f) {
-        if ( f!=parentFrame ) {
-            super.setParentFrame(f);
-            for ( int i=0; i<components.size(); i++ ) {
-                ((SComponent)components.get(i)).setParentFrame(getParentFrame());
-            }
-        }
-    }
 
     /**
      * TODO: documentation
@@ -369,6 +333,46 @@ public class SContainer extends SComponent
     /**
      * TODO: documentation
      *
+     * @param c
+     * @return
+     */
+    public SComponent addComponent(SComponent c) {
+        return addComponent(c, null);
+    }
+
+    public SComponent addComponent(SComponent c, Object constraint) {
+        if (c != null) {
+            if (layout != null)
+                layout.addComponent(c, constraint);
+
+            getComponentList().add(c);
+            getConstraintList().add(constraint);
+            c.setParent(this);
+
+            // processContainerEvent(new ContainerEvent(this,
+            // ContainerEvent.COMPONENT_ADDED, c));
+        }
+
+        return c;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @param f
+     */
+    protected void setParentFrame(SFrame f) {
+        if ( f!=parentFrame ) {
+            super.setParentFrame(f);
+            for ( int i=0; i<getComponentCount(); i++ ) {
+                getComponentAt(i).setParentFrame(getParentFrame());
+            }
+        }
+    }
+
+    /**
+     * TODO: documentation
+     *
      * @return
      */
     public Object clone() {
@@ -376,29 +380,15 @@ public class SContainer extends SComponent
             // ein bisschen kompliziert, muss aber alle Elemente einzeln
             // klonen !!
             SContainer erg = (SContainer)super.clone();
-            erg.components = new ArrayList(2);
-            for ( int i=0; i<components.size(); i++ ) {
-                erg.addComponent((SComponent)((SComponent)components.get(i)).clone());
+            // erg.components = new ArrayList(2);
+            for ( int i=0; i<getComponentCount(); i++ ) {
+                erg.addComponent((SComponent)getComponentAt(i).clone());
             }
             return erg;
         }
         catch (Exception e) {
             e.printStackTrace();
             return null;
-        }
-    }
-
-    /*
-     * Ist ganz geschickt um Dinge erst dann aufzubauen, wenn auch ein Frame da
-     * ist. Z.B. Locale sensitive Dinge.
-     */
-    /**
-     * TODO: documentation
-     *
-     */
-    protected void addedToFrame() {
-        for ( int i=0; i<getComponentCount(); i++ ) {
-            getComponentAt(i).addedToFrame();
         }
     }
 

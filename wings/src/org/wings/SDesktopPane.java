@@ -133,11 +133,8 @@ public class SDesktopPane
      *                  -1 is the bottommost position
      */
     public void setPosition(SComponent c, int position)  {
-        components.remove(c);
-        components.add(position, c);
-
-        //remove(c);
-        //add(c, null, position);
+        getComponentList().remove(c);
+        getComponentList().add(position, c);
     }
 
     /**
