@@ -98,8 +98,7 @@ public abstract class SComponent
     /** Preferred size of component in pixel. */
     protected SDimension preferredSize = null;
 
-    // hzeller: why are these transient? This means, that if a session had ever been persisted all listeners are gone
-    transient ArrayList componentListeners;
+    protected ArrayList componentListeners;
 
     protected Map scriptListeners = new HashMap();
 
