@@ -136,7 +136,9 @@
             comp = table.prepareRenderer(table.getCellRenderer(row, col), row, col);
 
         %><td<%
-        /*  %><%|class=(comp!=null)?comp.getStyle():null%><% */
+        %><%|class=(comp!=null)?comp.getStyle():null%><% 
+	String compStyle = comp.getStyle();
+	comp.setStyle(null);
         %>><%
 
         boolean pushedURL = false;
@@ -156,13 +158,14 @@
             }
         }
 		
-		rendererPane.writeComponent(device, comp, table);
+	rendererPane.writeComponent(device, comp, table);
 
         if (pushedURL) {
             AnchorRenderStack.pop();
         }
 
         %></td><%
+	comp.setStyle(compStyle);
     }
 
     protected void writeDefaultFormRowSelection(Device device, STable table, 
@@ -247,9 +250,14 @@
     {
         SComponent comp = table.prepareHeaderRenderer(c);
         
-        %><th><%
+        %><th<%
+        %><%|class=(comp!=null)?comp.getStyle():null%><% 
+	String compStyle = comp.getStyle();
+	comp.setStyle(null);
+        %>><%
         rendererPane.writeComponent(device, comp, table);
         %></th><%
+	comp.setStyle(compStyle);
     }
 
     protected void writeEmptyHeaderCell(Device device, STable table)
