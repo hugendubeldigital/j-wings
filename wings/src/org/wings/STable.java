@@ -27,8 +27,8 @@ import javax.swing.table.TableModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.DefaultListSelectionModel;
 
+import org.wings.table.*;
 import org.wings.externalizer.ExternalizeManager;
-import org.wings.io.Device;
 import org.wings.plaf.*;
 import org.wings.style.*;
 

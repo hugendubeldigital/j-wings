@@ -20,6 +20,7 @@ import java.util.*;
 import javax.swing.ListSelectionModel;
 
 import org.wings.*;
+import org.wings.table.*;
 import org.wings.border.*;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.*;

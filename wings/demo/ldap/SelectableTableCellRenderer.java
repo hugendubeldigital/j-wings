@@ -2,6 +2,7 @@ package ldap;
 
 import java.net.URL;
 import org.wings.*;
+import org.wings.table.*;
 import java.awt.event.*;
 import java.io.IOException;
 import javax.swing.event.EventListenerList;

@@ -17,7 +17,7 @@ package explorer;
 import org.wings.SComponent;
 import org.wings.SLabel;
 import org.wings.SBaseTable;
-import org.wings.STableCellRenderer;
+import org.wings.table.STableCellRenderer;
 
 /**
  * TODO: documentation

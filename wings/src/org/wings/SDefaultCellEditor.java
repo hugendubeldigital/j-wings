@@ -14,15 +14,12 @@
 
 package org.wings;
 
-import java.awt.AWTEvent;
 import java.awt.event.*;
-import java.io.*;
-import java.lang.Boolean;
 import java.util.EventObject;
-import java.util.logging.*;
+
 import javax.swing.event.*;
-import javax.swing.table.*;
-import javax.swing.tree.*;
+
+import org.wings.table.STableCellEditor;
 
 /**
  * TODO: documentation

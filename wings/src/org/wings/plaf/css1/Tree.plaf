@@ -3,6 +3,7 @@
 -->
 <template name="TreeCG" for="org.wings.STree">
 <import>javax.swing.tree.*</import>
+<import>org.wings.tree.*</import>
 
 <property type="SIcon" name="expandControlIcon">org/wings/icons/plus.gif</property>
 <property type="SIcon" name="collapseControlIcon">org/wings/icons/minus.gif</property>
@@ -11,7 +12,7 @@
 
 <property type="SIcon" name="emptyFillIcon">org/wings/icons/transdot.gif</property>
 
-<comp-property type="STreeCellRenderer" name="cellRenderer">new org.wings.SDefaultTreeCellRenderer()</comp-property>
+<comp-property type="org.wings.tree.STreeCellRenderer" name="cellRenderer">new org.wings.tree.SDefaultTreeCellRenderer()</comp-property>
 <comp-property type="Style" name="selectionStyle">treenodeselection</comp-property>
 
 <write>
@@ -148,7 +149,8 @@
 		 */
 		// the tree generates the URL that it can handle in its RequestListener
                 RequestURL expansionAddr = component.getRequestURL();
-                expansionAddr.addParameter(component.getExpansionParameter(node));
+                expansionAddr.addParameter(component.getNamePrefix() + "=" + 
+                                           component.getExpansionParameter(node));
 		%><a href="<%
                 %><%=expansionAddr.toString()%><%
                 %>"><%
@@ -178,7 +180,8 @@
         if ( isSelectable ) {
 	    // ask the tree for the URL it has for expansion events
             RequestURL selectionAddr = component.getRequestURL();
-            selectionAddr.addParameter(component.getSelectionParameter(node));
+            selectionAddr.addParameter(component.getNamePrefix() + "=" + 
+	                               component.getSelectionParameter(node));
             
             if ( cellComp instanceof ClickableRenderComponent ) {
                 AnchorRenderStack.push(selectionAddr, null);

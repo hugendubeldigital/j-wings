@@ -23,6 +23,7 @@ import javax.swing.tree.*;
 import javax.swing.event.*;
 
 import org.wings.*;
+import org.wings.table.*;
 
 /**
  * TODO: documentation

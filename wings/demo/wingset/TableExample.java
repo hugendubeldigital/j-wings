@@ -19,6 +19,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 import org.wings.*;
+import org.wings.table.*;
 
 /**
  * TODO: documentation

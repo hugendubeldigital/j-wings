@@ -12,13 +12,12 @@
  * Please see COPYING for the complete licence.
  */
 
-package org.wings;
+package org.wings.tree;
 
-import java.awt.Color;
-import java.io.IOException;
-
-import javax.swing.tree.*;
-
+import org.wings.SComponent;
+import org.wings.STree;
+import org.wings.SIcon;
+import org.wings.SLabel;
 import org.wings.io.Device;
 import org.wings.style.Style;
 

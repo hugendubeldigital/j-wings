@@ -26,6 +26,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import org.wings.table.*;
 import org.wings.io.Device;
 import org.wings.plaf.*;
 import org.wings.style.*;

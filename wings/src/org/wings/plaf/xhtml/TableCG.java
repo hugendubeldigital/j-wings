@@ -22,6 +22,7 @@ import javax.swing.ListSelectionModel;
 
 import org.wings.*; 
 import org.wings.border.*;
+import org.wings.table.*;
 import org.wings.io.*;
 import org.wings.util.CGUtil;
 import org.wings.util.AnchorRenderStack;

@@ -12,11 +12,14 @@
  * Please see COPYING for the complete licence.
  */
 
-package org.wings;
+package org.wings.table;
+
+import org.wings.SComponent;
+import org.wings.SBaseTable;
 
 /**
- * Cell Renderer for {@link STable}. This is similar (almost the same) to the renderer 
- * approach in swing. 
+ * Cell Renderer for {@link org.wings.STable}. This is similar (almost the same)
+ * to the renderer approach in swing. 
  *
  * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$

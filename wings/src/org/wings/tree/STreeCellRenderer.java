@@ -12,9 +12,12 @@
  * Please see COPYING for the complete licence.
  */
 
-package org.wings;
+package org.wings.tree;
 
 import javax.swing.tree.*;
+
+import org.wings.SComponent;
+import org.wings.STree;
 
 /**
  * Cell Renderer for {@link STree}. This is similar (almost the same) to the renderer 

@@ -12,24 +12,20 @@
  * Please see COPYING for the complete licence.
  */
 
-package org.wings;
+package org.wings.tree;
 
-import javax.swing.CellEditor;
+import javax.swing.tree.TreeSelectionModel;
+
+import org.wings.SDelayedEventModel;
 
 /**
- * TODO: documentation
  *
- * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
+ *
+ * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public interface STableCellEditor
-    extends CellEditor
+public interface STreeSelectionModel extends TreeSelectionModel, SDelayedEventModel
 {
-    SComponent getTableCellEditorComponent(SBaseTable table,
-                                           Object value,
-                                           boolean isSelected,
-                                           int row,
-                                           int column);
 }
 
 /*

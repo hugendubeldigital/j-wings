@@ -12,20 +12,19 @@
  * Please see COPYING for the complete licence.
  */
 
-package org.wings;
+package org.wings.table;
 
-import java.awt.Color;
-import java.io.IOException;
-
-import org.wings.io.Device;
-import org.wings.plaf.*;
-import org.wings.style.*;
+import org.wings.SComponent;
+import org.wings.SBaseTable;
+import org.wings.SLabel;
+import org.wings.SIcon;
+import org.wings.style.Style;
 
 /**
  * TODO: documentation
  *
- * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:holger.engels@mercatis.de">Holger Engels</a>
+ * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class SDefaultTableCellRenderer

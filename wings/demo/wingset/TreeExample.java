@@ -15,6 +15,7 @@
 package wingset;
 
 import javax.swing.tree.*;
+import javax.swing.event.*;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
@@ -46,7 +47,52 @@ public class TreeExample
         p.add(createControlForm(tree));
         p.add(new SSeparator());
         p.add(tree);
+
+        /* test code
+        p.add(new SSeparator());
+        p.add(createEventView(tree));
+        */
         return p;
+    }
+
+
+    private SComponent createEventView(final STree tree) {
+        SForm form = new SForm();
+        final STextArea messages = new STextArea("");
+        messages.setEditable(false);
+        messages.setColumns(80);
+        
+        tree.addTreeSelectionListener(new TreeSelectionListener() {
+                public void valueChanged(TreeSelectionEvent e) {
+                    messages.setText(messages.getText() + "\n" 
+                                     + "TreeSelectionEvent-"
+                                     + (e.isAddedPath()?"added ":"removed ")
+                                     + e.getPath().getLastPathComponent().toString());
+                }
+            });
+
+        tree.addTreeExpansionListener(new TreeExpansionListener() {
+                public void treeExpanded(TreeExpansionEvent e) {
+                    messages.setText(messages.getText() + "\n"
+                                     + "TreeExpansionEvent-treeExpanded "
+                                     + e.getPath().getLastPathComponent().toString());
+                }
+                public void treeCollapsed(TreeExpansionEvent e) {
+                    messages.setText(messages.getText() + "\n" 
+                                     + "TreeExpansionEvent-treeCollapsed "
+                                     + e.getPath().getLastPathComponent().toString());
+                }
+            });
+
+        form.add(messages);
+        form.add(new SButton("Clear"));
+        form.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    messages.setText("");
+                }
+            });
+
+        return form;
     }
 
     private SForm createControlForm(final STree tree) {

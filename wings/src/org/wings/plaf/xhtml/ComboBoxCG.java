@@ -63,7 +63,8 @@ public class ComboBoxCG
             for (int i=0; i < size; i++) {
                 Object o = model.getElementAt(i);
 
-                d.print("<option value=\"").print(i).print("\"");
+                d.print("<option value=\"")
+                    .print(comboBox.getSelectionParameter(i)).print("\"");
                 if (i == selectedIndex)
                     d.print(" selected=\"selected\">");
                 else
