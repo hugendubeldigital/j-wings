@@ -384,11 +384,13 @@ public class TemplateParser {
                     + "final " + forClassName + " component = ("
                     + forClassName + ") _c;");
 
-        if (writeBorder) {
-            out.println(INDENT + INDENT
+        if ( "org.wings.SPanel".equals(forClassName) == false ) { 
+            if (writeBorder) {
+                out.println(INDENT + INDENT
                         + "final SBorder _border = component.getBorder();");
-            out.println(INDENT + INDENT
+                out.println(INDENT + INDENT
                         + "if (_border != null) { _border.writePrefix(device); }");
+            }
         }
         
         out.println ("\n//--- code from write-template.");
@@ -396,9 +398,11 @@ public class TemplateParser {
         out.print ( writeJavaCode.toString());
         out.println ("\n//--- end code from write-template.");
 
-        if (writeBorder) {
-            out.println(INDENT + INDENT
+        if ( "org.wings.SPanel".equals(forClassName) == false ) {
+            if (writeBorder) {
+                out.println(INDENT + INDENT
                         + "if (_border != null) { _border.writePostfix(device); }");
+            }
         }
 
         out.println(INDENT + INDENT + "_c.fireRenderEvent(SComponent.DONE_RENDERING);");
