@@ -13,10 +13,7 @@
  */
 package org.wings;
 
-import java.io.IOException;
 import java.util.logging.Logger;
-
-import org.wings.io.Device;
 
 /**
  * A root container.
@@ -36,12 +33,12 @@ import org.wings.io.Device;
  */
 public abstract class SRootContainer extends SContainer {
     private final static Logger logger = Logger.getLogger("org.wings");
-    
+
     /**
      * The container for the contentPane.
      */
     protected final SContainer contentPane;
-    
+
     /**
      * default constructor initializes the stack layout system of this
      * SRootContainer.
@@ -51,7 +48,7 @@ public abstract class SRootContainer extends SContainer {
         super.setLayout(new SRootLayout());
         super.addComponent(getContentPane(), null, getComponentCount());
     }
-    
+
     /**
      * Push a new dialog on top of the stack. If this RootContainer is
      * rendered, then only this dialog is shown.
@@ -60,11 +57,11 @@ public abstract class SRootContainer extends SContainer {
     public void pushDialog(SDialog dialog) {
         super.addComponent(dialog, null, getComponentCount());
         int count = getComponentCount();
-        logger.info("pushDialog: " + count);
+        logger.finest("pushDialog: " + count);
         dialog.setFrame(this);
         reload(ReloadManager.RELOAD_CODE);
     }
-    
+
     /**
      * remove the dialog, that is on top of the stack.
      *
@@ -75,47 +72,48 @@ public abstract class SRootContainer extends SContainer {
         if (count <= 1)
             throw new IllegalStateException("there's no dialog left!");
 
-		SDialog dialog = (SDialog)getComponent(count - 1);
-        super.removeComponent(dialog);
-        logger.info("popDialog: " + count);
-        dialog.setFrame((SFrame)null);
+        SDialog dialog = (SDialog) getComponent(count - 1);
+        super.remove(dialog);
+        logger.finest("popDialog: " + count);
+        dialog.setFrame((SFrame) null);
         reload(ReloadManager.RELOAD_CODE);
         return dialog;
     }
-    
+
     public void removeDialog(SDialog dialog) {
         super.remove(dialog);
-        dialog.setFrame((SFrame)null);
+        dialog.setFrame((SFrame) null);
         reload(ReloadManager.RELOAD_CODE);
     }
+
     /**
      * @return the number of dialogs that are on the stack currently.
      */
     public int getDialogCount() {
         return getComponentCount() - 1;
     }
-    
+
     /**
      * returns the content pane of this RootContainer.
      */
     public SContainer getContentPane() {
         return contentPane;
     }
-    
+
     /**
      * Use getContentPane().addComponent(c) instead.
      */
     public SComponent addComponent(SComponent c, Object constraint, int index) {
         throw new IllegalArgumentException("use getContentPane().addComponent()");
     }
-    
+
     /**
      * Use getContentPane().removeComponent(c) instead.
-     * @deprecated use {@link #remove(int)} instead for swing conformity
      */
-    public void removeComponent(SComponent c) {
+    public void remove(SComponent c) {
         throw new IllegalArgumentException("use getContentPane().removeComponent()");
     }
+
 }
 
 /*

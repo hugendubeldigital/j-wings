@@ -17,7 +17,7 @@ package wingset;
 
 import java.awt.Color;
 import javax.swing.Icon;
-import org.wings.ResourceImageIcon;
+import org.wings.SResourceIcon;
 import org.wings.SAnchor;
 import org.wings.SComponent;
 import org.wings.SConstants;
@@ -38,8 +38,8 @@ abstract public class WingSetPane
     extends SPanel
     implements SConstants {
 
-    private static final ResourceImageIcon SOURCE_LABEL_ICON = 
-        new ResourceImageIcon("org/wings/icons/File.gif");
+    private static final SResourceIcon SOURCE_LABEL_ICON =
+        new SResourceIcon("org/wings/icons/File.gif");
 
     private boolean initialized = false;
 

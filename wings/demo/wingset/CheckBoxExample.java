@@ -27,17 +27,17 @@ public class CheckBoxExample
 {
     static final ClassLoader cl = WingSet.class.getClassLoader();
     static final SIcon sel = 
-        new ResourceImageIcon(cl, "wingset/icons/ComboBoxSelectedIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/ComboBoxSelectedIcon.gif");
     static final SIcon nsel = 
-        new ResourceImageIcon(cl, "wingset/icons/ComboBoxIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/ComboBoxIcon.gif");
     static final SIcon dissel = 
-        new ResourceImageIcon(cl, "wingset/icons/ComboBoxDisabledSelectedIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/ComboBoxDisabledSelectedIcon.gif");
     static final SIcon disnsel = 
-        new ResourceImageIcon(cl, "wingset/icons/ComboBoxDisabledIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/ComboBoxDisabledIcon.gif");
     static final SIcon rollsel = 
-        new ResourceImageIcon(cl, "wingset/icons/ComboBoxRolloverSelectedIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/ComboBoxRolloverSelectedIcon.gif");
     static final SIcon rollnsel = 
-        new ResourceImageIcon(cl, "wingset/icons/ComboBoxRolloverIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/ComboBoxRolloverIcon.gif");
 
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));

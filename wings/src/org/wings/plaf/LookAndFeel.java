@@ -14,17 +14,27 @@
 
 package org.wings.plaf;
 
-import java.awt.*;
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.logging.*;
-import javax.servlet.ServletOutputStream;
+import org.wings.ClasspathResource;
+import org.wings.Resource;
+import org.wings.SDimension;
+import org.wings.SIcon;
+import org.wings.SResourceIcon;
+import org.wings.style.AttributeSet;
+import org.wings.style.CSSStyleSheet;
+import org.wings.style.SimpleAttributeSet;
+import org.wings.style.StyleSheet;
 
-import org.wings.*; import org.wings.border.*;
-import org.wings.io.*;
-import org.wings.plaf.*;
-import org.wings.style.*;
+import java.awt.Color;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A Look-and-Feel consists of a bunch of CGs and resource properties.
@@ -165,7 +175,7 @@ public class LookAndFeel
      * @return a newly allocated Icon
      */
     public static SIcon makeIcon(ClassLoader classLoader, String fileName) {
-        return new ResourceImageIcon(classLoader, fileName);
+        return new SResourceIcon(classLoader, fileName);
     }
 
     /**

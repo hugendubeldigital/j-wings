@@ -30,7 +30,7 @@ import org.wings.*;
 public class ListExample
     extends WingSetPane
 {
-    static final ResourceImageIcon javaCup = new ResourceImageIcon("org/wings/icons/JavaCup.gif");
+    static final SResourceIcon javaCup = new SResourceIcon("org/wings/icons/JavaCup.gif");
 
     public SComponent createExample() {
         SForm form = new SForm(new SFlowDownLayout());

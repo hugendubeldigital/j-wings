@@ -26,7 +26,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.wings.ClasspathResource;
-import org.wings.ResourceImageIcon;
+import org.wings.SResourceIcon;
 import org.wings.SContainer;
 import org.wings.SFrame;
 import org.wings.SIcon;
@@ -49,13 +49,13 @@ public class WingSet
 
     static final ClassLoader cl = WingSet.class.getClassLoader();
     private final static SIcon brushedMetal = 
-        new ResourceImageIcon(cl, "wingset/icons/brushedMetal.gif");
+        new SResourceIcon(cl, "wingset/icons/brushedMetal.gif");
 
     private final static SIcon JAVA_CUP_ICON = 
-        new ResourceImageIcon("org/wings/icons/JavaCup.gif");
+        new SResourceIcon("org/wings/icons/JavaCup.gif");
 
     private final static SIcon SMALL_COW_ICON = 
-        new ResourceImageIcon("wingset/icons/cowSmall.gif");
+        new SResourceIcon("wingset/icons/cowSmall.gif");
 
 
     static final long birthday = System.currentTimeMillis();
@@ -166,16 +166,10 @@ public class WingSet
         
         //SForm form = new SForm();
         final STabbedPane tab = new STabbedPane();
-        tab.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                System.out.println(tab.getSession().getServletRequest().getSession().getId() +
-                                   " example = " + tab.getSelectedIndex());
-            }
-        });
         tab.setName("examples");
         // tab.setMaxTabsPerLine(9);
         tab.setTabPlacement(STabbedPane.TOP);
-		tab.setBackgroundImage(brushedMetal);
+		//tab.setBackgroundImage(brushedMetal);
 
         tab.add(new WingsImage(), "wingS!");
         tab.add(new LabelExample(), "Label");
@@ -195,7 +189,7 @@ public class WingSet
         tab.add(new FileChooserExample(), "FileChooser");
         tab.add(new ScrollPaneExample(), "ScrollPane");
         tab.add(new PageScrollerExample(), "PageScroller");
-        tab.add(new MenuExample(), "Menue");
+        tab.add(new MenuExample(), "Menu");
         tab.add(new TabbedPaneExample(), "Tabbed Pane");
         //tab.add(new LayoutExample(), "Simple Layout");
         tab.addTab("Template Layout", 

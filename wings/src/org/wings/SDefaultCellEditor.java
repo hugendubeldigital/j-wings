@@ -41,14 +41,14 @@ public class SDefaultCellEditor
      *
      */
     public static final SIcon OK_BUTTON_ICON = 
-        new ResourceImageIcon("toolbarButtonGraphics/general/Save16.gif");
+        new SResourceIcon("toolbarButtonGraphics/general/Save16.gif");
 
     /**
      * The default cancel button icon.
      *
      */
     public static final SIcon CANCEL_BUTTON_ICON = 
-        new ResourceImageIcon("toolbarButtonGraphics/general/Stop16.gif");
+        new SResourceIcon("toolbarButtonGraphics/general/Stop16.gif");
 
 
     /**

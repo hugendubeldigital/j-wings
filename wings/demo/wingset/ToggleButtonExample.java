@@ -30,15 +30,15 @@ public class ToggleButtonExample
 {
     static final ClassLoader cl = WingSet.class.getClassLoader();
     static final SIcon icon = 
-        new ResourceImageIcon(cl, "wingset/icons/ButtonIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/ButtonIcon.gif");
     static final SIcon disabledIcon = 
-        new ResourceImageIcon(cl, "wingset/icons/ButtonDisabledIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/ButtonDisabledIcon.gif");
     static final SIcon pressedIcon = 
-        new ResourceImageIcon(cl, "wingset/icons/ButtonPressedIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/ButtonPressedIcon.gif");
     static final SIcon selectedIcon = 
-        new ResourceImageIcon(cl, "wingset/icons/ButtonPressedIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/ButtonPressedIcon.gif");
     static final SIcon rolloverIcon = 
-        new ResourceImageIcon(cl, "wingset/icons/ButtonRolloverIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/ButtonRolloverIcon.gif");
     
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));

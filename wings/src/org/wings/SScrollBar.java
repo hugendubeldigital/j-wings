@@ -95,22 +95,22 @@ public class SScrollBar
 
             for ( int direction=0; direction<postfixes.length; direction++ ) {
                 DEFAULT_ICONS[orientation][direction][SClickable.ENABLED_ICON] =
-                    new ResourceImageIcon("org/wings/icons/"
+                    new SResourceIcon("org/wings/icons/"
                                           + prefixes[direction]
                                           + "Scroll"
                                           + postfixes[direction] + ".gif");
                 DEFAULT_ICONS[orientation][direction][SClickable.DISABLED_ICON] =
-                    new ResourceImageIcon("org/wings/icons/Disabled" 
+                    new SResourceIcon("org/wings/icons/Disabled"
                                           + prefixes[direction]
                                           + "Scroll"
                                           + postfixes[direction] + ".gif");
                 DEFAULT_ICONS[orientation][direction][SClickable.PRESSED_ICON] =
-                    new ResourceImageIcon("org/wings/icons/Pressed"
+                    new SResourceIcon("org/wings/icons/Pressed"
                                           + prefixes[direction]
                                           + "Scroll"
                                           + postfixes[direction] + ".gif");
                 DEFAULT_ICONS[orientation][direction][SClickable.ROLLOVER_ICON] =
-                    new ResourceImageIcon("org/wings/icons/Rollover"
+                    new SResourceIcon("org/wings/icons/Rollover"
                                           + prefixes[direction]
                                           + "Scroll"
                                           + postfixes[direction] + ".gif");

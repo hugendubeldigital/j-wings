@@ -1,7 +1,7 @@
 <!-- -*- html -*- -->
 <template name="ProgressBarCG" for="org.wings.SProgressBar">
 
-private static final SIcon BLIND_ICON = new ResourceImageIcon("org/wings/icons/blind.gif");
+private static final SIcon BLIND_ICON = new SResourceIcon("org/wings/icons/blind.gif");
 
 <comp-property type="java.awt.Color" name="filledColor">Color.red</comp-property>
 <comp-property type="java.awt.Color" name="unfilledColor">Color.gray</comp-property>

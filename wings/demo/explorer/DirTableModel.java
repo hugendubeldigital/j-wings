@@ -20,7 +20,7 @@ import java.text.*;
 
 import javax.swing.event.*;
 import javax.swing.table.*;
-import org.wings.ResourceImageIcon;
+import org.wings.SResourceIcon;
 import org.wings.*;
 
 /**

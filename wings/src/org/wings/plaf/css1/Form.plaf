@@ -1,6 +1,6 @@
 <template name="FormCG" for="org.wings.SForm">
 
-private static final SIcon BLIND_ICON = new ResourceImageIcon("org/wings/icons/blind.gif");
+private static final SIcon BLIND_ICON = new SResourceIcon("org/wings/icons/blind.gif");
 
 <write>
 <%

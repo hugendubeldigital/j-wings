@@ -205,22 +205,22 @@ public class SOptionPane
     /**
      * Icon for Inform Dialog
      */
-    protected static final SIcon messageImage = new ResourceImageIcon("org/wings/icons/Inform.gif");
+    protected static final SIcon messageImage = new SResourceIcon("org/wings/icons/Inform.gif");
     
     /**
      * Icon for Input Dialog
      */
-    protected static final SIcon questionImage = new ResourceImageIcon("org/wings/icons/Question.gif");
+    protected static final SIcon questionImage = new SResourceIcon("org/wings/icons/Question.gif");
 
     /**
      * Icon for Show Confirm Dialog
      */
-    protected static final SIcon yesnoImage =  new ResourceImageIcon("org/wings/icons/Question.gif");
+    protected static final SIcon yesnoImage =  new SResourceIcon("org/wings/icons/Question.gif");
 
     /**
      * Icon for Error Dialog
      */
-    protected static final SIcon errorImage =  new ResourceImageIcon("org/wings/icons/Warn.gif");
+    protected static final SIcon errorImage =  new SResourceIcon("org/wings/icons/Warn.gif");
   
     //  protected final SLabel messageLabel  = new SLabel(messageImage);
     //  protected final SLabel questionLabel = new SLabel(questionImage);

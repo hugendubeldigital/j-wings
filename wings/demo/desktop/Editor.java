@@ -87,7 +87,7 @@ public class Editor
 
         saveResource = new EditorDynamicResource();
 
-        SIcon icon = new ResourceImageIcon("/desktop/penguin.png");
+        SIcon icon = new SResourceIcon("/desktop/penguin.png");
         setIcon(icon);
         addInternalFrameListener(this);
     }
@@ -150,7 +150,7 @@ public class Editor
 
     protected SToolbar createToolbar() {
         try {
-            SButton saveButton = new SButton(new ResourceImageIcon("/desktop/filesave.png"));
+            SButton saveButton = new SButton(new SResourceIcon("/desktop/filesave.png"));
             saveButton.setAttribute("border", "black thin outset");
             saveButton.setToolTipText("save");
             saveButton.addActionListener(new ActionListener() {
@@ -159,7 +159,7 @@ public class Editor
                 }
             });
 
-            SButton revertButton = new SButton(new ResourceImageIcon("/desktop/filerevert.png"));
+            SButton revertButton = new SButton(new SResourceIcon("/desktop/filerevert.png"));
             revertButton.setAttribute("border", "black thin outset");
             revertButton.setToolTipText("revert");
             revertButton.addActionListener(new ActionListener() {
@@ -167,7 +167,7 @@ public class Editor
                     revert();
                 }
             });
-            SButton closeButton = new SButton(new ResourceImageIcon("/desktop/fileclose.png"));
+            SButton closeButton = new SButton(new SResourceIcon("/desktop/fileclose.png"));
             closeButton.setAttribute("border", "black thin outset");
             closeButton.setToolTipText("close");
             closeButton.addActionListener(new ActionListener() {
@@ -176,7 +176,7 @@ public class Editor
                 }
             });
 
-            SButton cutButton = new SButton(new ResourceImageIcon("/desktop/editcut.png"));
+            SButton cutButton = new SButton(new SResourceIcon("/desktop/editcut.png"));
             cutButton.setAttribute("border", "black thin outset");
             cutButton.setToolTipText("cut");
             cutButton.addActionListener(new ActionListener() {
@@ -184,7 +184,7 @@ public class Editor
                     cut();
                 }
             });
-            SButton copyButton = new SButton(new ResourceImageIcon("/desktop/editcopy.png"));
+            SButton copyButton = new SButton(new SResourceIcon("/desktop/editcopy.png"));
             copyButton.setAttribute("border", "black thin outset");
             copyButton.setToolTipText("copy");
             copyButton.addActionListener(new ActionListener() {
@@ -192,7 +192,7 @@ public class Editor
                     copy();
                 }
             });
-            SButton pasteButton = new SButton(new ResourceImageIcon("/desktop/editpaste.png"));
+            SButton pasteButton = new SButton(new SResourceIcon("/desktop/editpaste.png"));
             pasteButton.setAttribute("border", "black thin outset");
             pasteButton.setToolTipText("paste");
             pasteButton.addActionListener(new ActionListener() {

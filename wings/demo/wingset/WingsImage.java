@@ -29,7 +29,7 @@ public class WingsImage
     extends SPanel
 {
 
-    private static final SIcon WINGS_IMAGE = new ResourceImageIcon("wingset/icons/wingS.jpg");
+    private static final SIcon WINGS_IMAGE = new SResourceIcon("wingset/icons/wingS.jpg");
 
     public WingsImage() {
         add(createExample());

@@ -29,19 +29,19 @@ public class RadioButtonExample
 {
     static final ClassLoader cl = WingSet.class.getClassLoader();
     static final SIcon sel = 
-        new ResourceImageIcon(cl, "wingset/icons/RadioButtonSelectedIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/RadioButtonSelectedIcon.gif");
     static final SIcon nsel = 
-        new ResourceImageIcon(cl, "wingset/icons/RadioButtonIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/RadioButtonIcon.gif");
     static final SIcon pressed = 
-        new ResourceImageIcon(cl, "wingset/icons/RadioButtonPressedIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/RadioButtonPressedIcon.gif");
     static final SIcon dissel = 
-        new ResourceImageIcon(cl, "wingset/icons/RadioButtonDisabledSelectedIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/RadioButtonDisabledSelectedIcon.gif");
     static final SIcon disnsel = 
-        new ResourceImageIcon(cl, "wingset/icons/RadioButtonDisabledIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/RadioButtonDisabledIcon.gif");
     static final SIcon rollsel = 
-        new ResourceImageIcon(cl, "wingset/icons/RadioButtonRolloverSelectedIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/RadioButtonRolloverSelectedIcon.gif");
     static final SIcon rollnsel = 
-        new ResourceImageIcon(cl, "wingset/icons/RadioButtonRolloverIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/RadioButtonRolloverIcon.gif");
 
 
     public SComponent createExample() {

@@ -32,7 +32,7 @@ import org.wings.border.*;
 public class BorderExample
     extends WingSetPane
 {
-    private static final SIcon WAIT_ICON = new ResourceImageIcon("org/wings/icons/Wait.gif");
+    private static final SIcon WAIT_ICON = new SResourceIcon("org/wings/icons/Wait.gif");
 
     static final SBorder raised  = new SBevelBorder(SBevelBorder.RAISED);
     static final SBorder lowered = new SBevelBorder(SBevelBorder.LOWERED);

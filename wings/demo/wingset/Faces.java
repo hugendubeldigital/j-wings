@@ -30,15 +30,15 @@ public class Faces
 {
     static final ClassLoader cl = WingSet.class.getClassLoader();
     static final SIcon sel = 
-        new ResourceImageIcon(cl, "wingset/icons/RadioButtonSelectedIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/RadioButtonSelectedIcon.gif");
     static final SIcon nsel = 
-        new ResourceImageIcon(cl, "wingset/icons/RadioButtonIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/RadioButtonIcon.gif");
     static final SIcon pressed = 
-        new ResourceImageIcon(cl, "wingset/icons/RadioButtonPressedIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/RadioButtonPressedIcon.gif");
     static final SIcon rollsel = 
-        new ResourceImageIcon(cl, "wingset/icons/RadioButtonRolloverSelectedIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/RadioButtonRolloverSelectedIcon.gif");
     static final SIcon rollnsel = 
-        new ResourceImageIcon(cl, "wingset/icons/RadioButtonRolloverIcon.gif");
+        new SResourceIcon(cl, "wingset/icons/RadioButtonRolloverIcon.gif");
 
     static final Face henner = new Face("Henner");
     static final Face armin  = new Face("Armin");
@@ -228,9 +228,9 @@ public class Faces
         }
 
         Face(String name) {
-            hair = new ResourceImageIcon(cl, "wingset/icons/" + name + "_hair.jpeg");
-            eyes = new ResourceImageIcon(cl, "wingset/icons/" + name + "_eyes.jpeg");
-            mouth = new ResourceImageIcon(cl, "wingset/icons/" + name + "_mouth.jpeg");
+            hair = new SResourceIcon(cl, "wingset/icons/" + name + "_hair.jpeg");
+            eyes = new SResourceIcon(cl, "wingset/icons/" + name + "_eyes.jpeg");
+            mouth = new SResourceIcon(cl, "wingset/icons/" + name + "_mouth.jpeg");
 
             this.name = name;
         }

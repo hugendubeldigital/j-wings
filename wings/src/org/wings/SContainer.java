@@ -14,15 +14,14 @@
 
 package org.wings;
 
-import java.io.IOException;
-import java.util.*;
-
-import org.wings.plaf.*;
-import org.wings.io.Device;
-import org.wings.util.*;
-import org.wings.style.StyleConstants;
-import org.wings.event.SContainerListener;
 import org.wings.event.SContainerEvent;
+import org.wings.event.SContainerListener;
+import org.wings.plaf.ContainerCG;
+import org.wings.style.StyleConstants;
+import org.wings.util.ComponentVisitor;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 
 /**
@@ -93,7 +92,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
     public void setLayout(SLayoutManager l) {
         if (layout != null) {
             for ( int i=0; i<getComponentCount(); i++ ) {
-                layout.removeComponent(getComponentAt(i));
+                layout.removeComponent(getComponent(i));
             }
             layout.setContainer(null);
         }
@@ -102,7 +101,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
 
         if ( layout!=null ) {
             for ( int i=0; i<getComponentCount(); i++ ) {
-                layout.addComponent(getComponentAt(i), getConstraintAt(i), i);
+                layout.addComponent(getComponent(i), getConstraintAt(i), i);
             }
 
             layout.setContainer(this);
@@ -114,14 +113,14 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @param icon the SIcon representing the background image.
      */
-    public void setBackgroundImage(SIcon img) {
-        backgroundImage = img;
-        if (img == null) {
+    public void setBackgroundImage(SIcon icon) {
+        backgroundImage = icon;
+        if (icon == null) {
             removeAttribute(StyleConstants.BACKGROUND_IMAGE);
         }
         else {
             setAttribute(StyleConstants.BACKGROUND_IMAGE, 
-                         "url(" + img.getURL().toString() + ")");
+                         "url(" + icon.getURL().toString() + ")");
         }
     }
 
@@ -286,7 +285,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @deprecated use {@link #remove(int)} instead for swing conformity
      */
     public SComponent removeComponentAt(int i) {
-        SComponent c = getComponentAt(i);
+        SComponent c = getComponent(i);
         remove(c);
         return c;
     }
@@ -321,7 +320,8 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * 	from this container
      */
     public void remove(int index) {
-        removeComponentAt(index);
+        SComponent c = getComponent(index);
+        remove(c);
     }
 
     /**
@@ -338,7 +338,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      */
     public void removeAll() {
         while ( getComponentCount() > 0 ) {
-            removeComponentAt(0);
+            remove(0);
         }
     }
 
@@ -360,7 +360,6 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @param c the component to add
      * @param constraint the constraint for this component
-     * @return the added component
      */
     public void add(SComponent c, Object constraint) {
         addComponent(c, constraint);
@@ -384,7 +383,6 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      *
      * @param c the component to add
      * @param index the index of the component
-     * @return the added component
      */
     public void add(SComponent c, Object constraint, int index) {
         addComponent(c, constraint, index);
@@ -458,7 +456,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
         if ( f!=parentFrame ) {
             super.setParentFrame(f);
             for ( int i=0; i<getComponentCount(); i++ ) {
-                getComponentAt(i).setParentFrame(getParentFrame());
+                getComponent(i).setParentFrame(getParentFrame());
             }
         }
     }
@@ -477,7 +475,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
             erg.getComponentList().clear();
             erg.getConstraintList().clear();
             for ( int i=0; i<getComponentCount(); i++ ) {
-                erg.addComponent((SComponent)getComponentAt(i).clone());
+                erg.addComponent((SComponent)getComponent(i).clone());
             }
             return erg;
         }

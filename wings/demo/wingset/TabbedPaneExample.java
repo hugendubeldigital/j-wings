@@ -19,7 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.wings.ResourceImageIcon;
+import org.wings.SResourceIcon;
 import org.wings.SBorderLayout;
 import org.wings.SButtonGroup;
 import org.wings.SComponent;
@@ -42,10 +42,10 @@ import org.wings.STextArea;
 public class TabbedPaneExample extends WingSetPane
 {
     private final static SIcon JAVA_CUP_ICON = 
-        new ResourceImageIcon("org/wings/icons/JavaCup.gif");
+        new SResourceIcon("org/wings/icons/JavaCup.gif");
 
     private final static SIcon SMALL_COW_ICON = 
-        new ResourceImageIcon("wingset/icons/cowSmall.gif");
+        new SResourceIcon("wingset/icons/cowSmall.gif");
 
     /**
      * Constructor for TabbedPaneExample.

@@ -21,7 +21,7 @@ import org.wings.STable;
 import org.wings.STable;
 import org.wings.SLabel;
 import org.wings.SIcon;
-import org.wings.ResourceImageIcon;
+import org.wings.SResourceIcon;
 
 /**
  * TODO: documentation
@@ -34,17 +34,17 @@ public class SDefaultTableRowSelectionRenderer extends SLabel
     implements STableCellRenderer 
 {
 
-    public static final ResourceImageIcon DEFAULT_MULTI_SELECTION_ICON =
-        new ResourceImageIcon("org/wings/icons/SelectedCheckBox.gif");
+    public static final SResourceIcon DEFAULT_MULTI_SELECTION_ICON =
+        new SResourceIcon("org/wings/icons/SelectedCheckBox.gif");
     
-    public static final ResourceImageIcon DEFAULT_MULTI_NOT_SELECTION_ICON =
-        new ResourceImageIcon("org/wings/icons/NotSelectedCheckBox.gif");
+    public static final SResourceIcon DEFAULT_MULTI_NOT_SELECTION_ICON =
+        new SResourceIcon("org/wings/icons/NotSelectedCheckBox.gif");
 
-    public static final ResourceImageIcon DEFAULT_SINGLE_SELECTION_ICON =
-        new ResourceImageIcon("org/wings/icons/SelectedRadioButton.gif");
+    public static final SResourceIcon DEFAULT_SINGLE_SELECTION_ICON =
+        new SResourceIcon("org/wings/icons/SelectedRadioButton.gif");
 
-    public static final ResourceImageIcon DEFAULT_SINGLE_NOT_SELECTION_ICON =
-        new ResourceImageIcon("org/wings/icons/NotSelectedRadioButton.gif");
+    public static final SResourceIcon DEFAULT_SINGLE_NOT_SELECTION_ICON =
+        new SResourceIcon("org/wings/icons/NotSelectedRadioButton.gif");
 
     /** Style to use for the foreground for non-selected nodes. */
     protected String nonSelectionStyle;
@@ -52,14 +52,14 @@ public class SDefaultTableRowSelectionRenderer extends SLabel
     /** Style to use for the foreground for non-selected nodes. */
     protected String selectionStyle;
 
-    protected ResourceImageIcon multiSelectionIcon = DEFAULT_MULTI_SELECTION_ICON;
+    protected SResourceIcon multiSelectionIcon = DEFAULT_MULTI_SELECTION_ICON;
 
-    protected ResourceImageIcon multiNotSelectionIcon =
+    protected SResourceIcon multiNotSelectionIcon =
         DEFAULT_MULTI_NOT_SELECTION_ICON;
 
-    protected ResourceImageIcon singleSelectionIcon = DEFAULT_SINGLE_SELECTION_ICON;
+    protected SResourceIcon singleSelectionIcon = DEFAULT_SINGLE_SELECTION_ICON;
 
-    protected ResourceImageIcon singleNotSelectionIcon =
+    protected SResourceIcon singleNotSelectionIcon =
         DEFAULT_SINGLE_NOT_SELECTION_ICON; 
 
     /**

@@ -25,7 +25,7 @@ import org.wings.*;
  */
 public class LabelExample extends WingSetPane
 {
-    private static final SIcon WAIT_ICON = new ResourceImageIcon("org/wings/icons/Wait.gif");
+    private static final SIcon WAIT_ICON = new SResourceIcon("org/wings/icons/Wait.gif");
 
     static final String directions[] = 
     { "nw", "n", "ne",
@@ -41,9 +41,9 @@ public class LabelExample extends WingSetPane
         offIcons = new SIcon [ directions.length ];
         for (int i=0; i < directions.length; ++i) {
             String d = directions[i];
-            onIcons[i] = new ResourceImageIcon(cl, "wingset/icons/Label"
+            onIcons[i] = new SResourceIcon(cl, "wingset/icons/Label"
                                                + d + "On.gif");
-            offIcons[i] = new ResourceImageIcon(cl, "wingset/icons/Label"
+            offIcons[i] = new SResourceIcon(cl, "wingset/icons/Label"
                                                 + d + "Off.gif");
         }
     }

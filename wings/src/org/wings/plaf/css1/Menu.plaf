@@ -5,7 +5,7 @@
 <import>java.io.*</import>
 <import>org.wings.script.*</import>
 
-public static final SIcon RIGHT_ARROW = new ResourceImageIcon("org/wings/icons/MenuArrowRight.gif");
+public static final SIcon RIGHT_ARROW = new SResourceIcon("org/wings/icons/MenuArrowRight.gif");
 
 public static final JavaScriptListener SCRIPT_LOADER =
 	new JavaScriptListener("", "", loadScript());

@@ -33,11 +33,11 @@ public class TreeExample
     extends WingSetPane
 {
     private STree tree;
-    private static SIcon ARROW_DOWN = new ResourceImageIcon("org/wings/icons/ArrowDown.gif");
-    private static SIcon ARROW_RIGHT = new ResourceImageIcon("org/wings/icons/ArrowRight.gif");
+    private static SIcon ARROW_DOWN = new SResourceIcon("org/wings/icons/ArrowDown.gif");
+    private static SIcon ARROW_RIGHT = new SResourceIcon("org/wings/icons/ArrowRight.gif");
 
-    private static SIcon PLUS = new ResourceImageIcon("org/wings/icons/plus.gif");
-    private static SIcon MINUS = new ResourceImageIcon("org/wings/icons/minus.gif");
+    private static SIcon PLUS = new SResourceIcon("org/wings/icons/plus.gif");
+    private static SIcon MINUS = new SResourceIcon("org/wings/icons/minus.gif");
 
     public static final TreeNode ROOT_NODE = generateTree();
 

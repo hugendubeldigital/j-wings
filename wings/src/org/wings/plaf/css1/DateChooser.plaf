@@ -29,7 +29,7 @@ public static String loadScript() {
     }
 }
 
-static final ResourceImageIcon ICON = new ResourceImageIcon("org/wings/icons/ArrowDown.gif");
+static final SResourceIcon ICON = new SResourceIcon("org/wings/icons/ArrowDown.gif");
 
 <install>
         component.addScriptListener(SCRIPT_LOADER);

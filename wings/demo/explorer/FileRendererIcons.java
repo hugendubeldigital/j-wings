@@ -14,15 +14,15 @@
 package explorer;
 
 import org.wings.SIcon;
-import org.wings.ResourceImageIcon;
+import org.wings.SResourceIcon;
 
 public interface FileRendererIcons {
     public final static SIcon DIR_ICON =
-        new ResourceImageIcon(FileRendererIcons.class.getClassLoader(),
+        new SResourceIcon(FileRendererIcons.class.getClassLoader(),
                               "explorer/Directory.gif");
 
     public final static SIcon FILE_ICON =
-        new ResourceImageIcon(FileRendererIcons.class.getClassLoader(),
+        new SResourceIcon(FileRendererIcons.class.getClassLoader(),
                               "explorer/File.gif");
 }
 

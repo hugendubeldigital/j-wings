@@ -19,7 +19,7 @@ import java.awt.Color;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
-import org.wings.ResourceImageIcon;
+import org.wings.SResourceIcon;
 import org.wings.SComponent;
 import org.wings.SDimension;
 import org.wings.SIcon;
@@ -42,7 +42,7 @@ import wingset.WingSetPane;
 public class TableExample
     extends WingSetPane
 {
-    static final SIcon image = new ResourceImageIcon("org/wings/icons/JavaCup.gif");
+    static final SIcon image = new SResourceIcon("org/wings/icons/JavaCup.gif");
 
     public final MyCellRenderer cellRenderer = new MyCellRenderer();
 
