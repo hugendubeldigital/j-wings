@@ -27,15 +27,77 @@ import org.wings.style.*;
 public final class BaseTableCG
     extends org.wings.plaf.xhtml.BaseTableCG
 {
-    public void writePrefix(Device d, SBaseTable baseTable)
+    public void writePrefix(Device d, SBaseTable table)
         throws IOException
     {
-        String width = baseTable.getWidth();
-        Style style = baseTable.getStyle();
+        String width = table.getWidth();
+        Insets borderLines = table.getBorderLines();
+        boolean showHorizontalLines = table.getShowHorizontalLines();
+        boolean showVerticalLines = table.getShowVerticalLines();
+        Dimension intercellPadding = table.getIntercellPadding();
+        Dimension intercellSpacing = table.getIntercellSpacing();
+        Style style = table.getStyle();
 
         d.append("<table");
-        if (width != null && width.trim().length() > 0)
+        if (width != null)
             d.append(" width=\"").append(width).append("\"");
+
+        int thickness = 0;
+        if (borderLines != null) {
+            int lines
+                = ((borderLines.left   > 0) ? LEFT   : 0)
+                + ((borderLines.right  > 0) ? RIGHT  : 0)
+                + ((borderLines.top    > 0) ? TOP    : 0)
+                + ((borderLines.bottom > 0) ? BOTTOM : 0);
+
+            if (lines != 0) {
+                String border = (String)frameMap.get(new Byte((byte)lines));
+                if (border == null)
+                    border = "box";
+
+                d.append(" frame=\"")
+                    .append(border)
+                    .append("\"");
+
+                if (borderLines.top > 0)
+                    thickness = borderLines.top;
+                else if (borderLines.bottom > 0)
+                    thickness = borderLines.bottom;
+                else if (borderLines.left > 0)
+                    thickness = borderLines.left;
+                else
+                    thickness = borderLines.right;
+            }
+        }
+
+        //if (thickness == 0 && showHorizontalLines || showVerticalLines)
+        //    thickness = 1;
+
+        if (showHorizontalLines && showVerticalLines)
+            d.append(" rules=\"all\"");
+        else if (showVerticalLines) 
+            d.append(" rules=\"cols\"");
+        else if (showHorizontalLines)
+            d.append(" rules=\"rows\"");
+        else
+            d.append(" rules=\"none\"");
+
+        if (thickness > 0)
+            d.append(" border=\"")
+                .append(thickness)
+                .append("\"");
+
+        if (intercellSpacing != null)
+            d.append(" cellspacing=\"")
+                .append(intercellSpacing.width)
+                .append("\""); 
+
+        if (intercellPadding != null)
+            d.append(" cellpadding=\"")
+                .append(intercellPadding.width)
+                .append("\""); 
+
+
         Utils.writeStyleAttribute(d, style);
         d.append(">\n");
     }

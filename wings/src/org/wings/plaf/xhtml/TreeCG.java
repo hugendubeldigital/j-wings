@@ -14,9 +14,9 @@
 
 package org.wings.plaf.xhtml;
 
-import java.io.IOException;
-
 import java.awt.Color;
+import java.awt.Rectangle;
+
 import java.io.IOException;
 import javax.swing.tree.*;
 
@@ -74,9 +74,17 @@ public class TreeCG
     {
         STree tree = (STree)component;
 
+        int start = 0;
+        int count = tree.getRowCount();
+        Rectangle viewport = tree.getViewportSize();
+        if (viewport != null) {
+            start = viewport.y;
+            count = viewport.height;
+        }
+
         int depth = tree.getMaximumExpandedDepth();
         d.append("<table cellpadding=\"0\">");
-        for (int i=0; i < tree.getRowCount(); i++)
+        for (int i=start; i < count; i++)
             writeTreeNode(tree, d, tree.getPathForRow(i), depth);
         d.append("</table>");
     }
@@ -86,7 +94,7 @@ public class TreeCG
     {
         int nodeIndentDepth = tree.getNodeIndentDepth();
         d.append("<tr>");
-        for ( int i=0; i<path.getPathCount()-1; i++ )
+        for (int i=0; i<path.getPathCount()-1; i++)
             d.append("<td width=\"" + nodeIndentDepth + "\"></td>");
         d.append("\n<td colspan=\"" + (depth - (path.getPathCount()-1)) + "\">");
 

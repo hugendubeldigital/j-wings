@@ -16,6 +16,7 @@ package org.wings.plaf.xhtml;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.*;
 import javax.swing.Icon;
 
 import org.wings.*;
@@ -25,6 +26,28 @@ import org.wings.externalizer.ExternalizeManager;
 
 public class BaseTableCG implements org.wings.plaf.BaseTableCG, SConstants
 {
+    protected static final byte LEFT   = 1;
+    protected static final byte RIGHT  = 2;
+    protected static final byte TOP    = 4;
+    protected static final byte BOTTOM = 8;
+
+    protected static final byte VOID   = 0;
+    protected static final byte VSIDES = LEFT + RIGHT;
+    protected static final byte HSIDES = TOP + BOTTOM;
+    protected static final byte BOX    = VSIDES + HSIDES;
+
+    protected static final Map frameMap = new HashMap(8);
+    static {
+        frameMap.put(new Byte(LEFT),   "lhs");
+        frameMap.put(new Byte(RIGHT),  "rhs");
+        frameMap.put(new Byte(TOP),    "above");
+        frameMap.put(new Byte(BOTTOM), "below");
+        frameMap.put(new Byte(VOID),   "void");
+        frameMap.put(new Byte(VSIDES), "vsides");
+        frameMap.put(new Byte(HSIDES), "hsides");
+        frameMap.put(new Byte(BOX),    "box");
+    }
+
     private final static String propertyPrefix = "BaseTable";
     private final static String headerPropertyPrefix = "BaseTableHeader";
     private final static String cellPropertyPrefix = "BaseTableCell";
@@ -94,19 +117,75 @@ public class BaseTableCG implements org.wings.plaf.BaseTableCG, SConstants
         writePostfix(d, baseTable);
     }
 
-    public void writePrefix(Device d, SBaseTable baseTable)
+    public void writePrefix(Device d, SBaseTable table)
         throws IOException
     {
-        String width = baseTable.getWidth();
-        Insets borderLines = baseTable.getBorderLines();
-        boolean showHorizontalLines = baseTable.getShowHorizontalLines();
-        boolean showVerticalLines = baseTable.getShowVerticalLines();
-        Dimension intercellPadding = baseTable.getIntercellPadding();
-        Dimension intercellSpacing = baseTable.getIntercellSpacing();
+        String width = table.getWidth();
+        Insets borderLines = table.getBorderLines();
+        boolean showHorizontalLines = table.getShowHorizontalLines();
+        boolean showVerticalLines = table.getShowVerticalLines();
+        Dimension intercellPadding = table.getIntercellPadding();
+        Dimension intercellSpacing = table.getIntercellSpacing();
 
         d.append("<table");
-        if (width != null && width.trim().length() > 0)
+        if (width != null)
             d.append(" width=\"").append(width).append("\"");
+
+        int thickness = 0;
+        if (borderLines != null) {
+            int lines
+                = ((borderLines.left   > 0) ? LEFT   : 0)
+                + ((borderLines.right  > 0) ? RIGHT  : 0)
+                + ((borderLines.top    > 0) ? TOP    : 0)
+                + ((borderLines.bottom > 0) ? BOTTOM : 0);
+
+            if (lines != 0) {
+                String border = (String)frameMap.get(new Byte((byte)lines));
+                if (border == null)
+                    border = "box";
+
+                d.append(" frame=\"")
+                    .append(border)
+                    .append("\"");
+
+                if (borderLines.top > 0)
+                    thickness = borderLines.top;
+                else if (borderLines.bottom > 0)
+                    thickness = borderLines.bottom;
+                else if (borderLines.left > 0)
+                    thickness = borderLines.left;
+                else
+                    thickness = borderLines.right;
+            }
+        }
+
+        if (thickness == 0 && showHorizontalLines || showVerticalLines)
+            thickness = 1;
+
+        if (showHorizontalLines && showVerticalLines)
+            d.append(" rules=\"all\"");
+        else if (showVerticalLines) 
+            d.append(" rules=\"cols\"");
+        else if (showHorizontalLines)
+            d.append(" rules=\"rows\"");
+        else
+            d.append(" rules=\"none\"");
+
+        if (thickness > 0)
+            d.append(" border=\"")
+                .append(thickness)
+                .append("\"");
+
+        if (intercellSpacing != null)
+            d.append(" cellspacing=\"")
+                .append(intercellSpacing.width)
+                .append("\""); 
+
+        if (intercellPadding != null)
+            d.append(" cellpadding=\"")
+                .append(intercellPadding.width)
+                .append("\""); 
+
         d.append(">\n");
     }
 

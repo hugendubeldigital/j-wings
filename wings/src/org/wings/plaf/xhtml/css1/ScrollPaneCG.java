@@ -20,8 +20,7 @@ import org.wings.plaf.*;
 import org.wings.io.*;
 
 public final class ScrollPaneCG
-    extends DefaultComponentCG
-    implements org.wings.plaf.ScrollPaneCG
+    extends org.wings.plaf.xhtml.ScrollPaneCG
 {
 }
 
