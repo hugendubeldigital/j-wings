@@ -48,10 +48,13 @@ public class Editor
     public Editor() {
 	menuBar = createMenu();
 	getContentPane().add(menuBar);
+        SForm form = new SForm();
 	textArea = new STextArea();
 	textArea.setColumns(80);
 	textArea.setRows(24);
-	getContentPane().add(textArea);
+        form.add(textArea);
+        form.add(new SButton("Store"));
+	getContentPane().add(form);
 
         SIcon icon = new ResourceImageIcon(getClass(), "/desktop/penguin.png");
         setIcon(icon);
