@@ -147,27 +147,38 @@ public final class SRequestDispatcher
             name = name.substring(0, name.length()-2);
 
         ArrayList l = (ArrayList)listener.get(name);
-        if (l != null) {
-            RequestListener gl = (RequestListener)l.get(0);
-
-            if (epoch != null) {
-                SFrame frame = ((SComponent)gl).getParentFrame();
-                if (!epoch.equals(frame.getEventEpoch())) {
-                    if (logger.isLoggable(Level.FINE))
-                        logger.fine("got outdated event '" + epoch + "_" + name + "' from frame '" +
-                                    frame.getUnifiedId() + " " + frame.getEventEpoch());
-                    return false;
-                }
-            }
-
+        if (l != null && l.size()>0 ) {
             logger.finer("process event '" + epoch + "_" + name + "'");
             for (int i=0; i<l.size(); i++) {
-                gl = (RequestListener)l.get(i);
-                gl.processRequest(name, values);
-                erg = true;
+                RequestListener gl = (RequestListener)l.get(i);
+                if ( checkEpoch(epoch, name, gl) ) {
+                    gl.processRequest(name, values);
+                    erg = true;
+                }
             }
         }
         return erg;
+    }
+
+    protected boolean checkEpoch(String epoch, String name, RequestListener gl) {
+        if (epoch != null) {
+            SFrame frame = ((SComponent)gl).getParentFrame();
+            if ( frame==null ) {
+                if (logger.isLoggable(Level.FINE))
+                    logger.fine("request for dangling component '" + epoch +
+                                "_" + name);
+                unregister(gl);
+                return false;
+            } 
+            if (!epoch.equals(frame.getEventEpoch())) {
+                if (logger.isLoggable(Level.FINE))
+                    logger.fine("got outdated event '" + epoch + "_" + name + 
+                                "' from frame '" +
+                                frame.getUnifiedId() + " " + frame.getEventEpoch());
+                return false;
+            }
+        }
+        return true;
     }
 
     protected void finalize() {
