@@ -25,9 +25,10 @@ import java.io.Reader;
 import java.io.FilterReader;
 
 public class IncludingReader extends Reader {
-    /**
+    /*
      * we cannot use a filtered reader, since that one does not
-     * allow to change the value..
+     * allow to change the value of 'in'. Especially, setting it to 'null'
+     * does not work.
      */
     Reader in;
     String currentFile;
@@ -93,6 +94,7 @@ public class IncludingReader extends Reader {
 	return result;
     }
 
+    // --- implementation of the remaining methods provided by reader.
     public long skip(long n) throws IOException {
         return in.skip(n);
     }
