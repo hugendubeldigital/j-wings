@@ -15,6 +15,7 @@ package org.wings.plaf.compiler;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.EOFException;
 import java.io.Reader;
 import java.io.PrintWriter;
 import java.io.FileWriter;
@@ -33,6 +34,7 @@ import java.util.Iterator;
  */
 public class TemplateParser {
     private final static String VAR_PREFIX   = "__";
+    private final static int    VAR_LEN      = 16;
 
     // tags to look for.
     private final static String END_TEMPLATE = "</template>";
@@ -40,10 +42,9 @@ public class TemplateParser {
     private final static String END_WRITE    = "</write>";
     private final static String START_JAVA   = "<%";
     private final static String END_JAVA     = "%>";
-    private final static int MAX_LOOKAHEAD   = END_TEMPLATE.length();
 
     // state machine
-    private final static int IN_START_COMMON_JAVA = 0;
+    //private final static int IN_START_COMMON_JAVA = 0;
     private final static int IN_COMMON_JAVA = 1;
     private final static int IN_COMMON_TMPL = 2;
     private final static int IN_WRITE_JAVA  = 3;
@@ -63,8 +64,8 @@ public class TemplateParser {
 	this.forClassName = forClass;
         writeJavaCode = new StringBuffer();
         classJavaCode = new StringBuffer();
-        stringPool = new StringPool( VAR_PREFIX );
-        state = IN_START_COMMON_JAVA;
+        stringPool = new StringPool( VAR_PREFIX, VAR_LEN );
+        state = IN_COMMON_JAVA;
     }
 
     /**
@@ -74,18 +75,19 @@ public class TemplateParser {
         File outFile = new File(base, templateName + ".java");
         PrintWriter out = new PrintWriter(new FileWriter(outFile));
         
-        out.println ("// DO NOT EDIT your changes will be lost: generated file.");
+        out.println ("// DO NOT EDIT! Your changes will be lost: generated file.");
         out.println ("package " + pkg + ";\n\n");
         out.println ("import java.io.*;\n");
         out.println ("public final class " + templateName + " {");
         
         // collected HTML snippets
+        out.println ("\n//--- used template snippets.");
         Iterator n = stringPool.getNames();
         while (n.hasNext()) {
             String name = (String) n.next();
             out.print ("\tprivate final static byte[] ");
             out.print (name);
-            int fillNumber = 32 + VAR_PREFIX.length() - name.length();
+            int fillNumber = VAR_LEN - name.length();
             for (int i=0; i < fillNumber; ++i) 
                 out.print(' ');
             out.print ("= ");
@@ -94,19 +96,22 @@ public class TemplateParser {
         }
         
         // common stuff.
+        out.println ("\n//--- code from common area in template.");
         out.print( classJavaCode.toString() );
         
         // write function header.
         out.print ("\n\n    public void write("
-                   + "org.wings.io.Device device,"
-                   +" org.wings.SComponent _c)\n"
+                   + "final org.wings.io.Device device,"
+                   +" final org.wings.SComponent _c)\n"
                    + "\tthrows java.io.IOException {\n");
-        out.println("\t" + forClassName + " component = ("
+        out.println("\tfinal " + forClassName + " component = ("
                     + forClassName + ") _c;");
-
+        
+        out.println ("\n//--- code from write-template.");
         // collected write stuff.
         out.print ( writeJavaCode.toString());
 
+        out.println ("\n//--- end code from common area in template.");
         out.println ("\n\t}  /*** end write() ***/ ");
         out.println ("}");
         out.close();
@@ -117,82 +122,101 @@ public class TemplateParser {
      */
     public void parse(IncludingReader reader) throws IOException {
         StringBuffer tempBuffer = new StringBuffer();
-        String commonTransitions[] = new String[] { END_JAVA, START_WRITE,
-                                                    END_TEMPLATE };
+        int trans;
+        String commonJavaTransitions[] = new String[] { END_JAVA, 
+                                                        START_WRITE,
+                                                        END_TEMPLATE };
         String commonTmplTransitions[] = new String[] { START_JAVA,
-                                                        START_WRITE };
-        String writeTransitions[]  = new String[] { START_JAVA, END_WRITE };
+                                                        START_WRITE };   // err
+        String writeTmplTransitions[]  = new String[] { START_JAVA, 
+                                                        END_WRITE,
+                                                        END_TEMPLATE };  // err
+        String writeJavaTransitions[]  = new String[] { END_JAVA,
+                                                        END_WRITE,       // err
+                                                        END_TEMPLATE };  // err
+        skipWhitespace(reader);
         for (;;) {
             switch (state) {
-            case IN_START_COMMON_JAVA:
-                consumeTextUntil(reader, tempBuffer, "%<");
-                switch (checkTransitions(reader, commonTransitions)) {
+                /*
+                 * states within the common (non-write) area.
+                 */
+            case IN_COMMON_JAVA:   // (initial Common)
+                trans = findTransitions(reader, tempBuffer, 
+                                        commonJavaTransitions);
+                classJavaCode.append(tempBuffer);
+                tempBuffer.setLength(0);                
+                switch (trans) {
                 case 0:  // %>
-                    classJavaCode.append(tempBuffer);
-                    tempBuffer.setLength(0);
                     state = IN_COMMON_TMPL;
                     break;
                 case 1:  // <write>
-                    classJavaCode.append(tempBuffer);
-                    tempBuffer.setLength(0);
-                    state = IN_WRITE_TMPL; 
+                    skipWhitespace(reader);
+                    state = IN_WRITE_TMPL;         // --> WRITE
                     break;
                 case 2:
                     return; // </template> -> done.
-                default:  // false alarm.
-                    tempBuffer.append((char) reader.read());
                 }
                 break;
-                
-            case IN_COMMON_TMPL:
-                consumeTextUntil(reader, tempBuffer, "<");
-                switch (checkTransitions(reader, commonTmplTransitions)) {
+
+            case IN_COMMON_TMPL: 
+                trans = findTransitions(reader, tempBuffer,
+                                        commonTmplTransitions);
+                flushTemplateTo(tempBuffer, classJavaCode);
+                switch (trans) {
                 case 0: // <%
-                    flushTemplateTo(tempBuffer, classJavaCode);
                     state = IN_COMMON_JAVA;
                     break;
                 case 1: // <write>  .. errorhandling
-                    System.err.println(reader.getFilePosition() + ":"
-                                       + "<write> while common section in "
-                                       + "HTML mode; '<%' missing!");
-                    flushTemplateTo(tempBuffer, classJavaCode);
-                    state = IN_WRITE_TMPL;
-                    break;
-                default: // false alarm.
-                    tempBuffer.append((char) reader.read());
+                    System.err.println(reader.getFilePosition() + ": "
+                                       + "<write> while still reading "
+                                       + "text-template; '<%' missing?!");
+                    state = IN_WRITE_TMPL;       // --> WRITE
                     break;
                 }
                 break;
-
-            case IN_WRITE_TMPL:
-                consumeTextUntil(reader, tempBuffer, "<"); // <%, </write>
-                switch (checkTransitions(reader, writeTransitions)) {
+                
+                /*
+                 * states within the <write></write> area.
+                 */
+            case IN_WRITE_TMPL:  // (initial Write)
+                trans = findTransitions(reader, tempBuffer,
+                                        writeTmplTransitions);
+                flushTemplateTo(tempBuffer, writeJavaCode);
+                switch (trans) {
                 case 0:  // start java '<%'
-                    flushTemplateTo(tempBuffer, writeJavaCode);
                     state = IN_WRITE_JAVA; 
                     break;
                 case 1:  // end write '</write>'
-                    flushTemplateTo(tempBuffer, writeJavaCode);
-                    state = IN_COMMON_TMPL; 
+                    skipWhitespace(reader);
+                    state = IN_COMMON_JAVA;      // --> COMMON
                     break;
-                default: 
-                    tempBuffer.append((char) reader.read());
+                case 2:  // errornous '</template>'
+                    System.err.println(reader.getFilePosition() + ": "
+                                       + "</template> occured; "
+                                       + "missing </write>");
+                    return;
                 }
                 break;
-                                
+                
             case IN_WRITE_JAVA:
-                consumeJava(reader, writeJavaCode);
-                state = IN_WRITE_TMPL;
-                break;
-
-            case IN_COMMON_JAVA:
-                consumeJava(reader, classJavaCode);
-                state = IN_COMMON_TMPL;
-                break;
+                trans = findTransitions(reader, tempBuffer,
+                                        writeJavaTransitions);
+                execJava(reader, tempBuffer, writeJavaCode);
+                switch (trans) {
+                case 0: // end java '%>'
+                    state = IN_WRITE_TMPL;
+                    break;
+                case 1: // errornous </write>
+                    System.err.println(reader.getFilePosition() + ": "
+                                       + "</write> while still reading "
+                                       + "java-code; '%>' missing?!");
+                    flushTemplateTo(tempBuffer, writeJavaCode);
+                    state = IN_COMMON_JAVA;  // --> COMMON
+                }
             }
         }
     }
-
+    
     void flushTemplateTo(StringBuffer template, StringBuffer javaBuffer) {
         if (template.length() == 0) return;
         javaBuffer.append ("\tdevice.write(")
@@ -201,72 +225,91 @@ public class TemplateParser {
         template.setLength(0);
     }
 
-    public void consumeJava(Reader in, StringBuffer output) 
+    public void execJava(IncludingReader reader,
+                         StringBuffer input, StringBuffer output) 
         throws IOException {
-        int qualifier = in.read();
-        StringBuffer codeBuffer;
-        switch (qualifier) {
-        case '@': case '=': case '?':
-            codeBuffer = new StringBuffer(); 
-            break;
-        case '!':
-            codeBuffer = output;
-            break;
-        default:
-            codeBuffer = output;
-            codeBuffer.append((char) qualifier);
-            break;
-        }
-
-        consumeTextUntil(in, codeBuffer, "%<"); // %>, <write>
+        char qualifier = input.charAt(0);
         switch (qualifier) {
         case '@':
+            AttributeParser p = new AttributeParser(input.toString());
+            String filename = p.getAttribute("file");
+            output.append("// include file '" + filename + "'\n");
+            reader.open(filename);
+            break;
+            
         case '=':
+            input.deleteCharAt(0);
+            output.append("\torg.wings.plaf.compiler.Utils.write( device, ")
+                .append(input)
+                .append(");\n");
+            break;
+            
         case '?': 
-            output.append ("// later...'" + qualifier + "'\n");
+            input.deleteCharAt(0);
+            output.append("\torg.wings.plaf.compiler.Utils.write( device, ")
+                .append("component.get")
+                // todo: make introspection to find out the name of the getter.
+                .append(capitalize(input.toString()))
+                .append("());\n");
+            break;
+
+        default:
+            output.append(input);
         }
+        input.setLength(0);
+    }
+    
+    public int findTransitions(Reader in, StringBuffer buffer, 
+                               String[] options)
+        throws IOException {
+        char startChars[] = new char [ options.length ];
+        for (int i = 0; i < options.length; ++i)
+            startChars[i] = options[i].charAt(0);
+        String startSet = new String(startChars);
+        int result = -1;
+        try {
+            do {
+                consumeTextUntil(in, buffer, startSet);
+                result = checkTransitions(in, options);
+                if (result == -1) // false alert; append matched char.
+                    buffer.append((char) in.read());
+            }
+            while (result < 0);
+        }
+        catch (EOFException e) {
+            StringBuffer errList = new StringBuffer();
+            for (int i = 0; i < options.length; ++i) {
+                if (i != 0)
+                    errList.append(", ");
+                errList.append(options);
+            }
+            throw new IOException ("End-of-file while expecting "
+                                   + ((options.length > 1) ? "one of" : "")
+                                   + errList);
+        }
+        return result;
     }
 
-    /*
-    public static String capitalize(String s) {
+    /**
+     * captialize a string. A String 'foo' becomes 'Foo'. Used to 
+     * derive names of getters from the property name.
+     */
+    private  String capitalize(String s) {
 	s = s.trim();
 	return s.substring(0,1).toUpperCase() + s.substring(1);
     }
-
-		switch (codeType) {
-		case DECLARE: 
-		case EXECUTE: 
-		    output.append(codeOut);
-		    break;
-
-		case EXPRESSION:
-		    output.append("\torg.wings.plaf.compiler.Utils.write( device, ")
-			.append(codeOut)
-			.append(");\n");
-		    break;
-		    
-		case PROPEXPR:
-		    output.append("\torg.wings.plaf.compiler.Utils.write( device, component.get")
-			.append(capitalize(codeOut.toString()))
-			.append("());\n");
-		    break;
-		case DIRECTIVE: {
-		    AttributeParser p =new AttributeParser(codeOut.toString());
-		    String filename = p.getAttribute("file");
-		    output.append("// include file '" + filename + "'\n");
-		    input.open(filename);
-		    break;
-		}
-    */
     
     /**
-     * checks all possible transitions.
+     * checks all possible transitions. If any of the given
+     * options matches, the reader is placed after that token.
+     * This method assumes, that the options given are given in the
+     * order of their length.
      * @param in the reader to read from
      * @param options an array of all expected options, sorted by
      *                length, smallest first. Options must not
      *                start with the same prefix.
      */
-    public int checkTransitions(Reader in, String[] options) 
+    private int checkTransitions(Reader in, String[] options) 
         throws IOException {
         int pos = 0;
         int maxLength = options[options.length-1].length();
@@ -295,6 +338,17 @@ public class TemplateParser {
                 return false;
         }
         return (i == len);
+    }
+
+    private void skipWhitespace(Reader r)
+	throws IOException {
+	int c;
+	do {
+	    r.mark(1);
+	    c = r.read();
+	} 
+	while (c >= 0 && Character.isWhitespace((char) c));
+	r.reset();
     }
 
     /**
@@ -326,48 +380,7 @@ public class TemplateParser {
 	    }
 	    else
 		consumed.append((char)c);
-	}
-	return consumed;
-    }
-    
-    /**
-     * consumes the text from the reader, until the two given
-     * characters occur consecutively (todo: implement with consumeTextUntil())
-     * Place reader _before_ these characters.
-     */
-    public StringBuffer consumeTextUntil(Reader r, StringBuffer consumed,
-					 char first, char second)
-	throws IOException {
-	int c;
-        r.mark(2);
-	while ((c = r.read()) != -1) {
-	    if (c == first) {
-		c = r.read();
-		if (c == second) {
-                    r.reset();
-		    return consumed;
-                }
-		else {
-		    consumed.append((char) first);
-		    if (c != -1)
-			consumed.append((char)c);
-		    else
-			return consumed;
-		}
-	    }
-	    /*
-	     * ignore backslash + newline
-	     */
-	    else if (c == '\\') {
-		c = r.read();
-		if (c != '\n') {
-		    consumed.append('\\');
-		    if (c != -1)
-			consumed.append((char)c);
-		}
-	    }
-	    else
-		consumed.append((char)c);
+            r.mark(1);
 	}
 	return consumed;
     }    
