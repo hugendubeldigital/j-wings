@@ -7,9 +7,10 @@
     /*
      * for some wierd reason, the 'maxlength' column contains the
      * maximum content length .. see RFC1867.
-     * .. anyway, all browsers seem to ignore it.
+     * .. anyway, all browsers seem to ignore it or worse, render the
+     * file upload unusable (konqueror 2.2.2).
      */
-    int maxContent = component.getSession().getMaxContentLength()*1024;
+    //int maxContent = component.getSession().getMaxContentLength()*1024;
     String fileNameFilter = component.getFileNameFilter();
 
     String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
@@ -25,8 +26,9 @@
         %><input<%
         %><%|class=style%><%
     }
-	
-    %> type="file" name="<%=component.getNamePrefix()%>" <%|size=columns%><%|maxlength=maxContent%><%|accept=fileNameFilter%> /><%
+
+    // maxLength = maxContent removed, since it does not work.
+    %> type="file" name="<%=component.getNamePrefix()%>"<%|size=columns%><%|accept=fileNameFilter%> /><%
 
     if (style != null && attr != null) {
         %></span><%
