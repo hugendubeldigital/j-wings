@@ -70,7 +70,8 @@ public class TemplateParser {
     }
 
     /**
-     * generates the Java-class that describes this CG.
+     * generates the Java-class that describes this CG. This method can
+     * only be called after calling {@link #parse(IncludingReader)}
      */
     public void generate(File base) throws IOException {
         File outFile = new File(base, templateName + ".java");
@@ -121,7 +122,9 @@ public class TemplateParser {
     }
 
     /**
-     * parses this template until </template> is reached.
+     * parses this template until &lt;/template&gt; is reached.
+     *
+     * @param IncludingReader the Reader the source is read from.
      */
     public void parse(IncludingReader reader) throws IOException {
         StringBuffer tempBuffer = new StringBuffer();
@@ -280,9 +283,9 @@ public class TemplateParser {
             .append(");\n");
         template.setLength(0);
     }
-
-    public void openIncludeFile(IncludingReader reader,
-                                StringBuffer includeTag)
+    
+    private void openIncludeFile(IncludingReader reader,
+                                 StringBuffer includeTag)
         throws IOException {
         AttributeParser p = new AttributeParser(includeTag.toString());
         String filename = p.getAttribute("file");
@@ -294,10 +297,11 @@ public class TemplateParser {
     }
 
     /**
-     * executes code in JSP-tags. There are some special modifiers
-     * like '!', '?', '@' that are handled here.
+     * Creates java source from the scriptlets within the JSP-tags. 
+     * By default, it just outputs the given string as java, but there are 
+     * some special modifiers like '!', '?', '@' that generates code 'around'.
      */
-    public void execJava(IncludingReader reader,
+    private void execJava(IncludingReader reader,
                          StringBuffer input, StringBuffer output) 
         throws IOException {
         char qualifier = input.charAt(0);

@@ -21,11 +21,13 @@ import java.util.Set;
 /**
  * Externalizer Interface
  *
- * The {@link ExternalizeManager} uses a Externalizer to deliver a java object to a
- * client over a http connection. A Externalizer must be 
+ * The {@link ExternalizeManager} uses a Externalizer to deliver a 
+ * java object to a client over a http connection. An Externalizer must be 
  * {@link ExternalizeManager.addExternalizer registered} at the
  * {@link ExternalizeManager} of the actual 
- * {@link org.wings.session.Session Session} to work seamless. 
+ * {@link org.wings.session.Session Session} to work seamlesly.
+ * 
+ * Each Externalizer supports one or more classes it is able to externalize.
  *
  * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
@@ -34,53 +36,55 @@ import java.util.Set;
 public interface Externalizer
 {
     /**
-     * returns the file extension of the given object. Some (old) browsers use
-     * this information instead of the mime type
+     * Returns the file extension of the given object. Some (old) browsers use
+     * this information instead of the mime type. This is especially necessary
+     * if delivering anything different than HTML.
      */
     String getExtension( Object obj );
 
     /**
-     * returns the mime type of the given object
+     * returns the mime type of the given object.
      */
     String getMimeType( Object obj );
 
     /**
-     * returns the externalized length of this Object. This value is set as
+     * Returns the externalized length of this Object. This value is set as
      * content length in the HttpServletResponse. If it return -1 no content
      * length is set.
      */
     int getLength( Object obj );
 
     /**
-     * returns true if the object is final, false if transient. It is used to
+     * Returns true if the object is final, false if transient. It is used to
      * control the caching in the browser. 
      */
     boolean isFinal( Object obj );
 
     /**
-     * writes the given object into the given stream. 
+     * Writes the given object into the given stream. 
      */
     void write( Object obj, OutputStream out )
         throws IOException;
 
     /**
-     * returns the supported classes. The {@link ExternalizeManager} chooses the
-     * Externalizer (if not specified as parameter) by objects class.
+     * Returns the supported classes. The {@link ExternalizeManager} 
+     * chooses the Externalizer (if not specified as parameter) by objects 
+     * class.
      */
     Class[] getSupportedClasses();
 
     /**
-     * returns the supported mime types. The {@link ExternalizeManager} chooses the
-     * Externalizer by mime type (if specified as parameter)
+     * Returns the supported mime types. The {@link ExternalizeManager} 
+     * chooses the Externalizer by mime type (if specified as parameter)
      */
     String[] getSupportedMimeTypes();
     
     /**
-      * Get additional http-headers.
-      * Returns <tt>null</tt>, if there are no additional headers to be set.
-      * @return Set of {@link java.util.Map.Entry} (key-value pairs)
-      * @param obj get headers for this object
-      */
+     * Get additional http-headers.
+     * Returns <tt>null</tt>, if there are no additional headers to be set.
+     * @return Set of {@link java.util.Map.Entry} (key-value pairs)
+     * @param obj get headers for this object
+     */
     Set getHeaders( Object obj );
 }
 

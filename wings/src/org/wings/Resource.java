@@ -116,8 +116,8 @@ public class Resource
         public boolean isValid() { return withinLimit; }
         
         /**
-         * returns the _raw_ buffer; i.e. the buffer may be larger than
-         * the current size().
+         * returns the <em>raw</em> buffer. This means, that the buffer 
+         * may be larger than size() reports.
          */
         public byte[] getBytes() {
             return buf;
