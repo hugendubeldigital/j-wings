@@ -48,12 +48,16 @@ public final class Utils implements SConstants {
      */
     private Utils() {}
 
+    private static void quote(Device d, String s) throws IOException {
+        quote(d, s, true);
+    }
+
     /**
      * writes an {X|HT}ML quoted string according to RFC 1866.
      * '"', '<', '>', '&'  become '&quot;', '&lt;', '&gt;', '&amp;'
      */
     // not optimized yet
-    private static void quote(Device d, String s) throws IOException {
+    private static void quote(Device d, String s, boolean quoteNewline) throws IOException {
 	if (s == null) return;
         char[] chars = s.toCharArray();
 	char c;
@@ -63,7 +67,7 @@ public final class Utils implements SConstants {
             // write special characters as code ..
             if (c < 32 || c > 127) {
                 d.print(chars, last, (pos-last));
-                if ( c=='\n' ) {
+                if ( c=='\n' && quoteNewline ) {
                     d.print("<br>");
                 } else {
                     d.print("&#");
@@ -128,7 +132,7 @@ public final class Utils implements SConstants {
             writeRaw(d, s.substring(6));
         }
         else {
-            quote(d, s);
+            quote(d, s, false);
         }
     }
 
