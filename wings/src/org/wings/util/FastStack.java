@@ -21,59 +21,59 @@ package org.wings.util;
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
-public final class FastStack {   
+public final class FastStack {
     private Object[] elements;
     private int pos;
-    
+
     public FastStack(int initialElements) {
-	pos = -1;
-	elements = new Object [ initialElements ];
+        pos = -1;
+        elements = new Object[initialElements];
     }
-    
+
     /**
      * clear the stack.
      */
     public void clear() {
-	pos = -1;
+        pos = -1;
     }
-    
+
     public boolean isEmpty() {
-	return pos == -1;
+        return pos == -1;
     }
 
     /**
      * push object to Stack.
      */
     public void push(Object o) {
-	++pos;
-	if (pos == elements.length) resize();
-	/*
-	 * debugging hint: if you get an IndexOutOfBoundException here, 
-	 * maybe the last pop() operation was bogus in the first place ?
-	 * It is not checked there for speed reasons.
-	 */
-	elements[pos] = o;
+        ++pos;
+        if (pos == elements.length) resize();
+        /*
+         * debugging hint: if you get an IndexOutOfBoundException here,
+         * maybe the last pop() operation was bogus in the first place ?
+         * It is not checked there for speed reasons.
+         */
+        elements[pos] = o;
     }
-    
+
     public Object peek() {
-	return elements[pos];
+        return elements[pos];
     }
-    
+
     /**
      * pop element from stack. Does not return the actual element. If you
      * need this, call peek().
      */
     public void pop() {
-	--pos;
+        --pos;
     }
-    
+
     /**
      * we only increase the size.
      */
     private void resize() {
-	Object[] newArray = new Object [ elements.length * 2 ];
-	System.arraycopy(elements, 0, newArray, 0, elements.length);
-	elements = newArray;
+        Object[] newArray = new Object[elements.length * 2];
+        System.arraycopy(elements, 0, newArray, 0, elements.length);
+        elements = newArray;
     }
 }
 

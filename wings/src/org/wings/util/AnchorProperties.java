@@ -20,15 +20,43 @@ import org.wings.SimpleURL;
  */
 public final class AnchorProperties {
     private final SimpleURL url;
-    private final String    target;
-    
-    AnchorProperties(SimpleURL url, String target) {
-	this.url = url;
-	this.target = target;
+    private final String target;
+    private final String formEventName;
+    private final String formEventValue;
+
+    public AnchorProperties(SimpleURL url, String target) {
+        this.url = url;
+        this.target = target;
+        this.formEventName = null;
+        this.formEventValue = null;
     }
-    
-    public SimpleURL getURL() { return url; }
-    public String    getTarget() { return target; }
+
+    public AnchorProperties(String pFormEventName, String pFormEventValue) {
+        formEventName = pFormEventName;
+        formEventValue = pFormEventValue;
+        this.url = null;
+        this.target = null;
+    }
+
+    public SimpleURL getURL() {
+        return url;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public String getFormEventName() {
+        return formEventName;
+    }
+
+    public String getFormEventValue() {
+        return formEventValue;
+    }
+
+    public boolean isFormAnchor() {
+        return formEventName != null;
+    }
 }
 
 /*

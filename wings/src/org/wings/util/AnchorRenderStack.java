@@ -21,8 +21,7 @@ import org.wings.SimpleURL;
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
-public class AnchorRenderStack
-{   
+public class AnchorRenderStack {
     /**
      * 10 should be sufficient, so that we never need resizing. Usually
      * this will not go over 2
@@ -32,11 +31,11 @@ public class AnchorRenderStack
     /*
      * state for the ClickableRenderComponent.
      */
-    private final static ThreadLocal eventURLStack    = new ThreadLocal() {
-	    protected synchronized Object initialValue() {
-		return new FastStack( INITIAL_STACK_DEPTH );
-	    }
-	};
+    private final static ThreadLocal eventURLStack = new ThreadLocal() {
+        protected synchronized Object initialValue() {
+            return new FastStack(INITIAL_STACK_DEPTH);
+        }
+    };
 
     /**
      * reset the internal stacks. This should be done everytime a complete
@@ -44,19 +43,25 @@ public class AnchorRenderStack
      * stacks do not fill up.
      */
     public static void reset() {
-	((FastStack) eventURLStack.get()).clear();
+        ((FastStack) eventURLStack.get()).clear();
     }
 
     /**
      * Push a new URL.
      */
     public static void push(SimpleURL url, String target) {
-	FastStack s = (FastStack) eventURLStack.get();
+        FastStack s = (FastStack) eventURLStack.get();
         s.push(new AnchorProperties(url, target));
     }
-    
+
+    public static void push(String formEventName, String formEventValue) {
+        FastStack s = (FastStack) eventURLStack.get();
+        s.push(new AnchorProperties(formEventName, formEventValue));
+    }
+
+
     public static void pop() {
-	FastStack s = (FastStack) eventURLStack.get();
+        FastStack s = (FastStack) eventURLStack.get();
         s.pop();
     }
 
@@ -65,7 +70,7 @@ public class AnchorRenderStack
      * is no such element.
      */
     public static AnchorProperties get() {
-	FastStack s = (FastStack) eventURLStack.get();
+        FastStack s = (FastStack) eventURLStack.get();
         return s.isEmpty() ? null : (AnchorProperties) s.peek();
     }
 }
