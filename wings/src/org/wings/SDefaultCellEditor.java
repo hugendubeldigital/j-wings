@@ -83,7 +83,8 @@ public class SDefaultCellEditor
 
         SButton button = new SButton("ok");
         //button.setIcon(commitIcon);
-        button.addActionListener(delegate);
+        button.addActionListener(delegate); // react on button press..
+        editorForm.addActionListener(delegate); // .. and if form submitted
         editorPanel.add(button);
     }
 
