@@ -19,18 +19,11 @@ import org.wings.util.StringUtil;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
@@ -69,19 +62,19 @@ public abstract class AbstractExternalizeManager {
      * in seconds; Computed from UNIQUE_TIMESLICE; do not change.
      */
     public final long FINAL_EXPIRES =
-        (StringUtil.MAX_RADIX * StringUtil.MAX_RADIX - 1) * UNIQUE_TIMESLICE;
+            (StringUtil.MAX_RADIX * StringUtil.MAX_RADIX - 1) * UNIQUE_TIMESLICE;
 
     /**
      * Prefix for the externalized ID; long. Computed, do not change.
      */
     protected final long PREFIX_TIMESLICE =
-        ((System.currentTimeMillis() / 1000) % FINAL_EXPIRES) / UNIQUE_TIMESLICE;
+            ((System.currentTimeMillis() / 1000) % FINAL_EXPIRES) / UNIQUE_TIMESLICE;
 
     /**
      * String prefix for externalized ID as String. Computed, do not change.
      */
     protected final String PREFIX_TIMESLICE_STRING =
-        StringUtil.toShortestAlphaNumericString(PREFIX_TIMESLICE, 2);
+            StringUtil.toShortestAlphaNumericString(PREFIX_TIMESLICE, 2);
 
     // Flags
 
@@ -182,6 +175,7 @@ public abstract class AbstractExternalizeManager {
 
     /**
      * get the {@link ExternalizedResource} by identifier.
+     *
      * @return null, if not found!!
      */
     public abstract ExternalizedResource getExternalizedResource(String identifier);
@@ -395,24 +389,26 @@ public abstract class AbstractExternalizeManager {
 
     public void deliver(ExternalizedResource extInfo, HttpServletResponse response,
                         Device out)
-        throws IOException {
+            throws IOException {
         /* FIXME: re-implement.
         if ( extInfo.deliverOnce() ) {
             removeExternalizedResource(identifier);
         }
         */
 
-        response.setContentType(extInfo.getMimeType());
+        if (extInfo.getMimeType() != null) {
+            response.setContentType(extInfo.getMimeType());
+        }
 
         // FIXME find out, if this is correct: if the content length
         // is not size preserving (like a gzip-device), then we must not
         // send the content size we know..
         if (out.isSizePreserving()) {
             int resourceLen = extInfo
-                .getExternalizer().getLength(extInfo.getObject());
+                    .getExternalizer().getLength(extInfo.getObject());
             if (resourceLen > 0) {
                 logger.log(Level.FINER, extInfo.getMimeType() + ": " + resourceLen);
-                //response.setContentLength( resourceLen );
+                response.setContentLength(resourceLen);
             }
         }
 
