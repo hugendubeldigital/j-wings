@@ -1,5 +1,5 @@
 <template name="TextField" for="org.wings.STextField">
-<%@ include file="Common.plaf" %>
+<%@ include file="Common.plaf"%>
 
 <write>
 <input type="text" size="<%?columns%>" maxlength="<%?maxColumns%>"<%

@@ -1,5 +1,7 @@
 <template name="TextArea" for="org.wings.STextArea">
-<%@ include file="Common.plaf">
+<%@ include file="Common.plaf"%>
+
+<write>
 <textarea cols="<%?columns%>" rows="<%?rows%>"<%
 if (!component.isEditable()) %> readonly="1"<%;
 if (component.isEnabled())   %> name="<%?namePrefix%>"<%;
@@ -9,4 +11,5 @@ switch (<%?lineWrap%>) {
    case STextArea.PHYSICAL_WRAP: %> wrap="physical"<%; break;
 };
 %>><%?text%></textarea>
+</write>
 </template>

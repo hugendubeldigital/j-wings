@@ -1,5 +1,7 @@
 <template name="Separator" for="org.wings.SSeparator">
-<%@ include file="Common.plaf">
+<%@ include file="Common.plaf"%>
+
+<write>
 <hr<% 
 printStyle(<%?style%>);
 printOptAttr(<%?width%>);
@@ -10,4 +12,5 @@ switch (<%?alignment%>) {
    case SSeparator.BLOCK_ALIGN : %> align="justify"<%; break;
 };
 if (!<%?shade%>) %> noshade<%;%>>
+</write>
 </template>
