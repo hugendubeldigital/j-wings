@@ -40,7 +40,7 @@ public class WingSetSession
     extends SessionServlet
     implements SConstants
 {
-    SLabel timeMeasure = new SLabel();
+    SLabel timeMeasure;
 
     public WingSetSession(Session session) {
         super(session);
@@ -53,7 +53,10 @@ public class WingSetSession
     }
 
     void initGUI() {
+        timeMeasure = new SLabel();
+        timeMeasure.setEscapeSpecialChars(false);
         getFrame().setTitle("WingSet Demo");
+
         SContainer contentPane = getFrame().getContentPane();
         try {
             java.net.URL templateURL = 
