@@ -3,34 +3,54 @@
 <import>org.wings.header.*</import>
 <import>org.wings.script.*</import>
 
+        private DynamicCodeResource dynamicCodeRessource;
+        private DynamicResource styleSheetResource;
+        private DynamicResource scriptResource;
+        private Link stylesheetLink;
+        private Script scriptLink;
+        private Link staticCgSytles;
+
 <install>
         // dynamic code resource.
-        component.addDynamicResource(new DynamicCodeResource(component));
+        dynamicCodeRessource = new DynamicCodeResource(component);
+        component.addDynamicResource(dynamicCodeRessource);
 
         // dynamic stylesheet resource.
-        DynamicResource styleSheetResource = new DynamicStyleSheetResource(component);
+	styleSheetResource = new DynamicStyleSheetResource(component);
+	stylesheetLink = new Link("stylesheet", null,
+                                     "text/css", null,
+                                     styleSheetResource);
         component.addDynamicResource(styleSheetResource);
-	component.addHeader(new Link("stylesheet", null, 
-                                     "text/css", null, 
-                                     styleSheetResource));
-        	
+	component.addHeader(stylesheetLink);
+
         // dynamic java script resource.
-        DynamicResource scriptResource = new DynamicScriptResource(component);
+	scriptResource = new DynamicScriptResource(component);
         component.addDynamicResource(scriptResource);
-	
-        component.addHeader(new Script("JavaScript", "text/javascript", scriptResource));
+
+	scriptLink = new Script("JavaScript", "text/javascript", scriptResource);
+        component.addHeader(scriptLink);
 
         // static stylesheet, coming with the CG
         CGManager cgManager = component.getSession().getCGManager();
         StaticResource staticResource = (StaticResource)cgManager
             .getObject("lookandfeel.stylesheet", Resource.class);
         staticResource.setMimeType("text/css");
+	staticCgSytles = new Link("stylesheet", null,
+                                     "text/css", null,
+                                     staticResource);
 
-        component.headers().add(0, new Link("stylesheet", null, 
-                                     "text/css", null, 
-                                     staticResource));
+        component.headers().add(0, staticCgSytles);
 
 </install>
+
+<uninstall>
+	component.removeDynamicResource(dynamicCodeRessource);
+	component.removeDynamicResource(styleSheetResource);
+	component.removeHeader(stylesheetLink);
+	component.removeDynamicResource(scriptResource);
+	component.removeHeader(scriptLink);
+	component.removeHeader(staticCgSytles);
+</uninstall>
 
 <write>
 <%
@@ -112,7 +132,7 @@ if ( frame.getALinkColor()!=null ) {
                 %><%=it.next().toString()%><%
             }
             %>
-<% 
+<%
         }
 
         %></head>

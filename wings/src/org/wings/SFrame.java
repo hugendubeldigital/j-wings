@@ -115,6 +115,15 @@ public class SFrame
         }
         dynamicResources.put(d.getClass(), d);
     }
+    
+    /**
+     * Removes the given dynamic ressource. 
+     */
+    public void removeDynamicResource(DynamicResource d) {
+        if (dynamicResources != null && d != null) {
+            dynamicResources.remove(d.getClass());
+        }        
+    }    
 
     /**
      * TODO: documentation
