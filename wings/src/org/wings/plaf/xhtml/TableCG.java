@@ -209,7 +209,7 @@ public class TableCG
 
                 if ( !selectionWritten && 
                      c>=table.getRowSelectionColumn() ) {
-                    writeRowSelection(d, table, rendererPane, r);
+                    writeRowSelection(d, table, rendererPane, r, c);
                     selectionWritten = true;
                 }
 
@@ -217,7 +217,7 @@ public class TableCG
             }
 
             if ( !selectionWritten ) {
-                writeRowSelection(d, table, rendererPane, r);
+                writeRowSelection(d, table, rendererPane, r, colCount);
             }
 
             d.print("</tr>\n");
@@ -251,7 +251,7 @@ public class TableCG
                                   table.getEditParameter(row, col));
             
             if ( comp instanceof ClickableRenderComponent ) {
-                ((ClickableRenderComponent)comp).setEventParam(editAddr.toString());
+                ((ClickableRenderComponent)comp).setEventURL(editAddr);
             } else {
                 d.print("<a href=\"").print(editAddr.toString()).
                     print("\">");
@@ -263,7 +263,7 @@ public class TableCG
         rendererPane.writeComponent(d, comp, table);
 
         if ( comp instanceof ClickableRenderComponent ) {
-            ((ClickableRenderComponent)comp).setEventParam(null);
+            ((ClickableRenderComponent)comp).setEventURL(null);
         }
         d.print("</td>");
     }
@@ -306,7 +306,7 @@ public class TableCG
 
     protected void writeRowSelection(Device d, STable table, 
                                      SCellRendererPane rendererPane,
-                                     int row)
+                                     int row, int col)
         throws IOException
     {
         STableCellRenderer rowSelectionRenderer =
@@ -329,7 +329,26 @@ public class TableCG
         Utils.appendTableCellAttributes(d, comp);
         d.print(">");
 
+
+
+        RequestURL toggleSelectionAddr = table.getRequestURL();
+        toggleSelectionAddr.addParameter(table.getNamePrefix() + "=" + 
+                                         table.getSelectionToggleParameter(row,col));
+
+        if ( comp instanceof ClickableRenderComponent ) {
+            ((ClickableRenderComponent)comp).setEventURL(toggleSelectionAddr);
+        } else {
+            d.print("<a href=\"").
+                print(toggleSelectionAddr.toString()).print("\">");
+        }
+            
         rendererPane.writeComponent(d, comp, table);
+
+        if ( comp instanceof ClickableRenderComponent ) {
+            ((ClickableRenderComponent)comp).setEventURL(null);
+        } else {
+            d.print("</a>");
+        }
 
         d.print("</td>");
     }

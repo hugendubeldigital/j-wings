@@ -14,7 +14,7 @@
 
 package org.wings;
 
-import javax.swing.tree.*;
+import org.wings.RequestURL;
 
 /**
  * A component implementing this interface is able to produce events on user mouse
@@ -33,7 +33,7 @@ public interface ClickableRenderComponent
     /**
      * The event parameter generating the event
      */
-    void setEventParam(String s);
+    void setEventURL(RequestURL url);
 
 }
 

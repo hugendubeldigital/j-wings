@@ -8,16 +8,16 @@
 void writeIcon(Device device, SLabel label) throws IOException {
      SIcon icon = label.getIcon();
      if (icon != null) {
-        boolean hasEventLink = label.getEventParam()!=null;
+        boolean hasEventLink = label.getEventURL()!=null;
         if (hasEventLink) {
-           %><a href="<%=label.getEventParam()%>"><%
+           %><a href="<%=label.getEventURL()%>"><%
         }     
 
         %><img<%
         /*
 	 * write optional attributes ..
 	 */
-        if (hasEventLink) { %> border=0<% }
+        if (hasEventLink) { %> border="0"<% }
         %><%|src=icon.getURL()%><%
         %><%|width=icon.getIconWidth()%><%
         %><%|height=icon.getIconHeight()%><%
@@ -34,13 +34,13 @@ void writeText(Device device, SLabel label)
    if (label.getText() != null) {
       if (label.isNoBreak()) { %><nobr><% }
 
-      if (label.getEventParam()!=null ) {
-          %><a href="<%=label.getEventParam()%>"><%
+      if (label.getEventURL()!=null ) {
+          %><a href="<%=label.getEventURL()%>"><%
       }     
 
       %><%=label.getText()%><%
 
-      if (label.getEventParam()!=null ) {
+      if (label.getEventURL()!=null ) {
           %></a><%
       }     
 

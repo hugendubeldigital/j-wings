@@ -62,7 +62,7 @@ public class SLabel
     // output formatting information in Labels .. (s)he shouldn't!
     private boolean escapeSpecialChars = false;
 
-    protected String eventParam;
+    protected RequestURL eventURL;
 
 
     /**
@@ -334,12 +334,12 @@ public class SLabel
         super.setCG(cg);
     }
 
-    public void setEventParam(String s) {
-        eventParam = s;
+    public void setEventURL(RequestURL url) {
+        eventURL = url;
     }
 
-    public String getEventParam() {
-        return eventParam;
+    public RequestURL getEventURL() {
+        return eventURL;
     }
 
 }

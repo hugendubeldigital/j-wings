@@ -30,8 +30,8 @@ import org.wings.style.*;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SDefaultTableRowSelectionRenderer 
-    implements STableCellRenderer
+public class SDefaultTableRowSelectionRenderer extends SLabel
+    implements STableCellRenderer 
 {
 
     public static final ResourceImageIcon DEFAULT_MULTI_SELECTION_ICON =
@@ -64,12 +64,6 @@ public class SDefaultTableRowSelectionRenderer
     /** Style to use for the foreground for non-selected nodes. */
     protected Style nonSelectionStyle = null;
 
-    /** */
-    protected final SLabel selectionIcon = new SLabel();
-
-    /** */
-    protected final SAnchor selectionAnchor = new SAnchor();
-
     protected ResourceImageIcon multiSelectionIcon = DEFAULT_MULTI_SELECTION_ICON;
 
     protected ResourceImageIcon multiNotSelectionIcon =
@@ -85,7 +79,6 @@ public class SDefaultTableRowSelectionRenderer
      *
      */
     public SDefaultTableRowSelectionRenderer() {
-        selectionAnchor.add(selectionIcon);
     }
 
     public SComponent getTableCellRendererComponent(SBaseTable baseTable,
@@ -99,41 +92,38 @@ public class SDefaultTableRowSelectionRenderer
         
         switch ( table.getSelectionMode() ) {
         case ListSelectionModel.SINGLE_SELECTION:
-            selectionIcon.setIcon(selected ? singleSelectionIcon :
-                                      singleNotSelectionIcon);
+            setIcon(selected ? singleSelectionIcon :
+                    singleNotSelectionIcon);
             break;
         default:
-            selectionIcon.setIcon(selected ? multiSelectionIcon :
-                                  multiNotSelectionIcon);
+            setIcon(selected ? multiSelectionIcon :
+                    multiNotSelectionIcon);
             break;
         } 
-
-        selectionAnchor.setReference("?" + table.getNamePrefix() + "="  + 
-                                     table.getSelectionToggleParameter(row,col));
 
         // style
         if (selected) {
             if (table.getSelectionBackground() == null) {
-                selectionAnchor.setBackground(backgroundSelectionColor);
+                setBackground(backgroundSelectionColor);
             }
             else {
-                selectionAnchor.setBackground(table.getSelectionBackground());
+                setBackground(table.getSelectionBackground());
             }
             if (table.getSelectionForeground() == null) {
-                selectionAnchor.setForeground(foregroundSelectionColor);
+                setForeground(foregroundSelectionColor);
             }
             else {
-                selectionAnchor.setForeground(table.getSelectionForeground());
+                setForeground(table.getSelectionForeground());
             }
-            selectionAnchor.setStyle(selectionStyle);
+            setStyle(selectionStyle);
         }
         else {
-            selectionAnchor.setBackground(backgroundNonSelectionColor);
-            selectionAnchor.setForeground(foregroundNonSelectionColor);
-            selectionAnchor.setStyle(nonSelectionStyle);
+            setBackground(backgroundNonSelectionColor);
+            setForeground(foregroundNonSelectionColor);
+            setStyle(nonSelectionStyle);
         }
 
-        return selectionAnchor;
+        return this;
     }
 
     /**

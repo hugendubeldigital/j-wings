@@ -200,11 +200,12 @@ public class TreeCG
             // in most applications, the is no need to render a control icon for
             // a leaf. 
             d.print("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"");
-            if ( Utils.hasSpanAttributes( tree ) ) {
-                d.print( " style=\"" );
-                Utils.writeSpanAttributes( d, tree );
-                d.print( "\"" );
-            }
+            /*            
+                          if ( Utils.hasSpanAttributes( tree ) ) {
+                          d.print( " style=\"" );
+                          Utils.writeSpanAttributes( d, tree );
+                          d.print( "\"" );
+                          }*/
             d.print("><tr><td nowrap>");
         }
 
@@ -235,7 +236,7 @@ public class TreeCG
 
         SCellRendererPane rendererPane = tree.getCellRendererPane();
         if ( renderer instanceof ClickableRenderComponent ) {
-            ((ClickableRenderComponent)renderer).setEventParam(selectionAddr.toString());
+            ((ClickableRenderComponent)renderer).setEventURL(selectionAddr);
             rendererPane.writeComponent(d, renderer, tree);
         } else {
             d.print("<a href=\"").print(selectionAddr.toString()).print("\"");
@@ -251,6 +252,11 @@ public class TreeCG
             rendererPane.writeComponent(d, renderer, tree);
             d.print("</a>");
         }
+
+        if ( renderer instanceof ClickableRenderComponent ) {
+            ((ClickableRenderComponent)renderer).setEventURL(null);
+        }
+
 
         if ( !(isLeaf && leafIcon==null) ) {
             d.print("</td></tr></table>");
