@@ -149,61 +149,43 @@ public class DesktopSession
     public Editor openEditor() {
         final Editor editor = new Editor();
         addNewFrame(editor);
-
-        STemplateLayout layout = null;
-        try {
-            java.net.URL t;
-            t = getClass().getResource("/desktop/FileDialog.thtml");
-            layout = new STemplateLayout(t);
-        }
-        catch (IOException e) {
-            /* ignore ..*/
-        }
-        final SDialog dialog = new SDialog(layout);
-
-        dialog.setEncodingType("multipart/form-data");
-
-        dialog.setTitle("Open file");
-        SLabel label = new SLabel("Choose file");
-        dialog.add(label, "label");
-
+        
         final SFileChooser chooser = new SFileChooser();
-        dialog.add(chooser, "chooser");
+        chooser.setColumns(20);
 
-        final SButton submit = new SButton("Ok");
-        submit.addActionListener(new ActionListener() {
-           public void actionPerformed(ActionEvent evt) {
-               try {
-                   File file = chooser.getFile();
-                   Reader reader = new FileReader(file);
-                   StringWriter writer = new StringWriter();
-                   
-                   int b;
-                   while ((b = reader.read()) >= 0)
-                       writer.write(b);
-                   
-                   editor.setText(writer.toString());
-                   editor.setTitle(chooser.getFilename());
-                   chooser.reset();
-                   dialog.hide();
-               }
-               catch (Exception e) {
-                   SOptionPane.showMessageDialog(editor, 
-                                                 "Error opening file", 
-                                                 e.getMessage());
-               }
-           }});
-        
-        final SButton cancel = new SButton("Cancel");
-        cancel.addActionListener(new ActionListener() {
-           public void actionPerformed(ActionEvent evt) {
-               editor.close();
-           }});
-        
-        dialog.add(submit, "okbutton");
-        dialog.add(cancel, "cancelbutton");
-        
-        dialog.show(editor);
+        final SOptionPane dialog = new SOptionPane();
+        dialog.setEncodingType("multipart/form-data");
+        dialog.showInput(editor, "Choose file", chooser, "Open file");
+        dialog.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                    if ( evt.getActionCommand()==SOptionPane.OK_ACTION ) {
+                        try {
+                            File file = chooser.getFile();
+                            Reader reader = new FileReader(file);
+                            StringWriter writer = new StringWriter();
+                            
+                            int b;
+                            while ((b = reader.read()) >= 0)
+                                writer.write(b);
+                            
+                            editor.setText(writer.toString());
+                            editor.setTitle(chooser.getFilename());
+                            chooser.reset();
+                        }
+                        catch (Exception e) {
+                            dialog.show(editor); // show again ..
+                            // .. but first, show error-message on top ..
+                            SOptionPane.showMessageDialog(editor, 
+                                                      "Error opening file", 
+                                                          e.getMessage());
+                        }
+                    }
+                    else {
+                        editor.close();
+                    }
+                }
+            });
+
         return editor;
     }
 
