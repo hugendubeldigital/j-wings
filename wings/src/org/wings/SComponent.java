@@ -93,6 +93,9 @@ public abstract class SComponent
 
     /** The tooltip for this component. */
     protected String tooltip = null;
+    
+    /** The focus traversal Index */
+    protected int focusTraversalIndex = -1;
 
     /** */
     private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
@@ -414,10 +417,12 @@ public abstract class SComponent
 
     /**
      * Watch components beeing garbage collected.
+     */
+    /* comment out, unless explicitly debugged ..
     protected void finalize() {
         System.out.println("finalize " + getClass().getName());
     }
-     */
+    */
 
     /**
      * Set the class of the laf-provided style.
@@ -784,6 +789,30 @@ public abstract class SComponent
      * @return the tooltip text
      */
     public final String getToolTipText() { return tooltip; }
+
+    /**
+     * The index in which the focus is traversed using Tab. This is
+     * a very simplified notion of traversing the focus, but that is,
+     * what browser like interfaces currently offer. This has a bit rough
+     * edge, since you have to make sure, that the index is unique within
+     * the whole frame. You probably don't want to change this
+     * programmatically, but this is set usually by the template property
+     * manager.
+     *
+     * @param index the focus traversal index. Pressing the focus traversal
+     *              key (usually TAB) in the browser jumps to the next index.
+     */
+    public final void setFocusTraversalIndex(int index) {
+        focusTraversalIndex = index;
+    }
+
+    /**
+     * returns the focus traversal index.
+     * @see #setFocusTraversalIndex(int)
+     */
+    public final int getFocusTraversalIndex() {
+        return focusTraversalIndex;
+    }
 
     /**
      * Clone this component.
