@@ -30,6 +30,8 @@ import org.wings.io.Device;
  */
 public final class Utils
 {
+    
+
     private Utils() {}
 
     /**
@@ -99,6 +101,48 @@ public final class Utils
             return sel.getSelectionStyle();
         return null;
     }
+
+    final static byte[] ALIGN_CENTER = " align=\"center\"".getBytes();
+    final static byte[] ALIGN_LEFT = " align=\"left\"".getBytes();
+    final static byte[] ALIGN_RIGHT = " align=\"right\"".getBytes();
+    final static byte[] ALIGN_JUSTIFY = " align=\"justify\"".getBytes();
+    final static byte[] VALIGN_TOP = " valign=\"top\"".getBytes();
+    final static byte[] VALIGN_BOTTOM = " valign=\"bottom\"".getBytes();
+    final static byte[] VALIGN_BASELINE = " valign=\"baseline\"".getBytes();
+
+    static void printTableCellAlignment(Device d, SComponent c) 
+        throws IOException {
+        switch (c.getHorizontalAlignment()) {
+        case SConstants.NO_ALIGN:
+        case SConstants.LEFT:
+            break;
+        case SConstants.CENTER:
+            d.write(ALIGN_CENTER);
+            break;
+        case SConstants.RIGHT:
+            d.write(ALIGN_RIGHT);
+            break;
+        case SConstants.JUSTIFY:
+            d.write(ALIGN_JUSTIFY);
+            break;
+        }
+    
+        switch (c.getVerticalAlignment()) {
+        case SConstants.NO_ALIGN:
+        case SConstants.CENTER:
+            break;
+        case SConstants.TOP:
+            d.write(VALIGN_TOP);
+            break;
+        case SConstants.BOTTOM:
+            d.write(VALIGN_BOTTOM);
+            break;
+        case SConstants.BASELINE:
+            d.write(VALIGN_BASELINE);
+            break;
+        }
+    }
+
 }
 
 /*
