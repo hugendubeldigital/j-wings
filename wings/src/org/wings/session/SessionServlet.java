@@ -584,6 +584,7 @@ final class SessionServlet
             errorMessageLabel.setText(e.getMessage());
             errorFrame.write(new ServletDevice(out));
         } catch (Exception ex) {
+            logger.throwing(SessionServlet.class.getName(), "handleException", ex);
         }
     }
 
