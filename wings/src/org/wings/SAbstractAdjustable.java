@@ -102,10 +102,15 @@ public abstract class SAbstractAdjustable
      * @see #setMaximum
      */
     public SAbstractAdjustable(int value, int extent, int min, int max) {
-        this.unitIncrement = 1;
-        this.blockIncrement = (extent == 0) ? 1 : extent;
-        this.model = new SDefaultBoundedRangeModel(value, extent, min, max);
+        this(new SDefaultBoundedRangeModel(value, extent, min, max));
+    }
+
+
+    public SAbstractAdjustable(SBoundedRangeModel model) {
+        this.model = model;
         this.model.addChangeListener(fwdAdjustmentEvents);
+        this.unitIncrement = 1;
+        this.blockIncrement = (model.getExtent() == 0) ? 1 : model.getExtent();
     }
 
     /**

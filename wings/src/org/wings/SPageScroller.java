@@ -146,7 +146,7 @@ public class SPageScroller
      * @see #setMaximum
      */
     public SPageScroller(int orientation, int value, int extent, int min, int max) {
-        super(value, extent, min, max);
+        super(new SPagingBoundedRangeModel(value, extent, min, max));
 
         for ( int i=0; i<clickables.length; i++ ) {
             clickables[i] = new SClickable();
@@ -305,7 +305,7 @@ public class SPageScroller
         if ( getExtent()==0 )
             return 0;
 
-        return (getMaximum()+(getExtent()-1)-getMinimum())/getExtent();
+        return ((getMaximum()+1)+(getExtent()-1)-getMinimum())/getExtent();
     }
 
     public final int getActualPage() {
