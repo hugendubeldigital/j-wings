@@ -1,0 +1,10 @@
+<template name="LineBreak" for="org.wings.LineBreak">
+<%@ include file="Common.plaf">
+<br<% 
+printStyle(<%?style%>);
+switch (<%?clear%>) {
+   case SLineBreak.CLEAR_ALL  : %> clear="all"<%; break;
+   case SLineBreak.CLEAR_LEFT : %> clear="left"<%; break;
+   case SLineBreak.CLEAR_RIGHT: %> clear="right"<%; break;
+};%>>
+</template>
