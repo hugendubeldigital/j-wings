@@ -14,8 +14,9 @@
 
 package org.wings;
 
-import javax.swing.Action;
 
+import java.awt.event.ActionEvent;
+import javax.swing.Action;
 import org.wings.plaf.*;
 
 /**

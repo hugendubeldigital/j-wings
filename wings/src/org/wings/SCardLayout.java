@@ -153,8 +153,7 @@ public class SCardLayout
             SComponent c = (SComponent)en.next();
             c.setVisible(false);
         }
-        System.out.println("Show card component " + comp.getClass());
-        comp.setVisible(true);
+       comp.setVisible(true);
     }
 
     /**
