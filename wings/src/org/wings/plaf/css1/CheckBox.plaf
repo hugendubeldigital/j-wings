@@ -161,8 +161,10 @@ void writeFormIcon(final Device device, SCheckBox checkBox, String attr)
     %><%|tabindex=checkBox.getFocusTraversalIndex()%><%
     %><%|class=attr%><%
     %><%|src=src%><%
-    %><%|width=icon.getIconWidth()%><%
-    %><%|height=icon.getIconHeight()%><%
+    if (icon != null) {
+        %><%|width=icon.getIconWidth()%><%
+        %><%|height=icon.getIconHeight()%><%
+    }
     Utils.writeEvents(device, checkBox);
     %><%|id=checkBox.getComponentId()%><%
     %><%|value=value%><%
