@@ -38,8 +38,8 @@ public class RadioButtonExample
         add(new SSeparator());
 
         SHRef href =  new SHRef("View Source Code");
-        href.setReference("http://www.mercatis.de/~armin/WingSet/" +
-                          getClass().getName() + ".java");
+        href.setReference("/demo/wingset/" +
+                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
         add(href);
     }
 
@@ -48,25 +48,25 @@ public class RadioButtonExample
         SContainer cont = new SContainer(new SGridLayout(2,2));
 
         SPanel panel = new SPanel(new SGridLayout(2,1));
-        panel.add(new SLabel("<H4>RadioButtons not in a form</H4>"));
+        panel.add(new SLabel("<h4>RadioButtons not in a form</h4>"));
         panel.add(createRadioButtonExample());
         cont.add(panel);
 
         panel = new SPanel(new SGridLayout(2,1));
-        panel.add(new SLabel("<H4>Image RadioButtons not in a form</H4>"));
-        panel.add(new SLabel("<H5>TestBC and TestBR are disabled</H5>"));
+        panel.add(new SLabel("<h4>Image RadioButtons not in a form</h4>"));
+        panel.add(new SLabel("<h5>TestBC and TestBR are disabled</h5>"));
         panel.add(createImageRadioButtonExample());
         cont.add(panel);
 
         SForm form = new SForm(new SGridLayout(2,1));
-        form.add(new SLabel("<H4>RadioButtons in a form</H4>"));
+        form.add(new SLabel("<h4>RadioButtons in a form</h4>"));
         form.add(createRadioButtonExample());
         form.add(new SButton("submit"));
         cont.add(form);
 
         form = new SForm(new SGridLayout(2,1));
-        form.add(new SLabel("<H4>Image RadioButtons in a form</H4>"));
-        panel.add(new SLabel("<H5>TestBC and TestBR are disabled</H5>"));
+        form.add(new SLabel("<h4>Image RadioButtons in a form</h4>"));
+        panel.add(new SLabel("<h5>TestBC and TestBR are disabled</h5>"));
         form.add(createImageRadioButtonExample());
         form.add(new SButton("submit"));
         cont.add(form);

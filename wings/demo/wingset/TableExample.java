@@ -38,7 +38,7 @@ public class TableExample
         super(new SFlowDownLayout());
 
         add(new SSeparator());
-        add(new SLabel("<H4>Table out of a form with multiple selection</H4>"));
+        add(new SLabel("<h4>Table out of a form with multiple selection</h4>"));
 
         table.setSelectionMode(MULTIPLE_SELECTION);
         // table.setShowGrid(false);
@@ -46,7 +46,7 @@ public class TableExample
 
         add(new SSeparator());
 
-        form.add(new SLabel("<H4>Table in a form with single selection</H4>"));
+        form.add(new SLabel("<h4>Table in a form with single selection</h4>"));
         formTable.setSelectionMode(SINGLE_SELECTION);
         form.add(formTable);
         form.add(new SButton("SUBMIT"));
@@ -55,8 +55,8 @@ public class TableExample
         add(new SSeparator());
 
         SHRef href = new SHRef("View Source Code");
-        href.setReference("http://www.mercatis.de/~armin/WingSet/" +
-                          getClass().getName() + ".java");
+        href.setReference("/demo/wingset/" +
+                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
         add(href);
     }
 

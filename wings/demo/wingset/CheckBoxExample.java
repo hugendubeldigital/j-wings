@@ -39,8 +39,8 @@ public class CheckBoxExample
         add(new SSeparator());
 
         SHRef href = new SHRef("View Source Code");
-        href.setReference("http://www.mercatis.de/~armin/WingSet/" +
-                          getClass().getName() + ".java");
+        href.setReference("/demo/wingset/" +
+                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
         add(href);
 
     }
@@ -50,26 +50,26 @@ public class CheckBoxExample
         SContainer cont = new SContainer(new SGridLayout(2,2));
 
         SPanel panel = new SPanel(new SGridLayout(2,1));
-        panel.add(new SLabel("<H4>CheckBoxes not in a form</H4>"));
+        panel.add(new SLabel("<h4>CheckBoxes not in a form</h4>"));
         panel.add(createCheckBoxExample());
         cont.add(panel);
 
 
         panel = new SPanel(new SGridLayout(2,1));
-        panel.add(new SLabel("<H4>Image CheckBoxes not in a form</H4>"));
-        panel.add(new SLabel("<H5>TestBC and TestBR are disabled</H5>"));
+        panel.add(new SLabel("<h4>Image CheckBoxes not in a form</h4>"));
+        panel.add(new SLabel("<h5>TestBC and TestBR are disabled</h5>"));
         panel.add(createImageCheckBoxExample());
         cont.add(panel);
 
         SForm form = new SForm(new SGridLayout(2,1));
-        form.add(new SLabel("<H4>CheckBoxes in a form</H4>"));
+        form.add(new SLabel("<h4>CheckBoxes in a form</h4>"));
         form.add(createCheckBoxExample());
         form.add(new SButton("submit"));
         cont.add(form);
 
         form = new SForm(new SGridLayout(2,1));
-        form.add(new SLabel("<H4>Image CheckBoxes in a form</H4>"));
-        panel.add(new SLabel("<H5>TestBC and TestBR are disabled</H5>"));
+        form.add(new SLabel("<h4>Image CheckBoxes in a form</h4>"));
+        panel.add(new SLabel("<h5>TestBC and TestBR are disabled</h5>"));
         form.add(createImageCheckBoxExample());
         form.add(new SButton("submit"));
         cont.add(form);

@@ -35,8 +35,8 @@ public class BorderExample
         add(new SSeparator());
 
         SHRef href =  new SHRef("View Source Code");
-        href.setReference("http://www.mercatis.de/~armin/WingSet/" +
-                          getClass().getName() + ".java");
+        href.setReference("/demo/wingset/" +
+                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
         add(href);
     }
 

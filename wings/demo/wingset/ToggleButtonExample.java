@@ -38,8 +38,8 @@ public class ToggleButtonExample
         add(new SSeparator());
 
         SHRef href = new SHRef("View Source Code");
-        href.setReference("http://www.mercatis.de/~armin/WingSet/" +
-                          getClass().getName() + ".java");
+        href.setReference("/demo/wingset/" +
+                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
         add(href);
     }
 
@@ -47,12 +47,12 @@ public class ToggleButtonExample
     SContainer createExample() {
         SContainer cont = new SContainer(new SFlowDownLayout());
 
-        cont.add(new SLabel("<H4>ToggleButtones not in a ButtonGroup</H4>"));
+        cont.add(new SLabel("<h4>ToggleButtones not in a ButtonGroup</h4>"));
         cont.add(createToggleButtonExample());
 
         cont.add(new SSeparator());
 
-        cont.add(new SLabel("<H4>Image ToggleButtones in a ButtonGroup</H4>"));
+        cont.add(new SLabel("<h4>Image ToggleButtones in a ButtonGroup</h4>"));
         cont.add(createGroupToggleButtonExample());
 
         return cont;

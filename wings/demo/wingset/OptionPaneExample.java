@@ -81,12 +81,12 @@ public class OptionPaneExample
             }});
 
         add(yesno);
-        add(new SLabel("<BR>"));
+        add(new SLabel("<br />"));
         add(new SSeparator());
 
         SHRef href =  new SHRef("View Source Code");
-        href.setReference("http://www.mercatis.de/~armin/WingSet/" +
-                          getClass().getName() + ".java");
+        href.setReference("/demo/wingset/" +
+                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
         add(href);
     }
 }
