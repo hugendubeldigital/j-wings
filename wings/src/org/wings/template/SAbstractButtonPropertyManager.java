@@ -93,6 +93,8 @@ public class SAbstractButtonPropertyManager extends SComponentPropertyManager
             c.setRolloverSelectedIcon(new SURLIcon(value));
         else if ( name.equals("PRESSEDICON") )
             c.setPressedIcon(new SURLIcon(value));
+        else if ( name.equals("ACCESSKEY") )
+            c.setMnemonic(value);
         else if ( name.equals("TARGET") )
             c.setRealTarget(value);
         else
