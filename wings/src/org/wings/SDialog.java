@@ -73,15 +73,12 @@ public class SDialog
      */
     public SDialog(SLayoutManager layout) {
         super(layout);
-        setBorder(new SLineBorder());
     }
     /**
      * TODO: documentation
      *
      */
-    public SDialog() {
-        setBorder(new SLineBorder());
-    }
+    public SDialog() {}
 
     protected void fireActionPerformed(String state) {
         setActionCommand(state);

@@ -30,15 +30,13 @@ public class ButtonExample
     extends SPanel
 {
     SForm form = new SForm();
-    SPanel panel= new SPanel();
     Icon icon = SUtil.makeIcon(SButton.class, "icons/Warn.gif");
     Icon disabledIcon = SUtil.makeIcon(SButton.class, "icons/WarnDis.gif");
 
     public ButtonExample() {
-        super(new SFlowDownLayout());
+        super(new SGridLayout(2));
 
-        add(createExample());
-        add(new SSeparator());
+        createExample();
 
         SHRef href = new SHRef("View Source Code");
         href.setReference("/demo/wingset/" +
@@ -46,47 +44,25 @@ public class ButtonExample
         add(href);
     }
 
-    SContainer createExample() {
-        SContainer cont = new SContainer(new SGridLayout(2,2));
+    void createExample() {
+        add(new SLabel("<h4>Buttons outside forms</h4>"));
+        add(new SLabel("<h4>Image buttons outside forms</h4>"));
+        add(createButtonExample());
+        add(createImageButtonExample());
 
-        SPanel panel = new SPanel(new SGridLayout(2,1));
-        panel.add(new SLabel("<h4>Buttons not in a form</h4>"));
-        panel.add(createButtonExample());
-        cont.add(panel);
-
-
-        panel = new SPanel(new SGridLayout(2,1));
-        panel.add(new SLabel("<h4>Image Buttons not in a form</h4>"));
-        panel.add(new SLabel("<h5>TestBC and TestBR are disabled</h5>"));
-        panel.add(createImageButtonExample());
-        cont.add(panel);
-
-
-        SForm form = new SForm(new SGridLayout(2,1));
+        SForm form = new SForm();
         form.add(new SLabel("<h4>Buttons in a form</h4>"));
-        panel.add(new SLabel("<h5>TestBC and TestBR are disabled</h5>"));
         form.add(createButtonExample());
-        cont.add(form);
+        add(form);
 
-        form = new SForm(new SGridLayout(2,1));
-        form.add(new SLabel("<h4>Image Buttons in a form</h4>"));
+        form = new SForm();
+        form.add(new SLabel("<h4>Image buttons in a form</h4>"));
         form.add(createImageButtonExample());
-        cont.add(form);
-
-        return cont;
+        add(form);
     }
 
 
     SContainer createButtonExample() {
-        SPanel erg = new SPanel(new SFlowDownLayout());
-
-        erg.add(createTextButtonExample());
-
-        return erg;
-    }
-
-
-    SContainer createTextButtonExample() {
         SPanel text = new SPanel();
 
         final SLabel pressed = new SLabel("no Button pressed");
@@ -162,7 +138,7 @@ public class ButtonExample
         buttons[8].setVerticalTextPosition(SConstants.BOTTOM);
         buttons[8].setHorizontalTextPosition(SConstants.RIGHT);
 
-        SPanel erg = new SPanel(new SFlowDownLayout());
+        SPanel erg = new SPanel();
 
         SGridLayout grid = new SGridLayout(3,3);
         grid.setBorder(1);
@@ -184,6 +160,7 @@ public class ButtonExample
             b.add(buttons[i]);
 
         erg.add(b);
+        erg.add(new SLabel("<br />"));
         erg.add(pressed);
 
         return erg;

@@ -81,7 +81,6 @@ public final class TableCG
         }
     }
 
-    /*
     protected void writeCell(Device d, STable table, int row, int col)
         throws IOException
     {
@@ -120,7 +119,6 @@ public final class TableCG
             d.append("</th>");
         }
     }
-    */
 }
 
 /*

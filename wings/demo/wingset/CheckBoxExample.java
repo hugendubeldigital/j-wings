@@ -33,10 +33,9 @@ public class CheckBoxExample
 
 
     public CheckBoxExample() {
-        super(new SFlowDownLayout());
+        super(new SGridLayout(2));
 
-        add(createExample());
-        add(new SSeparator());
+        createExample();
 
         SHRef href = new SHRef("View Source Code");
         href.setReference("/demo/wingset/" +
@@ -45,46 +44,30 @@ public class CheckBoxExample
 
     }
 
+    void createExample() {
+        add(new SLabel("<h4>CheckBoxes outside forms</h4>"));
+        add(new SLabel("<h4>Image CheckBoxes outside forms</h4>"));
 
-    SContainer createExample() {
-        SContainer cont = new SContainer(new SGridLayout(2,2));
+        add(createCheckBoxExample());
+        add(createImageCheckBoxExample());
 
-        SPanel panel = new SPanel(new SGridLayout(2,1));
-        panel.add(new SLabel("<h4>CheckBoxes not in a form</h4>"));
-        panel.add(createCheckBoxExample());
-        cont.add(panel);
-
-
-        panel = new SPanel(new SGridLayout(2,1));
-        panel.add(new SLabel("<h4>Image CheckBoxes not in a form</h4>"));
-        panel.add(new SLabel("<h5>TestBC and TestBR are disabled</h5>"));
-        panel.add(createImageCheckBoxExample());
-        cont.add(panel);
-
-        SForm form = new SForm(new SGridLayout(2,1));
+        SForm form = new SForm();
         form.add(new SLabel("<h4>CheckBoxes in a form</h4>"));
         form.add(createCheckBoxExample());
+        form.add(new SLabel("<br />"));
         form.add(new SButton("submit"));
-        cont.add(form);
+        add(form);
 
-        form = new SForm(new SGridLayout(2,1));
+        form = new SForm();
         form.add(new SLabel("<h4>Image CheckBoxes in a form</h4>"));
-        panel.add(new SLabel("<h5>TestBC and TestBR are disabled</h5>"));
         form.add(createImageCheckBoxExample());
+        form.add(new SLabel("<br />"));
         form.add(new SButton("submit"));
-        cont.add(form);
-
-        return cont;
+        add(form);
     }
 
 
     SContainer createCheckBoxExample() {
-        SPanel erg = new SPanel(new SFlowDownLayout());
-        erg.add(createAnchorCheckBoxExample());
-        return erg;
-    }
-
-    SContainer createAnchorCheckBoxExample() {
         SPanel text = new SPanel();
 
         for ( int i=0; i<3; i++ ) {

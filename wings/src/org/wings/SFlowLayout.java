@@ -52,8 +52,7 @@ public class SFlowLayout
      * TODO: documentation
      *
      */
-    public SFlowLayout() {
-    }
+    public SFlowLayout() {}
 
     /**
      * TODO: documentation

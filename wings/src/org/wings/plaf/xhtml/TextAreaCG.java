@@ -71,6 +71,7 @@ public class TextAreaCG
         switch(textArea.getLineWrap()) {
         case 1:
             d.append(" wrap=\"virtual\"");
+            break;
         case 2:
             d.append(" wrap=\"physical\"");
         }

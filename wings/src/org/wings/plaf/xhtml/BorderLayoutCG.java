@@ -98,7 +98,7 @@ public class BorderLayoutCG
             writeComponentAlignment(d, south);
             d.append(">");
             writeComponent(d, south);
-            d.append("</tr>");
+            d.append("</td></tr>");
         }
         d.append("\n</table>");
     }

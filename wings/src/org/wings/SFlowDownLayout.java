@@ -35,6 +35,7 @@ public class SFlowDownLayout
     public SFlowDownLayout() {
         super();
         setOrientation(SConstants.VERTICAL);
+        setAlignment(SConstants.LEFT_ALIGN);
     }
 }
 

@@ -16,8 +16,8 @@ package org.wings;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.*;
 import java.net.URL;
-
 import javax.swing.*;
 
 import java.util.ArrayList;
@@ -256,26 +256,97 @@ public class SButton extends SAbstractButton
         return ( icon!=null || iconAddress!=null );
     }
 
-    /**
-     * TODO: documentation
-     */
-    public static void main(String[] args) {
 
-        SFrame frame = new SFrame();
+    private Action action;
+    private PropertyChangeListener actionPropertyChangeListener;
 
-        SPanel erg = new SPanel(new SFlowDownLayout());
-        SForm form = new SForm();
-        SButton b = new SButton("form");
-        b.setIcon("http://www.mercatis.de/pics/pikto.gif");
-        form.add(b);
-        erg.add(form);
+    public void setAction(Action a) {
+	Action oldValue = getAction();
+	if (action == null || !action.equals(a)) {
+	    action = a;
+	    if (oldValue != null) {
+		removeActionListener(oldValue);
+		oldValue.removePropertyChangeListener(actionPropertyChangeListener);
+		actionPropertyChangeListener = null;
+	    }
+	    configurePropertiesFromAction(action);
+	    if (action != null) {		
+		// Don't add if it is already a listener
+		if (!isListener(ActionListener.class, action)) {
+		    addActionListener(action);
+		}
+		// Reverse linkage:
+		actionPropertyChangeListener = createActionPropertyChangeListener(action);
+		action.addPropertyChangeListener(actionPropertyChangeListener);
+	    }
+	    firePropertyChange("action", oldValue, action);
+	}
+    }
 
-        b = new SButton();
-        b.setIcon("http://www.mercatis.de/pics/pikto.gif");
-        erg.add(b);
+    private boolean isListener(Class c, ActionListener a) {
+	boolean isListener = false;
+	Object[] listeners = listenerList.getListenerList();
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i] == c && listeners[i+1] == a) {
+                isListener = true;
+	    }
+	}
+	return isListener;
+    }
 
-        frame.getContentPane().add(erg);
-        System.out.println(frame.show());
+    public Action getAction() {
+	return action;
+    }
+
+    protected void configurePropertiesFromAction(Action a) {
+	setActionCommand((a != null ? (String)a.getValue(Action.ACTION_COMMAND_KEY) : null));
+	setText((a != null ? (String)a.getValue(Action.NAME) : null));
+	setIcon((a != null ? (Icon)a.getValue(Action.SMALL_ICON) : null));
+	setEnabled((a != null ? a.isEnabled() : true));
+ 	setToolTipText((a != null ? (String)a.getValue(Action.SHORT_DESCRIPTION) : null));	
+    }
+
+    protected PropertyChangeListener createActionPropertyChangeListener(Action a) {
+        return new ButtonActionPropertyChangeListener(this, a);
+    }
+
+    private static class ButtonActionPropertyChangeListener
+        extends AbstractActionPropertyChangeListener
+    {
+	ButtonActionPropertyChangeListener(SButton b, Action a) {
+	    super(b, a);
+	}
+
+	public void propertyChange(PropertyChangeEvent e) {	    
+	    String propertyName = e.getPropertyName();
+	    SButton button = (SButton)getTarget();
+	    if (button == null) {
+		Action action = (Action)e.getSource();
+		action.removePropertyChangeListener(this);
+            }
+            else {
+                if (e.getPropertyName().equals(Action.NAME)) {
+                    String text = (String)e.getNewValue();
+                    button.setText(text);
+                }
+                else if (e.getPropertyName().equals(Action.SHORT_DESCRIPTION)) {
+                    String text = (String)e.getNewValue();
+                    button.setToolTipText(text);
+                }
+                else if (propertyName.equals("enabled")) {
+                    Boolean enabled = (Boolean)e.getNewValue();
+                    button.setEnabled(enabled.booleanValue());
+                }
+                else if (e.getPropertyName().equals(Action.SMALL_ICON)) {
+                    Icon icon = (Icon)e.getNewValue();
+                    button.setIcon(icon);
+                }
+                else if (e.getPropertyName().equals(Action.ACTION_COMMAND_KEY)) {
+                    String actionCommand = (String)e.getNewValue();
+                    button.setActionCommand(actionCommand);
+                }
+            }
+        }
     }
 
     /**

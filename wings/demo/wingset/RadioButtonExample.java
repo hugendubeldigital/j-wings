@@ -32,10 +32,9 @@ public class RadioButtonExample
     javax.swing.Icon icon = null;
 
     public RadioButtonExample() {
-        super(new SFlowDownLayout());
+        super(new SGridLayout(2));
 
-        add(createExample());
-        add(new SSeparator());
+        createExample();
 
         SHRef href =  new SHRef("View Source Code");
         href.setReference("/demo/wingset/" +
@@ -44,44 +43,28 @@ public class RadioButtonExample
     }
 
 
-    SContainer createExample() {
-        SContainer cont = new SContainer(new SGridLayout(2,2));
+    void createExample() {
+        add(new SLabel("<h4>RadioButtons outside forms</h4>"));
+        add(new SLabel("<h4>Image RadioButtons outside forms</h4>"));
+        add(createRadioButtonExample());
+        add(createImageRadioButtonExample());
 
-        SPanel panel = new SPanel(new SGridLayout(2,1));
-        panel.add(new SLabel("<h4>RadioButtons not in a form</h4>"));
-        panel.add(createRadioButtonExample());
-        cont.add(panel);
-
-        panel = new SPanel(new SGridLayout(2,1));
-        panel.add(new SLabel("<h4>Image RadioButtons not in a form</h4>"));
-        panel.add(new SLabel("<h5>TestBC and TestBR are disabled</h5>"));
-        panel.add(createImageRadioButtonExample());
-        cont.add(panel);
-
-        SForm form = new SForm(new SGridLayout(2,1));
+        SForm form = new SForm();
         form.add(new SLabel("<h4>RadioButtons in a form</h4>"));
         form.add(createRadioButtonExample());
+        form.add(new SLabel("<br />"));
         form.add(new SButton("submit"));
-        cont.add(form);
+        add(form);
 
-        form = new SForm(new SGridLayout(2,1));
+        form = new SForm();
         form.add(new SLabel("<h4>Image RadioButtons in a form</h4>"));
-        panel.add(new SLabel("<h5>TestBC and TestBR are disabled</h5>"));
         form.add(createImageRadioButtonExample());
+        form.add(new SLabel("<br />"));
         form.add(new SButton("submit"));
-        cont.add(form);
-
-        return cont;
+        add(form);
     }
-
 
     SContainer createRadioButtonExample() {
-        SPanel erg = new SPanel(new SFlowDownLayout());
-        erg.add(createAnchorRadioButtonExample());
-        return erg;
-    }
-
-    SContainer createAnchorRadioButtonExample() {
         SPanel text = new SPanel();
 
         SButtonGroup group = new SButtonGroup();

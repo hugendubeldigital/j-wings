@@ -117,6 +117,11 @@ public class SOptionPane
     public static final int YES_NO_CANCEL_RESET_OPTION = 997;
 
     /**
+     * ContentPane with border layout.
+     */
+    private final SContainer contents = new SContainer(new SBorderLayout());
+
+    /**
      * Die Message des OptionPanes wird hier rein getan.
      */
     private final SContainer optionData = new SContainer();
@@ -190,14 +195,14 @@ public class SOptionPane
      */
     protected Object selected = null;
 
-    private final SPanel titlePanel = new SPanel(new SFlowDownLayout());
-
     /**
      * TODO: documentation
      *
      */
     public SOptionPane() {
-        super(new SBorderLayout());
+        SGridLayout layout = new SGridLayout(1);
+        layout.setBorder(1);
+        setLayout(layout);
         initPanel();
     }
 
@@ -226,13 +231,12 @@ public class SOptionPane
         images.add(yesnoImage);
         yesnoImage.setAlternativeText("question");
 
-        titlePanel.add(optionTitle);
-        titlePanel.add(new SSeparator());
+        add(optionTitle);
+        contents.add(optionData, SBorderLayout.CENTER);
+        contents.add(images, SBorderLayout.WEST);
+        add(contents);
 
-        add(optionButtons, SBorderLayout.SOUTH);
-        add(optionData, SBorderLayout.CENTER);
-        add(titlePanel, SBorderLayout.NORTH);
-        add(images, SBorderLayout.WEST);
+        add(optionButtons);
     }
 
     /**
@@ -306,8 +310,6 @@ public class SOptionPane
      *
      */
     protected void resetOptions() {
-        add(optionButtons, SBorderLayout.SOUTH);
-
         optionOK.setVisible(false);
         optionYes.setVisible(false);
         optionCancel.setVisible(false);
@@ -315,7 +317,7 @@ public class SOptionPane
         optionReset.setVisible(false);
 
         messageImage.setVisible(false);
-        questionImage.setVisible(false);;
+        questionImage.setVisible(false);
         yesnoImage.setVisible(false);
     }
 
@@ -343,7 +345,7 @@ public class SOptionPane
             }
         }
 
-        add(customButtons, SBorderLayout.SOUTH);
+        add(customButtons);
     }
 
 

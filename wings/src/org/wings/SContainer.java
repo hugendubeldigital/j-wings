@@ -330,6 +330,14 @@ public class SContainer
         addComponent(c, constraint);
     }
 
+    public SComponent add(SComponent c, int index) {
+        return addComponent(c, null, index);
+    }
+
+    public void add(SComponent c, Object constraint, int index) {
+        addComponent(c, constraint, index);
+    }
+
     /**
      * TODO: documentation
      *
@@ -347,6 +355,26 @@ public class SContainer
 
             getComponentList().add(c);
             getConstraintList().add(constraint);
+            c.setParent(this);
+
+            // processContainerEvent(new ContainerEvent(this,
+            // ContainerEvent.COMPONENT_ADDED, c));
+        }
+
+        return c;
+    }
+
+    public SComponent addComponent(SComponent c, int index) {
+        return addComponent(c, null, index);
+    }
+
+    public SComponent addComponent(SComponent c, Object constraint, int index) {
+        if (c != null) {
+            if (layout != null)
+                layout.addComponent(c, constraint);
+
+            getComponentList().add(index, c);
+            getConstraintList().add(index, constraint);
             c.setParent(this);
 
             // processContainerEvent(new ContainerEvent(this,

@@ -46,7 +46,7 @@ public final class EmptyBorderCG
     public void writePostfix(Device d, SBorder b)
 	throws IOException
     {
-	d.append("</span>");
+	d.append("</div>");
     }
 }
 

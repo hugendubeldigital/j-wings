@@ -75,16 +75,16 @@ public final class SUtil
         case NO_ALIGN:
             break;
         case CENTER:
-            s.append(" ALIGN=CENTER");
+            s.append(" align=\"center\"");
             break;
         case LEFT:
-            s.append(" ALIGN=LEFT");
+            s.append(" align=\"left\"");
             break;
         case RIGHT:
-            s.append(" ALIGN=RIGHT");
+            s.append(" align=\"right\"");
             break;
         case JUSTIFY:
-            s.append(" ALIGN=JUSTIFY");
+            s.append(" align=\"justify\"");
             break;
         }
 
@@ -93,13 +93,13 @@ public final class SUtil
         case CENTER:
             break;
         case TOP:
-            s.append(" VALIGN=TOP");
+            s.append(" valign=\"top\"");
             break;
         case BOTTOM:
-            s.append(" VALIGN=BOTTOM");
+            s.append(" valign=\"bottom\"");
             break;
         case BASELINE:
-            s.append(" VALIGN=BASELINE");
+            s.append(" valign=\"baseline\"");
             break;
         }
     }

@@ -29,30 +29,25 @@ import org.wings.*;
 public class TableExample
     extends SPanel
 {
-    SForm form = new SForm(new SFlowDownLayout());
+    SForm form = new SForm();
     STable formTable = new STable(new MyTableModel());
     STable table = new STable(new MyTableModel());
 
 
     public TableExample() {
-        super(new SFlowDownLayout());
+        super(new SGridLayout(1));
 
-        add(new SSeparator());
-        add(new SLabel("<h4>Table out of a form with multiple selection</h4>"));
+        add(new SLabel("<h4>Table outside a form with multiple selection</h4>"));
 
         table.setSelectionMode(MULTIPLE_SELECTION);
         // table.setShowGrid(false);
         add(table);
 
-        add(new SSeparator());
-
-        form.add(new SLabel("<h4>Table in a form with single selection</h4>"));
+        form.add(new SLabel("<h4>Table inside a form with single selection</h4>"));
         formTable.setSelectionMode(SINGLE_SELECTION);
         form.add(formTable);
         form.add(new SButton("SUBMIT"));
         add(form);
-
-        add(new SSeparator());
 
         SHRef href = new SHRef("View Source Code");
         href.setReference("/demo/wingset/" +
