@@ -33,7 +33,7 @@ public class ButtonCG
     protected String getPropertyPrefix() {
         return propertyPrefix;
     }
-
+    
     public void write(Device d, SComponent c)
         throws IOException
     {
@@ -138,41 +138,12 @@ public class ButtonCG
         throws IOException
     {
         String text = button.getText();
-        String iconAddress = button.getIconAddress();
-        String disabledIconAddress = button.getDisabledIconAddress();
-        Icon icon = button.getIcon();
-        Icon disabledIcon = button.getDisabledIcon();
         String tooltip = button.getToolTipText();
 
-        String iAdr = null;
-        Icon ic = null;
-
-        if (!button.isEnabled()){
-            if (disabledIconAddress != null)
-                iAdr = disabledIconAddress;
-            else if (disabledIcon != null)
-                ic = disabledIcon;
-
-            if (ic == null && iAdr == null)
-                if (iconAddress != null)
-                    iAdr = iconAddress;
-                else if (icon != null)
-                    ic = icon;
-        } else {
-            if (iconAddress != null)
-                iAdr = iconAddress.toString();
-            else if (icon != null)
-                ic = icon;
-        }
-
-        if (ic != null) {
-            ExternalizeManager ext = button.getExternalizeManager();
-            if (ext != null) {
-                iAdr = ext.externalize(ic);
-            }
-        }
-        else if(icon != null)
-            ic = icon;
+        SIcon ic = button.isEnabled() 
+            ? button.getIcon() 
+            : button.getDisabledIcon();
+        String iAdr = (ic != null) ? ic.getURL().toString() : null;
 
         if (iAdr != null) {
             writeAnchorPrefix(d, button);
