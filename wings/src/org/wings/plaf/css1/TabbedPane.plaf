@@ -459,7 +459,6 @@ protected void writeAnchor(final Device device, STabbedPane tabbed, int index, S
         %><a href="<%
         writeAnchorAddress(device, tabbed, index);
         %>"<%|title=tabbed.getToolTipTextAt(index)%><%
-
     }
     else {
         %><span<%
@@ -487,11 +486,11 @@ protected void writeAnchor(final Device device, STabbedPane tabbed, int index, S
     if ("Konqueror".equals(bname)) {
         text = org.wings.plaf.xhtml.Utils.escapeSpecialChars(text);
         text = text.replaceAll(" ", "&nbsp;");
-        %><%#text%></a><%
+        %><%#text%><%
     }
     else if ("Opera".equals(bname)) {
         %><%=text%><%
-        %></a> <%
+        %> <%  // some extra space
     }
     else {
         %><%=text%><%
