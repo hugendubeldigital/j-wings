@@ -39,6 +39,8 @@ import java.util.Stack;
  *
  * This class has just two buffers, containing the resulting java code:
  * a buffer for the common area and a buffer for the write method.
+ *
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  */
 public class TemplateParser {
     private final static String INDENT       = "    ";
@@ -137,7 +139,7 @@ public class TemplateParser {
                      + " implements org.wings.SConstants {");
         
         // collected HTML snippets
-        out.println ("\n//--- used template snippets.");
+        out.println ("\n//--- byte array converted template snippets.");
         Iterator n = stringPool.getNames();
         while (n.hasNext()) {
             String name = (String) n.next();
@@ -170,8 +172,8 @@ public class TemplateParser {
         out.println ("\n//--- code from write-template.");
         // collected write stuff.
         out.print ( writeJavaCode.toString());
-
-        out.println ("\n" + INDENT + "}  // -- end write() ");
+        out.println ("\n//--- end code from write-template.");
+        out.println ("\n" + INDENT + "}");
         out.println ("}");
         out.close();
     }
@@ -235,6 +237,7 @@ public class TemplateParser {
      * write-area: html-code (java-code html-code)* '</write>'
      */
     private void parseWrite() throws IOException, ParseException {
+        skipWhitespace();
         for (;;) {
             if ((parseHTMLTemplate(writeJavaCode)) == END_WRITE) {
                 checkBracesClosed();
@@ -338,7 +341,7 @@ public class TemplateParser {
         if (filename != null && filename.length() > 0)
             in.open(filename);
         else
-            reportError("cannot include file without name; 'file' attribute not set ?");
+            reportError("cannot include file without name; 'file=\"..\"' attribute not set ?");
     }
 
     /**
