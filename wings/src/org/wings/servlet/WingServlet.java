@@ -91,11 +91,11 @@ public abstract class WingServlet extends HttpServlet
      */
     protected void initExternalizeManager(ServletConfig config) {
         String timeout = config.getInitParameter("externalizer.timeout");
-        if ( timeout != null ) {
+        if (timeout != null) {
             try {
                 extManager.setDestroyerTimeout(Long.parseLong(timeout));
             }
-            catch ( NumberFormatException e ) {
+            catch (NumberFormatException e) {
                 System.err.println("invalid externalizer.timeout: " + timeout);
                 e.printStackTrace();
             }
@@ -133,11 +133,11 @@ public abstract class WingServlet extends HttpServlet
      */
     protected void initMaxContentLength(ServletConfig config) {
         String maxCL = config.getInitParameter("content.maxlength");
-        if ( maxCL != null ) {
+        if (maxCL != null) {
             try {
                 maxContentLength = Integer.parseInt(maxCL);
             }
-            catch ( NumberFormatException e ) {
+            catch (NumberFormatException e) {
                 System.err.println("invalid content.maxlength: " + maxCL);
             }
             debug("content.maxlength: " + maxContentLength);
@@ -169,7 +169,7 @@ public abstract class WingServlet extends HttpServlet
 
         if (DEBUG) {
             debug("Init Parameter");
-            for ( Enumeration en=config.getInitParameterNames(); en.hasMoreElements(); ) {
+            for (Enumeration en=config.getInitParameterNames(); en.hasMoreElements();) {
                 String param = (String)en.nextElement();
                 debug(param + " = " + config.getInitParameter(param));
             }
@@ -226,10 +226,10 @@ public abstract class WingServlet extends HttpServlet
         SessionServlet sessionServlet = null;
         HttpSession session = req.getSession(false);
 
-        if ( session != null )
-            sessionServlet = (SessionServlet)session.getValue(lookupName);
+        if (session != null)
+            sessionServlet = (SessionServlet)session.getAttribute(lookupName);
 
-        if ( sessionServlet!=null )
+        if (sessionServlet!=null)
             debug("sessionServlet: " + sessionServlet.getClass().getName());
         else
             debug("no session yet...");
@@ -287,7 +287,7 @@ public abstract class WingServlet extends HttpServlet
             sessionServlet.setParent(this);
             sessionServlet.setExternalizeManager(getExternalizeManager());
             sessionServlet.init(servletConfig);
-            session.putValue(lookupName, sessionServlet);
+            session.putAttribute(lookupName, sessionServlet);
 
             return sessionServlet;
         }
@@ -305,10 +305,10 @@ public abstract class WingServlet extends HttpServlet
         HttpSession session = req.getSession(false);
         SessionServlet sessionServlet = null;
 
-        if ( session != null )
-            sessionServlet = (SessionServlet)session.getValue(lookupName);
+        if (session != null)
+            sessionServlet = (SessionServlet)session.getAttribute(lookupName);
         
-        if ( sessionServlet == null )
+        if (sessionServlet == null)
             sessionServlet = newSession(req);
 
         return sessionServlet;
@@ -356,10 +356,10 @@ public abstract class WingServlet extends HttpServlet
         if (info == null)
             return;
         Set headers = info.handler.getHeaders(info.extObject);
-        if ( headers != null ) {
-            for ( Iterator it = headers.iterator(); it.hasNext(); ) {
+        if (headers != null) {
+            for (Iterator it = headers.iterator(); it.hasNext();) {
                 Map.Entry entry = (Map.Entry) it.next();
-                response.addHeader( (String) entry.getKey(), 
+                response.addHeader((String) entry.getKey(), 
                                     (String) entry.getValue());
             }
         }
@@ -429,8 +429,8 @@ public abstract class WingServlet extends HttpServlet
             sessionServlet = getSessionServlet(req);
         }
 
-        if ( DEBUG ) {
-            if ( req.getParameterValues("exit")!=null ) {
+        if (DEBUG) {
+            if (req.getParameterValues("exit")!=null) {
                 req.getSession(false).invalidate();
                 sessionServlet.destroy();
                 sessionServlet = null;
@@ -443,9 +443,8 @@ public abstract class WingServlet extends HttpServlet
         sessionServlet.doGet(req, response);
     }
 
-
     private static final void debug(String msg) {
-        if ( DEBUG ) {
+        if (DEBUG) {
             DebugUtil.printDebugMessage(WingServlet.class, msg);
         }
     }

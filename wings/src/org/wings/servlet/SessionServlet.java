@@ -107,11 +107,6 @@ public abstract class SessionServlet
     private Session session = null;
 
     /**
-     * 
-     */
-    private boolean generateCode = true;
-
-    /**
      * TODO: documentation
      *
      * @param session
@@ -119,18 +114,7 @@ public abstract class SessionServlet
     protected SessionServlet(Session session) {
         this.session = session;
         SessionManager.setSession(session);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param session
-     */
-    protected SessionServlet(Session session, boolean generateCode) {
-        this.session = session;
-        
-        setCodeGeneration(generateCode);
-        SessionManager.setSession(session);
+        LookAndFeelFactory.unregister(session);
     }
 
     /**
@@ -144,15 +128,8 @@ public abstract class SessionServlet
     /**
      * TODO: documentation
      */
-    public final void setCodeGeneration(boolean on) {
-        generateCode = on;
-    }
-
-    /**
-     * TODO: documentation
-     */
     protected final void setParent(HttpServlet p) {
-        if ( p!=null )
+        if (p!=null)
             parent = p;
     }
 
@@ -164,14 +141,14 @@ public abstract class SessionServlet
      * TODO: documentation
      */
     public final void setLocaleFromHeader(String[] args) {
-        if ( args==null )
+        if (args==null)
             return;
 
-        for ( int i=0; i<args.length; i++ ) {
+        for (int i=0; i<args.length; i++) {
             try {
                 setLocaleFromHeader(new Boolean(args[i]).booleanValue());
-            } catch ( Exception e ) {
-                if ( DEBUG )
+            } catch (Exception e) {
+                if (DEBUG)
                     log(e.getMessage());
             }
         }
@@ -206,12 +183,12 @@ public abstract class SessionServlet
             return;
         StringTokenizer tokenizer = new StringTokenizer(locales, ",");
 
-        while ( tokenizer.hasMoreTokens() ) {
+        while (tokenizer.hasMoreTokens()) {
             try {
                 setLocale(getLocale(tokenizer.nextToken()));
                 return;
-            } catch ( IllegalArgumentException e) {
-                if ( DEBUG )
+            } catch (IllegalArgumentException e) {
+                if (DEBUG)
                     log(e.getMessage());
             }
         }
@@ -224,12 +201,12 @@ public abstract class SessionServlet
         if (locales == null)
             return;
 
-        for ( int i=0; i<locales.length; i++ ) {
+        for (int i=0; i<locales.length; i++) {
             try {
                 setLocale(locales[i]);
                 return;
-            } catch ( IllegalArgumentException e) {
-                if ( DEBUG )
+            } catch (IllegalArgumentException e) {
+                if (DEBUG)
                     log(e.getMessage());
             }
         }
@@ -242,8 +219,8 @@ public abstract class SessionServlet
         String args[] = {"", "", ""};
         StringTokenizer tokenizer = new StringTokenizer(localeString, "-");
         int index = 0;
-        while ( tokenizer.hasMoreTokens() ) {
-            if ( index>args.length )
+        while (tokenizer.hasMoreTokens()) {
+            if (index>args.length)
                 break;
             args[index++] = tokenizer.nextToken();
         }
@@ -260,9 +237,9 @@ public abstract class SessionServlet
      * TODO: documentation
      */
     protected final void setLocale(Locale l) {
-        if ( supportedLocales==null ||
+        if (supportedLocales==null ||
              supportedLocales.length==0 ||
-             ASUtil.inside(l, supportedLocales) ) {
+             ASUtil.inside(l, supportedLocales)) {
             session.setLocale(l);
             debug("Set Locale " + l);
         } else
@@ -293,9 +270,9 @@ public abstract class SessionServlet
     protected final void handleLocale(HttpServletRequest req) {
         setLocaleFromHeader(req.getParameterValues("LocaleFromHeader"));
 
-        if ( localeFromHeader )
+        if (localeFromHeader)
             setLocale(req.getHeader("Accept-Language"));
-        if ( req.getParameterValues("Lang")!=null ) {
+        if (req.getParameterValues("Lang")!=null) {
             setLocale(req.getParameterValues("Lang"));
             setLocaleFromHeader(false);
         }
@@ -310,7 +287,7 @@ public abstract class SessionServlet
      * @return
      */
     public ServletContext getServletContext() {
-        if ( parent!=this )
+        if (parent!=this)
             return parent.getServletContext();
         else
             return super.getServletContext();
@@ -323,7 +300,7 @@ public abstract class SessionServlet
      * @return
      */
     public String getInitParameter(String name) {
-        if ( parent!=this )
+        if (parent!=this)
             return parent.getInitParameter(name);
         else
             return super.getInitParameter(name);
@@ -335,7 +312,7 @@ public abstract class SessionServlet
      * @return
      */
     public Enumeration getInitParameterNames() {
-        if ( parent!=this )
+        if (parent!=this)
             return parent.getInitParameterNames();
         else
             return super.getInitParameterNames();
@@ -347,7 +324,7 @@ public abstract class SessionServlet
      * @param msg
      */
     public void log(String msg) {
-        if ( parent!=this )
+        if (parent!=this)
             parent.log(msg);
         else
             super.log(msg);
@@ -359,7 +336,7 @@ public abstract class SessionServlet
      * @return
      */
     public String getServletInfo() {
-        if ( parent!=this )
+        if (parent!=this)
             return parent.getServletInfo();
         else
             return super.getServletInfo();
@@ -371,7 +348,7 @@ public abstract class SessionServlet
      * @return
      */
     public ServletConfig getServletConfig() {
-        if ( parent!=this )
+        if (parent!=this)
             return parent.getServletConfig();
         else
             return super.getServletConfig();
@@ -386,7 +363,7 @@ public abstract class SessionServlet
      * @throws ServletException
      */
     protected void initErrorTemplate(ServletConfig config) throws ServletException {
-        if ( errorTemplateFile==null ) {
+        if (errorTemplateFile==null) {
             String errorTemplate = config.getInitParameter("ErrorTemplateFile");
         }
     }
@@ -522,13 +499,13 @@ public abstract class SessionServlet
 
         try {
             try {
-                if ( DEBUG ) {
-                    System.out.println("\nHEADER: ");
-                    for ( Enumeration en = req.getHeaderNames(); en.hasMoreElements(); ) {
+                if (DEBUG) {
+                    log("\nHEADER:");
+                    for (Enumeration en = req.getHeaderNames(); en.hasMoreElements();) {
                         String header = (String)en.nextElement();
-                        System.out.println("   " + header + ": " + req.getHeader(header));
+                        log("   " + header + ": " + req.getHeader(header));
                     }
-                    System.out.println();
+                    log("");
                 }
 
                 handleLocale(req);
@@ -541,7 +518,7 @@ public abstract class SessionServlet
             try {
                 ServletRequest asreq = new ServletRequest(req);
 
-                if ( DEBUG )
+                if (DEBUG)
                     measure.start("time to dispatch");
 
                 boolean eventsContained = false;
@@ -560,7 +537,7 @@ public abstract class SessionServlet
                     eventsContained = dispatchPostQuery(req.getQueryString()) || eventsContained;
                 }
 
-                if ( DEBUG ) {
+                if (DEBUG) {
                     measure.stop();
                     measure.start("time to fire form events");
                 }
@@ -570,46 +547,42 @@ public abstract class SessionServlet
                 // moved this beyound SForm.fireEvents()
                 getDispatcher().dispatchDone();
 
-                if ( DEBUG ) {
+                if (DEBUG) {
                     measure.stop();
                     measure.start("time to process request");
                 }
 
-                if (generateCode) {
-                    // default content ist text/html
-                    response.setContentType("text/html;charset=" + session.getCharSet());
+                // default content ist text/html
+                response.setContentType("text/html;charset=" + session.getCharSet());
 
-                    // Page must not be cached since higly dynamic
-                    response.setHeader("Pragma", "no-cache");
-                    response.setHeader("Cache-Control",
-                                       "max-age=0, no-cache, must-revalidate");
-                    // 1000 (one second after Jan 01 1970) because of some IE bug:
-                    response.setDateHeader("Expires", 1000);
-                }
+                // Page must not be cached since higly dynamic
+                response.setHeader("Pragma", "no-cache");
+                response.setHeader("Cache-Control",
+                                   "max-age=0, no-cache, must-revalidate");
+                // 1000 (one second after Jan 01 1970) because of some IE bug:
+                response.setDateHeader("Expires", 1000);
 
                 processRequest(asreq, response);
 
-                System.err.println("eventsContained: " + eventsContained);
+                log("eventsContained: " + eventsContained);
 
-                if (generateCode) {
-                    SComponent reload = null;
-                    if (eventsContained)
-                        reload = getSession().getReloadManager().getManagerComponent();
+                SComponent reload = null;
+                if (eventsContained)
+                    reload = getSession().getReloadManager().getManagerComponent();
 
-                    if (reload == null)
-                        reload = getFrame();
+                if (reload == null)
+                    reload = getFrame();
 
-                    reload.write(new ServletDevice(response.getOutputStream()));
-                }
+                reload.write(new ServletDevice(response.getOutputStream()));
 
-                if ( DEBUG ) {
+                if (DEBUG) {
                     measure.stop();
                     debug(measure.print());
                     measure.reset();
                 }
 
             }
-            catch ( Exception e) {
+            catch (Exception e) {
                 handleException(req, response, e);
             }
             finally {
@@ -647,11 +620,8 @@ public abstract class SessionServlet
                                    HttpServletResponse res,
                                    Exception e)
     {
-        if ( !generateCode ) 
-            return;
-
         try {
-            if ( errorFrame == null ) {
+            if (errorFrame == null) {
                 errorFrame = new SFrame();
                 /*
                  * if we don't have an errorTemplateFile defined, then this
@@ -675,7 +645,7 @@ public abstract class SessionServlet
             errorMessageLabel.setText(e.getMessage());
             errorFrame.write(new ServletDevice (out));
         }
-        catch ( Exception ex ) {
+        catch (Exception ex) {
             // Ok, seems that we have no luck: write this to the error-Log.
             e.printStackTrace();
         }
@@ -707,6 +677,8 @@ public abstract class SessionServlet
     public void destroy() {
         debug("destroy called");
 
+        LookAndFeelFactory.unregister(session);
+
         try {
             SFrame f = getFrame();
             // traverse all frames in a frameset ?
@@ -714,20 +686,20 @@ public abstract class SessionServlet
                 f.getContentPane().removeAll();
             // remove all elements in ExternalizerCache ?
         }
-        catch ( Exception e ) {
+        catch (Exception e) {
             e.printStackTrace();
         }
         finally {
             Runtime rt = Runtime.getRuntime();
-            if ( DEBUG ) debug("free mem before gc: " + rt.freeMemory());
+            if (DEBUG) debug("free mem before gc: " + rt.freeMemory());
             rt.gc();
-            if ( DEBUG ) debug("free mem after gc: " + rt.freeMemory());
+            if (DEBUG) debug("free mem after gc: " + rt.freeMemory());
         }
     }
 
 
     private static final void debug(String msg) {
-        if ( DEBUG ) {
+        if (DEBUG) {
             DebugUtil.printDebugMessage(SessionServlet.class, msg);
         }
     }
