@@ -374,6 +374,7 @@ function _mouse_pos(evt, obj)
 // Tooltip
 var _FEHLER_ = false;
 var _SHOW_ = false;
+var tttimeout = null;
 
 function showTooltip(show, t)
 {
@@ -387,6 +388,7 @@ function showTooltip(show, t)
     // Tooltip wieder verstecken
     if(!show)
     {
+       if (tttimeout != null) clearTimeout(tttimeout);
        setVis('tooltip', false);
        _SHOW_ = false;
        return false;
@@ -411,7 +413,7 @@ function showTooltip(show, t)
 
     //window.status = "Pos:" + tooltip_y +  ':' + tooltip_x;
     var pos = pagePos(obj, tooltip_y, tooltip_x);
-    setVis('tooltip', true);
+    tttimeout = setTimeout("setVis('tooltip', true)", 1000);
 
     return true;
 }
