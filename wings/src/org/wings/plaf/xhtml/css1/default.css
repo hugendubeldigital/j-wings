@@ -179,6 +179,7 @@ FORM {
 	padding-bottom: 0px;
 	border-style: solid;
 	border-width: 1px;
+    padding : 0 px;
 }
 
 .menu {
@@ -197,6 +198,17 @@ FORM {
 	font-size: 14px;
   	color: #ffffff;
 	background-color: #5555AA;
+	border-width: 0px;
+	margin: 0px;
+	padding: 0px;
+	white-space: nowrap;
+}
+
+.smenu {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+  	color: #ffffff;
+	background-color: #7777CC;
 	border-width: 0px;
 	margin: 0px;
 	padding: 0px;

@@ -23,10 +23,10 @@
                      rightAligned = true;
                  }
                  %><td id="<%=mbar.getComponent(i).getComponentId() + "_hook"%>" class="menu"<%
-                 if ( mbar.getComponent(i).isEnabled() && 
+                 if ( mbar.getComponent(i).isEnabled() &&
                       mbar.getComponent(i) instanceof SMenuItem ) {
-                     %> onMouseOver="setStyleClass(this, 'amenu')"<%
-                     %> onMouseOut="setStyleClass(this, 'menu')"<%
+                     %> onMouseOver="Menu.prototype.setMouseOverStyle(this)"<%
+                     %> onMouseOut="Menu.prototype.setMouseOutStyle(this)"<%
                  }
                  %>>&nbsp;<%
                  mbar.getComponent(i).write(device);

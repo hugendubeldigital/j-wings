@@ -39,7 +39,7 @@ protected void writePopup(final Device device, SMenu menu)
     String componentId = menu.getComponentId();
     String popupId = componentId + "_pop";
 
-    %><table cellspacing="0" cellpadding="0" id="<%=popupId%>" class="pdmenu" style="display:none"><%
+    %><table cellpadding="0" cellspacing="0" id="<%=popupId%>" class="pdmenu" style="display:none"><%
 
     for (int i = 0; i < menu.getMenuComponentCount(); i++) {
         SComponent menuItem = menu.getMenuComponent(i);
@@ -54,15 +54,11 @@ protected void writePopup(final Device device, SMenu menu)
                     String itemParentId = popupId;
                     String itemPopupId = itemComponentId + "_pop";
 
-                    %> onMouseOver="setStyleClass(this, 'amenu')"<%
-                    %> onMouseOut="setStyleClass(this, 'menu')"<%
                     %> onMouseDown="Menu.prototype.toggle('<%=itemParentId%>','<%=itemHookId%>','<%=itemPopupId%>')"<%
                 }
                 %> class="menu"<%
             } else {
                 if (menuItem.isEnabled()) {
-                    %> onMouseOver="setStyleClass(this, 'amenuitem')"<%
-                    %> onMouseOut="setStyleClass(this, 'menuitem')"<%
                     if ( menuItem instanceof SMenuItem ) {
                         %> onClick="window.location.href='<%writeAnchorAddress(device, (SMenuItem)menuItem);%>'"<%
                     }
