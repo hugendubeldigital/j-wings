@@ -11,24 +11,24 @@
  *
  * Please see COPYING for the complete licence.
  */
-
 package org.wings;
-
-
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.util.EventObject;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.EventListenerList;
+
 import org.wings.event.SRequestEvent;
 import org.wings.event.SRequestListener;
 import org.wings.session.SessionManager;
 import org.wings.table.STableCellEditor;
 
 /**
- * TODO: documentation
+ * A default Table cell Editor. In order to see the graphics, you need the
+ * Java look and feel graphics (jlfgr*.jar)
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
@@ -56,46 +56,46 @@ public class SDefaultCellEditor
      * is set.
      *
      */
-    protected final SLabel messageLabel = new SLabel();
+    protected final SLabel messageLabel;
 
     /**
      * Form for edit fields.
      *
      */
-    protected final SForm editorForm = new SForm();
+    protected final SForm editorForm;
 
     /**
      * If this button is pressed, editing is tried to stop. If input validation
      * found no error, editing is stopped, else an error message is displayed
      *
      */
-    protected final SButton ok = new SButton();
+    protected final SButton ok;
 
     /**
      * If this button is pressed, editing is canceled. 
      *
      */
-    protected final SButton cancel = new SButton();
+    protected final SButton cancel;
 
     /**
      * Store here the CellEditorListener
      *
      */
-    protected final EventListenerList listenerList = new EventListenerList();
+    protected final EventListenerList listenerList;
 
     /**
      * Indicates, that an stopped event occurs. A stop event occurs on pressing
      * the {@link #ok ok button} or on posting the {@link #editorForm form}. 
      *
      */
-    protected boolean fireStoppedEvent = false;
+    protected boolean fireStoppedEvent;
 
     /**
      * Indicates, that an cancel event occurs. A cancel event occurs on pressing
      * the {@link #cancel cancel button}.
      *
      */
-    protected boolean fireCanceledEvent = false;
+    protected boolean fireCanceledEvent;
 
     /**
      * Event listener, which set the fire... indicators. This event listener is
@@ -104,15 +104,15 @@ public class SDefaultCellEditor
      *
      */
     private final ActionListener fireEventListener = new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-                    if ( e.getSource()==editorForm || 
-                         e.getSource()==ok ) {
-                        fireStoppedEvent = true;
-                    } else if ( e.getSource()==cancel ) { 
-                        fireCanceledEvent = true;
-                    } // end of if ()
-		}
-	    };
+            public void actionPerformed(ActionEvent e) {
+                if ( e.getSource()==editorForm || 
+                     e.getSource()==ok ) {
+                    fireStoppedEvent = true;
+                } else if ( e.getSource()==cancel ) { 
+                    fireCanceledEvent = true;
+                } // end of if ()
+            }
+        };
     
     /**
      * This is a trick, after the dispatching is done, check, if this editor
@@ -134,7 +134,6 @@ public class SDefaultCellEditor
      * Fast edit support is editing with reduced interaction. E.g. a boolean
      * value can only have to states, true or false. So if editing is started,
      * the editor just flips the state and fires editing stopped. 
-     *
      */
     private boolean fastEditSupport = true;
 
@@ -151,15 +150,42 @@ public class SDefaultCellEditor
     }
 
     /**
+     * Initialize the DefaultCellEditor with an editor component (like an text
+     * field for instance). After calling this constructor, the 
+     * {@link EditorDelegate}, that links the CellEditor and the
+     * editorComponent has to be passed to the delegate instance variable.
+     *
+     * @param editorComponent the component used
+     * @param initializeButtons flag to indicate if the button texts and icons
+     *                          should be initialized.
+     */
+    protected SDefaultCellEditor(SComponent editorComponent,
+                                 boolean initializeButtons) 
+    {
+        this.messageLabel = new SLabel();
+        this.editorForm = new SForm();
+        this.ok = new SButton();
+        this.cancel = new SButton();
+        this.listenerList = new EventListenerList();
+        this.editorComponent = editorComponent;
+        this.delegate = delegate;
+        fireStoppedEvent = false;
+        fireCanceledEvent = false;
+
+        editorForm.add(messageLabel);
+        editorForm.add(editorComponent);
+        if (initializeButtons) {
+            initButtons();
+        }
+    }
+
+    /**
      * Constructs a DefaultCellEditor that uses a text field.
      *
      * @param x  a STextField object ...
      */
     public SDefaultCellEditor(STextField x) {
-        editorForm.add(messageLabel);
-        editorForm.add(x);
-
-        this.editorComponent = x;
+        this(x, true);
         this.delegate = new EditorDelegate() {
                 public void setValue(Object v) {
                     super.setValue(v);
@@ -181,10 +207,7 @@ public class SDefaultCellEditor
                 public boolean shouldSelectCell(EventObject anEvent) {
                     return true;
                 }
-        };
-
-        initButtons();
-
+            };
     }
 
     /**
@@ -193,10 +216,7 @@ public class SDefaultCellEditor
      * @param x  a SCheckBox object ...
      */
     public SDefaultCellEditor(SCheckBox x) {
-        editorForm.add(messageLabel);
-        editorForm.add(x);
-
-        this.editorComponent = x;
+        this(x, true);
         this.delegate = new EditorDelegate() {
                 public void setValue(Object v) {
                     // Try my best to do the right thing with v
@@ -232,15 +252,11 @@ public class SDefaultCellEditor
                 public boolean shouldSelectCell(EventObject anEvent) {
                     return false;
                 }
-        };
-
-        initButtons();
-
+            };
     }
-
+    
     /**
      * Intializes the buttons with default icons, tooltip text and listener.
-     *
      */
     protected void initButtons() {
 	ok.addActionListener(fireEventListener);
@@ -282,7 +298,7 @@ public class SDefaultCellEditor
     /**
      * Fast edit support is editing with reduced interaction. E.g. a boolean
      * value can only have to states, true or false. So if editing is started,
-     * the editor just flips the state and fires editing stopped. 
+     * the editor just flips the state and fires editing stopped.
      *
      * @param b a <code>boolean</code> value
      */
@@ -303,12 +319,11 @@ public class SDefaultCellEditor
     /**
      * Checks if a ChangeEvent should be fired. This is done on every
      * request. Pressing a button just set flags what to do. This method
-     * checks the flags and start the jobs. This is a trick which gets necessary
-     * because the {@link #editorForm form} fires an event on posting the form
-     * and it is not sure, if cancel, ok, undo or a editor component is
-     * responsible for this post. So flags are set and processed after
-     * dispatching of the request, when all flags are set.
-     *
+     * checks the flags and start the jobs. This is a trick which gets 
+     * necessary because the {@link #editorForm form} fires an event on 
+     * posting the form and it is not sure, if cancel, ok, undo or 
+     * a editor component is responsible for this post. So flags are set 
+     * and processed after dispatching of the request, when all flags are set.
      */
     protected void checkFireEvents() {
         // something is to be done, if the editor form has fired an action
@@ -502,24 +517,29 @@ public class SDefaultCellEditor
     //
 
     /**
-     * TODO: documentation
+     * The interface all editing boils down to: setting the value for
+     * the editor and retrieve its value.
      */
     protected class EditorDelegate {
         protected Object value;
 
         /**
-         * TODO: documentation
+         * Retrieve the value from the component used as Editor.
+         * This method is called by the CellEditor to retrieve the
+         * value after editing.
          *
-         * @return
+         * @return the value managed by the Editor.
          */
         public Object getCellEditorValue() {
             return value;
         }
 
         /**
-         * TODO: documentation
+         * Set the Editors value. The task of this method is to
+         * pass the value to the editor component so that editing
+         * can be started.
          *
-         * @param x
+         * @param the value to be edited.
          */
         public void setValue(Object x) {
             this.value = x;
