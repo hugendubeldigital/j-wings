@@ -149,13 +149,15 @@ public class SimpleAttributeSet
      */
     public Object clone() {
 	SimpleAttributeSet attr;
+	/*
 	try {
 	    attr = (SimpleAttributeSet)super.clone();
 	    attr.putAll(this);
 	} catch (CloneNotSupportedException cnse) {
 	    attr = null;
 	}
-        return attr;
+	*/
+        return new SimpleAttributeSet((HashMap) ((HashMap) map).clone());
     }
 
     /**
