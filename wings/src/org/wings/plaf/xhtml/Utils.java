@@ -76,7 +76,7 @@ public final class Utils implements SConstants
             else if ( c == '\"' )
                 escaped.append("&quot;");
             else if ( c == '\n' )
-                escaped.append("<br>");
+                escaped.append("<br />");
             else
                 escaped.append(c);
         }

@@ -212,7 +212,7 @@ public class HRefCG
                 d.append(" alt=\"").append(text).append("\"");
             }
 
-            d.append(">");
+            d.append(" />");
 
             writeAnchorPostfix(d, hRef);
         }

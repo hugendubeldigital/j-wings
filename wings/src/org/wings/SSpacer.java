@@ -77,7 +77,7 @@ public class SSpacer
     public void appendBody(Device s) {
         for ( int i=0; i<spaces; i++ ) {
             if ( alignment == VERTICAL )
-                s.append("<BR>");
+                s.append("<br />");
             else
                 s.append("&nbsp;");
         }

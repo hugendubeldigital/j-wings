@@ -269,7 +269,7 @@ public class ButtonCG
         else {
             // Hauptsache, es funktioniert !!!
             if (verticalTextPosition == TOP && horizontalTextPosition == LEFT) {
-                d.append("<table><tr><td valign=top>");
+                d.append("<table><tr><td valign=\"top\">");
                 writeFormText(d, button);
                 d.append("</td><td>");
                 writeFormIcon(d, button);
@@ -281,7 +281,7 @@ public class ButtonCG
                 writeFormIcon(d, button);
                 d.append("</td></tr></table>\n");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == LEFT) {
-                d.append("<table><tr><td valign=bottom>");
+                d.append("<table><tr><td valign=\"bottom\">");
                 writeFormText(d, button);
                 d.append("</td><td>");
                 writeFormIcon(d, button);

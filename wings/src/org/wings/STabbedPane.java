@@ -735,7 +735,7 @@ public class STabbedPane
 
             if ( maxTabsPerLine>0 ) {
                 if ( (i+1)%maxTabsPerLine==0 ) {
-                    buttons.add(new SLabel("<BR>"));
+                    buttons.add(new SLabel("<br />"));
                 }
             }
 

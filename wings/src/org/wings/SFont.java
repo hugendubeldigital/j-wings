@@ -135,21 +135,22 @@ public class SFont implements SConstants
     public void appendPrefix(Device s) {
         switch ( type ) {
         case BASEFONT:
-            s.append("<BASEFONT");
+            s.append("<basefont");
             break;
 
         default:
-            s.append("<FONT");
+            s.append("<font");
         }
 
         if ( face!=null )
-            s.append(" FACE=\"").append(face).append("\"");
+            s.append(" face=\"").append(face).append("\"");
 
         if ( size>Integer.MIN_VALUE ) {
-            s.append(" SIZE=");
-            if ( size>0 )
+            s.append(" size=\"");
+            if (size>0)
                 s.append("+");
             s.append(size);
+            s.append("\"");
         }
     }
 
@@ -162,11 +163,11 @@ public class SFont implements SConstants
         s.append(">");
         switch ( style ) {
         case ITALIC:
-            s.append("<I>");
+            s.append("<i>");
             break;
 
         case BOLD:
-            s.append("<B>");
+            s.append("<b>");
             break;
         }
     }
@@ -179,21 +180,21 @@ public class SFont implements SConstants
     public void appendPostfix(Device s) {
         switch ( style ) {
         case ITALIC:
-            s.append("</I>");
+            s.append("</i>");
             break;
 
         case BOLD:
-            s.append("</B>");
+            s.append("</b>");
             break;
         }
 
         switch ( type ) {
         case BASEFONT:
-            s.append("</BASEFONT>");
+            s.append("</basefont>");
             break;
 
         default:
-            s.append("</FONT>");
+            s.append("</font>");
         }
     }
 }

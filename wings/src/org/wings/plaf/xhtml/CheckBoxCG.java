@@ -319,7 +319,7 @@ public class CheckBoxCG
                 writeFormIcon(d, checkBox);
                 writeFormText(d, checkBox);
             } else if (verticalTextPosition == TOP && horizontalTextPosition == LEFT) {
-                d.append("<table><tr><TD valign=top>");
+                d.append("<table><tr><td valign=\"top\">");
                 writeFormText(d, checkBox);
                 d.append("</td><td>");
                 writeFormIcon(d, checkBox);
@@ -331,7 +331,7 @@ public class CheckBoxCG
                 writeFormIcon(d, checkBox);
                 d.append("</td></tr></table>\n");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == LEFT) {
-                d.append("<table><tr><TD valign=bottom>");
+                d.append("<table><tr><td valign=\"bottom\">");
                 writeFormText(d, checkBox);
                 d.append("</td><td>");
                 writeFormIcon(d, checkBox);
@@ -355,21 +355,21 @@ public class CheckBoxCG
                 writeFormText(d, checkBox);
                 d.append("</td></tr></table>\n");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == RIGHT) {
-                d.append("<table><tr><TD VALIGN=\"TOP\">");
+                d.append("<table><tr><td valign=\"top\">");
                 writeFormIcon(d, checkBox);
-                d.append("</td><TD ALIGN=\"RIGHT\">");
+                d.append("</td><td align=\"right\">");
                 writeFormText(d, checkBox);
                 d.append("</td></tr></table>\n");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == RIGHT) {
                 d.append("<table><tr><td>");
                 writeFormIcon(d, checkBox);
-                d.append("</td><TD ALIGN=\"RIGHT\">");
+                d.append("</td><td align=\"right\">");
                 writeFormText(d, checkBox);
                 d.append("</td></tr></table>\n");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == RIGHT) {
-                d.append("<table><tr><TD VALIGN=\"BOTTOM\">");
+                d.append("<table><tr><td valign=\"bottom\">");
                 writeFormIcon(d, checkBox);
-                d.append("</td></tr><tr><TD ALIGN=\"RIGHT\">");
+                d.append("</td></tr><tr><td align=\"right\">");
                 writeFormText(d, checkBox);
                 d.append("</td></tr></table>\n");
             } else {

@@ -87,8 +87,8 @@ public class TreeCG
         int nodeIndentDepth = tree.getNodeIndentDepth();
         d.append("<tr>");
         for ( int i=0; i<path.getPathCount()-1; i++ )
-            d.append("<td width=" + nodeIndentDepth + "></td>");
-        d.append("\n<td colspan=" + (depth - (path.getPathCount()-1)) + ">");
+            d.append("<td width=\"" + nodeIndentDepth + "\"></td>");
+        d.append("\n<td colspan=\"" + (depth - (path.getPathCount()-1)) + "\">");
 
         TreeNode node = (TreeNode)path.getLastPathComponent();
         STreeCellRenderer cellRenderer = tree.getCellRenderer();

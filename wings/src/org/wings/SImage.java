@@ -215,18 +215,18 @@ public class SImage
             } catch ( Exception e) {}
         }
 
-        s.append("<IMG SRC=\""+imagePath+"\"");
+        s.append("<img src=\""+imagePath+"\"");
         if ( text!=null && text.length()>0 )
-            s.append(" ALT=\"" + text + "\"");
+            s.append(" alt=\"" + text + "\"");
 
-        s.append(" WIDTH=\"");
+        s.append(" width=\"");
         if ( width>0 )
             s.append(width);
         else
             s.append(image.getIconWidth());
 
         s.append("\"");
-        s.append(" HEIGHT=\"");
+        s.append(" height=\"");
         if ( height>0 )
             s.append(height);
         else
@@ -235,17 +235,17 @@ public class SImage
         s.append("\"");
 
         if ( alignment==SConstants.RIGHT_ALIGN )
-            s.append(" ALIGN=RIGHT");
+            s.append(" align=\"right\"");
         else if ( alignment==SConstants.LEFT_ALIGN )
-            s.append(" ALIGN=LEFT");
+            s.append(" align=\"\"left\"");
         else if ( alignment==SConstants.CENTER_ALIGN )
-            s.append(" ALIGN=MIDDLE");
+            s.append(" align=\"middle\"");
         else if ( alignment==SConstants.TOP_ALIGN )
-            s.append(" ALIGN=TOP");
+            s.append(" align=\"top\"");
         else if ( alignment==SConstants.BOTTOM_ALIGN )
-            s.append(" ALIGN=BOTTOM");
+            s.append(" align=\"bottom\"");
 
-        s.append(" BORDER=\"" + border + "\">");
+        s.append(" border=\"" + border + "\" />");
     }
 
     /**

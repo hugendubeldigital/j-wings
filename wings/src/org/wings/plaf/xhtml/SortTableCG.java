@@ -202,7 +202,7 @@ public class SortTableCG
                         ExternalizeManager ext = sortTable.getExternalizeManager();
                         d.append("<img src=\"")
                             .append(ext.externalize(SSortTable.DEFAULT_SORT_UP)).
-                            append("\" border=\"0\">");
+                            append("\" border=\"0\" />");
                     } else
                         d.append("u&nbsp;");
                 } catch (java.io.IOException e) {
@@ -219,7 +219,7 @@ public class SortTableCG
                         ExternalizeManager ext = sortTable.getExternalizeManager();
                         d.append("<img src=\"")
                             .append(ext.externalize(SSortTable.DEFAULT_SORT_DOWN)).
-                            append("\" border\"=0\">");
+                            append("\" border\"=0\" />");
                     } else
                         d.append("d&nbsp;");
 
