@@ -93,7 +93,7 @@ public class PageParser {
 	Vector parts;
 	long   lastModified;
 	long   parseTime;
-	public DataSourceInfo () {};
+	public DataSourceInfo () {}
     }
 
     /**
