@@ -65,6 +65,10 @@ public class SDefaultTableCellRenderer
      */
     protected SGetAddress addr = null;
 
+    protected final static Icon DEFAULT_EDIT_ICON = 
+        new ResourceImageIcon(SDefaultTableCellRenderer.class, 
+                              "/org/wings/icons/Pencil.gif");
+
     /**
      * TODO: documentation
      *
@@ -75,7 +79,7 @@ public class SDefaultTableCellRenderer
         contents = new SLabel();
         contents.setStyle(null);
         contents.setEscapeSpecialChars(true);
-        edit = new SLabel();
+        edit = new SLabel( DEFAULT_EDIT_ICON );
         add(contents);
         add(edit);
     }
