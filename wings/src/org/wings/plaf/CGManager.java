@@ -23,69 +23,141 @@ import org.wings.*;
 import org.wings.session.*;
 import org.wings.style.*;
 
+/**
+ * The CGManager holds a reference to the current laf.
+ * It delegates to a session related CGDefaults table, that is backed by the laf's defaults.
+ */
 public class CGManager
 {
     private LookAndFeel lookAndFeel;
 
+    /**
+     * Get an Object from the defaults table.
+     * If the there's no value associated to the <code>key</code>, the request
+     * is delegated to the laf's defaults table.
+     * @param key the lookup key
+     */
     public Object get(String key) {
         return getDefaults().get(key);
     }
 
+    /**
+     * Get an Object from the defaults table.
+     * If the there's no value associated to the <code>key</code>, the request
+     * is delegated to the laf's defaults table.
+     * @param key the lookup key
+     * @param key the class of the object in question
+     */
     public Object getObject(String key, Class clazz) {
         return getDefaults().get(key, clazz);
     }
 
+    /**
+     * Get a ComponentCG from the defaults table.
+     * If the there's no value associated to the <code>target</code>'s cgClassID, the request
+     * is delegated to the laf's defaults table.
+     * @param target the SComponent
+     */
     public ComponentCG getCG(SComponent target) {
         System.err.print("CGManager.getCG(SComponent)");
         return (ComponentCG)getDefaults().get(target.getCGClassID(), ComponentCG.class);
     }
 
+    /**
+     * Get a LayoutManagerCG from the defaults table.
+     * If the there's no value associated to the <code>target</code>'s cgClassID, the request
+     * is delegated to the laf's defaults table.
+     * @param target the SLayoutManager
+     */
     public LayoutCG getCG(SLayoutManager target) {
         System.err.print("CGManager.getCG(SLayoutManager)");
         return (LayoutCG)getDefaults().get(target.getCGClassID(), LayoutCG.class);
     }
 
+    /**
+     * Get a BorderCG from the defaults table.
+     * If the there's no value associated to the <code>target</code>'s cgClassID, the request
+     * is delegated to the laf's defaults table.
+     * @param target the SBorder
+     */
     public BorderCG getCG(SBorder target) {
         System.err.print("CGManager.getCG(SBorder)");
         return (BorderCG)getDefaults().get(target.getCGClassID(), BorderCG.class);
     }
 
+    /**
+     * Get a Font from the defaults table.
+     * If the there's no value associated to the <code>key</code>, the request
+     * is delegated to the laf's defaults table.
+     * @param key the lookup key
+     */
     public SFont getFont(String key) {
         return (SFont)getDefaults().get(key, SFont.class);
     }
 
+    /**
+     * Get a Color from the defaults table.
+     * If the there's no value associated to the <code>key</code>, the request
+     * is delegated to the laf's defaults table.
+     * @param key the lookup key
+     */
     public Color getColor(String key) {
         return (Color)getDefaults().get(key, Color.class);
     }
 
+    /**
+     * Get a Style from the defaults table.
+     * If the there's no value associated to the <code>key</code>, the request
+     * is delegated to the laf's defaults table.
+     * @param key the lookup key
+     */
     public Style getStyle(String key) {
         return (Style)getDefaults().get(key, Style.class);
     }
 
+    /**
+     * Get a StyleSheet from the defaults table.
+     * If the there's no value associated to the <code>key</code>, the request
+     * is delegated to the laf's defaults table.
+     * @param key the lookup key
+     */
     public StyleSheet getStyleSheet(String key) {
         return (StyleSheet)getDefaults().get(key, StyleSheet.class);
     }
 
+    /**
+     * Get a Icon from the defaults table.
+     * If the there's no value associated to the <code>key</code>, the request
+     * is delegated to the laf's defaults table.
+     * @param key the lookup key
+     */
     public Icon getIcon(String key) {
         return (Icon)getDefaults().get(key, Icon.class);
     }
 
     private CGDefaults defaults = null;
 
-    public void setLookAndFeelDefaults(CGDefaults defaults) {
+    /**
+     * Set the defaults table.
+     * @param defaults the defaults table
+     */
+    public void setDefaults(CGDefaults defaults) {
         this.defaults = defaults;
     }
-    public CGDefaults getLookAndFeelDefaults() { return defaults; }
 
+    /**
+     * Return the defaults table.
+     * @return the defaults table
+     */
     public CGDefaults getDefaults() {
         return defaults;
     }
 
 
     /**
-     * Returns the current default look and feel, or null.
+     * Returns the current default look and feel.
      *
-     * @return the current default look and feel, or null.
+     * @return the current default look and feel
      * @see #setLookAndFeel
      */
     public LookAndFeel getLookAndFeel() {
@@ -115,10 +187,10 @@ public class CGManager
         lookAndFeel = newLookAndFeel;
         
         if (newLookAndFeel != null) {
-            setLookAndFeelDefaults(new CGDefaults(newLookAndFeel.getDefaults()));
+            setDefaults(new CGDefaults(newLookAndFeel.getDefaults()));
         }
         else {
-            setLookAndFeelDefaults(null);
+            setDefaults(null);
         }
         
         // have the session fire a propertyChangeEvent regarding the new lookAndFeel

@@ -25,6 +25,9 @@ import javax.swing.Icon;
 import org.wings.*;
 import org.wings.style.*;
 
+/**
+ * A defaults table, that acts as an override mechanism 
+ */
 public class CGDefaults
     extends HashMap
 {

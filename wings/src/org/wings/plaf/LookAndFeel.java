@@ -27,6 +27,13 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.style.*;
 
+/**
+ * A Look-and-Feel consists of a bunch of CGs and resource properties.
+ * wingS provides a pluggable look-and-feel (laf or plaf) concept similar to that of Swing.
+ * A certain plaf implementation adresses normally a specific browser.
+ * 
+ * @see org.wings.plaf.ComponentCG
+ */
 public class LookAndFeel
 {
     private static Map wrappers = new HashMap();
@@ -45,7 +52,10 @@ public class LookAndFeel
     protected ClassLoader classLoader;
     protected CGDefaults defaults;
 
-
+    /**
+     * Instantiate a laf using the war's classLoader.
+     * @param properties the configuration of the laf
+     */
     public LookAndFeel(Properties properties) {
 	this.properties = properties;
 	this.classLoader = getClass().getClassLoader();
@@ -53,6 +63,12 @@ public class LookAndFeel
         defaults = new ResourceFactory();
     }
 
+    /**
+     * Instantiate a laf using the specified classLoader.
+     * The properties are read from the classLoader's classpath as a resource with
+     * name <i>default.properties</i>.
+     * @param classLoader the classLoader that will load the CGs
+     */
     public LookAndFeel(ClassLoader classLoader)
         throws IOException
     {
@@ -67,8 +83,8 @@ public class LookAndFeel
     }
 
     /**
-     * Return a short string that identifies this look and feel, e.g.
-     * "XHTML".
+     * Return a unique string that identifies this look and feel, e.g.
+     * "konqueror"
      */
     public String getName() {
         return properties.getProperty("lookandfeel.name");
@@ -76,20 +92,33 @@ public class LookAndFeel
 
     /**
      * Return a one line description of this look and feel implementation,
-     * e.g. "XHTML Look and Feel".
+     * e.g. "Optimized for KDE's Konqueror Browser".
      */
     public String getDescription() {
         return properties.getProperty("lookandfeel.description");
     }
 
+    /**
+     * Return the ClassLoader, that is used to load the CGs.
+     * @return the ClassLoader
+     */
     public ClassLoader getClassLoader() {
         return classLoader;
     }
 
+    /**
+     * Return the CGDefaults, that hold the laf's defaults for CGs and resources
+     * @return the laf's defaults
+     */
     public CGDefaults getDefaults() {
         return defaults;
     }
 
+    /**
+     * Create a CG instance.
+     * @param className the full qualified class name of the CG
+     * @return a new CG instance
+     */
     public Object makeCG(String className) {
         System.err.print("LookAndFeel.makeCG(" + className + ")");
         try {
@@ -211,8 +240,9 @@ public class LookAndFeel
     /**
      * Utility method that creates an Object of class <code>clazz</code>
      * using the single String arg constructor.
+     * @param classLoader the classLoader to be used
      * @param value object as a string
-     * @param value class of the object
+     * @param clazz class of the object
      * @return the object
      */
     public static Object makeObject(ClassLoader classLoader, String value, Class clazz) {
@@ -238,6 +268,13 @@ public class LookAndFeel
         }
     }
 
+    /**
+     * Utility method that creates an Object of class <code>clazz</code>
+     * using the single String arg constructor.
+     * @param value object as a string
+     * @param clazz class of the object
+     * @return the object
+     */
     public Object makeObject(String value, Class clazz) {
         return makeObject(classLoader, value, clazz);
     }
@@ -288,11 +325,6 @@ public class LookAndFeel
             put(id, value);
             return value;
         }
-        /*
-        public Object put(Object key, Object value) {
-            return super.put(key, value);
-        }
-        */
     }
 }
 
