@@ -404,6 +404,8 @@ public abstract class SessionServlet
      * @return set the frame(set) for this session
      */
     public final void setFrame(SFrame frame) {
+        if (this.frame != null)
+          frame.setServer(this.frame.getServerAddress().getAbsoluteAddress());
         this.frame = frame;
         frame.setBaseTarget(getSession().getReloadManager().getTarget());
     }
