@@ -14,6 +14,7 @@
 
 package wingset;
 
+import javax.swing.tree.*;
 import org.wings.*;
 
 /**
@@ -67,7 +68,8 @@ public class TemplateExample
             c.add(b, "SELVAL=" + i);
         }
 
-        c.add(new TreeExample(), "TREE");
+        STree tree = new STree(new DefaultTreeModel(TreeExample.generateTree()));
+        c.add(tree, "TREE");
         return c;
     }
 }

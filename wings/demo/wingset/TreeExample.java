@@ -45,7 +45,7 @@ public class TreeExample
         add(href);
     }
 
-    TreeNode generateTree() {
+    static TreeNode generateTree() {
         DefaultMutableTreeNode top = new DefaultMutableTreeNode("Music");
         DefaultMutableTreeNode catagory;
         DefaultMutableTreeNode composer;

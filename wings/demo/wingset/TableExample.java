@@ -52,6 +52,7 @@ public class TableExample
         form.add(new SButton("SUBMIT"));
         add(form);
 
+        add(new SSeparator());
         SHRef href = new SHRef("View Source Code");
         href.setReference("/demo/wingset/" +
                           getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");

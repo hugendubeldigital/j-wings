@@ -15,6 +15,7 @@
 package wingset;
 
 import java.awt.Insets;
+import java.awt.event.*;
 import javax.swing.Icon;
 
 import org.wings.*;
@@ -42,25 +43,74 @@ public class BorderExample
 
     SPanel createBorderExample() {
         SPanel p = new SPanel();
-
-        SGridLayout layout = new SGridLayout(2);
-        p.setLayout(layout);
-
-        Icon icon = new ResourceImageIcon(SConstants.class, "icons/Wait.gif");
-
-        SLabel raised = new SLabel("raised");
-        raised.setBorder(new SBevelBorder(SBevelBorder.RAISED));
-        SLabel lowered = new SLabel("lowered");
-        lowered.setBorder(new SBevelBorder(SBevelBorder.LOWERED));
-        SLabel line = new SLabel("line");
-        line.setBorder(new SLineBorder(3));
-        SLabel empty = new SLabel("empty");
-        empty.setBorder(new SEmptyBorder(new Insets(3,3,3,3)));
+        try {
+            java.net.URL templateURL = 
+                getClass().getResource("/wingset/BorderExample.thtml");
+            if( templateURL == null ){
+                p.add(new SLabel("Sorry, can't find BorderExample.thtml. Are you using a JAR-File?"));
+                return p;
+            }
+            // you can of course directly give files here.
+            STemplateLayout layout = new STemplateLayout( templateURL );
+            p.setLayout( layout );
+        }
+        catch ( java.io.IOException except ) {
+            except.printStackTrace();
+        }
         
-        p.add(raised);
-        p.add(lowered);
-        p.add(line);
-        p.add(empty);
+        final SBorder raised  = new SBevelBorder(SBevelBorder.RAISED);
+        final SBorder lowered = new SBevelBorder(SBevelBorder.LOWERED);
+        final SBorder line    = new SLineBorder(3);
+        final SBorder empty   = new SEmptyBorder(new Insets(3,3,3,3));
+        
+        final SPanel c = new SPanel(new SBorderLayout());
+
+        c.setBackground(new java.awt.Color(100, 100, 255));
+        c.add(new SLabel(new ResourceImageIcon(SConstants.class, "icons/Wait.gif")),
+              SBorderLayout.NORTH);
+        c.add(new SLabel("This is the bordered content"));
+        final SLabel borderType = new SLabel("raised");
+        c.add(borderType, SBorderLayout.SOUTH);
+
+        p.add(c, "BorderExample");
+
+        SPanel buttons = new SPanel();
+        buttons.setLayout(new SGridLayout(2, 2));
+        SButtonGroup group = new SButtonGroup();
+        final SRadioButton rb = new SRadioButton("Raised");
+        group.add(rb); buttons.add(rb);
+        final SRadioButton lb = new SRadioButton("Lowered");
+        group.add(lb); buttons.add(lb);
+        final SRadioButton lineb = new SRadioButton("Line");
+        group.add(lineb); buttons.add(lineb);
+        final SRadioButton eb = new SRadioButton("Empty");
+        group.add(eb); buttons.add(eb);
+        
+        group.addActionListener (new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    SButtonGroup g = (SButtonGroup) e.getSource();
+                    Object button = g.getSelection();
+                    if (button == rb) {
+                        borderType.setText("Raised Border");
+                        c.setBorder(raised);
+                    }
+                    else if (button == lb) {
+                        borderType.setText("Lowered Border");
+                        c.setBorder(lowered);
+                    }
+                    else if (button == lineb) {
+                        borderType.setText("Line Border");
+                        c.setBorder(line);
+                    }
+                    else if (button == eb) {
+                        borderType.setText("No Border");
+                        c.setBorder(empty);
+                    }
+                }
+            });
+
+        rb.setSelected(true); // default: raised
+        p.add(buttons, "Modifier");
 
         return p;
     }
