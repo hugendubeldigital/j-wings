@@ -35,6 +35,9 @@ import org.wings.session.SessionManager;
  */
 public class SFrameSet
 extends SFrame {
+    
+    private boolean frameborderVisible = true;
+    
     public SFrameSet() {}
     
     public SFrameSet(SFrameSetLayout layout) {
@@ -183,6 +186,13 @@ extends SFrame {
     
     public void write(Device s) throws IOException {
         layout.write(s);
+    }
+    
+    public void setFrameborderVisible ( boolean bool ) {
+        this.frameborderVisible = bool;
+    }
+    public boolean isFrameBorderVisible () {
+        return frameborderVisible;
     }
 }
 

@@ -153,6 +153,10 @@ public class SFrameSetLayout
 	    d.print("\"");
 	}
 
+        if ( !frameSet.isFrameBorderVisible() ) {
+            d.print(" frameborder=\"0\" framespacing=\"0\" border=\"0\"" );
+        }
+        
 	d.print(">\n");
 
 	Iterator iterator = components.iterator();
