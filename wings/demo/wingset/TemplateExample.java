@@ -41,11 +41,14 @@ public class TemplateExample
         SForm c = new SForm();
 
         try {
-            java.net.URL templateURL = getClass()
-                .getResource("/wingset/TemplateExample.thtml");
+            java.net.URL templateURL = getClass().getResource("/wingset/TemplateExample.thtml");
+			if( templateURL == null ){
+				c.add(new SLabel("Sorry, can't find TemplateExample.thtml. Are you using a JAR-File?"));
+				return c;
+			}
             // you can of course directly give files here.
             STemplateLayout layout = new STemplateLayout( templateURL );
-            c.setLayout( layout );
+			c.setLayout( layout );
         }
         catch ( java.io.IOException except ) {
             except.printStackTrace();
