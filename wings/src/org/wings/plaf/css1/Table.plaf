@@ -78,8 +78,10 @@
         if (!selectionWritten) {
             writeEmptyHeaderCell(device, table);
         }
-
-        %></tr><%
+	
+	// end of row with newline.
+        %></tr>
+<%
     }
 
     String style = Utils.style(table);
@@ -110,7 +112,9 @@
             writeRowSelection(device, table, rendererPane, r, endCol);
         }
 
-        %></tr><%
+	// end of row with newline
+        %></tr>
+<%
     }
     %></table><%
 %>
