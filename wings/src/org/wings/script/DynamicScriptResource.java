@@ -14,16 +14,16 @@
 
 package org.wings.script;
 
-import java.io.IOException;
-import java.lang.reflect.*;
-import java.util.*;
-
+import org.wings.DynamicResource;
 import org.wings.SComponent;
 import org.wings.SContainer;
 import org.wings.SFrame;
-import org.wings.DynamicResource;
 import org.wings.io.Device;
 import org.wings.util.ComponentVisitor;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Traverses the component hierarchy of a frame and gathers the scripts of
@@ -32,31 +32,25 @@ import org.wings.util.ComponentVisitor;
  * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class DynamicScriptResource
-    extends DynamicResource
-{
+public class DynamicScriptResource extends DynamicResource {
     public DynamicScriptResource(SFrame frame) {
         super(frame, "js", "application/x-javascript");
     }
 
     public void write(Device out)
-        throws IOException
-    {
+            throws IOException {
         try {
             ScriptWriter visitor = new ScriptWriter(out);
             getFrame().invite(visitor);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw e;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new IOException(e.getMessage()); // UndeclaredThrowable
         }
     }
 
     protected static class ScriptWriter
-        implements ComponentVisitor
-    {
+            implements ComponentVisitor {
         Device out;
         Set set = new HashSet();
 
@@ -64,13 +58,13 @@ public class DynamicScriptResource
             this.out = out;
         }
 
-        private void writeListenersFrom(SComponent component) 
-            throws IOException {
+        private void writeListenersFrom(SComponent component)
+                throws IOException {
             ScriptListener[] listeners = component.getScriptListeners();
             if (listeners.length == 0)
                 return;
 
-            for ( int i=0; i<listeners.length; i++ ) {
+            for (int i = 0; i < listeners.length; i++) {
                 ScriptListener listener = listeners[i];
                 if (listener.getScript() != null) {
                     if (set.contains(listener.getScript()))
