@@ -43,7 +43,7 @@ public class TemplateExample
         
         try {
             java.net.URL templateURL = 
-                getClass().getResource("/wingset/TemplateExample.thtml");
+                getClass().getResource("/wingset/templates/TemplateExample.thtml");
             if( templateURL == null ){
                 c.add(new SLabel("Sorry, can't find TemplateExample.thtml. Are you using a JAR-File?"));
                 return c;

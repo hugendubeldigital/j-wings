@@ -31,7 +31,7 @@ public class BorderExample
 {
 
     public SComponent createExample() {
-        SPanel p = createResourceTemplatePanel("/wingset/BorderExample.thtml");
+        SPanel p = createResourceTemplatePanel("/wingset/templates/BorderExample.thtml");
         
         final SBorder raised  = new SBevelBorder(SBevelBorder.RAISED);
         final SBorder lowered = new SBevelBorder(SBevelBorder.LOWERED);

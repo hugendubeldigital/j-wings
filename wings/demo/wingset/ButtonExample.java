@@ -32,7 +32,7 @@ public class ButtonExample
     final Icon icon = new ResourceImageIcon(SButton.class, "icons/Warn.gif");
     final Icon disabledIcon = new ResourceImageIcon(SButton.class,
                                                     "icons/WarnDis.gif");
-
+    
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));
         

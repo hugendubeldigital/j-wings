@@ -27,36 +27,32 @@ import org.wings.*;
  * @version $Revision$
  */
 public class TableExample
-    extends SPanel
+    extends WingSetPane
 {
-    SForm form = new SForm();
-    STable formTable = new STable(new MyTableModel());
-    STable table = new STable(new MyTableModel());
+    public SComponent createExample() {
+        // Netscape 4.0 is dumb: it is very slow, so use default layout here.
+        setLayout(null);
 
-
-    public TableExample() {
-        super(new SGridLayout(1));
-
-        add(new SLabel("<h4>Table outside a form with multiple selection</h4>"));
+        SPanel p = new SPanel (new SGridLayout(1));
+        
+        STable table = new STable(new MyTableModel());
+        p.add(new SLabel("<h4>Table outside a form with multiple selection</h4>"));
         table.setShowGrid(true);
         table.setBorderLines(new Insets(1,1,1,1));
         table.setSelectionMode(MULTIPLE_SELECTION);
         // table.setShowGrid(false);
-        add(table);
+        p.add(table);
 
+        SForm form = new SForm();
+        STable formTable = new STable(new MyTableModel());
         form.add(new SLabel("<h4>Table inside a form with single selection</h4>"));
         formTable.setShowGrid(true);
         formTable.setBorderLines(new Insets(1,1,1,1));
         formTable.setSelectionMode(SINGLE_SELECTION);
         form.add(formTable);
         form.add(new SButton("SUBMIT"));
-        add(form);
-
-        add(new SSeparator());
-        SHRef href = new SHRef("View Source Code");
-        href.setReference("/demo/wingset/" +
-                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
-        add(href);
+        p.add(form);
+        return p;
     }
 
 

@@ -47,7 +47,7 @@ public class LabelExample
     }
 
     SContainer createRoundRadio(final SLabel label) {
-        SPanel b = createResourceTemplatePanel("/wingset/roundRadio.thtml");
+        SPanel b = createResourceTemplatePanel("/wingset/templates/roundRadio.thtml");
 
         SButtonGroup g = new SButtonGroup();
         final SRadioButton n = new SRadioButton();
@@ -92,7 +92,11 @@ public class LabelExample
 
         final SRadioButton cc = new SRadioButton();
         cc.setToolTipText("Center");
-        b.add(cc, "p=cc");
+        /*
+         * don't place this button in the page; a center/center does not 
+         * make sense with layerless HTML
+         */
+        //b.add(cc, "p=cc");
         g.add(cc);
 
         g.addActionListener (new ActionListener() {

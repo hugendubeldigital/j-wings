@@ -55,7 +55,7 @@ public class WingSetSession
         SContainer contentPane = getFrame().getContentPane();
         try {
             java.net.URL templateURL = 
-                getClass().getResource("/wingset/ExampleFrame.thtml");
+                getClass().getResource("/wingset/templates/ExampleFrame.thtml");
             if( templateURL == null ){
                 contentPane.add(new SLabel("Sorry, can't find ExampleFrame.thtml. Are you using a JAR-File?"));
             }

@@ -27,26 +27,18 @@ import org.wings.*;
  * @version $Revision$
  */
 public class ScrollPaneExample
-    extends SPanel
+    extends WingSetPane
 {
-    SBaseTable table = new SBaseTable(new MyTableModel());
+    public SComponent createExample() {
+        SPanel p = new SPanel();
 
-    public ScrollPaneExample() {
-        super(new SFlowDownLayout());
+        p.add(new SLabel("<h4>Table in a ScrollPane</h4>"));
 
-        add(new SLabel("<h4>Table in a ScrollPane</h4>"));
-
-        // table.setSelectionMode(MULTIPLE_SELECTION);
         // table.setShowGrid(true);
+        SBaseTable table = new SBaseTable(new MyTableModel());
         SScrollPane scroller = new SScrollPane(table);
-        add(scroller);
-
-        add(new SSeparator());
-
-        SHRef href =  new SHRef("View Source Code");
-        href.setReference("/demo/wingset/" +
-                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
-        add(href);
+        p.add(scroller);
+        return p;
     }
 
 
