@@ -31,7 +31,7 @@ import org.wings.style.*;
  * @version $Revision$
  */
 public class SDefaultTreeCellRenderer
-    extends SContainer
+    extends SLabel
     implements STreeCellRenderer
 {
     /** Color to use for the foreground for selected nodes. */
@@ -52,59 +52,12 @@ public class SDefaultTreeCellRenderer
     /** Style to use for the foreground for non-selected nodes. */
     protected Style textNonSelectionStyle = null;
 
-    /** Icon used to show non-leaf nodes that aren't expanded. */
-    transient protected SIcon closedIcon = null;
-
-    /** Icon used to show leaf nodes. */
-    transient protected SIcon leafIcon = null;
-
-    /** Icon used to show non-leaf nodes that are expanded. */
-    transient protected SIcon openIcon = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected SLabel handle = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected SLabel body = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected SGetAddress handleAddr = null;
-
-    /**
-     * TODO: documentation
-     */
-    protected SGetAddress bodyAddr = null;
-
     /**
      * Create a SDefaultTreeCellRenderer with default properties.
      */
     public SDefaultTreeCellRenderer() {
-        setLayout(null);
-        handle = new SLabel();
-        body = new SLabel();
-        add(handle);
-        add(body);
-        createDefaultIcons();
     }
 
-    /**
-     * TODO: documentation
-     *
-     */
-    protected void createDefaultIcons() {
-        CGManager cgManager = getSession().getCGManager();
-        if (cgManager == null)
-            return;
-        setOpenIcon(cgManager.getIcon("Tree.openIcon"));
-        setClosedIcon(cgManager.getIcon("Tree.closedIcon"));
-        setLeafIcon(cgManager.getIcon("Tree.leafIcon"));
-    }
 
     public SComponent getTreeCellRendererComponent(STree tree,
                                                    Object value,
@@ -114,69 +67,26 @@ public class SDefaultTreeCellRenderer
                                                    int row,
                                                    boolean hasFocus)
     {
-        handleAddr = tree.getServerAddress();
-        handleAddr.addParameter(tree.getNamePrefix() + "=h" + value.hashCode());
-        bodyAddr = tree.getServerAddress();
-        bodyAddr.addParameter(tree.getNamePrefix() + "=b" + value.hashCode());
-
-        String text = "";
-
         if (selected) {
-            body.setBackground(backgroundSelectionColor);
-            body.setForeground(textSelectionColor);
-            body.setStyle(textSelectionStyle);
+            setBackground(backgroundSelectionColor);
+            setForeground(textSelectionColor);
+            setStyle(textSelectionStyle);
         }
         else {
-            body.setBackground(backgroundNonSelectionColor);
-            body.setForeground(textNonSelectionColor);
-            body.setStyle(textNonSelectionStyle);
+            setBackground(backgroundNonSelectionColor);
+            setForeground(textNonSelectionColor);
+            setStyle(textNonSelectionStyle);
         }
 
         if (value == null) {
-            body.setText("&nbsp;");
+            setText("&nbsp;");
             return this;
         }
 
-        if (!leaf) {
-            if (expanded) {
-                if (openIcon == null)
-                    text += "-";
-                handle.setIcon(openIcon);
-            }
-            else {
-                if (closedIcon == null)
-                    text += "+";
-                handle.setIcon(closedIcon);
-            }
-        }
-        else
-            handle.setIcon(leafIcon);
-
-        body.setText(text + value.toString());
-        handle.setToolTipText(value.toString());
+        setText(value.toString());
+        setToolTipText(value.toString());
 
         return this;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param d
-     * @throws IOException
-     */
-    public void write(Device d)
-        throws IOException
-    {
-        d.append("<a href=\"");
-        handleAddr.write(d);
-        d.append("\">");
-        handle.write(d);
-        d.append("</a> ");
-        d.append("<a href=\"");
-        bodyAddr.write(d);
-        d.append("\"> ");
-        body.write(d);
-        d.append("</a>");
     }
 
     /**
@@ -286,61 +196,6 @@ public class SDefaultTreeCellRenderer
      */
     public Style getTextNonSelectionStyle() {
         return textNonSelectionStyle;
-    }
-
-    /**
-     * Sets the icon used to represent non-leaf nodes that are expanded.
-     *
-     * @param newIcon
-     */
-    public void setOpenIcon(SIcon newIcon) {
-        openIcon = newIcon;
-    }
-
-    /**
-     * Returns the icon used to represent non-leaf nodes that are expanded.
-     *
-     * @return
-     */
-    public SIcon getOpenIcon() {
-        return openIcon;
-    }
-
-    /**
-     * Sets the icon used to represent non-leaf nodes that are not expanded.
-     *
-     * @param newIcon
-     */
-    public void setClosedIcon(SIcon newIcon) {
-        closedIcon = newIcon;
-    }
-
-    /**
-     * Returns the icon used to represent non-leaf nodes that are not
-     * expanded.
-     *
-     * @return
-     */
-    public SIcon getClosedIcon() {
-        return closedIcon;
-    }
-
-    /**
-     * Sets the icon used to represent leaf nodes.
-     *
-     * @param newIcon
-     */
-    public void setLeafIcon(SIcon newIcon) {
-        leafIcon = newIcon;
-    }
-
-    /**
-     * Returns the icon used to represent leaf nodes.
-     *
-     * @return
-     */
-    public SIcon getLeafIcon() {
-        return leafIcon;
     }
 }
 

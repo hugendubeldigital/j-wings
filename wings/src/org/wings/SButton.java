@@ -23,7 +23,6 @@ import java.util.ArrayList;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
-import org.wings.externalizer.ExternalizeManager;
 
 /**
  * TODO: documentation

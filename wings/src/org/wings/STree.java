@@ -827,6 +827,23 @@ public class STree
         }
     }
 
+    /**
+     * This is for plafs only! 
+     * With this parameter the tree expands the given node 
+     * ({@link #processRequest})
+     */
+    public String getExpansionParameter(TreeNode node) {
+        return getNamePrefix() + "=h" + node.hashCode();
+    } 
+
+    /**
+     * This is for plafs only! 
+     * With this parameter the tree selects the given node 
+     * ({@link #processRequest})
+     */
+    public String getSelectionParameter(TreeNode node) {
+        return getNamePrefix() + "=b" + node.hashCode();
+    } 
 
     public void processRequest(String action, String[] values) {
         boolean handle = values[0].charAt(0) == 'h';

@@ -29,9 +29,81 @@ public class TreeCG
     extends org.wings.plaf.AbstractComponentCG
     implements org.wings.plaf.TreeCG
 {
+    // wie kann statisch auf die Defaults zugreifen??
+    private final static SIcon OPEN_ICON = 
+        new ResourceImageIcon("org/wings/icons/TreeOpen.gif");
+    private final static SIcon CLOSED_ICON = 
+        new ResourceImageIcon("org/wings/icons/TreeClosed.gif");
+    private final static SIcon LEAF_ICON = 
+        new ResourceImageIcon("org/wings/icons/TreeLeaf.gif");
+
+    private final static SIcon BLIND_ICON = 
+        new ResourceImageIcon("org/wings/icons/blind.gif");
+
     private final static String propertyPrefix = "Tree";
+
     private final static String nodePropertyPrefix = "TreeNode";
-    private final SImage blindGif = new SImage( new ResourceImageIcon("org/wings/icons/blind.gif") );
+
+    private SIcon openIcon = OPEN_ICON;
+    private SIcon closedIcon = CLOSED_ICON;
+    private SIcon leafIcon = LEAF_ICON;
+
+
+    /**
+     * Sets the icon used to represent non-leaf nodes that are expanded.
+     *
+     * @param newIcon
+     */
+    public void setOpenIcon(SIcon newIcon) {
+        openIcon = newIcon;
+    }
+
+    /**
+     * Returns the icon used to represent non-leaf nodes that are expanded.
+     *
+     * @return
+     */
+    public SIcon getOpenIcon() {
+        return openIcon;
+    }
+
+    /**
+     * Sets the icon used to represent non-leaf nodes that are not expanded.
+     *
+     * @param newIcon
+     */
+    public void setClosedIcon(SIcon newIcon) {
+        closedIcon = newIcon;
+    }
+
+    /**
+     * Returns the icon used to represent non-leaf nodes that are not
+     * expanded.
+     *
+     * @return
+     */
+    public SIcon getClosedIcon() {
+        return closedIcon;
+    }
+
+    /**
+     * Sets the icon used to represent leaf nodes.
+     *
+     * @param newIcon
+     */
+    public void setLeafIcon(SIcon newIcon) {
+        leafIcon = newIcon;
+    }
+
+    /**
+     * Returns the icon used to represent leaf nodes.
+     *
+     * @return
+     */
+    public SIcon getLeafIcon() {
+        return leafIcon;
+    }
+
     
     protected String getPropertyPrefix() {
         return propertyPrefix;
@@ -51,9 +123,6 @@ public class TreeCG
             start = viewport.y;
             count = viewport.height;
         }
-
-        blindGif.setWidth( tree.getNodeIndentDepth() );
-        blindGif.setHeight( 1 );
 
         int depth = tree.getMaximumExpandedDepth(); // - ( ( tree.isRootVisible() )?0:1 );
         d.append("<table border=\"0\" cellpadding=\"0\"");
@@ -84,23 +153,53 @@ public class TreeCG
         for (int i=((tree.isRootVisible())?0:1); i<path.getPathCount()-1; i++)
          {
             d.append("<td width=\"" + nodeIndentDepth + "\">");
-            blindGif.write( d );
+            Utils.appendBlindIcon(d, BLIND_ICON, 1, tree.getNodeIndentDepth());
             d.append("</td>");
-		 }
+         }
         d.append("\n<td nowrap colspan=\"" + (depth - (path.getPathCount()-1)) + "\">");
 
         TreeNode node = (TreeNode)path.getLastPathComponent();
         STreeCellRenderer cellRenderer = tree.getCellRenderer();
 
+        boolean isLeaf = tree.getModel().isLeaf(node);
+        boolean isExpanded = tree.isExpanded(path);
+
         SComponent renderer = cellRenderer.getTreeCellRendererComponent(tree, node,
                                                                         tree.isPathSelected(path),
-                                                                        tree.isExpanded(path),
-                                                                        tree.getModel().isLeaf(node), 0,
+                                                                        isExpanded,
+                                                                        isLeaf, 0,
                                                                         false);
+
+        SGetAddress selectionAddr = tree.getServerAddress();
+        selectionAddr.addParameter(tree.getSelectionParameter(node));
+
+        if ( isLeaf ) {
+            Utils.appendIcon(d, leafIcon, null);
+        } else {
+            SGetAddress expansionAddr = tree.getServerAddress();
+            expansionAddr.addParameter(tree.getExpansionParameter(node));
+            d.append("<a href=").append(expansionAddr.toString()).append(">");
+            if (isExpanded) {
+                if (openIcon == null)
+                    d.append("-");
+                else
+                    Utils.appendIcon(d, openIcon, null);
+            } else {
+                if (closedIcon == null)
+                    d.append("+");
+                else
+                    Utils.appendIcon(d, closedIcon, null);
+            }
+            d.append("</a>");
+        } 
+        d.append("&nbsp;");
+        
+        d.append("<a href=").append(selectionAddr.toString()).append(">");
         SCellRendererPane rendererPane = tree.getCellRendererPane();
         rendererPane.writeComponent(d, renderer, tree);
+        d.append("</a>");
 
-		d.append("\n</td><td width=\"100%\"></td></tr>\n");
+        d.append("\n</td><td width=\"100%\"></td></tr>\n");
     }
 }
 

@@ -184,6 +184,30 @@ public final class Utils implements SConstants
         appendTableCellAlignment(s,c);
         appendTableCellSpan(s,c);
     }
+
+    public static void appendIcon(Device d, SIcon icon, String align) {
+        d.append("<img src=\"").
+            append(icon.getURL()).
+            append("\"");
+        if (align != null)
+            d.append(" valign=\"").append(align).append("\"");
+        if ( icon.getIconWidth() > 0)
+            d.append(" width=\"").append(icon.getIconWidth()).append("\"");
+        if ( icon.getIconHeight() > 0)
+            d.append(" height=\"").append(icon.getIconHeight()).append("\"");
+        d.append(" border=\"0\">");
+
+    }
+
+    public static void appendBlindIcon(Device d, SIcon icon, int height, int width) {
+        d.append("<img src=\"").
+            append(icon.getURL()).
+            append("\"").
+            append(" width=\"").append(width).append("\"").
+            append(" height=\"").append(height).append("\"").
+            append(" border=\"0\">");
+
+    }
     
     
     /**
