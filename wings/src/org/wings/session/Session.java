@@ -306,8 +306,11 @@ public class Session
 
     protected void destroy() {
         Iterator it = frames.iterator();
-        while (it.hasNext())
-            ((SFrame)it.next()).getContentPane().removeAll();
+        while (it.hasNext()) {
+            SContainer container = ((SFrame)it.next()).getContentPane();
+            if (container != null)
+                container.removeAll();
+        }
 
         extManager = null;
         reloadManager = null;
