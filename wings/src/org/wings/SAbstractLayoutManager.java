@@ -94,7 +94,7 @@ public abstract class SAbstractLayoutManager
     public void write(Device d)
 	throws IOException
     {
-	String name;
+	String name = null;
 	
         if (DEBUG) {
 	    name = getClass().getName();
