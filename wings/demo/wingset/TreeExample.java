@@ -19,6 +19,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import org.wings.util.PropertyAccessor;
 import org.wings.*;
 
 /**
@@ -69,7 +70,7 @@ public class TreeExample
         /*
          * change properties of running CG ..
          */
-        if (tree.getCG() instanceof org.wings.plaf.css1.TreeCG) {
+        if (PropertyAccessor.hasProperty(tree.getCG(), "collapseControlIcon")){
             SButtonGroup group = new SButtonGroup();
             controlForm.add(new SLabel(" Folding icons: "));
             final SRadioButton plusButton = new SRadioButton("plus/minus");
@@ -84,17 +85,21 @@ public class TreeExample
             group.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         // plaf might have changed.
-                        if(tree.getCG() instanceof org.wings.plaf.css1.TreeCG){
-                            org.wings.plaf.css1.TreeCG cg;
-                            cg = (org.wings.plaf.css1.TreeCG) tree.getCG();
-                            if (plusButton.isSelected()) {
-                                cg.setCollapseControlIcon( MINUS );
-                                cg.setExpandControlIcon( PLUS );
-                            }
-                            else {
-                                cg.setCollapseControlIcon( ARROW_DOWN );
-                                cg.setExpandControlIcon( ARROW_RIGHT );
-                            }
+                        if (plusButton.isSelected()) {
+                            PropertyAccessor.setProperty(tree.getCG(), 
+                                                         "collapseControlIcon",
+                                                         MINUS );
+                            PropertyAccessor.setProperty(tree.getCG(), 
+                                                         "expandControlIcon",
+                                                         PLUS );
+                        }
+                        else {
+                            PropertyAccessor.setProperty(tree.getCG(), 
+                                                         "collapseControlIcon",
+                                                         ARROW_DOWN );
+                            PropertyAccessor.setProperty(tree.getCG(), 
+                                                         "expandControlIcon",
+                                                         ARROW_RIGHT );
                         }
                     }
                 });
