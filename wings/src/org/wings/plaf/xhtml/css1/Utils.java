@@ -193,7 +193,87 @@ public final class Utils
 	  append(name).append("\" value=\"").
 	  append(value).append("\" />\n");
     }
-    
+
+    public static String toHexString(int rgb) {
+        char[] buf = new char[6];
+        int digits = 6;
+        do {
+            buf[--digits] = hexDigits[rgb & 15];
+            rgb >>>= 4;
+        } while (digits!=0);
+
+        return new String(buf);
+    }
+
+    public static String toHexString(java.awt.Color c) {
+        return toHexString(c.getRGB());
+    }
+
+    public static void writeFontPrefix(Device d, SFont font)
+        throws IOException
+    {
+        writeFontPrefix(d, font, null);
+    }
+
+    public static void writeFontPrefix(Device d, SFont font, Color color)
+        throws IOException
+    {
+        if (font == null && color == null)
+            return;
+
+        String face = null;
+        int style = PLAIN;
+        int size = Integer.MIN_VALUE;
+        if (font != null) {
+            face = font.getFace();
+            style = font.getStyle();
+            size = font.getSize();
+        }
+        d.append("<font");
+
+        if (face != null)
+            d.append(" face=\"").append(face).append("\"");
+
+        if (size > Integer.MIN_VALUE) {
+            d.append(" size=");
+            if (size > 0)
+                d.append("+");
+            d.append(size);
+        }
+
+        if (color != null)
+            d.append(" color=#").append(toColorString(color));
+
+        d.append(">");
+
+        if ((style & ITALIC) != 0)
+            d.append("<i>");
+        if ((style & BOLD) != 0)
+            d.append("<b>");
+    }
+
+    public static void writeFontPostfix(Device d, SFont font)
+        throws IOException
+    {
+        writeFontPostfix(d, font, null);
+    }
+
+    public static void writeFontPostfix(Device d, SFont font, Color color)
+        throws IOException
+    {
+        if (font == null && color == null)
+            return;
+
+        int style = PLAIN;
+        if (font != null)
+            style = font.getStyle();
+
+        if ((style & BOLD) != 0)
+            d.append("</b>");
+        if ((style & ITALIC) != 0)
+            d.append("</i>");
+        d.append("</font>");
+    }
 }
 
 /*

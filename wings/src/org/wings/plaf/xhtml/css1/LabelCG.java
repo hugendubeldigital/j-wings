@@ -37,7 +37,7 @@ public final class LabelCG
 
             Utils.writeSpanWithStyleAttributePrefix(d, label );
             // override additional settings
-            org.wings.plaf.xhtml.old.Utils.writeFontPrefix(d, font, foreground);
+            Utils.writeFontPrefix(d, font, foreground);
             if (noBreak)
                 d.append("<nobr>");
 
@@ -47,8 +47,8 @@ public final class LabelCG
 
             if (noBreak)
                 d.append("</nobr>");
-            org.wings.plaf.xhtml.old.Utils.writeFontPostfix(d, font, foreground);
-            Utils.writeSpanWithStyleAttributePostfix(d, label );
+            Utils.writeFontPostfix(d, font, foreground);
+            Utils.writeSpanWithStyleAttributePostfix(d, label);
         }
     }
 }
