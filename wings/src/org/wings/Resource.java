@@ -85,7 +85,7 @@ public abstract class Resource implements Serializable, URLResource
     }
 
     /**
-     * TODO: documentation
+     * Returns the mime type of this resource.
      *
      * @return
      */
