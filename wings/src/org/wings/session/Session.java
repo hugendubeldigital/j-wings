@@ -61,6 +61,13 @@ public interface Session
     void setLocale(Locale l);
 
     Locale getLocale();
+
+    /**
+     * Get char set of this session (i. e. iso-8859-1).
+     *
+     * @return Char set of this session
+     */
+    String getCharSet();
 }
 
 /*

@@ -484,7 +484,7 @@ public abstract class SessionServlet
             }
 
             // default content ist text
-            response.setContentType("text/html;charset=iso-8859-1");
+            response.setContentType("text/html;charset=" + session.getCharSet());
 
             // Seite darf nicht gecacht werden !!
             response.setHeader("Pragma", "no-cache");

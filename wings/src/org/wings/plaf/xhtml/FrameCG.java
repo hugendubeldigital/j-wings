@@ -40,7 +40,9 @@ public class FrameCG
 	List metas = frame.metas();
 	List headers = frame.headers();
 	
-	d.append("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
+	d.append("<?xml version=\"1.0\" encoding=\"");
+	d.append(frame.getSession().getCharSet());
+	d.append("\"?>\n");
 	d.append("<!DOCTYPE html\n");
 	d.append("   PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n");
 	d.append("   \"DTD/xhtml1-strict.dtd\">\n");
@@ -53,7 +55,9 @@ public class FrameCG
 	d.append(title);
 	d.append("</title>\n");
 	
-	d.append("<meta http-equiv=\"Content-type\" content='text/html; charset=\"iso-8859-1\"' />\n");
+	d.append("<meta http-equiv=\"Content-type\" content='text/html; charset=\"");
+	d.append(frame.getSession().getCharSet());
+	d.append("\"' />\n");
 	d.append("<meta http-equiv=\"expires\" content=\"0\" />\n");
 	d.append("<meta http-equiv=\"pragma\" content=\"no-cache\" />\n");
 	
