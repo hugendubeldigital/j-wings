@@ -581,7 +581,7 @@ public class ImageInfo {
         width = getIntBigEndian(a, 14);
         height = getIntBigEndian(a, 18);
         bitsPerPixel = a[22] & 0xff;
-        int colorType = a[23] & 0xff;
+        colorType = a[23] & 0xff;
         if (colorType == 2 || colorType == 6) {
             bitsPerPixel *= 3;
         }
