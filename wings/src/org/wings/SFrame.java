@@ -22,19 +22,17 @@ import java.util.*;
 import java.util.logging.*;
 
 import org.wings.*;
+import org.wings.header.*;
 import org.wings.io.Device;
 import org.wings.plaf.*;
 import org.wings.style.StyleSheet;
-import org.wings.session.LowLevelEventDispatcher;
-import org.wings.session.Session;
-import org.wings.session.SessionManager;
-import org.wings.session.PropertyService;
+import org.wings.session.*;
 import org.wings.util.*;
 
 /**
  * The frame is the root component in every component hierarchie.
  * A SessionServlet requires an instance of SFrame to render the page.
- * SFrame consists of some header informaton (metas, headers, style sheet)
+ * SFrame consists of some header informaton (meta, link, script)
  * and a stack of components. The bottommost component of the stack is always
  * the contentPane. When dialogs are to be shown, they are stacked on top of
  * it.
@@ -60,19 +58,10 @@ public class SFrame
     protected String baseTarget = null;
 
     /**
-     * A List containing meta tags for the html header.
+     * A Set containing additional tags for the html header.
      */
-    protected ArrayList metas;
+    protected Set headers;
 
-    /**
-     * A List containing additional tags for the html header.
-     */
-    protected ArrayList headers;
-
-    /**
-     * A List containing links for the html header.
-     */
-    protected ArrayList links;
 
     // do not initialize with null
     private Color textColor;
@@ -251,37 +240,7 @@ public class SFrame
         return baseTarget;
     }
 
-    /*
-     * Add meta tags in the form of three attributes.
-     * For example:
-     * <PRE>name="keywords" lang="de" content="Ferien, Griechenland, Sonnenschein"<PRE>
-     *
-     * @param m
-     */
-    public void addMeta(String m) {
-        metas().add(m);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     */
-    public void clearMetas() {
-        metas().clear();
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public List metas() {
-        if (metas == null)
-            metas = new ArrayList(2);
-        return metas;
-    }
-
-    public void addHeader(String m) {
+    public void addHeader(Object m) {
 	headers().add(m);
     }
 
@@ -289,24 +248,10 @@ public class SFrame
 	headers().clear();
     }
     
-    public List headers() {
+    public Set headers() {
         if (headers == null)
-            headers = new ArrayList(2);
+            headers = new HashSet(2);
 	return headers;
-    }
-
-    public void addLink(SLink link) {
-	links().add(link);
-    }
-
-    public void clearLinks() {
-	links().clear();
-    }
-    
-    public List links() {
-        if (links == null)
-            links = new ArrayList(2);
-	return links;
     }
 
     /**
@@ -517,9 +462,7 @@ public class SFrame
         throws Exception
     {
         visitor.visit(this);
-        getContentPane().invite(visitor);
     }
-
 }
 
 /*

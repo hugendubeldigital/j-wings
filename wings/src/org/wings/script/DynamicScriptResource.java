@@ -58,6 +58,7 @@ public class DynamicScriptResource
         implements ComponentVisitor
     {
         Device out;
+        Set set = new HashSet();
 
         public ScriptWriter(Device out) {
             this.out = out;
@@ -68,11 +69,15 @@ public class DynamicScriptResource
             Collection listeners = component.getScriptListeners();
             if (listeners.size() == 0)
                 return;
-            
+
             Iterator iterator = listeners.iterator();
             while (iterator.hasNext()) {
                 ScriptListener listener = (ScriptListener)iterator.next();
                 if (listener.getScript() != null) {
+                    if (set.contains(listener.getScript()))
+                        continue;
+                    set.add(listener.getScript());
+                    out.print("\n");
                     out.print("// ");
                     out.print(component.getComponentId());
                     out.print(".");

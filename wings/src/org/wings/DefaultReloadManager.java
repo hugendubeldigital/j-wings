@@ -56,8 +56,10 @@ public class DefaultReloadManager
     }
 
     public synchronized void markDirty(DynamicResource d) {
-        if (d == null)
+        if (d == null) {
             System.err.println("markDirty: null");
+            return;
+        }
         dirtyResources.add(d);
     }
 

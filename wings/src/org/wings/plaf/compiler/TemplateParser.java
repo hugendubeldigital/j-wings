@@ -70,36 +70,43 @@ public class TemplateParser {
      *
      * The tags must be ordered according to their length.
      */
-    String stateTransitionTags[] = new String[] { "<%",           // 0 Start J.
-                                                  "%>",           // 1 End java
-                                                  "<write>",      // 2
-                                                  "</write>",     // 3
-                                                  "<import>",     // 4
-                                                  "<include",     // 5
-                                                  "</import>",    // 6
-                                                  "<template",    // 7
-                                                  "<property",    // 8
-                                                  "</template>",  // 9
-                                                  "</property>",  // 10
-                                                  "<comp-property", // 11
-                                                  "</comp-property>" }; // 12
-
+    String stateTransitionTags[] = new String[] { "<%",                // 0 Start J.
+                                                  "%>",                // 1 End java
+                                                  "<write>",           // 2
+                                                  "</write>",          // 3
+                                                  "<import>",          // 4
+                                                  "<include",          // 5
+                                                  "</import>",         // 6
+                                                  "<template",         // 7
+                                                  "<property",         // 8
+                                                  "<install>",         // 9
+                                                  "</install>",        // 10
+                                                  "</template>",       // 11
+                                                  "</property>",       // 12
+                                                  "<uninstall>",       // 13
+                                                  "</uninstall>",      // 14
+                                                  "<comp-property",    // 15
+                                                  "</comp-property>"}; // 16
 
     // the index for the tags. Yes: c-preprocessor and enumerations would be
     // better.
-    private final static int START_JAVA   = 0;
-    private final static int END_JAVA     = 1;
-    private final static int START_WRITE  = 2;
-    private final static int END_WRITE    = 3;
-    private final static int START_IMPORT = 4;
-    private final static int INCLUDE      = 5;
-    private final static int END_IMPORT   = 6;
-    private final static int TEMPLATE     = 7;
-    private final static int START_PROP   = 8;
-    private final static int END_TEMPLATE = 9;
-    private final static int END_PROP     = 10;
-    private final static int START_C_PROP = 11;
-    private final static int END_C_PROP   = 12;
+    private final static int START_JAVA      = 0;
+    private final static int END_JAVA        = 1;
+    private final static int START_WRITE     = 2;
+    private final static int END_WRITE       = 3;
+    private final static int START_IMPORT    = 4;
+    private final static int INCLUDE         = 5;
+    private final static int END_IMPORT      = 6;
+    private final static int TEMPLATE        = 7;
+    private final static int START_PROP      = 8;
+    private final static int START_INSTALL   = 9;
+    private final static int END_INSTALL     = 10;
+    private final static int END_TEMPLATE    = 11;
+    private final static int END_PROP        = 12;
+    private final static int START_UNINSTALL = 13;
+    private final static int END_UNINSTALL   = 14;
+    private final static int START_C_PROP    = 15;
+    private final static int END_C_PROP      = 16;
     
     // current mode we are in - this is important for the brace depth check.
     private final static int JAVA_MODE     = 1;
@@ -116,6 +123,8 @@ public class TemplateParser {
     private final SortedSet compProperties;
     private final SortedSet cgProperties;
     private final List importList;
+    private final List installList;
+    private final List uninstallList;
     private final File sourcefile;
     private final File cwd;
     private final StringPool stringPool;
@@ -150,6 +159,8 @@ public class TemplateParser {
         this.cgProperties  = new TreeSet();
         this.compProperties= new TreeSet();
         this.importList    = new ArrayList();
+        this.installList   = new ArrayList();
+        this.uninstallList = new ArrayList();
         this.writeJavaCode = new JavaBuffer(2, INDENT);
         this.commonJavaCode= new JavaBuffer(1, INDENT);
         this.stringPool    = new StringPool( VAR_PREFIX, VAR_LEN );
@@ -198,7 +209,8 @@ public class TemplateParser {
         out.println ("import org.wings.event.*;");
         out.println ("import org.wings.io.Device;");
 
-        if (cgProperties.size() > 0 || compProperties.size() > 0 ) {
+        if (cgProperties.size() > 0 || compProperties.size() > 0 ||
+            installList.size() > 0 || uninstallList.size() > 0) {
             out.println ("import org.wings.plaf.CGManager;");
             out.println ("import org.wings.session.SessionManager;");
         }
@@ -309,17 +321,23 @@ public class TemplateParser {
          */
         out.print(INDENT);
         out.println("public void installCG(final SComponent comp) {");
-        if (compProperties.size() > 0) {
-            outProps.add("# component properties set by "
-                         + templateName);
-            String shortClassName = forClassName.substring(forClassName.lastIndexOf(".") + 1);
+
+        if (compProperties.size() > 0 || installList.size() > 0) {
             out.println(INDENT + INDENT + "final " + forClassName 
                         + " component = (" + forClassName + ") comp;");
             out.println(INDENT + INDENT + "final CGManager manager = component.getSession().getCGManager();");
+        }
+        if (compProperties.size() > 0) {
+            String shortClassName = forClassName.substring(forClassName.lastIndexOf(".") + 1);
             out.println(INDENT + INDENT + "Object value;");
             out.println(INDENT + INDENT + "Object previous;");
+            outProps.add("# component properties set by "
+                         + templateName);
             printConfigurationSetters(out, compProperties, shortClassName+".",
                                       outProps);
+        }
+        if (installList.size() > 0) {
+            printCodeBlocks(out, installList);
         }
         out.println(INDENT + "}");
 
@@ -329,6 +347,12 @@ public class TemplateParser {
         out.print(INDENT);
         out.println("public void uninstallCG(final SComponent component) {");
         // nothing for now. We could reset this to old values ..
+        if (uninstallList.size() > 0) {
+            out.println(INDENT + INDENT + "final " + forClassName 
+                        + " component = (" + forClassName + ") comp;");
+            out.println(INDENT + INDENT + "final CGManager manager = component.getSession().getCGManager();");
+            printCodeBlocks(out, uninstallList);
+        }
         out.println(INDENT + "}");
         
         // common stuff.
@@ -472,6 +496,14 @@ public class TemplateParser {
         }
     }
     
+    public void printCodeBlocks(PrintWriter out, List blocks) {
+        Iterator it = blocks.iterator();
+        while (it.hasNext()) {
+            String code = (String)it.next();
+            out.print(code);
+        }
+    }
+
     public void reportError(FilePosition pos, String msg) {
         System.err.println(pos.toString(cwd) + ": " + msg);
         anyError = true;
@@ -532,7 +564,13 @@ public class TemplateParser {
             case START_IMPORT:
                 handleImport();
                 break;
-            case END_TEMPLATE:
+            case START_INSTALL:
+                handleInstall();
+                break;
+            case START_UNINSTALL:
+                handleUninstall();
+                break;
+             case END_TEMPLATE:
                 return;
             }
         }
@@ -544,6 +582,22 @@ public class TemplateParser {
             seriousError("unexpected tag in <import> area");
         }
         importList.add(content.toString());
+    }
+
+    private void handleInstall() throws IOException, ParseException {
+        StringBuffer content = new StringBuffer();
+        if ((findTransitions(content, stateTransitionTags)) != END_INSTALL) {
+            seriousError("unexpected tag in <install> area");
+        }
+        installList.add(content.toString());
+    }
+
+    private void handleUninstall() throws IOException, ParseException {
+        StringBuffer content = new StringBuffer();
+        if ((findTransitions(content, stateTransitionTags)) != END_UNINSTALL) {
+            seriousError("unexpected tag in <uninstall> area");
+        }
+        uninstallList.add(content.toString());
     }
 
     private void parseProperty(int endTag) throws IOException, ParseException {
