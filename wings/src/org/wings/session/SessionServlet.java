@@ -50,16 +50,18 @@ import org.wings.util.DebugUtil;
 import org.wings.util.LocaleCharSet;
 
 /**
- * The servlet engine creates for each user a new HttpSession. This HttpSession can be
- * accessed by all Serlvets running in the engine. A WingServlet creates one 
- * wings SessionServlet per HTTPSession and stores it in its context.
- * As the SessionServlets acts as Wrapper for the WingsServlet, you can access from
- * there as used the  ServletContext and the HttpSession. Additionally the SessionServlet
- * containts also the wingS-Session with all important services and the superordinated
- * SFrame. To this SFrame all wings-Components and hence the complete application state
- * is attached. The developer can access from any place via the SessionManager a 
- * reference to the wingS-Session. Additionally the SessionServlet provides access to the
- * all containing HttpSession.
+ * The servlet engine creates for each user a new HttpSession. This 
+ * HttpSession can be accessed by all Serlvets running in the engine. A 
+ * WingServlet creates one wings SessionServlet per HTTPSession and stores 
+ * it in its context.
+ * As the SessionServlets acts as Wrapper for the WingsServlet, you can 
+ * access from there as used the  ServletContext and the HttpSession. 
+ * Additionally the SessionServlet containts also the wingS-Session with 
+ * all important services and the superordinated SFrame. To this SFrame all 
+ * wings-Components and hence the complete application state is attached. 
+ * The developer can access from any place via the SessionManager a
+ * reference to the wingS-Session. Additionally the SessionServlet 
+ * provides access to the all containing HttpSession.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -94,8 +96,8 @@ final class SessionServlet
     }
 
     /**
-     * Sets the parent servlet contianint this wings session servlet (WingsServlet, delegating
-     * its requests to the SessionServlet).
+     * Sets the parent servlet contianint this wings session 
+     * servlet (WingsServlet, delegating its requests to the SessionServlet).
      */
     protected final void setParent(HttpServlet p) {
         if (p!=null) parent = p;
@@ -106,7 +108,8 @@ final class SessionServlet
     }
 
     /**
-     * Overrides the session set for setLocaleFromHeader by a request parameter.
+     * Overrides the session set for setLocaleFromHeader by a request 
+     * parameter.
      * Hence you can force the wings session to adopt the clients Locale. 
      */
     public final void setLocaleFromHeader(String[] args) {
@@ -123,9 +126,11 @@ final class SessionServlet
     }
 
     /**
-     * The Locale of the current wings session servlet is determined by the locale transmitted
-     * by the browser. The request parameter <PRE>LocaleFromHeader</PRE> can override the behaviour 
+     * The Locale of the current wings session servlet is determined by 
+     * the locale transmitted by the browser. The request parameter 
+     * <PRE>LocaleFromHeader</PRE> can override the behaviour 
      * of a wings session servlet to adopt the clients browsers Locale.
+     *
      * @param req The request to determine the local from.
      */
     protected final void handleLocale(HttpServletRequest req) {
@@ -185,7 +190,8 @@ final class SessionServlet
     }
 
     /**
-     * Delegates log messages to the according WingsServlet or alternativley to the HttpServlet logger.
+     * Delegates log messages to the according WingsServlet or alternativley 
+     * to the HttpServlet logger.
      *
      * @param msg The logmessage
      */
@@ -310,7 +316,8 @@ final class SessionServlet
      * <LI> Dispatch Get Parameter
      * <LI> feuert Form Events
      * </UL>
-     * Ist synchronized, damit nur ein Frame gleichzeitig bearbeitet werden kann.
+     * Ist synchronized, damit nur ein Frame gleichzeitig bearbeitet 
+     * werden kann.
      * {@link org.wings.SFrameSet}
      * @ deprecated -- bsc: warum? und was aendern?
      */
@@ -332,29 +339,42 @@ final class SessionServlet
         try {
             /* Handling of the requests character encoding.
              * --------------------------------------------
-             * The following block is needed for a correct handling of non-ISO-8859-1 data:
+             * The following block is needed for a correct handling of 
+             * non-ISO-8859-1 data:
              * 
-             * Using LocaleCharacterSet and/or charset.properties we can advise the client to use i.e. UTF-8 as
-             * character encoding. Once told the browser consequently also encodes his requests in the choosen
-             * characterset of the sings session. This is achieved by adding the HTML code 
-             * <meta http-equiv="Content-Type" content="text/html;charset="<charset>"> to the generated pages. 
-             * If the user hasn't overridden the encoding in their browser, then all form data is submitted with 
-             * data encoded like m%C3%BCller because byte pair C3 BC is how the german u-umlaut is represented in 
-             * UTF-8. If the form is iso-8859-1 encoded then you get m%FCller, because byte FC is how it is 
-             * presented in iso-8859-1.
-             * So the browser behaves correctly by sending his form input correctly encoded in the advised character
-             * encoding. The issue is that the servlet container is typically unable to determine the correct encoding
-             * of this form data. By proposal the browser should als declare the used character encoding for his data.
-             * But actual browsers omit this information and hence the servlet container is unable to guess the right
-             * encoding (Tomcat actually thenalways guesses ISO 8859-1). This results in totally scrumbled up data
-             * for all non ISO-8859-1 character encodings. With the block below we tell the servlet container about
-             * the character encoding we expect in the browsers request and hence the servlet container can do the 
-             * correct decoding.
-             * This has to be done at very first, otherwise the servlet container will ignore this setting.
+             * Using LocaleCharacterSet and/or charset.properties we can 
+             * advise the client to use i.e. UTF-8 as character encoding. 
+             * Once told the browser consequently also encodes his requests 
+             * in the choosen characterset of the sings session. This is 
+             * achieved by adding the HTML code 
+             * <meta http-equiv="Content-Type" content="text/html;charset="<charset>"> 
+             * to the generated pages. 
+             *
+             * If the user hasn't overridden the encoding in their browser, 
+             * then all form data (e.g. müller) is submitted with data encoded 
+             * like m%C3%BCller because byte pair C3 BC is how the german 
+             * u-umlaut is represented in UTF-8. If the form is 
+             * iso-8859-1 encoded then you get m%FCller, because byte FC is 
+             * how it is presented in iso-8859-1.
+             * 
+             * So the browser behaves correctly by sending his form input 
+             * correctly encoded in the advised character encoding. The issue
+             * is that the servlet container is typically unable to determine
+             * the correct encoding of this form data. By proposal the browser
+             * should als declare the used character encoding for his data.
+             * But actual browsers omit this information and hence the servlet
+             * container is unable to guess the right encoding (Tomcat actually
+             * thenalways guesses ISO 8859-1). This results in totally 
+             * scrumbled up data for all non ISO-8859-1 character encodings.
+             * With the block below we tell the servlet container about the
+             * character encoding we expect in the browsers request and hence
+             * the servlet container can do the correct decoding.
+             * This has to be done at very first, otherwise the servlet
+             * container will ignore this setting.
              */
              
-            // TODO: Actually the whole character encoding is depending FIXED on clients locale
-            // Should be propably a per session setting             
+            // TODO: Actually the whole character encoding is depending 
+            // FIXED on clients locale Should be propably a per session setting
             if ((req.getCharacterEncoding() == null)) {             
                 String sessionCharacterEncoding = getSession().getCharacterEncoding();                 
                  // We know better about the used character encoding than tomcat
@@ -524,6 +544,9 @@ final class SessionServlet
 
                 session.fireRequestEvent(SRequestEvent.DELIVER_DONE, extInfo);
             }
+            else {
+                handleInvalidResourceRequested(req, response);
+            }
             
         }
         catch (Throwable e) {
@@ -623,6 +646,22 @@ final class SessionServlet
         catch (Exception ex) {}
     }
 
+    /**
+     * This method is called, whenever a Resource is requested whose
+     * name is not known within this session.
+     *
+     * @param req the causing HttpServletRequest
+     * @param res the HttpServletResponse of this request
+     */
+    protected void handleUnknownResourceRequested(HttpServletRequest req,
+                                                  HttpServletResponse res) 
+        throws IOException
+    {
+        res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        res.setContentType("text/html");
+        res.getOutputStream().println("<h1>404 Not Found</h1>Unknown Resource Requested");
+    }
+
     /** --- HttpSessionBindingListener --- **/
 
     /**
@@ -649,6 +688,7 @@ final class SessionServlet
      */
     public static String getSessionEncoding(HttpServletResponse response) {
         if (response == null) return "";
+        // encode dummy non-empty URL.
         String enc = response.encodeURL("foo").substring(3);
         return enc;
     }
