@@ -26,13 +26,14 @@ import org.wings.session.*;
 public class FrameSetSession
     extends SessionServlet{
   
-    private int leftCount = 0;
-    private int rightCount = 0;
+    private static SIcon on = new ResourceImageIcon(SCheckBox.class,
+                                              "icons/bulb2.gif");
+    private static SIcon off = new ResourceImageIcon(SCheckBox.class, 
+                                              "icons/bulb1.gif");
 
-    private SLabel leftLabel = createLabel("" + leftCount);
-    private SLabel rightLabel = createLabel("" + rightCount);
+    private SLabel leftLabel = createLabel(null, on);
+    private SLabel rightLabel = createLabel(null, on);
   
-
 
     public FrameSetSession(Session session, HttpServletRequest req) {
         super(session);
@@ -49,7 +50,7 @@ public class FrameSetSession
         toolbarFrame.getContentPane().add(new TimestampLabel(), SBorderLayout.EAST);
         vertical.add(toolbarFrame);
 
-        SFrameSet horizontal = new SFrameSet(new SFrameSetLayout("210,*", null));
+        SFrameSet horizontal = new SFrameSet(new SFrameSetLayout("300,*", null));
         vertical.add(horizontal);
         SFrame leftFrame = new SFrame("left frame");
         leftFrame.getContentPane().setLayout(new SBorderLayout());
@@ -62,59 +63,47 @@ public class FrameSetSession
 
 
 
-        ActionListener leftIncrement = new ActionListener() {
+        ActionListener changeLeft = new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    leftCount++;
-                    leftLabel.setText("" + leftCount);
+                    if ( leftLabel.getIcon()==on )
+                        leftLabel.setIcon(off);
+                    else
+                        leftLabel.setIcon(on);
                 }
             };
-        ActionListener leftDecrement = new ActionListener() {
+
+        ActionListener changeRight = new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    leftCount--;
-                    leftLabel.setText("" + leftCount);
-                }
-            };
-        ActionListener rightIncrement = new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    rightCount++;
-                    rightLabel.setText("" + rightCount);
-                }
-            };
-        ActionListener rightDecrement = new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    rightCount--;
-                    rightLabel.setText("" + rightCount);
+                    if ( rightLabel.getIcon()==on )
+                        rightLabel.setIcon(off);
+                    else
+                        rightLabel.setIcon(on);
                 }
             };
 
 
-        SButton leftDecrementButton = createButton("decrement left");
-        leftDecrementButton.addActionListener(leftDecrement);
-        SButton leftIncrementButton = createButton("increment left");
-        leftIncrementButton.addActionListener(leftIncrement);
+        SButton changeLeftButton = createButton("change left");
+        changeLeftButton.addActionListener(changeLeft);
 
-        SButton rightDecrementButton = createButton("decrement right");
-        rightDecrementButton.addActionListener(rightDecrement);
-        SButton rightIncrementButton = createButton("increment right");
-        rightIncrementButton.addActionListener(rightIncrement);
+        SButton changeRightButton = createButton("change right");
+        changeRightButton.addActionListener(changeRight);
 
-        SButton leftRightIncrementButton = createButton("increment left and right");
-        leftRightIncrementButton.addActionListener(leftIncrement);
-        leftRightIncrementButton.addActionListener(rightIncrement);
+        SButton changeBothButton = createButton("change both");
+        changeBothButton.addActionListener(changeLeft);
+        changeBothButton.addActionListener(changeRight);
+
 
         SPanel toolbarPanel = new SPanel(null);
-        toolbarPanel.add(leftIncrementButton);
-        toolbarPanel.add(rightIncrementButton);
-        toolbarPanel.add(leftRightIncrementButton);
+        toolbarPanel.add(changeLeftButton);
+        toolbarPanel.add(changeRightButton);
+        toolbarPanel.add(changeBothButton);
         toolbarFrame.getContentPane().add(toolbarPanel, SBorderLayout.CENTER);
 
         SPanel leftFramePanel = new SPanel(null);
-        leftFramePanel.add(leftDecrementButton);
         leftFramePanel.add(leftLabel);
         leftFrame.getContentPane().add(leftFramePanel, SBorderLayout.CENTER);
 
         SPanel rightFramePanel = new SPanel(null);
-        rightFramePanel.add(rightDecrementButton);
         rightFramePanel.add(rightLabel);
         rightFrame.getContentPane().add(rightFramePanel, SBorderLayout.CENTER);
 
@@ -126,9 +115,8 @@ public class FrameSetSession
         return b;
     }
 
-    SLabel createLabel(String text) {
-        SLabel l = new SLabel(text);
-        l.setBorder(new SLineBorder());
+    SLabel createLabel(String text, SIcon icon) {
+        SLabel l = new SLabel(icon);
         return l;
     }
 
