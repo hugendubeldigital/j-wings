@@ -68,9 +68,10 @@ public class FrameCG
         d.append("\" lang=\"");
         d.append(language);
         d.append("\">\n");
-        d.append("<head>\n<title>");
-        d.append(title);
-        d.append("</title>\n");
+        d.append("<head>\n");
+        if (title != null) {
+            d.append("<title>").append(title).append("</title>\n");
+        }
 
         if (frame.getBaseTarget() != null)
             d.append("<base target=\"")
