@@ -31,16 +31,23 @@ public class SURLIcon implements SIcon
     private int width = -1;
     private int height = -1;
 
-    public SURLIcon (URL u) {
+    public SURLIcon(URL u) {
         this(u.toString());
     }
 
-    public SURLIcon (SimpleURL u) {
+    public SURLIcon(SimpleURL u) {
         url = u;
     }
 
-    public SURLIcon (String u) {
+    public SURLIcon(String u) {
         this(new SimpleURL(u));
+    }
+
+    public SURLIcon(String u, int width, int height) {
+        this(u);
+
+        setIconWidth(width);
+        setIconHeight(height);
     }
 
     public int getIconWidth() {
@@ -55,7 +62,7 @@ public class SURLIcon implements SIcon
         width = w;
     }
   
-    public void getIconHeight(int h) {
+    public void setIconHeight(int h) {
         height = h;
     }
   
