@@ -42,8 +42,8 @@ public class DialogCG
 
         RequestURL addr;
 
-        d.append("<table border=\"0\" width=\"100%\" height=\"100%\"><tr>\n");
-        d.append("<td align=\"center\" valign=\"center\">\n");
+        d.append("<table border=\"0\" width=\"100%\"><tr>\n");
+        d.append("<td align=\"center\" valign=\"middle\">\n");
         d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"");
         CGUtil.writeSize(d, dialog);
         d.append("><tr>\n");
@@ -56,13 +56,13 @@ public class DialogCG
         d.append("</tr>\n");
 
         d.append("<tr><td colspan=\"" + cols)
-            .append("\" CLASS=\"frameborder\">\n");
+            .append("\" class=\"frameborder\">\n");
 
         writePrefix(d, dialog);
         org.wings.plaf.xhtml.Utils.writeContainerContents(d, dialog);
-        d.append("</td></tr>\n</table>\n");
-        d.append("</td></tr>\n</table>\n");
         writePostfix(d, dialog);
+        d.append("</td></tr>\n</table>\n");
+        d.append("</td></tr>\n</table>\n");
     }
 
     protected void writePrefix(Device d, SDialog dialog)

@@ -57,10 +57,11 @@ public class InternalFrameCG
 
         // left icon..
         d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\"><tr>");
+
         if (frame.getIcon() != null) {
             d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><img src=\"")
                 .append(frame.getIcon().getURL())
-                .append("\" width=\"16\" height=\"16\" border=\"0\"></a></td>");
+                .append("\" width=\"16\" height=\"16\" border=\"0\" /></td>");
             cols ++;
         }
         
@@ -79,7 +80,7 @@ public class InternalFrameCG
                 .append(addr)
                 .append("\"><img src=\"")
                 .append(iconify.getURL())
-                .append("\" width=\"16\" height=\"16\" border=\"0\"></a></td>");
+                .append("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
             cols ++;
         }
 
@@ -91,7 +92,7 @@ public class InternalFrameCG
                 .append(addr)
                 .append("\"><img src=\"")
                 .append(deiconify.getURL())
-                .append("\" width=\"16\" height=\"16\" border=\"0\"></a></td>");
+                .append("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
             cols ++;
         }
 
@@ -106,7 +107,7 @@ public class InternalFrameCG
                 .append(addr)
                 .append("\"><img src=\"")
                 .append(maximize.getURL())
-                .append("\" width=\"16\" height=\"16\" border=\"0\"></a></td>");
+                .append("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
             cols ++;
         }
 
@@ -118,7 +119,7 @@ public class InternalFrameCG
                 .append(addr)
                 .append("\"><img src=\"")
                 .append(unmaximize.getURL())
-                .append("\" width=\"16\" height=\"16\" border=\"0\"></a></td>");
+                .append("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
             cols ++;
         }
 
@@ -130,15 +131,16 @@ public class InternalFrameCG
                 .append(addr)
                 .append("\"><img src=\"")
                 .append(close.getURL())
-                .append("\" width=\"16\" height=\"16\" border=\"0\"></a></td>");
+                .append("\" width=\"16\" height=\"16\" border=\"0\" /></a></td>");
             cols ++;
         }
 
         d.append("</tr>\n");
 
+        // write the actual content.
         if (!frame.isIconified()) {
             d.append("<tr><td colspan=\"" + cols)
-                .append("\" CLASS=\"frameborder\">\n");
+                .append("\" class=\"frameborder\">\n");
             org.wings.plaf.xhtml.Utils.writeContainerContents(d, frame);
             d.append("</td></tr>\n");
         }

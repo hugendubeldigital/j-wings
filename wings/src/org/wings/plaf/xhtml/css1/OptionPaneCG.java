@@ -41,8 +41,8 @@ public final class OptionPaneCG
         if (text == null)
             text = "Dialog";
 
-        d.append("<table border=\"0\" width=\"100%\" height=\"100%\"><tr>\n");
-        d.append("<td align=\"center\" valign=\"center\">\n");
+        d.append("<table border=\"0\" width=\"100%\"><tr>\n");
+        d.append("<td align=\"center\" valign=\"middle\">\n");
         d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"");
         CGUtil.writeSize(d, dialog);
         d.append("><tr>\n");
@@ -57,8 +57,9 @@ public final class OptionPaneCG
              * this is a non-functioning hack for demonstration purposes.
              */
             SButton closeButton = new SButton(close);
+            closeButton.setToolTipText("close");
             closeButton.setParent(c.getParent());
-            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"");
+            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\">");
             closeButton.write(d);
             d.append("</td>");
             cols ++;
@@ -67,13 +68,13 @@ public final class OptionPaneCG
         d.append("</tr>\n");
 
         d.append("<tr><td colspan=\"" + cols)
-            .append("\" CLASS=\"frameborder\">\n");
+            .append("\" class=\"frameborder\">\n");
 
         writePrefix(d, dialog);
         org.wings.plaf.xhtml.Utils.writeContainerContents(d, dialog);
-        d.append("</td></tr>\n</table>\n");
-        d.append("</td></tr>\n</table>\n");
         writePostfix(d, dialog);
+        d.append("</td></tr>\n</table>\n");
+        d.append("</td></tr>\n</table>\n");
     }
 
     protected void writePrefix(Device d, SDialog dialog)

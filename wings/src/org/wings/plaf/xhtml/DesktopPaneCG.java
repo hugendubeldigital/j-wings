@@ -36,7 +36,6 @@ public class DesktopPaneCG
     {
         SBorder border = c.getBorder();
         SDesktopPane desktopPane = (SDesktopPane)c;
-
         Utils.writeBorderPrefix(d, border);
         writePrefix(d, desktopPane);
         Utils.writeContainerContents(d, desktopPane);
