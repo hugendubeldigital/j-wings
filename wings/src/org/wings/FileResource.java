@@ -44,6 +44,7 @@ public class FileResource
         if (dotIndex > -1) {
             extension = file.getName().substring(dotIndex + 1);
         }
+        externalizerFlags = ExternalizeManager.REQUEST | ExternalizeManager.FINAL;
     }
 
     public String toString() {

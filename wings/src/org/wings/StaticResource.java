@@ -192,10 +192,27 @@ public abstract class StaticResource
     }
 
     public String getURL() {
+        String name = null;
         if (extension != null)
-            return getId() + "." + extension;
+            name = getId() + "." + extension;
         else
-            return getId();
+            name = getId();
+
+        // append the sessionid, if not global
+        if ((externalizerFlags & ExternalizeManager.GLOBAL) > 0)
+            return name;
+        else {
+            RequestURL requestURL = (RequestURL)getPropertyService().getProperty("request.url");
+            requestURL.setResource(name);
+            return requestURL.toString();
+        }
+    }
+
+    private PropertyService propertyService;
+    protected PropertyService getPropertyService() {
+        if (propertyService == null)
+            propertyService = (PropertyService)SessionManager.getSession();
+        return propertyService;
     }
 
     /**

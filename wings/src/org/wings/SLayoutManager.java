@@ -14,7 +14,7 @@
 
 package org.wings;
 
-import java.io.IOException;
+import java.io.*;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
@@ -26,6 +26,7 @@ import org.wings.io.Device;
  * @version $Revision$
  */
 public interface SLayoutManager
+    extends Serializable
 {
     /**
      * Adds a component to the layout manager

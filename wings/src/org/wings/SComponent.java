@@ -17,7 +17,7 @@ package org.wings;
 import java.awt.Color;
 import java.awt.Font;
 import java.beans.*;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.logging.*;
@@ -35,13 +35,13 @@ import org.wings.util.*;
 import org.wings.script.ScriptListener;
 
 /**
- * The basic component for all components in this package.
+ * The basic component implementation for all components in this package.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public abstract class SComponent
-    implements SConstants, Cloneable
+    implements SConstants, Cloneable, Serializable
 {
     protected static Logger logger = Logger.getLogger("org.wings");
 
@@ -101,10 +101,10 @@ public abstract class SComponent
     // hzeller: why are these transient? This means, that if a session had ever been persisted all listeners are gone
     transient ArrayList componentListeners;
 
-    protected List scriptListeners = new ArrayList();
+    protected Map scriptListeners = new HashMap();
 
     /**
-     * Default constructor.
+     * Default constructor.cript
      * The method updateCG is called to get a cg delegate installed.
      */
     public SComponent() {
@@ -295,7 +295,9 @@ public abstract class SComponent
         if (l == null)
             return;
 
-        scriptListeners.add(l);
+        scriptListeners.put(l.getEvent(), l);
+        if (l.getScript() != null)
+            reload(ReloadManager.RELOAD_SCRIPT);
     }
 
     /**
@@ -313,10 +315,11 @@ public abstract class SComponent
         if (l == null)
             return;
 
-        scriptListeners.remove(l);
+        if (scriptListeners.remove(l.getEvent()) != null && l.getScript() != null)
+            reload(ReloadManager.RELOAD_SCRIPT);
     }
 
-    public List getScriptListeners() { return scriptListeners; }
+    public Collection getScriptListeners() { return scriptListeners.values(); }
 
     /**
      * Return a jvm wide unique id.
@@ -417,7 +420,6 @@ public abstract class SComponent
      */
     public void setAttribute(String name, String value) {
         boolean changed = attributes.isDefined(name);
-
         attributes.putAttribute(name, value);
 
         if (changed)
@@ -923,7 +925,7 @@ public abstract class SComponent
     public void addPropertyChangeListener(PropertyChangeListener l) {
 	propertyChangeSupport.addPropertyChangeListener(l);
     }
-    
+
     /**
      * Remove a PropertyChangeListener from the current list of listeners.
      *
@@ -932,7 +934,7 @@ public abstract class SComponent
     public void removePropertyChangeListener(PropertyChangeListener l) {
 	propertyChangeSupport.removePropertyChangeListener(l);
     }
-    
+
     /**
      * Notify all listeners that a property change has occured.
      * @param propertyName the name of the property

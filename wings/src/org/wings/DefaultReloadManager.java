@@ -16,6 +16,7 @@ package org.wings;
 
 import java.util.*;
 import org.wings.style.DynamicStyleSheetResource;
+import org.wings.script.DynamicScriptResource;
 
 /**
  * This is the default implementation of the reload manager.
@@ -50,8 +51,7 @@ public class DefaultReloadManager
             markDirty(parent.getDynamicResource(DynamicStyleSheetResource.class));
             break;
         case RELOAD_SCRIPT: 
-            // TODO
-            //reloadManager.markDirty(parent.getDynamicResource(DynamicScriptResource.class));
+            markDirty(parent.getDynamicResource(DynamicScriptResource.class));
             break;
         }
     }

@@ -47,7 +47,7 @@ public class SCellRendererPane
     /**
      * If the specified component is already a child of this then we don't
      * bother doing anything - stacking order doesn't matter for cell
-     * renderer components (CellRendererPane doesn't paint anyway).<
+     * renderer components (CellRendererPane doesn't paint anyway).
      */
     public SComponent addComponent(SComponent c, Object constraints) {
         if ( c.getParent() == this ) {

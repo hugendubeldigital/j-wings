@@ -13,6 +13,8 @@
  */
 package org.wings.style;
 
+import org.wings.io.Device;
+
 import java.util.*;
 
 /**
@@ -91,6 +93,11 @@ public interface AttributeSet
      * clear the contents of this AttributeSet.
      */
     public void clear();
+
+    /**
+     * Write style definition to the device
+     */
+    void write(Device d, String selector);
 }
 
 /*

@@ -14,6 +14,7 @@
 
 package org.wings;
 
+import java.io.*;
 import java.text.*;
 import java.util.logging.*;
 
@@ -21,6 +22,7 @@ import java.util.logging.*;
  * TODO: parse units
  */
 public class SDimension
+    implements Serializable
 {
     private static Logger logger = Logger.getLogger("org.wings");
 

@@ -30,17 +30,15 @@ public final class ButtonCG
     {
         String tooltip = button.getToolTipText();
         Style style = button.getStyle();
+        String id = button.getUnifiedId();
 
         if (button.isEnabled()) {
             d.append("<a href=\"");
             writeAnchorAddress(d, button);
+            d.append("\" id=\"");
+            d.append(id);
+            d.append(button.getSession().getSuffixManager().nextSuffix(id, d));
             d.append("\"");
-
-            if (style != null)
-                style.write(d);
-
-            if (button.isSelected())
-                d.append(" style=\"color:#990000\"");
 
             if (button.getRealTarget() != null)
                 d.append(" target=\"").append(button.getRealTarget()).append("\"");
@@ -50,14 +48,24 @@ public final class ButtonCG
 
             d.append(">");
         }
+
+        String inline = (button.isSelected()) ? "color:#990000" : null;
+        boolean spanWritten = writeSpan(d, true, button, inline);
+
+        if (button.isSelected())
+            d.append(" style=\"color:#990000\"");
     }
 
     protected void writeFormPrefix(Device d, SButton button)
         throws IOException
     {
         Style style = button.getStyle();
+        String id = button.getUnifiedId();
 
-        d.append("<input type=\"submit\"");
+        d.append("<input type=\"submit\" id=\"");
+        d.append(id);
+        d.append(button.getSession().getSuffixManager().nextSuffix(id, d));
+        d.append("\"");
 
         if (style != null)
             style.write(d);
@@ -66,7 +74,7 @@ public final class ButtonCG
             d.append(" style=\"color:#990000\"");
     }
 
-    boolean writeSpan(final Device d, boolean writeSpan, final SComponent component)
+    boolean writeSpan(final Device d, boolean writeSpan, final SComponent component, final String inline)
         throws IOException
     {
         boolean spanWritten = !writeSpan;
@@ -89,6 +97,16 @@ public final class ButtonCG
                 spanWritten = true;
             }
             style.write(d);
+        }
+
+        if (inline != null) {
+            if (!spanWritten) {
+                d.append("<span");
+                spanWritten = true;
+            }
+            d.append(" style=\"");
+            d.append(inline);
+            d.append("\"");
         }
 
         if (spanWritten && writeSpan)

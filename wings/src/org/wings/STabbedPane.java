@@ -17,6 +17,7 @@ package org.wings;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.swing.SingleSelectionModel;
@@ -855,7 +856,9 @@ public class STabbedPane
         */
     }
 
-    private static class Page {
+    private static class Page
+        implements Serializable
+    {
         String title;
         Color background;
         Color foreground;

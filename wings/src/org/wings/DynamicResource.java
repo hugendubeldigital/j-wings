@@ -51,7 +51,7 @@ public abstract class DynamicResource
     private String epochCache=StringUtil.toShortestAlphaNumericString(epoch);
 
     /**
-     *
+     * The frame, to which this resource belongs.
      */
     private SFrame frame;
 
@@ -71,7 +71,7 @@ public abstract class DynamicResource
     }
 
     /**
-     *
+     * Return the frame, to which this resource belongs.
      */
     public final SFrame getFrame() {
         return frame;

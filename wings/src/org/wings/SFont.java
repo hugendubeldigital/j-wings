@@ -14,6 +14,7 @@
 
 package org.wings;
 
+import java.io.*;
 import org.wings.io.Device;
 
 /**
@@ -22,7 +23,9 @@ import org.wings.io.Device;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SFont implements SConstants
+public class SFont
+    implements SConstants, Serializable
+
 {
     private static final boolean DEBUG = true;
 

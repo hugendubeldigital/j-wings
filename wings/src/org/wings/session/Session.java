@@ -22,6 +22,7 @@ import javax.servlet.*;
 import org.wings.SRequestDispatcher;
 import org.wings.ReloadManager;
 import org.wings.plaf.CGManager;
+import org.wings.plaf.SuffixManager;
 import org.wings.externalizer.ExternalizeManager;
 
 /**
@@ -48,6 +49,9 @@ public interface Session
     void setReloadManager(ReloadManager reloadManager);
     ReloadManager getReloadManager();
 
+    CGManager getCGManager();
+    SuffixManager getSuffixManager();
+
     /**
      * Retrieve the ServletContext.
      * @return the servlet context
@@ -57,7 +61,6 @@ public interface Session
     void putService(Object key, Service service);
     Service getService(Object key);
 
-    CGManager getCGManager();
     SRequestDispatcher getDispatcher();
 
     void addPropertyChangeListener(PropertyChangeListener listener);

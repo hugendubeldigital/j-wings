@@ -27,6 +27,7 @@ import org.wings.DefaultReloadManager;
 import org.wings.ReloadManager;
 import org.wings.SRequestDispatcher;
 import org.wings.plaf.CGManager;
+import org.wings.plaf.SuffixManager;
 import org.wings.util.WeakPropertyChangeSupport;
 import org.wings.util.StringUtil;
 import org.wings.externalizer.ExternalizeManager;
@@ -43,6 +44,7 @@ public class DefaultSession
     private ServletContext servletContext;
     private final Map services = new HashMap();
     private final CGManager cgManager = new CGManager();
+    private final SuffixManager suffixManager = new SuffixManager();
     private ReloadManager reloadManager = null;
     private ExternalizeManager extManager = null;
     private final SRequestDispatcher dispatcher = new SRequestDispatcher();
@@ -163,6 +165,15 @@ public class DefaultSession
      */
     public void setExternalizeManager(ExternalizeManager em) {
         extManager = em;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public SuffixManager getSuffixManager() {
+        return suffixManager;
     }
 
     /**

@@ -13,6 +13,8 @@
  */
 package org.wings.style;
 
+import org.wings.io.Device;
+
 import java.util.*;
 import java.io.*;
 
@@ -171,20 +173,37 @@ public class SimpleAttributeSet
      * @return true if the sets are equal, false otherwise
      */
     public boolean equals(Object object) {
-	if (!(object instanceof AttributeSet))
-	    return false;
-	AttributeSet other = (AttributeSet)object;
+        if (!(object instanceof AttributeSet))
+            return false;
+        AttributeSet other = (AttributeSet)object;
 
-	if (size() != other.size())
-	    return false;
+        if (size() != other.size())
+            return false;
 
         Iterator names = other.names().iterator();
         while (names.hasNext()) {
             String name = (String)names.next();
             if (!other.getAttribute(name).equals(getAttribute(name)))
-		return false;
+                return false;
         }
-	return true;
+        return true;
+    }
+
+    /**
+     * Write style definition to the device
+     */
+    public void write(Device d, String selector) {
+        d.append(selector);
+        d.append(" { ");
+        Iterator names = map.entrySet().iterator();
+        while (names.hasNext()) {
+            Map.Entry next = (Map.Entry)names.next();
+            d.append(next.getKey());
+            d.append(":");
+            d.append(next.getValue());
+            d.append("; ");
+        }
+        d.append("}\n");
     }
 
     /**
@@ -193,16 +212,16 @@ public class SimpleAttributeSet
      * @return the string
      */
     public String toString() {
-	StringBuffer b = new StringBuffer();
+        StringBuffer b = new StringBuffer();
         Iterator names = map.entrySet().iterator();
         while (names.hasNext()) {
-	    Map.Entry next = (Map.Entry)names.next();
-	    b.append(next.getKey());
-	    b.append(":");
-	    b.append(next.getValue());
-	    b.append("; ");
-	}
-	return b.toString();
+            Map.Entry next = (Map.Entry)names.next();
+            b.append(next.getKey());
+            b.append(":");
+            b.append(next.getValue());
+            b.append("; ");
+        }
+        return b.toString();
     }
 }
 

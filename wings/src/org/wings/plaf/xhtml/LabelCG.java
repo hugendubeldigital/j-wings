@@ -43,7 +43,6 @@ public class LabelCG
         int horizontalTextPosition = label.getHorizontalTextPosition();
         int verticalTextPosition = label.getVerticalTextPosition();
 
-        Utils.writeBorderPrefix(d, border);
 
         if (label.getIcon() == null )
             writeText(d, label);

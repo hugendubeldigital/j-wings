@@ -39,6 +39,7 @@ public class LabelExample
         final SLabel testLabel = new SLabel("LabelText");
         testLabel.setHorizontalAlignment(LEFT);
         testLabel.setIcon(icon);
+        testLabel.setAttribute("color", "#ee0000");
 
         all.add(new SLabel("Control the LabelText's position"));
         all.add(new SLabel("Result"));

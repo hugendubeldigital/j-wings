@@ -231,10 +231,14 @@ public class Editor
             resource.setHeaders(headers.entrySet());
 
             // java script, that is executed "onload"; loads the file resource and triggers
-            // the named event "clear"
-            final ScriptListener script = new JavaScriptListener("onload", "parent.location='" +
-                                                                           resource.getURL() + "?" +
-                                                                           "clear=X'");
+            // the named event "clear=X"
+            String url = resource.getURL();
+            if (url.indexOf("?") > -1)
+                url = url + "&clear=X";
+            else
+                url = url + "?clear=X";
+
+            final ScriptListener script = new JavaScriptListener("onload", "parent.location='" + url + "'");
             final SFrame frame = getParentFrame();
             frame.addScriptListener(script);
 

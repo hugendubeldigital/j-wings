@@ -15,7 +15,7 @@
 package org.wings;
 
 import java.awt.Insets;
-import java.io.IOException;
+import java.io.*;
 
 import org.wings.io.Device;
 
@@ -25,7 +25,9 @@ import org.wings.io.Device;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public interface SBorder {
+public interface SBorder
+    extends Serializable
+{
 
     /**
      * Sets the insets of this border. Insets describe the amount

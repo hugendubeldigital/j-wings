@@ -1,8 +1,7 @@
 package org.wings.script;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.wings.SComponent;
 import org.wings.SFrame;
@@ -35,7 +34,7 @@ public class DynamicScriptResource
 
         public void visit(SComponent component) {
             //System.err.println("StyleSheetWriter.visit(" + component.getClass() + ")");
-            List listeners = component.getScriptListeners();
+            Collection listeners = component.getScriptListeners();
             if (listeners.size() == 0)
                 return;
 

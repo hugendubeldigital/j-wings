@@ -32,14 +32,10 @@ public class DynamicStyleSheetResource
         }
 
         public void visit(SComponent component) {
-            //System.err.println("StyleSheetWriter.visit(" + component.getClass() + ")");
-            if (component.getAttributes().size() == 0)
+            AttributeSet attributes = component.getAttributes();
+            if (attributes.size() == 0)
                 return;
-            out.append("#s_");
-            out.append(component.getUnifiedId());
-            out.append("{ ");
-            out.append(component.getAttributes().toString());
-            out.append("}\n");
+            attributes.write(out, "._" + component.getUnifiedId());
         }
     }
 }
