@@ -68,7 +68,7 @@ public class SForm
     /**
      * TODO: documentation
      */
-    protected EventListenerList listenerList = new EventListenerList();
+    protected final EventListenerList listenerList = new EventListenerList();
 
     /**
      * TODO: documentation
