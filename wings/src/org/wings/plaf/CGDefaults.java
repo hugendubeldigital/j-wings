@@ -26,8 +26,8 @@ import org.wings.*;
 import org.wings.style.*;
 
 /**
- * A defaults table, that overrides the mappings of the <code>parent</code>
- * defaults table.  
+ * A Property table that stores default. This table overrides the
+ * mappings of its <code>parent</code> table.
  */
 public class CGDefaults
     extends HashMap
@@ -75,7 +75,10 @@ public class CGDefaults
         if (value != null)
             return value;
 
-        return parent.get(id, type);
+        if (parent != null) {
+            return parent.get(id, type);
+        }
+        return null;
     }
 
 
