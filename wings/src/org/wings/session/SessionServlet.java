@@ -545,7 +545,7 @@ final class SessionServlet
                 session.fireRequestEvent(SRequestEvent.DELIVER_DONE, extInfo);
             }
             else {
-                handleInvalidResourceRequested(req, response);
+                handleUnknownResourceRequested(req, response);
             }
             
         }
