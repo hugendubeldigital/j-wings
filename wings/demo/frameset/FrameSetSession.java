@@ -30,7 +30,8 @@ import org.wings.io.Device;
 import org.wings.io.ServletDevice;
 
 /**
- * TODO: documentation
+ * A little application to demonstrate the features of the ReloadManagerFrame.
+ * This frame is used to only reload the frames, whose code actually changed.
  *
  * @author Holger Engels
  * @version $Revision$
@@ -41,15 +42,17 @@ public class FrameSetSession
     private SFrameSet vertical;
     private SFrameSet horizontal;
     private SFrame toolbarFrame;
-    private SFrame menuFrame;
-    private SFrame mainFrame;
+    private SFrame leftFrame;
+    private SFrame rightFrame;
     private ReloadManagerFrame reloadManagerFrame;
 
-    private SButton menuButton = new SButton("menu frame");
-    private SButton mainButton = new SButton("main frame");
+    private SButton leftButton = new SButton("left frame: 0");
+    private SButton rightButton = new SButton("right frame: 0");
 
-    private int menuCount = 0;
-    private int mainCount = 0;
+    private int leftCount = 0;
+    private int rightCount = 0;
+    
+    private static String VERTICAL_LAYOUT="100,*";
 
     public FrameSetSession(Session session, HttpServletRequest req) {
         super(session);
@@ -58,74 +61,84 @@ public class FrameSetSession
     public void postInit(ServletConfig config)
         throws ServletException
     {
-        vertical = new SFrameSet(new SFrameSetLayout(null, "60,*"));
+        vertical = new SFrameSet(new SFrameSetLayout(null, VERTICAL_LAYOUT));
         toolbarFrame = new SFrame("toolbar");
         vertical.add(toolbarFrame);
 
-        horizontal = new SFrameSet(new SFrameSetLayout("210,*", null));
+        horizontal = new SFrameSet(new SFrameSetLayout("50%,50%", null));
         vertical.add(horizontal);
-        menuFrame = new SFrame("menu frame");
-        horizontal.add(menuFrame);
-        mainFrame = new SFrame("main frame");
-        horizontal.add(mainFrame);
+        leftFrame = new SFrame("left frame");
+        horizontal.add(leftFrame);
+        rightFrame = new SFrame("right frame");
+        horizontal.add(rightFrame);
 
         vertical.setBaseTarget("_top");
         setFrame(vertical);
 
-        buildFrames(toolbarFrame, menuFrame, mainFrame);
+        buildFrames(toolbarFrame, leftFrame, rightFrame);
     }
 
-    protected void buildFrames(SFrame toolbar, SFrame menu, SFrame main) {
-        ActionListener menuIncrement = new ActionListener() {
+    protected void buildFrames(SFrame toolbar, SFrame left, SFrame right) {
+        ActionListener leftIncrement = new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    menuCount++;
-                    menuButton.setText("menu frame: " + menuCount);
+                    leftCount++;
+                    leftButton.setText("left frame: " + leftCount);
                 }
             };
-        ActionListener mainIncrement = new ActionListener() {
+        ActionListener rightIncrement = new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    mainCount++;
-                    mainButton.setText("main frame: " + mainCount);
-                }
-            };
-
-        ActionListener menuDecrement = new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    menuCount--;
-                    menuButton.setText("menu frame: " + menuCount);
-                }
-            };
-        ActionListener mainDecrement = new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    mainCount--;
-                    mainButton.setText("main frame: " + mainCount);
+                    rightCount++;
+                    rightButton.setText("right frame: " + rightCount);
                 }
             };
 
-        SButton menuModifier = new SButton("reload menu frame");
-        menuModifier.addActionListener(menuIncrement);
+        ActionListener leftDecrement = new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    leftCount--;
+                    leftButton.setText("left frame: " + leftCount);
+                }
+            };
+        ActionListener rightDecrement = new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    rightCount--;
+                    rightButton.setText("right frame: " + rightCount);
+                }
+            };
 
-        SButton mainModifier = new SButton("reload main frame");
-        mainModifier.addActionListener(mainIncrement);
+        // Form to increment all frames.
+        SButton leftModifier = new SButton("< increment left");
+        leftModifier.addActionListener(leftIncrement);
 
-        SButton bothModifier = new SButton("reload both frames");
-        bothModifier.addActionListener(menuIncrement);
-        bothModifier.addActionListener(mainIncrement);
+        SButton rightModifier = new SButton("increment right >");
+        rightModifier.addActionListener(rightIncrement);
 
-        SForm form = new SForm();
-        form.add(menuModifier);
-        form.add(mainModifier);
-        form.add(bothModifier);
-        toolbar.getContentPane().add(form);
+        SButton bothModifier = new SButton("< increment both >");
+        bothModifier.addActionListener(leftIncrement);
+        bothModifier.addActionListener(rightIncrement);
 
-        menu.getContentPane().setLayout(null);
-        menu.getContentPane().add(menuButton);
+        // some explanation.
+        toolbar.getContentPane().add(new SLabel("With the reload-manager frame, only frames whose components actually changed, are refetched"));
 
-        main.getContentPane().setLayout(null);
-        main.getContentPane().add(mainButton);
+        SForm incForm = new SForm();
+        incForm.add(leftModifier);
+        incForm.add(bothModifier);
+        incForm.add(rightModifier);
+        toolbar.getContentPane().add(incForm);
 
-        menuButton.addActionListener(menuDecrement);
-        mainButton.addActionListener(mainDecrement);
+        left.getContentPane().setLayout(null);
+        left.getContentPane().add(leftButton);
+        left.getContentPane().add(createDecrementerForm(leftDecrement, 
+                                                        rightDecrement));
+        left.getContentPane().add(new RenderTimeLabel()); // see below.
+
+        right.getContentPane().setLayout(null);
+        right.getContentPane().add(rightButton);
+        right.getContentPane().add(createDecrementerForm(leftDecrement, 
+                                                         rightDecrement));
+        right.getContentPane().add(new RenderTimeLabel()); // see below.
+
+        leftButton.addActionListener(leftDecrement);
+        rightButton.addActionListener(rightDecrement);
 
         final SCheckBox toggleReloadManager = new SCheckBox("use reload manager frame");
         toggleReloadManager.addActionListener(new ActionListener() {
@@ -139,23 +152,38 @@ public class FrameSetSession
         toolbar.getContentPane().add(toggleReloadManager);
     }
 
+    SForm createDecrementerForm(ActionListener left, ActionListener right) {
+        SButton leftDecrementer = new SButton("decrement left");
+        leftDecrementer.addActionListener(left);
+        
+        SButton rightDecrementer = new SButton("decrement right");
+        rightDecrementer.addActionListener(right);
+        
+        SForm decForm = new SForm();
+        decForm.add(leftDecrementer);
+        decForm.add(rightDecrementer);
+        return decForm;
+    }
+
     void installReloadManagerFrame() {
-        // add reload manager frame
-        vertical.setLayout(new SFrameSetLayout(null, "30,*,10"));
+        // add reload manager frame. Create a frame of size 10 for
+        // demonstration purposes. In 'real' applications, this would obviously
+        // be of size zero.
+        vertical.setLayout(new SFrameSetLayout(null, VERTICAL_LAYOUT+",10"));
         reloadManagerFrame = new ReloadManagerFrame();
         vertical.add(reloadManagerFrame);
 
         // set base target
         toolbarFrame.setBaseTarget("frame" + reloadManagerFrame.getUnifiedId());
-        menuFrame.setBaseTarget("frame" + reloadManagerFrame.getUnifiedId());
-        mainFrame.setBaseTarget("frame" + reloadManagerFrame.getUnifiedId());
+        leftFrame.setBaseTarget("frame" + reloadManagerFrame.getUnifiedId());
+        rightFrame.setBaseTarget("frame" + reloadManagerFrame.getUnifiedId());
 
         DynamicResource targetResource
             = reloadManagerFrame.getDynamicResource(DynamicCodeResource.class);
         // set target resource
         toolbarFrame.setTargetResource(targetResource.getId());
-        menuFrame.setTargetResource(targetResource.getId());
-        mainFrame.setTargetResource(targetResource.getId());
+        leftFrame.setTargetResource(targetResource.getId());
+        rightFrame.setTargetResource(targetResource.getId());
     }
 
     void uninstallReloadManagerFrame() {
@@ -164,16 +192,16 @@ public class FrameSetSession
         reloadManagerFrame.setDirtyResources(dirtyResources);
 
         vertical.remove(reloadManagerFrame);
-        vertical.setLayout(new SFrameSetLayout(null, "30,*"));
+        vertical.setLayout(new SFrameSetLayout(null, VERTICAL_LAYOUT));
         reloadManagerFrame = null;
 
         toolbarFrame.setBaseTarget("_top");
-        menuFrame.setBaseTarget("_top");
-        mainFrame.setBaseTarget("_top");
+        leftFrame.setBaseTarget("_top");
+        rightFrame.setBaseTarget("_top");
 
         toolbarFrame.setTargetResource(null);
-        menuFrame.setTargetResource(null);
-        mainFrame.setTargetResource(null);
+        leftFrame.setTargetResource(null);
+        rightFrame.setTargetResource(null);
     }
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse response)
@@ -183,6 +211,20 @@ public class FrameSetSession
             Set dirtyResources = new HashSet(getSession().getReloadManager().getDirtyResources());
             reloadManagerFrame.setDirtyResources(dirtyResources);
             getSession().getReloadManager().clear();
+        }
+    }
+
+    /**
+     * A Label that returns the current time every time it is rendered.
+     * This is to demonstrate, that using the reload-frame does not cause
+     * re-rendering of unaffected Frames. In real-live, you would never have
+     * a component whose content changes every time it is rendered.
+     */
+    private static class RenderTimeLabel extends SLabel {
+        long startTime = System.currentTimeMillis();
+        public String getText() {
+            return "(rendered frame at t=" 
+                + (System.currentTimeMillis()-startTime)/1000.0 + ")";
         }
     }
 
@@ -198,5 +240,6 @@ public class FrameSetSession
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */
