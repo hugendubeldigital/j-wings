@@ -1,0 +1,27 @@
+<template name="ToggleButtonCG" 
+          for="org.wings.SToggleButton"
+	  extends="org.wings.plaf.css1.ButtonCG">
+<write>
+<%
+    /*
+     * This is a quick hack, until we can extend check box cg or so.
+     */
+    final String style = ((component.getStyle() != null) 
+		    ? component.getStyle().getName() 
+		    : null);
+    final String attr = ((component.getAttributes().size() > 0) 
+			 ? ("_" + component.getUnifiedId()) 
+			 : null);
+
+    writeIcon(device, component, (attr != null) ? attr : style);
+    writeText(device, component, (attr != null) ? attr : style);
+
+    if (component.isEnabled() && component.getShowAsFormComponent()) {
+       // could be a util method
+       %><input type="hidden"<%
+       %><%|name=component.getNamePrefix()%><%
+       %><%|value=component.getDeselectParameter()%><%
+       %>/><%
+   }
+%></write>
+</template>

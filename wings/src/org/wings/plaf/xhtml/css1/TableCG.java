@@ -49,7 +49,7 @@ public final class TableCG
         SDimension intercellPadding = table.getIntercellPadding();
         SDimension intercellSpacing = table.getIntercellSpacing();
 
-        d.print("<table");
+        d.print("\n<table");
         CGUtil.writeSize( d, table );
 
         int thickness = 0;
@@ -165,20 +165,22 @@ public final class TableCG
         for (int r = startRow; r < endRow; r++) {
             d.print("<tr ");
 
-            Style rowStyle = table.isRowSelected(r) ? 
-                table.getSelectionStyle() : table.getStyle();
+            Style rowStyle = ( table.isRowSelected(r)
+                               ? table.getSelectionStyle() 
+                               : table.getStyle());
             
             if (rowStyle != null) {
                 d.print(" class=\"").print(rowStyle.getName()).print("\"");
             }
             d.print(">");
 
-            boolean selectionWritten = table.getRowSelectionColumn()<0;
+            boolean selectionWritten = ((table.getSelectionModel().getSelectionMode() == SListSelectionModel.NO_SELECTION)
+                                        ||(table.getRowSelectionColumn() < 0));
 
             for (int c = startCol; c < endCol; c++) {
 
-                if ( !selectionWritten && 
-                     c>=table.getRowSelectionColumn() ) {
+                if ( !selectionWritten
+                     && (c >= table.getRowSelectionColumn()) ) {
                     writeRowSelection(d, table, rendererPane, r, c);
                     selectionWritten = true;
                 }
@@ -213,7 +215,7 @@ public final class TableCG
         boolean pushedURL = false;
         if (!isEditingCell && table.isCellEditable(row, col)) {
             RequestURL editAddr = table.getRequestURL();
-            editAddr.addParameter(table.getNamePrefix() + "=" + 
+            editAddr.addParameter(table.getNamePrefix(),
                                   table.getEditParameter(row, col));
 
             if ( comp instanceof ClickableRenderComponent ) {
@@ -262,7 +264,7 @@ public final class TableCG
         d.print("<td>");
 
         RequestURL toggleSelectionAddr = table.getRequestURL();
-        toggleSelectionAddr.addParameter(table.getNamePrefix() + "=" + 
+        toggleSelectionAddr.addParameter(table.getNamePrefix(),
                                          table.getSelectionToggleParameter(row,col));
 
         if ( comp instanceof ClickableRenderComponent ) {

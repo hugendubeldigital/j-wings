@@ -149,7 +149,7 @@
 										
                 if ( renderSelection ) {
                    RequestURL selectionAddr = list.getRequestURL();
-                   selectionAddr.addParameter(list.getNamePrefix() + "=" + 
+                   selectionAddr.addParameter(list.getNamePrefix(),
                                               list.getSelectionToggleParameter(i));
 
 		   if ( renderer instanceof ClickableRenderComponent ) {

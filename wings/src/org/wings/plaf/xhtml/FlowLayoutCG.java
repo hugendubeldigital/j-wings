@@ -55,23 +55,21 @@ public class FlowLayoutCG
             for (int i=0;  i < components.size(); i++) {
                 SComponent comp = (SComponent)components.get(i);
                 if (comp.isVisible()) {
-		    if (count == 0)
-             {
-                d.print("<table cellpadding=\"0\" cellspacing=\"0\"");
-                CGUtil.writeSize( d, container );
-                if ( Utils.hasSpanAttributes( container ) )
-                 {
-                    d.print(" style=\"");
-                    Utils.writeSpanAttributes( d, (SComponent) container );
-                    d.print("\" ");
-                 }
-
-                d.print("><tr><td>");
-			 }
+		    if (count == 0) {
+                        d.print("<table cellpadding=\"0\" cellspacing=\"0\"");
+                        CGUtil.writeSize( d, container );
+                        if ( Utils.hasSpanAttributes( container ) ) {
+                            d.print(" style=\"");
+                            Utils.writeSpanAttributes( d, (SComponent) container );
+                            d.print("\" ");
+                        }
+                        
+                        d.print("><tr><td>");
+                    }
 		    else if (orientation == SConstants.VERTICAL)
-                        d.print("</td></tr><tr><td>\n");
+                        d.print("</td></tr>\n<tr><td>");
 		    else
-                        d.print("</td><td>\n");
+                        d.print("</td><td>");
                     ((SComponent)components.get(i)).write(d);
                     count++;
                 }

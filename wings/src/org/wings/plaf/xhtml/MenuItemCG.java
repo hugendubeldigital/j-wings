@@ -171,7 +171,8 @@ public class MenuItemCG
     protected void writeAnchorAddress(Device d, SButton button) 
     throws IOException {
         RequestURL addr = button.getRequestURL();
-        addr.addParameter(button.getNamePrefix() + "=" + button.getUnifiedId() + SConstants.UID_DIVIDER);
+        addr.addParameter(button.getNamePrefix(),
+                          button.getUnifiedId() + SConstants.UID_DIVIDER);
         addr.write(d);
     }
 

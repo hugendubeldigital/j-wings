@@ -13,8 +13,8 @@ void writeText(final Device device, SClickable clickable, String attr)
     
     if ( clickable.getEvent()!=null && clickable.getRequestTarget()!=null) {
         RequestURL u = clickable.getRequestURL();
-        u.addParameter(clickable.getRequestTarget().getNamePrefix() + 
-	               "=" + clickable.getEvent());
+        u.addParameter(clickable.getRequestTarget().getNamePrefix(),
+	               clickable.getEvent());
         url = u;
     } else {
         AnchorProperties anchor	= AnchorRenderStack.get();
@@ -64,8 +64,8 @@ void writeIcon(final Device device, SClickable clickable, String attr)
     
     if ( clickable.getEvent()!=null && clickable.getRequestTarget()!=null) {
         RequestURL u = clickable.getRequestURL();
-        u.addParameter(clickable.getRequestTarget().getNamePrefix() + 
-	               "=" + clickable.getEvent());
+        u.addParameter(clickable.getRequestTarget().getNamePrefix(),
+	               clickable.getEvent());
         url = u;
     } else {
         AnchorProperties anchor	= AnchorRenderStack.get();

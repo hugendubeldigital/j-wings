@@ -22,7 +22,7 @@ void writeIcon(Device device, SIcon icon, SLabel label,
         %><%|src=icon.getURL()%><%
         %><%|width=icon.getIconWidth()%><%
         %><%|height=icon.getIconHeight()%><%
-        %>><%
+        %> /><%
 
         if (anchor != null) {
 	    %></a><%

@@ -126,7 +126,8 @@ protected void writeAnchorAddress(Device d, SCheckBox checkBox)
     throws IOException
 {
     RequestURL addr = checkBox.getRequestURL();
-    addr.addParameter(checkBox.getNamePrefix() + "=" + checkBox.getSelectionToggleParameter());
+    addr.addParameter(checkBox.getNamePrefix(), 
+                      checkBox.getSelectionToggleParameter());
     addr.write(d);
 }
 
@@ -143,6 +144,7 @@ void writeFormIcon(final Device device, SCheckBox checkBox, String attr)
 {
     %><input type="<%=checkBox.getType()%>" name="<%
     %><%=checkBox.getNamePrefix()%>"<%
+    %><%|tabindex=checkBox.getFocusTraversalIndex()%><%
     %><%|class=attr%><%
     // writeEvents();
     %><%|id=checkBox.getUnifiedId()%><%

@@ -126,7 +126,8 @@ protected void writeAnchorAddress(Device d, SRadioButton radioButton)
     throws IOException
 {
     RequestURL addr = radioButton.getRequestURL();
-    addr.addParameter(radioButton.getNamePrefix() + "=" + radioButton.getSelectionToggleParameter());
+    addr.addParameter(radioButton.getNamePrefix(),
+                      radioButton.getSelectionToggleParameter());
     addr.write(d);
 }
 
@@ -143,6 +144,7 @@ void writeFormIcon(final Device device, SRadioButton radioButton, String attr)
 {
     %><input type="<%=radioButton.getType()%>" name="<%
     %><%=radioButton.getNamePrefix()%>"<%
+    %><%|tabindex=radioButton.getFocusTraversalIndex()%><%
     %><%|class=attr%><%
     // writeEvents();
     %><%|id=radioButton.getUnifiedId()%><%

@@ -37,6 +37,7 @@ public class TableCG
     protected static final SIcon EDIT_ICON = 
         new ResourceImageIcon("org/wings/icons/Pencil.gif");
 
+    // this should somehow go into the plaf's properties.
     protected static final STableCellRenderer DEFAULT_ROW_SELECTION_RENDERER = 
         new SDefaultTableRowSelectionRenderer();
 
@@ -251,7 +252,7 @@ public class TableCG
         boolean pushedURL = false;
         if ( !isEditingCell && table.isCellEditable(row, col) ) {
             RequestURL editAddr = table.getRequestURL();
-            editAddr.addParameter(table.getNamePrefix() + "=" + 
+            editAddr.addParameter(table.getNamePrefix(),
                                   table.getEditParameter(row, col));
             
             if ( comp instanceof ClickableRenderComponent ) {
@@ -337,7 +338,7 @@ public class TableCG
 
 
         RequestURL toggleSelectionAddr = table.getRequestURL();
-        toggleSelectionAddr.addParameter(table.getNamePrefix() + "=" + 
+        toggleSelectionAddr.addParameter(table.getNamePrefix(),
                                          table.getSelectionToggleParameter(row,col));
 
         if ( comp instanceof ClickableRenderComponent ) {
