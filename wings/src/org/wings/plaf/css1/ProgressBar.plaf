@@ -1,0 +1,47 @@
+<!-- -*- html -*- -->
+<template name="ProgressBarCG" for="org.wings.SProgressBar">
+
+<write>
+<%
+
+    String style = Utils.style(component);
+
+    SDimension size = component.getPreferredSize();
+    int width = size!=null ? size.getIntWidth() : 200;
+    int height = size!=null ? size.getIntHeight() : 200;
+
+    if ( component.isStringPainted() ) {
+        %><table border="0" cellpadding="0" cellspacing="0"><tr><td><%
+    }
+    if ( component.isBorderPainted() ) {
+        %><table border="0" cellpadding="1" cellspacing="0"><tr><td<%
+	%><%|bgcolor=component.getBorderColor()%>><%
+    }
+ 
+    %><table border="0" cellpadding="0" cellspacing="0"><%
+    %><tr><%
+        %><td<%|bgcolor=component.getFilledColor()%>><%
+            %><img src="/blank.gif"<%|width=(int)(width*component.getPercentComplete())%><%
+                %><%|height=size.getIntHeight()%>></td><%
+        %><td<%|bgcolor=component.getUnfilledColor()%>><%
+            %><img src="/blank.gif"<%|width=(int)(width*(1-component.getPercentComplete()))%><%
+                %><%|height=size.getIntHeight()%>><%
+        %></td><%
+    %></tr><%
+    %></table><%
+
+    if ( component.isBorderPainted() ) {
+        %></td></tr></table><%
+    }
+
+    if ( component.isStringPainted() ) {
+        %></td></tr><tr><td align="center"><%
+        if (style != null) {
+            %><span class="<%=style%>"><%
+        }
+	%><%=component.getString()%><%
+       if (style != null) { %></span><% }
+        %></td></tr></table><%
+    }
+%></write>
+</template>
