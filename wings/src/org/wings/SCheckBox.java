@@ -176,16 +176,20 @@ public class SCheckBox extends SButton
     }
 
     /**
-     * TODO: documentation
-     *
+     * Add this button to a button group. This influences the event-prefix
+     * this button reports to the request dispatcher: it will change to
+     * the button group's prefix.
      * @param g
      */
     protected void setGroup(SButtonGroup g) {
-        group = g;
-
-        if ( group!=g && getDispatcher()!=null ) {
-            getDispatcher().unregister(this);
-            getDispatcher().register(this);
+        if ( group!=g ) {
+            if (getDispatcher()!=null ) {
+                getDispatcher().unregister(this);
+                group = g;
+                getDispatcher().register(this);
+            }
+            else
+                group = g;
         }
     }
 
@@ -291,15 +295,20 @@ public class SCheckBox extends SButton
         }
     }
 
+    public String getCGClassID() {
+        return cgClassID;
+    }
+
+    public void setCG(CheckBoxCG cg) {
+        super.setCG(cg);
+    }
+
+    //--- RequestListener implementation.
     /*
-     * Abhaengig, ob der Button zu einer Gruppe gehoert, wird deren Name
-     * oder der eigene zurueckgegeben.
+     * if this button belongs to a button group, then its name
+     * is returned, otherwise the own.
      */
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
+    
     public String getNamePrefix() {
         if ( group==null )
             return super.getNamePrefix();
@@ -313,14 +322,6 @@ public class SCheckBox extends SButton
     }
 
     public void fireFinalEvents() {}
-
-    public String getCGClassID() {
-        return cgClassID;
-    }
-
-    public void setCG(CheckBoxCG cg) {
-        super.setCG(cg);
-    }
 }
 
 /*
