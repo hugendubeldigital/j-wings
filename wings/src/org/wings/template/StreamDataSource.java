@@ -30,7 +30,7 @@ import org.wings.template.parser.*;
 public class StreamDataSource implements DataSource
 {
     /**
-     * Debug Ausgaben aktivieren.
+     * enable debug output
      */
     private static final boolean DEBUG = true;
 

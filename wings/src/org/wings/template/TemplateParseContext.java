@@ -38,20 +38,24 @@ public final class TemplateParseContext implements ParseContext
     public TemplateParseContext (final Device sink, Hashtable components) {
         this.sink = sink;
         this.components = components;
+        /**
+         * implement an OutputStream on top
+         * of a sink.
+         */
         myOut = new OutputStream () {
-            public void close() {}
-            public void flush() throws IOException {
+            public final void close() {}
+            public final void flush() throws IOException {
                 sink.flush();
             }
-            public void write(byte b[],
-                              int off,
-                              int len) throws IOException {
+            public final void write(byte b[],
+                                    int off,
+                                    int len) throws IOException {
                 sink.write (b, off, len);
             }
-            public void write(byte b[]) throws IOException {
+            public final void write(byte b[]) throws IOException {
                 sink.write (b);
             }
-            public void write(int b) throws IOException {
+            public final void write(int b) throws IOException {
                 sink.write (b);
             }
         };
@@ -67,7 +71,9 @@ public final class TemplateParseContext implements ParseContext
     public void doneTag (int number) {
     }
 
-    /** --- fuer's Template wichtige Funktionen --- **/
+    /*
+     * important for the template: the components write to this sink
+    */
     public Device getDevice () {
         return sink;
     }
