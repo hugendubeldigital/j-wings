@@ -2,27 +2,23 @@
 var TREE_NODES = new Array();
 
 
-function Tree(treeId, eventId, expandIcon, collapseIcon, baseAddress, rootNodeId) {
+function Tree(treeId, eventId, expandIcon, collapseIcon, baseAddress, rootNode) {
     this.eventId = eventId;
     this.expandIcon = expandIcon;
     this.collapseIcon = collapseIcon;
     this.treeElement = document.getElementById(treeId);
-    this.rootNodeId = rootNodeId;
-    this.rootNode = null;
+    this.rootNode = rootNode;
+    this.rootNode.tree = this;
     this.baseAddress = baseAddress;
-}
+ }
 
 Tree.prototype.getRootNode = function() {
-    if ( this.rootNode==null ) {
-        this.rootNode = TREE_NODES[this.rootNodeId];
-    } // end of if ()
-    
     return this.rootNode;
 }
 
 
-function TreeNode(tree, nodeId, expanded, toggleSelectionEvent, toggleExpansionEvent) {
-    this.tree = tree;
+function TreeNode(nodeId, expanded, toggleSelectionEvent, toggleExpansionEvent) {
+    this.nodeId = nodeId;
     this.nodeElement = document.getElementById(nodeId);
     this.icon = document.getElementById(nodeId + "_icon");
     this.originalExpanded = expanded;
@@ -30,8 +26,18 @@ function TreeNode(tree, nodeId, expanded, toggleSelectionEvent, toggleExpansionE
     this.children = null;
     this.toggleSelectionEvent = toggleSelectionEvent;
     this.toggleExpansionEvent = toggleExpansionEvent;
+    this.parentNode = null;
+}
 
-    TREE_NODES[nodeId] = this;
+
+TreeNode.prototype.getTree = function() {
+    var rootNode = this;
+        
+    while ( rootNode.parentNode != null ) {
+        rootNode = rootNode.parentNode;
+    }
+
+    return rootNode.tree;
 }
 
 TreeNode.prototype.addChild = function(child) {
@@ -40,10 +46,11 @@ TreeNode.prototype.addChild = function(child) {
     }
 
     this.children[this.children.length] = child;
+    child.parentNode = this;
 }
 
 TreeNode.prototype.updateIcon = function() {
-    this.icon.src = this.expanded ? this.tree.collapseIcon : this.tree.expandIcon;
+    this.icon.src = this.expanded ? this.getTree().collapseIcon : this.getTree().expandIcon;
 }
 
 TreeNode.prototype.getNode = function(nodeId) {
@@ -73,7 +80,7 @@ TreeNode.prototype.updateDisplayRecursive = function(visible) {
     }
 }
 
-TreeNode.prototype.toggleExpansion2 = function() {
+TreeNode.prototype.toggleExpansion = function() {
     if ( this.expanded ) {
         this.collapse();
     } else {
@@ -82,13 +89,19 @@ TreeNode.prototype.toggleExpansion2 = function() {
 }
 
 TreeNode.prototype.getRootNode = function() {
-    return this.tree.rootNode;
+    return this.getTree().rootNode;
 }
+
+TreeNode.prototype.isLeaf = function() {
+    return this.children == null || this.children.length == 0;
+}
+
 
 TreeNode.prototype.appendToggleExpansionEvents = function(address) {
     if ( this.children!=null ) {
         if ( this.expanded!=this.originalExpanded ) {
-            address += "&" + this.tree.eventId + "=" + this.toggleExpansionEvent;
+            // &amp; did not work here!!
+            address += "&" + this.getTree().eventId + "=" + this.toggleExpansionEvent;
         } // end of if ()
     
         for ( var i=0; i<this.children.length; i++ ) {
@@ -99,25 +112,14 @@ TreeNode.prototype.appendToggleExpansionEvents = function(address) {
     return address;
 }
 
-TreeNode.prototype.toggleSelection2 = function() {
-    var address = this.tree.baseAddress;
+TreeNode.prototype.toggleSelection = function() {
+    var address = this.getTree().baseAddress;
 
-    address += "?" + this.tree.eventId + "=" + this.toggleSelectionEvent;
+    address += "?" + this.getTree().eventId + "=" + this.toggleSelectionEvent;
 
-    address = this.tree.getRootNode().appendToggleExpansionEvents(address);
+    address = this.getTree().getRootNode().appendToggleExpansionEvents(address);
 
     document.location.href = address;
 }
 
-TreeNode.prototype.toggleSelection = function(nodeId) {
-    var node = TreeNode.prototype.getNode(nodeId);
-
-    node.toggleSelection2()
-}
-
-TreeNode.prototype.toggleExpansion = function(nodeId) {
-    var node = TreeNode.prototype.getNode(nodeId);
-
-    node.toggleExpansion2()
-}
 

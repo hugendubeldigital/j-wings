@@ -42,8 +42,9 @@ public static String loadScript() {
         component.addScriptListener(SCRIPT_LOADER);
 </install>
 
-
-
+<uninstall>
+        component.removeScriptListener(SCRIPT_LOADER);
+</uninstall>
 
 private void writeTreeNode(STree tree, Device device, Object[] path, int depth, 
                            String nodeId, int maxDepth, int row) throws IOException {
@@ -67,12 +68,7 @@ private void writeTreeNode(STree tree, Device device, Object[] path, int depth,
                                                                     isLeaf, row,
                                                                     false);
 
-    %><tr id="<%=nodeId%>"<%
-
-           /*    if ( !isExpanded ) {
-        %> style="display:none"<%
-        }*/
-    %>><% // close <tr>
+    %><tr id="<%=nodeId%>"><%
 
     /*
      * fill the indented area.
@@ -103,11 +99,7 @@ private void writeTreeNode(STree tree, Device device, Object[] path, int depth,
         /*
          * write expansion control (the [-] or [+] thingies)
          */
-        // the tree generates the URL that it can handle in its RequestListener
-        RequestURL expansionAddr = tree.getRequestURL();
-        expansionAddr.addParameter(tree,
-                                   tree.getExpansionParameter(row, true));
-        %><a href="javascript:TreeNode.prototype.toggleExpansion('<%=nodeId%>')"><%
+        %><a href="javascript:TREE_NODES['<%=nodeId%>'].toggleExpansion()"><%
 
         if (isExpanded) {
             writeIcon(device, collapseControlIcon, true, nodeId + "_icon");
@@ -123,8 +115,7 @@ private void writeTreeNode(STree tree, Device device, Object[] path, int depth,
     if ( isSelectable ) {
         // ask the tree for the URL it has for expansion events
         RequestURL selectionAddr = new RequestURL();
-        selectionAddr.setResource("javascript:TreeNode.prototype.toggleSelection('" + 
-                                  nodeId + "')");
+        selectionAddr.setResource("javascript:TREE_NODES['" + nodeId + "'].toggleSelection()");
             
         if ( cellComp instanceof ClickableRenderComponent ) {
             AnchorRenderStack.push(selectionAddr, null);
@@ -162,11 +153,7 @@ private void writeScriptNode(STree tree, Device device,
     final Object node = path[depth];
     final String isExpanded = tree.isExpanded(new MyTreePath(path,depth+1)) ? "true" : "false";
 
-
-    final String treeVar = "tree_" + tree.getComponentId();
-    final String nodeVar = "treenode_" + nodeId;
-
-%>var <%=nodeVar%> = new TreeNode(<%=treeVar%>, '<%=nodeId%>', <%=isExpanded%>,'<%=tree.getSelectionParameter(result.row, true)%>','<%=tree.getExpansionParameter(result.row, true)%>');
+%>TREE_NODES["<%=nodeId%>"] = new TreeNode("<%=nodeId%>", <%=isExpanded%>,"<%=tree.getSelectionParameter(result.row, true)%>","<%=tree.getExpansionParameter(result.row, true)%>");
 <%
 
     result.row++;
@@ -175,11 +162,11 @@ private void writeScriptNode(STree tree, Device device,
     for ( int i=0; i<model.getChildCount(node); i++ ) {
         path[depth+1] = model.getChild(node, i);
         writeScriptNode(tree, device, path, nodeId + "_" + i, depth+1, result);
-        %><%=nodeVar%>.addChild(<%=result.nodeVar%>);
+        %>TREE_NODES["<%=nodeId%>"].addChild(TREE_NODES["<%=result.nodeId%>"]);
 <%
     }
 
-    result.nodeVar = nodeVar;
+    result.nodeId = nodeId;
 }
 
 
@@ -232,25 +219,18 @@ private int writeSubTree(STree tree, Device device, Object[] path, int depth,
   %>
 <tr><td<%
   %><%|colspan=maxDepth+2%><%
-  %>></td></tr></table><%
+  %>>&nbsp;</td></tr></table><%
 
   %>
   <script language="JavaScript" type="text/javascript">
-     var tree_<%=component.getComponentId()%> = new Tree('<%=component.getComponentId()%>','<%=component.getEncodedLowLevelEventId()%>','<%=expandControlIcon.getURL()%>','<%=collapseControlIcon.getURL()%>', '<%=component.getRequestURL()%>', '<%=component.getComponentId() + "_0"%>');
   <%
       path[0] = component.getModel().getRoot();
       ScriptResult result = new ScriptResult();
       writeScriptNode(component, device, path,component.getComponentId() + "_0", 0, result);
 
-        %>
-if ( <%=result.nodeVar%>.expanded ) {
-    <%=result.nodeVar%>.expand(); 
-} else {
-    <%=result.nodeVar%>.collapse(); 
-} // end of else
-<%
+  %>var tree_<%=component.getComponentId()%> = new Tree("<%=component.getComponentId()%>","<%=component.getEncodedLowLevelEventId()%>","<%=expandControlIcon.getURL()%>","<%=collapseControlIcon.getURL()%>", "<%=component.getRequestURL()%>", TREE_NODES["<%=result.nodeId%>"]);
 
-  %>
+TREE_NODES["<%=result.nodeId%>"].expand();
   </script>
   <%
 
@@ -314,7 +294,7 @@ if ( <%=result.nodeVar%>.expanded ) {
   }
 
   protected class ScriptResult {
-      String nodeVar;
+      String nodeId;
       int row = 0;
   }
 

@@ -345,7 +345,7 @@ public class TemplateParser {
          * un-installCG()
          */
         out.print(INDENT);
-        out.println("public void uninstallCG(final SComponent component) {");
+        out.println("public void uninstallCG(final SComponent comp) {");
         // nothing for now. We could reset this to old values ..
         if (uninstallList.size() > 0) {
             out.println(INDENT + INDENT + "final " + forClassName 
