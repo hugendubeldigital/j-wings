@@ -153,7 +153,7 @@ public class ButtonCG
             else if (disabledIcon != null)
                 ic = disabledIcon;
 
-            if (ic == null)
+            if (ic == null && iAdr == null)
                 if (iconAddress != null)
                     iAdr = iconAddress;
                 else if (icon != null)
