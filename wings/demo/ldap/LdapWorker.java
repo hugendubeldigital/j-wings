@@ -294,6 +294,8 @@ public class LdapWorker
     }
 
     public Object getOAttributeValues (String o,String attrName) {
+
+	System.out.println("na was denn");
 	Object val = null;
 	System.out.println(o);
 	try {
@@ -306,7 +308,7 @@ public class LdapWorker
 	    SearchControls c = new SearchControls();
 	    c.setSearchScope(0);
 	    c.setReturningAttributes(new String[] {attrName});
-	    NamingEnumeration enum = ctx.search(o + "," + "dc=engels,dc=de", "(objectclass=*)",c);
+	    NamingEnumeration enum = ctx.search(o, "(objectclass=*)",c);
 	    
 	    
 	    while (enum.hasMore()) {
@@ -376,11 +378,11 @@ public class LdapWorker
 	
 	}*/
     
-    public ArrayList getFilteredDN(String baseDN,String filter) {
-	String [] attribs = {};
+    public ArrayList getFilteredAllDN(String baseDN,String filter) {
+	String [] attribs = {"cn"};
 	ArrayList l = new ArrayList();
 	try {
-	    NamingEnumeration en = search("dc=engels,dc=de",filter,attribs,2);
+	    NamingEnumeration en = search("dc=engels,dc=de","(cn=*)",attribs,2);
 	    while (en!=null && en.hasMoreElements()) {
 		SearchResult sr = (SearchResult)en.next();
 		System.out.println(">>>" + sr.getName());

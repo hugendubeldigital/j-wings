@@ -59,7 +59,7 @@ public class LdapBrowserSession
     SPanel viewPanel;
     SForm searchForm;
     STextField searchField;
-    SComboBox searchBox;
+    SLabel searchLabel;
     SButton searchButton;
     final String filter = "(cn=*)";
 
@@ -109,7 +109,7 @@ public class LdapBrowserSession
 	getFrame().getContentPane().setLayout(new SFlowDownLayout());
 	
 		
-	listForm = new SForm(new SFlowDownLayout());
+	searchForm = new SForm(new SFlowDownLayout());
 	tableForm = new SForm(new SFlowDownLayout());
 	//tableForm = new SPanel(new SFlowDownLayout());
 	
@@ -132,18 +132,16 @@ public class LdapBrowserSession
 	personList.setVisibleRowCount(12);
 	addListElements(personList);
 
-	searchBox = new SComboBox();
-	searchBox.addItem("name");
-	searchBox.addItem("abteilung");
-	
-	searchField = new STextField("*");
+	searchLabel = new SLabel("name");
+		
+	searchField = new STextField("");
 
-	SButton searchButton = new SButton("search");
+	searchButton = new SButton("search");
 	searchButton.addActionListener(this);
 	
 	tableForm.add(peopleTable);
 	tableForm.add(view);
-	searchForm.add(searchBox);
+	searchForm.add(searchLabel);
 	searchForm.add(searchField);
 	searchForm.add(searchButton);
 	
@@ -169,19 +167,20 @@ public class LdapBrowserSession
 	    tableForm.add(view);
 	}
 
-	else 
+	//else 
 	
-	    if ((SButton)evt.getSource() == view) {
-		int row = peopleTable.getSelectedRow();
-		LdapTableModel model = (LdapTableModel)peopleTable.getModel();
-		System.out.println("value at(" + row+",0)");
-		String value = (String)model.getValueAt(row,0);
-		String dn = (String)peopleDN.get(value);
-		System.out.println("die dn ist" + dn);
-		System.out.println("base DN ist " + baseDN);
-		viewPanel.removeAll();
-		
-		BasicAttributes attrs = (BasicAttributes)getLdapWorker().getDNAttributes(dn + "," + baseDN);
+	if ((SButton)evt.getSource() == view) {
+	    System.out.println("juju");
+	    int row = peopleTable.getSelectedRow();
+	    LdapTableModel model = (LdapTableModel)peopleTable.getModel();
+	    System.out.println("value at(" + row+",0)");
+	    String value = (String)model.getValueAt(row,0);
+	    String dn = (String)peopleDN.get(value);
+	    System.out.println("die dn ist" + dn);
+	    System.out.println("base DN ist " + baseDN);
+	    viewPanel.removeAll();
+	    
+	    BasicAttributes attrs = (BasicAttributes)getLdapWorker().getDNAttributes(dn + "," + baseDN);
 		try {
 		    NamingEnumeration en = attrs.getAll();
 		    while (en!=null && en.hasMoreElements()) {
@@ -201,8 +200,8 @@ public class LdapBrowserSession
 				    else {
 					values = (String)i;
 				    }
-				viewPanel.add(new SLabel(label));
-				viewPanel.add(new SLabel(values));
+				    viewPanel.add(new SLabel(label));
+				    viewPanel.add(new SLabel(values));
 				}
 				if (i.getClass().getName() == "[B") {
 				//byte hallo [] = (byte [])i;
@@ -226,12 +225,15 @@ public class LdapBrowserSession
 		catch (NamingException exc){
 		    System.out.println(exc);
 		}
-	    }
+	}
+	//else 
 	if ((SButton)evt.getSource() == searchButton) {
 	    //filter = search.getSelectedItem();
 	    System.out.println("filter is... " + filter);
 	    //LdapWorker worker = getLdapWorker();
 	    //peopleTable.setModel(new LdapTableModel());
+	    
+	    tableForm.removeAll();
 	    peopleTable = new STable(new LdapTableModel());
 	    peopleTable.setBorderLines(new Insets(2,2,2,2));
 	    peopleTable.setSelectionMode(SINGLE_SELECTION);
@@ -269,25 +271,37 @@ public class LdapBrowserSession
 	final String[] columnNames = {"cn","sn"};
 	final int COLS = columnNames.length;
 	int ROWS ;
-	Object[][] data = new Object[ROWS][COLS];
+	Object[][] data; //= new Object[ROWS][COLS];
+	ArrayList dnList;
 	
 	LdapTableModel() {
-	    ArrayList l = getSelList();
-	    ArrayList dnList = getLdapWorker().getFilteredDN(filter,baseDN);
+	    //ArrayList l = getSelList();
+	    dnList = getLdapWorker().getFilteredAllDN("(cn = " + searchField.getText() + "*)",baseDN);
 	    ROWS = dnList.size();
 
 	    int i = 0 ;
-	    while (i < l.size()){
-		System.out.println(i + "   " + l.get(i));
+	    data = new Object[ROWS][COLS];
+	    /*while (i < dnList.size()){
+		System.out.println(i + "   " + dnList.get(i));
 		i++;
-	    }
+		}*/
 	    if (ROWS > 0) {
+		System.out.println(COLS + "columns");
+		System.out.println(ROWS + "rows");
+
+		System.out.println(data.length);
+		System.out.println(data[0].length);
 	    for (int c=0; c < COLS; c++) {
 		for (int r=0; r < ROWS; r++) {
 		    //filter  = "(" + filter + " = " + searchField.getText() + ")"; 
 		    //data[r][c] = worker.getOAttributeValues((String)peopleDN.get((String)getSelList().get(r)),columnNames[c]);
-		       
-		    data[r][c] = getLdapWorker().getOAttributeValues((String)dnList.get(r) + "," + baseDN , columnNames[c]);
+		    System.out.println("row " + r + "col " + c );
+		    System.out.println(columnNames[c]);
+		    System.out.println((String)dnList.get(r)); 
+		    System.out.println(baseDN);
+		    if (getLdapWorker()!=null)
+			System.out.println("kein krach");
+		    data[r][c] = (String)getLdapWorker().getOAttributeValues((String)dnList.get(r) + "," + baseDN , columnNames[c]);
 		    System.out.println("row " + r + "col " + c + "value "+ data[r][c]);
 		}
 		
