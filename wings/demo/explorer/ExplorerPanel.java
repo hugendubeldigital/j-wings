@@ -87,7 +87,7 @@ public class ExplorerPanel
     }
 
     protected SComponent createUpload() {
-        SForm p = new SForm(new SFlowLayout());
+        SForm p = new SForm();
         p.setEncodingType("multipart/form-data");
 
         final SFileChooser chooser = new SFileChooser();
