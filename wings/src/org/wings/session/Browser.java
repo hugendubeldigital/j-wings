@@ -165,7 +165,7 @@ public class Browser
 	 * @return true, if it is a netscape6/mozilla clone,
 	 *  false otherwise.
 	 */
-	public boolean hashGecko()
+	public boolean hasGecko()
 	{
 	    return HasGecko;
 	}
