@@ -106,6 +106,12 @@ public class STree
     private ArrayList delayedExpansionEvents;
 
     /**
+     * store here expansion paths that will be processed after procession the
+     * request. 
+     */
+    protected final ArrayList requestedExpansionPaths = new ArrayList();
+
+    /**
      * TODO: documentation
      */
     protected int nodeIndentDepth = 12;
@@ -188,6 +194,60 @@ public class STree
         reload(ReloadManager.RELOAD_CODE);
     }
 
+    /**
+     * Adds a listener for <code>TreeWillExpand</code> events.
+     *
+     * @param tel a <code>TreeWillExpandListener</code> that will be notified 
+     *            when a tree node will be expanded or collapsed (a "negative
+     *            expansion")
+     */
+    public void addTreeWillExpandListener(TreeWillExpandListener tel) {
+        listenerList.add(TreeWillExpandListener.class, tel);
+    }
+
+    /**
+     * Removes a listener for <code>TreeWillExpand</code> events.
+     *
+     * @param tel the <code>TreeWillExpandListener</code> to remove
+     */
+    public void removeTreeWillExpandListener(TreeWillExpandListener tel) {
+        listenerList.remove(TreeWillExpandListener.class, tel);
+    }
+
+
+    /**
+     * Notifies all listeners that have registered interest for
+     * notification on this event type.  The event instance 
+     * is lazily created using the <code>path</code> parameter.
+     *
+     * @param path the <code>TreePath</code> indicating the node that was
+     *		expanded
+     * @see EventListenerList
+     */
+     public void fireTreeWillExpand(TreePath path, boolean expand) 
+         throws ExpandVetoException {
+
+         // Guaranteed to return a non-null array
+         Object[] listeners = listenerList.getListenerList();
+         TreeExpansionEvent e = null;
+         // Process the listeners last to first, notifying
+         // those that are interested in this event
+         for (int i = listeners.length-2; i>=0; i-=2) {
+             if (listeners[i]==TreeWillExpandListener.class) {
+                 // Lazily create the event:
+                 if (e == null)
+                     e = new TreeExpansionEvent(this, path);
+
+                 if ( expand ) {
+                     ((TreeWillExpandListener)listeners[i+1]).
+                         treeWillExpand(e);
+                 } else {
+                     ((TreeWillExpandListener)listeners[i+1]).
+                         treeWillCollapse(e);
+                 }
+             }          
+         }
+     }   
 
     /**
      * TODO: documentation
@@ -287,7 +347,24 @@ public class STree
         fireTreeExpansionEvent(new TreeExpansionEvent(this, path), false);
     }
 
+    protected void processRequestedExpansionPaths() {
+        getSelectionModel().setDelayEvents(true);
+        
+        for ( int i=0; i<requestedExpansionPaths.size(); i++ ) {
+            try {
+                TreePath path = (TreePath)requestedExpansionPaths.get(i);
+                togglePathExpansion(path);
+            } catch ( ExpandVetoException ex ) {
+                // do not expand...
+            }
+        }
+        requestedExpansionPaths.clear();
+        getSelectionModel().setDelayEvents(false);
+    }
+
     public void fireIntermediateEvents() {
+        processRequestedExpansionPaths();
+
         getSelectionModel().fireDelayedIntermediateEvents();
     }
 
@@ -840,12 +917,16 @@ public class STree
      *
      * @param path
      */
-    protected void togglePathExpansion(TreePath path) {
+    protected void togglePathExpansion(TreePath path) 
+        throws ExpandVetoException
+    {
         if ( path != null ) {
             if ( treeState.isExpanded(path) ) {
+                fireTreeWillExpand(path, false);
                 collapseRow(path);
             }
             else {
+                fireTreeWillExpand(path, true);
                 expandRow(path);
             }
         }
@@ -886,7 +967,8 @@ public class STree
                     //selection
                     togglePathSelection(path);
                 } else if ( values[i].charAt(0)=='h' ) {
-                    togglePathExpansion(path);
+                    requestedExpansionPaths.add(path);
+                    //                    togglePathExpansion(path);
                 }
             }
         }

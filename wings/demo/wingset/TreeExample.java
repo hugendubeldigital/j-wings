@@ -48,10 +48,10 @@ public class TreeExample
         p.add(new SSeparator());
         p.add(tree);
 
-        /* test code
+        //        /* test code
         p.add(new SSeparator());
         p.add(createEventView(tree));
-        */
+        //        */
         return p;
     }
 
@@ -81,6 +81,24 @@ public class TreeExample
                     messages.setText(messages.getText() + "\n" 
                                      + "TreeExpansionEvent-treeCollapsed "
                                      + e.getPath().getLastPathComponent().toString());
+                }
+            });
+
+        tree.addTreeWillExpandListener(new TreeWillExpandListener() {
+                public void treeWillExpand(TreeExpansionEvent e)
+                    throws ExpandVetoException {
+                    messages.setText(messages.getText() + "\n"
+                                     + "TreeExpansionEvent-treeWillExpand "
+                                     +
+                                     e.getPath().getLastPathComponent().toString());
+                }
+
+                public void treeWillCollapse(TreeExpansionEvent e)
+                    throws ExpandVetoException {
+                    messages.setText(messages.getText() + "\n"
+                                     + "TreeExpansionEvent-treeWillCollapse "
+                                     +
+                                     e.getPath().getLastPathComponent().toString());
                 }
             });
 
