@@ -390,7 +390,7 @@ public class LdapClientSession
 			    int i = fis.read(b);
 			    fis.close();
 			    componentTable.remove("jpegPhoto");
-			    componentTable.put("jpegPhoto", new SLabel(new ImageIcon("/home/nengels/jpg/" + chooser.getFilename())));
+			    componentTable.put("jpegPhoto", new SLabel(new SImageIcon("/home/nengels/jpg/" + chooser.getFilename())));
 			    addEditableComponents(componentTable);
 			}
 			catch (IOException e) {
@@ -510,7 +510,7 @@ public class LdapClientSession
 			byte hallo [] = (byte [])o;
 			if (label.equals("jpegPhoto")) {
 			    SLabel attrL = new SLabel(label);
-			    SLabel photo = new SLabel(new ImageIcon((byte [])o));
+			    SLabel photo = new SLabel(new SImageIcon(new ImageIcon((byte [])o)));
 			    componentTable.put(label,photo);
 			}
 			if (label.equals("userPassword")) {

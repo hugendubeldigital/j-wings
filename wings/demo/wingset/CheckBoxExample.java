@@ -14,8 +14,6 @@
 
 package wingset;
 
-import javax.swing.Icon;
-
 import org.wings.*;
 
 /**
@@ -27,7 +25,7 @@ import org.wings.*;
 public class CheckBoxExample
     extends WingSetPane
 {
-    javax.swing.Icon icon = null;
+    SIcon icon = null;
 
     public SComponent createExample() {
         SPanel p = new SPanel(new SGridLayout(2));
@@ -67,10 +65,10 @@ public class CheckBoxExample
     }
 
     SContainer createImageCheckBoxExample() {
-        Icon sel = new ResourceImageIcon(SCheckBox.class, "icons/bulb2.gif");
-        Icon nsel = new ResourceImageIcon(SCheckBox.class, "icons/bulb1.gif");
-        Icon dissel = new ResourceImageIcon(SCheckBox.class, "icons/bulb3.gif");
-        Icon disnsel = new ResourceImageIcon(SCheckBox.class, "icons/bulb3.gif");
+        SIcon sel = new ResourceImageIcon(SCheckBox.class, "icons/bulb2.gif");
+        SIcon nsel = new ResourceImageIcon(SCheckBox.class, "icons/bulb1.gif");
+        SIcon dissel = new ResourceImageIcon(SCheckBox.class, "icons/bulb3.gif");
+        SIcon disnsel = new ResourceImageIcon(SCheckBox.class, "icons/bulb3.gif");
 
         SCheckBox[] boxes = new SCheckBox[9];
         boxes[0] = new SCheckBox("testTL");

@@ -20,8 +20,8 @@ import java.text.*;
 
 import javax.swing.event.*;
 import javax.swing.table.*;
-import javax.swing.Icon;
 import org.wings.ResourceImageIcon;
+import org.wings.*;
 
 /**
  * TODO: documentation
@@ -32,10 +32,10 @@ import org.wings.ResourceImageIcon;
 public class DirTableModel
     extends AbstractTableModel
 {
-    final static Icon DIR_ICON =
+    final static SIcon DIR_ICON =
         new ResourceImageIcon(DirTableModel.class, "/explorer/Directory.gif");
 
-    final static Icon FILE_ICON =
+    final static SIcon FILE_ICON =
         new ResourceImageIcon(DirTableModel.class, "/explorer/File.gif");
 
     private static FilenameFilter DEFAULT_FILENAMEFILTER =
@@ -177,7 +177,7 @@ public class DirTableModel
     public Class getColumnClass(int col) {
         switch ( col ) {
         case 0:
-            return Icon.class;
+            return SIcon.class;
         case 2:
             return Date.class;
         case 3:

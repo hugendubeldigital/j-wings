@@ -16,7 +16,6 @@ package wingset;
 
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
 
 import org.wings.*;
 
@@ -29,8 +28,8 @@ import org.wings.*;
 public class ButtonExample
     extends WingSetPane
 {
-    final Icon icon = new ResourceImageIcon(SButton.class, "icons/Warn.gif");
-    final Icon disabledIcon = new ResourceImageIcon(SButton.class,
+    final SIcon icon = new ResourceImageIcon(SButton.class, "icons/Warn.gif");
+    final SIcon disabledIcon = new ResourceImageIcon(SButton.class,
                                                     "icons/WarnDis.gif");
     
     public SComponent createExample() {
@@ -96,7 +95,7 @@ public class ButtonExample
             buttons[i].setToolTipText("Button " + i);
         }
 
-        buttons[4].setIcon((Icon)null);
+        buttons[4].setIcon(null);
         //buttons[4].setIcon("http://194.95.24.168/~armin/WingSet/swing-64.gif");
 
         buttons[0].setVerticalTextPosition(SConstants.TOP);

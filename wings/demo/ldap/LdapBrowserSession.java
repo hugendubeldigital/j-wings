@@ -178,7 +178,7 @@ public class LdapBrowserSession
 
 		if (attribute.get().getClass().getName().equals("[B")) {
 		    if (attribute.getID().equals("jpegPhoto")) {
-			ImageIcon icon = new ImageIcon((byte[])attribute.get());
+			SImageIcon icon = new SImageIcon(new ImageIcon((byte[])attribute.get()));
 			detailPanel.add(new SLabel(icon));
 		    }
 		    else if (attribute.getID().equals("userPassword")) {

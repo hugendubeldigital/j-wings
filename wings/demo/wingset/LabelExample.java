@@ -14,8 +14,6 @@
 
 package wingset;
 
-import javax.swing.Icon;
-
 import java.awt.event.*;
 import org.wings.*;
 
@@ -36,7 +34,7 @@ public class LabelExample
         layout.setCellSpacing(10);
         all.setLayout(layout);
 
-        Icon icon = new ResourceImageIcon(SConstants.class, "icons/Wait.gif");
+        SIcon icon = new ResourceImageIcon(SConstants.class, "icons/Wait.gif");
 
         final SLabel testLabel = new SLabel("LabelText");
         testLabel.setHorizontalAlignment(LEFT);
