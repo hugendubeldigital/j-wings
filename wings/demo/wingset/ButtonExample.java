@@ -103,8 +103,6 @@ public class ButtonExample
         buttons[7] = new SButton("testBC");
         buttons[8] = new SButton("testBR");
 
-        System.err.println("###########################");
-        System.err.println("icon.getURL()" + icon);
         for ( int i=0; i<buttons.length; i++ ) {
             if ( i!=4 ) {
                 buttons[i].setIcon(icon);

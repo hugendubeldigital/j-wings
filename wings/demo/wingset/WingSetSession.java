@@ -14,6 +14,8 @@
 
 package wingset;
 
+import java.text.MessageFormat;
+
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
@@ -41,20 +43,22 @@ public class WingSetSession
     extends SessionServlet
     implements SConstants
 {
-    SLabel timeMeasure;
+    /*
+     * some hack.
+     */
+    private SLabel timeMeasure;
+    private final TimeMeasure stopWatch;
 
     public WingSetSession(Session session) {
         super(session);
+        stopWatch = new TimeMeasure(new MessageFormat("<b>{0}</b>: {1} (<i>x {2}</i>)<br/>"));
         System.out.println("new WingSetSession");
     }
 
-
+    /**
+     * after the servlet is initialized, we can create our GUI.
+     */
     public void postInit(ServletConfig config) {
-        initGUI();
-    }
-
-
-    void initGUI() {
         timeMeasure = new SLabel();
         timeMeasure.setEscapeSpecialChars(false);
         getFrame().setTitle("WingSet Demo");
@@ -136,33 +140,37 @@ public class WingSetSession
         */
     }
 
-    /**
-     * this function handles the request from a HTML-Browser
-     * nearly all servlet functionality is in here
-     */
+    public void prepareRequest(HttpServletRequest req, 
+                               HttpServletResponse response) {
+        stopWatch.start("Event dispatching/action execution");
+    }
+    
     public void processRequest(HttpServletRequest req,
                                HttpServletResponse res)
         throws ServletException, IOException
         {
-            measure.start("time to generate HTML Code ");
-            // then write the data of the response
+            stopWatch.stop();
             /*
              * This is a dummy call to generate the HTML output, just
-             * to measure the time
+             * to measure the time. With the result, we modify the
+             * timeMeasure label, which may modify the actual code size
+             * within a range of some bytes ..
              */
+            stopWatch.start("time to generate HTML Code ");
             NullDevice devNull = new NullDevice();
             getFrame().write(devNull);
-            measure.stop();
-            timeMeasure.setText(measure.print() + 
-                                "(" + devNull.getSize() + " Bytes)");
-            measure.reset();
+            stopWatch.stop();
+            timeMeasure.setText(stopWatch.toString()
+                                + "<b>HTML code size: </b>" 
+                                + devNull.getSize() + " Bytes");
+            stopWatch.reset();
         }
 
     /**
      * Servletinfo
      */
     public String getServletInfo() {
-        return "WingSet ($Revision$)";
+        return "WingSet WingS demo servlet ($Revision$)";
     }
 }
 
