@@ -23,7 +23,8 @@
         case STextArea.VIRTUAL_WRAP : %> wrap="virtual"<%  break;
         case STextArea.PHYSICAL_WRAP: %> wrap="physical"<% break;
     }
-    %>><%#component.getText()%><%
+    %>><%
+    org.wings.plaf.compiler.Utils.writeQuoted(device, component.getText());
     %></textarea><%
 %>
 </write>

@@ -119,6 +119,11 @@ public final class Utils implements SConstants {
         d.print(s);
     }
 
+    public static void writeQuoted(Device d, String s) throws IOException {
+        if (s == null) return;
+        quote(d, s, false);
+    }
+
     /**
      * writes the given String to the device. The string is quoted, i.e.
      * for all special characters in *ML, their appropriate entity is
