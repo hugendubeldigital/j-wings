@@ -1,0 +1,98 @@
+<template name="FrameCG" for="org.wings.SFrame">
+<import>java.util.*</import>
+<import>org.wings.header.*</import>
+<import>org.wings.script.*</import>
+
+<install>
+        // dynamic code resource.
+        component.addDynamicResource(new DynamicCodeResource(component));
+
+        // dynamic stylesheet resource.
+        DynamicResource styleSheetResource = new DynamicStyleSheetResource(component);
+        component.addDynamicResource(styleSheetResource);
+        component.addHeader(new Link("stylesheet", null, 
+                                     "text/css", null, 
+                                     styleSheetResource));
+
+        // dynamic java script resource.
+        DynamicResource scriptResource = new DynamicScriptResource(component);
+        component.addDynamicResource(scriptResource);
+        component.addHeader(new Script("JavaScript", scriptResource));
+
+        // static stylesheet, coming with the CG
+        CGManager cgManager = component.getSession().getCGManager();
+        StaticResource staticResource = (StaticResource)cgManager
+            .getObject("lookandfeel.stylesheet", Resource.class);
+        staticResource.setMimeType("text/css");
+        component.addHeader(new Link("stylesheet", null, 
+                                     "text/css", null, 
+                                     staticResource));
+</install>
+
+<write>
+<%
+    SFrame frame = (SFrame)component;
+    try {
+        String language = "en"; // TODO: ???
+        String title = frame.getTitle();
+        Set headers = frame.headers();
+        String encoding = charSetFor(frame.getSession().getLocale());
+
+        %><?xml version="1.0" encoding="<%=encoding%>"?><%
+        %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd"><%
+        %><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=language%>" lang="<%=language%>"><%
+
+        %><head><%
+        if (title != null) {
+            %><title><%=title%></title><%
+        }
+
+        if (frame.getBaseTarget() != null) {
+            %><base target="<%=frame.getBaseTarget()%>"/><%
+        }
+
+        %><meta http-equiv="Content-type" content="text/html; charset=<%=encoding%>"/><%
+        %><meta http-equiv="expires" content="1000"/><%
+        %><meta http-equiv="pragma" content="no-cache"/><%
+
+        Iterator it = headers.iterator();
+        while (it.hasNext()) {
+            Object next = it.next();
+            if (next instanceof Renderable)
+                ((Renderable)next).write(device);
+            else {
+                %><%=it.next().toString()%><%
+            }
+        }
+
+        %></head><%
+
+        %><body<%
+        %><%|class=Utils.style(frame)%><%
+	Utils.writeEvents(device, frame);
+        %>><%
+
+        if (frame.isVisible()) {
+            frame.getLayout().write(device);
+        }
+
+        %></body></html><%
+    }
+    finally {
+        // cleanup, in case someone didn't do this correctly.
+        AnchorRenderStack.reset();
+    }
+%>
+</write>
+
+
+    private String charSetFor(Locale locale) {
+        final String language = locale.getLanguage();
+
+        if(language.equals("pl"))
+            return "iso-8859-2";
+
+        return "iso-8859-1";
+    }
+
+</template>
