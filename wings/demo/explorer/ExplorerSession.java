@@ -46,7 +46,7 @@ public class ExplorerSession
     {
         super.postInit( config );
 
-        String dir = config.getInitParameter("BaseDir");
+        String dir = config.getInitParameter("ExplorerBaseDir");
 
         if (dir == null)
             mainPanel = new ExplorerPanel(new String("."));
