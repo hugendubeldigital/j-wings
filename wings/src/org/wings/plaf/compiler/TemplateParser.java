@@ -293,13 +293,18 @@ public class TemplateParser {
                                ": cannot include file");
     }
 
+    /**
+     * executes code in JSP-tags. There are some special modifiers
+     * like '!', '?', '@' that are handled here.
+     */
     public void execJava(IncludingReader reader,
                          StringBuffer input, StringBuffer output) 
         throws IOException {
         char qualifier = input.charAt(0);
         switch (qualifier) {
         case '@':
-            // the code describes an include tag.
+            // the code describes an include tag (we are ignoring other
+            // types like 'import' for now)
             openIncludeFile(reader, input);
             break;
             
@@ -311,10 +316,10 @@ public class TemplateParser {
             break;
             
         case '?': 
+            // TODO: make introspection to find out the name of the getter.
             input.deleteCharAt(0);
             output.append("\torg.wings.plaf.compiler.Utils.write( device, ")
                 .append("component.get")
-                // todo: make introspection to find out the name of the getter.
                 .append(capitalize(input.toString()))
                 .append("());\n");
             break;
