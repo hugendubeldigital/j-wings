@@ -22,7 +22,8 @@ import javax.swing.ListSelectionModel;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public interface SListSelectionModel extends ListSelectionModel, SDelayedEventModel
+public interface SListSelectionModel 
+    extends ListSelectionModel, SDelayedEventModel
 {
     int NO_SELECTION              = -1;
 }

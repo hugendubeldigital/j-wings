@@ -16,7 +16,9 @@ package org.wings;
 import java.io.Serializable;
 
 /**
- * Some element, that can be accessed via an URL.
+ * Some Resource, that can be accessed through an URL.
+ *
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  */
 public interface URLResource extends Serializable
 {

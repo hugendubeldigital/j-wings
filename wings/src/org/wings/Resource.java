@@ -36,7 +36,7 @@ import org.wings.externalizer.ExternalizeManager;
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
-public abstract class Resource implements Serializable, URLResource
+public abstract class Resource implements Serializable, URLResource, Renderable
 {
     private final static Logger logger = Logger.getLogger("org.wings");
 
@@ -60,6 +60,7 @@ public abstract class Resource implements Serializable, URLResource
      */
     protected String mimeType; 
 
+    protected Set headers;
 
     protected Resource(String extension, String mimeType) {
         this.extension = extension;
@@ -92,8 +93,6 @@ public abstract class Resource implements Serializable, URLResource
     public final String getMimeType() {
         return mimeType;
     }
-
-    protected Set headers;
 
     public void setHeaders(Set headers) {
         this.headers = headers;

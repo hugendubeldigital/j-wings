@@ -30,6 +30,7 @@ import javax.swing.event.ChangeListener;
 import org.wings.plaf.*;
 import org.wings.style.*;
 
+// fixme: refactorize.
 /**
  * A tabbed pane shows one tab (usually a panel) at a moment.
  * The user can switch between the panels.
@@ -37,7 +38,7 @@ import org.wings.style.*;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class STabbedPane
+public class STabbedPane 
     extends SContainer
     implements SConstants
 {
@@ -401,7 +402,7 @@ public class STabbedPane
      * @param component the component for the tab
      */
     public int indexOfComponent(SComponent component) {
-        for ( int i = 0; i < getTabCount(); i++ ) {
+        for ( int i = 0; i < getTabCount(); ++i ) {
             if ( contents.getComponentAt(i).equals(component) ) {
                 return i;
             }
@@ -849,8 +850,7 @@ public class STabbedPane
         }
     }
 
-    private static class Page
-        implements Serializable
+    private static class Page implements Serializable
     {
         String title;
         Color background;
@@ -873,6 +873,7 @@ public class STabbedPane
             this.component = component;
             this.tip = tip;
 
+            // FIXME: this shouldn't be buttons.
             button = new SToggleButton(title);
             button.setShowAsFormComponent(false);
             button.setSelectedIcon(icon);

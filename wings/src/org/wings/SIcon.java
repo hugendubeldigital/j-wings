@@ -20,6 +20,8 @@ import java.net.URL;
  * A small fixed size picture, typically used to decorate components. 
  * This icon can be accessed via an URL; this URL is passed to a browser
  * that fetches it from there.
+ * 
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  */
 public interface SIcon extends URLResource
 {

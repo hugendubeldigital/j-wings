@@ -41,7 +41,8 @@ public class SDefaultListSelectionModel
     /**
      * indicates the the selection model is in {@link #NO_SELECTION} mode. This
      * is necessary, because we cannot set the selection mode of the swing
-     * DefaultSelectionModel to a value we want, so must must wrap it...
+     * DefaultSelectionModel to a value we want  (it does not provide 
+     * for NO_SELEFCTION), so we have to wrap it...
      */
     private boolean noSelection = false;
 

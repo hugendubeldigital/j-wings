@@ -36,6 +36,8 @@ public abstract class SAbstractButton
     extends SAbstractIconTextCompound
     implements RequestListener
 {
+    private static final String cgClassID = "ButtonCG";
+
     public static final String SUBMIT_BUTTON  = "submit";
     public static final String RESET_BUTTON   = "reset";
     public static final String IMAGE_BUTTON   = "image";
@@ -70,6 +72,9 @@ public abstract class SAbstractButton
      * it is not inside a Form.
      */
     private boolean showAsFormComponent = true;
+
+    /** @see #setEscapeSpecialChars(boolean) */
+    private boolean escapeSpecialChars = true;
 
     /**
      * 
@@ -142,6 +147,37 @@ public abstract class SAbstractButton
       */
     public boolean getShowAsFormComponent() {
         return showAsFormComponent && getResidesInForm();
+    }
+
+    /**
+     * returns the setting of the escape character property
+     *
+     * @see #setEscapeSpecialChars(boolean)
+     * @return 'true', if characters are quoted, 'false' if they
+     *         are passed raw to the backend Device.
+     */
+    public boolean isEscapeSpecialChars() {
+	return escapeSpecialChars;
+    }
+
+    /**
+     * By default, all special characters are quoted in the
+     * output. This means for *ML like languages, that special 
+     * characters like &lt; &gt; or &amp; are replaced by their
+     * appropriate entities. Note, that the decision, what is
+     * quoted is done by the CG. If you set this to 'false', then
+     * they are not quoted - you might use this, if you want to
+     * sneak in HTML (XML, WML..PDF) formatting information in the
+     * raw String. Note, that in that case, your application might
+     * not be portable accross different backend CG's (think of
+     * WML).
+     *
+     * @param escape boolean 'true', if characters are to be escaped
+     *               (the default), or 'false' if any character you
+     *               write here is passed 'raw' to the Device.
+     */
+    public void setEscapeSpecialChars(boolean escape) {
+	escapeSpecialChars = escape;
     }
 
     /**
@@ -491,6 +527,14 @@ public abstract class SAbstractButton
 
     public Action getAction() {
 	return action;
+    }
+
+    public String getCGClassID() {
+        return cgClassID;
+    }
+
+    public void setCG(ButtonCG cg) {
+        super.setCG(cg);
     }
 
     protected void configurePropertiesFromAction(Action a) {

@@ -26,8 +26,6 @@ import org.wings.plaf.*;
  */
 public class SButton extends SAbstractButton
 {
-    private static final String cgClassID = "ButtonCG";
-
     /**
      * TODO: documentation
      *
@@ -67,14 +65,6 @@ public class SButton extends SAbstractButton
     public SButton(String text, SIcon i) {
         super(text);
         setIcon(i);
-    }
-
-    public String getCGClassID() {
-        return cgClassID;
-    }
-
-    public void setCG(ButtonCG cg) {
-        super.setCG(cg);
     }
 
     /**

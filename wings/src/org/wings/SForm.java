@@ -77,32 +77,17 @@ public class SForm
      */
     protected String actionCommand = null;
 
-    /*
-     * In dieser Map werden die Eventqueues der verschiedenen
-     * Threads verwaltet. Das ist deshlab noetig, weil ein Thread sonst
-     * die EventQueue eines anderen leeren (feuern) koennte, obwohl noch
-     * kein konsistener Zustand der {@link SComponent} erreicht ist.
-     * <P>
-     * Beispiel: Ein Thread haelt ein Button und eine Liste. In der
-     * Liste wird ein Element selektiert, der Button wird gedrueckt. Im
-     * Extremfall werden diese Get Aktionen vom Dispatcher bearbeitet
-     * und eventuell zuerst die Aktion des Buttons und dann erst die
-     * Selektion. Der Anwendungsprogrammierer reagiert auf den Button
-     * Event und liest den Zustand der Liste aus. Sind alle Get Aktionen
-     * bearbeitet worden, kein Problem. Wird aber der Event des Buttons
-     * von einem anderen Thread, der zufaellig gerade seine Events
-     * feuert, gefeuert, kann es sein dass die Listen Selektion noch
-     * nicht bearbeitet ist und der Zustand der Liste nicht mit dem der
-     * Liste auf HTML Seite uebereinstimmt. Das darf nicht
-     * passieren. Also koennen Events nur vom erzeugenden Thread
-     * gefeuert werden.
+    /**
+     * the WingS event thread is the servlet doGet()/doPost() context
+     * thread. Within this thread, we collect all armed components. A
+     * 'armed' component is a component, that will 'fire' an event after the
+     * first processRequest() stage is completed.
      */
     private static ThreadLocal threadArmedComponents = new ThreadLocal() {
             protected synchronized Object initialValue() {
                 return new ArrayList(2);
             }
         };
-    
 
     /**
      * TODO: documentation
@@ -354,9 +339,9 @@ public class SForm
      */
     public RequestURL getRequestURL() {
         RequestURL addr = super.getRequestURL();
-        if ( getAction()!=null )
-            addr.addParameter(getAction().toString());
-
+        if ( getAction()!=null ) {
+            addr.addParameter(getAction().toString()); // ??
+        }
         return addr;
     }
 

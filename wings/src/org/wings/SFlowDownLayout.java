@@ -27,8 +27,7 @@ import org.wings.io.Device;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class SFlowDownLayout
-    extends SFlowLayout
+public class SFlowDownLayout extends SFlowLayout
 {
     /**
      * creates a new flow down layouts

@@ -90,7 +90,9 @@ public class STable
     protected SListSelectionModel selectionModel = new SDefaultListSelectionModel();
 
     /**
-     * 
+     * A special cell renderer, that displays the control used to select
+     * a table row; ususally, this would be some checkbox. The plaf is the
+     * last instance to decide this.
      */
     protected STableCellRenderer rowSelectionRenderer = null;
 
@@ -534,12 +536,18 @@ public class STable
     }
 
     /**
-     * TODO: documentation
+     * Sets the row selection model for this table to <code>model</code>.
      *
-     * @return
+     * @param   model        the new selection model
+     * @exception IllegalArgumentException    if <code>model</code> 
+     *                                        is <code>null</code>
+     * @see     #getSelectionModel
      */
-    public void setSelectionModel(SListSelectionModel m) {
-        selectionModel = m;
+    public void setSelectionModel(SListSelectionModel model) {
+        if (model == null) {
+            throw new IllegalArgumentException("cannot set a null SListSelectionModel");
+        }
+        selectionModel = model;
     }
 
     /**
@@ -805,10 +813,28 @@ public class STable
         return "d" + row + ":" + col;
     }
 
+    /**
+     * Set the column, after which the selection control should be
+     * located. The selection control usually is the checkbox that is
+     * displayed for the user to select the row. Note, that the plaf
+     * may choose to provide other means to make selection accessible
+     * to the user.
+     *
+     * @param column The column, after which the selection control
+     *               should be placed. If this is less than 1, then
+     *               the selection control is not displayed at all. If
+     *               you set this to <code>Integer.MAX_VALUE</code>, the
+     *               selection control is always displayed as last element
+     *               in the row.
+     */
     public void setRowSelectionColumn(int column) {
         rowSelectionColumn = column;
     }
 
+    /**
+     * returns the selection control position.
+     * @see #setRowSelectionColumn(int)
+     */
     public int getRowSelectionColumn() {
         return rowSelectionColumn;
     }

@@ -117,7 +117,7 @@ public class STemplateLayout
      */
     static {
         addPropertyManager(new SComponentPropertyManager());
-        addPropertyManager(new SButtonPropertyManager());
+        addPropertyManager(new SAbstractButtonPropertyManager());
         addPropertyManager(new SLabelPropertyManager());
         addPropertyManager(new STextFieldPropertyManager());
         addPropertyManager(new STextAreaPropertyManager());

@@ -162,7 +162,7 @@ public final class SRequestDispatcher
         return erg;
     }
 
-    protected boolean checkEpoch(String epoch, String name, RequestListener gl) {
+    protected boolean checkEpoch(String epoch, String name,RequestListener gl){
         if (epoch != null) {
             SFrame frame = ((SComponent)gl).getParentFrame();
             if ( frame==null ) {
@@ -173,10 +173,13 @@ public final class SRequestDispatcher
                 return false;
             } 
             if (!epoch.equals(frame.getEventEpoch())) {
-                if (logger.isLoggable(Level.FINE))
-                    logger.fine("got outdated event '" + epoch + "_" + name + 
-                                "' from frame '" +
-                                frame.getUnifiedId() + " " + frame.getEventEpoch());
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("### got outdated event '" + epoch + "_" + name
+                                + "' from frame '"
+                                + frame.getUnifiedId() 
+                                + "'; expected epoch: " 
+                                + frame.getEventEpoch());
+                }
                 return false;
             }
         }

@@ -29,7 +29,7 @@ import java.io.*;
 public class FileResource
     extends StaticResource
 {
-    private File file;
+    private final File file;
 
     public FileResource(String name)
         throws IOException
@@ -38,13 +38,22 @@ public class FileResource
     }
 
     public FileResource(File file) {
-        super(null, "unknown");
+	this(file, null, "unknown");
+    }
+    
+    public FileResource(File file, String ext, String mt) {
+	super(ext, mt);
         this.file = file;
-        int dotIndex = file.getName().lastIndexOf('.');
-        if (dotIndex > -1) {
-            extension = file.getName().substring(dotIndex + 1);
-        }
-        externalizerFlags = ExternalizeManager.REQUEST | ExternalizeManager.FINAL;
+	if (extension == null) {
+	    int dotIndex = file.getName().lastIndexOf('.');
+	    if (dotIndex > -1) {
+		extension = file.getName().substring(dotIndex + 1);
+	    }
+	}
+	try {
+	    size = (int) file.length();
+	}
+	catch (SecurityException ignore) {}
     }
 
     public String toString() {

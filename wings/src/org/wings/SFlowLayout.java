@@ -37,29 +37,36 @@ public class SFlowLayout
     /**
      * TODO: documentation
      */
-    protected ArrayList components = new ArrayList(2);
+    protected final List components;
 
     /**
      * TODO: documentation
      */
-    protected int orientation = SConstants.HORIZONTAL;
+    protected int orientation;
     /**
      * TODO: documentation
      */
-    protected int align = SConstants.LEFT_ALIGN;
+    protected int align;
 
     /**
      * creates a new flow layout with horizontal orientation and
      * left alignment
      */
-    public SFlowLayout() {}
+    public SFlowLayout() {
+        components = new ArrayList(2);
+        setOrientation(SConstants.HORIZONTAL);
+        setAlignment(SConstants.LEFT_ALIGN);
+    }
 
+    /**
+     *
     /**
      * creates a new flow layout with the given alignment
      *
      * @param alignment the alignment
      */
     public SFlowLayout(int alignment) {
+        this();
         setAlignment(alignment);
     }
 

@@ -26,7 +26,8 @@ import org.wings.session.SessionManager;
 import org.wings.externalizer.ExternalizeManager;
 
 /**
- * An SIcon of this type is externalized globally. It is not bound to a session.
+ * An SIcon of this type is externalized globally. It is not bound
+ * to a session.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -46,7 +47,9 @@ public class FileImageIcon
     private int height = -1;
 
     /**
-     * TODO: documentation
+     * Create a new FileImageIcon from the File. This constructor extracts
+     * the extension from the file to be appended to the externalized resource
+     * name.
      *
      * @param resourceFileName
      */
@@ -54,19 +57,43 @@ public class FileImageIcon
         this(new File(fileName));
     }
 
-    public FileImageIcon(File file) throws IOException {
-        super(file);
-
-        if (extension == null || extension.length() == 0) {
-            extension = "";
-            mimeType = "image/png";
+    /**
+     * crates a new FileImageIcon from the given file. The extension and
+     * mimetype are taken from the parameters given.
+     *
+     * @param file      the file to construct a FileImageIcon from
+     * @param extension user provided extension. The original extension of
+     *                  the file is ignored, unless this paramter is
+     *                  'null'.
+     * @param mimetype  the user provided mimetype. If this is 'null', then
+     *                  the mimetype is guessed from the extension.
+     */
+    public FileImageIcon(File file, String ext, String mt) {
+        super(file, ext, mt);
+        
+        // if either of the extension or mimetype is missing, try to guess it.
+        if (mimeType == null || mimeType.length() == 0) {
+            if (extension == null || extension.length() == 0) {
+                extension = "";
+                mimeType = "image/png";
+            }
+            else if (extension.toUpperCase().equals("JPG"))
+                mimeType = "image/jpeg";
+            else
+                mimeType = "image/" + extension;
         }
-        else if (extension.toUpperCase().equals("JPG"))
-            mimeType = "image/jpeg";
-        else
-            mimeType = "image/" + extension;
-
+        else if (extension == null || extension.length() == 0) {
+            int slashPos = -1;
+            if (mimeType != null 
+                && (slashPos = mimeType.lastIndexOf('/')) >= 0) {
+                extension = mimeType.substring(slashPos+1);
+            }
+        }
         calcDimensions();
+    }
+
+    public FileImageIcon(File file) throws IOException {
+        this(file, null, null);
     }
 
     /**

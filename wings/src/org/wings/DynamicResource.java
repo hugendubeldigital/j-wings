@@ -28,10 +28,10 @@ import org.wings.session.*;
  * Dynamic Resources are web resources representing rendered components 
  * and are individually loaded by Browsers as different 'files'. 
  * Dynamic Resources include therefore frames, cascading stylesheets or 
- * script files.
+ * script files. The externalizer gives them a uniqe name.
  * The resources may change in the consequence of some internal change of
  * the components. This invalidation process yields a new 'version', called
- * epoch here.
+ * epoch here. The epoch is part of the externalized name.
  */
 public abstract class DynamicResource
     extends Resource
@@ -78,7 +78,7 @@ public abstract class DynamicResource
     public final SFrame getFrame() {
         return frame;
     }
-
+ 
     public String getId() {
         if (id == null) {
             ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
@@ -159,12 +159,6 @@ public abstract class DynamicResource
     public Set getCookies() {
         return null;
     }
-
-    /**
-     * Write the current document to the device.
-     * @param the device to write to
-     */
-    public abstract void write(Device out) throws IOException;
 }
 
 /*

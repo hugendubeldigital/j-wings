@@ -23,6 +23,7 @@ import java.util.logging.*;
 import org.wings.session.*;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.externalizer.AbstractExternalizeManager;
+import org.wings.io.Device;
 
 /**
  * TODO: documentation
@@ -31,8 +32,7 @@ import org.wings.externalizer.AbstractExternalizeManager;
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
-public abstract class StaticResource
-    extends Resource
+public abstract class StaticResource extends Resource
 {
     private final static Logger logger = Logger.getLogger("org.wings");
     /**
@@ -44,10 +44,16 @@ public abstract class StaticResource
      * A buffer for temporal storage of the resource
      */
     protected LimitedBuffer buffer;
+    
+    /**
+     * The size of this resource. Initially, this will be '-1', but
+     * the value is updated, once the Resource is delivered.
+     */
+    protected int size = -1;
 
     /**
      * An ByteArrayOutputStream that buffers up to the limit
-     * MAX_SIZE_TO_BUFFER.
+     * MAX_SIZE_TO_BUFFER. Is able to write to an Device.
      */
     protected final static class LimitedBuffer extends ByteArrayOutputStream {
         public static final int MAX_SIZE_TO_BUFFER = 8 * 1024; // 8KByte
@@ -87,11 +93,25 @@ public abstract class StaticResource
         public boolean isValid() { return withinLimit; }
         
         /**
+         * sets, whether this resource is valid.
+         */
+        public void setValid(boolean valid) {
+            withinLimit = valid;
+        }
+
+        /**
          * returns the _raw_ buffer; i.e. the buffer may be larger than
          * the current size().
          */
         public byte[] getBytes() {
             return buf;
+        }
+        
+        /**
+         * write to some output device.
+         */
+        public void writeTo(Device out) throws IOException {
+            out.write(buf);
         }
     }
 
@@ -104,6 +124,7 @@ public abstract class StaticResource
     public StaticResource(String extension, String mimeType) {
         super(extension, mimeType);
     }
+
     /**
      * Get the id that identifies this resource as an externalized object.
      * If the object has not been externalized yet, it will be externalized.
@@ -135,16 +156,22 @@ public abstract class StaticResource
      */
     protected LimitedBuffer bufferResource() throws IOException {
         if ( buffer==null ) {
+            buffer = new LimitedBuffer();
             InputStream resource = getResourceStream();
             if ( resource!=null ) {
                 byte[] copyBuffer = new byte[1024];
-                buffer = new LimitedBuffer();
                 int read;
                 while (buffer.isValid()
                        && (read = resource.read(copyBuffer)) > 0) {
                     buffer.write(copyBuffer, 0, read);
                 }
                 resource.close();
+                if (buffer.isValid()) {
+                    size = buffer.size();
+                }
+            }
+            else {
+                buffer.setValid(false);
             }
         }
         return buffer;
@@ -156,10 +183,13 @@ public abstract class StaticResource
      * an internal buffer caches the content the first time, so that it
      * is delivered as fast as possible at any subsequent calls.
      *
-     * @param OutputStream the stream, the content of the resource should
-     *                     be written to.
+     * @param Device the sink, the content of the resource should
+     *               be written to.
      */
-    public final void write(OutputStream out) throws IOException {
+    public final void write(Device out) throws IOException {
+        /*
+         * if the buffer is null, then we are called the first time.
+         */
         if ( buffer == null ) {
             bufferResource();
             if ( buffer == null )     // no valid bufferable resource available
@@ -170,14 +200,17 @@ public abstract class StaticResource
             buffer.writeTo(out);
         }
         else {                        // too large to be buffered. res->out
+            int deliverSize = 0;
             InputStream resource = getResourceStream();
             if ( resource!=null ) {
                 byte[] copyBuffer = new byte[1024];
                 int read;
                 while ((read = resource.read(copyBuffer)) > 0) {
                     out.write(copyBuffer, 0, read);
+                    deliverSize += read;
                 }
                 resource.close();
+                size = deliverSize;
             }
         }
         
@@ -190,10 +223,7 @@ public abstract class StaticResource
      * @return
      */
     public final int getLength() {
-        if ( buffer!=null && buffer.isValid())
-            return buffer.size();
-        else
-            return -1;
+        return size;
     }
 
     public SimpleURL getURL() {
@@ -229,6 +259,17 @@ public abstract class StaticResource
      */
     public String toString() {
         return getId();
+    }
+
+    /**
+     * set the externalizer flags as defined in 
+     * {@link org.wings.externalizer.AbstractExternalizeManager}.
+     */
+    public void setExternalizerFlags(int flags) {
+        externalizerFlags = flags;
+    }
+    public int getExternalizerFlags() {
+        return externalizerFlags;
     }
 
     protected static String resolveName(Class baseClass, String fileName) {

@@ -33,8 +33,8 @@ import org.wings.style.*;
 
 /**
  * This is a base implementation from which all other tables are derived.
- * This base table is a simple table. It is used if selection is not
- * required and the table is only used to present tabular data.
+ * This base table is a simple table. It is used if selecting and editing is 
+ * not required and the table is only used to present tabular data.
  * <p>
  * The advanced stuff like selection is implemented in {@link STable}.
  *
