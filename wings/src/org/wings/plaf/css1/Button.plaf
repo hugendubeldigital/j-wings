@@ -190,6 +190,7 @@ protected void writeFormText(final Device device, SAbstractButton abstractButton
     %><input type="<%=abstractButton.getType()%>"<%
     %> name="<%=Utils.event(abstractButton)%>"<%
     %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
+    %><%|title=abstractButton.getToolTipText()%><%
     %><%|accesskey=abstractButton.getMnemonic()%><%
     %><%|class=attr%><%
     Utils.writeEvents(device, abstractButton);
