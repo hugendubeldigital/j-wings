@@ -356,6 +356,7 @@ public class Session
     }
 
     private String redirectAddress;
+    private String exitAddress;
 
     /**
      * Exit the current session and redirect to other URL.
@@ -380,7 +381,7 @@ public class Session
      *                        happens.
      */
     public void exit(String redirectAddress) {
-        this.redirectAddress = redirectAddress;
+        this.exitAddress = redirectAddress;
     }
 
     /**
@@ -401,8 +402,16 @@ public class Session
      */
     public void exit() { exit(""); }
 
+    String getExitAddress() {
+        return exitAddress;
+    }
+
     String getRedirectAddress() {
         return redirectAddress;
+    }
+
+    public void setRedirectAddress(String redirectAddress) {
+        this.redirectAddress = redirectAddress;
     }
 
     /**
