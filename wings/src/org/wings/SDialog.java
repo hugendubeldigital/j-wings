@@ -66,7 +66,7 @@ public class SDialog
     /**
      * TODO: documentation
      */
-    protected SContainer frame = null;
+    protected SRootContainer root = null;
 
     /**
      * TODO: documentation
@@ -76,6 +76,7 @@ public class SDialog
     public SDialog(SLayoutManager layout) {
         super(layout);
     }
+
     /**
      * TODO: documentation
      *
@@ -120,51 +121,43 @@ public class SDialog
      * Remove this dialog from its frame.
      */
     public void hide() {
-        System.err.println("hide");
-        if (frame != null) {
-            if (frame instanceof SFrame)
-                ((SFrame)frame).popDialog();
-            else
-                ((SInternalFrame)frame).popDialog();
+        if (root != null) {
+            root.popDialog();
         }
     }
 
     /**
-     * sets the frame in which the option pane is displayed
+     * sets the root container in which this dialog is to be displayed.
      */
-    protected void setFrame(SFrame f) {
-        frame = f;
+    protected void setFrame(SRootContainer f) {
+        root = f;
     }
 
     /**
-     * sets the frame in which the option pane is displayed
-     */
-    protected void setFrame(SInternalFrame f) {
-        frame = f;
-    }
-
-    /**
-     * shows the option pane
+     * shows this dialog in the given frame. If the component given is
+     * not a frame, then it is shown in the frame, the component resides
+     * in.
      *
      * @param c
      */
     public void show(SComponent c) {
+        SContainer frame = null;
         if (c instanceof SContainer)
             frame = (SContainer)c;
         else
             frame = c.getParent();
 
-        while (frame != null && !(frame instanceof SFrame || frame instanceof SInternalFrame))
+        // find RootContainer
+        while (frame != null && !(frame instanceof SRootContainer)) {
             frame = frame.getParent();
-
-        if (frame == null) {
-            throw new IllegalArgumentException("Component has no parent frame");
         }
+        
+        if (frame == null) {
+            throw new IllegalArgumentException("Component has no root container");
+        }
+        root = (SRootContainer) frame;
 
-        if (frame instanceof SFrame)
-            ((SFrame)frame).pushDialog(this);
-        else
-            ((SInternalFrame)frame).pushDialog(this);
+        root.pushDialog(this);
     }
 
     public void processRequest(String name, String[] values) {}

@@ -94,7 +94,7 @@ public class SOptionPane
     /**
      * TODO: documentation
      */
-    public static final int OK_CANCEL_RESET_OPTION = 999;
+    public static final int OK_CANCEL_RESET_OPTION = OK_CANCEL_OPTION + 1000;
 
     /**
      * TODO: documentation
@@ -104,7 +104,7 @@ public class SOptionPane
     /**
      * TODO: documentation
      */
-    public static final int YES_NO_RESET_OPTION = 998;
+    public static final int YES_NO_RESET_OPTION = YES_NO_OPTION + 1000;
 
     /**
      * TODO: documentation
@@ -114,7 +114,7 @@ public class SOptionPane
     /**
      * TODO: documentation
      */
-    public static final int YES_NO_CANCEL_RESET_OPTION = 997;
+    public static final int YES_NO_CANCEL_RESET_OPTION = YES_NO_CANCEL_OPTION + 1000;
 
     /**
      * ContentPane with border layout.
@@ -161,12 +161,6 @@ public class SOptionPane
      * TODO: documentation
      */
     private final SResetButton optionReset = createResetButton("Reset");
-
-    /**
-     * Der Title des OptionPanes. Wird ganz oben dargestellt abgesetzt
-     * durch einen Separator.
-     */
-    private final SLabel optionTitle = new SLabel();
 
     /**
      * TODO: documentation
@@ -231,7 +225,6 @@ public class SOptionPane
         images.add(yesnoImage);
         yesnoImage.setToolTipText("question");
 
-        add(optionTitle);
         contents.add(optionData, SBorderLayout.CENTER);
         contents.add(images, SBorderLayout.WEST);
         add(contents);
@@ -277,11 +270,8 @@ public class SOptionPane
      * @param e
      */
     public void actionPerformed(ActionEvent e) {
-        if (frame != null) {
-            if (frame instanceof SFrame)
-                ((SFrame)frame).popDialog();
-            else
-                ((SInternalFrame)frame).popDialog();
+        if (root != null) {
+            root.popDialog();
         }
 
         selected = e.getSource();
@@ -348,6 +338,22 @@ public class SOptionPane
         add(customButtons);
     }
 
+    /**
+     * returns, whether this OptionPane is cancelable. This may be used
+     * from the renderer to add additional cancel buttons.
+     */
+    public boolean isCancelable() {
+        return optionCancel.isVisible();
+    }
+
+    /**
+     * cancel this option pane programmatically.
+     */
+    public void cancel() {
+        if (isCancelable()) {
+            fireActionPerformed(CANCEL_ACTION);
+        }
+    }
 
     /**
      * TODO: documentation
@@ -403,24 +409,8 @@ public class SOptionPane
      * TODO: documentation
      */
     public void showOption(SComponent c, String title, Object message) {
-        if (c instanceof SContainer)
-            frame = (SContainer)c;
-        else
-            frame = c.getParent();
-
-        while (frame != null && !(frame instanceof SFrame || frame instanceof SInternalFrame) )
-            frame = frame.getParent();
-
-        if (frame == null) {
-            throw new IllegalArgumentException("No parent Frame");
-        }
-
-        if (frame instanceof SFrame)
-            ((SFrame)frame).pushDialog(this);
-        else
-            ((SInternalFrame)frame).pushDialog(this);
-
-        optionTitle.setText(title);
+        if (title != null)
+            setTitle(title);
 
         optionData.removeAll();
         if ( message instanceof SComponent ) {
@@ -429,6 +419,7 @@ public class SOptionPane
         else {
             optionData.add(new SLabel(message.toString()));
         }
+        show(c);
     }
 
     /**
@@ -437,7 +428,7 @@ public class SOptionPane
     public static void showMessageDialog(SComponent parent,
                                          Object message,
                                          ActionListener al) {
-        showMessageDialog(parent, message, "", 0, al);
+        showMessageDialog(parent, message, null, 0, al);
     }
 
     /**
@@ -445,7 +436,7 @@ public class SOptionPane
      */
     public static void showMessageDialog(SComponent parent,
                                          Object message) {
-        showMessageDialog(parent, message, "", 0, null);
+        showMessageDialog(parent, message, null, 0, null);
     }
 
     /**
@@ -515,7 +506,7 @@ public class SOptionPane
                                         Object message, String title) {
         showOption(parent, title, message);
 
-        setOptionType(OK_CANCEL_RESET_OPTION);
+        setOptionType(OK_CANCEL_OPTION);
 
         questionImage.setVisible(true);
     }
