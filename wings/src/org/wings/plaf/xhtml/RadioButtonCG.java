@@ -61,7 +61,7 @@ public class RadioButtonCG
         throws IOException
     {
         if (checkBox.isEnabled() && !checkBox.isSelected())
-            d.append("</a>\n");
+            d.append("</a>");
     }
 }
 

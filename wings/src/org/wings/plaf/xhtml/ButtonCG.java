@@ -69,37 +69,37 @@ public class ButtonCG
                 writeAnchorText(d, button);
                 d.append("</td><td>");
                 writeAnchorIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == LEFT) {
                 d.append("<table><tr><td>");
                 writeAnchorText(d, button);
                 d.append("</td><td>");
                 writeAnchorIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == LEFT) {
                 d.append("<table><tr><td valign=\"bottom\">");
                 writeAnchorText(d, button);
                 d.append("</td><td>");
                 writeAnchorIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
                 writeAnchorText(d, button);
                 d.append("</td></tr><tr><td>");
                 writeAnchorIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
                 writeAnchorText(d, button);
                 d.append("</td><td>");
                 writeAnchorIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
                 writeAnchorIcon(d, button);
                 d.append("</td></tr><tr><td>");
                 writeAnchorText(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == RIGHT) {
                 writeAnchorIcon(d, button, "top");
                 writeAnchorText(d, button);
@@ -238,61 +238,61 @@ public class ButtonCG
                 writeFormText(d, button);
                 d.append("</td><td>");
                 writeFormIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == LEFT) {
                 d.append("<table><tr><td>");
                 writeFormText(d, button);
                 d.append("</td><td>");
                 writeFormIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == LEFT) {
                 d.append("<table><tr><td valign=\"bottom\">");
                 writeFormText(d, button);
                 d.append("</td><td>");
                 writeFormIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
                 writeFormText(d, button);
                 d.append("</td></tr><tr><td>");
                 writeFormIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
                 writeFormText(d, button);
                 d.append("</td><td>");
                 writeFormIcon(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
                 writeFormIcon(d, button);
                 d.append("</td></tr><tr><td>");
                 writeFormText(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == RIGHT) {
                 d.append("<table><tr><td valign=\"top\">");
                 writeFormIcon(d, button);
                 d.append("</td><td align=\"right\">");
                 writeFormText(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == RIGHT) {
                 d.append("<table><tr><td>");
                 writeFormIcon(d, button);
                 d.append("</td><td align=\"right\">");
                 writeFormText(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == RIGHT) {
                 d.append("<table><tr><td valign=\"bottom\">");
                 writeFormIcon(d, button);
                 d.append("</td></tr><tr><td align=\"right\">");
                 writeFormText(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else {
                 d.append("<table><tr><td>");
                 writeFormIcon(d, button);
                 d.append("</td></tr><tr><td>");
                 writeFormText(d, button);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             }
         }
     }
@@ -370,7 +370,7 @@ public class ButtonCG
     protected void writeFormPostfix(Device d, SButton button)
         throws IOException
     {
-        d.append(" />\n");
+        d.append(" />");
     }
 }
 

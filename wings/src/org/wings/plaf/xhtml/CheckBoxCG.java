@@ -84,37 +84,37 @@ public class CheckBoxCG
                 writeAnchorText(d, checkBox);
                 d.append("</td><td>");
                 writeAnchorIcon(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == LEFT) {
                 d.append("<table><tr><td>");
                 writeAnchorText(d, checkBox);
                 d.append("</td><td>");
                 writeAnchorIcon(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == LEFT) {
                 d.append("<table><tr><td valign=\"bottom\">");
                 writeAnchorText(d, checkBox);
                 d.append("</td><td>");
                 writeAnchorIcon(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
                 writeAnchorText(d, checkBox);
                 d.append("</td></tr><tr><td>");
                 writeAnchorIcon(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
                 writeAnchorText(d, checkBox);
                 d.append("</td><td>");
                 writeAnchorIcon(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
                 writeAnchorIcon(d, checkBox);
                 d.append("</td></tr><tr><td>");
                 writeAnchorText(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == RIGHT) {
                 writeAnchorIcon(d, checkBox, "top");
                 writeAnchorText(d, checkBox);
@@ -245,7 +245,7 @@ public class CheckBoxCG
         throws IOException
     {
         if (checkBox.isEnabled()) {
-            d.append("</a>\n");
+            d.append("</a>");
         }
     }
 
@@ -277,61 +277,61 @@ public class CheckBoxCG
                 writeFormText(d, checkBox);
                 d.append("</td><td>");
                 writeFormIcon(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == LEFT) {
                 d.append("<table><tr><td>");
                 writeFormText(d, checkBox);
                 d.append("</td><td>");
                 writeFormIcon(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == LEFT) {
                 d.append("<table><tr><td valign=\"bottom\">");
                 writeFormText(d, checkBox);
                 d.append("</td><td>");
                 writeFormIcon(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
                 writeFormText(d, checkBox);
                 d.append("</td></tr><tr><td>");
                 writeFormIcon(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
                 writeFormText(d, checkBox);
                 d.append("</td><td>");
                 writeFormIcon(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == CENTER) {
                 d.append("<table><tr><td>");
                 writeFormIcon(d, checkBox);
                 d.append("</td></tr><tr><td>");
                 writeFormText(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == TOP && horizontalTextPosition == RIGHT) {
                 d.append("<table><tr><td valign=\"top\">");
                 writeFormIcon(d, checkBox);
                 d.append("</td><td align=\"right\">");
                 writeFormText(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == CENTER && horizontalTextPosition == RIGHT) {
                 d.append("<table><tr><td>");
                 writeFormIcon(d, checkBox);
                 d.append("</td><td align=\"right\">");
                 writeFormText(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else if (verticalTextPosition == BOTTOM && horizontalTextPosition == RIGHT) {
                 d.append("<table><tr><td valign=\"bottom\">");
                 writeFormIcon(d, checkBox);
                 d.append("</td></tr><tr><td align=\"right\">");
                 writeFormText(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             } else {
                 d.append("<table><tr><td>");
                 writeFormIcon(d, checkBox);
                 d.append("</td></tr><tr><td>");
                 writeFormText(d, checkBox);
-                d.append("</td></tr></table>\n");
+                d.append("</td></tr></table>");
             }
         }
     }
@@ -376,7 +376,7 @@ public class CheckBoxCG
     protected void writeFormPostfix(Device d, SCheckBox checkBox)
         throws IOException
     {
-        d.append(" />\n");
+        d.append(" />");
     }
 }
 
