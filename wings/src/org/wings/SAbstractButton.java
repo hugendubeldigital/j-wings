@@ -303,7 +303,7 @@ public abstract class SAbstractButton
 
     public void processRequest(String action, String[] values) {
         /*
-        System.out.print("action " + action);
+          System.out.print("action " + action);
         for ( int i=0; i<values.length; i++ ) {
             System.out.print(" " + values[i]);
         }
@@ -311,12 +311,8 @@ public abstract class SAbstractButton
         */
 
         requestSelection = isSelected(); 
-
-        // if event Count == 2, then we are in a form and got a deselect event and
-        // and a select event. That is the new state is select. Else select
-        // state is in selection
+        
         int eventCount = 0;
-
 
         if ( buttonGroup!=null ) {
 
@@ -325,12 +321,12 @@ public abstract class SAbstractButton
             for ( int i=0; i<values.length; i++ ) {
 
                 // with button group the value has a special encoding...
-                // this is because in a form the name of a parameter for buttons in
-                // a buttongroup must be the same...
+                // this is because in a form the name of a parameter for
+                // buttons in a buttongroup must be the same...
                 String value = values[i];
 
                 // illegal format
-                if ( value.length()<3 ) { continue; }
+                if ( value.length() < 3 ) { continue;  }
 
                 // no uid DIVIDER
                 // value.charAt(value.length()-2)!=UID_DIVIDER ) { break; }
@@ -338,27 +334,43 @@ public abstract class SAbstractButton
                 // not for me
                 if ( !value.startsWith(getUnifiedId()) ) { continue; }
 
-                // last character is indicator, if button should be selected or not
+                // last character is indicator, if button should be 
+                // selected or not
                 switch ( value.charAt(value.length()-1) ) {
                 case '1':
                     requestSelection = true;
-                    eventCount++;
+                    ++eventCount;
                     break;
                 case '0':
                     requestSelection = false;
-                    eventCount++;
+                    ++eventCount;
                     break;
                 }
             }
-        } else {
+        } 
+        else {
             for ( int i=0; i<values.length; i++ ) {
                 requestSelection = parseSelectionToggle(values[0]);
-                eventCount++;
+                ++eventCount;
             }
         }
 
-        if ( eventCount==2 ) 
+        /*
+         * Checkboxes in HTML-forms write two form components:
+         * one hidden input, containing the deselect-command (value='0'),
+         * and one <input type="checkbox".. value="1">.
+         * This is, because browsers send the checkbox-variable
+         * only if it is set, not if it is not set.
+         * So, if we get two events with the same name, then the checkbox
+         * actually got selected; if we only got one event (from the hidden
+         * input), then it was a deselect-event (select event value = '1',
+         * deselect value = '0').
+         * This is just in case, the browser sends the both events
+         * in the wrong order (select and then deselect).
+         */
+        if ( eventCount==2 ) {
             requestSelection = true;
+        }
 
         if ( isSelected()!=requestSelection ) {
             SForm.addArmedComponent(this);
