@@ -1,5 +1,4 @@
 <template name="ButtonCG" for="org.wings.SButton">
-<property type="SIcon" name="icon">org/wings/plaf/css1/button.gif</property>
 
 void writeText(final Device device, SButton button, String attr)
     throws IOException
@@ -23,6 +22,10 @@ void writeAnchorText(final Device device, SButton button, String attr)
     throws IOException
 {
     boolean noBreak = button.isNoBreak();
+    String text = button.getText();
+    if (text == null || text.length() == 0) {
+	return;
+    }
 
     if (button.isEnabled()) {
         %><a href="<%
@@ -53,7 +56,7 @@ void writeAnchorIcon(final Device device, SButton button, String attr)
     SIcon icon = button.isEnabled() 
         ? button.getIcon() 
         : button.getDisabledIcon();
-
+    
     if (button.isEnabled()) {
         %><a href="<%
         writeAnchorAddress(device, button);
@@ -72,7 +75,7 @@ void writeAnchorIcon(final Device device, SButton button, String attr)
     %><%=icon.getURL()%>"<%
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
-    %><%|alt=tooltip%>/><%
+    %><%|alt=tooltip%> /><%
     // writeEvents();
 
     if (button.isEnabled()) {
@@ -98,22 +101,28 @@ void writeFormText(final Device device, SButton button, String attr)
     %><%=button.getNamePrefix()%>"<%
     %><%|class=attr%><%
     // writeEvents();
-    %><%|value=button.getText()%>/><%
+    %><%|value=button.getText()%> /><%
 }
 
 void writeFormIcon(final Device device, SButton button, String attr)
      throws IOException
 {
+    SIcon icon = button.isEnabled() 
+        ? button.getIcon() 
+        : button.getDisabledIcon();
+    if (icon == null) {
+	return;
+    }
     String tooltip = button.getToolTipText();
     if (tooltip == null)
         tooltip = button.getText();
 
     %><input type="image" border="0" src="<%
     %><%=icon.getURL()%>"<%
-    %><%|class=attr%>><%
+    %><%|class=attr%><%
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
-    %><%|name=button.getNamePrefix()%>/><%
+    %><%|name=button.getNamePrefix()%><%
     %><%|value=tooltip%><%
     %><%|alt=tooltip%><%
     // writeEvents();
@@ -140,15 +149,15 @@ void writeFormIcon(final Device device, SButton button, String attr)
         if (verticalTextPosition == TOP) {
  	       %><tr><td<%|class=style%>><% 
  	       if (horizontalTextPosition == LEFT) { 
- 		  writeAnchorText(device, component, attr);
+ 		  writeText(device, component, attr);
  	       }
  	       %></td><td<%|class=style%>><%
  	       if (horizontalTextPosition == CENTER) { 
- 		    writeAnchorText(device, component, attr);
+ 		    writeText(device, component, attr);
 	       }
 	       %></td><td<%|class=style%>><%
 	       if (horizontalTextPosition == RIGHT) {
-		  writeAnchorText(device, component, attr);
+		  writeText(device, component, attr);
 	       }
 	       %></td></tr><%
        }
@@ -157,22 +166,22 @@ void writeFormIcon(final Device device, SButton button, String attr)
        if (verticalTextPosition == CENTER) {
 	   %><tr><td<%|class=style%>><%
 	   if (horizontalTextPosition == LEFT) { 
-	       writeAnchorText(device, component, attr);
+	       writeText(device, component, attr);
 	   }
 	   %></td><td<%|class=style%>><% 
 	   if (horizontalTextPosition == CENTER) { 
-	      writeAnchorText(device, component, attr);
+	      writeText(device, component, attr);
 	   }
 	   // the rendered icon in the center
-	   writeAnchorIcon(device, component, attr); 
+	   writeIcon(device, component, attr); 
 	   %></td><td<%|class=style%>><% 
 	   if (horizontalTextPosition == RIGHT) { 
-	      writeAnchorText(device, component, attr);
+	      writeText(device, component, attr);
 	   }
 	   %></td></tr><%
        } else {
 	   %><tr><td></td><td<%|class=style%>><%
-	   writeAnchorIcon(device, component, attr);
+	   writeIcon(device, component, attr);
 	   %></td><td></td></tr><%
        }
 
@@ -180,15 +189,15 @@ void writeFormIcon(final Device device, SButton button, String attr)
        if (verticalTextPosition == BOTTOM) {
 	   %><tr><td<%|class=style%>><% 
 	   if (horizontalTextPosition == LEFT) {
-	     writeAnchorText(device, component, attr);
+	     writeText(device, component, attr);
 	   }
 	   %></td><td<%|class=style%>><% 
 	   if (horizontalTextPosition == CENTER) {
-	     writeAnchorText(device, component, attr);
+	     writeText(device, component, attr);
 	   }
 	   %></td><td<%|class=style%>><%
 	   if (horizontalTextPosition == RIGHT) {
-	      writeAnchorText(device, component, attr);
+	      writeText(device, component, attr);
 	   }
 	   %></td></tr><%
        } 
