@@ -14,12 +14,12 @@
 
 package org.wings.externalizer;
 
-
-import org.wings.io.OutputStreamDevice;
-import java.io.*;
+import java.io.IOException;
 import java.util.Set;
 
-import org.wings.*;
+import org.wings.Renderable;
+import org.wings.DynamicResource;
+import org.wings.io.Device;
 
 /**
  * TODO: documentation
@@ -58,10 +58,10 @@ public class DynamicResourceExternalizer
         return ((DynamicResource)obj).getEpoch();
     }
 
-    public void write(Object obj, OutputStream out)
+    public void write(Object obj, Device out)
         throws IOException
     {
-        ((DynamicResource)obj).write(new OutputStreamDevice(out));
+        ((Renderable)obj).write(out);
     }
 
     public Class[] getSupportedClasses() {
@@ -84,5 +84,6 @@ public class DynamicResourceExternalizer
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

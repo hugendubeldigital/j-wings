@@ -18,8 +18,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.*;
 
+import org.wings.Renderable;
 import org.wings.StaticResource;
-import org.wings.RequestURL;
+import org.wings.io.Device;
 
 /**
  * TODO: documentation
@@ -28,8 +29,7 @@ import org.wings.RequestURL;
  * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
  * @version $Revision$
  */
-public class StaticResourceExternalizer
-    implements Externalizer
+public class StaticResourceExternalizer implements Externalizer
 {
     private static final Class[] SUPPORTED_CLASSES = { StaticResource.class };
 
@@ -57,10 +57,10 @@ public class StaticResourceExternalizer
         return true;
     }
 
-    public void write(Object obj, java.io.OutputStream out)
+    public void write(Object obj, Device out)
         throws IOException
     {
-        ((StaticResource)obj).write(out);
+        ((Renderable)obj).write(out);
     }
 
     public Class[] getSupportedClasses() {
@@ -83,5 +83,6 @@ public class StaticResourceExternalizer
  * Local variables:
  * c-basic-offset: 4
  * indent-tabs-mode: nil
+ * compile-command: "ant -emacs -find build.xml"
  * End:
  */

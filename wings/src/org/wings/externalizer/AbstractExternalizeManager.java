@@ -23,10 +23,13 @@ import java.util.Iterator;
 import java.util.Collections;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletOutputStream;
 
 import java.util.logging.*;
 import org.wings.RequestURL;
 import org.wings.util.StringUtil;
+import org.wings.io.Device;
+import org.wings.io.ServletDevice; // remove later.
 
 /**
  * 
@@ -117,7 +120,7 @@ public abstract class AbstractExternalizeManager
     /**
      * for an externalized object with the gobal flag on, the externalized
      * object is available to all requests. Also it is never garbage collected
-     * and available over the lifecycle of the servlet container
+     * and available for the lifecycle of the servlet container.
      */
     public static final int GLOBAL = 4;
 
@@ -392,27 +395,39 @@ public abstract class AbstractExternalizeManager
      * client.
      * It sends an error (404), if the identifier is not registered.
      */
-    public void deliver(String identifier, HttpServletResponse response) 
-        throws IOException 
-    {
+    public void deliver(String identifier, HttpServletResponse response,
+                        Device out) throws IOException {
         ExternalizedInfo extInfo = getExternalizedInfo(identifier);
-
+        
         if ( extInfo == null ) {
             logger.warning("identifier " + identifier + " not found");
             response.sendError(response.SC_NOT_FOUND);
             return;
         }
+        deliver(extInfo, response, out);
+    }
 
-        if ( extInfo.deliverOnce() )
+    public void deliver(ExternalizedInfo extInfo, HttpServletResponse response,
+                        Device out)
+        throws IOException 
+    {
+        /* FIXME: re-implement.
+        if ( extInfo.deliverOnce() ) {
             removeExternalizedInfo(identifier);
+        }
+        */
 
-            
         response.setContentType(extInfo.getMimeType());
         
-        int resourceLen = extInfo
-            .getExternalizer().getLength(extInfo.getObject());
-        if ( resourceLen > 0 ) {
-            response.setContentLength( resourceLen );
+        // FIXME find out, if this is correct: if the content length
+        // is not size preserving (like a gzip-device), then we must not
+        // send the content size we know..
+        if (out.isSizePreserving()) {
+            int resourceLen = extInfo
+                .getExternalizer().getLength(extInfo.getObject());
+            if ( resourceLen > 0 ) {
+                response.setContentLength( resourceLen );
+            }
         }
 
         Set headers = extInfo.getHeaders();
@@ -429,22 +444,23 @@ public abstract class AbstractExternalizeManager
             /*
              * This would be the correct way to do it; alas, that means, that
              * for static resources, after a day or so, no caching could take
-             * place, since the last modification was at the start of the
-             * application server. .. have to think about it.
+             * place, since the last modification was at the first time, the
+             * resource was externalized (since it doesn't change).
+             * .. have to think about it.
              */
-            //response.setDateHeader("Expires", FINAL_EXPIRES + extInfo.getLastModified());
+            //response.setDateHeader("Expires", 
+            //                      FINAL_EXPIRES + extInfo.getLastModified());
             // .. so do this for now, which is the best approximation of what
             // we want.
-            response.setDateHeader("Expires", FINAL_EXPIRES + System.currentTimeMillis());
+            response.setDateHeader("Expires", 
+                                   System.currentTimeMillis() + FINAL_EXPIRES);
         } else {
             // expire in deep past ..
-            response.setDateHeader("Expires", 1000); // 1000 instead of 0: work around IE bug.
+            // 1000 instead of 0: work around IE bug.
+            response.setDateHeader("Expires", 1000); 
         }
 
-        OutputStream out = response.getOutputStream();
         extInfo.getExternalizer().write(extInfo.getObject(), out);
-        out.flush();
-        out.close();
     }
 }
 

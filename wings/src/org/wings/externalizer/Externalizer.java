@@ -14,7 +14,7 @@
 
 package org.wings.externalizer;
 
-import java.io.OutputStream;
+import org.wings.io.Device;
 import java.io.IOException;
 import java.util.Set;
 
@@ -23,10 +23,15 @@ import org.wings.RequestURL;
 /**
  * Externalizer Interface
  *
- * The {@link ExternalizeManager} uses a Externalizer to deliver a 
- * java object to a client over a http connection. An Externalizer must be 
+ * The {@link ExternalizeManager} uses a Externalizer to deliver an
+ * external representation of a java object to the output device (usually
+ * an HTTP connection).
+ * A SFrame'es external representation would be HTML, an Images content the
+ * GIF-byte stream, for instance.
+ *
+ * <p>An Externalizer must be 
  * {@link ExternalizeManager#addExternalizer(Externalizer) registered} at the
- * {@link ExternalizeManager} of the actual 
+ * {@link ExternalizeManager} of the current
  * {@link org.wings.session.Session Session} to work seamlessly.
  * 
  * Each Externalizer supports one or more classes it is able to externalize.
@@ -63,9 +68,9 @@ public interface Externalizer
     boolean isFinal( Object obj );
 
     /**
-     * Writes the given object into the given stream. 
+     * Writes the given object into the given Device.
      */
-    void write( Object obj, OutputStream out )
+    void write( Object obj, Device out )
         throws IOException;
     
     /**

@@ -15,10 +15,12 @@
 package org.wings.externalizer;
 
 import java.awt.Image;
-import Acme.JPM.Encoders.GifEncoder;
-import com.keypoint.*;
 
-import org.wings.RequestURL;
+import org.wings.io.Device;
+import org.wings.io.DeviceOutputStream;
+
+import Acme.JPM.Encoders.GifEncoder;
+import com.keypoint.PngEncoder;
 
 /**
  * TODO: documentation
@@ -33,8 +35,8 @@ public class ImageExternalizer
     public static final String FORMAT_PNG = "png";
     public static final String FORMAT_GIF = "gif";
 
-    private static final String[] SUPPORTED_FORMATS = { FORMAT_PNG, FORMAT_GIF };
-    private static final Class[] SUPPORTED_CLASSES = { Image.class };
+    private static final String[] SUPPORTED_FORMATS = { FORMAT_PNG,FORMAT_GIF};
+    private static final Class[] SUPPORTED_CLASSES  = { Image.class };
 
     protected String format;
 
@@ -84,7 +86,7 @@ public class ImageExternalizer
         return supportedMimeTypes;
     }
 
-    public void write(Object obj, java.io.OutputStream out)
+    public void write(Object obj, Device out)
         throws java.io.IOException
     {
         Image img = (Image)obj;
@@ -97,17 +99,18 @@ public class ImageExternalizer
     /**
      * writes a image as gif to the OutputStream
      */
-    public void writeGIF(Image img, java.io.OutputStream out)
+    public void writeGIF(Image img, Device out)
         throws java.io.IOException
     {
-        GifEncoder encoder = new GifEncoder(img, out, true);
+        GifEncoder encoder = new GifEncoder(img, new DeviceOutputStream(out),
+                                            true);
         encoder.encode();
     }
 
     /**
      * writes a image as png to the OutputStream
      */
-    public void writePNG(Image img, java.io.OutputStream out)
+    public void writePNG(Image img, Device out)
         throws java.io.IOException
     {
         PngEncoder png =  new PngEncoder(img, PngEncoder.ENCODE_ALPHA);

@@ -16,8 +16,9 @@ package org.wings.externalizer;
 
 import java.io.InputStream;
 
-import org.wings.RequestURL;
+import org.wings.Renderable;
 import org.wings.style.StyleSheet;
+import org.wings.io.Device;
 
 /**
  * TODO: documentation
@@ -25,8 +26,7 @@ import org.wings.style.StyleSheet;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class StyleSheetExternalizer
-    implements Externalizer
+public class StyleSheetExternalizer implements Externalizer
 {
 
     private static final Class[] SUPPORTED_CLASSES = { StyleSheet.class };
@@ -48,10 +48,10 @@ public class StyleSheetExternalizer
         return -1;
     }
 
-    public void write(Object obj, java.io.OutputStream out)
+    public void write(Object obj, Device out)
         throws java.io.IOException
     {
-        ((StyleSheet)obj).write(out);
+        ((Renderable)obj).write(out);
     }
 
     public Class[] getSupportedClasses() {

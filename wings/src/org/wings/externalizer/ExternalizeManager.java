@@ -70,8 +70,9 @@ public class ExternalizeManager extends AbstractExternalizeManager
     public ExternalizeManager(HttpServletResponse response,
                               boolean initWithDefaultExternalizers) {
         super(response);
-        if ( initWithDefaultExternalizers )
+        if ( initWithDefaultExternalizers ) {
             addDefaultExternalizers();
+        }
     }
 
     /**
@@ -100,7 +101,10 @@ public class ExternalizeManager extends AbstractExternalizeManager
         return null;
     }
     
-    public final ExternalizedInfo getExternalizedInfo(String identifier) {
+    /**
+     * stripts the identifier from attachments to the external names.
+     */
+    private String stripIdentifier(String identifier) {
         if ( identifier == null || identifier.length() < 1 )
             return null;
 
@@ -116,6 +120,13 @@ public class ExternalizeManager extends AbstractExternalizeManager
         if (identifier.length() < 1) {
             return null;
         }
+        return identifier;
+    }
+
+    public final ExternalizedInfo getExternalizedInfo(String identifier) {
+        identifier = stripIdentifier(identifier);
+        if (identifier == null) return null;
+
         // SystemExternalizeManager hat Minus as prefix.
         if ( identifier.charAt(0) == '-' ) {
             return SystemExternalizeManager.getSharedInstance().
@@ -126,6 +137,8 @@ public class ExternalizeManager extends AbstractExternalizeManager
     }
 
     protected final void removeExternalizedInfo(String identifier) {
+        identifier = stripIdentifier(identifier);
+        if (identifier == null) return;
         externalized.remove(identifier);
     }
 

@@ -4,7 +4,9 @@
 
 package org.wings.externalizer;
 
-import java.io.*;
+import org.wings.io.Device;
+import java.io.StringReader;
+import java.io.Reader;
 
 import org.wings.RequestURL;
 
@@ -54,18 +56,16 @@ public class TextExternalizer
 	return -1;
     }
     
-    public void write(Object obj, java.io.OutputStream out)
+    public void write(Object obj, Device out)
 	throws java.io.IOException
     {
 	Reader reader = new StringReader((String)obj);
-	Writer writer = new OutputStreamWriter(out);
 	char[] buffer = new char[2048];
 	int num;
 	while ((num = reader.read(buffer)) > 0) {
-	    writer.write(buffer, 0, num);
+	    out.print(buffer, 0, num);
 	}
 	reader.close();
-	writer.close();
     }
     
     public Class[] getSupportedClasses() {

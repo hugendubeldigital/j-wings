@@ -16,10 +16,7 @@ package org.wings.externalizer;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
-
-import Acme.JPM.Encoders.GifEncoder;
-
-import org.wings.RequestURL;
+import org.wings.io.Device;
 
 /**
  * TODO: documentation
@@ -28,8 +25,7 @@ import org.wings.RequestURL;
  * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
  * @version $Revision$
  */
-public class ImageIconExternalizer
-    extends ImageExternalizer
+public class ImageIconExternalizer extends ImageExternalizer
 {
     private static final Class[] SUPPORTED_CLASSES = { ImageIcon.class };
 
@@ -45,7 +41,7 @@ public class ImageIconExternalizer
         return SUPPORTED_CLASSES;
     }
 
-    public void write(Object obj, java.io.OutputStream out)
+    public void write(Object obj, Device out)
         throws java.io.IOException
     {
         super.write(((ImageIcon)obj).getImage(), out);
