@@ -1,4 +1,7 @@
 <template name="FormCG" for="org.wings.SForm">
+
+private static final SIcon BLIND_ICON = new ResourceImageIcon("org/wings/icons/blind.gif");
+
 <write>
 <%
    %><form method="<% 
@@ -9,9 +12,13 @@
    %><%|class=Utils.style(component)%><%
    %><%|enctype=component.getEncodingType()%><%
    %><%|action=component.getRequestURL()%><%
-   %>><input type="hidden" name="<%=Utils.event(component)%>" \
-value="<%?componentId%><%=org.wings.SConstants.UID_DIVIDER%>" /><%
-   Utils.renderContainer(device, component);
+   %>><input type="image" name="_capture_enter1" border="0" <%|src=BLIND_ICON.getURL()
+   %> width="0" height="0" tabindex=""/><%
+   %><input type="hidden" name="<%=Utils.event(component)%>" value="<%?componentId
+   %><%=org.wings.SConstants.UID_DIVIDER%>" /><%
+     Utils.renderContainer(device, component);
+   %><input type="image" name="_capture_enter2" border="0" <%|src=BLIND_ICON.getURL()
+   %> width="0" height="0" tabindex=""/><%
    %></form><%
 %>
 </write>
