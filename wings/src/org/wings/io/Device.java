@@ -17,9 +17,9 @@ package org.wings.io;
 import java.io.IOException;
 
 /**
- * A general interface for a Device
- * -- PROPOSAL --
- * (hen)
+ * A general interface for a Output-Device.
+ * A Device is the destination, where the HTML-code is written to. This is
+ * the 'Graphics' - device.
  *
  * @author <a href="mailto:hzeller@to.com">Henner Zeller</a>
  * @version $Revision$

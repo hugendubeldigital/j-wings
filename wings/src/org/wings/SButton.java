@@ -299,7 +299,10 @@ public class SButton extends SAbstractButton
     }
 
     protected void configurePropertiesFromAction(Action a) {
-	setActionCommand((a != null ? (String)a.getValue(Action.ACTION_COMMAND_KEY) : null));
+        // uncomment if compiled against < jdk 1.3
+	setActionCommand((a != null 
+                          ? (String)a.getValue(Action.ACTION_COMMAND_KEY) 
+                          : null));
 	setText((a != null ? (String)a.getValue(Action.NAME) : null));
 	setIcon((a != null ? (Icon)a.getValue(Action.SMALL_ICON) : null));
 	setEnabled((a != null ? a.isEnabled() : true));
@@ -341,6 +344,7 @@ public class SButton extends SAbstractButton
                     Icon icon = (Icon)e.getNewValue();
                     button.setIcon(icon);
                 }
+                // uncomment if compiled against jdk < 1.3
                 else if (e.getPropertyName().equals(Action.ACTION_COMMAND_KEY)) {
                     String actionCommand = (String)e.getNewValue();
                     button.setActionCommand(actionCommand);

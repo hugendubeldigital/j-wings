@@ -32,16 +32,18 @@ public class TemplateLayoutCG
     implements LayoutCG
 {
     /**
-     *
+     * The PageParser parses the templates once and then
+     * reuses the cached parse results. To let the cache survive
+     * multiple invokations, this PageParser is static.
      */
     static private final PageParser PARSER = new PageParser();
 
     /**
-     *
+     * The parser looks for the '<OBJECT></OBJECT>' - tags.
      */
     static {
-        PARSER.addTagHandler(STemplateLayout.COMPONENT,
-	    TemplateTagHandler.class);
+        PARSER.addTagHandler(STemplateLayout.COMPONENT_TAG,
+                             TemplateTagHandler.class);
     }
 
     /**
@@ -66,8 +68,8 @@ public class TemplateLayoutCG
     /**
      * TODO: documentation
      *
-     * @param d the device to write the code to
-     * @param l the layout manager
+     * @param device the device to write the code to
+     * @param manager the layout manager
      * @throws IOException
      */
     public void write(Device device, SLayoutManager manager)

@@ -26,7 +26,7 @@ import org.wings.SComponent;
 import org.wings.io.Device;
 
 /**
- * TODO: documentation
+ * A TemplateTagHandler 
  *
  * @author <A href="mailto:zeller@think.de">Henner Zeller</A>
  * @version $Revision$
@@ -82,13 +82,15 @@ public class TemplateTagHandler implements SpecialTagHandler
 
         while (!startTag.finished()) {
             startTag = new SGMLTag (input, true);
-            if (startTag.isNamed("/" + org.wings.STemplateLayout.COMPONENT) ||
-                startTag.isNamed(org.wings.STemplateLayout.COMPONENT))
+            if (startTag.isNamed("/" +
+                                 org.wings.STemplateLayout.COMPONENT_TAG) ||
+                startTag.isNamed(org.wings.STemplateLayout.COMPONENT_TAG))
                 break;
         }
 
         // Entweder EOF oder unerwartet neu oeffnendes COMPONENT ..
-        if (startTag.finished() || startTag.isNamed(org.wings.STemplateLayout.COMPONENT)) {
+        if (startTag.finished() || 
+            startTag.isNamed(org.wings.STemplateLayout.COMPONENT_TAG)) {
             close_is_missing = true;
         }
         else {

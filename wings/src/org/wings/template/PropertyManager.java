@@ -15,7 +15,10 @@
 package org.wings.template;
 
 /**
- * TODO: documentation
+ * Property Manager for template managed components.
+ * Components managed by TemplateLayout - Managers may have certain
+ * properties which can be set from parameters given in the template
+ * page, e.g. a 'text' parameter for a 'Button'-Component.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$

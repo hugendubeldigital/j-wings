@@ -429,7 +429,6 @@ public class ServletRequest
         return null;
     }
 
-
     public boolean isSecure() {
         return false;
     }

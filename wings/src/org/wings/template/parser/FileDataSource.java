@@ -76,11 +76,13 @@ public class FileDataSource
 
     public FileDataSource (File f) {
 	this.file = f;
-	try {
-	    canonicalName = "file:" + file.getCanonicalPath();
-	}
-	catch (IOException e) {
-	    // should never happen for files ..
+	if (file != null) {
+	    try {
+		canonicalName = "file:" + file.getCanonicalPath();
+	    }
+	    catch (IOException e) {
+		// should never happen for files ..
+	    }
 	}
     }
     

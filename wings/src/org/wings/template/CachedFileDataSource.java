@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.ByteArrayInputStream;
+import java.net.URL;
 import java.util.Hashtable;
 
 import org.wings.template.parser.*;
@@ -44,6 +45,32 @@ public class CachedFileDataSource
             lastModified = -1;
             checkModified();
         }
+        
+        public CacheEntry(URL url) throws IOException {
+            file = null;
+            lastModified = System.currentTimeMillis();
+            InputStream in = url.openStream();
+            /*
+             * unfortnunatly, we do not know the length of
+             * the data ..
+             */
+            int totLen = 0;
+            int copyLen = 0;
+            byte [] tempBuffer = new byte [ 1024 ];
+            do {
+                copyLen = in.read(tempBuffer);
+                if (copyLen > 0) {
+                    byte [] newFileBuf = new byte [ totLen + copyLen ];
+                    if (filebuffer != null)
+                        System.arraycopy(filebuffer, 0, newFileBuf, 0, totLen);
+                    System.arraycopy(tempBuffer, 0, newFileBuf, totLen, 
+                                     copyLen);
+                    totLen += copyLen;
+                    filebuffer = newFileBuf;
+                }
+            }
+            while (copyLen >= 0);
+        }
 
         public byte[] getBuffer() {
             return filebuffer;
@@ -61,6 +88,8 @@ public class CachedFileDataSource
         }
 
         private void checkModified() {
+            if (file == null)
+                return;
             long timestamp = file.lastModified();
             if (lastModified != timestamp) {
                 lastModified = timestamp;
@@ -101,6 +130,15 @@ public class CachedFileDataSource
         }
     }
 
+    public CachedFileDataSource (URL url) 
+        throws IOException {
+        super(null); // we never read the file directly
+        entry = (CacheEntry) cache.get(url);
+        if (entry == null) {
+            entry = new CacheEntry(url);
+            cache.put (url, entry);
+        }
+    }
 
     /**
      * Returns the time the content of this File

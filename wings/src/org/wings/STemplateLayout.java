@@ -16,6 +16,7 @@ package org.wings;
 
 import java.util.Hashtable;
 import java.util.ArrayList;
+import java.net.URL;
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -79,7 +80,7 @@ public class STemplateLayout
     /**
      * TODO: documentation
      */
-    public static final String COMPONENT = "OBJECT";
+    public static final String COMPONENT_TAG = "OBJECT";
     static final String INLINE = "INLINE";
 
     /*
@@ -108,14 +109,9 @@ public class STemplateLayout
      */
     private static final Hashtable propertyManager = new Hashtable();
 
-//    /**
-//     * Der PageParser. Damit der eine chance hat, die Templates
-//     * zu cachen, ist der static ..
-//     */
-//    private static PageParser parser;
-
     /*
-     * Setzen von ein paar default PropertyManagern
+     * some default property Managers. Sets properties of components
+     * from parameters given in the template page.
      */
     static {
         addPropertyManager(new SComponentPropertyManager());
@@ -163,6 +159,17 @@ public class STemplateLayout
      */
     public STemplateLayout (File tmplFile) throws java.io.IOException {
         setTemplate(tmplFile);
+    }
+
+    /**
+     * Open Template from URL. Reads the content once in a cache.
+     *
+     * @param tmplFile
+     * @return
+     * @throws java.io.IOException
+     */
+    public STemplateLayout (URL url) throws java.io.IOException {
+        setTemplate(url);
     }
 
     /*
@@ -219,13 +226,24 @@ public class STemplateLayout
     }
 
     /**
-     * TODO: documentation
+     * Set the template to the template stored in the given file.
      *
      * @param templateFile
      * @throws java.io.IOException
      */
     public void setTemplate(File templateFile) throws java.io.IOException {
         dataSource = new CachedFileDataSource(templateFile);
+    }
+
+    /**
+     * Set the template to the template which can be retrieved from the
+     * given URL.
+     *
+     * @param templateFile
+     * @throws java.io.IOException
+     */
+    public void setTemplate(URL templateURL) throws java.io.IOException {
+        dataSource = new CachedFileDataSource(templateURL);
     }
 
     public void addComponent(SComponent c, Object constraint) {
