@@ -21,6 +21,10 @@ import java.io.PrintWriter;
 import java.io.FileWriter;
 import java.util.Iterator;
 import java.util.Stack;
+import java.util.List;
+import java.util.Vector;
+
+import org.wings.SComponent;
 
 /**
  * parses a template for a PlafCG. A Template has the
@@ -66,9 +70,9 @@ public class TemplateParser {
                                                   "</write>",     // 3
                                                   "<include",     // 4
                                                   "<template",    // 5
-                                                  "<install>",    // 6
-                                                  "</install>",   // 7
-                                                  "</template>" }; // 8
+                                                  "<property",    // 6
+                                                  "</template>",  // 7 
+                                                  "</property>" }; // 8
 
     // the index for the tags. Yes: c-preprocessor and enumerations would be
     // better.
@@ -78,9 +82,9 @@ public class TemplateParser {
     private final static int END_WRITE    = 3;
     private final static int INCLUDE      = 4;
     private final static int TEMPLATE     = 5;
-    private final static int START_INSTALL= 6;
-    private final static int END_INSTALL  = 7;
-    private final static int END_TEMPLATE = 8;
+    private final static int START_PROP   = 6;
+    private final static int END_TEMPLATE = 7;
+    private final static int END_PROP     = 8;
     
     // current mode we are in - this is important for the brace depth check.
     private final static int JAVA_MODE     = 1;
@@ -91,6 +95,7 @@ public class TemplateParser {
     private final String forClassName;
     private final JavaBuffer writeJavaCode;
     private final JavaBuffer commonJavaCode;
+    private final List    properties;
     private final File sourcefile;
     private final File cwd;
     private final StringPool stringPool;
@@ -116,6 +121,7 @@ public class TemplateParser {
         this.cwd          = cwd;
         this.openBraces   = new Stack();
         this.anyError     = false;
+        properties        = new Vector();
         writeJavaCode     = new JavaBuffer(2, INDENT);
         commonJavaCode    = new JavaBuffer(1, INDENT);
         stringPool        = new StringPool( VAR_PREFIX, VAR_LEN );
@@ -150,7 +156,22 @@ public class TemplateParser {
         out.println ("import org.wings.*;");
         out.println ("import org.wings.io.Device;\n");
         out.println ("public final class " + templateName 
-                     + " implements org.wings.SConstants {");
+                     + " extends org.wings.plaf.AbstractComponentCG");
+        /*
+         * find out the name of the interface to be implemented.
+         */
+        try {
+            Class c = Class.forName(forClassName);
+            SComponent comp = (SComponent) c.newInstance();
+            out.println(INDENT + "implements org.wings.plaf."
+                        + comp.getCGClassID());
+        }
+        catch (Exception e) {
+            System.err.println("cannot instantiate " + forClassName
+                               + ": " + e.getMessage());
+            
+        }
+        out.println("{");
         
         // collected HTML snippets
         out.println ("\n//--- byte array converted template snippets.");
@@ -167,6 +188,15 @@ public class TemplateParser {
             out.println (".getBytes();");
         }
         
+        out.println("\n//--- properties of this plaf.");
+        Iterator props = properties.iterator();
+        while (props.hasNext()) {
+            Property p = (Property) props.next();
+            out.print(INDENT + "private " + p.getType());
+            out.print(" " + p.getName());
+            out.print(";\n");
+        }
+
         // common stuff.
         if (commonJavaCode.length() > 0) {
             out.println ("\n//--- code from common area in template.");
@@ -188,6 +218,20 @@ public class TemplateParser {
         out.print ( writeJavaCode.toString());
         out.println ("\n//--- end code from write-template.");
         out.println ("\n" + INDENT + "}");
+
+        out.println("\n//--- setters and getters for the properties.");
+        props = properties.iterator();
+        while (props.hasNext()) {
+            Property p = (Property) props.next();
+            out.print(INDENT + "public " + p.getType() 
+                      + " get" + capitalize(p.getName()));
+            out.print("() { return " + p.getName() + "; }\n");
+            out.print(INDENT + "public void set" + capitalize(p.getName()));
+            out.print("(" + p.getType() + " " + p.getName() + ") { ");
+            out.print("this." + p.getName() + " = " + p.getName() + "; }\n\n");
+        }
+       
+
         out.println ("}");
         out.close();
     }
@@ -230,9 +274,8 @@ public class TemplateParser {
                 checkBracesClosed();
                 parseWrite();  // --> write-area
                 break;
-            case START_INSTALL:
-                reportError("Warning: <install> not yet supported..");
-                parseInstall();
+            case START_PROP:
+                parseProperty();
                 break;
             case END_TEMPLATE:
                 return;
@@ -240,11 +283,25 @@ public class TemplateParser {
         }
     }
 
-    private void parseInstall() throws IOException, ParseException {
-        final JavaBuffer discard = new JavaBuffer(1, INDENT);
-        if ((parseJavaCode(discard)) != END_INSTALL)
-            throw new ParseException ("unexpected tag in <install> area");
-        reportError("end of not yet supported <install> area ..");
+    private void parseProperty() throws IOException, ParseException {
+        StringBuffer propertyTag = new StringBuffer();
+        consumeTextUntil(propertyTag, ">");
+        in.read(); // consume last character: '>'
+        AttributeParser ap = new AttributeParser(propertyTag.toString());
+        String type = ap.getAttribute("type");
+        String name = ap.getAttribute("name");
+        Property p = null;
+        if (type == null || name == null)
+            reportError("<property>: 'type' and 'name' attribute expected");
+        else
+            p = new Property(type, name);
+        StringBuffer defaultVal = new StringBuffer();
+        if ((findTransitions(defaultVal, stateTransitionTags)) != END_PROP)
+            throw new ParseException ("unexpected tag in <property> area");
+        if (p != null) {
+            p.setValue(defaultVal.toString());
+            properties.add(p);
+        }
     }
 
     /**
