@@ -94,13 +94,13 @@ public class SRadioButton
     }
 
     public void processLowLevelEvent(String action, String[] values) {
-        boolean requestSelection;
-    
+        boolean origSelected = isSelected();
+
         if ( isRenderedAsFormInput() ) {
             if ( getGroup()==null ) {
                 // one hidden and one checked event from the form says select
                 // it, else deselect it (typically only the hidden event)
-                requestSelection = values.length==2;
+                setSelected(values.length==2);
             } else {
                 int eventCount = 0;
                 for ( int i=0; i<values.length; i++) {
@@ -113,26 +113,19 @@ public class SRadioButton
                 } // end of for (int i=0; i<; i++)
                 // one hidden and one checked event from the form says select
                 // it, else deselect it (typically only the hidden event)
-                requestSelection = eventCount==2;
+                setSelected(eventCount==2);
             } // end of if ()
         } else {
-            if ( action.equals(getComponentId()) ) {
-                requestSelection = parseSelectionToggle(values[0]);
-            } else {
-                requestSelection = isSelected();
-            }
-        }        
- 
-        if ( requestSelection != isSelected() ) {
-            delayEvents(true);
             if ( getGroup()!=null ) {
                 getGroup().setDelayEvents(true);
-                setSelected(requestSelection);
+                setSelected(parseSelectionToggle(values[0]));
                 getGroup().setDelayEvents(false);
             } else {
-                setSelected(requestSelection);
+                setSelected(parseSelectionToggle(values[0]));
             } // end of else
-
+        }        
+ 
+        if ( isSelected()!=origSelected ) {
             // got an event, that is a select...
             SForm.addArmedComponent(this);
         } // end of if ()
