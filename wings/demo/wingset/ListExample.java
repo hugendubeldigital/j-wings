@@ -50,6 +50,7 @@ public class ListExample
         SContainer cont = new SPanel(new SFlowDownLayout());
         cont.add(new SLabel("List with single selection"));
         SList list = new SList();
+        list.setName("single");
         list.setSelectionMode(SINGLE_SELECTION);
         addListElements(list);
         cont.add(list);
@@ -61,6 +62,7 @@ public class ListExample
         SContainer cont = new SPanel(new SFlowDownLayout());
         cont.add(new SLabel("List with multiple selection"));
         SList list = new SList();
+        list.setName("multiple");
         list.setSelectionMode(MULTIPLE_SELECTION);
         addListElements(list);
         cont.add(list);
@@ -72,6 +74,7 @@ public class ListExample
         SContainer cont = new SPanel(new SFlowDownLayout());
         cont.add(new SLabel("ComboBox"));
         SComboBox comboBox = new SComboBox();
+        comboBox.setName("combo");
         addComboBoxElements(comboBox);
         cont.add(comboBox);
         
@@ -82,6 +85,7 @@ public class ListExample
         SContainer cont = new SPanel(new SFlowDownLayout());
         cont.add(new SLabel("List with showAsFormComponent = false"));
         SList list = new SList();
+        list.setName("noform");
         list.setShowAsFormComponent(false);
         list.setSelectionMode(SConstants.SINGLE_SELECTION);
         addAnchorElements(list);

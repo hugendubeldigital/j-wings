@@ -934,9 +934,11 @@ public class STabbedPane
      */
     public void processLowLevelEvent(String name, String[] values)
     {
+        /*
         if ( !name.startsWith(getLowLevelEventId()) ) {
             return;
         }
+        */
 		for (int i=0;i<values.length;++i) {
 		    try {
 		        int index = new Integer(values[i]).intValue();

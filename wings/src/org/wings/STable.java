@@ -326,9 +326,11 @@ public class STable
 
     public void processLowLevelEvent(String action, String[] values) {
         // is it for me ?
+        /*
         if ( !action.startsWith(getLowLevelEventId()) ) {
             return;
         }
+        */
 
         // delay events...
         getSelectionModel().setDelayEvents(true);
@@ -337,16 +339,16 @@ public class STable
         for ( int i=0; i<values.length; i++ ) {
             String value = values[i];
             if ( value.length()>1 ) {
-                
+
                 char modus = value.charAt(0);
                 value = value.substring(1);
-                
+
                 int colonIndex = value.indexOf(':');
                 if ( colonIndex<0 )
 					continue; // maybe next value fits ...
 
                 try {
-                
+
                     int row = Integer.parseInt(value.substring(0, colonIndex));
                     int col = Integer.parseInt(value.substring(colonIndex + 1));
                     // editor event
@@ -355,7 +357,7 @@ public class STable
                         editCellAt(row, col, null);
                         break;
                     case 't':
-                        if ( getSelectionModel().isSelectedIndex(row) ) 
+                        if ( getSelectionModel().isSelectedIndex(row) )
                             getSelectionModel().removeSelectionInterval(row, row);
                         else
                             getSelectionModel().addSelectionInterval(row, row);
@@ -373,7 +375,7 @@ public class STable
                 }
             }
         }
- 
+
         getSelectionModel().setValueIsAdjusting(false);
         getSelectionModel().setDelayEvents(false);
         SForm.addArmedComponent(this);

@@ -9,8 +9,8 @@ import java.util.*;
 class Request {
     private String method;
     private String resource;
-    List events = new LinkedList();
     private long millis;
+    List events = new LinkedList();
     List headers = new LinkedList();
 
     public Request(String method, String resource) {
@@ -23,8 +23,16 @@ class Request {
         return method;
     }
 
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
     public String getResource() {
         return resource;
+    }
+
+    public void setResource(String resource) {
+        this.resource = resource;
     }
 
     public List getEvents() {

@@ -129,6 +129,7 @@ public abstract class SComponent
     private boolean fireComponentChangeEvents = false;
 
     private EventListenerList listeners;
+    private Boolean useNamedEvents;
 
     /**
      * Default constructor.cript
@@ -913,7 +914,7 @@ public abstract class SComponent
      * using it in a request parameter. This encoding adds consistency checking
      * for outtimed requests ("Back Button")
      */
-    public final String encodeLowLevelEventId(String lowLevelEventId) {
+    private String encodeLowLevelEventId(String lowLevelEventId) {
         if (getParentFrame() != null)
             if (!(this instanceof LowLevelEventListener) ||
                 ((LowLevelEventListener)this).checkEpoch()) {
@@ -931,7 +932,18 @@ public abstract class SComponent
      * for outtimed requests ("Back Button")
      */
     public final String getEncodedLowLevelEventId() {
-        return encodeLowLevelEventId(getLowLevelEventId());
+        if (getUseNamedEvents() && getName() != null)
+            return name;
+        else
+            return encodeLowLevelEventId(getLowLevelEventId());
+    }
+
+    private boolean getUseNamedEvents() {
+        if (useNamedEvents == null) {
+            useNamedEvents = ("true".equalsIgnoreCase((String)getSession().getProperty("wings.event.usenames")))
+                ? Boolean.TRUE : Boolean.FALSE;
+        }
+        return useNamedEvents.booleanValue();
     }
 
     /**
@@ -943,11 +955,11 @@ public abstract class SComponent
     }
 
     /**
-     * @deprecated use encodeLowLevelEventId(getLowLevelEventId)
+     * @deprecated use getEncodedLowLevelEventId()
      */
     public String getNamePrefix() {
         if (this instanceof LowLevelEventListener) {
-            return encodeLowLevelEventId(this.getLowLevelEventId());
+            return getEncodedLowLevelEventId();
         }
         return getComponentId();
     }

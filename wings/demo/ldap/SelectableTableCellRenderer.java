@@ -37,7 +37,7 @@ public class SelectableTableCellRenderer
 
         if (isSelectableColumn(col)) {
             RequestURL addr = table.getRequestURL();
-            addr.addParameter(getNamePrefix(), col + DELIMITER + row);
+            addr.addParameter(getEncodedLowLevelEventId(), col + DELIMITER + row);
             setText(value.toString());
             reference = addr.toString();
             return this;

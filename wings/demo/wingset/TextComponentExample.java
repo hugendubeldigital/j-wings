@@ -26,12 +26,18 @@ import org.wings.*;
 public class TextComponentExample
     extends WingSetPane
 {
+    private int i = 1;
+
     public SComponent createExample() {
         SPanel p = new SPanel();
-        p.add(createTextComponentExample(new STextField()));
+        STextField textField = new STextField();
+        textField.setName("textfield");
+        p.add(createTextComponentExample(textField));
         p.add(new SSeparator());
 
-        p.add(createTextComponentExample(new STextArea()));
+        STextArea textArea = new STextArea();
+        textArea.setName("textarea");
+        p.add(createTextComponentExample(textArea));
         return p;
     }
 
@@ -53,6 +59,7 @@ public class TextComponentExample
             } } );
 
         SButton button = new SButton("Submit");
+        button.setName("submit" + (i++));
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 buttonDesc.setText("button pressed");

@@ -426,6 +426,7 @@ public class SOptionPane
      */
     protected final SButton createButton(String label) {
         SButton b = new SButton(label);
+        b.setName(label);
         b.addActionListener(this);
         return b;
     }

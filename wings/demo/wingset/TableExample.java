@@ -63,18 +63,21 @@ public class TableExample
         }
 
         STable table = new STable(new MyTableModel(7, 5));
+        table.setName("table");
         table.setShowGrid(true);
         table.setSelectionMode(MULTIPLE_SELECTION);
         table.setDefaultRenderer(cellRenderer);
         panel.add(table, "MultiSelectionTable");
 
         STable formTable = new STable(new MyTableModel(7, 5));
+        formTable.setName("formtable");
         formTable.setShowGrid(true);
         formTable.setSelectionMode(SINGLE_SELECTION);
         formTable.setDefaultRenderer(cellRenderer);
         panel.add(formTable, "SingleSelectionTable");
 
         STable simple = new STable(new ROTableModel(7,10));
+        simple.setName("simpletable");
         simple.setAttribute("border", "1px solid black");
         simple.setAttribute("bgcolor", "white");
         simple.setSelectionMode(SListSelectionModel.NO_SELECTION);

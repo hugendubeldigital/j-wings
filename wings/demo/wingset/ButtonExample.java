@@ -102,6 +102,7 @@ public class ButtonExample
                 buttons[i].setRolloverIcon(rolloverIcon);
                 buttons[i].setPressedIcon(pressedIcon);
                 buttons[i].setToolTipText("Button " + i);
+                buttons[i].setName(buttons[i].getText());
             }
         }
 

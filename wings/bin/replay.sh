@@ -32,5 +32,15 @@ do
 done
 export CLASSPATH
 
-echo $CLASSPATH
+SCRIPT=`echo "$#-1"| bc`
+eval SCRIPT=\$$SCRIPT
+SOURCE=${SCRIPT}.java
+CLASS=${SCRIPT}.class
+
+if [ -e "$SOURCE" ] && [ $SOURCE -nt $CLASS ]
+then
+  echo COMPILE: $SOURCE
+  $JAVA_HOME/bin/javac $SOURCE
+fi
+
 $JAVA_HOME/bin/java org.wings.recorder.Simulator $@

@@ -47,6 +47,7 @@ public class PageScrollerExample
         list.setVisibleRowCount(8);
 
         scrollbar = new SPageScroller(Adjustable.VERTICAL);
+        scrollbar.setName("scrollbar");
 
         // its a horizontal scrollbar, but scrolls vertical...
         scrollbar.setLayoutMode(Adjustable.HORIZONTAL);

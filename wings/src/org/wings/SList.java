@@ -992,10 +992,12 @@ public class SList
      */
     public void processLowLevelEvent(String action, String[] values) {
         // is it for me ?
-        if ( !action.startsWith(getLowLevelEventId()) ) { 
+        /*
+        if ( !action.startsWith(getLowLevelEventId()) ) {
             return; 
         }
-
+        */
+        
         // delay events...
         getSelectionModel().setDelayEvents(true);
 

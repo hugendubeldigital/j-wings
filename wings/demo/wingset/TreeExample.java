@@ -45,6 +45,7 @@ public class TreeExample
         SPanel p = new SPanel();
         // generating the tree:
         tree = new STree(new DefaultTreeModel(ROOT_NODE)); // thats it.
+        tree.setName("tree");
 
         /* test code
         p.add(createEventView(tree));

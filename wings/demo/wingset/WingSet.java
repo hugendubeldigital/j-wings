@@ -27,6 +27,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import javax.swing.event.*;
+
 import org.wings.*;
 import org.wings.event.SRequestEvent;
 import org.wings.event.SRequestListener;
@@ -159,7 +161,14 @@ public class WingSet
         }
         
         //SForm form = new SForm();
-        STabbedPane tab = new STabbedPane();
+        final STabbedPane tab = new STabbedPane();
+        tab.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                System.out.println(tab.getSession().getServletRequest().getSession().getId() +
+                                   " example = " + tab.getSelectedIndex());
+            }
+        });
+        tab.setName("examples");
         // tab.setMaxTabsPerLine(9);
         tab.setTabPlacement(STabbedPane.TOP);
 		tab.setBackgroundImage(brushedMetal);

@@ -1,11 +1,9 @@
 /* $Id$ */
 package org.wings.recorder;
 
-import org.wings.util.StringUtil;
-
 import javax.servlet.Filter;
 import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.*;
 import java.io.*;
 import java.util.*;
 import java.util.logging.*;
@@ -24,10 +22,19 @@ public class Recorder
     private File file;
     private List list;
     private String scriptName = "Recording";
+    private String lookupName = "SessionServlet";
 
     public void init(FilterConfig filterConfig) throws ServletException {
         if (filterConfig.getInitParameter("wings.servlet.recorder.script") != null)
             scriptName = filterConfig.getInitParameter("wings.servlet.recorder.script");
+
+        lookupName = filterConfig.getInitParameter("wings.servlet.lookupname");
+
+        if (lookupName == null || lookupName.trim().length() == 0) {
+            lookupName = "SessionServlet:" + filterConfig.getInitParameter("wings.mainclass");
+        }
+
+        logger.info("use session servlet lookup name " + lookupName);
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
@@ -36,6 +43,11 @@ public class Recorder
             if (servletRequest instanceof HttpServletRequest) {
                 HttpServletRequest httpServletRequest = (HttpServletRequest)servletRequest;
                 Map map = servletRequest.getParameterMap();
+                if (map.containsKey(RECORDER_SCRIPT)) {
+                    logger.info("recorder_script " + map.get(RECORDER_SCRIPT));
+                    String[] values = (String[])map.get(RECORDER_SCRIPT);
+                    scriptName = values[0];
+                }
                 if (map.containsKey(RECORDER_START)) {
                     if (list != null)
                         return;
@@ -48,10 +60,6 @@ public class Recorder
                     logger.info(RECORDER_STOP);
                     writeCode();
                     list = null;
-                }
-                else if (map.containsKey(RECORDER_SCRIPT)) {
-                    logger.info("recorder_script " + map.get(RECORDER_SCRIPT));
-                    scriptName = (String)map.get(RECORDER_SCRIPT);
                 }
                 else if (list != null) {
                     String resource = httpServletRequest.getPathInfo();
@@ -67,11 +75,16 @@ public class Recorder
                     while (parameterNames.hasMoreElements()) {
                         String name = (String)parameterNames.nextElement();
                         String[] values = httpServletRequest.getParameterValues(name);
+                        System.out.println("name before = " + name);
+                        System.out.println("name after = " + name);
                         addEvent(record, name, values);
                     }
                     Enumeration headerNames = httpServletRequest.getHeaderNames();
                     while (headerNames.hasMoreElements()) {
                         String name = (String)headerNames.nextElement();
+                        if (name.equalsIgnoreCase("cookie") ||
+                            name.equalsIgnoreCase("referer"))
+                            continue;
                         addHeader(record, name, httpServletRequest.getHeader(name));
                     }
                     list.add(record);
@@ -79,7 +92,30 @@ public class Recorder
             }
         }
         finally {
-            filterChain.doFilter(servletRequest, servletResponse);
+            if (servletResponse instanceof HttpServletResponse) {
+                filterChain.doFilter(servletRequest, new HttpServletResponseWrapper((HttpServletResponse)servletResponse) {
+                    public ServletOutputStream getOutputStream() throws IOException {
+                        final ServletOutputStream out = super.getOutputStream();
+                        return new ServletOutputStream() {
+                            public void write(int b) throws IOException {
+                                out.write(b);
+                            }
+
+                            public void close() throws IOException {
+                                super.println("<hr/><div align=\"center\">");
+                                super.println("<form method=\"get\" action=\"\">");
+                                super.println("<input type=\"text\" name=\"recorder_script\" value=\"" + scriptName + "\">");
+                                super.println("<input type=\"submit\" name=\"recorder_start\" value=\"start\">");
+                                super.println("<input type=\"submit\" name=\"recorder_stop\" value=\"stop\">");
+                                super.println("</div></form>");
+                                super.close();
+                            }
+                        };
+                    }
+                });
+            }
+            else
+                filterChain.doFilter(servletRequest, servletResponse);
         }
     }
 
@@ -113,9 +149,14 @@ public class Recorder
         if (list == null || list.size() == 0)
             return;
         try {
+            for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+                Request record = (Request)iterator.next();
+                if (record.getResource().indexOf(".") == -1)
+                    record.setResource("");
+            }
+
             file = new File(scriptName + ".java");
             PrintWriter out = new PrintWriter(new FileWriter(file));
-            //PrintWriter out = new PrintWriter(System.out);
             out.println("import org.wings.recorder.*;");
             out.println();
             out.println("public class " + scriptName);
@@ -142,7 +183,7 @@ public class Recorder
                     out.print("            .addHeader(\"");
                     out.print(header.getName());
                     out.print("\", \"");
-                    out.print(StringUtil.replace(header.getValue(), "\"", "\\\""));
+                    out.print(replace(header.getValue(), "\"", "\\\""));
                     out.print("\")");
                 }
                 for (Iterator iterator2 = record.getEvents().iterator(); iterator2.hasNext();) {
@@ -155,7 +196,7 @@ public class Recorder
                         String value = event.getValues()[i];
                         if (i > 0)
                             out.print("\", \"");
-                        out.print(StringUtil.replace(value, "\"", "\\\""));
+                        out.print(replace(value, "\"", "\\\""));
                     }
                     out.print("\" })");
                 }
@@ -174,4 +215,22 @@ public class Recorder
         }
     }
 
+    public static final String replace(String s,
+                                       String toFind, String replace) {
+        StringBuffer erg = new StringBuffer();
+
+        int lastindex = 0;
+        int indexOf = s.indexOf(toFind);
+        if ( indexOf == -1 ) return s;
+        while ( indexOf != -1 )
+            {
+                erg.append(s.substring(lastindex, indexOf)).append(replace);
+                lastindex = indexOf + toFind.length();
+                indexOf = s.indexOf(toFind, lastindex);
+            }
+
+        erg.append(s.substring(lastindex));
+
+        return erg.toString();
+    }
 }

@@ -460,9 +460,11 @@ public abstract class SAbstractAdjustable
 
     public void processLowLevelEvent(String name, String[] values) {
         // is it for me ?
-        if ( !name.startsWith(getComponentId()) ) { 
-            return; 
+        /*
+        if ( !name.startsWith(getComponentId()) ) {
+            return;
         }
+        */
 
         getModel().setDelayEvents(true);
         for ( int i=0; i<values.length; i++ ) {
@@ -480,7 +482,7 @@ public abstract class SAbstractAdjustable
     public void fireIntermediateEvents() {
         getModel().fireDelayedIntermediateEvents();
     }
-    
+
     public void fireFinalEvents() {
         getModel().fireDelayedFinalEvents();
     }
