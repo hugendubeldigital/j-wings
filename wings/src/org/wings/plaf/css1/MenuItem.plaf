@@ -9,7 +9,7 @@
         component.addScriptListener(MenuCG.EXIT_ITEM);
 </install>
 
-protected void writeMenuItem(final Device device, SMenuItem menuItem, boolean withAnchor) 
+protected void writeMenuItem(final Device device, SMenuItem menuItem, SIcon rightIcon, boolean withAnchor) 
   throws IOException
 {
     SIcon icon = getIcon(menuItem);
@@ -28,8 +28,9 @@ protected void writeMenuItem(final Device device, SMenuItem menuItem, boolean wi
     } else {
         %> style="color:#999999"<%
     }
+    %>><%
 
-    %>><nobr><%
+    %><nobr><%
 
     if ( icon!=null ) {	
         %><img border="0" align="middle" src="<%=icon.getURL()%>"<%
@@ -46,16 +47,25 @@ protected void writeMenuItem(final Device device, SMenuItem menuItem, boolean wi
         }
     }
 
+    if ( rightIcon!=null ) {	
+        %>&nbsp;<img border="0" align="middle" src="<%=rightIcon.getURL()%>"<%
+        %><%|width=rightIcon.getIconWidth()%><%
+        %><%|height=rightIcon.getIconHeight()%><%
+        %>/><%
+    }
+
+    %></nobr><%
+
     if ( withAnchor && menuItem.isEnabled() ) {
         %></a><%
     } 
-    %></nobr></div><%
+    %></div><%
 }
 
 <write>
 
 <%
-    writeMenuItem(device, component, true);
+    writeMenuItem(device, component, null, true);
 %>
 </write>
 </template>
