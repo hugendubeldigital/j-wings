@@ -158,7 +158,7 @@ public final class Utils implements SConstants
                 .print(";"); 
         } 
         if (c.getForeground() != null) {
-            s.print("font-color:#").print(toColorString(c.getForeground())).print(";");
+            // s.print("font-color:#").print(toColorString(c.getForeground())).print(";");
             s.print("color:#").print(toColorString(c.getForeground())).print(";");
         }
         s.print("\""); 
@@ -245,16 +245,20 @@ public final class Utils implements SConstants
         if (bgcolor != null) 
             d.print("background-color:#").print(toColorString(bgcolor)).print(";");
         if (fgcolor != null) {
-            d.print("font-color:#").print(toColorString(fgcolor)).print(";");
+            // d.print("font-color:#").print(toColorString(fgcolor)).print(";");
             d.print("color:#").print(toColorString(fgcolor)).print(";");
         }
         
         if (font != null) {
             int style = font.getStyle();
+/*            d.print("font-style:").print((style & java.awt.Font.ITALIC) > 0 ? "italic;" : "normal;");
+            d.print("font-weight:").print((style & java.awt.Font.BOLD) > 0 ? "bold;" : "normal;");
             d.print("font-size:").print(font.getSize()).print("pt;");
-            d.print("font-style:").print((style & java.awt.Font.ITALIC) > 0 ?"italic;":"normal;");
-            d.print("font-weight:").print((style & java.awt.Font.BOLD) > 0 ?"bold;":"normal;");
             d.print("font-family:").print(font.getFace()).print(";");
+ */         d.print("font:").print((style & java.awt.Font.ITALIC) > 0 ? "italic " : "normal ");
+            d.print((style & java.awt.Font.BOLD) > 0 ? "bold " : "normal ");
+            d.print(font.getSize()).print("pt ");
+            d.print(font.getFace()).print(";");
         }
         
         if (border != null) {
@@ -262,8 +266,8 @@ public final class Utils implements SConstants
         }
 
         if (dim != null) {
-            if (dim.width != null) d.print("width:").print(dim.width).print(";");
-            if (dim.height != null) d.print("height:").print(dim.height).print(";");
+            if ((dim.width != null) && !"".equals(dim.width)) d.print("width:").print(dim.width).print(";");
+            if ((dim.height != null) && !"".equals(dim.height)) d.print("Height:").print(dim.height).print(";");
         }
      }
 
