@@ -61,20 +61,20 @@ public final class Utils {
      * Renders a complex ToolTip
      */
     public static void writeToolTip(Device d, SComponent c) throws IOException {
-      SToolTip stt = ToolTipManager.sharedInstance().lookupComponent(c);
-      if (stt != null) {
-        d.print(" onmouseover=\"showTooltip(true,'");
-        org.wings.plaf.compiler.Utils.writeToolTip(d, stt.getTipText());
-        d.print("', this)\" onmouseout=\"showTooltip(false)\" ");
+      if (!"".equals(c.getToolTipText())) {
+        d.print(" title=\"");
+        d.print(c.getToolTipText());
+        d.print("\"");
       } else {
-        if (c.getToolTipText() != null) {
-          d.print(" title=\"");
-          d.print(c.getToolTipText());
-          d.print("\"");
+        SToolTip stt = ToolTipManager.sharedInstance().lookupComponent(c);
+        if (stt != null) {
+          d.print(" onmouseover=\"showTooltip(true,'");
+          org.wings.plaf.compiler.Utils.writeToolTip(d, stt.getTipText());
+          d.print("', this)\" onmouseout=\"showTooltip(false)\" ");
         }
       }
     }
-
+    
     /**
      * Renders a complex ToolTip
      */
