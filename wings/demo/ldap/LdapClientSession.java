@@ -371,37 +371,37 @@ public class LdapClientSession
 	    if (attributes !=null && attributes.size() > 0)
 		worker.modifyAttributes(dn,attributes);
 	    if (chooser!=null) {
-		if (chooser.getFilename()!="" && chooser.getFilename()!=null) {
-		    String attribut = "jpegPhoto";
-		    BasicAttributes attrs = new BasicAttributes();
-		    BasicAttribute attr = new BasicAttribute("jpegPhoto");
-		    
-		    try {
-			fis = new FileInputStream(JPEGPATH + chooser.getFilename());
-			System.out.println("dirrrrrrrrrrrrrrrrrrrrrrrrr" + chooser.getFiledir());
-			System.out.println("filerrrrrrrrrrrrrrrrrrrrrrrrr" + chooser.getFilename());
-			try {
-			    int bytesNr = fis.available();
-			    b = new byte[bytesNr];
-			    System.out.println(bytesNr + "  bytes            " );
-			    System.out.println(b.length);
-			    int i = fis.read(b);
-			    fis.close();
-			    componentTable.remove("jpegPhoto");
-			    componentTable.put("jpegPhoto", new SLabel(new
+                try {
+                    if (chooser.getFilename()!="" && chooser.getFilename()!=null) {
+                        String attribut = "jpegPhoto";
+                        BasicAttributes attrs = new BasicAttributes();
+                        BasicAttribute attr = new BasicAttribute("jpegPhoto");
+                        
+                        fis = new FileInputStream(JPEGPATH + chooser.getFilename());
+                        System.out.println("dirrrrrrrrrrrrrrrrrrrrrrrrr" + chooser.getFiledir());
+                        System.out.println("filerrrrrrrrrrrrrrrrrrrrrrrrr" + chooser.getFilename());
+                        try {
+                            int bytesNr = fis.available();
+                            b = new byte[bytesNr];
+                            System.out.println(bytesNr + "  bytes            " );
+                            System.out.println(b.length);
+                            int i = fis.read(b);
+                            fis.close();
+                            componentTable.remove("jpegPhoto");
+                            componentTable.put("jpegPhoto", new SLabel(new
                                 SImageIcon(JPEGPATH + chooser.getFilename())));
-			    addEditableComponents(componentTable);
-			}
-			catch (IOException e) {
-			}
-		    }
-		    catch(FileNotFoundException ex){
-		    }
-		    attr.add(b);
-		    attrs.put(attr);
-		    if (attrs.size() > 0)
-			worker.modifyAttributes(dn,attrs);
-		}
+                            addEditableComponents(componentTable);
+                        }
+                        catch (IOException e) {
+                        }
+                        attr.add(b);
+                        attrs.put(attr);
+                        if (attrs.size() > 0)
+                            worker.modifyAttributes(dn,attrs);
+                    }
+                }
+                catch (IOException e) {
+                }
 	    }
 	}
 	
