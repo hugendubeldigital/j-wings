@@ -241,8 +241,8 @@ public class SFrame
     }
 
     public void addHeader(Object m) {
-    if (!headers.contains(m))
-		headers().add(m);
+        if (!headers().contains(m))
+            headers.add(m);
     }
 
     public void clearHeaders() {
