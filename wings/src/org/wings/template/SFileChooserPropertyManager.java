@@ -34,8 +34,13 @@ public class SFileChooserPropertyManager
         SFileChooser c = (SFileChooser)comp;
         if ( name.equals("SIZE") || name.equals("COLS") )
             c.setColumns(Integer.parseInt(value));
+        /* maxsize should be the maximum content length, according to
+         * RFC 1867. So we should set the sessions' content length here.
+         * But people often think this is the maximum number of columns
+         * -- so just ignore it.
         else if ( name.equals("MAXSIZE") )
-            c.setMaxColumns(Integer.parseInt(value));
+            c.getSession().setMaxContentLength(Integer.parseInt(value)*1024);
+        */
         else if (name.equals("ACCEPT") || name.equals("FILTER") )
             c.setFileNameFilter(value);
         else

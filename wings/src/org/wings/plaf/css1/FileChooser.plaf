@@ -4,7 +4,12 @@
 <write>
 <%
     int columns = component.getColumns();
-    int maxColumns = component.getMaxColumns();
+    /*
+     * for some wierd reason, the 'maxlength' column contains the
+     * maximum content length .. see RFC1867.
+     * .. anyway, all browsers seem to ignore it.
+     */
+    int maxContent = component.getSession().getMaxContentLength()*1024;
     String fileNameFilter = component.getFileNameFilter();
 
     String style = (component.getStyle() != null) ? component.getStyle().getName() : null;
@@ -21,7 +26,7 @@
         %><%|class=style%><%
     }
 	
-%> type="file" name="<%=component.getNamePrefix()%>" <%|size=columns%><%|maxlength=maxColumns%><%|accept=fileNameFilter%>/><%
+    %> type="file" name="<%=component.getNamePrefix()%>" <%|size=columns%><%|maxlength=maxContent%><%|accept=fileNameFilter%> /><%
 
     if (style != null && attr != null) {
         %></span><%

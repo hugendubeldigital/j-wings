@@ -91,11 +91,6 @@ public class SFileChooser
      */
     protected int columns = 16;
 
-    /**
-     * maximum allowed number of columns. Default: not limited.
-     */
-    protected int maxColumns = -1;
-
     protected String fileNameFilter = null;
 
     protected Class filter    = null;
@@ -169,39 +164,30 @@ public class SFileChooser
     }
 
     /**
-     * TODO: documentation
+     * Unlike the swing filechooser that allows to match certain file-suffices,
+     * this sets the <em>mimetype</em> to be accepted. This filter may be fully
+     * qualified like <code>text/html</code> or can contain
+     * a wildcard in the subtype like <code>text/ *</code>. Some browsers
+     * may as well accept a file-suffix wildcard as well. 
      *
-     * @param mc
+     * <p>In any case, you hould check the result, since you cannot assume,
+     * that the browser
+     * actually does filter. Worse, browsers may not guess the
+     * correct type so users cannot upload a file even if has the correct
+     * type. So, bottomline, it is generally a good idea to let the file 
+     * name filter untouched, unless you know browser at the other end
+     * of the wire...
+     *
+     * @param mimeFilter the mime type to be filtered.
      */
-    public void setMaxColumns(int mc) {
-        int oldMaxColumns = maxColumns;
-        maxColumns = mc;
-        if (maxColumns != oldMaxColumns)
-            reload(ReloadManager.RELOAD_CODE);
+    public void setFileNameFilter(String mimeFilter) {
+        fileNameFilter = mimeFilter;
     }
 
     /**
+     * returns the current filename filter. This is a mimetype-filter
      *
-     *
-     * @return
-     */
-    public int getMaxColumns() {
-        return maxColumns;
-    }
-
-    /**
-     * The filter for filenames, like '*.txt'; This seems to be ignored
-     * by current browsers.
-     *
-     * @param s
-     */
-    public void setFileNameFilter(String s) {
-        fileNameFilter = s;
-    }
-
-    /**
-     * returns the current filename filter.
-     *
+     * @see #setFileNameFilter(String)
      * @return the current filename filter or 'null', if no filename filter
      *         is provided.
      */
