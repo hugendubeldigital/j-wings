@@ -86,7 +86,7 @@ public final class Utils implements SConstants {
             d.write( SPACE );
             d.print( attr );
             d.write( EQUALS_QUOT );
-            d.print(value);
+            quote(d, value);
             d.write( QUOT );
         }
     }
