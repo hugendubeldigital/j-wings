@@ -1,35 +1,35 @@
 <template name="ButtonCG" for="org.wings.SButton">
 
-void writeText(final Device device, SButton button, String attr)
+void writeText(final Device device, SAbstractButton abstractButton, String attr)
     throws IOException
 {
-    if (button.getShowAsFormComponent() && button.isEnabled())
-        writeFormText(device, button, attr);
+    if (abstractButton.getShowAsFormComponent() && abstractButton.isEnabled())
+        writeFormText(device, abstractButton, attr);
     else
-        writeAnchorText(device, button, attr);
+        writeAnchorText(device, abstractButton, attr);
 }
 
-void writeIcon(final Device device, SButton button, String attr)
+void writeIcon(final Device device, SAbstractButton abstractButton, String attr)
     throws IOException
 {
-    if (button.getShowAsFormComponent() && button.isEnabled())
-        writeFormIcon(device, button, attr);
+    if (abstractButton.getShowAsFormComponent() && abstractButton.isEnabled())
+        writeFormIcon(device, abstractButton, attr);
     else
-        writeAnchorIcon(device, button, attr);
+        writeAnchorIcon(device, abstractButton, attr);
 }
 
-void writeAnchorText(final Device device, SButton button, String attr)
+void writeAnchorText(final Device device, SAbstractButton abstractButton, String attr)
     throws IOException
 {
-    boolean noBreak = button.isNoBreak();
-    String text = button.getText();
+    boolean noBreak = abstractButton.isNoBreak();
+    String text = abstractButton.getText();
     if (text == null || text.length() == 0) {
 	return;
     }
 
-    if (button.isEnabled()) {
+    if (abstractButton.isEnabled() && (!(abstractButton instanceof SRadioButton) || !abstractButton.isSelected())) {
         %><a href="<%
-        writeAnchorAddress(device, button);
+        writeAnchorAddress(device, abstractButton);
         %>"<%
         // writeEvents();
     }
@@ -39,10 +39,10 @@ void writeAnchorText(final Device device, SButton button, String attr)
     %><%|class=attr%>><%
 
     if (noBreak) { %><nobr><% }
-    %><%=button.getText()%><%
+    %><%=abstractButton.getText()%><%
     if (noBreak) { %></nobr><% }
 
-    if (button.isEnabled()) {
+    if (abstractButton.isEnabled() && (!(abstractButton instanceof SRadioButton) || !abstractButton.isSelected())) {
         %></a><%
     }
     else {
@@ -50,16 +50,16 @@ void writeAnchorText(final Device device, SButton button, String attr)
     }
 }
 
-void writeAnchorIcon(final Device device, SButton button, String attr)
+void writeAnchorIcon(final Device device, SAbstractButton abstractButton, String attr)
      throws IOException
 {
-    SIcon icon = button.isEnabled() 
-        ? button.getIcon() 
-        : button.getDisabledIcon();
+    SIcon icon = abstractButton.isEnabled() 
+        ? abstractButton.getIcon() 
+        : abstractButton.getDisabledIcon();
     
-    if (button.isEnabled()) {
+    if (abstractButton.isEnabled() && (!(abstractButton instanceof SRadioButton) || !abstractButton.isSelected())) {
         %><a href="<%
-        writeAnchorAddress(device, button);
+        writeAnchorAddress(device, abstractButton);
         %>"<%
     }
     else {
@@ -67,20 +67,20 @@ void writeAnchorIcon(final Device device, SButton button, String attr)
     }
     %><%|class=attr%>><%
 
-    String tooltip = button.getToolTipText();
+    String tooltip = abstractButton.getToolTipText();
     if (tooltip == null)
-        tooltip = button.getText();
+        tooltip = abstractButton.getText();
 
     %><img border="0" src="<%
     %><%=icon.getURL()%>"<%
 
-    if ( button.isEnabled() ) {
+    if ( abstractButton.isEnabled() ) {
        // render rollover
-       SIcon rolloverIcon = button.getRolloverIcon();
-       SIcon pressedIcon = button.getPressedIcon();
+       SIcon rolloverIcon = abstractButton.getRolloverIcon();
+       SIcon pressedIcon = abstractButton.getPressedIcon();
 
        if ( rolloverIcon!=null || pressedIcon!=null ) {
-           String iconName = "Icon_" + button.getUnifiedId();
+           String iconName = "Icon_" + abstractButton.getUnifiedId();
 
            %> name="<%=iconName%>"<%
    
@@ -107,7 +107,7 @@ void writeAnchorIcon(final Device device, SButton button, String attr)
     %><%|alt=tooltip%> /><%
     // writeEvents();
 
-    if (button.isEnabled()) {
+    if (abstractButton.isEnabled() && (!(abstractButton instanceof SRadioButton) || !abstractButton.isSelected())) {
         %></a><%
     }
     else {
@@ -115,43 +115,54 @@ void writeAnchorIcon(final Device device, SButton button, String attr)
     }
 }
 
-protected void writeAnchorAddress(Device d, SButton button) 
+protected void writeAnchorAddress(Device d, SAbstractButton abstractButton) 
     throws IOException
 {
-    RequestURL addr = button.getRequestURL();
-    addr.addParameter(button.getNamePrefix() + "=" + button.getSelectionToggleParameter());
+    RequestURL addr = abstractButton.getRequestURL();
+    addr.addParameter(abstractButton.getNamePrefix() + "=" + abstractButton.getSelectionToggleParameter());
     addr.write(d);
 }
 
-void writeFormText(final Device device, SButton button, String attr)
+void writeFormText(final Device device, SAbstractButton abstractButton, String attr)
     throws IOException
 {
-    %><input type="submit" name="<%
-    %><%=button.getNamePrefix()%>"<%
+    %><input type="<%=abstractButton.getType()%>" name="<%
+    %><%=abstractButton.getNamePrefix()%>"<%
     %><%|class=attr%><%
     // writeEvents();
-    %><%|value=button.getText()%> /><%
+    if (abstractButton instanceof SButton) {
+        %><%|value=abstractButton.getText()%><%
+    }
+    else {
+        %><%|value=abstractButton.getSelectParameter()%><%
+    }
+    if (abstractButton.isSelected()) {
+        %> checked="1" /><%
+    }
+    else {
+        %> /><%
+    }
 }
 
-void writeFormIcon(final Device device, SButton button, String attr)
+void writeFormIcon(final Device device, SAbstractButton abstractButton, String attr)
      throws IOException
 {
-    SIcon icon = button.isEnabled() 
-        ? button.getIcon() 
-        : button.getDisabledIcon();
+    SIcon icon = abstractButton.isEnabled() 
+        ? abstractButton.getIcon() 
+        : abstractButton.getDisabledIcon();
     if (icon == null) {
 	return;
     }
-    String tooltip = button.getToolTipText();
+    String tooltip = abstractButton.getToolTipText();
     if (tooltip == null)
-        tooltip = button.getText();
+        tooltip = abstractButton.getText();
 
     %><input type="image" border="0" src="<%
     %><%=icon.getURL()%>"<%
     %><%|class=attr%><%
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
-    %><%|name=button.getNamePrefix()%><%
+    %><%|name=abstractButton.getNamePrefix()%><%
     %><%|value=tooltip%><%
     %><%|alt=tooltip%><%
     // writeEvents();
