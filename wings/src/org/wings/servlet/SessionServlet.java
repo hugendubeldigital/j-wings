@@ -14,29 +14,37 @@
 
 package org.wings.servlet;
 
-import java.io.*;
-import java.util.Vector;
+import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.StringTokenizer;
-import java.text.MessageFormat;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSessionBindingListener;
 import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
 
-import org.wings.*;
+import org.wings.FastDispatcher;
+import org.wings.SForm;
+import org.wings.SFrame;
+import org.wings.SGetDispatcher;
+import org.wings.SLabel;
+import org.wings.STemplateLayout;
 
-import org.wings.util.*;
-import org.wings.io.ServletDevice;
-import org.wings.session.*;
 import org.wings.externalizer.ExternalizeManager;
+import org.wings.io.ServletDevice;
+import org.wings.session.DefaultSession;
+import org.wings.session.Session;
+import org.wings.session.SessionManager;
+import org.wings.util.ASUtil;
+import org.wings.util.DebugUtil;
+import org.wings.util.TimeMeasure;
 
 /**
  * TODO: documentation
@@ -107,6 +115,14 @@ public abstract class SessionServlet
     protected SessionServlet(Session session) {
         this.session = session;
         SessionManager.setSession(session);
+    }
+
+    /**
+     * This default constructor sets the default session.
+     * @see org.wings.session.DefaultSession
+     */
+    protected SessionServlet() {
+        this(new DefaultSession());
     }
 
     /**
