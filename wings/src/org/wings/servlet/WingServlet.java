@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.wings.*;
 import org.wings.util.*;
 import org.wings.session.Session;
+import org.wings.session.PropertyService;
 import org.wings.externalizer.SystemExternalizeManager;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.externalizer.AbstractExternalizeManager;
@@ -143,6 +144,32 @@ public abstract class WingServlet extends HttpServlet
     }
 
     /**
+     * returns the last modification of an externalized resource to allow the
+     * browser to cache it. 
+     */
+    protected long getLastModified(HttpServletRequest request) {
+        AbstractExternalizeManager extMgr;
+        try {
+            extMgr = getExternalizeManager(request);
+        }
+        catch (Exception e) {
+            return -1;
+        }
+        String pathInfo = request.getPathInfo();
+        //System.err.println("LAST MODIFIED: " + pathInfo);
+        if (extMgr != null && pathInfo != null && pathInfo.length() > 1) {
+            ExternalizedInfo info;
+            String identifier = pathInfo.substring(1);
+            info = extMgr.getExternalizedInfo(identifier);
+            if (info != null) {
+                //System.err.println("  **>" + info.getLastModified());
+                return info.getLastModified();
+            }
+        }
+        return -1;
+    }
+
+    /**
      * postInit is called by init after it's finished. <br>
      * Overwrite this method if you have to initialize something in your
      * servlet.
@@ -228,6 +255,18 @@ public abstract class WingServlet extends HttpServlet
             HttpSession session = request.getSession(true);
 
             SessionServlet sessionServlet = generateSessionServlet(request);
+            
+            /* the request URL is needed already in the setup-phase. Note,
+             * that at this point, the URL will always be encoded, since
+             * we (or better: the servlet engine) does not know yet, if setting
+             * a cookie will be successful (it has to await the response).
+             * Subsequent requests might decide, _not_ to encode the sessionid
+             * in the URL (see SessionServlet::doGet())                   -hen
+             */
+            RequestURL requestURL = new RequestURL("", response.encodeURL(""));
+            ((PropertyService)sessionServlet.getSession())
+                .setProperty("request.url", requestURL);
+
             sessionServlet.setParent(this);
             sessionServlet.setExternalizeManager(createExternalizeManager(response));
             sessionServlet.init(servletConfig);
@@ -248,12 +287,18 @@ public abstract class WingServlet extends HttpServlet
         HttpSession session = request.getSession(false);
         SessionServlet sessionServlet = null;
 
-        if (session != null)
+        if (session != null) {
             sessionServlet = (SessionServlet)session.getAttribute(lookupName);
-        
-        if (sessionServlet == null)
-            sessionServlet = newSession(request, response);
+        }
 
+        /*
+         * we are only interested in a new session, if the response is
+         * not null. If it is null, then we just called getSessionServlet()
+         * for lookup purposes and are satisfied, if we don't get anything.
+         */
+        if (sessionServlet == null && response != null) {
+            sessionServlet = newSession(request, response);
+        }
         return sessionServlet;
     }
 
@@ -264,8 +309,9 @@ public abstract class WingServlet extends HttpServlet
      */
     protected boolean isSystemExternalizeRequest(HttpServletRequest request) {
         String pathInfo = request.getPathInfo();
-
-        return (pathInfo != null && pathInfo.length()>1 && pathInfo.charAt(1)=='-');
+        return (pathInfo != null 
+                && pathInfo.length() > 1 
+                && pathInfo.startsWith("/-"));
     }
 
     /**
@@ -276,8 +322,9 @@ public abstract class WingServlet extends HttpServlet
     {
         
         AbstractExternalizeManager extManager = null;
-        if ( isSystemExternalizeRequest(req) )
+        if ( isSystemExternalizeRequest(req) ) {
             return SystemExternalizeManager.getSharedInstance();
+        }
         else {
             SessionServlet sessionServlet = null;
             synchronized (initializer) {
@@ -311,8 +358,8 @@ public abstract class WingServlet extends HttpServlet
              * request parameter (like '?12_22=121').
              * The browser assembles the request URL from the current context
              * (the 'directory' it assumes it is in) plus the relative URL.
-             * Thus emitted URLs are as short as possible and thus the generated
-             * page size.
+             * Thus emitted URLs are as short as possible and thus the
+             * generated page size.
              */
             String pathInfo = req.getPathInfo();
             if (pathInfo == null || pathInfo.length() == 0) {
@@ -332,16 +379,10 @@ public abstract class WingServlet extends HttpServlet
              * (if there is something in the path info, that starts with '-')
              * or just a normal request to this servlet.
              */
-            if (isSystemExternalizeRequest(req)) {
+            if ( isSystemExternalizeRequest(req) ) {
                 String identifier = pathInfo.substring(1);
-                logger.fine("system externalizer: " + identifier);
-
-                int pos = identifier.indexOf(".");
-                if (pos > -1)
-                    identifier = identifier.substring(0, pos);
-
-                logger.fine("system externalizer " + identifier);
-                SystemExternalizeManager.getSharedInstance().deliver(identifier, response);
+                SystemExternalizeManager.getSharedInstance()
+                    .deliver(identifier, response);
                 return;
             }
 

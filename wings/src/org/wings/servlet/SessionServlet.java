@@ -488,10 +488,28 @@ public abstract class SessionServlet
         SessionManager.setSession(session);
 
         try {
-            RequestURL requestURL = new RequestURL("", response.encodeURL(""));
-            // this will fire an event, if the encoding has changed ..
-            ((PropertyService)session).setProperty("request.url", requestURL);
-
+            /*
+             * The tomcat 3.x has a bug, in that it does not encode the URL
+             * sometimes. It does so, when there is a cookie, containing some
+             * tomcat sessionid but that is invalid (because, for instance,
+             * we restarted the tomcat in-between). 
+             * [I can't think of being this the correct behaviour, so I assume
+             *  it is a bug. ]
+             *
+             * So we have to workaround this here: if we actually got the
+             * session id from a cookie, but it is not valid, we don't do
+             * the encodeURL() here: we just leave the requestURL as it is
+             * in the properties .. and this is url-encoded, since
+             * we had set it up in the very beginning of this session 
+             * with URL-encoding on  (see WingServlet::newSession())
+             */
+            RequestURL requestURL = null;
+            if (req.isRequestedSessionIdValid()) {
+                 requestURL = new RequestURL("", response.encodeURL(""));
+                // this will fire an event, if the encoding has changed ..
+                ((PropertyService)session).setProperty("request.url", 
+                                                       requestURL);
+            }
             try {
                 if (logger.isLoggable(Level.FINER)) {
                     logger.finer("RequestURL: " + requestURL);
