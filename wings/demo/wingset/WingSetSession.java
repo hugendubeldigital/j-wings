@@ -26,6 +26,7 @@ import javax.swing.*;
 import org.wings.*;
 import org.wings.io.Device;
 import org.wings.io.ServletDevice;
+import org.wings.io.NullDevice;
 import org.wings.servlet.*;
 import org.wings.session.*;
 import org.wings.util.*;
@@ -146,10 +147,11 @@ public class WingSetSession
              * This is a dummy call to generate the HTML output, just
              * to measure the time
              */
-            Device devNull = new org.wings.io.NullDevice();
+            NullDevice devNull = new NullDevice();
             getFrame().write(devNull);
             measure.stop();
-            timeMeasure.setText(measure.print());
+            timeMeasure.setText(measure.print() + 
+                                "(" + devNull.getSize() + " Bytes)");
             measure.reset();
         }
 
