@@ -17,6 +17,7 @@ package wingset;
 import java.awt.event.*;
 import java.util.*;
 import org.wings.*;
+import org.wings.border.*;
 
 /**
  * TODO: documentation
@@ -27,6 +28,18 @@ import org.wings.*;
 public class Faces
     extends WingSetPane
 {
+
+    static final SIcon sel = 
+        new ResourceImageIcon("wingset/icons/RadioButtonSelectedIcon.gif");
+    static final SIcon nsel = 
+        new ResourceImageIcon("wingset/icons/RadioButtonIcon.gif");
+    static final SIcon pressed = 
+        new ResourceImageIcon("wingset/icons/RadioButtonPressedIcon.gif");
+    static final SIcon rollsel = 
+        new ResourceImageIcon("wingset/icons/RadioButtonRolloverSelectedIcon.gif");
+    static final SIcon rollnsel = 
+        new ResourceImageIcon("wingset/icons/RadioButtonRolloverIcon.gif");
+
     static final Face henner = new Face("Henner");
     static final Face armin = new Face("Armin");
     static final Face holger = new Face("Holger");
@@ -35,64 +48,97 @@ public class Faces
 
     static final Random random = new Random();
 
-    public SComponent createExample() {
-        SForm form = new SForm(new SBorderLayout());
+    SComboBox hairs;
+    SComboBox eyes;
+    SComboBox mouths;
 
-        SGridLayout layout = new SGridLayout(1);
+    public SComponent createExample() {
+        final SLabel hair = new SLabel();
+        hair.setImageAbsBottom(true);
+        final SLabel eye = new SLabel();
+        eye.setImageAbsBottom(true);
+        final SLabel mouth = new SLabel();
+        mouth.setImageAbsBottom(true);
+
+
+        SGridLayout layout = new SGridLayout(faces.length+1);
         layout.setCellPadding(0);
         layout.setCellSpacing(0);
-        SPanel picture = new SPanel(layout);
-        final SLabel hair = new SLabel();
-        picture.add(hair);
-        final SLabel eye = new SLabel();
-        picture.add(eye);
-        final SLabel mouth = new SLabel();
-        picture.add(mouth);
-        form.add(picture, SBorderLayout.CENTER);
+        SPanel panel = new SPanel(layout);
 
-        
-        SPanel chooser = new SPanel(new SFlowDownLayout());
-        final SComboBox hairs = new SComboBox(faces);
-        hairs.addActionListener(new ActionListener() {
+        SEmptyBorder nameBorder = new SEmptyBorder(10,10,10,10);
+        // name labels
+        for ( int i=0; i<faces.length; i++ ) {
+            SLabel name = new SLabel(faces[i].name);
+            name.setBorder(nameBorder);
+            panel.add(name);
+        }
+        // empty Label for picture
+        panel.add(new SLabel());
+
+        SButtonGroup hairGroup = new SButtonGroup();
+        hairGroup.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    hair.setIcon(((Face)hairs.getSelectedItem()).hair);
+                    int index = Integer.parseInt(e.getActionCommand());
+                    hair.setIcon(faces[index].hair);
                 }
             });
-        hairs.setSelectedItem(getRandomFace());
-        chooser.add(hairs);
+        addButtons(panel, hairGroup, getRandomFaceIndex());
+        panel.add(hair);
 
-        final SComboBox eyes = new SComboBox(faces);
-        eyes.addActionListener(new ActionListener() {
+        SButtonGroup eyeGroup = new SButtonGroup();
+        eyeGroup.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    eye.setIcon(((Face)eyes.getSelectedItem()).eyes);
+                    int index = Integer.parseInt(e.getActionCommand());
+                    eye.setIcon(faces[index].eyes);
                 }
             });
-        eyes.setSelectedItem(getRandomFace());
-        chooser.add(eyes);
+        addButtons(panel, eyeGroup, getRandomFaceIndex());
+        panel.add(eye);
 
-        final SComboBox mouths = new SComboBox(faces);
-        mouths.addActionListener(new ActionListener() {
+        SButtonGroup mouthGroup = new SButtonGroup();
+        mouthGroup.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    mouth.setIcon(((Face)mouths.getSelectedItem()).mouth);
+                    int index = Integer.parseInt(e.getActionCommand());
+                    mouth.setIcon(faces[index].mouth);
                 }
             });
-        mouths.setSelectedItem(getRandomFace());
-        chooser.add(mouths);
-
-        form.add(chooser, SBorderLayout.WEST);
+        addButtons(panel, mouthGroup, getRandomFaceIndex());
+        panel.add(mouth);
 
 
-        form.add(new SButton("OK"), SBorderLayout.SOUTH);
-
-
-        return form;
+        return panel;
 
     }
 
+    void decorateButton(SRadioButton b) {
+        b.setIcon(nsel);
+        b.setSelectedIcon(sel);
+        b.setRolloverIcon(rollnsel);
+        b.setRolloverSelectedIcon(rollsel);
+        b.setPressedIcon(pressed);
+        b.setHorizontalAlignment(SRadioButton.CENTER);
+        b.setVerticalAlignment(SRadioButton.CENTER);
+    }
 
-    static Face getRandomFace() {
+    void addButtons(SContainer c, SButtonGroup group, int selectIndex) {
+        for ( int i=0; i<faces.length; i++ ) {
+            SRadioButton b = new SRadioButton();
+            decorateButton(b);
+            b.setActionCommand("" + i);
+            
+            group.add(b);
+            c.add(b);
+
+            if ( i==selectIndex ) {
+                b.setSelected(true);
+            }
+        }
+    }
+
+    static int getRandomFaceIndex() {
         synchronized ( random ) {
-            return faces[random.nextInt(faces.length)];
+            return random.nextInt(faces.length);
         }
     }
 
