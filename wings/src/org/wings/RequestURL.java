@@ -48,6 +48,18 @@ public class RequestURL extends SimpleURL
     }
 
     /**
+     * copy constructor.
+     */
+    private RequestURL(RequestURL other) {
+        this.baseParameters = other.baseParameters;
+        this.hasQuestMark = other.hasQuestMark;
+        this.epoch = other.epoch;
+        this.resource = other.resource;
+        StringBuffer params = other.parameters;
+        parameters = (params == null) ? params : new StringBuffer(params.toString());
+    }
+
+    /**
      * 
      */
     public RequestURL(String baseURL, String encodedBaseURL) { 
@@ -273,17 +285,8 @@ public class RequestURL extends SimpleURL
      * Deep copy.
      * @return object with cloned contents
      */
-    /*
-     * this should actually pass references to readily calculated
-     * caches. But seems, that this is currently disabled.
-     */
-    public Object clone()
-    {
-        try {
-            return super.clone();
-        } catch ( CloneNotSupportedException ex ) {
-            return new RequestURL();
-        }
+    public Object clone() {
+        return new RequestURL(this);
     }
 }
 
