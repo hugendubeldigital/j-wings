@@ -155,8 +155,9 @@ public class SDefaultTreeCellRenderer
         else
             handle.setIcon(leafIcon);
 
-        body.setText(text + value.toString());
-        handle.setToolTipText(value.toString());
+        String objText = org.wings.plaf.xhtml.Utils.escapeSpecialChars(value.toString());
+        body.setText(text + objText );
+        handle.setToolTipText(objText);
 
         return this;
     }
