@@ -81,6 +81,11 @@ public class SButton extends SAbstractButton
      * 
      */
     public void setSelected(boolean b) {
+        // set in group as selected
+        if ( getGroup()!=null ) {
+            getGroup().setSelected(this, b);
+        }
+
         // button is never in a selected state...
         super.setSelected(false);
     }
