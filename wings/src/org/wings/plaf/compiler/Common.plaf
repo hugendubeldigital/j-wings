@@ -1,11 +1,11 @@
-<%!
+<%
 /**
  * Prints an optional attribute. If the String value has a content 
  * (value != null && value.length > 0), the attrib is added otherwise 
  * it is left out
  */
 void printOptAttr(String attr, String value) {
-    if (value != null && value.length > 0) %> <%=attr%>="<%=value%>"<%!;
+    if (value != null && value.length > 0) %> <%=attr%>="<%=value%>"<%;
 }
 
 /**
@@ -22,6 +22,6 @@ void printOptAttr(String attr, int value) {
 void printStyle(Style style) {
     String value = null;
     if (style != null) value = style.getID();
-    if (value != null && value.length > 0) %> class="<%=value%>"<%!;
+    printOptAttr("class", value);
 }
 %>

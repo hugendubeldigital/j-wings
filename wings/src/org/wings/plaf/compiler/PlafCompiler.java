@@ -28,6 +28,7 @@ class PlafCompiler {
     final static int EXECUTE    = 1;
     final static int EXPRESSION = 2;
     final static int PROPEXPR   = 3;
+    final static int DIRECTIVE  = 4;
 
     public static void main(String argv[]) throws Exception {
 	if (argv.length == 0) {
@@ -36,7 +37,7 @@ class PlafCompiler {
 	}
 	for (int arg=0; arg < argv.length; ++arg) {
 	    System.err.println (argv[arg]);
-	    LineNumberReader input = new LineNumberReader(new BufferedReader(new FileReader(argv[arg])));
+	    IncludingReader input = new IncludingReader(argv[arg]);
 	    StringBuffer output = new StringBuffer();
 	    Map stringToName = new HashMap();
 	    Map nameToString = new HashMap();
@@ -46,12 +47,13 @@ class PlafCompiler {
 
 	    while (input.ready()) {
 		String html = consumeTextUntil(input, '<', '%').toString();
+		/*
 		if (input.getLineNumber() != lastReportedLine) {
 		    output.append ("\n\n// ---------- " + argv[arg] + ":" + 
 				   input.getLineNumber() + " ----\n");
 		    lastReportedLine = input.getLineNumber();
 		}
-		
+		*/
 		if (html.length() > 0) {
 		    if (!stringToName.containsKey(html)) {
 			String name = generateName(varPrefix, html);
@@ -85,6 +87,9 @@ class PlafCompiler {
 		case '?':
 		    codeType = PROPEXPR;           // property expression
 		    break;
+		case '@':
+		    codeType = DIRECTIVE;
+		    break;
 		default:
 		    codeType = EXECUTE;
 		    output.append((char) c);  // just give out the extra char
@@ -108,6 +113,13 @@ class PlafCompiler {
 			.append(capitalize(codeOut.toString()))
 			.append("());\n");
 		    break;
+		case DIRECTIVE: {
+		    AttributeParser p =new AttributeParser(codeOut.toString());
+		    String filename = p.getAttribute("file");
+		    output.append("// include file '" + filename + "'\n");
+		    input.open(filename);
+		    break;
+		}
 		}
 	    }
 	    
