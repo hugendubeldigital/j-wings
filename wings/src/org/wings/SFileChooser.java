@@ -303,14 +303,18 @@ public class SFileChooser
     }
 
     /**
-     * resets this FileChooser. This removes the temporary file.
+     * resets this FileChooser (no file selected). It did not remove an upload filter!.
+     * CAVEAT: If a file is selected it is
+     * NOT removed on the 
+     * local tmp disk space. If an uploaded file is not referenced any more, the
+     * garbage collectors finalize will remove the file.
      */
     public void reset() {
         if (currentFile != null) {
-            currentFile.cleanup();
             currentFile = null;
             fileId  = null;
             fileDir = null;
+            fileType = null;
         }
     }
 
