@@ -19,5 +19,29 @@
 #  -k		expansion mode		value: b, o, kkv, &c
 #
 #  and value is a single-quote delimited value.
-# For example:
-#*.gif -k 'b'
+
+*.gif   -k 'b' -m 'COPY'
+*.jpg   -k 'b' -m 'COPY'
+*.jpeg  -k 'b' -m 'COPY'
+*.mpeg  -k 'b' -m 'COPY'
+*.mp3   -k 'b' -m 'COPY'
+*.wav   -k 'b' -m 'COPY'
+*.mid   -k 'b' -m 'COPY'
+*.midi  -k 'b' -m 'COPY'
+*.png   -k 'b' -m 'COPY'
+*.tif   -k 'b' -m 'COPY'
+*.tiff  -k 'b' -m 'COPY'
+*.ico   -k 'b' -m 'COPY'
+*.dsk   -k 'b' -m 'COPY'
+*.prj   -k 'b' -m 'COPY'
+*.lib   -k 'b' -m 'COPY'
+*.dll   -k 'b' -m 'COPY'
+*.exe   -k 'b' -m 'COPY'
+*.rar   -k 'b' -m 'COPY'
+*.zip   -k 'b' -m 'COPY'
+*.gz    -k 'b' -m 'COPY'
+*.tar   -k 'b' -m 'COPY'
+*.tgz   -k 'b' -m 'COPY'
+*.class -k 'b' -m 'COPY'
+*.jar   -k 'b' -m 'COPY'
+
