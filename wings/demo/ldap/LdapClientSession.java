@@ -14,7 +14,7 @@
 
 package ldap;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
@@ -91,7 +91,7 @@ public class LdapClientSession
 
     public LdapClientSession(Session session) {
         super(session);
-        System.out.println("I`m starting now");  
+        System.out.println("I`m starting now");
     }
 
     public void postInit(ServletConfig config) {
@@ -99,118 +99,125 @@ public class LdapClientSession
     }
 
     void initGUI() {
-	tabbedPane = new STabbedPane();
-	getFrame().getContentPane().setLayout(new SFlowLayout());
-	getFrame().getContentPane().add(tabbedPane);
+        tabbedPane = new STabbedPane();
+        getFrame().getContentPane().setLayout(new SFlowLayout());
+        getFrame().getContentPane().add(tabbedPane);
 
-	settingsForm = new SForm(new SGridLayout(2));
-	tabbedPane.add(settingsForm, "Connection Settings");
+        settingsForm = new SForm(new SGridLayout(2));
+        tabbedPane.add(settingsForm, "Connection Settings");
 
-	SLabel descServer = new SLabel("sever:port");
-	final STextField server = new STextField("");
-	server.setColumns(30);
-	server.setText(((PropertyService)getSession()).getProperty("ldap.server.host"));
-	settingsForm.add(descServer);
-	settingsForm.add(server);
+        SLabel descServer = new SLabel("sever:port");
+        final STextField server = new STextField("");
+        server.setColumns(30);
+        server.setText(((PropertyService)getSession()).getProperty("ldap.server.host"));
+        settingsForm.add(descServer);
+        settingsForm.add(server);
 
-	SLabel descBaseDN = new SLabel("base DN");
-	final STextField baseDN = new STextField();
-	baseDN.setColumns(30);
-	baseDN.setText(((PropertyService)getSession()).getProperty("ldap.server.basedn"));
-	settingsForm.add(descBaseDN);
-	settingsForm.add(baseDN);
+        SLabel descBaseDN = new SLabel("base DN");
+        final STextField baseDN = new STextField();
+        baseDN.setColumns(30);
+        baseDN.setText(((PropertyService)getSession()).getProperty("ldap.server.basedn"));
+        settingsForm.add(descBaseDN);
+        settingsForm.add(baseDN);
 
-	SLabel descBindDN = new SLabel("bind DN");
-	final STextField bindDN= new STextField();
-	bindDN.setText(((PropertyService)getSession()).getProperty("ldap.server.binddn"));
-	bindDN.setColumns(30);
-	settingsForm.add(descBindDN);
-	settingsForm.add(bindDN);
+        SLabel descBindDN = new SLabel("bind DN");
+        final STextField bindDN= new STextField();
+        bindDN.setText(((PropertyService)getSession()).getProperty("ldap.server.binddn"));
+        bindDN.setColumns(30);
+        settingsForm.add(descBindDN);
+        settingsForm.add(bindDN);
 
-	SLabel descBindDNPassword = new SLabel("password");
-	final SPasswordField bindDNPassword= new SPasswordField();
-	bindDNPassword.setColumns(30);
-	settingsForm.add(descBindDNPassword);
-	settingsForm.add(bindDNPassword);
+        SLabel descBindDNPassword = new SLabel("password");
+        final SPasswordField bindDNPassword= new SPasswordField();
+        bindDNPassword.setColumns(30);
+        settingsForm.add(descBindDNPassword);
+        settingsForm.add(bindDNPassword);
 
-	final SButton connectButton = new SButton("connect");
-	final SButton disconnectButton = new SButton("disconnect");
-	disconnectButton.setVisible(false);
-	settingsForm.add(connectButton);
-	settingsForm.add(disconnectButton);
+        final SButton connectButton = new SButton("connect");
+        final SButton disconnectButton = new SButton("disconnect");
+        disconnectButton.setVisible(false);
+        settingsForm.add(connectButton);
+        settingsForm.add(disconnectButton);
 
-	mainPanel = new SForm(new SGridLayout(2));
-	mainPanel.setEncodingType("multipart/form-data");
-	tabbedPane.add(mainPanel, "Browser");
+        try
+        {
+            mainPanel = new SForm(new STemplateLayout(getClass().getResource("ldapclientlayout.html")));
+	    mainPanel.setEncodingType("multipart/form-data");
+        }
+        catch(Exception e)
+        {
+            System.err.println("LdapClientSession::initGUI() -> "+e);
+            System.exit(0);
+        }
 
-	createTreeModel(null);
-	createTree();
-	SBorderLayout layout = new SBorderLayout();
-	layout.setBorder(5);
-	//layout.addComponent(tree, SBorderLayout.NORTH );
-	//layout.addComponent(new SLabel(""), SBorderLayout.CENTER );
-	treePanel = new SPanel(layout);
-	treePanel.add(tree,SBorderLayout.NORTH);
-	treePanel.add(new SLabel("dummy"),SBorderLayout.CENTER);
+        mainPanel.setEncodingType("multipart/form-data");
+
+	Image img = Toolkit.getDefaultToolkit().createImage(getClass().getResource("images/LDAPworm.gif"));
+        mainPanel.add(new SImage( img ) ,"BOTTOMIMAGE");
+
+        tabbedPane.add(mainPanel, "Browser");
+
+        createTreeModel(null);
+        createTree();
 	
-	mainPanel.add(treePanel);
+        mainPanel.add(tree,"TREE");
+	
+	//attrPanel.setLayout(new SGridLayout(2));
+        
+        existentAttrsF = new SForm(new SGridLayout(2));
+        existentAttrsF.setEncodingType("multipart/form-data");
+        otherAttrsF = new SForm(new SFlowDownLayout());
 
-	attrPanel = new SForm();
-	attrPanel.setLayout(new SGridLayout(2));
-	attrPanel.setEncodingType("multipart/form-data");
-	
-	existentAttrsF = new SForm(new SGridLayout(2));
-	//existentAttrsF.setEncodingType("multipart/form-data");
-	otherAttrsF = new SForm(new SFlowDownLayout());
-	
-	select = new SButton("select");
-	select.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    int i = 0;
-		    ArrayList remElements = new ArrayList();
-		    while (obj!=null && i< obj.size()) {
-			System.out.println(obj.get(i));
-			String o = (String)obj.get(i);
-			remElements.add(o);
-			//SLabel attrLabel = new SLabel(o);
-			STextField attrField = new STextField("");
-			attrField.setColumns(columns);
-			//componentTable.put(attrLabel,attrField);
-			componentTable.put(o,attrField);
-			//textHashtable.put(attrLabel,attrField.getText());
-			textHashtable.put(o,attrField.getText());
-			i++;
-		    }
-		    existentAttrsF.removeAll();
-		    Enumeration compEnum;
-		    compEnum = componentTable.keys();
-		    
-		    addEditableComponents(componentTable);
-		    
-		    System.out.println("groesse  " + remElements.size());
-		    
-		    for (int l = 0;l<remElements.size();l++) {
-			int j = obj.indexOf(remElements.get(l));
-			System.out.println("ausgesucht  " + remElements.get(l));
-			objectAttributes.remove(j);
-		    }
-		    otherAttrsL.setListData(objectAttributes);
+        select = new SButton("select");
+        select.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int i = 0;
+                ArrayList remElements = new ArrayList();
+                while (obj!=null && i< obj.size()) {
+                System.out.println(obj.get(i));
+                String o = (String)obj.get(i);
+                
+		remElements.add(o);
+		SComponent attrField;
+		if (!((String)o).equals("jpegPhoto")) {
+		    attrField = new STextField("");
+		    ((STextField)attrField).setColumns(columns);
+		}
+		else {
+		    attrField = new SLabel("");
 		}
 		
-	    });
-	//otherAttrsF.add(select);
-	attrPanel.add(existentAttrsF);
-	attrPanel.add(otherAttrsF);
+		componentTable.put(o,attrField);
+		i++;
+                }
+                existentAttrsF.removeAll();
+                Enumeration compEnum;
+                compEnum = componentTable.keys();
+
+                addEditableComponents(componentTable);
+
+                System.out.println("groesse  " + remElements.size());
+
+                for (int l = 0;l<remElements.size();l++) {
+                int j = obj.indexOf(remElements.get(l));
+                System.out.println("ausgesucht  " + remElements.get(l));
+                objectAttributes.remove(j);
+                }
+                otherAttrsL.setListData(objectAttributes);
+            }
+
+        });
 	
-	mainPanel.add(attrPanel);
+        mainPanel.add(existentAttrsF,"OBJECTATTRIBUTES");
+        mainPanel.add(otherAttrsF,"ATTRIBUTELIST");
 	
-	commitButton = new SButton("Commit");
-	commitButton.addActionListener(this);
-		
-	addPanel = new AddObjectsPanel();
-	tabbedPane.add(addPanel, "Add new Object");
+        commitButton = new SButton("Commit");
+        commitButton.addActionListener(this);
 	
-	connectButton.addActionListener(new ActionListener() {
+        addPanel = new AddObjectsPanel();
+        tabbedPane.add(addPanel, "Add new Object");
+	
+        connectButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		    worker = new LdapWorker(server.getText(),
 					    baseDN.getText(),
@@ -227,7 +234,7 @@ public class LdapClientSession
 			connectButton.setVisible(true);
 			disconnectButton.setVisible(false);
 		    }
-
+		    
 		    if (success) {
 			setLdapWorker(worker);
 			createTreeModel(worker);
@@ -237,27 +244,27 @@ public class LdapClientSession
 		    }
 		}
 	    });
-
-	disconnectButton.addActionListener(new ActionListener() {
+	
+        disconnectButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		    createTreeModel(null);
 		    tree.setModel(treeModel);
-		    attrPanel.removeAll();
-
-		    bindDNPassword.setText("");
-
-		    disconnectButton.setVisible(false);
-		    connectButton.setVisible(true);
+                attrPanel.removeAll();
+		
+                bindDNPassword.setText("");
+		
+                disconnectButton.setVisible(false);
+                connectButton.setVisible(true);
 		}
 	    });
     }
+
     
-
-
+    
     private LdapWorker getLdapWorker() {
 	return worker;
     }
-
+    
     private void setLdapWorker(LdapWorker c) {
 	this.worker = c;
     }
@@ -273,7 +280,7 @@ public class LdapClientSession
     }
 
     private void createTree() {
-	tree = new STree(treeModel);	
+	tree = new STree(treeModel);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(this);
     }
@@ -284,7 +291,7 @@ public class LdapClientSession
 	String oValue;
 
 	System.out.println(">> commit <<");
-	
+
 	LdapWorker worker = getLdapWorker();
 	BasicAttributes attributes = new BasicAttributes();
 	Enumeration enumer = componentTable.keys();
@@ -294,36 +301,36 @@ public class LdapClientSession
 
 	    oldValue = (String)(textHashtable.get(key));
 	    System.out.println("fuer " + key + " old value " +oldValue);
-	    
+
 	    if (oldValue != null )
 		newValue = ((STextField)componentTable.get(key)).getText();
-	    
+
 	    System.out.println("new value " +newValue);
 	    System.out.println("old value " +oldValue);
-	    
+
 	    if (oldValue!=null) {
 		if (!oldValue.equals(newValue)) {
 		    BasicAttribute attr = new BasicAttribute((String)key);
 		    StringTokenizer st = new StringTokenizer(newValue,",");
 		    String atV;
 		    boolean b = (st !=null && st.hasMoreTokens());
-		    if (b) 
-			while (st !=null && st.hasMoreTokens()) 
+		    if (b)
+			while (st !=null && st.hasMoreTokens())
 			    attr.add(st.nextToken());
 		    else attr.add(newValue);
 		    attributes.put(attr);
 		}
 	    }
 	}
-	
-	if (attributes !=null && attributes.size() > 0) 
+
+	if (attributes !=null && attributes.size() > 0)
 	    worker.modifyAttributes(dn,attributes);
-	
+
 	if (chooser.getFilename()!="" && chooser.getFilename()!=null) {
 	    String attribut = "jpegPhoto";
 	    BasicAttributes attrs = new BasicAttributes();
 	    BasicAttribute attr = new BasicAttribute("jpegPhoto");
-	    
+
 	    try {
 		fis = new FileInputStream("/home/nengels/jpg/" + chooser.getFilename());
 		System.out.println("dir" + chooser.getFiledir());
@@ -337,7 +344,6 @@ public class LdapClientSession
 		    fis.close();
 		    componentTable.remove("jpegPhoto");
 		    componentTable.put("jpegPhoto", new SLabel(new ImageIcon("/home/nengels/jpg/" + chooser.getFilename())));
-		    //existentAttrsF.removeAll();
 		    addEditableComponents(componentTable);
 		    
 		    
@@ -347,18 +353,18 @@ public class LdapClientSession
 	    }
 	    catch(FileNotFoundException ex){
 	    }
-	    	    
+	    
 	    attr.add(b);
 	    attrs.put(attr);
-	    if (attrs.size() > 0) 
+	    if (attrs.size() > 0)
 		worker.modifyAttributes(dn,attrs);
-	    
+
 	}
-	
-	
+
+
     }
-    
-    
+
+
     private void setDN(String dn) {
 	this.dn = dn;
     }
@@ -387,7 +393,7 @@ public class LdapClientSession
 
 	componentTable.clear();
 	textHashtable.clear();
-	
+
 	existentAttrsF.removeAll();
 
 	LdapWorker worker = getLdapWorker();
@@ -400,11 +406,11 @@ public class LdapClientSession
 		String label = attr.getID();
 		String values = "";
 		NamingEnumeration aV = attr.getAll();
-		
+
 		Object cl = null;
-		while (aV!=null && aV.hasMore()) 
+		while (aV!=null && aV.hasMore())
 		    cl = aV.next();
-		
+
 		if (cl!=null) {
 		    if (cl.getClass().getName().equals("java.lang.String")) {
 			NamingEnumeration aValues = attr.getAll();
@@ -417,30 +423,27 @@ public class LdapClientSession
 				values = (String)o;
 			    }
 			}
-			//SLabel attrLabel = new SLabel(label);
 			STextField attrField = new STextField((String)values);
 			attrField.setColumns(columns);
 			componentTable.put(label,attrField);
 			textHashtable.put(label,values);
-			
+
 		    }
-		    
+
 		    if (cl.getClass().getName().equals("[B")) {
 			NamingEnumeration aValues = attr.getAll();
 			Object o = null;
 			while (aValues!=null && aValues.hasMore()) {
 			     o = aValues.next();
 			}
-			
+
 			byte hallo [] = (byte [])o;
-			if (label.equals("jpegPhoto")) { 
+			if (label.equals("jpegPhoto")) {
 			    SLabel attrL = new SLabel(label);
 			    SLabel photo = new SLabel(new ImageIcon((byte [])o));
-			    //SButton photo = new SButton(new ImageIcon((byte [])i));
-			    //SButton photo = new SButton(new ImageIcon("/home/nengels/Nathan.jpg"));
 			    componentTable.put(label,photo);
 			}
-			if (label.equals("userPassword")) { 
+			if (label.equals("userPassword")) {
 			    SLabel attrLa = new SLabel(label);
 			    STextField attrF = new SPasswordField();
 			    attrF.setColumns(35);
@@ -457,41 +460,33 @@ public class LdapClientSession
 	    Enumeration enum = componentTable.keys();
 	    while (enum != null && enum.hasMoreElements()) {
 		String keyString = (String)enum.nextElement();
-		if (objectAttributes.contains((String)keyString)) 
+		if (objectAttributes.contains((String)keyString))
 		    objectAttributes.remove((String)keyString);
 	    }
-	
-	    
-	    
+
 	    otherAttrsL = new SList();
 	    otherAttrsL.setSelectionMode(MULTIPLE_SELECTION);
 	    otherAttrsL.addListSelectionListener(this);
 	    otherAttrsL.setVisibleRowCount(12);
-	    
-	    
-	    
+
 	    Vector v = new Vector();
 	    Enumeration er  = objectAttributes.elements();
 	    while (er!=null && er.hasMoreElements()) {
 		Object ob = er.nextElement();
 		v.add((String)ob);
-	    }  
+	    }
 	    otherAttrsL.setListData(objectAttributes);
 	    otherAttrsF.removeAll();
 	    otherAttrsF.add(otherAttrsL);
 	    otherAttrsF.add(select);
-	    
-	    
 	}
 	catch (NamingException ex) {
 	    System.out.println(ex);
 	}
-	
-		
 	addEditableComponents(componentTable);
     }
 
-    
+
     
     private void addEditableComponents(Hashtable comp) {
 	existentAttrsF.removeAll();
@@ -499,14 +494,13 @@ public class LdapClientSession
 	compEnum = comp.keys();
 	while (compEnum!=null && compEnum.hasMoreElements()) {
 	    Object key = compEnum.nextElement();
-		existentAttrsF.add(new SLabel((String)key));
+	    existentAttrsF.add(new SLabel((String)key));
 		existentAttrsF.add((SComponent)comp.get(key));
 		if (((String)key).equals("jpegPhoto")) {
 		    SLabel label = new SLabel("Select jpegPhoto...");
 		    existentAttrsF.add(label);
 		    chooser = new SFileChooser();
-		    existentAttrsF.add(chooser);  
-		    
+		    existentAttrsF.add(chooser);
 		}
 	}
 	existentAttrsF.add(commitButton);

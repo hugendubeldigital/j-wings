@@ -119,12 +119,12 @@ public class LdapWorker
 
 	    while (answer.hasMore()) {
 		SearchResult sr = (SearchResult)answer.next();
-		System.out.println(">>>" + sr.getName());
+		//System.out.println(">>>" + sr.getName());
 		Attributes attribs = sr.getAttributes();
 		for (NamingEnumeration ae = attribs.getAll();
 		     ae.hasMore();) {
 		    attr = (Attribute)ae.next();
-		    System.out.println("attribute: " + attr.getID());
+		    //System.out.println("attribute: " + attr.getID());
 		}
 
 		//ab da
@@ -147,7 +147,7 @@ public class LdapWorker
 	try {
 	    while (ne!=null && ne.hasMore()) {
 	    String oString = ne.next().toString();
-	    System.out.println(oString);
+	    //System.out.println(oString);
 	    StringTokenizer sto = new StringTokenizer(oString,new String("'"));
 	    String obj = sto.nextToken();
 	    obj = sto.nextToken();
@@ -162,10 +162,10 @@ public class LdapWorker
 		sup = suptok.nextToken();
 	    }
 	    
-	    System.out.println("rest" + rest);
+	    //System.out.println("rest" + rest);
 	    if (sup!=null && !sup.equals("top")) obj = obj + "TOP" +"(" + sup + ")";
 		
-	    System.out.println(obj);	    
+	    //System.out.println(obj);	    
 	    objArray.add(obj);
 	    	    
 	}
@@ -251,7 +251,7 @@ public class LdapWorker
 		SearchResult si = (SearchResult)enum.next(); 
 		Attributes ocAttrs = si.getAttributes();
 		Attribute name = ocAttrs.get("NAME");
-		System.out.println("NAME of oc is " + name);
+		//System.out.println("NAME of oc is " + name);
 		Attribute must = ocAttrs.get("MUST");
 		
 
@@ -259,7 +259,7 @@ public class LdapWorker
 		    NamingEnumeration mt = must.getAll();
 		    while (mt!= null && mt.hasMore()) {
 			myNames.addElement((String)mt.next());
-			System.out.println("must" + myNames);
+			//System.out.println("must" + myNames);
 		    }
 		}
 		Attribute may = ocAttrs.get("MAY");
@@ -268,7 +268,7 @@ public class LdapWorker
 		    NamingEnumeration my = may.getAll();
 		    while (my !=null && my.hasMoreElements()) {
 			myNames.addElement((String)my.next());
-			System.out.println("may" + myNames);
+			//System.out.println("may" + myNames);
 		    }
 		}
 	}
@@ -426,6 +426,7 @@ public class LdapWorker
 	    attrValues = new ArrayList();
 	    Attribute oc = new BasicAttribute("objectclass");
 	    for (int i = 0; i < objectClasses.size(); i++) {
+		System.out.println("i  " + (String)objectClasses.get(i));
 		attrValues.add(objectClasses.get(i));
 		oc.add(objectClasses.get(i));
 	    }
@@ -513,6 +514,7 @@ public class LdapWorker
 	ctx.createSubcontext(dn,attrs);
 	}
 	catch (NamingException e){
+	    System.out.println("so ein mist");
 	}
     }
     

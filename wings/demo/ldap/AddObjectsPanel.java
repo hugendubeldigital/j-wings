@@ -34,6 +34,7 @@ public class AddObjectsPanel
     SButton suspend = new SButton("suspend");
     SForm tisconUserForm;
     SForm tisconUserOClForm;
+    private final int columns = 40;
     
 	public AddObjectsPanel() {
 	setLayout(new SFlowDownLayout());
@@ -56,6 +57,8 @@ public class AddObjectsPanel
 	tisconOClasses = new SButton("tisconUserAllAttributes");
 	tisconOClasses.addActionListener(this);
 	submit.addActionListener(this);
+	
+	objForm.setLayout(new SFlowDownLayout());
 	objForm.add(objLabel);
 	objForm.add(objList) ;
 	objForm.add(submit) ;
@@ -94,7 +97,7 @@ public class AddObjectsPanel
 	attrForm.setLayout(new SGridLayout(0,2));
 	SLabel dnLabel = new SLabel("dn");
 	dnText = new STextField("");
-	dnText.setColumns(35);
+	dnText.setColumns(columns);
 	STextField val;
 	String tval;
 
@@ -119,7 +122,7 @@ public class AddObjectsPanel
 		}
 		else
 		    val = new STextField("");
-		val.setColumns(35);
+		val.setColumns(columns);
 		attrForm.add(label);
 		attrForm.add(val);
 		comp.put(label,val);
@@ -129,9 +132,6 @@ public class AddObjectsPanel
 	addEntry.addActionListener(this);
 	attrForm.add(addEntry);
 	attrForm.add(suspend);
-	
-	
-	
     }
 
     private void fillAttributePanel(ArrayList selectedObjects) {
@@ -146,6 +146,7 @@ public class AddObjectsPanel
 	SLabel dnLabel = new SLabel("dn");
 	
 	dnText = new STextField("");
+	dnText.setColumns(columns);
 	attrForm.add(dnLabel);
 	attrForm.add(dnText);
 	    
@@ -181,7 +182,7 @@ public class AddObjectsPanel
 		STextField tf = new STextField(atv);
 		System.out.println("text field " + atv);
 		attrForm.add(al);
-		tf.setColumns(33);
+		tf.setColumns(columns);
 		attrForm.add(tf);
 		comp.put(al,tf);
 	    }
@@ -194,28 +195,66 @@ public class AddObjectsPanel
 	}
     }
     
+    private ArrayList findParent(ArrayList list, String o) {
+	boolean parent = true;
+	String arg = null;
+	ArrayList objects = worker.getObjects();
+	
+	int index = o.indexOf("TOP");
+	    	    
+	if (index > 0) {
+	    String s = o.substring(0,index);
+	    
+	    if (!(list.contains(s)))
+		list.add(o.substring(0,index));
+	    
+	    int k = o.indexOf("(");
+	    int l = o.indexOf(")");
+	    
+	    String finalS = o.substring(k+1,l);
+	    int z = 0;
+	    
+	    boolean notEmpty = true;
+	    
+	    while (z < objects.size() && notEmpty) {
+		arg = (String)objects.get(z);
+		if (arg.startsWith(finalS)) {
+		    notEmpty = false;
+		}
+		z++;
+	    }
+	    list = findParent(list,arg);
+	}
+	else {
+	    if (!(list.contains(o)))
+		list.add(o);
+	}
+	return list;
+    }
+    
     public void actionPerformed(ActionEvent evt) {
 	
 	if ((SButton)(evt.getSource()) == submit) {
-	    System.out.println("submit");
+	    ArrayList list = new ArrayList();
+	    ArrayList old = new ArrayList();
 	    int i = 0;
+	    //System.out.println
 	    while (obj!=null && i< obj.size()) {
-		System.out.println(obj.get(i));
+		System.out.println("***" + obj.get(i));
 		String o = (String)obj.get(i);
-		
-		int index = o.indexOf("TOP");
-		if (index > 0)
-		    obj.set(i,o.substring(0,index));
+		list = findParent(old,o);
+		old = list;
 		i++;
-	}
+	    }
+	    //System.out.println
 	    
-	    fillAttributePanel(obj);
+	    fillAttributePanel(list);
 	    objForm.setVisible(false);
 	    tisconUserForm.setVisible(false);
 	    tisconUserOClForm.setVisible(false);
 	    attrForm.setVisible(true);
-    }
-
+	}
+	
 	if ((SButton)(evt.getSource()) == tisconUser) {
 	    fillTisconPanel();
 	    objForm.setVisible(false);
@@ -224,7 +263,7 @@ public class AddObjectsPanel
 	    attrForm.setVisible(true);
 	}
 	
-
+	
 	if ((SButton)(evt.getSource()) == suspend) {
 	    
 	    objForm.setVisible(true);
@@ -325,15 +364,18 @@ public class AddObjectsPanel
 
 
     private void setSelectedObjects(Object [] elements) {
-	obj.clear();
+	obj = new ArrayList();
 	for (int i = 0; i < elements.length; i++) {
 	    obj.add(elements[i]);
+	    System.out.println("elements    " +elements[i] );
 	}
     }
 
     public void valueChanged(ListSelectionEvent evt) {
 	SList source = (SList)evt.getSource();
+	//Object [] elements = new Object [];
 	Object [] elements = source.getSelectedValues();
+	System.out.println("size is            " + elements.length);
 	System.out.println("valueChanged ...");
 	setSelectedObjects(elements);
     }
