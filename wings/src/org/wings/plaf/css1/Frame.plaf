@@ -57,7 +57,7 @@
 
     SFrame frame = (SFrame)component;
     try {
-        String language = "en"; // TODO: ???
+        String language = SessionManager.getSession().getLocale().getLanguage(); 
         String title = frame.getTitle();
         List headers = frame.headers();
         String encoding = org.wings.util.LocaleCharSet.getInstance()
