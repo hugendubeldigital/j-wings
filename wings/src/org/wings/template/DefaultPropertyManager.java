@@ -25,10 +25,13 @@ public class DefaultPropertyManager implements PropertyManager {
     public static final DefaultPropertyValueConverter 
 	DEFAULT_PROPERTY_VALUE_CONVERTER = new DefaultPropertyValueConverter();
 
+    private boolean scriptEnabled = false;
+
     /**
      * 
      */
     public DefaultPropertyManager() {
+
     }
 
     protected Interpreter createInterpreter() {
@@ -36,7 +39,7 @@ public class DefaultPropertyManager implements PropertyManager {
     }
 
     public void setProperty(SComponent comp, String name, String value) {
-	if ( "SCRIPT".equals(name) ) {
+	if ( scriptEnabled && "SCRIPT".equals(name) ) {
 	    Interpreter interpreter = createInterpreter();
 
 	    try {
@@ -110,6 +113,9 @@ public class DefaultPropertyManager implements PropertyManager {
 
 /*
    $Log$
+   Revision 1.3  2002/10/26 11:59:35  ahaaf
+   o deactivate scripting per default
+
    Revision 1.2  2002/09/04 14:26:35  ahaaf
    o SComponent now have a EventListenerList (not allocated by default)
    o every component which manages listeners uses now the SComponent EventListener
