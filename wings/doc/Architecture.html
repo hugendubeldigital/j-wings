@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+  <title>wingS Architecture</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR" content="Quanta Plus">
+</head>
+<body>
+<h1>wingS Architecture</h1>
+
+<h2>WingServlet and SessionServlet</h2>
+<p>
+The <code>org.wings.servlet.WingServlet</code> is the underlying servlet, that
+is derived from <code>javax.servlet.http.HttpServlet</code>. Its responsibility
+is the creation of new SessionServlets, delegation to existing SessionServlets
+and serving global / common resources. The
+<code>org.wings.servlet.SessionServlet</code> represents a user session. It
+references the top level frame and serves dynamic and static resources. A
+minimal application consists of two classes. One is derived from WingServlet,
+the other from SessionServlet.
+</p>
+<p>
+The WingServlet receives all HttpRequests. A request consists of up to three
+parts:
+<ul>
+  <li>session identifier</li>
+  <li>request parameters</li>
+  <li>resource identifier</li>
+</ul>
+.. and divides into two phases:
+<ul>
+  <li>processing events (if request parameters are contained)</li>
+  <li>delivering a resource (identified by the pathinfo)</li>
+</ul>
+
+<h2>Request Handling</h2>
+If the request contains a session identifier, it will be forwarded to the
+corresponding SessionServlet. If there's no session context, it might be a
+request for a global resource, that can be handled by the
+<code>org.wings.externalizer.SystemExternalizeManager</code> (see below for more
+info on externalizers). If both is not the case, a new SessionServlet and thus a
+new user session will be created.
+</p>
+<p>
+When an existing SessionServlet receives a request, it lets the
+<code>org.wings.SRequestDispatcher</code> dispatch the request parameters -
+which can be considered as low level events - to the particular components. The
+components will fire high level events (as we know them from Swing), which will
+most probably involve changes on the overall session state. The process of event
+dispatching can be compared with the event dispatching thread of Swing. When a
+new SessionServlet is created, its init method is called. The init method
+normally contains code, that loads configuration and sets up the GUI.
+</p>
+<table border="1">
+  <tr>
+    <th rowspan="2"></th>
+    <th colspan="3">session identifier present</th>
+    <th colspan="3">no session identifier</th>
+  </tr>
+  <tr>
+    <th>global resource id</th>
+    <th>local resource id</th>
+    <th>no resource id</th>
+    <th>global resource id</th>
+    <th>local resource id</th>
+    <th>no resource id</th>
+  </tr>
+  <tr>
+    <th>request</th>
+    <td colspan="3">
+        <li>dispatch events</li>
+        <li>invalidate dynamic resources</li>
+    </td>
+     <td>-</td>     <td colspan="2">create new session</td>
+  </tr>
+  <tr>
+    <th>response</th>
+    <td align="center">global resource</td>
+    <td align="center">local resource</td>
+    <td align="center">toplevel frame</td>
+    <td align="center">global resource</td>
+    <td colspan="2" align="center">toplevel frame</td>
+  </tr>
+</table>
+
+<h2>Event Dispatching</h2>
+<p>
+The wingS event dispatching mechanism is very similar to Swing's event
+dispatching thread. Every component has a unique identifier. Interactive
+components, like STextField, etc. use this id as part of the name attribute:
+</p>
+<pre>
+   &lt;input type="text" name="epoch_id" value="some text"/&gt;
+</pre>
+<p>
+or as the name of a GET parameter:
+</p>
+<pre>
+   &lt;a href="?epoch_id=_id"&gt;button&lt;/a&gt;
+</pre>
+<p>
+It is obvious, that in both cases, the id will be contained as the name of a
+request parameter. The parameters are delivered to the corresponding components
+by the <code>org.wings.SRequestDispatcher</code>. It's the component's job to
+react on the low level event. The text field will store the parameter value
+as its text property and fire TextEvents. The button will ignore the parameter
+value and fire ActionEvents.
+</p>
+<p>
+In order to make sure, that outdatet events - originating from cached html
+documents (browser's back / reload button) will not be processed, each event
+name contains an additional <code>epoch</code>. The epoch of a frame is altered
+on every state change. Whenever a component's state changes, the containing
+frame will be invalidated and thus its epoch counter will be incremented. The
+dispatcher checks every event for up-to-dateness before delivering it. Outdated
+events are ignored.
+</p>
+</body>
+</html>
