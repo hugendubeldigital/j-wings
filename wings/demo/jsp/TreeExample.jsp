@@ -3,6 +3,9 @@ import="wingset.*,org.wings.*,org.wings.style.*,org.wings.servlet.*,org.wings.ex
 %>
 
 <%!
+	 
+    boolean initialized = false;
+
     WingServlet servlet = new WingServlet() {
         protected void initExternalizer(ServletConfig config) {
           // we want to use the servlet externalizer
@@ -24,7 +27,10 @@ import="wingset.*,org.wings.*,org.wings.style.*,org.wings.servlet.*,org.wings.ex
 %>
 <%
 
-  servlet.init(config);
+  if ( !initialized ) {
+    servlet.init(config);
+    initialized = true;
+  } 
 
   servlet.doPost(request, response);
 
