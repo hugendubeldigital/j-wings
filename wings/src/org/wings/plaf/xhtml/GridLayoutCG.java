@@ -100,7 +100,7 @@ public class GridLayoutCG
             else {
                 d.print("<td");
                 Utils.printTableCellAlignment(d, c);
-                d.print(">\n");
+                d.print(">");
             }
 
             c.write(d);

@@ -90,6 +90,7 @@ public class WingSetSession
         tab.add(new ButtonExample(), "Button");
         tab.add(new CheckBoxExample(), "CheckBox");
         tab.add(new RadioButtonExample(), "RadioButton");
+        tab.add(new Faces(), "Faces");
         tab.add(new FileChooserExample(), "FileChooser");
         tab.add(new ScrollPaneExample(), "ScrollPane");
         //tab.add(new LayoutExample(), "Simple Layout");
