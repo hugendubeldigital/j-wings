@@ -26,6 +26,5 @@
     if (style != null && attr != null) {
         %></span><%
     }
-%>
-</write>
+%></write>
 </template>
