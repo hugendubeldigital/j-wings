@@ -28,6 +28,7 @@ import org.wings.io.Device;
 
 /**
  * TODO: documentation
+ * A DesktopPane holds SInternalFrames.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
@@ -177,12 +178,17 @@ public class SDesktopPane
             container = c;
         }
 
+        // ** FIXME: move to plaf ..
         public void write(Device d)
             throws IOException
         {
             d.append("<table cellpadding=\"0\" cellspacing=\"7\" border=\"0\" width=\"100%\">\n");
 
             int componentCount = getComponentCount();
+            // hack ? einfach nur das erste maximized ausgeben, oder was ?
+            // das funktioniert nur unter der Annhame, dass der User nicht
+            // zwei maximieren kann. Vielleicht sollte das ueber eine
+            // button-group oder so gemacht werden ..
             for (int i=0; i<componentCount; i++) {
                 SInternalFrame frame = (SInternalFrame)getComponent(i);
                 if (!frame.isClosed() && frame.isMaximized()) {
