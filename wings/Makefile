@@ -23,7 +23,7 @@ jar: dummy
 
 demojar: dummy
 	rm wings-demo.jar ; cd demo ; \
-	${JAVA_HOME}/bin/jar cvf ../wings-demo.jar `find . -name "*.class" -o -name "*.gif" -o -name "*.css"`
+	${JAVA_HOME}/bin/jar cvf ../wings-demo.jar `find . -name "*.class" -o -name "*.gif" -o -name "*.css" -o -name "*.thtml"`
 
 demo: dummy
 	rm -rf demo/tomcat ;\
