@@ -98,7 +98,7 @@ public interface SBorder
     /**
      * Notification from the CGFactory that the L&F has changed.
      *
-     * @see SComponent#updateCG
+     * @see org.wings.SComponent#updateCG
      */
     void updateCG();
 

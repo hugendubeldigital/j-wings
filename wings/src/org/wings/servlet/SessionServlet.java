@@ -448,7 +448,8 @@ public abstract class SessionServlet
 
 
     /**
-     * this method references to {@link doGet}
+     * this method references to 
+     * {@link doGet(HttpServletRequest, HttpServletResponse)}
      */
     public final void doPost(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException

@@ -25,9 +25,9 @@ import org.wings.RequestURL;
  *
  * The {@link ExternalizeManager} uses a Externalizer to deliver a 
  * java object to a client over a http connection. An Externalizer must be 
- * {@link ExternalizeManager.addExternalizer registered} at the
+ * {@link ExternalizeManager#addExternalizer(Externalizer) registered} at the
  * {@link ExternalizeManager} of the actual 
- * {@link org.wings.session.Session Session} to work seamlesly.
+ * {@link org.wings.session.Session Session} to work seamlessly.
  * 
  * Each Externalizer supports one or more classes it is able to externalize.
  *

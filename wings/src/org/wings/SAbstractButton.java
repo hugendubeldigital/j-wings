@@ -132,7 +132,7 @@ public abstract class SAbstractButton
     /**
      * Set display mode (href or form-component).
      * An AbstractButton can appear as HTML-Form-Button or as 
-     * HTML-HREF. If button is inside a {@link org.wings.SFrom} the default
+     * HTML-HREF. If button is inside a {@link org.wings.SForm} the default
      * is displaying it as html form button.
      * Setting <i>showAsFormComponent</i> to <i>false</i> will
      * force displaying as href even if button is inside 

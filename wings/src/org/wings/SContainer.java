@@ -144,7 +144,7 @@ public class SContainer
      * following occurs:
      * a) A ContainerListener object is registered via addContainerListener()
      * b) Container events are enabled via enableEvents()
-     * @see Component#enableEvents
+     * @see SComponent#enableEvents
      * @param e the container event
      */
     protected void processContainerEvent(SContainerEvent e) {

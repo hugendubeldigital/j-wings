@@ -92,7 +92,8 @@ public interface Session
     public String createUniqueId();
 
     /**
-     * The maximal length of data that is accepted in one POST request.
+     * The maximal length of data that is accepted in one POST request in
+     * kilobytes.
      * Data can be this big, if your application provides a capability
      * to upload a file (SFileChooser). This constant limits the maximum
      * size that is accepted to avoid denial of service attacks.

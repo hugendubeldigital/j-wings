@@ -255,13 +255,11 @@ public abstract class SComponent
      * <p><ul>
      * <li>A <code>SComponentListener</code> object is registered
      * via <code>addComponentListener</code>.
-     * <li>Component events are enabled via <code>enableEvents</code>.
      * </ul>
      * @param       e the component event.
      * @see         org.wings.event.SComponentEvent
      * @see         org.wings.event.SComponentListener
      * @see         org.wings.SComponent#addComponentListener
-     * @see         org.wings.SComponent#enableEvents
      */
     protected void processComponentEvent(SComponentListener listener, SComponentEvent e)
     {

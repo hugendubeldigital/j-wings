@@ -142,7 +142,21 @@ public class SForm
     }
 
     /**
-     * TODO: documentation
+     * Add a listener for Form events. A Form event is always triggered, when
+     * a form has been submitted. Usually, this happens, whenever a submit
+     * button is pressed or some other mechanism triggered the posting of the
+     * form. Other mechanisms are
+     * <ul>
+     * <li> Java Script submit() event</li>
+     * <li> If a form contains a single text input, then many browsers
+     *      submit the form, if the user presses RETURN in this field. In that
+     *      case, you won't get any event at the submit button, but you will
+     *      get a form event.
+     * <li> The {@link SFileChooser} will trigger a form event, if the file 
+     *      size exceeded the allowed size. In that case, even if the submit
+     *      button has been pressed, no submit-button event will be triggered.
+     *      (For details, see {@link SFileChooser}).
+     * </ul>
      *
      * @param listener
      */
@@ -151,7 +165,8 @@ public class SForm
     }
 
     /**
-     * TODO: documentation
+     * Remove a form action listener, that has been added in
+     * {@link #addActionListener(ActionListener)}
      *
      * @param listener
      */
@@ -225,7 +240,9 @@ public class SForm
 
 
     /**
-     * TODO: documentation
+     * Set, whether this form is to be transmitted via <code>POST</code> (true)
+     * or <code>GET</code> (false). The default, and this is what you 
+     * usually want, is <code>POST</code>.
      *
      * @param postMethod
      */
@@ -234,7 +251,8 @@ public class SForm
     }
 
     /**
-     * TODO: documentation
+     * Returns, whether this form is transmitted via <code>POST</code> (true)
+     * or <code>GET</code> (false).
      *
      * @return
      */
@@ -243,18 +261,32 @@ public class SForm
     }
 
     /**
-     * TODO: documentation
+     * Set the encoding of this form. This actually is an HTML interna
+     * that bubbles up here. By default, the encoding type of any HTML-form
+     * is <code>application/x-www-form-urlencoded</code>, and as such, needn't
+     * be explicitly set with this setter. However, if you've included a
+     * file upload element (as represented by {@link SFileChooser}) in your
+     * form, this must be set to <code>multipart/form-data</code>, since only
+     * then, files are transmitted correctly. In 'normal' forms without
+     * file upload, it is not necessary to set it to
+     * <code>multipart/form-data</code>; actually it enlarges the data to
+     * be transmitted, so you probably don't want to do this, then.
      *
-     * @param type
+     * @param type the encoding type; one of <code>multipart/form-data</code>,
+     *             <code>application/x-www-form-urlencoded</code>.
      */
     public void setEncodingType(String type) {
         encType = type;
     }
 
     /**
-     * TODO: documentation
+     * Get the current encoding type, as set with 
+     * {@link #setEncodingType(String)}
      *
-     * @return
+     * @return string containting the encoding type. This is something like
+     *         <code>multipart/form-data</code>, 
+     *         <code>application/x-www-form-urlencoded</code> .. or 'null'
+     *         by default.
      */
     public String getEncodingType() {
         return encType;

@@ -32,8 +32,8 @@ package org.wings.event;
  *
  * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
  * @version $Revision$, $Date$
- * @see org.wings.event.ComponentEvent
- * @see org.wings.event.ComponentListener
+ * @see org.wings.event.SComponentEvent
+ * @see org.wings.event.SComponentListener
  */
 public abstract class SComponentAdapter
 	implements SComponentListener

@@ -25,13 +25,12 @@ import org.wings.plaf.FileChooserCG;
 import org.wings.io.Device;
 
 /**
- * A filechooser shows a textfiled with
- * a browse-button to enter a file. The file is uploaded via HTTP and
- * made accessible to the WingS application. 
+ * A filechooser shows a textfiled with a browse-button to enter a file.
+ * The file is uploaded via HTTP and made accessible to the WingS application.
  *
- * <p>The uploaded file is stored temporarily in the filesystem of the 
- * server with a unique name, so that uploaded files with the same 
- * filename do not clash. You can access this internal name with 
+ * <p>The uploaded file is stored temporarily in the filesystem of the
+ * server with a unique name, so that uploaded files with the same
+ * filename do not clash. You can access this internal name with
  * the {@link #getFiledir()} and {@link #getFileid()} methods. 
  * The user provided filename can be queried with the 
  * {@link #getFilename()} method.
@@ -44,21 +43,37 @@ import org.wings.io.Device;
  * <p>If you don't call reset, the file is eventually be removed
  * by the Java garbage collector, if you haven't renamed it.
  *
- * <p>The form, you add this FileChooser needs to have the encoding type
+ * <p>The form, you add this SFileChooser to, needs to have the encoding type
  * <code>multipart/form-data</code> set 
- * (form.setEncodingType("multipart/form-data")).
+ * (form.{@link SForm#setEncodingType(String) setEncodingType("multipart/form-data")}).
  *
- * <p>Notifies the form if something has gone wrong with uploading a file. Szenario:
- * a file is to big to upload, the filechooser got that information from the
- * request dispatcher. But this is the only request the dispatcher forwards,
- * so nothing will happen, because most developers do their work on an action
- * of the form. So the filechooser notifies that form, that a request was
- * sent. After that the attempt to get a file from the filechooser throws
- * an IOException and the circle is closed. The problem is to provide a
- * mechanism to notify the contolling component (e.g. a submit button). The
- * only way to do this, is to use SForm as control component. This is the
- * way a developer should work with forms, don't use SButton as control
- * component. 
+ * <p>You can limit the size of files to be uploaded, so it is hard to make
+ * a denial-of-service (harddisk, bandwidth) attack from outside to your
+ * server. You can modify the maximum content length to be posted in
+ * {@link org.wings.session.Session#setMaxContentLength(int)}. This is
+ * 64 kByte by default, so you might want to change this in your application.
+ *
+ * <p>
+ * The SFileChooser notifies the form if something has gone 
+ * wrong with uploading a file. 
+ * <p>
+ * <b>Szenario</b>
+ * Files that are too big to be uploaded are blocked
+ * very early in the upload-process (if you are curious: this is done in
+ * {@link org.wings.servlet.MultipartRequest}).
+ * At that time, only a partial input is
+ * read, the rest is discarded to thwart denial of service attacks. Since we
+ * read only part of the input, we cannot make sure, that <em>all</em>
+ * parameters are gathered from the input, thus we cannot just deliver the
+ * events contained, since they might be incomplete. However, the file
+ * chooser needs to be informed, that something went wrong as to present
+ * an error message to the user. So in that case, only <em>one</em> event
+ * is delivered to the form, that contains this SFileChooser.
+ * <p>Note, that in this case, this will <em>not</em> trigger the action
+ * listener that you might have added to the submit-button.
+ * This means, that you <em>always</em> should add your action listener
+ * to the {@link SForm} ({@link SForm#addActionListener(ActionListener)}),
+ * <em>not</em> the submit button.
  *
  * @author <a href="mailto:HEngels@mercatis.de">Holger Engels</a>
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
@@ -106,7 +121,7 @@ public class SFileChooser
     public SFileChooser() {}
 
     /**
-     *
+     * Find the form, this FileChooser is embedded in.
      */
     protected final SForm getParentForm() {
         SComponent parent = getParent();
@@ -119,14 +134,16 @@ public class SFileChooser
     }
 
     /**
-     * notifies the parent form, to fire action performed. This is necessary, if
-     * an exception in parsing a MultiPartRequest occurs, e.g. upload file is to big.
+     * notifies the parent form, to fire action performed. This is necessary, 
+     * if an exception in parsing a MultiPartRequest occurs, e.g. upload 
+     * file is too big.
      */
     protected final void notifyParentForm() {
         SForm form = getParentForm();
 
-        if ( form!=null )
+        if ( form!=null ) {
             SForm.addArmedComponent(form);
+        }
     }
 
     /**
@@ -244,7 +261,7 @@ public class SFileChooser
      * Returns the internal ID of this file, that has been assigned at upload
      * time. This ID is unique to prevent clashes with other uploaded files.
      * You won't need this, unless you want to access the file directly. Don't
-     * store the value you receive here for use later, since the SFileChooser
+     * store the value you receive here for later use, since the SFileChooser
      * does its own garbage collecting of unused files.
      *
      * @return the internal, unique file id given to the uploaded file.

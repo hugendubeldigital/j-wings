@@ -52,7 +52,7 @@ public class DelegatingHttpServletRequest
      * Returns a buffered reader for reading text in the request body.
      * This translates character set encodings as appropriate.
      *
-     * @see getInputStream
+     * @see #getInputStream
      * @return
      * @throws IOException
      */

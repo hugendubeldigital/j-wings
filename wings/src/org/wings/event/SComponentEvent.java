@@ -42,8 +42,8 @@ import org.wings.SDimension;
  * ComponentListener interface.) Each such listener object 
  * gets this ComponentEvent when the event occurs.
  *
- * @see org.wings.event.ComponentAdapter
- * @see org.wings.event.ComponentListener
+ * @see org.wings.event.SComponentAdapter
+ * @see org.wings.event.SComponentListener
  * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
  * @version $Revision$, $Date$
  */

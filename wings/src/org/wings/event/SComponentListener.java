@@ -17,7 +17,6 @@ package org.wings.event;
 import java.awt.event.*;
 
 /**
- * 
  * The listener interface for receiving component events.
  * The class that is interested in processing a component event
  * either implements this interface (and all the methods it
@@ -36,8 +35,8 @@ import java.awt.event.*;
  *
  * @author <a href="mailto:andre.lison@crosstec.de">Andre Lison</a>
  * @version $Revision$, $Date$
- * @see org.wings.event.ComponentAdapter
- * @see org.wings.event.ComponentEvent
+ * @see org.wings.event.SComponentAdapter
+ * @see org.wings.event.SComponentEvent
  */
 public interface SComponentListener
     extends java.util.EventListener
