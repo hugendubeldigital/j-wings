@@ -44,6 +44,10 @@ public class FrameSetReloadManager
     private final Set dirtyFrames = new HashSet();
     private ReloadManagerFrame reloadManagerFrame = null;
 
+    /**
+     * Marking a component dirty effectively marks the component's
+     * parent frame dirty.
+     */
     public void markDirty(SComponent component) {
 	if (component instanceof SFrameSet) {
 	    SFrameSet frameSet = (SFrameSet)component;
@@ -63,6 +67,9 @@ public class FrameSetReloadManager
 	dirtyFrames.clear();
     }
 
+    /**
+     * The manager component is the invisible target frame.
+     */
     public SComponent getManagerComponent() {
 	if (reloadManagerFrame == null)
 	    reloadManagerFrame = new ReloadManagerFrame();

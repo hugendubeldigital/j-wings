@@ -31,19 +31,38 @@ import org.wings.style.Style;
 import org.wings.externalizer.ExternalizeManager;
 
 /**
- * This is the reload manager interface.
+ * The reload manager interface.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
 public interface ReloadManager
 {
+    /**
+     * Mark a <code>component</code> dirty.
+     * Frames that container dirty components have to be reloaded.
+     * @param component the dirty component
+     */
     void markDirty(SComponent component);
 
+    /**
+     * Return an array of all dirty components.
+     * @return an array of all dirty components
+     */
     SComponent[] getDirtyComponents();
+    /**
+     * Clear dirts components list.
+     */
     void clearDirtyComponents();
 
+    /**
+     * Get the reload manager component, that is the target of all links.
+     */
     SComponent getManagerComponent();
+
+    /**
+     * The key to the reload manager component
+     */
     String getTarget();
 }
 

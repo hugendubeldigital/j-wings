@@ -33,7 +33,8 @@ import org.wings.session.Session;
 import org.wings.session.SessionManager;
 
 /**
- * TODO: doc (holger)
+ * An invisible frame, that executes a javascript function <code>onload</code>,
+ * that reloads all dirty frames.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
@@ -106,10 +107,18 @@ public class ReloadManagerFrame
         this.serverAddress = serverAddress;
     }
 
+    /**
+     * No LayoutManager allowed.
+     */
     public void setLayout(SLayoutManager l) {
 	throw new IllegalArgumentException("No LayoutManager allowed");
     }
 
+    /**
+     * Generate a minimal document with a javascript function, that reloads
+     * all dirty frames. The list of dirty frames is obtained from the ReloadManager.
+     * After the code has been generated, the dirty components list is cleared.
+     */
     public void write(Device d) throws IOException {
 	ExternalizeManager externalizer = getSession().getExternalizeManager();
 

@@ -26,8 +26,17 @@ import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.style.*;
 
+/**
+ * Partial implementation that is common to all ComponentCGs.
+ * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
+ * @version $Revision$
+ */
 public abstract class AbstractComponentCG implements ComponentCG
 {
+    /**
+     * Install the appropriate CG for <code>component</code>.
+     * @param component the component
+     */
     public void installCG(SComponent component) {
 	CGManager manager = component.getSession().getCGManager();
         String className = component.getClass().getName();
@@ -37,7 +46,7 @@ public abstract class AbstractComponentCG implements ComponentCG
     }
 
     /**
-     * recursively configure the component and dependant objects
+     * Recursively configure the component and dependant objects.
      */
     protected void configure(Object object, String className, CGManager manager) {
         try {
@@ -75,6 +84,10 @@ public abstract class AbstractComponentCG implements ComponentCG
         }
     }
 
+    /**
+     * Uninstall the CG from <code>component</code>.
+     * @param component the component
+     */
     public void uninstallCG(SComponent c) {
     }
 }

@@ -26,7 +26,8 @@ import org.wings.*;
 import org.wings.style.*;
 
 /**
- * A defaults table, that acts as an override mechanism 
+ * A defaults table, that overrides the mappings of the <code>parent</code>
+ * defaults table.  
  */
 public class CGDefaults
     extends HashMap
@@ -34,6 +35,9 @@ public class CGDefaults
     private PropertyChangeSupport changeSupport;
     private CGDefaults parent;
 
+    /**
+     * @param parent the parent defaults table that backs this defaults table
+     */
     public CGDefaults(CGDefaults parent) {
         this.parent = parent;
     }
@@ -58,6 +62,14 @@ public class CGDefaults
         return oldValue;
     }
 
+    /**
+     * Get a value from the defaults table.
+     * If the <code>id</code> is not associated with a value,
+     * the request is delegated to the parent defaults table
+     * @param id the key
+     * @param type the class of the value in question
+     * @return the associated value or <code>null</code>
+     */
     public Object get(String id, Class type) {
         Object value = super.get(id);
         if (value != null)
