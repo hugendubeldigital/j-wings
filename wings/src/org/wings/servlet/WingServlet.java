@@ -131,10 +131,11 @@ public abstract class WingServlet
      *     can access those files</dd>
      * <dt>externalizer.servlet.url</dt><dd><b>ServletExternalizer</b>url, where the client
      *     can access the externalizer servlet</dd>
-     * <dt>session.timeout</dt><dd><b>The time, a session is kept alive during inactivity</dd>
+     * <dt>externalizer.timeout</dt><dd>The time, externalized objects are kept, before they
+     *     are removed</dd>
      * <dt>content.maxlength</dt><dd>Maximum content lengt for form posts. Remember to increase
      *     this, if you make use of the SFileChooser component</dd>
-     * <dt>filechooser.uploaddir</dt><dd><b>The directory, where uploaded files ar stored
+     * <dt>filechooser.uploaddir</dt><dd>The directory, where uploaded files ar stored
      *     temporarily</dd>
      * </dl>
      *
