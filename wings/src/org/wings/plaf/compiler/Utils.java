@@ -80,6 +80,11 @@ public final class Utils implements SConstants {
                 d.print("&gt;");
                 last = pos+1;
                 break;
+	    case ' ':
+                d.print(chars, last, (pos-last));
+                d.print("&nbsp;");
+                last = pos+1;
+                break;
 	    }
 	}
         d.print(chars, last, chars.length-last);
@@ -95,7 +100,12 @@ public final class Utils implements SConstants {
      * returned.
      */
     public static void write(Device d, String s) throws IOException {
-        quote(d, s);
+        if ((s.length() > 5) && (s.startsWith("<html>"))) {
+            writeRaw(d, s.substring(6));
+        }
+        else {
+            quote(d, s);
+        }
     }
 
     /**
@@ -244,8 +254,11 @@ public final class Utils implements SConstants {
 	quote(d, "\nThis is a <abc> string \"; foo & sons\nmoin");
 	write(d, -42);
         write(d, Integer.MIN_VALUE);
-	System.out.println (d.toString());
         
+        write(d, "hello test&nbsp;\n");
+        write(d, "<html>hallo test&nbsp;\n");
+	System.out.println (d.toString());
+
         d = new org.wings.io.NullDevice();
         long start = System.currentTimeMillis();
         for (int i=0; i < 1000000; ++i) {
