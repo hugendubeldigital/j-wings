@@ -10,6 +10,7 @@ import javax.swing.table.*;
 
 import org.wings.*;
 import org.wingx.beans.*;
+import org.wingx.beans.editors.*;
 
 /**
  * Bean Editor <p>
@@ -17,18 +18,18 @@ import org.wingx.beans.*;
  * Usage:
  * <ul>
  *  <li>
- *   Class based:
+ *   Via introspection:
  *   <code>
  *    BeanEditor editor = new BeanEditor(); <br>
- *    editor.setBeanClass(BeanClass.class); // sets property descriptors from class <br>
+ *    editor.setBean(bean); <br>
  *   </code>
  *  </li>
  *  <li>
- *   Bean or PropertyDescriptor based:
+ *   by providing a custom set of PropertyDescriptors:
  *   <code>
  *    BeanEditor editor = new BeanEditor(); <br>
+ *    editor.setBean(bean); <br>
  *    editor.setPropertyDescriptors(PropertyDescriptor[]); <br>
- *    editor.setBean(bean);  // must <br>
  *   </code>
  *  </li>
  * </ul>
@@ -108,7 +109,12 @@ public class BeanEditor
 
     protected SPropertyEditor getPropertyEditor(PropertyDescriptor descriptor) {
 	SPropertyEditor editor = null;
+	Object[] enumerationValues = (Object[])descriptor.getValue("enumerationValues");
 	Class pec = descriptor.getPropertyEditorClass();
+	if (pec == null)
+	    if (enumerationValues != null)
+		pec = TagsEditor.class;
+
 	if (pec != null) {
 	    try {
 		editor = (SPropertyEditor)pec.newInstance();
@@ -116,9 +122,12 @@ public class BeanEditor
 		// Drop through.
 	    }
 	}
-	if (editor == null) {
+
+	if (editor == null)
 	    editor = SPropertyEditorManager.findEditor(descriptor.getPropertyType());
-	}
+	
+	if (editor instanceof TagsEditor)
+	    ((TagsEditor)editor).setEnumerationValues(enumerationValues);
 
 	return editor;
     }

@@ -32,7 +32,7 @@ public class SComboBoxEditorAdapter
     public void setEditor(SPropertyEditor editor) {
 	super.setEditor(editor);
 	component.setModel(new DefaultComboBoxModel(editor.getTags()));
-    }    
+    }
 
     public void reset() {
         component.setSelectedItem(null);
