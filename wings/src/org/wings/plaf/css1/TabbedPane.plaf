@@ -146,13 +146,13 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
             attrset.put(StyleConstants.PADDING_BOTTOM, "2px");
             attrset.put(StyleConstants.WHITE_SPACE, "nowrap");
         }
-        attrset.put(StyleConstants.FONT_STYLE,                "normal");
+        attrset.put(StyleConstants.FONT_STYLE, "normal");
         fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnnonsel", attrset));
         fStyleSheet.putStyle(new Style("a.tp_"+comp.getComponentId()+"_btnnonsel", attrset));
         
         /* disabled not selected button wo icon */
         SimpleAttributeSet woicn = (SimpleAttributeSet) attrset.clone();
-        woicn.put(StyleConstants.FONT_STYLE,                "italic");
+        woicn.put(StyleConstants.COLOR, "#AAAAAA");
         fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnnonseldis", woicn));
         
         // # icon styles
@@ -400,7 +400,9 @@ protected void writeTabs(Device device, STabbedPane component) throws IOExceptio
           }
           %> /><% // close image tag.
           // selected = (i == component.getSelectedIndex());
-          String style_btn = "tp_"+component.getComponentId()+(selected?"_btnsel":"_btnnonsel");
+          String style_btn = "tp_"+component.getComponentId()+
+	                     (selected?"_btnsel":"_btnnonsel") + 
+	                     (component.isEnabledAt(i)?"":"dis");
 
           writeAnchor(device, component, i, style_btn, isMSIE);
 
@@ -442,11 +444,19 @@ protected void writeAnchor(final Device device, STabbedPane tabbed, int index, S
     if (tooltip == null)
         tooltip = tabbed.getTitleAt(index);
 
-    %><a href="<%
-    writeAnchorAddress(device, tabbed, index);
-    %>"<%
-    %><%|class=attr%><%
-    %>><%
+    boolean enabled = tabbed.isEnabledAt(index) && (index!=tabbed.getSelectedIndex());
+
+    
+    if ( enabled ) {
+        %><a href="<%
+        writeAnchorAddress(device, tabbed, index);
+        %>"<%|title=tabbed.getToolTipTextAt(index)%><%
+
+    }
+    else {
+        %><span<%
+    }
+    %><%|class=attr%>><%
 
     SIcon icon = tabbed.isEnabledAt(index) 
         ? tabbed.getIconAt(index) 
@@ -476,8 +486,16 @@ protected void writeAnchor(final Device device, STabbedPane tabbed, int index, S
         %></a> <%
     }
     else {
-        %><%=text%></a><%
+        %><%=text%><%
     }
+
+    if ( enabled ) {
+        %></a><%
+    }
+    else {
+        %></span><%
+    }
+	
 }
 
 
