@@ -26,9 +26,14 @@ import org.wings.session.Session;
  */
 public class ExternalizedResource
 {
-    private final String        mimeType;
+    /*
+     * the following two members are the key elements,
+     * used by hashCode() and equals();
+     */
     private final Object        extObject;
     private final Externalizer  externalizer;
+
+    private final String        mimeType;
     private final int           flags;
     private final long          lastModified;
     private final Collection    headers;
@@ -165,28 +170,34 @@ public class ExternalizedResource
     }
 
     /**
-     * TODO: documentation
+     * The HashCode of the externalized resource is
+     * the hash code of the to be externalized object
+     * (the externalized resource). Together with the implementation
+     * of the {@link equals(Object)}-Method, this makes sure, that
+     * the same resource gets the same ID.
      *
-     * @return
+     * @return the has code of the externalized object.
      */
     public final int hashCode() {
         return extObject.hashCode();
     }
 
     /**
-     * TODO: documentation
-     *
-     * @return
+     * If the managed externalized resource and the
+     * externalized manager are the same, then both
+     * ExternalizedResource objects are regarded equal.
+     *     
+     * @return true, if the other externalized resource equals
+     *         this resource regarding the key members.
      */
     public final boolean equals(ExternalizedResource e) {
-        return extObject == e.extObject &&
-            externalizer == e.externalizer;
+        return (extObject.equals(e.extObject)
+                && externalizer.equals(e.externalizer));
     }
 
     /**
-     * TODO: documentation
-     *
-     * @return
+     * @return true, if the other object is an ExternalizedResource
+     *         and {@link equals(ExternalizedResource)} returns true.
      */
     public final boolean equals(Object o) {
         if ( o instanceof ExternalizedResource ) {

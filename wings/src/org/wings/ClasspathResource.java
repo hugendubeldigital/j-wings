@@ -37,12 +37,12 @@ public class ClasspathResource
     /**
      * The class loader from which the resource is loaded
      */
-    protected ClassLoader classLoader;
+    protected final ClassLoader classLoader;
 
     /**
      * The name that identifies the resource in the classpath
      */
-    protected String resourceFileName;
+    protected final String resourceFileName;
 
     /**
      * A static resource that is obtained from the default classpath.
@@ -89,12 +89,45 @@ public class ClasspathResource
         externalizerFlags = ExternalizeManager.GLOBAL | ExternalizeManager.FINAL;
     }
 
+
     public String toString() {
         return getId() + " " + resourceFileName;
     }
 
     protected final InputStream getResourceStream() {
         return classLoader.getResourceAsStream(resourceFileName);
+    }
+
+    /*
+     * the equal() and hashCode() method make sure, that the same resources
+     * get the same name in the SystemExternalizer.
+     */
+
+    /**
+     * resources using the same classloader and are denoting the same
+     * name do have the same hasCode(). Thus the same resources get the
+     * same ID in the System externalizer.
+     *
+     * @return a hashcode, comprised from the hashcodes of the classloader
+     *         and from the file name of the resource.
+     */
+    public int hashCode() {
+        return classLoader.hashCode() ^ resourceFileName.hashCode();
+    }
+
+    /**
+     * Two ClasspathResouces are equal if both of them use the same
+     * classloader and point to a resource with the same name.
+     *
+     * @return true if classloader and resource name are equal.
+     */
+    public boolean equals(Object o) {
+        if (o instanceof ClasspathResource) {
+            ClasspathResource other = (ClasspathResource) o;
+            return (classLoader.equals(other.classLoader)
+                    && resourceFileName.equals(other.resourceFileName));
+        }
+        return false;
     }
 }
 

@@ -42,12 +42,13 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
     /**
      * TODO: documentation
      */
-    protected final Map externalized = Collections.synchronizedMap( new HashMap() );
+    protected final Map/*<String, ExternalizedResource>*/ externalized;
 
     /**
      * 
      */
     private SystemExternalizeManager () {
+        externalized = Collections.synchronizedMap( new HashMap() );
     }
 
     /**

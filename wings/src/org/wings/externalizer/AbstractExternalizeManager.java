@@ -131,10 +131,10 @@ public abstract class AbstractExternalizeManager
 
     /**
      * To search for an already externalized object. This performs way better
-     * than search in the value set of the identifier-{@link ExternalizedResource}
-     * map.
+     * than search in the value set of the 
+     * identifier-{@link ExternalizedResource} map.
      */
-    protected final Map reverseExternalized = Collections.synchronizedMap( new HashMap() );
+    protected final Map/*<ExternalizedResource,String>*/ reverseExternalized;
 
     /**
      * To support Session local externalizing, the {@link ExternalizeManager}
@@ -148,6 +148,7 @@ public abstract class AbstractExternalizeManager
      *
      */
     public AbstractExternalizeManager() {
+        reverseExternalized = Collections.synchronizedMap( new HashMap() );
     }
 
     public void setResponse(HttpServletResponse response) {
