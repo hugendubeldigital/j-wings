@@ -458,6 +458,12 @@ public class CSSStyleSheet
 	return attributes;
     }
 
+    public static String getAttribute(Color color) {
+	if (color != null)
+	    return colorToHex(color);
+	return null;
+    }
+
     class CssParser
 	implements CSSParser.CSSParserCallback
     {
