@@ -151,7 +151,7 @@ public class SByteArrayIcon extends Resource implements SIcon {
         height = pHeight;
     }
 
-    public void finalize() {
+    protected void finalize() {
         removeExternalizedResource();
     }
 
