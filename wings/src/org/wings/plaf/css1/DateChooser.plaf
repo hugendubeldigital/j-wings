@@ -36,8 +36,7 @@ static final ResourceImageIcon ICON = new ResourceImageIcon("org/wings/icons/Arr
 
 <write>
 <%
-    SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy", component.getLocale());
-    dateFormatter.setCalendar(component.getCalendar());
+    SimpleDateFormat dateFormatter = (SimpleDateFormat)DateFormat.getDateInstance(DateFormat.MEDIUM, component.getLocale());
 
     %><nobr><input type="text" size="11"<%
     %><%|class=Utils.style(component)%><%
@@ -47,13 +46,17 @@ static final ResourceImageIcon ICON = new ResourceImageIcon("org/wings/icons/Arr
     }
     %><%|tabindex=component.getFocusTraversalIndex()%><%
     Utils.writeEvents(device, component);
-    %><%|value=dateFormatter.format(component.getTime())%>/><%
+    try {
+        %><%|value=dateFormatter.format(component.getDate())%>/><%
+    } catch ( SDateChooser.DateParseException ex ) {
+        %><%|value=ex.getDateString()%>/><%
+    }
     %><a href="javascript: void(0);"<%
       %> onmouseover="if (timeoutId) clearTimeout(timeoutId);return true;"<%
       %> onmouseout="if (timeoutDelay) calendarTimeout();"<%
       %> onclick="g_Calendar.show(event,<%
-                %>'<%=Utils.event(component)%>',<%
-                %>'mm/dd/yyyy');<%
+                %>'<%=component.getComponentId()%>',<%
+                %>'<%=dateFormatter.toPattern()%>');<%
                 %>return false;"><%
       %><img <%|src=ICON.getURL()%><%
       %><%|width=ICON.getIconWidth()%><%

@@ -1,14 +1,14 @@
 /*
  * $Id$
  * (c) Copyright 2002 wingS development team.
- * 
+ *
  * This file is part of wingS (http://wings.mercatis.de).
- * 
+ *
  * wingS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
  * of the License, or (at your option) any later version.
- * 
+ *
  * Please see COPYING for the complete licence.
  */
 
@@ -17,8 +17,13 @@ package wingset;
 import org.wings.SComponent;
 import org.wings.SDateChooser;
 import org.wings.SForm;
+import org.wings.SLabel;
+import org.wings.SButton;
 import wingset.WingSetPane;
 
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.text.DateFormat;
 
 
 /**
@@ -32,28 +37,47 @@ import wingset.WingSetPane;
  * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class DateChooserExample extends WingSetPane  {
-    
+public class DateChooserExample extends WingSetPane {
+
+    protected SDateChooser dateChooser = new SDateChooser();
+    protected SLabel dateLabel = new SLabel();
+
     /**
-     * 
+     *
      */
     public DateChooserExample() {
-	
+
     }
 
     public SComponent createExample() {
-	SForm form = new SForm();
+        SForm form = new SForm();
 
-	form.add(new SDateChooser());
+        form.add(dateChooser);
+        form.add(dateLabel);
 
-	return form;
+        form.add(new SButton("ok"));
+
+        form.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    dateLabel.setText(DateFormat.getDateInstance(DateFormat.MEDIUM, dateChooser.getLocale()).format(dateChooser.getDate()));
+                } catch (SDateChooser.DateParseException ex) {
+                    dateLabel.setText(ex.getCauseParseException().getMessage());
+                }
+            }
+        });
+
+        return form;
     }
 
-    
+
 }// DateChooserExample
 
 /*
    $Log$
+   Revision 1.6  2003/12/19 11:07:15  arminhaaf
+   o make it workable and usable
+
    Revision 1.5  2002/11/19 19:21:18  ahaaf
    o initial
 

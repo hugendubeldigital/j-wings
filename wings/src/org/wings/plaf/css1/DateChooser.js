@@ -11,7 +11,7 @@ You do not need to link to my site (be nice though!)
 
 Amendments
 22 Jan 2002; Added ns resize bug code; rewrote date functions into Date 'class';
-Added support for yyyy-mm-dd date format
+Added support for yyyy-MM-dd date format
 Added support for calendar beginning on any day
 7th Feb 2002 Fixed day highlight when year wasn't current year bug
 9th Jun 2002 Fixed bug with weekend colour
@@ -228,12 +228,12 @@ Calendar.prototype.changeMonth = function(incr){
 Calendar.prototype.clickDay = function(day){
     var tmp = browser.dom?document.getElementById(this.target):eval('document.all.' + this.target);
 
-    if (this.dateFormat=='dd-mmm-yyyy' || this.dateFormat=='dd/mmm/yyyy') tmp.value = day + this.dateDelim + this.months[this.month].substr(0,3) + this.dateDelim + this.year;
-    if (this.dateFormat=='dd/mm/yyyy' || this.dateFormat=='dd-mm-yyyy') tmp.value = day + this.dateDelim + (this.month+1) + this.dateDelim + this.year;
-    if (this.dateFormat=='dd.mm.yyyy') tmp.value = day + this.dateDelim + (this.month+1) + this.dateDelim + this.year;
-    if (this.dateFormat=='mm/dd/yyyy' || this.dateFormat=='mm-dd-yyyy') tmp.value = (this.month+1) + this.dateDelim + day + this.dateDelim + this.year;
-    if (this.dateFormat=='yyyy-mm-dd') tmp.value = this.year + this.dateDelim + (this.month+1) + this.dateDelim + day;
-   
+    if (this.dateFormat=='dd-MMM-yyyy' || this.dateFormat=='dd/MMM/yyyy') tmp.value = day + this.dateDelim + this.months[this.month].substr(0,3) + this.dateDelim + this.year;
+    if (this.dateFormat=='dd/MM/yyyy' || this.dateFormat=='dd-MM-yyyy') tmp.value = day + this.dateDelim + (this.month+1) + this.dateDelim + this.year;
+    if (this.dateFormat=='dd.MM.yyyy') tmp.value = day + this.dateDelim + (this.month+1) + this.dateDelim + this.year;
+    if (this.dateFormat=='MM/dd/yyyy' || this.dateFormat=='MM-dd-yyyy') tmp.value = (this.month+1) + this.dateDelim + day + this.dateDelim + this.year;
+    if (this.dateFormat=='yyyy-MM-dd') tmp.value = this.year + this.dateDelim + (this.month+1) + this.dateDelim + day;
+
     if (browser.ns4) this.containerLayer.hidden=true;
     if (browser.dom || browser.ie4){
 	this.containerLayer.style.visibility='hidden'
@@ -245,7 +245,7 @@ Calendar.prototype.writeString = function(str){
 	this.containerLayer.document.open();
 	this.containerLayer.document.write(str);
 	this.containerLayer.document.close();
-    } 
+    }
     if (browser.dom || browser.ie4){
 	this.containerLayer.innerHTML = str;
     }
@@ -262,19 +262,19 @@ Calendar.prototype.show = function(event, target, dateFormat, dateFrom, dateTo){
     this.dateToDay = padZero(this.dateTo.getDate());
     this.dateToMonth = padZero(this.dateTo.getMonth());
     this.dateToYear = this.dateTo.getFullYear();
-    if (dateFormat) this.dateFormat = dateFormat; else this.dateFormat = 'dd-mmm-yyyy';
+    if (dateFormat) this.dateFormat = dateFormat; else this.dateFormat = 'dd-MMM-yyyy';
     switch (this.dateFormat){
-    case 'dd-mmm-yyyy':
-    case 'dd-mm-yyyy':
-    case 'yyyy-mm-dd':
+    case 'dd-MMM-yyyy':
+    case 'dd-MM-yyyy':
+    case 'yyyy-MM-dd':
 	this.dateDelim = '-';
 	break;
-    case 'dd/mm/yyyy':
-    case 'mm/dd/yyyy':
-    case 'dd/mmm/yyyy':
+    case 'dd/MM/yyyy':
+    case 'MM/dd/yyyy':
+    case 'dd/MMM/yyyy':
 	this.dateDelim = '/';
 	break;
-    case 'dd.mm.yyyy':
+    case 'dd.MM.yyyy':
 	this.dateDelim = '.';
 	break;
     }
@@ -327,8 +327,8 @@ Calendar.prototype.show = function(event, target, dateFormat, dateFrom, dateTo){
     if (tmp && tmp.value && tmp.value.split(this.dateDelim).length==3 && tmp.value.indexOf('d')==-1){
 	var atmp = tmp.value.split(this.dateDelim)
 	    switch (this.dateFormat){
-		case 'dd-mmm-yyyy':
-		case 'dd/mmm/yyyy':
+		case 'dd-MMM-yyyy':
+		case 'dd/MMM/yyyy':
 		for (var i=0;i<this.months.length;i++){
 		    if (atmp[1].toLowerCase()==this.months[i].substr(0,3).toLowerCase()){
 			this.month = this.oMonth = i;
@@ -338,20 +338,20 @@ Calendar.prototype.show = function(event, target, dateFormat, dateFrom, dateTo){
 		this.day = parseInt(atmp[0],10);
 		this.year = this.oYear = parseInt(atmp[2],10);
 		break;
-		case 'dd/mm/yyyy':
-		case 'dd-mm-yyyy':
-		case 'dd.mm.yyyy':
+		case 'dd/MM/yyyy':
+		case 'dd-MM-yyyy':
+		case 'dd.MM.yyyy':
 		this.month = this.oMonth = parseInt(atmp[1]-1,10); 
 		this.day = parseInt(atmp[0],10);
 		this.year = this.oYear = parseInt(atmp[2],10);
 		break;
-		case 'mm/dd/yyyy':
-		case 'mm-dd-yyyy':
+		case 'MM/dd/yyyy':
+		case 'MM-dd-yyyy':
 		this.month = this.oMonth = parseInt(atmp[0]-1,10);
 		this.day = parseInt(atmp[1],10);
 		this.year = this.oYear = parseInt(atmp[2],10);
 		break;
-		case 'yyyy-mm-dd':
+		case 'yyyy-MM-dd':
 		this.month = this.oMonth = parseInt(atmp[1]-1,10);
 		this.day = parseInt(atmp[2],10);
 		this.year = this.oYear = parseInt(atmp[0],10);
