@@ -33,7 +33,7 @@ tomcat: dummy
 	mkdir demo/tomcat/WEB-INF/lib ;\
 	cp wings.jar demo/tomcat/WEB-INF/lib ;\
 	cd demo ;\
-	cp -P `find wingset -name "*.class" -o -name "*.gif" -o -name "*.css"` ../demo/tomcat/WEB-INF/classes ;\
+	cp -P `find wingset explorer -name "*.class" -o -name "*.gif" -o -name "*.css"` ../demo/tomcat/WEB-INF/classes ;\
 	cd .. \;
 	cp demo/wingset.xml demo/tomcat/WEB-INF/web.xml
 
