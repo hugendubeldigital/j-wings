@@ -20,6 +20,9 @@ import java.util.StringTokenizer;
 
 import org.wings.SComponent;
 import org.wings.SFont;
+import org.wings.plaf.*;
+import org.wings.session.*;
+import org.wings.style.*;
 
 /**
  * TODO: documentation
@@ -44,6 +47,12 @@ public class SComponentPropertyManager
             comp.setFont(parseFont(value));
         else if ( "TABINDEX".equals(name) )
             comp.setFocusTraversalIndex(Integer.parseInt(value));
+        else if ( "STYLE".equals(name) ) {
+            LookAndFeel laf = SessionManager.getSession().getCGManager().getLookAndFeel();
+            comp.setAttributes(laf.makeAttributeSet(value));
+        }
+        else if ( "CLASS".equals(name) )
+            comp.setStyle(new Style(value, null));
     }
 
     public Class[] getSupportedClasses() {
