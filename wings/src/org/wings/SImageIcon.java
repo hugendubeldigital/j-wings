@@ -26,37 +26,27 @@ import java.awt.image.PixelGrabber;
 
 import javax.swing.ImageIcon;
 
-public class SImageIcon implements SIcon {
+public class SImageIcon extends SAbstractIcon {
 
-	private final ImageIcon img;
+    private final ImageIcon img;
     private final SimpleURL url;
-    private int width = -1;
-    private int height = -1;
 
     public SImageIcon(ImageIcon image) {
         this.img = image;
         url = new SimpleURL(SessionManager.getSession()
                             .getExternalizeManager()
                             .externalize(image, determineMimeType(image.getImage())));
+
+        setIconWidth(img.getIconWidth());
+        setIconHeight(img.getIconHeight());
     }
 
     public SImageIcon(java.awt.Image image) {
-		this.img = new ImageIcon(image);
-        url = new SimpleURL(SessionManager.getSession()
-                            .getExternalizeManager()
-                            .externalize(this.img, determineMimeType(image)));
+        this(new ImageIcon(image));
     }
 
     public SImageIcon(String name) {
         this(new ImageIcon(name));
-    }
-
-    public int getIconWidth() {
-	return img.getIconWidth();
-    }
-
-    public int getIconHeight() {
-	return img.getIconHeight();
     }
 
     /**
@@ -73,23 +63,20 @@ public class SImageIcon implements SIcon {
     }
     
     protected String determineMimeType(Image image) {
-		PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
-		try
-		{
-	    	pg.grabPixels();
-		}
-		catch (InterruptedException e)
-		{
-	    	System.err.println("interrupted waiting for pixels!");
-		}
+        PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
+        try {
+            pg.grabPixels();
+        } catch (InterruptedException e) {
+            System.err.println("interrupted waiting for pixels!");
+        }
 		
-		String mimeType = "image/";
-		if (!(pg.getColorModel() instanceof IndexColorModel))
-			mimeType += ImageExternalizer.FORMAT_PNG;
-		else
-			mimeType += ImageExternalizer.FORMAT_GIF;
+        String mimeType = "image/";
+        if (!(pg.getColorModel() instanceof IndexColorModel))
+            mimeType += ImageExternalizer.FORMAT_PNG;
+        else
+            mimeType += ImageExternalizer.FORMAT_GIF;
 		
-		return mimeType;
+        return mimeType;
     }
 }
 

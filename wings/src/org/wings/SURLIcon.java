@@ -23,13 +23,10 @@ import java.net.MalformedURLException;
  * @author <a href="mailto:armin@hyperion.intranet.mercatis.de">Armin Haaf</a>
  * @version $Revision
  */
-public class SURLIcon implements SIcon
+public class SURLIcon extends SAbstractIcon
 {
 
-    SimpleURL url;
-
-    private int width = -1;
-    private int height = -1;
+    protected SimpleURL url;
 
     public SURLIcon(URL u) {
         this(u.toString());
@@ -50,21 +47,6 @@ public class SURLIcon implements SIcon
         setIconHeight(height);
     }
 
-    public int getIconWidth() {
-        return width;
-    }
-  
-    public int getIconHeight() {
-        return height;
-    }
-
-    public void setIconWidth(int w) {
-        width = w;
-    }
-  
-    public void setIconHeight(int h) {
-        height = h;
-    }
   
     public SimpleURL getURL() {
         return url;
