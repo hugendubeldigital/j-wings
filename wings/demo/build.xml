@@ -79,6 +79,7 @@
         <include name="ldap/**"/>
       </classes>
       <classes dir=".">
+        <include name="ldap/editors/*.properties"/>
         <include name="ldap/images/*.gif"/>
         <include name="ldap/*.jpg"/>
       </classes>
