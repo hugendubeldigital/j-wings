@@ -391,7 +391,7 @@ public class Browser
                 if (strtok.hasMoreElements())
                     BLocale = new Locale(l, strtok.nextToken());
                 else
-                    BLocale = new Locale(l);
+                    BLocale = new Locale(l, "");
             }
             
             if (OSType == OS_UNKNOWN && OS != null)
