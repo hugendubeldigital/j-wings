@@ -29,20 +29,25 @@
             SListCellRenderer cellRenderer = list.getCellRenderer();
 
             for (int i=0; i < size; i++) {
+                SComponent renderer = null;
+                if (cellRenderer != null) {
+                    renderer = cellRenderer.getListCellRendererComponent(list, model.getElementAt(i), false, i);
+                }
+
                 %><option<%
                 %><%|value=list.getSelectionParameter(i)%><%
-
+               
                 if (list.isSelectedIndex(i)) {
-                    %> selected="selected"><%
+                    %> selected="selected"<%
                 }
-                else {
-                    %>><%
+                if ((renderer!=null) && (renderer.getToolTipText() != null)) {
+                   %> title="<%
+                   %><%=renderer.getToolTipText()%><%
+                   %>"<%
                 }
+                %>><%
 
-                if (cellRenderer != null) {
-                    SComponent renderer = cellRenderer.getListCellRendererComponent(list,
-                                                                                    model.getElementAt(i),
-                                                                                    false, i);
+                if (renderer != null) {
                     // Hack: remove all tags, because in form selections, looks ugly.
                     org.wings.io.StringBufferDevice string = getStringBufferDevice();
                     renderer.write(string);
