@@ -52,10 +52,7 @@ public abstract class SessionServlet
     extends HttpServlet
     implements HttpSessionBindingListener
 {
-    protected static Logger logger = Logger.getLogger("org.wings.servlet");
-
-    protected final TimeMeasure measure =
-        new TimeMeasure(new MessageFormat("<b>{0}</b>: {1} <i>{2}</i><br />"));
+    private static Logger logger = Logger.getLogger("org.wings.servlet");
 
     private SRequestDispatcher dispatcher = null;
 
@@ -122,8 +119,7 @@ public abstract class SessionServlet
      * TODO: documentation
      */
     protected final void setParent(HttpServlet p) {
-        if (p!=null)
-            parent = p;
+        if (p!=null) parent = p;
     }
 
     public final Session getSession() {
@@ -486,6 +482,12 @@ public abstract class SessionServlet
         throws ServletException, IOException
     {
         SessionManager.setSession(session);
+        TimeMeasure measure = null;
+        if (logger.isLoggable(Level.FINER)) {        
+            measure = new TimeMeasure(new MessageFormat("{0}: {1} {2}"));
+        }
+        // in case, the previous thread did not clean up.
+        SForm.clearArmedComponents();
 
         try {
             /*
@@ -493,7 +495,7 @@ public abstract class SessionServlet
              * sometimes. It does so, when there is a cookie, containing some
              * tomcat sessionid but that is invalid (because, for instance,
              * we restarted the tomcat in-between). 
-             * [I can't think of being this the correct behaviour, so I assume
+             * [I can't think of this being the correct behaviour, so I assume
              *  it is a bug. ]
              *
              * So we have to workaround this here: if we actually got the
@@ -501,7 +503,7 @@ public abstract class SessionServlet
              * the encodeURL() here: we just leave the requestURL as it is
              * in the properties .. and this is url-encoded, since
              * we had set it up in the very beginning of this session 
-             * with URL-encoding on  (see WingServlet::newSession())
+             * with URL-encoding on  (see WingServlet::newSession())   (hen)
              */
             RequestURL requestURL = null;
             if (req.isRequestedSessionIdValid()) {
@@ -530,8 +532,9 @@ public abstract class SessionServlet
             try {
                 ServletRequest asreq = new ServletRequest(req);
 
-                if (logger.isLoggable(Level.FINER))
+                if (logger.isLoggable(Level.FINER)) {
                     measure.start("time to dispatch");
+                }
 
                 // it's the dispatcher's resposibility to check the event's actuality
                 // should this be hasCurrentValidEvents or something ?
@@ -583,11 +586,15 @@ public abstract class SessionServlet
                  */
                 if (afterSessionURL != null) {
                     req.getSession().invalidate(); // calls destroy implicitly
-                    if (afterSessionURL.length() > 0)
+                    if (afterSessionURL.length() > 0) {
+                        // redirect to user requested URL.
                         response.sendRedirect(afterSessionURL);
-                    else
+                    }
+                    else {
+                        // redirect to a fresh session.
                         response.sendRedirect(HttpUtils.getRequestURL(req)
                                               .toString());
+                    }
                     return;
                 }
 
