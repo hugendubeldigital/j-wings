@@ -266,7 +266,7 @@ public class SScrollPane
 
     /**
      * Returns the horizontal scroll bar.
-     * @returns the scrollbar that controls the viewports horizontal view position
+     * @return the scrollbar that controls the viewports horizontal view position
      */
     public Adjustable getHorizontalScrollBar() {
         return horizontalScrollBar;
@@ -310,7 +310,7 @@ public class SScrollPane
 
     /**
      * Returns the horizontal scroll bar policy value.
-     * @returns the horizontal scrollbar policy. 
+     * @return the horizontal scrollbar policy. 
      * @see #setHorizontalScrollBarPolicy(int)
      */
     public final int getHorizontalScrollBarPolicy() {
@@ -319,7 +319,7 @@ public class SScrollPane
 
     /**
      * Returns the vertical scroll bar.
-     * @returns the scrollbar that controls the viewports vertical view position
+     * @return the scrollbar that controls the viewports vertical view position
      */
     public final Adjustable getVerticalScrollBar() {
         return verticalScrollBar;
@@ -365,7 +365,7 @@ public class SScrollPane
 
     /**
      * Returns the vertical scroll bar policy value.
-     * @returns the vertical scrollbar policy.
+     * @return the vertical scrollbar policy.
      * @see #setVerticalScrollBarPolicy(int)
      */
     public final int getVerticalScrollBarPolicy() {

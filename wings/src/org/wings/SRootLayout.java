@@ -25,10 +25,7 @@ public class SRootLayout
      */
     public SRootLayout() {
 	try {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        if (loader == null)
-            loader = getClass().getClassLoader();
-	    setTemplate(loader.getResource("org/wings/template/default.thtml"));
+	    setTemplate(getClass().getResource("template/default.thtml"));
 	}
 	catch (IOException e) {
 	    System.err.println(e.getMessage());
@@ -50,7 +47,6 @@ public class SRootLayout
      * Read the template from a file.
      *
      * @param tmplFile
-     * @return
      * @throws java.io.IOException
      */
     public SRootLayout(File tmplFile) throws IOException {
@@ -62,7 +58,6 @@ public class SRootLayout
      * The content is cached.
      * 
      * @param tmplFile
-     * @return
      * @throws java.io.IOException
      */
     public SRootLayout(URL url) throws java.io.IOException {

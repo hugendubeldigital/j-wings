@@ -507,7 +507,7 @@ public class STabbedPane
      * otherwise the component's name will be used as the tab title.
      * Cover method for insertTab().
      * @param component The component to be displayed when this tab is clicked.
-     * @constraints the object to be displayed in the tab
+     * @constraint the object to be displayed in the tab
      * @param index the position to insert this new tab
      *
      * @see #insertTab
@@ -524,7 +524,7 @@ public class STabbedPane
      * otherwise the component's name will be used as the tab title.
      * Cover method for insertTab().
      * @param component The component to be displayed when this tab is clicked.
-     * @constraints the object to be displayed in the tab
+     * @constraint the object to be displayed in the tab
      * @param index the position to insert this new tab
      *
      * @see #insertTab

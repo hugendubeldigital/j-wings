@@ -149,6 +149,7 @@ implements LowLevelEventListener {
      * @see #setEscapeSpecialChars(boolean)
      * @return 'true', if characters are quoted, 'false' if they
      *         are passed raw to the backend Device.
+     * @deprecated please use the html tag instead
      */
     public boolean isEscapeSpecialChars() {
         return escapeSpecialChars;
@@ -169,6 +170,7 @@ implements LowLevelEventListener {
      * @param escape boolean 'true', if characters are to be escaped
      *               (the default), or 'false' if any character you
      *               write here is passed 'raw' to the Device.
+     * @deprecated please use the html tag instead
      */
     public void setEscapeSpecialChars(boolean escape) {
         escapeSpecialChars = escape;
