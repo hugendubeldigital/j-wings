@@ -18,7 +18,8 @@ import java.io.IOException;
 import org.wings.io.Device;
 
 /**
- * This class handles a HTTP GET Address with optional parameters.
+ * This class handles a HTTP GET Address that can be updated
+ * with additional GET parameters.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
@@ -42,24 +43,27 @@ public class SGetAddress
     private StringBuffer parameters = null;
 
     /**
-     * TODO: documentation
-     *
+     * creates an empty SGetAddress
      */
     public SGetAddress() { 
         this("");
     }
 
     /**
-     * TODO: documentation
+     * Creates a SGetAddress with the given absolute URL
+     * as base. This could be something like 'http://my.domain.org/blub'.
+     * It may already contain parameters, appended after '?'.
      *
-     * @param base
+     * @param absoulte base address.
      */
     public SGetAddress(String absolute) {
         setAbsoluteAddress(absolute);
     }
 
     /**
-     * TODO: documentation
+     * Sets the absolute base address of this SGetAddress.
+     * This could be something like 'http://my.domain.org/blub'.
+     * It may already contain parameters, appended after '?'.
      *
      * @param addr
      */
@@ -70,23 +74,25 @@ public class SGetAddress
     }
 
     /**
-     * TODO: documentation
+     * Returns the base URL of this SGetAddress.
+     * This URL may contain get parameters that were given in 
+     * the constructor or the {@link #setAbsoluteAddress()} call.
      *
-     * @return
+     * @return String containing the base address.
      */
     public String getAbsoluteAddress() {
         return absoluteAddress;
     }
 
-    private void breakdownAddress() {
-    }
 
     /**
      * returns the relative address of this GET-address.
      * For the absoulte address 'http://www.domain.org/wingset/WingSet/?blub',
      * the relative address would be '/wingset/WingSet?blub'.
+     * The part returned contains only get paramters that were given in 
+     * the constructor or the {@link #setAbsoluteAddress()} call.
      *
-     * @return
+     * @return String containing the relative address without host part.
      */
     public String getRelativeAddress() {
         int pos = absoluteAddress.indexOf('/', 8); // after "http://"
@@ -96,9 +102,13 @@ public class SGetAddress
     }
     
     /**
-     * returns the relative address of this GET-address.
-     * For the absoulte address 'http://www.domain.org/wingset/WingSet/?blub',
-     * the relative address would be '?blub'.
+     * returns the context URL part of this address. This is the part after the
+     * last slash. The part returned contains only get paramters that were given in 
+     * the constructor or the {@link #setAbsoluteAddress()} call.
+     * For the absoulte address 'http://www.domain.org/wingset/WingSet/foo.gif?blub',
+     * the relative address would be 'foo.gif?blub'.
+     *
+     * @return the context URL.
      */
     public String getContextURL() { 
         if (contextAddress == null) {
@@ -111,15 +121,14 @@ public class SGetAddress
     }
 
     /**
-     * TODO: documentation
-     *
+     * Add an additional paramter to this Address
      * @param parameter
      * @return
      */
     public SGetAddress add(String parameter) {
         return addParameter(parameter);
     }
-
+    
     /**
      * TODO: documentation
      *
