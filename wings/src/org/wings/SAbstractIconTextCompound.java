@@ -56,6 +56,13 @@ public abstract class SAbstractIconTextCompound
 
     private SButtonModel model;
 
+    /** 
+     * The button model's <code>changeListener</code>.
+     */
+    protected ChangeListener changeListener = null;
+
+    protected transient ChangeEvent changeEvent = null;
+
     /** the text the button is showing */
     private String text;
 
@@ -195,13 +202,43 @@ public abstract class SAbstractIconTextCompound
         removeEventListener(ItemListener.class, il);
     }
 
-    public void addChangeListener(ChangeListener listener) {
-        model.addChangeListener(listener);
+    /**
+     * Adds a <code>ChangeListener</code> to the button.
+     * @param l the listener to be added
+     */
+    public void addChangeListener(ChangeListener l) {
+        addEventListener(ChangeListener.class, l);
     }
-
-    public void removeChangeListener(ChangeListener listener) {
-        model.removeChangeListener(listener);
+    
+    /**
+     * Removes a ChangeListener from the button.
+     * @param l the listener to be removed
+     */
+    public void removeChangeListener(ChangeListener l) {
+        removeEventListener(ChangeListener.class, l);
     }
+    
+    /**
+     * Notifies all listeners that have registered interest for
+     * notification on this event type.  The event instance 
+     * is lazily created using the parameters passed into 
+     * the fire method.
+     * @see EventListenerList
+     */
+    protected void fireStateChanged() {
+        // Guaranteed to return a non-null array
+        Object[] listeners = getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==ChangeListener.class) {
+                // Lazily create the event:
+                if (changeEvent == null)
+                    changeEvent = new ChangeEvent(this);
+                ((ChangeListener)listeners[i+1]).stateChanged(changeEvent);
+            }          
+        }
+    }   
 
     /**
      * TODO: documentation
@@ -523,6 +560,7 @@ public abstract class SAbstractIconTextCompound
     public void setSelected(boolean selected) {
         if (model.isSelected() != selected) {
             model.setSelected(selected);
+            fireStateChanged();
             reload(ReloadManager.RELOAD_CODE | ReloadManager.RELOAD_STYLE);
         }
     }
