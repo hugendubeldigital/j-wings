@@ -18,10 +18,14 @@ import java.io.IOException;
 
 /**
  * Device, that discards everything. For debugging purposes.
- * @author <a href="mailto:hzeller@to.com">Henner Zeller</a>
+ * Counts the number of bytes written (not exactly, since for print() methods,
+ * it counts the number of characters, that might not be the same as
+ * bytes).
+ *
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
-public class NullDevice implements Device
+public final class NullDevice implements Device
 {
     private long byteCount;
 
@@ -29,10 +33,13 @@ public class NullDevice implements Device
         byteCount = 0;
     }
 
+    public boolean isSizePreserving() { return true; }
+
     /**
      * Flush this Device.
      */
     public void flush () { }
+    public void close() { }
     
     /**
      * returns the number of bytes written to this data sink.

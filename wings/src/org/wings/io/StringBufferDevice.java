@@ -24,30 +24,21 @@ import java.io.ByteArrayOutputStream;
  * @author <a href="mailto:hzeller@to.com">Henner Zeller</a>
  * @version $Revision$
  */
-public final class StringBufferDevice
-    implements Device
+public final class StringBufferDevice implements Device
 {
     private StringBuffer buffer;
     private ByteArrayOutputStream byteStream = null;
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
     public StringBufferDevice () {
         buffer = new StringBuffer();
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
     public String toString() {
         flush();
         return buffer.toString();
     }
+
+    public boolean isSizePreserving() { return true; }
 
     /**
      * Flush this Stream.
@@ -57,6 +48,10 @@ public final class StringBufferDevice
             buffer.append (byteStream.toString());
             byteStream = null;
         }
+    }
+
+    public void close() { 
+        flush();
     }
 
     public void reset() {

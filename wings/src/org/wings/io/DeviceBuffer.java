@@ -18,13 +18,13 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 /**
- * TODO: documentation
+ * A Device, that buffers the data written to it to be
+ * written to some other Device later (see {@link writeTo(Device)})
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public final class DeviceBuffer
-    implements Device
+public final class DeviceBuffer implements Device
 {
     //  private static final byte[] NULL_STRING = "null".getBytes();
 
@@ -38,6 +38,8 @@ public final class DeviceBuffer
         buffer = new byte[initialCapacity];
         this.capacityIncrement = capacityIncrement;
     }
+
+    public boolean isSizePreserving() { return true; }
 
     /**
      * TODO: documentation
@@ -58,11 +60,8 @@ public final class DeviceBuffer
         this(2000);
     }
 
-    /**
-     * Flush this Stream.
-     */
-    public void flush () throws IOException {
-    }
+    public void flush () { }
+    public void close() { }
 
     /**
      * Print a String.

@@ -22,8 +22,7 @@ import java.io.*;
  * @author <a href="mailto:hengels@to.com">Holger Engels</a>
  * @version $Revision$
  */
-public final class OutputStreamDevice
-    implements Device
+public final class OutputStreamDevice implements Device
 {
     private PrintStream out;
 
@@ -37,11 +36,17 @@ public final class OutputStreamDevice
         this.out = new PrintStream(out);
     }
 
+    public boolean isSizePreserving() { return true; }
+
     /**
      * Flush this Stream.
      */
     public void flush () throws IOException {
         out.flush();
+    }
+
+    public void close() throws IOException { 
+        out.close(); 
     }
 
     /**

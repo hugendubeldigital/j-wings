@@ -18,13 +18,12 @@ import java.io.IOException;
 import javax.servlet.ServletOutputStream;
 
 /**
- * A Device encapsulating a ServletOutputStream
+ * A Device encapsulating a ServletOutputStream.
  *
- * @author <a href="mailto:hzeller@to.com">Henner Zeller</a>
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
-public final class ServletDevice
-    implements Device
+public final class ServletDevice implements Device
 {
     private ServletOutputStream out;
 
@@ -38,11 +37,17 @@ public final class ServletDevice
         this.out = out;
     }
 
+    public boolean isSizePreserving() { return true; }
+
     /**
      * Flush this Stream.
      */
     public void flush () throws IOException {
         out.flush();
+    }
+
+    public void close() throws IOException { 
+        out.close(); 
     }
 
     /**

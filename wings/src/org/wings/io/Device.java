@@ -19,9 +19,26 @@ import java.io.IOException;
 /**
  * A general interface for a Output-Device.
  * A Device is the destination, where the HTML-code is written to. This is
- * the 'Graphics' - device.
+ * like the 'Graphics' - device in GUI applications.
  *
- * @author <a href="mailto:hzeller@to.com">Henner Zeller</a>
+ * <p>All the printing methods return the Device itself, to allow simple
+ * chaining:
+ * <hr /><pre>
+ *    someDevice.print("foo").print("bar");
+ * </pre><hr />
+ *
+ * <p>Usually, the underlying data sink of a Device would be some OutputStream,
+ * as it finally writes through some socket to the client browser.
+ * The Device, however, offers basically two methods for writing to the 
+ * output: with print() and write() like methods. The print() like 
+ * methods get character input that has to be converted to a byte-stream
+ * before it actually can be written to the underlying OutputStream, while 
+ * the write() like methods directly handle arrays of bytes to do this. So 
+ * if possible, try to always use the write() methods, if you can 
+ * pre-calculate the byte-representation of the output (if you have some
+ * static Strings, for instance, consider using String.getBytes()).
+ *
+ * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
 public interface Device
@@ -30,6 +47,22 @@ public interface Device
      * Flush this Device.
      */
     void flush () throws IOException;
+    
+    /**
+     * close the Device.
+     */
+    void close() throws IOException;
+
+    /**
+     * returns, whether this the size of data put into this device is
+     * the same as comes out. This is necessary to know if we want to send the
+     * content size: if we know the content size, but this device changes
+     * the size, we must not send it.
+     *
+     * @return 'true', if this device leaves the size of the data going through
+     *         it, untouched. This is usually true.
+     */
+    boolean isSizePreserving();
 
     // ------------*
     // Methods which deal with characers using the platform's
