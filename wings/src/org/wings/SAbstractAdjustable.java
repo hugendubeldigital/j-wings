@@ -35,7 +35,7 @@ import javax.swing.event.ChangeEvent;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public abstract class AbstractAdjustable
+public abstract class SAbstractAdjustable
     extends SContainer
     implements Adjustable
 {
@@ -106,7 +106,7 @@ public abstract class AbstractAdjustable
      * @see #setMinimum
      * @see #setMaximum
      */
-    public AbstractAdjustable(int value, int extent, int min, int max) {
+    public SAbstractAdjustable(int value, int extent, int min, int max) {
         this.unitIncrement = 1;
         this.blockIncrement = (extent == 0) ? 1 : extent;
         this.model = new DefaultBoundedRangeModel(value, extent, min, max);
@@ -123,7 +123,7 @@ public abstract class AbstractAdjustable
      * extent = 10
      * </pre>
      */
-    public AbstractAdjustable() {
+    public SAbstractAdjustable() {
         this(0, 10, 0, 100);
     }
 

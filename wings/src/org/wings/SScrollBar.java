@@ -39,7 +39,7 @@ import org.wings.io.Device;
  * @version $Revision$
  */
 public class SScrollBar
-    extends AbstractAdjustable
+    extends SAbstractAdjustable
 {
     /**
      * @see #getCGClassID

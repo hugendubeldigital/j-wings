@@ -33,7 +33,7 @@ import org.wings.style.Style;
  * @version $Revision$
  */
 public abstract class SAbstractButton
-    extends SComponent
+    extends SAbstractIconTextCompound
     implements RequestListener
 {
     public static final String SUBMIT_BUTTON  = "submit";
@@ -42,87 +42,6 @@ public abstract class SAbstractButton
     public static final String CHECKBOX       = "checkbox";
     public static final String RADIOBUTTON    = "radio";
 
-
-    public static final int ICON_COUNT = 7;
-    public static final int DISABLED_ICON = 0;
-    public static final int DISABLED_SELECTED_ICON = 1;
-    public static final int ENABLED_ICON = 2;
-    public static final int SELECTED_ICON = 3;
-    public static final int ROLLOVER_ICON = 4;
-    public static final int ROLLOVER_SELECTED_ICON = 5;
-    public static final int PRESSED_ICON = 6;
-
-    /** the text the button is showing */
-    private String text;
-
-    /** selection state */
-    private boolean selected = false;
-
-    /**
-     * The icon to be displayed
-     */
-    private SIcon icon;
-
-    /**
-     * TODO: documentation
-     */
-    private SIcon disabledIcon;
-
-    /**
-     * TODO: documentation
-     */
-    private SIcon selectedIcon;
-
-    /**
-     * TODO: documentation
-     */
-    private SIcon pressedIcon;
-
-    /**
-     * TODO: documentation
-     */
-    private SIcon disabledSelectedIcon;
-
-    /**
-     * TODO: documentation
-     */
-    private SIcon rolloverIcon;
-
-    /**
-     * TODO: documentation
-     */
-    private SIcon rolloverSelectedIcon;
-
-    /**
-     * TODO: documentation
-     */
-    private Style selectionStyle;
-
-
-    /**
-     * TODO: documentation
-     */
-    private int verticalTextPosition = CENTER;
-
-    /**
-     * TODO: documentation
-     */
-    private int horizontalTextPosition = RIGHT;
-
-    /**
-     * TODO: documentation
-     */
-    private int iconTextGap = 0;
-
-    /**
-     * TODO: documentation
-     */
-    private boolean alignText = false;
-
-    /**
-     * TODO: documentation
-     */
-    private boolean escapeSpecialChars = true;
 
     /**
      * button type
@@ -151,12 +70,6 @@ public abstract class SAbstractButton
      * it is not inside a Form.
      */
     private boolean showAsFormComponent = true;
-
-    /**
-     * If the text of the button should not be wrapped, set this to true. This
-     * inserts a &lt;NOBREAK&gt; Tag around the label
-     */
-    protected boolean noBreak = false;
 
     /**
      * 
@@ -206,246 +119,6 @@ public abstract class SAbstractButton
      */
     public SAbstractButton() {
         this("");
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param textPosition
-     */
-    public void setHorizontalTextPosition(int textPosition) {
-        horizontalTextPosition = textPosition;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public final int getHorizontalTextPosition() {
-        return horizontalTextPosition;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param textPosition
-     */
-    public void setVerticalTextPosition(int textPosition) {
-        verticalTextPosition = textPosition;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public final int getVerticalTextPosition() {
-        return verticalTextPosition;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param gap
-     */
-    public void setIconTextGap(int gap) {
-        iconTextGap = gap;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public final int getIconTextGap() {
-        return iconTextGap;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setIcon(SIcon i) {
-        if ( isDifferent(icon, i) ) {
-            icon = i;
-            reload(ReloadManager.RELOAD_CODE);
-        }
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public final SIcon getIcon() {
-        return icon;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setPressedIcon(SIcon i) {
-        if ( isDifferent(pressedIcon, i) ) {
-            pressedIcon = i;
-            reload(ReloadManager.RELOAD_CODE);
-        }
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public final SIcon getPressedIcon() {
-        return pressedIcon;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setRolloverIcon(SIcon i) {
-        if ( isDifferent(rolloverIcon, i) ) {
-            rolloverIcon = i;
-            reload(ReloadManager.RELOAD_CODE);
-        }
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public final SIcon getRolloverIcon() {
-        return rolloverIcon;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setRolloverSelectedIcon(SIcon i) {
-        if ( isDifferent(rolloverSelectedIcon, i) ) {
-            rolloverSelectedIcon = i;
-            reload(ReloadManager.RELOAD_CODE);
-        }
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public final SIcon getRolloverSelectedIcon() {
-        return rolloverSelectedIcon;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setSelectedIcon(SIcon i) {
-        if ( isDifferent(selectedIcon, i) ) {
-            selectedIcon = i;
-            reload(ReloadManager.RELOAD_CODE);
-        }
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public final SIcon getSelectedIcon() {
-        return selectedIcon;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setDisabledSelectedIcon(SIcon i) {
-        if ( isDifferent(disabledSelectedIcon, i) ) {
-            disabledSelectedIcon = i;
-            reload(ReloadManager.RELOAD_CODE);
-        }
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public final SIcon getDisabledSelectedIcon() {
-        return disabledSelectedIcon;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param i
-     */
-    public void setDisabledIcon(SIcon i) {
-        if ( isDifferent(disabledIcon, i) ) {
-            disabledIcon = i;
-            reload(ReloadManager.RELOAD_CODE);
-        }
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public SIcon getDisabledIcon() {
-        if(disabledIcon == null) {
-            /**** TODO
-                  if(icon != null && icon instanceof ImageIcon)
-                  disabledIcon = new ImageIcon(GrayFilter.createDisabledImage(((ImageIcon)icon).getImage()));
-            ***/
-        }
-        return disabledIcon;
-    }
-
-    /**
-     * If the text of the button should not be wrapped, set this to true. This
-     * inserts a &lt;NOBREAK&gt; Tag around the label
-     * @see #isNoBreak()
-     * @param b
-     */
-    public void setNoBreak(boolean b) {
-        noBreak = b;
-    }
-
-    /**
-     * Test, if "noBreak" is set for this button.
-     * @see #setNoBreak(boolean)
-     * @return true, if nobreak is set, false otherwise.
-     */
-    public final boolean isNoBreak() {
-        return noBreak;
-    }
-
-    /**
-     * @param selectionStyle
-     */
-    public void setSelectionStyle(Style selectionStyle) {
-        this.selectionStyle = selectionStyle;
-    }
-
-    /**
-     * @return
-     */
-    public final Style getSelectionStyle() { 
-        return selectionStyle; 
     }
 
     /**
@@ -600,27 +273,6 @@ public abstract class SAbstractButton
     }
 
     /**
-     * Sets the label of the button.
-     *
-     * @param t
-     */
-    public void setText(String t) {
-        if ( isDifferent(text, t) ) {
-            text = t;
-            reload(ReloadManager.RELOAD_CODE);
-        }
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getText() {
-        return text;
-    }
-
-    /**
      * TODO: documentation
      */
     public void doClick() {
@@ -634,23 +286,12 @@ public abstract class SAbstractButton
      *
      * @return
      */
-    public final boolean isSelected() {
-        return selected;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
     public void setSelected(boolean b) {
-        if ( selected!=b ) {
+        if ( isSelected()!=b ) {
             if ( buttonGroup!=null )
                 buttonGroup.setSelected(this, b);
 
-            selected = b;
-
-            reload(ReloadManager.RELOAD_CODE | ReloadManager.RELOAD_STYLE);
+            super.setSelected(b);
         }
     }
 
@@ -669,7 +310,7 @@ public abstract class SAbstractButton
         System.out.println();
         */
 
-        requestSelection = selected; 
+        requestSelection = isSelected(); 
 
         // if event Count == 2, then we are in a form and got a deselect event and
         // and a select event. That is the new state is select. Else select
@@ -719,7 +360,7 @@ public abstract class SAbstractButton
         if ( eventCount==2 ) 
             requestSelection = true;
 
-        if ( selected!=requestSelection ) {
+        if ( isSelected()!=requestSelection ) {
             SForm.addArmedComponent(this);
         }
     }
@@ -770,11 +411,11 @@ public abstract class SAbstractButton
             return false;
 
         // don't change...
-        return selected;
+        return isSelected();
     }
 
     public String getSelectionToggleParameter() {
-        return selected ? getDeselectParameter() : getSelectParameter();
+        return isSelected() ? getDeselectParameter() : getSelectParameter();
     }
 
     public String getSelectParameter() {
@@ -887,19 +528,6 @@ public abstract class SAbstractButton
                     }*/
             }
         }
-    }
-
-    /**
-     * Sets the proper icons for buttonstatus enabled resp. disabled.
-     */
-    public void setIcons(SIcon[] icons) {
-        setIcon(icons[ENABLED_ICON]);
-        setDisabledIcon(icons[DISABLED_ICON]);
-        setDisabledSelectedIcon(icons[DISABLED_SELECTED_ICON]);
-        setRolloverIcon(icons[ROLLOVER_ICON]);
-        setRolloverSelectedIcon(icons[ROLLOVER_SELECTED_ICON]);
-        setPressedIcon(icons[PRESSED_ICON]);
-        setSelectedIcon(icons[SELECTED_ICON]);
     }
 
 }

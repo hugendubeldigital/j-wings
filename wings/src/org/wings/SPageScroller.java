@@ -27,6 +27,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
 import org.wings.border.SEmptyBorder;
+import org.wings.util.AnchorProperties;
 
 /**
  * TODO: documentation
@@ -35,8 +36,10 @@ import org.wings.border.SEmptyBorder;
  * @version $Revision$
  */
 public class SPageScroller
-    extends AbstractAdjustable
+    extends SAbstractAdjustable
+    implements RequestListener
 {
+
     /**
      * Default maximum amount of page buttons.
      */
@@ -108,16 +111,13 @@ public class SPageScroller
     protected int layoutMode;
     
     /** */
-    private final SButton forwardPage = new SButton();
+    private final SClickable forwardPage = new SClickable();
 
     /** */
-    private final SButton backwardPage = new SButton();
-
-    /** */
-    protected final SButtonGroup buttonGroup = new SButtonGroup();
+    private final SClickable backwardPage = new SClickable();
 
     /** contains the direct page buttons. Size of this array is extend */
-    protected SAbstractButton[] directPageButtons = null;
+    protected SClickable[] directPageButtons;
 
     /**
      * Icons for backward direction, the icon set of a button consists of 7 icons:
@@ -125,7 +125,7 @@ public class SPageScroller
      * rollover_selected, pressed. we
      * don't need selected here, but we support it
      **/
-    private final SIcon[] backwardIcons = new SIcon[SAbstractButton.ICON_COUNT];
+    private final SIcon[] backwardIcons = new SIcon[SClickable.ICON_COUNT];
 
     /**
      * Icons for forward direction, the icon set of a button consists of 7 icons:
@@ -133,14 +133,14 @@ public class SPageScroller
      * rollover_selected, pressed. we 
      * don't need selected here, but we support it
      **/
-    private final SIcon[] forwardIcons = new SIcon[SAbstractButton.ICON_COUNT];
+    private final SIcon[] forwardIcons = new SIcon[SClickable.ICON_COUNT];
 
     /**
      * Icons for both directions, the icon set of a button consists of 7 icons:
      * enabled, disabled, selected, disabled_selected, rollover,
      * rollover_selected, pressed.  
      **/
-    private final SIcon[] directIcons = new SIcon[SAbstractButton.ICON_COUNT];
+    private final SIcon[] directIcons = new SIcon[SClickable.ICON_COUNT];
 
     /**
      * Creates a scrollbar with the specified orientation,
@@ -159,15 +159,12 @@ public class SPageScroller
     public SPageScroller(int orientation, int value, int extent, int min, int max) {
         super(value, extent, min, max);
 
+        forwardPage.setRequestTarget(this);
+        backwardPage.setRequestTarget(this);
+
         setOrientation(orientation);
 
         setLayout(new SBorderLayout());
-
-        forwardPage.addActionListener(scrollAction);
-
-        backwardPage.addActionListener(scrollAction);
-
-        buttonGroup.addActionListener(scrollAction);
 
         initScrollers();
     }
@@ -241,35 +238,6 @@ public class SPageScroller
     }
 
     /**
-     * TODO: documentation
-     */
-    protected final ActionListener scrollAction = new ActionListener() {
-        /**
-         * TODO: documentation
-         *
-         * @param e
-         */
-        public void actionPerformed(ActionEvent e) {
-            if ( e.getSource()==forwardPage ) {
-                setValue(getValue()+getExtent());
-            }
-            else if ( e.getSource()==backwardPage ) {
-                setValue(getValue()-getExtent());
-            }
-            else { // check all Page Buttons
-                String command = e.getActionCommand();
-
-                try {
-                    int page = Integer.parseInt(command);
-                    setValue(page*getExtent());
-                } catch ( NumberFormatException ex ) {
-                    // ignore action...
-                }
-            }
-        }
-    };
-
-    /**
      * Sets the amount of page buttons to <code>count</code>.
      */
     public final int getDirectPages() {
@@ -291,8 +259,8 @@ public class SPageScroller
      * TODO: documentation
      *
      */
-    protected SAbstractButton createDirectPageButton() {
-        SButton result = new SButton();
+    protected SClickable createDirectPageButton() {
+        SClickable result = new SClickable();
         result.setBorder(DEFAULT_DIRECT_BUTTON_BORDER);
         return result;
     }
@@ -302,14 +270,10 @@ public class SPageScroller
      *
      */
     protected void initScrollers() {
-        // remove old:
-        
-        buttonGroup.removeAll();
-
-        directPageButtons = new SAbstractButton[directPages];
+        directPageButtons = new SClickable[directPages];
         for (int i = 0; i<directPageButtons.length; i++) {
             directPageButtons[i] = createDirectPageButton();
-            buttonGroup.add(directPageButtons[i]);
+            directPageButtons[i].setRequestTarget(this);
         }
 
         initLayout();
@@ -357,8 +321,16 @@ public class SPageScroller
         // lower bound
         backwardPage.setEnabled(getValue() > getMinimum());
 
+        if ( backwardPage.isEnabled() ) {
+            backwardPage.setEvent(getEventParameter(getValue()-getExtent()));
+        }
+
         // upper bound: maximum - extent
         forwardPage.setEnabled(getValue() < getMaximum()-getExtent());
+
+        if ( forwardPage.isEnabled() ) {
+            forwardPage.setEvent(getEventParameter(getValue()+getExtent()));
+        }
 
 
         // overall pages 
@@ -383,8 +355,9 @@ public class SPageScroller
             int page = firstDirectPage+i;
 
             directPageButtons[i].setText(formatDirectPageLabel(page));
-            directPageButtons[i].setActionCommand(Integer.toString(page));
             directPageButtons[i].setVisible(true);
+
+            directPageButtons[i].setEvent(getEventParameter(page*getExtent()));
 
             if ( page==actualPage ) {
                 directPageButtons[i].setEnabled(false);
@@ -396,6 +369,24 @@ public class SPageScroller
             
         }
     }
+
+    protected String getEventParameter(int value) {
+        return Integer.toString(value);
+    }
+
+    public void processRequest(String name, String[] values) {
+        for ( int i=0; i<values.length; i++ ) {
+            try {
+                setValue(Integer.parseInt(values[i]));
+            } catch ( NumberFormatException ex ) {
+                // ignore
+            }
+        }
+    }
+
+    public void fireIntermediateEvents() {}
+    
+    public void fireFinalEvents() {}
 }
 
 /*
