@@ -15,7 +15,9 @@
 package explorer;
 
 import java.io.*;
+import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 
 import javax.swing.tree.*;
 import javax.swing.event.*;
@@ -25,17 +27,17 @@ import org.wings.*;
 /**
  * TODO: documentation
  *
- * @author Rene Thol
+ * @author Holger Engels
+ * @author Andreas Gruener
+ * @author Armin Haaf
  * @version $Revision$
  */
 public class ExplorerPanel
     extends SPanel
 {
-    private STree explorerTree;
+    private final DirTableModel dirTableModel = new DirTableModel();
 
-    private final FileTableModel fTableModel = new FileTableModel();
-
-    private final STable fileTable = new STable(fTableModel);
+    private final STable dirTable = new STable(dirTableModel);
 
     public ExplorerPanel(String dir) {
         try {
@@ -45,38 +47,46 @@ public class ExplorerPanel
             setLayout(new SFlowLayout());
         }
 
-        initExplorerTree();
-        setExplorerBaseDir(dir);
-
-        fileTable.setSelectionMode(fileTable.MULTIPLE_SELECTION);
-        add(fileTable, "FileTable");
-
-        SButton deleteButton = new SButton("delete");
-        deleteButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                deleteFiles();
-            } });
-        add(deleteButton, "DeleteButton");
-
-        initUploadFile();
+	add(createTree(dir), "DirTree");
+	add(createTable(), "FileTable");
+	add(createUpload(), "UploadForm");
+	add(createDeleteButton(), "DeleteButton");
     }
 
     /**
      *
      */
     private void deleteFiles() {
-        int selected[] = fileTable.getSelectedRows();
+        int selected[] = dirTable.getSelectedRows();
 
         for (int i=0; i<selected.length; i++)
-            fTableModel.getFileAt(selected[i]).delete();
+            dirTableModel.getFileAt(selected[i]).delete();
 
-        fTableModel.reset();
+        dirTableModel.reset();
     }
 
-    /**
-     *
-     */
-    private void initUploadFile() {
+    protected SComponent createTable() {
+        dirTable.setSelectionMode(STable.MULTIPLE_SELECTION);
+
+	// Zeitstempel und Dateigröße werden mit speziellen Renderern dargestellt
+	dirTable.setDefaultRenderer(Date.class, new DateTableCellRenderer());
+	dirTable.setDefaultRenderer(Long.class, new SizeTableCellRenderer());
+
+	return dirTable; 
+    }
+
+    protected SComponent createDeleteButton() {
+        SButton delete = new SButton("delete");
+        delete.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                deleteFiles();
+            } 
+        });
+
+        return delete;
+    }
+
+    protected SComponent createUpload() {
         SForm p = new SForm(new SFlowLayout());
         p.setEncodingType("multipart/form-data");
 
@@ -86,22 +96,22 @@ public class ExplorerPanel
         SButton submit = new SButton("upload");
         submit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if ( chooser.getSelectedFile()!=null &&
-                     chooser.getFilename()!=null )
-                    uploadFile(chooser.getSelectedFile(), chooser.getFilename());
-            } });
+                writeFile(chooser.getSelectedFile(), chooser.getFilename());
+            }
+        });
         p.add(submit);
-        add(p, "UploadForm");
+
+        return p;
     }
 
     /**
      *
      */
-    private void uploadFile(File file, String fileName) {
+    private void writeFile(File file, String fileName) {
         try {
             FileInputStream fin = new FileInputStream(file);
             FileOutputStream fout =
-                new FileOutputStream(fTableModel.getDirectory().getAbsolutePath() +
+                new FileOutputStream(dirTableModel.getDirectory().getAbsolutePath() +
                                      File.separator + fileName);
             int val;
 
@@ -111,49 +121,39 @@ public class ExplorerPanel
             fin.close();
             fout.close();
 
-            fTableModel.reset();
+            dirTableModel.reset();
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     *
-     */
-    private void initExplorerTree() {
-        explorerTree = new STree(new DefaultTreeModel(new DefaultMutableTreeNode("")));
+    protected SComponent createTree(String dir) {
+
+        STree explorerTree = new STree(createModel(dir));
+
+        // wenn ein Verzeichnis selektiert wird, wird die Tabelle
+        // aktualisiert
         explorerTree.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
+
                 TreePath tpath = e.getNewLeadSelectionPath();
+                DefaultMutableTreeNode selectedNode =
+                    (DefaultMutableTreeNode)tpath.getLastPathComponent();
 
-                if ( tpath!=null ) {
-                    DefaultMutableTreeNode selectedNode =
-                        (DefaultMutableTreeNode)tpath.getLastPathComponent();
-
-                    fTableModel.setDirectory((File)selectedNode.getUserObject());
-                }
-            } });
+                dirTableModel.setDirectory((File)selectedNode.getUserObject());
+            } 
+        });
 
         explorerTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
-        add(explorerTree, "DirTree");
+        return explorerTree;
     }
 
-    /**
-     *
-     */
-    public void setExplorerBaseDir(String baseDir) {
-        File start = new File(baseDir);
-
-        if (start.isDirectory()) {
-
-            fTableModel.setDirectory(start);
-            DefaultMutableTreeNode root = new DefaultMutableTreeNode(start);
-            appendDirTree(root);
-
-            explorerTree.setModel(new DefaultTreeModel(root));
-        }
+    protected TreeModel createModel(String dir) {
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(new File(dir));
+        appendDirTree(root);
+	return new DefaultTreeModel(root);
     }
 
     /**

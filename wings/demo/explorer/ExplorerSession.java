@@ -30,7 +30,9 @@ import org.wings.io.ServletDevice;
 /**
  * TODO: documentation
  *
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author Holger Engels
+ * @author Andreas Gruener
+ * @author Armin Haaf
  * @version $Revision$
  */
 public class ExplorerSession
@@ -48,16 +50,10 @@ public class ExplorerSession
 
         String dir = config.getInitParameter("ExplorerBaseDir");
 
-        if (dir == null)
-            mainPanel = new ExplorerPanel(new String("."));
-        else
-            mainPanel = new ExplorerPanel(dir);
+	ExplorerPanel mainPanel = new ExplorerPanel(dir);
 
-        initGUI();
-    }
-
-    void initGUI() {
-        getFrame().getContentPane().add(mainPanel, SBorderLayout.CENTER);
+	// übergeordneter SFrame (Browser-Fenster)
+        getFrame().getContentPane().add(mainPanel);
     }
 
     /**

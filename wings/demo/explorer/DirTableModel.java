@@ -27,7 +27,7 @@ import javax.swing.table.*;
  * @author Rene Thol
  * @version $Revision$
  */
-public class FileTableModel
+public class DirTableModel
     extends AbstractTableModel
 {
     private static FilenameFilter DEFAULT_FILENAMEFILTER =
@@ -45,10 +45,10 @@ public class FileTableModel
 
     private final HashMap filenameCache = new HashMap();
 
-    public FileTableModel() {
+    public DirTableModel() {
     }
 
-    public FileTableModel(File dir) {
+    public DirTableModel(File dir) {
         setDirectory(dir);
     }
 
@@ -157,6 +157,8 @@ public class FileTableModel
 
     public Class getColumnClass(int col) {
         switch ( col ) {
+        case 1:
+            return Date.class;
         case 2:
             return Long.class;
         default:

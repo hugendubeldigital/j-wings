@@ -1,4 +1,4 @@
-<table border=4 bordercolordark=#660000 bordercolorlight=#FF0000>
+<table border=4>
 <tr>
 <th align=left bgcolor=#808080>Verzeichnis</th>
 <th align=center bgcolor=#808080>Inhalt<th>
@@ -9,6 +9,6 @@
 </tr>
 <tr>
 <td align=left valign=top bgcolor=#f0f0ff><object name=UploadForm></object></td>
-<td align=center valign=center bgcolor=#f0f0ff><object name=Delete icon="http://www.mercatis.de/~rene/swhtml/delete.gif"></object></td>
+<td align=center valign=center bgcolor=#f0f0ff><object name=DeleteButton>delete</object></td>
 </tr>
 </table>
