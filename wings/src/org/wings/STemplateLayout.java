@@ -241,7 +241,11 @@ public class STemplateLayout
      * @throws java.io.IOException
      */
     public void setTemplate(URL templateURL) throws java.io.IOException {
-        setTemplate(new CachedFileTemplateSource(templateURL));
+        if ( "file".equals(templateURL.getProtocol()) ) {
+            setTemplate(new File(templateURL.getFile()));
+        } else {
+            setTemplate(new CachedFileTemplateSource(templateURL));
+        }
     }
 
     /**
@@ -299,13 +303,6 @@ public class STemplateLayout
     public Map getLabels() {
         return PageParser.getInstance().getLabels(getTemplateSource());
     }
-
-    /**
-     * TODO: documentation
-     *
-     * @param c
-     */
-    public void setContainer(SContainer c) {}
 
     public String getCGClassID() {
         return cgClassID;
