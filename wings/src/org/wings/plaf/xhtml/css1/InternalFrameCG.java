@@ -55,6 +55,7 @@ public class InternalFrameCG
 
         RequestURL addr;
 
+        // left icon..
         d.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\"><tr>");
         if (frame.getIcon() != null) {
             d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><img src=\"")
@@ -62,13 +63,15 @@ public class InternalFrameCG
                 .append("\" width=\"16\" height=\"16\" border=\"0\"></a></td>");
             cols ++;
         }
-
-        d.append("<td color=\"#ffffff\" bgcolor=\"#5555aa\" class=\"frametitle\">&nbsp;<b>")
+        
+        // main window bar .. (width=480: hack necessary for opera, netscape 4)
+        d.append("<td width=\"480\" color=\"#ffffff\" bgcolor=\"#5555aa\" class=\"frametitle\">&nbsp;<b>")
             .append(text)
             .append("</b></td>");
         cols ++;
 
-        if (iconify != null) {
+        // optional icons.
+        if (frame.isIconifyable() && !frame.isIconified() && iconify != null) {
             addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_ICONIFIED);
 
@@ -80,7 +83,7 @@ public class InternalFrameCG
             cols ++;
         }
 
-        if (deiconify != null) {
+        if (frame.isIconified() && deiconify != null) {
             addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_DEICONIFIED);
 
@@ -92,7 +95,10 @@ public class InternalFrameCG
             cols ++;
         }
 
-        if (maximize != null) {
+        if (frame.isMaximizable() 
+            && !frame.isMaximized() 
+            && !frame.isIconified()
+            && maximize != null)     {
             addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_MAXIMIZED);
 
@@ -104,7 +110,7 @@ public class InternalFrameCG
             cols ++;
         }
 
-        if (unmaximize != null) {
+        if (frame.isMaximized() && unmaximize != null) {
             addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_UNMAXIMIZED);
 
@@ -116,7 +122,7 @@ public class InternalFrameCG
             cols ++;
         }
 
-        if (close != null) {
+        if (frame.isClosable() && close != null) {
             addr = frame.getRequestURL();
             addr.addParameter(frame.getNamePrefix() + "=" + SInternalFrameEvent.INTERNAL_FRAME_CLOSED);
 
