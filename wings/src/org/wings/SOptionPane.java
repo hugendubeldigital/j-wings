@@ -267,6 +267,7 @@ public class SOptionPane
      */
     public SOptionPane() {
         this("");
+        this.setName("SOptionPane");
     }
 
     /*
@@ -594,11 +595,13 @@ public class SOptionPane
         switch ( newType ) {
         case DEFAULT_OPTION:
             optionOK.setVisible(true);
+            optionOK.requestFocus();
             break;
 
         case OK_CANCEL_OPTION:
             optionOK.setVisible(true);
             optionCancel.setVisible(true);
+            optionCancel.requestFocus();
             break;
 
         case OK_CANCEL_RESET_OPTION:
