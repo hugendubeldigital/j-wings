@@ -2,11 +2,11 @@
 # adjust JAVA_HOME and JSDK_HOME to fit your needs
 
 JAVA_HOME=/usr/local/jdk1.3
-JSDK_HOME=/usr/local/jsdk
+JSDK_HOME=/home/httpd/classes
 
 DEVEL_HOME=`pwd`
 
-CLASSPATH=$JAVA_HOME/jre/lib/rt.jar:$JSDK_HOME/lib/jsdk.jar
+CLASSPATH=$JAVA_HOME/jre/lib/rt.jar:$JSDK_HOME/servlet-2.0.jar
 CLASSPATH=$CLASSPATH:$DEVEL_HOME/src:$DEVEL_HOME/demo
 
 PATH=$PATH:$JAVA_HOME/bin
