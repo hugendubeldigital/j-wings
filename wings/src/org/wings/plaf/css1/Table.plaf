@@ -91,9 +91,12 @@
     int rowSelectionColumn = table.getRowSelectionColumn();
 
     for (int r = startRow; r < endRow; r++) {
-        String rowStyle = table.isRowSelected(r) ? selectionStyle : style;
+        String rowStyle = table.getRowStyle(r);
 
-        %><tr<%|class=rowStyle%>><%
+        String actualRowStyle = rowStyle!=null ? rowStyle :
+	  (table.isRowSelected(r) ?  selectionStyle : style );
+
+        %><tr<%|class=actualRowStyle%>><%
 
         boolean selectionWritten = ((selectionMode == SListSelectionModel.NO_SELECTION)
                                    || (rowSelectionColumn < 0));
@@ -131,7 +134,7 @@
             comp = table.getEditorComponent();
         else
             comp = table.prepareRenderer(table.getCellRenderer(row, col), row, col);
-		
+
         %><td<%
         /*  %><%|class=(comp!=null)?comp.getStyle():null%><% */
         %>><%
@@ -215,7 +218,6 @@
                                                                row, -1);
 
         %><td><%
-
         RequestURL toggleSelectionAddr = table.getRequestURL();
         toggleSelectionAddr.addParameter(table, table.getToggleSelectionParameter(row, col));
 

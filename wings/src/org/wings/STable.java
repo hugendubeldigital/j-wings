@@ -955,6 +955,10 @@ public class STable
      */
     public String getSelectionStyle() { return selectionStyle; }
 
+    /**
+     * @return the style of selected cells.
+     */
+    public String getRowStyle(int row) { return null; }
 
     /**
      * Set the selectionAttributes.
