@@ -31,7 +31,7 @@ import org.wings.session.SessionManager;
  */
 public final class SRequestDispatcher
 {
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     private final HashMap listener = new HashMap();
 

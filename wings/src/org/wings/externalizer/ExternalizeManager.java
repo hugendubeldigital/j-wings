@@ -43,9 +43,6 @@ public class ExternalizeManager extends AbstractExternalizeManager
         new ImageIconExternalizer(ImageExternalizer.FORMAT_PNG),
         new ImageIconExternalizer(ImageExternalizer.FORMAT_GIF),
         new StaticResourceExternalizer(),
-        new TextExternalizer(),
-        new TextExternalizer("text/html", "html"),
-        new StyleSheetExternalizer(),
         new DynamicResourceExternalizer(),
     };
 

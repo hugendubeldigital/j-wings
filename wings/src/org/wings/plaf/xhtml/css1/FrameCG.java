@@ -39,9 +39,7 @@ public final class FrameCG
         frame.addLink(new SLink("stylesheet", null, "text/css", null, dynamicResource));
 
         CGManager cgManager = frame.getSession().getCGManager();
-        String resourceName = (String)cgManager.getObject("lookandfeel.stylesheet", String.class);
-        System.err.println("lookandfeel.stylesheet: " + resourceName);
-        StaticResource staticResource = new StaticResource(getClass().getClassLoader(), resourceName);
+        Resource staticResource = (Resource)cgManager.getObject("lookandfeel.stylesheet", Resource.class);
         frame.addLink(new SLink("stylesheet", null, "text/css", null, staticResource));
     }
 

@@ -51,11 +51,11 @@ public abstract class AbstractExternalizeManager
      * The externalized ID is just a counter start starts with zero. This
      * happens with each start of the server, and thus generates the same
      * ID if we restart the application (especially, if we are in the 
-     * development phase). Since we externalize the resource giving a long
-     * caching timeout, the browser might not refetch an resource externalized
-     * in a fresh instance of the web-application, since the browser has it
-     * already cached.
-     * Thus, we need an unique prefix for each externalized resource, that
+     * development phase). Since we externalize the resource with a long
+     * caching timeout, the browser might not refetch a resource externalized
+     * in a fresh instance of the web-application, since the browser has cached
+     * it already.
+     * Thus, we need a unique prefix for each externalized resource, that
      * changes with each start of the server. 
      * These static variables create a new ID every UNIQUE_TIMESLICE, which
      * means, that, if we use a 2-character prefix, can offer the browser

@@ -14,7 +14,6 @@
 
 package org.wings.plaf;
 
-import java.awt.*;
 import java.beans.*;
 import java.lang.reflect.*;
 import java.util.*;
@@ -24,6 +23,7 @@ import javax.swing.*;
 import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
+import org.wings.session.*;
 import org.wings.style.*;
 
 /**
@@ -33,34 +33,17 @@ import org.wings.style.*;
  */
 public abstract class AbstractComponentCG implements ComponentCG, SConstants
 {
-    static Map cache = Collections.synchronizedMap(new HashMap());
+    protected static final Map cache = new HashMap();
 
     protected AbstractComponentCG() {
-    }
-
-    public void reload(SComponent comp, int aspect) {
-        if ( comp==null )
-            return;
-
-        SFrame parent = comp.getParentFrame();
-
-        if ( parent==null )
-            return;
-
-        ReloadManager reloadManager = comp.getSession().getReloadManager();
-
-        switch ( aspect ) {
-        case ReloadManager.RELOAD_CODE: 
-            reloadManager.markDirty(parent.getDynamicResource(DynamicCodeResource.class));
-            break;
-        case ReloadManager.RELOAD_STYLE: 
-            reloadManager.markDirty(parent.getDynamicResource(DynamicStyleSheetResource.class));
-            break;
-        case ReloadManager.RELOAD_SCRIPT: 
-            // TODO
-            //reloadManager.markDirty(parent.getDynamicResource(DynamicScriptResource.class));
-            break;
-        }
+        CGManager manager = SessionManager.getSession().getCGManager();
+        String name = getClass().getName();
+        name = name.substring(name.lastIndexOf("."));
+        long start = System.currentTimeMillis();
+        configure(this, name, manager);
+        if ((System.currentTimeMillis()-start) > 50)
+            System.err.println("configure CG done in " +
+                               (System.currentTimeMillis()-start) + " ms");
     }
 
     /**
@@ -68,15 +51,15 @@ public abstract class AbstractComponentCG implements ComponentCG, SConstants
      * @param component the component
      */
     public void installCG(SComponent component) {
-        System.err.println("install CG " + getClass().getName());
         long start = System.currentTimeMillis();
 	CGManager manager = component.getSession().getCGManager();
         String className = component.getClass().getName();
         className = className.substring(className.lastIndexOf(".") + 1);
 
         configure(component, className, manager);
-        System.err.println("install CG done in " +
-                           (System.currentTimeMillis()-start) + " ms");
+        if ((System.currentTimeMillis()-start) > 50)
+            System.err.println("install CG done in " +
+                               (System.currentTimeMillis()-start) + " ms");
     }
 
     /**
@@ -84,43 +67,110 @@ public abstract class AbstractComponentCG implements ComponentCG, SConstants
      */
     protected void configure(Object object, String className, CGManager manager) {
         try {
-            PropertyDescriptor[] descriptors = (PropertyDescriptor[])cache.get(object.getClass());
-            if (descriptors == null) {
-                BeanInfo info = Introspector.getBeanInfo(object.getClass());
-                descriptors = info.getPropertyDescriptors();
-                cache.put(object.getClass(), descriptors);
-            }
+            Class objectClass = object.getClass();
 
-            for (int i=0; i < descriptors.length; i++) {
-                Object value = null;
-
-                if (descriptors[i] instanceof IndexedPropertyDescriptor ||
-                    descriptors[i].getPropertyType() == null)
-                    continue;
-
-                Method setter = descriptors[i].getWriteMethod();
-                if (setter == null || descriptors[i].getReadMethod() == null)
-                    continue;
-
-                String propertyName = className + "." + descriptors[i].getName();
-                Class propertyType = descriptors[i].getPropertyType();
-                boolean configurable = false;
-
-                value = manager.getObject(propertyName, propertyType);
-                configurable = !propertyType.isPrimitive();
-
-                if (value != null) {
-                    setter.invoke(object, new Object[] { value });
-                    if (configurable)
-                        configure(value, propertyName, manager);
+            long introspection_time = System.currentTimeMillis();
+            Method[] setters = (Method[])cache.get(objectClass);
+            if (setters == null) {
+                synchronized (cache) {
+                    setters = (Method[])cache.get(objectClass);
+                    if (setters == null) {
+                        setters = findRelevantSetters(objectClass);
+                        cache.put(objectClass, setters);
+                    }
                 }
             }
+            if ((System.currentTimeMillis()-introspection_time) > 50)
+                System.err.println(objectClass.getName() + " introspection_time " +
+                               (System.currentTimeMillis()-introspection_time) + " ms");
+
+            long configuration_time = System.currentTimeMillis();
+            for (int i=0; i < setters.length; i++) {
+                Object value = null;
+
+                String propertyName = Introspector.decapitalize(setters[i].getName().substring(3));
+                String lookupName = className + "." + propertyName;
+                Class propertyType = setters[i].getParameterTypes()[0];
+
+                value = manager.getObject(lookupName, propertyType);
+                boolean configurable = !propertyType.isPrimitive();
+
+                if (value != null) {
+                    setters[i].invoke(object, new Object[] { value });
+                    if (configurable) {
+                        configure(value, lookupName, manager);
+                    }
+                }
+            }
+            if ((System.currentTimeMillis()-configuration_time) > 50)
+                System.err.println(objectClass.getName() + " configuration_time " +
+                               (System.currentTimeMillis()-configuration_time) + " ms");
         }
         catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace(System.err);
         }
     }
+
+    protected Method[] findRelevantSetters(Class clazz) {
+        Method[] methods = clazz.getMethods();
+        List setterList = new ArrayList(methods.length / 2);
+        for (int m=0; m < methods.length; m++) {
+            Method method = methods[m];
+            if (method.getName().startsWith("set") &&
+                method.getParameterTypes().length == 1 &&
+                !method.getParameterTypes()[0].isArray() &&
+                Arrays.binarySearch(toBeSkipped, method.getName()) < 0)
+                setterList.add(method);
+        }
+        Iterator it = setterList.iterator();
+        while (it.hasNext()) {
+            Method setter = (Method)it.next();
+            Class type = setter.getParameterTypes()[0];
+            boolean present = false;
+            if (boolean.class.equals(setter.getParameterTypes()[0])) {
+                String getterName = "is" + setter.getName().substring(3);
+                try {
+                    Method getter = clazz.getMethod(getterName, EMPTY_CLASS_ARRAY);
+                    if (type.equals(getter.getReturnType()))
+                        present = true;
+                }
+                catch (Exception e) {}
+            }
+            if (!present) {
+                String getterName = "g" + setter.getName().substring(1);
+                try {
+                    Method getter = clazz.getMethod(getterName, EMPTY_CLASS_ARRAY);
+                    if (type.equals(getter.getReturnType()))
+                        present = true;
+                }
+                catch (Exception e) {}
+            }
+            if (!present)
+                it.remove();
+            //else
+            //    System.err.println(setter.toString());
+        }
+        return (Method[])setterList.toArray(new Method[setterList.size()]);
+    }
+
+    private static final String[] toBeSkipped = new String[] {
+        "setAction",
+        "setBaseTarget",
+        "setEnabled",
+        "setEscapeSpecialChars",
+        "setLocale",
+        "setModel",
+        "setName",
+        "setParent",
+        "setShowAsFormComponent",
+        "setTargetResource",
+        "setText",
+        "setToolTipText",
+        "setVisible"
+    };
+
+    private static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
 
     /**
      * Uninstall the CG from <code>component</code>.

@@ -112,6 +112,8 @@ public abstract class SessionServlet
      */
     private String afterSessionURL = null;
 
+    private boolean firstRequest = true;
+
     /**
      * TODO: documentation
      *
@@ -567,7 +569,7 @@ public abstract class SessionServlet
                 if (events)
                     processRequest(asreq, response);
 
-                // if the user chose to exit the session as an reaction on an
+                // if the user chose to exit the session as a reaction on an
                 // event, we got an URL to redirect after the session.
                 /*
                  * where is the right place?
@@ -598,8 +600,9 @@ public abstract class SessionServlet
                 System.err.println("pathInfo: " + pathInfo);
 
                 // no pathInfo .. getFrame()
-                if (pathInfo == null || pathInfo.length() == 0) {
+                if (pathInfo == null || pathInfo.length() == 0 || firstRequest) {
                     debug("delivering default frame");
+                    firstRequest = false;
 
                     DynamicResource resource
                         = (DynamicResource)getFrame().getDynamicResource(DynamicCodeResource.class);
@@ -639,7 +642,6 @@ public abstract class SessionServlet
     private SFrame errorFrame;
 
     private SLabel errorStackTraceLabel;
-
     private SLabel errorMessageLabel;
 
     protected void handleException(HttpServletRequest req, HttpServletResponse res, Exception e) {

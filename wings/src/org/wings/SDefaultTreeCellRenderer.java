@@ -168,9 +168,6 @@ public class SDefaultTreeCellRenderer
      * @param newStyle
      */
     public void setTextSelectionStyle(Style newStyle) {
-        System.err.println("############################");
-        System.err.println("setting text selection style");
-        System.err.println("############################");
         textSelectionStyle = newStyle;
     }
 
@@ -189,9 +186,6 @@ public class SDefaultTreeCellRenderer
      * @param newStyle
      */
     public void setTextNonSelectionStyle(Style newStyle) {
-        System.err.println("############################");
-        System.err.println("setting text nonselection style");
-        System.err.println("############################");
         textNonSelectionStyle = newStyle;
     }
 

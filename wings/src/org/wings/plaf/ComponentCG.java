@@ -21,8 +21,6 @@ import org.wings.io.*;
 
 public interface ComponentCG
 {
-    void reload(SComponent comp, int aspect);
-
     /**
      * Installs the CG.
      *

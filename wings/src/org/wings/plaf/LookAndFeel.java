@@ -28,7 +28,7 @@ import org.wings.style.*;
 /**
  * A Look-and-Feel consists of a bunch of CGs and resource properties.
  * wingS provides a pluggable look-and-feel (laf or plaf) concept similar to that of Swing.
- * A certain plaf implementation adresses normally a specific browser.
+ * A certain plaf implementation normally adresses a specific browser.
  * 
  * @see org.wings.plaf.ComponentCG
  */
@@ -118,11 +118,21 @@ public class LookAndFeel
      * @return the laf's style sheet
      */
     public StyleSheet getStyleSheet() {
+        if (styleSheet == null) {
+            styleSheet = new CSSStyleSheet();
+
+            try {
+                InputStream in = classLoader.getResourceAsStream(properties.getProperty("lookandfeel.stylesheet"));
+                ((CSSStyleSheet)styleSheet).read(in);
+            }
+            catch (Exception e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace(System.err);
+            }
+        }
         if (styleSheet == null)
-            styleSheet = (StyleSheet)defaults.get("lookandfeel.stylesheet", StyleSheet.class);
-        if (styleSheet == null)
-            throw new RuntimeException("mmmmmmmiiiiiiiiiiiissssssssssstttttttt");
-        // styleSheet = makeStyleSheet("org/wings/plaf/xhtml/css1/default.css");
+            throw new RuntimeException("a stylsheet is required");
+
         return styleSheet;
     }
 
@@ -211,17 +221,8 @@ public class LookAndFeel
      * @param value styleSheet as a string
      * @return the style
      */
-    public static StyleSheet makeStyleSheet(ClassLoader classLoader, String resourceName) {
-        CSSStyleSheet sheet = new CSSStyleSheet();
-        try {
-            InputStream in = classLoader.getResourceAsStream(resourceName);
-            sheet.read(in);
-        }
-        catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
-        }
-        return sheet;
+    public static Resource makeResource(ClassLoader classLoader, String resourceName) {
+        return new StaticResource(classLoader, resourceName);
     }
 
     /**
@@ -229,8 +230,27 @@ public class LookAndFeel
      * @param value styleSheet as a string
      * @return the styleSheet
      */
+    public Resource makeResource(String resourceName) {
+        return makeResource(classLoader, resourceName);
+    }
+
+    /**
+     * Utility method that creates a stylesheet object from a resource
+     * @param resourceName
+     * @return the styleSheet
+     */
     public StyleSheet makeStyleSheet(String resourceName) {
-        return makeStyleSheet(classLoader, resourceName);
+        try {
+            CSSStyleSheet styleSheet = new CSSStyleSheet();
+            InputStream in = classLoader.getResourceAsStream(resourceName);
+            styleSheet.read(in);
+            return styleSheet;
+        }
+        catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace(System.err);
+            return null;
+        }
     }
 
     /**
@@ -270,6 +290,10 @@ public class LookAndFeel
                 Constructor constructor = clazz.getConstructor(new Class[] { String.class });
                 return constructor.newInstance(new Object[] { value });
             }
+        }
+        catch (NoSuchMethodException e) {
+            System.err.println(clazz.getName() + " doesn't have a single String arg constructor");
+            return null;
         }
         catch (Exception e) {
             System.err.println(e.getMessage());
@@ -312,6 +336,7 @@ public class LookAndFeel
             String property = properties.getProperty(id);
             if (property == null) {
                 //System.err.println("no property for id " + id);
+                put(id, null);
                 return null;
             }
 
@@ -325,17 +350,19 @@ public class LookAndFeel
                 value = makeCG(property);
             else if (SIcon.class.isAssignableFrom(type))
                 value = makeIcon(property);
-            else if (StyleSheet.class.isAssignableFrom(type))
-                value = makeStyleSheet(property);
+            else if (Resource.class.isAssignableFrom(type))
+                value = makeResource(property);
             else if (Style.class.isAssignableFrom(type))
                 value = makeStyle(property);
+            else if (StyleSheet.class.isAssignableFrom(type))
+                value = makeStyleSheet(property);
             else if (AttributeSet.class.isAssignableFrom(type))
                 value = makeAttributeSet(property);
             else
                 value = makeObject(property, type);
             //System.err.println(" " + (System.currentTimeMillis() - millis));
 
-            //            put(id, value);
+            put(id, value);
             return value;
         }
     }

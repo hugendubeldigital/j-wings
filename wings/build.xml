@@ -121,24 +121,15 @@
     </jar>
   </target>
 
-  <target name="parser" depends="prepare">
-    <delete dir="${build}/src" />
-    <mkdir dir="${build}/src/org/wings/style" />
-    <copy todir="${build}/src/org/wings/style">
-      <fileset dir="jj">
-        <include name="*.java" />
+  <target name="claf" depends="compile">
+    <taskdef name="claf"
+	     classpath="${classes}"
+	     classname="org.wings.plaf.compiler.ClafTask"/>
+    <claf destdir="build/src">
+      <fileset dir="src">
+        <include name="org/wings/plaf/css1/*.plaf"/>
       </fileset>
-    </copy>
-    <javacc target="jj/css1.jj" 
-	    outputdirectory="${build}/src/org/wings/style"
-	    javacchome="${javacc.home}/bin/lib"/>
-
-    <javac srcdir="${build}/src" destdir="${build}/classes"
-	   debug="true"
-	   deprecation="${build.deprecation}"
-	   encoding="ISO8859-1">
-      <classpath refid="build.classpath" />
-    </javac>
+    </claf>
   </target>
 
   <target name="testcompile" depends="wings.jar,css1.jar">
