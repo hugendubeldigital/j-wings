@@ -126,7 +126,11 @@ public class ListCG implements org.wings.plaf.ListCG
 
                 SComponent renderer
                     = cellRenderer.getListCellRendererComponent(list, o, false, i);
-
+                
+                /*
+                 * Hack: remove all tags, because in form selections, this
+                 * does look ugly.
+                 */
                 StringBufferDevice device = getStringBufferDevice();
                 renderer.write(device);
                 char[] chars = device.toString().toCharArray();

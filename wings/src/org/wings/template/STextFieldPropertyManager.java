@@ -14,6 +14,7 @@
 
 package org.wings.template;
 
+import org.wings.SComponent;
 import org.wings.STextField;
 
 /**
@@ -30,12 +31,16 @@ public class STextFieldPropertyManager
     public STextFieldPropertyManager() {
     }
 
-    public void setProperty(Object o, String name, String value) {
-        STextField c = (STextField)o;
+    public void setProperty(SComponent comp, String name, String value) {
+        STextField c = (STextField)comp;
         if ( name.equals("COLS") )
             c.setColumns(Integer.parseInt(value));
+        if ( name.equals("SIZE") )
+            c.setColumns(Integer.parseInt(value));
+        if ( name.equals("MAXSIZE") )
+            c.setMaxColumns(Integer.parseInt(value));
         else
-            super.setProperty(o, name, value);
+            super.setProperty(comp, name, value);
     }
 
     public Class[] getSupportedClasses() {

@@ -14,6 +14,7 @@
 
 package org.wings.template;
 
+import org.wings.SComponent;
 import org.wings.SButton;
 
 /**
@@ -30,8 +31,8 @@ public class SButtonPropertyManager
     public SButtonPropertyManager() {
     }
 
-    public void setProperty(Object o, String name, String value) {
-        SButton c = (SButton)o;
+    public void setProperty(SComponent comp, String name, String value) {
+        SButton c = (SButton) comp;
         if ( name.equals("ICON") )
             c.setIcon(value);
         else if ( name.equals("TEXT") )
@@ -39,7 +40,7 @@ public class SButtonPropertyManager
         else if ( name.equals("TARGET") )
             c.setRealTarget(value);
         else
-            super.setProperty(o, name, value);
+            super.setProperty(comp, name, value);
     }
 
     public Class[] getSupportedClasses() {

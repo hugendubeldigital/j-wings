@@ -20,7 +20,8 @@ import org.wings.STemplateLayout;
 import org.wings.io.Device;
 import org.wings.plaf.LayoutCG;
 import org.wings.template.TemplateParseContext;
-import org.wings.template.TemplateTagHandler;
+import org.wings.template.RangeTagHandler;
+import org.wings.template.SimpleTagHandler;
 import org.wings.template.parser.DataSource;
 import org.wings.template.parser.PageParser;
 
@@ -34,7 +35,7 @@ public class TemplateLayoutCG
     /**
      * The PageParser parses the templates once and then
      * reuses the cached parse results. To let the cache survive
-     * multiple invokations, this PageParser is static.
+     * multiple invocations, this PageParser is static.
      */
     static private final PageParser PARSER = new PageParser();
 
@@ -43,7 +44,10 @@ public class TemplateLayoutCG
      */
     static {
         PARSER.addTagHandler(STemplateLayout.COMPONENT_TAG,
-                             TemplateTagHandler.class);
+                             RangeTagHandler.class);
+        PARSER.addTagHandler("TEXTAREA", RangeTagHandler.class);
+        PARSER.addTagHandler("SELECT",   RangeTagHandler.class);
+        PARSER.addTagHandler("INPUT",    SimpleTagHandler.class);
     }
 
     /**
@@ -61,7 +65,7 @@ public class TemplateLayoutCG
         }
 	else {
             PARSER.process(source,
-	        new TemplateParseContext(device, layout.getComponents()));
+                           new TemplateParseContext(device, layout));
         }
     }
 

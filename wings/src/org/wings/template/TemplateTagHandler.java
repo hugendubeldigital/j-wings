@@ -16,6 +16,7 @@ package org.wings.template;
 
 import java.io.*;
 import java.util.Dictionary;
+import java.util.Enumeration;
 
 import javax.servlet.http.*;
 import javax.servlet.ServletConfig;
@@ -23,6 +24,7 @@ import javax.servlet.ServletConfig;
 import org.wings.template.parser.*;
 
 import org.wings.SComponent;
+import org.wings.STemplateLayout;
 import org.wings.io.Device;
 
 /**
@@ -31,75 +33,12 @@ import org.wings.io.Device;
  * @author <A href="mailto:zeller@think.de">Henner Zeller</A>
  * @version $Revision$
  */
-public class TemplateTagHandler implements SpecialTagHandler
+abstract class TemplateTagHandler implements SpecialTagHandler
 {
-    private static String ERRORMSG = "Error in Template: &lt;/component&gt; missing";
     long startPos;
     long endPos;
     Dictionary properties;
     String name;
-    boolean close_is_missing = false;
-
-    /**
-     * Parse special tag.
-     * @param config    Servlet configuration
-     * @param input     The PositionReader, located after the Name token of the Tag
-     * @param startPos  The Position parsing of this token began
-     * @param startTag  the SGMLTag found in the file.
-     */
-    public SGMLTag readTag(ParseContext context,
-                           PositionReader input,
-                           long startPosition,
-                           SGMLTag startTag)
-        throws IOException
-    {
-        /*
-         * parse the full tag to get all parameters
-         * (i.e. an optional 'format'-parameter)
-         * and to place the Reader at the position
-         * after the closing '>'
-         */
-        startTag.parse(input);
-
-        /*
-         * The Offset is the space the reader skipped
-         * before it reached the opening '<'
-         *   <!-- a comment --> some garbage <DATE>
-         * ^----- offset --------------------^
-         */
-        startPos = startPosition + startTag.getOffset();
-
-        /*
-         * get needed properties
-         */
-        name = startTag.value ("NAME", null);
-        if (name == null)
-            return null;
-
-        properties = startTag.getAttributes();
-
-        endPos = input.getPosition();  // in case </component> is missing
-
-        while (!startTag.finished()) {
-            startTag = new SGMLTag (input, true);
-            if (startTag.isNamed("/" +
-                                 org.wings.STemplateLayout.COMPONENT_TAG) ||
-                startTag.isNamed(org.wings.STemplateLayout.COMPONENT_TAG))
-                break;
-        }
-
-        // Entweder EOF oder unerwartet neu oeffnendes COMPONENT ..
-        if (startTag.finished() || 
-            startTag.isNamed(org.wings.STemplateLayout.COMPONENT_TAG)) {
-            close_is_missing = true;
-        }
-        else {
-            // The current Position is after the closing '>'
-            endPos = input.getPosition();
-        }
-
-        return startTag;
-    }
 
     /**
      * Get start position of the area in the sourcefile this
@@ -131,23 +70,30 @@ public class TemplateTagHandler implements SpecialTagHandler
     {
         TemplateParseContext tcontext = (TemplateParseContext) context;
         Device sink = tcontext.getDevice();
+
+        /*
+         * get the component that is associtated with this name. This has
+         * been set as Layout Manager Constraint.
+         */
         SComponent c = tcontext.getComponent (name);
         if (c == null) {
-            sink.append ("<!-- NOT FOUND -->");
+            sink.append ("<!-- Template: '" + name + "' Component not given -->");
         }
         else {
-            // set properties first ..
+            // set properties; the STemplateLayout knows how knows how.
+            if (properties.size() > 0) {
+                PropertyManager propManager = STemplateLayout
+                    .getPropertyManager(c.getClass());
+                if (propManager != null) {
+                    Enumeration e = properties.keys();
+                    while (e.hasMoreElements()) {
+                        String key = (String) e.nextElement();
+                        String value = (String) properties.get(key);
+                        propManager.setProperty(c, key, value);
+                    }
+                }
+            }
             c.write(sink);
-        }
-
-        // warn, if the closing tag was not found ..
-        if (close_is_missing) {
-            sink.append ("<table bgcolor='#FFAA55'><tr><td>");
-            sink.append ("&nbsp;<blink><b>");
-            sink.append ( ERRORMSG );
-            sink.append (" for '<em>" + name + "</em>'");
-            sink.append ("</b></blink>&nbsp;");
-            sink.append ("</td></tr></table>");
         }
     }
 }

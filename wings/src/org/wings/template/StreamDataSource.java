@@ -21,7 +21,7 @@ import org.wings.template.parser.*;
 
 /**
  * A <CODE>StreamDataSource</CODE> implements a DataSource
- * for a Stream.
+ * as a wrapper around a Stream.
  *
  * @see org.wings.template.parser.DataSource
  * @author <A href="mailto:joachim.karrer@mercatis.de">Joachim Karrer</A>

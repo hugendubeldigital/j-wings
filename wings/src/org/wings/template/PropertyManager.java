@@ -13,6 +13,7 @@
  */
 
 package org.wings.template;
+import org.wings.SComponent;
 
 /**
  * Property Manager for template managed components.
@@ -25,7 +26,7 @@ package org.wings.template;
  */
 public interface PropertyManager
 {
-    void setProperty(Object o, String name, String value);
+    void setProperty(SComponent comp, String name, String value);
     Class[] getSupportedClasses();
 }
 

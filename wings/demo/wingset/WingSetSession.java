@@ -57,21 +57,20 @@ public class WingSetSession
 
         STabbedPane tab = new STabbedPane();
 
-        tab.add(new LabelExample(), "Label Example");
-        tab.add(new BorderExample(), "Border Example");
-        tab.add(new TextComponentExample(), "Text Component Example");
-        tab.add(new TreeExample(), "Tree Example");
-        tab.add(new OptionPaneExample(getFrame()), "OptionPane Example");
-        tab.add(new TableExample(), "Table Example");
-        tab.add(new ListExample(), "List Example");
-        tab.add(new ButtonExample(), "Button Example");
-        tab.add(new CheckBoxExample(), "CheckBox Example");
-        tab.add(new RadioButtonExample(), "RadioButton Example");
-        tab.add(new FileChooserExample(), "FileChooser Example");
-        tab.add(new ScrollPaneExample(), "ScrollPane Example");
-        tab.add(new TemplateExample(), "Template Example");
-        tab.add(new SLabel("temporarily disabled"), "DateChooser Example");
-        //tab.add(new DateChooserExample(), "DateChooser Example");
+        tab.add(new LabelExample(), "Label");
+        tab.add(new BorderExample(), "Border");
+        tab.add(new TextComponentExample(), "Text Component");
+        tab.add(new TreeExample(), "Tree");
+        tab.add(new OptionPaneExample(getFrame()), "OptionPane");
+        tab.add(new TableExample(), "Table");
+        tab.add(new ListExample(), "List");
+        tab.add(new ButtonExample(), "Button");
+        tab.add(new CheckBoxExample(), "CheckBox");
+        tab.add(new RadioButtonExample(), "RadioButton");
+        tab.add(new FileChooserExample(), "FileChooser");
+        tab.add(new ScrollPaneExample(), "ScrollPane");
+        tab.add(new TemplateExample(), "Template");
+        //tab.add(new DateChooserExample(), "DateChooser");
 
         contentPane.add(tab);
         contentPane.add(new SSeparator());

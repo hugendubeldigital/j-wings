@@ -38,7 +38,7 @@ public class ScrollPaneExample
         add(new SLabel("<h4>Table in a ScrollPane</h4>"));
 
         // table.setSelectionMode(MULTIPLE_SELECTION);
-        // table.setShowGrid(false);
+        // table.setShowGrid(true);
         SScrollPane scroller = new SScrollPane(table);
         add(scroller);
 
@@ -73,8 +73,7 @@ public class ScrollPaneExample
         final int COLS = 15;
         final int ROWS = 15;
 
-        SImage image =
-            new SImage(new ResourceImageIcon(SLabel.class, "icons/JavaCup.gif"));
+        Icon image = new ResourceImageIcon(SLabel.class, "icons/JavaCup.gif");
 
         Object[][] data = new Object[ROWS][COLS];
 
@@ -119,14 +118,11 @@ public class ScrollPaneExample
             return getValueAt(0, columnIndex).getClass();
         }
 
-        public SLabel createColor(int row) {
-            SLabel color = new SLabel("");
-            color.setForeground(colors[row % colors.length]);
-            color.setText(colors[row % colors.length].toString());
-            return color;
+        public Color createColor(int row) {
+            return colors[row % colors.length];
         }
 
-        public SComponent createImage(int row) {
+        public Object createImage(int row) {
             return image;
         }
 

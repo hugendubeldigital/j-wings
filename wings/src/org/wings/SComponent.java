@@ -937,9 +937,9 @@ public abstract class SComponent
      */
     public void updateCG() {
         if (getSession() == null)
-            System.err.println("noch keine Session - das darf nicht sein!");
+            System.err.println("no session yet.");
         if (getSession().getCGManager() == null)
-            System.err.println("kein CGManager - das darf nicht sein!");
+            System.err.println("no CGManager");
 
         setCG((ComponentCG)getSession().getCGManager().getCG(this));
 

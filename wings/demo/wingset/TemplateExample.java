@@ -39,26 +39,35 @@ public class TemplateExample
 
     SForm createTemplateExample() {
         SForm c = new SForm();
-
+        
         try {
-            java.net.URL templateURL = getClass().getResource("/wingset/TemplateExample.thtml");
-			if( templateURL == null ){
-				c.add(new SLabel("Sorry, can't find TemplateExample.thtml. Are you using a JAR-File?"));
-				return c;
-			}
+            java.net.URL templateURL = 
+                getClass().getResource("/wingset/TemplateExample.thtml");
+            if( templateURL == null ){
+                c.add(new SLabel("Sorry, can't find TemplateExample.thtml. Are you using a JAR-File?"));
+                return c;
+            }
             // you can of course directly give files here.
             STemplateLayout layout = new STemplateLayout( templateURL );
-			c.setLayout( layout );
+            c.setLayout( layout );
         }
         catch ( java.io.IOException except ) {
             except.printStackTrace();
         }
-
+        
+        c.add(new STextArea(), "DemoArea");
         c.add(new SLabel ((new java.util.Date()).toString()), "theLabel");
-        c.add(new SButton ("Button"), "TESTBUTTON");
+        c.add(new SButton ("Press Me"), "TESTBUTTON");
         c.add(new STextField (), "NAME");
-        c.add(new STextField (), "VORNAME");
-        c.add(new TreeExample(), "BAUM");
+        c.add(new STextField (), "FIRSTNAME");
+        SButtonGroup group = new SButtonGroup();
+        for ( int i=0; i<3; i++ ) {
+            SRadioButton b = new SRadioButton("Radio " + (i+1));
+            group.add(b);
+            c.add(b, "SELVAL=" + i);
+        }
+
+        c.add(new TreeExample(), "TREE");
         return c;
     }
 }

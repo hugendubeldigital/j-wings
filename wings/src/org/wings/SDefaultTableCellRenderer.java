@@ -100,7 +100,14 @@ public class SDefaultTableCellRenderer
         addr = baseTable.getServerAddress();
         addr.add(baseTable.getNamePrefix() + "=" + row + ":" + col);
 
-        contents.setText((value == null) ? "&nbsp;" : value.toString());
+        contents.setText(null);
+        contents.setIcon((Icon) null);
+        if (value == null)
+            contents.setText("&nbsp;");
+        else if (value instanceof Icon)
+            contents.setIcon((Icon) value);
+        else
+            contents.setText(value.toString());
 
         if (baseTable instanceof STable) {
             STable table = (STable)baseTable;

@@ -16,10 +16,12 @@ package org.wings.template;
 
 import java.io.OutputStream;
 import java.io.IOException;
+import java.util.Dictionary;
 import java.util.Hashtable;
 import org.wings.io.Device;
 
 import org.wings.SComponent;
+import org.wings.STemplateLayout;
 
 import org.wings.template.parser.*;
 
@@ -33,11 +35,11 @@ public final class TemplateParseContext implements ParseContext
 {
     private OutputStream myOut;
     private Device sink;
-    private Hashtable components;
+    private STemplateLayout layout;
 
-    public TemplateParseContext (final Device sink, Hashtable components) {
+    public TemplateParseContext (final Device sink, STemplateLayout layout) {
         this.sink = sink;
-        this.components = components;
+        this.layout = layout;
         /**
          * implement an OutputStream on top
          * of a sink.
@@ -79,7 +81,7 @@ public final class TemplateParseContext implements ParseContext
     }
 
     public SComponent getComponent (String name) {
-        return (SComponent) components.get (name);
+        return (SComponent) layout.getComponents().get (name);
     }
 }
 

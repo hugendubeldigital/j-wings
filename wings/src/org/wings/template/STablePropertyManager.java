@@ -15,7 +15,7 @@
 package org.wings.template;
 
 import java.awt.Color;
-
+import org.wings.SComponent;
 import org.wings.STable;
 
 /**
@@ -32,14 +32,14 @@ public class STablePropertyManager
     public STablePropertyManager() {
     }
 
-    public void setProperty(Object o, String name, String value) {
-        STable t = (STable)o;
+    public void setProperty(SComponent comp, String name, String value) {
+        STable t = (STable)comp;
         if ( name.equals("SELECTION_FOREGROUND") )
             t.setSelectionForeground(Color.decode(value));
         else if ( name.equals("SELECTION_BACKGROUND") )
             t.setSelectionBackground(Color.decode(value));
         else
-            super.setProperty(o, name, value);
+            super.setProperty(comp, name, value);
     }
 
     public Class[] getSupportedClasses() {

@@ -16,6 +16,7 @@ package org.wings.template;
 
 import java.awt.Color;
 
+import org.wings.SComponent;
 import org.wings.SBaseTable;
 
 /**
@@ -32,12 +33,12 @@ public class SBaseTablePropertyManager
     public SBaseTablePropertyManager() {
     }
 
-    public void setProperty(Object o, String name, String value) {
-        SBaseTable t = (SBaseTable)o;
+    public void setProperty(SComponent comp, String name, String value) {
+        SBaseTable t = (SBaseTable) comp;
         if ( name.equals("GRID") )
             t.setShowGrid(Boolean.valueOf(value).booleanValue());
         else
-            super.setProperty(o, name, value);
+            super.setProperty(comp, name, value);
     }
 
     public Class[] getSupportedClasses() {

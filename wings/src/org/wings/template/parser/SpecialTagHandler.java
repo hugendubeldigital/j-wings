@@ -78,13 +78,13 @@ import javax.servlet.ServletConfig;
 
 public interface SpecialTagHandler {
     /**
-     * Parse special tag.
+     * Parse tag.
      * This method is invoked if a tag with a name
      * this class is registered for is found.
      * It gets the ServletConfiguration of the PageParser
      * servet and a PositionReader, placed after name of
      * the current tag.<p> 
-     * The <CODE>readTag()</CODE> method is called <em>before</em>
+     * The <CODE>parseTag()</CODE> method is called <em>before</em>
      * any processing is done. Its purpose is to parse the area
      * this tag spans and probably read in parameters used at
      * execution time.<p>
@@ -100,10 +100,10 @@ public interface SpecialTagHandler {
      * @param startPos  The Position parsing of this token began
      * @param startTag  the SGMLTag found in the file.
      */
-    SGMLTag readTag(ParseContext context,
-		    PositionReader input, 
-		    long startPos,
-		    SGMLTag startTag)
+    SGMLTag parseTag(ParseContext context,
+		     PositionReader input, 
+		     long startPos,
+		     SGMLTag startTag)
 	throws IOException;
   
     /**

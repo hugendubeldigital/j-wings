@@ -382,7 +382,7 @@ public class PageParser {
 			    handlerClass = (Class)handlerClasses.get(upName);
 			    handler= (SpecialTagHandler) handlerClass
 				.newInstance();
-			    endTag = handler.readTag(context,fin,startPos,tag);
+			    endTag=handler.parseTag(context,fin,startPos,tag);
 			}
 			catch (Exception e) {
 			    System.err.println (e.getMessage());

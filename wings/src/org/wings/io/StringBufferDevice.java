@@ -103,7 +103,7 @@ public final class StringBufferDevice
      */
     public Device print (char[] c, int start, int end) throws IOException {
         if (byteStream != null) flush();
-        buffer.append(c, start, end);
+        buffer.append(c, start, end-start);
         return this;
     }
 

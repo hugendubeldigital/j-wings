@@ -14,6 +14,7 @@
 
 package org.wings.template;
 
+import org.wings.SComponent;
 import org.wings.SLabel;
 
 /**
@@ -30,14 +31,14 @@ public class SLabelPropertyManager
     public SLabelPropertyManager() {
     }
 
-    public void setProperty(Object o, String name, String value) {
-        SLabel c = (SLabel)o;
+    public void setProperty(SComponent comp, String name, String value) {
+        SLabel c = (SLabel)comp;
         if ( name.equals("ICON") )
             c.setIcon(value);
         else if ( name.equals("TEXT") )
             c.setText(value);
         else
-            super.setProperty(o, name, value);
+            super.setProperty(comp, name, value);
     }
 
     public Class[] getSupportedClasses() {

@@ -35,14 +35,13 @@ public class SComponentPropertyManager
     public SComponentPropertyManager() {
     }
 
-    public void setProperty(Object o, String name, String value) {
-        SComponent c = (SComponent)o;
+    public void setProperty(SComponent comp, String name, String value) {
         if ( name.equals("BACKGROUND") )
-            c.setBackground(Color.decode(value));
+            comp.setBackground(Color.decode(value));
         else if ( name.equals("FOREGROUND") )
-            c.setForeground(Color.decode(value));
+            comp.setForeground(Color.decode(value));
         else if ( name.equals("FONT") )
-            c.setFont(parseFont(value));
+            comp.setFont(parseFont(value));
     }
 
     public Class[] getSupportedClasses() {

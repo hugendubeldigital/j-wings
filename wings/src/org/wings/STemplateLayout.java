@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 
-// import org.wings.template.parser.PageParser;
 import org.wings.template.parser.DataSource;
 
 import org.wings.*;
@@ -92,18 +91,19 @@ public class STemplateLayout
      * Dieser PropertyManager behandelt alle Properties, zu denen kein eigener
      * PropertyManager gefunden wurde.
      */
-    private static final org.wings.template.PropertyManager defaultPropertyManager =
-        new org.wings.template.PropertyManager() {
-            final Class[] empty = new Class[0];
-
-            public void setProperty(Object o, String name, String value) {
-            }
-
-            public Class[] getSupportedClasses() {
-                return empty;
-            }
-        };
-
+    private static final PropertyManager defaultPropertyManager =
+        new PropertyManager() {
+                final Class[] empty = new Class[0];
+                
+                public void setProperty(SComponent c, String name, 
+                                        String value) {
+                }
+                
+                public Class[] getSupportedClasses() {
+                    return empty;
+                }
+            };
+    
     /*
      * Alle Property Manager
      */
@@ -180,28 +180,27 @@ public class STemplateLayout
     /**
      * TODO: documentation
      */
-    public static final org.wings.template.PropertyManager getPropertyManager(Class c) {
+    public static final PropertyManager getPropertyManager(Class c) {
         if ( c == null )
             return defaultPropertyManager;
-
-        org.wings.template.PropertyManager p =
-            (org.wings.template.PropertyManager)propertyManager.get(c);
-
+        
+        PropertyManager p = (PropertyManager) propertyManager.get(c);
+        
         if ( p == null )
             return getPropertyManager(c.getSuperclass());
-
+        
         return p;
     }
-
-    /*
-     * Fuegt einen PropertyManager hinzu. Ist schon ein PropertyManager fuer eine
-     * unterstuetzte Klasse vorhanden wird dieser PropertyManager fuer diese Klasse
-     * nicht hinzugefuegt.
-     */
+    
     /**
-     * TODO: documentation
+     * Adds a PropertyManager.
+     * A Property Manager provides a mapping from properties given in
+     * template tags to properties of components.
+     * PropertyManager are responsible for a number of component classes; if
+     * there is already a mapping for a certain class, then this mapping
+     * is <em>not</em> added.
      */
-    public static final void addPropertyManager(org.wings.template.PropertyManager p) {
+    public static final void addPropertyManager(PropertyManager p) {
         if ( p == null )
             return;
 
@@ -214,14 +213,15 @@ public class STemplateLayout
                 propertyManager.put(cl[i], p);
         }
     }
-
+    
     /**
-     * TODO: documentation
+     * Set the template to the template given as file name.
      *
      * @param templateFileName
      * @throws java.io.IOException
      */
-    public void setTemplate(String templateFileName) throws java.io.IOException {
+    public void setTemplate(String templateFileName) 
+        throws java.io.IOException {
         setTemplate(templateFileName);
     }
 
@@ -251,7 +251,7 @@ public class STemplateLayout
             throw new IllegalArgumentException("null constraint not allowed here");
         components.put(constraint.toString(), c);
     }
-
+    
     /**
      * TODO: documentation
      *
@@ -274,67 +274,7 @@ public class STemplateLayout
     public Hashtable getComponents() {
         return components;
     }
-
-//    /**
-//     * TODO: documentation
-//     *
-//     * @param s
-//     * @throws IOException
-//     */
-//    public void write(Device s)
-//        throws IOException
-//    {
-//        if ( dataSource == null ) {
-//            s.append("unable to open template-file <b>'" + dataSource + "'</b>");
-//            // use FlowLayout instead.
-//            return;
-//        }
-//        try {
-//            parser.process(dataSource,
-//                           new TemplateParseContext(s, components));
-//        }
-//        catch ( java.io.IOException e ) {
-//            // ignore until toString() itself throws IOExceptions
-//        }
-//    }
-
-    /*
-     * ... muss noch ausgelagert werden. Setzt die Properties unter Verwendung des
-     * ... PropertyManagers.
-     */
-    class TemplateEntry {
-        SComponent component;
-        Hashtable parameter;
-
-        TemplateEntry(SComponent c, String constr, Hashtable p) {
-            component = c;
-            parameter = p;
-
-            setComponentProperties();
-        }
-
-        void setComponentProperties() {
-            if ( component != null ) {
-                org.wings.template.PropertyManager p = getPropertyManager(component.getClass());
-                System.out.println(component.getClass() + " " + p);
-                if ( parameter != null ) {
-                    for ( Enumeration en=parameter.keys(); en.hasMoreElements(); ) {
-                        String key = (String)en.nextElement();
-                        p.setProperty(component, key, (String)parameter.get(key));
-                    }
-                }
-            }
-        }
-
-        void write(Device s)
-            throws IOException
-        {
-            setComponentProperties();
-            if ( component != null )
-                component.write(s);
-        }
-    }
-
+    
     // testing purposes ..
     /**
      * TODO: documentation

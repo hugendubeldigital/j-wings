@@ -14,6 +14,7 @@
 
 package org.wings.template;
 
+import org.wings.SComponent;
 import org.wings.STextArea;
 
 /**
@@ -30,14 +31,14 @@ public class STextAreaPropertyManager
     public STextAreaPropertyManager() {
     }
 
-    public void setProperty(Object o, String name, String value) {
-        STextArea c = (STextArea)o;
+    public void setProperty(SComponent comp, String name, String value) {
+        STextArea c = (STextArea)comp;
         if ( name.equals("COLS") )
             c.setColumns(Integer.parseInt(value));
         else if ( name.equals("ROWS") )
             c.setRows(Integer.parseInt(value));
         else
-            super.setProperty(o, name, value);
+            super.setProperty(comp, name, value);
     }
 
     public Class[] getSupportedClasses() {
