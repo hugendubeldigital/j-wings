@@ -198,6 +198,7 @@ public abstract class STextComponent
         return true;
     }
 
+    //-- implement SDocumentListener to notify TextListeners
     public void insertUpdate(SDocumentEvent e) {
         fireTextValueChanged();
         reload(ReloadManager.RELOAD_CODE);

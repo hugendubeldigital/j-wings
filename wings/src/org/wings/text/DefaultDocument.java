@@ -23,6 +23,10 @@ public class DefaultDocument implements SDocument
     }
 
     public void setText(String text) {
+        String origText = buffer.toString();
+        if (origText.equals(text)) {
+            return;
+        }
         buffer.setLength(0);
         buffer.append(text);
         fireChangeUpdate(0, buffer.length());
@@ -46,6 +50,9 @@ public class DefaultDocument implements SDocument
     }
 
     public void remove(int offset, int length) throws BadLocationException {
+        if (length == 0) {
+            return;
+        }
         try {
             buffer.delete(offset, offset + length);
             fireRemoveUpdate(offset, length);
@@ -56,6 +63,9 @@ public class DefaultDocument implements SDocument
     }
 
     public void insert(int offset, String string) throws BadLocationException {
+        if (string == null || string.length() == 0) {
+            return;
+        }
         try {
             buffer.insert(offset, string);
             fireInsertUpdate(offset, string.length());
