@@ -191,6 +191,7 @@ public class WingSet
                    new TemplateExample(), "Template Layout Manager");
         tab.add(new InteractiveTemplateExample(), "Interactive Template");
         tab.add(new ProgressBarExample(), "ProgressBar");
+        tab.add(new DateChooserExample(), "DateChooser");
         tab.add(new MemUsageExample(), "Memory Usage");
         //tab.add(new DateChooserExample(), "DateChooser");
         //form.add(tab);
