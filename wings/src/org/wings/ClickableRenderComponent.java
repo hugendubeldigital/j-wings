@@ -52,10 +52,10 @@ import org.wings.RequestURL;
  * The use of this interface is as follows: if a plaf needs to be informed by
  * an event from some sub-component and that component is 
  * <code>instanceof</code> ClickableRenderComponent, it pushes the URL on
- * some global stack and lets the sub-component render itself (
- * {@link SComponent#write(Device)}). Then the URL is popped. 
- * So the plaf of the ClickableRender-Component has to take care, that the URL
- * is rendered.
+ * some {@link org.wings.util.AnchorRenderStack global stack} and lets 
+ * the sub-component render itself ({@link SComponent#write(Device)}).
+ * Finally, the URL is popped. So the plaf of the ClickableRender-Component 
+ * has to take care, that the URL is rendered.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
