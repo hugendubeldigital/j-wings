@@ -23,11 +23,8 @@ import java.util.Locale;
 
 import java.security.Principal;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpSession;
-import javax.servlet.ServletInputStream;
-import javax.servlet.RequestDispatcher;
+import javax.servlet.http.*;
+import javax.servlet.*;
 
 /*
  * ServletRequest.java
@@ -428,10 +425,11 @@ public class ServletRequest
     }
 
 
+    /*
     public RequestDispatcher getRequestDispatcher(String s) {
         return null;
     }
-
+    */
 
     public boolean isSecure() {
         return false;

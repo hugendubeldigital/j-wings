@@ -485,11 +485,11 @@ public class DelegatingHttpServletRequest
         return null;
     }
 
-
+    /*
     public RequestDispatcher getRequestDispatcher(String s) {
         return null;
     }
-
+    */
 
     public boolean isSecure() {
         return false;
@@ -503,8 +503,6 @@ public class DelegatingHttpServletRequest
     public void setAttribute(String s, Object o) {
     }
 }
-
-
 
 /*
  * Local variables:
