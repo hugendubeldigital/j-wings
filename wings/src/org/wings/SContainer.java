@@ -272,27 +272,10 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * the dispatcher.
      *
      * @param c the component to remove
-     * @return true if the component was found and removed; false otherwise.
      * @deprecated use {@link #remove(SComponent)} instead for swing conformity
      */
-    public boolean removeComponent(SComponent c) {
-        if ( c==null )
-            return false;
-
-        if ( layout!=null )
-            layout.removeComponent(c);
-
-        int index = getComponentList().indexOf(c);
-        boolean isRemoved = getComponentList().remove(c);
-        if ( isRemoved ) {
-            getConstraintList().remove(index);
-
-            fireContainerEvent(SContainerEvent.COMPONENT_REMOVED, c);
-
-            c.setParent(null);
-            reload(ReloadManager.RELOAD_CODE);
-        }
-        return isRemoved;
+    public void removeComponent(SComponent c) {
+        remove(c);
     }
 
     /**
@@ -315,7 +298,20 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @see #removeComponent(org.wings.SComponent)
      */
     public void remove(SComponent c) {
-        removeComponent(c);
+        if ( c==null )  return;
+
+        if ( layout!=null )
+            layout.removeComponent(c);
+
+        int index = getComponentList().indexOf(c);
+        if ( getComponentList().remove(c) ) {
+            getConstraintList().remove(index);
+
+            fireContainerEvent(SContainerEvent.COMPONENT_REMOVED, c);
+
+            c.setParent(null);
+            reload(ReloadManager.RELOAD_CODE);
+        }
     }
 
     /**
