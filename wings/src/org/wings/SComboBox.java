@@ -393,6 +393,7 @@ public class SComboBox
      */
     public void addActionListener(ActionListener listener) {
         listenerList.add(ActionListener.class, listener);
+        reload(ReloadManager.RELOAD_CODE);
     }
 
     /** Removes an ActionListener 
@@ -401,6 +402,20 @@ public class SComboBox
      */
     public void removeActionListener(ActionListener listener) {
         listenerList.remove(ActionListener.class, listener);
+        reload(ReloadManager.RELOAD_CODE);
+    }
+
+     /**
+     * Returns an array of all the ActionListener added
+     * to this SComboBox
+     *
+     * @return all ActionListeners added or an empty
+     *         array if no listeners are there
+     */
+    public ActionListener[] getActionListeners() {
+        if (listenerList == null) return null;
+        return (ActionListener[])listenerList.getListeners(
+                ActionListener.class);
     }
 
     /** 
