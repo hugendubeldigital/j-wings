@@ -18,8 +18,8 @@
     %><%|size=columns%><%
     %><%|accept=component.getFileNameFilter()%><%
     if ( component.isEnabled() ) {
-        %> name="<%?namePrefix%>"<%
-        %> id="<%?namePrefix%>"<%
+        %> name="<%=Utils.event(component)%>"<%
+        %> id="<%=Utils.event(component)%>"<%
     } else {
 	%> readonly="1"<%
     }

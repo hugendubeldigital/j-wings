@@ -15,7 +15,7 @@
     {
         %><select size="1"<%
         %><%|class=Utils.style(comboBox)%><%
-        %><%|name=comboBox.getNamePrefix()%><%
+        %><%|name=Utils.event(comboBox)%><%
         %><%|style=comboBox.getPreferredSize()%><%
         %><%|tabindex=comboBox.getFocusTraversalIndex()%><%
 	if ( !comboBox.isEnabled() ) {
@@ -87,7 +87,7 @@
 
         // util method
         %><input type="hidden"<%
-        %><%|name=comboBox.getNamePrefix()%><%
+        %><%|name=Utils.event(comboBox)%><%
         %><%|value=-1%><%
         %>/><%
     }

@@ -231,7 +231,7 @@ private int writeSubTree(STree tree, Device device, Object[] path, int depth,
       ScriptResult result = new ScriptResult();
       writeScriptNode(component, device, path,component.getComponentId() + "_", 0, result);
 
-  %>var tree_<%=component.getComponentId()%> = new Tree("<%=component.getComponentId()%>","<%=component.getEncodedLowLevelEventId()%>","<%=expandControlIcon.getURL()%>","<%=collapseControlIcon.getURL()%>", "<%=component.getRequestURL()%>", TREE_NODES["<%=result.nodeId%>"]);
+  %>var tree_<%=component.getComponentId()%> = new Tree("<%=component.getComponentId()%>","<%=Utils.event(component)%>","<%=expandControlIcon.getURL()%>","<%=collapseControlIcon.getURL()%>", "<%=component.getRequestURL()%>", TREE_NODES["<%=result.nodeId%>"]);
 
 TREE_NODES["<%=result.nodeId%>"].expand();
   </script>

@@ -14,8 +14,8 @@
     %><%|style=component.getPreferredSize()%><%
     if (!component.isEditable() || !component.isEnabled() ) { %> readonly="1"<% }
     if (component.isEnabled()) {
-        %> name="<%?namePrefix%>"<%
-        %> id="<%?namePrefix%>"<%
+        %> name="<%=Utils.event(component)%>"<%
+        %> id="<%=Utils.event(component)%>"<%
     } else { %> disabled="1"<% } 
     %><%|tabindex=component.getFocusTraversalIndex()%><%
     component.removeScriptListener(submitListener);

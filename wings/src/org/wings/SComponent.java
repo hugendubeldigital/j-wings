@@ -916,7 +916,7 @@ public abstract class SComponent
      * for outtimed requests ("Back Button")
      */
     public final String encodeLowLevelEventId(String lowLevelEventId) {
-        if (getParentFrame() != null)
+        if (getParentFrame() != null && getSession().getEventInvalidation())
             if (!(this instanceof LowLevelEventListener) ||
                 ((LowLevelEventListener)this).checkEpoch()) {
                 return (getParentFrame().getEventEpoch()

@@ -334,7 +334,7 @@ protected void writeTabs(Device device, STabbedPane component) throws IOExceptio
                   %><input type="image" border="0"<%
                   %><%|src=icon.getURL()%><%
                   %><%|style="padding-bottom: "+(tabHeight-icon.getIconHeight()+2)+"px"%><%
-                  %><%|name=component.getEncodedLowLevelEventId()+"_"+i%><%
+                  %><%|name= Utils.event(component)+"_"+i%><%
                   String cls = component.getSelectedIndex() == i?"_icnsel":"_icnnonsel";
                   %><%|class="tp_"+component.getComponentId()+cls%><%
                   %>><%
@@ -353,7 +353,7 @@ protected void writeTabs(Device device, STabbedPane component) throws IOExceptio
                           cls+="dis";
                       }
                       else {
-                          %><%|name=component.getEncodedLowLevelEventId()+"_"+i%><%
+                          %><%|name=Utils.event(component)+"_"+i%><%
                       }
                       %><%|class="tp_"+component.getComponentId()+cls%><%
                   }
@@ -510,8 +510,7 @@ protected void writeAnchorAddress(Device device, STabbedPane tabbed, int index)
     throws IOException
 {
     RequestURL addr = tabbed.getRequestURL();
-    addr.addParameter(
-        tabbed.encodeLowLevelEventId(tabbed.getLowLevelEventId())+"="+index);
+    addr.addParameter(Utils.event(tabbed) + "=" + index);
     %><%#addr.toString()%><%
 }
 

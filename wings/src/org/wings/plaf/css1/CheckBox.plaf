@@ -62,11 +62,11 @@ protected void writeFormIcon(final Device device, SAbstractButton abstractButton
     // the components event handler code
 
     %><input type="hidden"<%
-    %> name="<%=abstractButton.getEncodedLowLevelEventId()%>"<%
+    %> name="<%=Utils.event(abstractButton)%>"<%
     %> value="hidden_reset" /><%
     
     %><input type="checkbox"<%
-    %> name="<%=abstractButton.getEncodedLowLevelEventId()%>"<%
+    %> name="<%=Utils.event(abstractButton)%>"<%
     %><%|id=abstractButton.getComponentId()%><%
     %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
     %><%|class=attr%><%

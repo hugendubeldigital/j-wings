@@ -53,16 +53,16 @@ import org.wings.util.TimeMeasure;
 
 /**
  * TODO: documentation
-Die ServletEngine erzeugt für jeden User eine eigene HttpSession. Auf diese kann
+Die ServletEngine erzeugt fï¿½r jeden User eine eigene HttpSession. Auf diese kann
 man von allen Servlets, die in der Engine laufen, zugreifen. _Ein_ WingServlet
 erzeugt ein SessionServlet pro HttpSession und legt es dort ab. Da das
-SessionServlet als Wrapper für das WingServlet fungiert, kann man von dort, wie
-gewohnt auf den ServletContext und die HttpSession zugreifen. Zusätzlich hängt
-am SessionServlet die wingS-Session mit wichtigen Services und der übergeordnete
-SFrame. An diesem Frame hängen alle wingS-Komponenten und somit der gesamte
-Zustand der Anwendung. Der Programmierer bekommt über den SessionManager von
+SessionServlet als Wrapper fï¿½r das WingServlet fungiert, kann man von dort, wie
+gewohnt auf den ServletContext und die HttpSession zugreifen. Zusï¿½tzlich hï¿½ngt
+am SessionServlet die wingS-Session mit wichtigen Services und der ï¿½bergeordnete
+SFrame. An diesem Frame hï¿½ngen alle wingS-Komponenten und somit der gesamte
+Zustand der Anwendung. Der Programmierer bekommt ï¿½ber den SessionManager von
 jeder Stelle aus eine Referenz auf die wingS-Session. Das SessionServlet bietet
-zudem Zugang zur Servlet übergreifenden HttpSession.
+zudem Zugang zur Servlet ï¿½bergreifenden HttpSession.
 
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>

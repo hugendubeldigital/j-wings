@@ -30,8 +30,6 @@ import org.wings.io.Device;
  */
 public final class Utils
 {
-    
-
     private Utils() {}
 
     /**
@@ -102,6 +100,29 @@ public final class Utils
         return null;
     }
 
+    /*
+    static String event(SComponent component, String lowLevelEventId) {
+        if (component.getSession().getEventInvalidation() && component.getParentFrame() != null) {
+            if (!(component instanceof LowLevelEventListener) || ((LowLevelEventListener)component).checkEpoch())
+                return (component.getParentFrame().getEventEpoch()
+                    + SConstants.UID_DIVIDER
+                    + lowLevelEventId);
+        }
+        return lowLevelEventId;
+    }
+    */
+
+    /**
+     * Encodes a low level event id for using it in a request parameter. Every
+     * {@link LowLevelEventListener} should encode its LowLevelEventId before
+     * using it in a request parameter. This encoding adds consistency checking
+     * for outtimed requests ("Back Button")
+     */
+    static String event(SComponent component) {
+        return component.getEncodedLowLevelEventId();
+        //return event(component, component.getLowLevelEventId());
+    }
+
     final static byte[] ALIGN_CENTER = " align=\"center\"".getBytes();
     final static byte[] ALIGN_LEFT = " align=\"left\"".getBytes();
     final static byte[] ALIGN_RIGHT = " align=\"right\"".getBytes();
@@ -142,7 +163,6 @@ public final class Utils
             break;
         }
     }
-
 }
 
 /*

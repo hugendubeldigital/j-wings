@@ -19,7 +19,7 @@
 			%><%|style=list.getPreferredSize().toString()%><%
 		}
         %><%|class=Utils.style(list)%><%
-        %><%|name=list.getNamePrefix()%><%
+        %><%|name= Utils.event(list)%><%
         %><%|size=list.getVisibleRowCount()%><%
         %><%|tabindex=list.getFocusTraversalIndex()%><%
         %><%|multiple=(list.getSelectionMode() == SConstants.MULTIPLE_SELECTION) ? "multiple" : null%><%
@@ -93,7 +93,7 @@
 
         // util method
         %><input type="hidden"<%
-        %><%|name=list.getNamePrefix()%><%
+        %><%|name= Utils.event(list)%><%
         %><%|value=-1%><%
         %>/><%
     }
@@ -155,7 +155,7 @@
 										
                 if ( renderSelection ) {
                    RequestURL selectionAddr = list.getRequestURL();
-                   selectionAddr.addParameter(list.getNamePrefix(),
+                   selectionAddr.addParameter(Utils.event(list),
                                               list.getToggleSelectionParameter(i));
 
 		   if ( renderer instanceof ClickableRenderComponent ) {

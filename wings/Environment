@@ -1,0 +1,14 @@
+# source this to get your environment set up
+# adjust JAVA_HOME and JSDK_HOME to fit your needs
+
+JAVA_HOME=/usr/java/j2sdk1.4.1_02/
+ANT_HOME=/home/hengels/jdevel/apache-ant-1.5.2
+TOMCAT_HOME=/home/hengels/jdevel/jboss-3.2.0RC3
+
+PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$PATH
+JAVA=$JAVA_HOME/bin/java
+
+export JAVA JAVA_HOME TOMCAT_HOME PATH
+
+export CVS_RSH=ssh
+

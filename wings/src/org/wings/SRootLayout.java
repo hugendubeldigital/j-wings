@@ -25,7 +25,10 @@ public class SRootLayout
      */
     public SRootLayout() {
 	try {
-	    setTemplate(getClass().getResource("template/default.thtml"));
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        if (loader == null)
+            loader = getClass().getClassLoader();
+	    setTemplate(loader.getResource("org/wings/template/default.thtml"));
 	}
 	catch (IOException e) {
 	    System.err.println(e.getMessage());

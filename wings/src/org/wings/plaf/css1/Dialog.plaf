@@ -13,7 +13,7 @@ private void writeIcon(Device device, SIcon icon) throws IOException {
 private void writeWindowIcon(Device device, SDialog dialog,
 			     int event, SIcon icon) throws IOException {
     RequestURL addr = dialog.getRequestURL();
-    addr.addParameter(dialog.getNamePrefix(), event);
+    addr.addParameter(Utils.event(dialog), event);
     %><td<%|width=icon.getIconWidth()%> class="framebutton"><a href="<%=addr%>"><%
     writeIcon(device, icon);
     %></a></td><%

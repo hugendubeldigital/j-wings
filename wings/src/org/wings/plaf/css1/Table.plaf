@@ -217,20 +217,20 @@
         	%><input <%
         	%>type="image"<%
         	%><%|src=icn.getURL()%><%
-        	%> name="<%=table.encodeLowLevelEventId(table.getLowLevelEventId())%><%
+        	%> name="<%=Utils.event(table)%><%
         	%>_<%
         	%><%=table.getToggleSelectionParameter(row,-1)%>"<%
         }
         else {
 	        %><input type="hidden"<%
-	        %> name="<%=table.encodeLowLevelEventId(table.getLowLevelEventId())%>"<%
+	        %> name="<%=Utils.event(table)%>"<%
 	        %> value="<%=table.getDeselectionParameter(row,-1)%>"/><%
 	
         	%><input <%
         	%><%|checked=(selected ? "checked" : null)%><%
         	%> type="<%=(table.getSelectionMode() == ListSelectionModel.SINGLE_SELECTION ? "radio" : "checkbox")%>"<%
         	%> value="<%=table.getToggleSelectionParameter(row,-1)%>"<%
-        	%> name="<%=table.encodeLowLevelEventId(table.getLowLevelEventId())%>"<%
+        	%> name="<%=Utils.event(table)%>"<%
         }
         %>></td>
 <%

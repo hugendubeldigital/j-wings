@@ -18,7 +18,7 @@ private void writeIcon(Device device, SIcon icon) throws IOException {
 private void writeWindowIcon(Device device, SInternalFrame frame,
 			     int event, SIcon icon) throws IOException {
     RequestURL addr = frame.getRequestURL();
-    addr.addParameter(frame.getNamePrefix(), event);
+    addr.addParameter(Utils.event(frame), event);
     %><td<%|width=icon.getIconWidth()%> class="framebutton"><a href="<%=addr%>"><%
     writeIcon(device, icon);
     %></a></td><%

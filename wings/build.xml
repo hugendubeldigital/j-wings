@@ -4,6 +4,7 @@
 
 <project name="wingS" default="main" basedir=".">
   <!-- read properties from file -->
+  <property file="custom-build.properties" />
   <property file="build.properties" />
 
   <!-- directories -->

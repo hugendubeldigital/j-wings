@@ -58,6 +58,10 @@ public abstract class DynamicResource
      */
     private SFrame frame;
 
+    protected DynamicResource(String extension, String mimeType) {
+        super(extension, mimeType);
+    }
+
     /**
      *
      */

@@ -62,11 +62,11 @@ protected void writeFormIcon(final Device device, SAbstractButton abstractButton
     // the components event handler code
 
     %><input type="hidden"<%
-    %> name="<%=abstractButton.getEncodedLowLevelEventId()%>"<%
+    %> name="<%=Utils.event(abstractButton)%>"<%
     %> value="<%=abstractButton.getDeselectionParameter()%>" /><%
     
     %><input type="radio"<%
-    %> name="<%=abstractButton.getEncodedLowLevelEventId()%>"<%
+    %> name="<%=Utils.event(abstractButton)%>"<%
     %> value="<%=abstractButton.getToggleSelectionParameter()%>"<%
     %><%|id=abstractButton.getComponentId()%><%
     %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%

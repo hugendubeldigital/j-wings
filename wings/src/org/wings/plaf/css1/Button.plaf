@@ -188,7 +188,7 @@ protected void writeFormText(final Device device, SAbstractButton abstractButton
     } else {
 	 
     %><input type="<%=abstractButton.getType()%>"<%
-    %> name="<%=abstractButton.getEncodedLowLevelEventId()%>"<%
+    %> name="<%=Utils.event(abstractButton)%>"<%
     %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
     %><%|accesskey=abstractButton.getMnemonic()%><%
     %><%|class=attr%><%
@@ -220,7 +220,7 @@ protected void writeFormIcon(final Device device, SAbstractButton abstractButton
     %><%|class=attr%><%
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
-    %><%|name=abstractButton.getEncodedLowLevelEventId()%><%
+    %><%|name= Utils.event(abstractButton)%><%
     %><%|id=abstractButton.getComponentId()%><%
     %><%|accesskey=abstractButton.getMnemonic()%><%
     %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%

@@ -16,7 +16,7 @@
 		%>;" <%
 	}
     if (!component.isEditable()) { %> readonly="1"<% }
-    if (component.isEnabled())   { %> name="<%?namePrefix%>"<% }  else 
+    if (component.isEnabled())   { %> name="<%=Utils.event(component)%>"<% }  else
     { %> disabled="1"<% } 
 
     switch (component.getLineWrap()) {

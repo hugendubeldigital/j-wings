@@ -41,8 +41,8 @@ static final ResourceImageIcon ICON = new ResourceImageIcon("org/wings/icons/Arr
     %><nobr><input type="text" size="11"<%
     %><%|class=Utils.style(component)%><%
     if (component.isEnabled()) {
-        %> name="<%?namePrefix%>"<%
-        %> id="<%?namePrefix%>"<%
+        %> name="<%=Utils.event(component)%>"<%
+        %> id="<%=Utils.event(component)%>"<%
     }
     %><%|tabindex=component.getFocusTraversalIndex()%><%
     Utils.writeEvents(device, component);
@@ -51,7 +51,7 @@ static final ResourceImageIcon ICON = new ResourceImageIcon("org/wings/icons/Arr
       %> onmouseover="if (timeoutId) clearTimeout(timeoutId);return true;"<%
       %> onmouseout="if (timeoutDelay) calendarTimeout();"<%
       %> onclick="g_Calendar.show(event,<%
-                %>'<%?namePrefix%>',<%
+                %>'<%=Utils.event(component)%>',<%
                 %>'mm/dd/yyyy');<%
                 %>return false;"><%
       %><img <%|src=ICON.getURL()%><%

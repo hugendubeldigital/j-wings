@@ -61,9 +61,7 @@ public class SDesktopPane
     public void setLayout(SLayoutManager l) {}
 
     /**
-     * Returns the currently selected component for this desktopPane.
-     * Returns null if there is no component on the layout.
-     *
+     * @deprecated nonsense
      * @return the top most component
      */
     public SInternalFrame getVisibleFrame() {

@@ -151,7 +151,7 @@ private void writeScriptNode(STree tree, Device device,
 
   %>
 
-var tree_<%=tree.getComponentId()%> = new Tree("<%=tree.getComponentId()%>","<%=tree.getEncodedLowLevelEventId()%>","<%=expandControlIcon.getURL()%>","<%=collapseControlIcon.getURL()%>", "<%=hashMark.getURL()%>", "<%=emptyFillIcon.getURL()%>", <%=tree.getNodeIndentDepth()%>, "<%=tree.getRequestURL()%>", TREE_NODES["<%=result.nodeId%>"]);
+var tree_<%=tree.getComponentId()%> = new Tree("<%=tree.getComponentId()%>","<%=Utils.event(tree)%>","<%=expandControlIcon.getURL()%>","<%=collapseControlIcon.getURL()%>", "<%=hashMark.getURL()%>", "<%=emptyFillIcon.getURL()%>", <%=tree.getNodeIndentDepth()%>, "<%=tree.getRequestURL()%>", TREE_NODES["<%=result.nodeId%>"]);
 
 TREE_NODES["<%=result.nodeId%>"].writeSubTree();
 

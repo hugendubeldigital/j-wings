@@ -5,6 +5,7 @@
 <project name="wingS-Demo" default="main" basedir=".">
   <property environment="env" />
   <!-- read custom properties from file -->
+  <property file="custom-build.properties" />
   <property file="build.properties" />
 
   <!-- directories -->
@@ -50,7 +51,7 @@
     <mkdir dir="${dist}"/>
     <mkdir dir="${dist.deploy}"/>
 
-    <ant antfile="build.xml" dir=".."/>
+    <!--ant antfile="build.xml" dir=".."/-->
   </target>
 
 
@@ -201,9 +202,9 @@
   </target>
 
   <target name="deploy.wingset" depends="wingset" if="deploy.wingset">
-    <mkdir dir="${webapps.deploydir}/wingset"/>
-    <unwar src="${dist.deploy}/wingset.war" dest="${webapps.deploydir}/wingset"/>
-    <touch file="${webapps.deploydir}/wingset/WEB-INF/web.xml"/>
+    <mkdir dir="${webapps.deploydir}/wingset.war"/>
+    <unwar src="${dist.deploy}/wingset.war" dest="${webapps.deploydir}/wingset.war"/>
+    <touch file="${webapps.deploydir}/wingset.war/WEB-INF/web.xml"/>
   </target>
 
   <target name="deploy.ldap" depends="ldap" if="deploy.ldap">

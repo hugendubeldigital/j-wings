@@ -8,7 +8,7 @@
    %><%|class=Utils.style(component)%><%
    %><%|enctype=component.getEncodingType()%><%
    %><%|action=component.getRequestURL()%><%
-   %>><input type="hidden" name="<%?encodedLowLevelEventId%>" \
+   %>><input type="hidden" name="<%=Utils.event(component)%>" \
 value="<%?componentId%><%=org.wings.SConstants.UID_DIVIDER%>" /><%
    Utils.renderContainer(device, component);
    %></form><%
