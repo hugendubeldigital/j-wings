@@ -172,8 +172,8 @@ FORM {
 .menubar {
 	background-color: #CCCCCC;
 	border-color: #EEEEEE #999999 #999999 #eeeeee;
-	padding-right: 8px;
-	padding-left: 8px;
+	padding-right: 0px;
+	padding-left: 0px;
 	padding-top: 0px;
 	padding-bottom: 0px;
 	border-style: solid;
