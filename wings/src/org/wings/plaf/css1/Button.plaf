@@ -37,7 +37,7 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
         %><a href="<%
         writeAnchorAddress(device, abstractButton);
         %>"<%
-	Utils.writeEvents(device, abstractButton);
+	    Utils.writeEvents(device, abstractButton);
         %><%|title=abstractButton.getToolTipText()%><%
         %><%|accesskey=abstractButton.getMnemonic()%><%
 
@@ -52,12 +52,7 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
      * styles and konqueror 3.0. (should be: white-space: nowrap)
      */
     /* if (noBreak) { %><nobr><% } */
-    if (abstractButton.isEscapeSpecialChars()) {
-        %><%=text%><%
-    }
-    else {
-	%><%#text%><% // write raw.
-    }
+    %><%=text%><%
     /* if (noBreak) { %></nobr><% } */
 
     if ( enabled )
@@ -174,12 +169,7 @@ protected void writeFormText(final Device device, SAbstractButton abstractButton
     %><%|class=attr%><%
     Utils.writeEvents(device, abstractButton);
     %>><%
-    if (abstractButton.isEscapeSpecialChars()) {
-        %><%=text%><%
-    }
-    else {
-        %><%#text%><% // write raw.
-    }
+    %><%=text%><%
     %></label><%
     } else {
 
@@ -191,12 +181,7 @@ protected void writeFormText(final Device device, SAbstractButton abstractButton
     %><%|class=attr%><%
     Utils.writeEvents(device, abstractButton);
     %> value="<%
-    if (abstractButton.isEscapeSpecialChars()) {
-        %><%=text%><%
-    }
-    else {
-        %><%#text%><% // write raw.
-    }
+    %><%=text%><%
     %>"<%
     if ( !abstractButton.isEnabled() ||
 	 abstractButton.getGroup()!=null && abstractButton.isSelected() ) {

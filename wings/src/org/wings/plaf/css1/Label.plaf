@@ -44,12 +44,7 @@ void writeText(Device device, SLabel label, AnchorProperties anchor)
             Utils.writeEvents(device, label);
             %>><%
         }
-	if (label.isEscapeSpecialChars()) {
-            %><%=text%><%
-        }
-	else {
-	    %><%#text%><% // write raw.
-        }
+        %><%=text%><%
         if (anchor != null) { %></a><% }
         if (noBreak) { %></nobr><% }
    }

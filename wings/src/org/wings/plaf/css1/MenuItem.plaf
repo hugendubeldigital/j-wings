@@ -21,11 +21,7 @@ protected void writeItemContent(final Device device, SMenuItem menuItem)
     String text = menuItem.getText();
 
     if ( text!=null ) {
-        if ( menuItem.isEscapeSpecialChars()) {
-            %><%=text%><%
-        } else {
-            %><%#text%><% // write raw.
-        }
+        %><%=text%><%
     }
     %></nobr><%
 }

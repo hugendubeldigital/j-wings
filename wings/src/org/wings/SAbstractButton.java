@@ -14,15 +14,13 @@
 
 package org.wings;
 
-import java.awt.Color;
+import org.wings.plaf.ButtonCG;
+
+import javax.swing.Action;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.*;
-import javax.swing.event.EventListenerList;
-import javax.swing.Action;
-
-import org.wings.plaf.*;
-import org.wings.io.Device;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * This is the base class for all components which have a button
@@ -66,10 +64,7 @@ public abstract class SAbstractButton
      * it is not inside a Form.
      */
     private boolean showAsFormComponent = true;
-  
-    /** @see #setEscapeSpecialChars(boolean) */
-    private boolean escapeSpecialChars = true;
-  
+
     /**
      *
      */
@@ -145,41 +140,8 @@ public abstract class SAbstractButton
     }
   
     /**
-     * returns the setting of the escape character property
-     *
-     * @see #setEscapeSpecialChars(boolean)
-     * @return 'true', if characters are quoted, 'false' if they
-     *         are passed raw to the backend Device.
-     * @deprecated please use the &lt;html&gt; tag in the label instead
-     */
-    public boolean isEscapeSpecialChars() {
-        return escapeSpecialChars;
-    }
-  
-    /**
-     * By default, all special characters are quoted in the
-     * output. This means for *ML like languages, that special
-     * characters like &lt; &gt; or &amp; are replaced by their
-     * appropriate entities. Note, that the decision, what is
-     * quoted is done by the CG. If you set this to 'false', then
-     * they are not quoted - you might use this, if you want to
-     * sneak in HTML (XML, WML..PDF) formatting information in the
-     * raw String. Note, that in that case, your application might
-     * not be portable accross different backend CG's (think of
-     * WML).
-     *
-     * @param escape boolean 'true', if characters are to be escaped
-     *               (the default), or 'false' if any character you
-     *               write here is passed 'raw' to the Device.
-     * @deprecated please use the &lt;html&gt; tag in the label instead
-     */
-    public void setEscapeSpecialChars(boolean escape) {
-        escapeSpecialChars = escape;
-    }
-  
-    /**
      * Sets the action command for this button.
-     * @param actionCommand the action command for this button
+     * @param ac the action command for this button
      */
     public void setActionCommand(String ac) {
         actionCommand = ac;
@@ -236,7 +198,7 @@ public abstract class SAbstractButton
   
     /**
      * Adds an ActionListener to the button.
-     * @param l the ActionListener to be added
+     * @param listener the ActionListener to be added
      */
     public void addActionListener(ActionListener listener) {
         addEventListener(ActionListener.class, listener);
@@ -264,7 +226,7 @@ public abstract class SAbstractButton
   
     /**
      * Fire an ActionEvent at each registered listener.
-     * @param teh supplied ActionEvent
+     * @param event supplied ActionEvent
      */
     protected void fireActionPerformed(ActionEvent event) {
         // Guaranteed to return a non-null array
