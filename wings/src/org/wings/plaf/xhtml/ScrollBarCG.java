@@ -111,7 +111,7 @@ public class ScrollBarCG
          d.print( bwalign );
          d.print( el_s );
          d.print( "1%\">" );
-         sb.getComponentAt(0).write( d );
+         sb.getComponent(0).write( d );
          d.print( "</td>" );
          d.print( el_post );
          
@@ -124,7 +124,7 @@ public class ScrollBarCG
          d.print( fwalign );
          d.print( el_s );
          d.print( "1%\">" );
-         sb.getComponentAt(1).write( d );
+         sb.getComponent(1).write( d );
          d.print( "</td>" );
      }
     
@@ -196,18 +196,18 @@ public class ScrollBarCG
         int width = 0;
         int height = 0;
         for ( int s = 0; s < 2; s++ ) {
-            SContainer scrollerp = (SContainer) sb.getComponentAt(s);
+            SContainer scrollerp = (SContainer) sb.getComponent(s);
             int c = scrollerp.getComponentCount();
             if (sb.getOrientation() == SConstants.HORIZONTAL ) {
                 for (int i = 0; i < c; i++ ) {
-                    SIcon icon = ((SClickable) scrollerp.getComponentAt(i)).getIcon();
+                    SIcon icon = ((SClickable) scrollerp.getComponent(i)).getIcon();
                     width+=icon.getIconWidth();
                     height=Math.max(icon.getIconHeight(), height);
                 }
             }
             else {
                 for (int i = 0; i < c; i++ ) {
-                    SIcon icon = ((SClickable) scrollerp.getComponentAt(i)).getIcon();
+                    SIcon icon = ((SClickable) scrollerp.getComponent(i)).getIcon();
                     width=Math.max(icon.getIconWidth(), width);
                     height+=icon.getIconHeight();
                 }

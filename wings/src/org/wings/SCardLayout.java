@@ -81,9 +81,9 @@ public class SCardLayout
         checkLayout(parent);
         for (int i = 0 ; i < parent.getComponentCount(); i++)
             if ( i>0 )
-                parent.getComponentAt(i).setVisible(false);
+                parent.getComponent(i).setVisible(false);
             else
-                parent.getComponentAt(i).setVisible(true);
+                parent.getComponent(i).setVisible(true);
     }
 
     /**
@@ -97,10 +97,10 @@ public class SCardLayout
         checkLayout(parent);
         int ncomponents = parent.getComponentCount();
         for (int i = 0 ; i < ncomponents; i++) {
-            SComponent comp = parent.getComponentAt(i);
+            SComponent comp = parent.getComponent(i);
             if ( comp.isVisible() ) {
                 comp.setVisible(false);
-                comp = parent.getComponentAt((i + 1 < ncomponents) ? i+1 : 0);
+                comp = parent.getComponent((i + 1 < ncomponents) ? i+1 : 0);
                 comp.setVisible(true);
                 return;
             }
@@ -118,10 +118,10 @@ public class SCardLayout
         checkLayout(parent);
         int ncomponents = parent.getComponentCount();
         for (int i = 0 ; i < ncomponents ; i++) {
-            SComponent comp = parent.getComponentAt(i);
+            SComponent comp = parent.getComponent(i);
             if ( comp.isVisible() ) {
                 comp.setVisible(false);
-                comp = parent.getComponentAt((i > 0) ? i-1 : ncomponents-1);
+                comp = parent.getComponent((i > 0) ? i-1 : ncomponents-1);
                 comp.setVisible(true);
                 return;
             }
@@ -138,9 +138,9 @@ public class SCardLayout
         int ncomponents = parent.getComponentCount();
         for (int i = 0 ; i < ncomponents ; i++) {
             if (i < ncomponents-1)
-                parent.getComponentAt(i).setVisible(false);
+                parent.getComponent(i).setVisible(false);
             else
-                parent.getComponentAt(i).setVisible(true);
+                parent.getComponent(i).setVisible(true);
         }
     }
 
@@ -183,7 +183,7 @@ public class SCardLayout
         SComponent next = (SComponent)tab.get(name);
         if ((next != null) && !next.isVisible()) {
             for (int i = 0 ; i < parent.getComponentCount(); i++)
-                parent.getComponentAt(i).setVisible(false);
+                parent.getComponent(i).setVisible(false);
             next.setVisible(true);
         }
     }

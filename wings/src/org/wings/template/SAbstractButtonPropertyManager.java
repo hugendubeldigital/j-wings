@@ -96,7 +96,7 @@ public class SAbstractButtonPropertyManager extends SComponentPropertyManager
         else if ( name.equals("ACCESSKEY") )
             c.setMnemonic(value);
         else if ( name.equals("TARGET") )
-            c.setRealTarget(value);
+            c.setEventTarget(value);
         else
             super.setProperty(comp, name, value);
     }

@@ -313,7 +313,7 @@ public class LookAndFeel
             if (value.startsWith("new ")) {
                 int bracket = value.indexOf("(");
                 String name = value.substring("new ".length(), bracket);
-                clazz = LookAndFeel.class.forName(name, true, classLoader);
+                clazz = Class.forName(name, true, classLoader);
                 return clazz.newInstance();
             }
             else {

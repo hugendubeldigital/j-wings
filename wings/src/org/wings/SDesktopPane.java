@@ -106,7 +106,7 @@ public class SDesktopPane
 
         count = getComponentCount();
         for(i = 0; i < count; i++) {
-            if(c == getComponentAt(i))
+            if(c == getComponent(i))
                 return i;
         }
         return -1;
@@ -137,7 +137,7 @@ public class SDesktopPane
         public void removeComponent(SComponent c) {}
 
         public SComponent getComponentAt(int i) {
-            return (SComponent)container.getComponentAt(i);
+            return (SComponent)container.getComponent(i);
         }
 
         public void setContainer(SContainer c) {
@@ -156,7 +156,7 @@ public class SDesktopPane
             // zwei maximieren kann. Vielleicht sollte das ueber eine
             // button-group oder so gemacht werden ..
             for (int i=0; i<componentCount; i++) {
-                SInternalFrame frame = (SInternalFrame)container.getComponentAt(i);
+                SInternalFrame frame = (SInternalFrame)container.getComponent(i);
                 if (!frame.isClosed() && frame.isMaximized()) {
                     d.print("<tr><td>\n");
                     frame.write(d);
@@ -166,7 +166,7 @@ public class SDesktopPane
             }
 
             for (int i=0; i<componentCount; i++) {
-                SInternalFrame frame = (SInternalFrame)container.getComponentAt(i);
+                SInternalFrame frame = (SInternalFrame)container.getComponent(i);
                 if (!frame.isClosed()) {
                     d.print("<tr><td>\n");
                     frame.write(d);

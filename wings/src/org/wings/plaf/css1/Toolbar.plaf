@@ -10,12 +10,12 @@
         %><tr align="left"><%
 
         for (int i = 0; i < mcount; i++) {
-            if ( toolbar.getComponentAt(i).isVisible() ) {
-                if ( toolbar.getComponentAt(i).getHorizontalAlignment()==SConstants.RIGHT_ALIGN ) {
+            if ( toolbar.getComponent(i).isVisible() ) {
+                if ( toolbar.getComponent(i).getHorizontalAlignment()==SConstants.RIGHT_ALIGN ) {
                     %><td width="100%"></td><%
                 }
                 %><td><%
-	            toolbar.getComponentAt(i).write(device);
+	            toolbar.getComponent(i).write(device);
                 %></td><%
             }
         }

@@ -360,7 +360,7 @@ public class SPageScroller
      *
      */
     protected void initLayout() {
-        removeAllComponents();
+        removeAll();
 
         SPanel forwardPanel = null;
         SPanel backwardPanel = null;

@@ -27,6 +27,8 @@ import org.wings.ClasspathResource;
  */
 public class LocaleCharSet
 {
+    /** The wings default character encoding. */
+    public final static String DEFAULT_ENCODING = "ISO-8859-1";
     
     private static LocaleCharSet fInstance = null;
     private Properties fCharSet;
@@ -63,7 +65,6 @@ public class LocaleCharSet
 	public String getCharSet(Locale aLocale)
 	{
 	    String cs = null;
-	    //System.out.println("Getting charset for locale " + aLocale);
 	    
 	    cs = fCharSet.getProperty(
 	    	aLocale.getCountry()+"_"+aLocale.getLanguage());

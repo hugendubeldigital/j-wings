@@ -274,7 +274,7 @@ public class SScrollBar
      */
     protected void initLayout()
     {
-        removeAllComponents();
+        removeAll();
 
 
         SPanel backward = null;

@@ -98,16 +98,16 @@ public abstract class AbstractDateChooser
         }
         else {
             // System.out.println("Set " + year + " " + month + " " + day);
-            calendar.set(calendar.YEAR, year);
-            calendar.set(calendar.MONTH, month);
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
             if ( day<0 ) {
                 nullDate = true;
-                calendar.set(calendar.DATE,
-                             Math.min(calendar.get(calendar.DATE),
+                calendar.set(Calendar.DATE,
+                             Math.min(calendar.get(Calendar.DATE),
                                       getMonthLength(month,year)));
             } else {
                 nullDate = false;
-                calendar.set(calendar.DATE,
+                calendar.set(Calendar.DATE,
                              Math.min(day, getMonthLength(month,year)));
             }
         }

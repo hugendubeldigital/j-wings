@@ -72,7 +72,7 @@ public class SRootLayout
 	    return null;
 
 	int topmost = container.getComponentCount() - 1;
-        return container.getComponentAt(topmost);
+        return container.getComponent(topmost);
     }
 
     // this has been overridden as noop in STemplateLayout

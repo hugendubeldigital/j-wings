@@ -25,7 +25,7 @@ public class DefaultLayoutCG
     public void write(Device d, SLayoutManager l) throws IOException {
 	SContainer c = l.getContainer();
 	for (int i=0; i < c.getComponentCount(); i++)
-	    c.getComponentAt(i).write(d);
+	    c.getComponent(i).write(d);
     }
 }
 

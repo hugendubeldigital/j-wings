@@ -133,8 +133,7 @@ public class PageParser
      */
     public void addTagHandler (String tagname, String handlerClassName) 
 	throws ClassNotFoundException {
-	handlerClasses.put (tagname.toUpperCase(),
-			    getClass().forName (handlerClassName));
+	handlerClasses.put (tagname.toUpperCase(), Class.forName (handlerClassName));
     }
 
     /**

@@ -16,20 +16,20 @@
          ***/
 	 boolean rightAligned = false;
          for (int i = 0; i < mcount; i++) {
-             if ( mbar.getComponentAt(i).isVisible() ) {
-                 if ( mbar.getComponentAt(i).getHorizontalAlignment()==SConstants.RIGHT_ALIGN &&
+             if ( mbar.getComponent(i).isVisible() ) {
+                 if ( mbar.getComponent(i).getHorizontalAlignment()==SConstants.RIGHT_ALIGN &&
                       !rightAligned ) {
                      %><td width="100%"></td><%
                      rightAligned = true;
                  }
-                 %><td id="<%=mbar.getComponentAt(i).getComponentId() + "_hook"%>" class="menu"<%
-                 if ( mbar.getComponentAt(i).isEnabled() && 
-                      mbar.getComponentAt(i) instanceof SMenuItem ) {
+                 %><td id="<%=mbar.getComponent(i).getComponentId() + "_hook"%>" class="menu"<%
+                 if ( mbar.getComponent(i).isEnabled() && 
+                      mbar.getComponent(i) instanceof SMenuItem ) {
                      %> onMouseOver="setStyleClass(this, 'amenu')"<%
                      %> onMouseOut="setStyleClass(this, 'menu')"<%
                  }
                  %>>&nbsp;<%
-                 mbar.getComponentAt(i).write(device);
+                 mbar.getComponent(i).write(device);
                  %>&nbsp;</td><%
              }
          }

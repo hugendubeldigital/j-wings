@@ -22,6 +22,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.wings.UploadFilterManager;
+import org.wings.util.LocaleCharSet;
 
 /**
  * A utility class to handle <tt>multipart/form-data</tt> requests,
@@ -772,21 +773,29 @@ class MultipartRequest
          * @return
          */
         public String toString() {
-            StringBuffer buffer = new StringBuffer();
-            buffer.append("dir=");
-            buffer.append(URLEncoder.encode(getDir()));
-            if (getFileName() != null) {
-                buffer.append("&name=");
-                buffer.append(URLEncoder.encode(getFileName()));
+            String encoding = getRequest().getCharacterEncoding() != null ? getRequest().getCharacterEncoding() : LocaleCharSet.DEFAULT_ENCODING;
+             
+            try {
+                StringBuffer buffer = new StringBuffer();            
+                buffer.append("dir=");
+                buffer.append(URLEncoder.encode(getDir(), encoding));
+                if (getFileName() != null) {
+                    buffer.append("&name=");
+                    buffer.append(URLEncoder.encode(getFileName(), encoding));
+                }
+                if (getContentType() != null) {
+                    buffer.append("&type=");
+                    buffer.append(URLEncoder.encode(getContentType(), encoding));
+                }
+                buffer.append("&id=");
+                buffer.append(URLEncoder.encode(getId(), encoding));
+                
+                return buffer.toString();
             }
-            if (getContentType() != null) {
-                buffer.append("&type=");
-                buffer.append(URLEncoder.encode(getContentType()));
+            catch (UnsupportedEncodingException e) {
+                logger.throwing(getClass().getName(), "toString()", e);
+                return null;
             }
-            buffer.append("&id=");
-            buffer.append(URLEncoder.encode(getId()));
-
-            return buffer.toString();
         }
     }
 }

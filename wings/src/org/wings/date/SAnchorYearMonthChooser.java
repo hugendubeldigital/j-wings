@@ -69,15 +69,15 @@ public class SAnchorYearMonthChooser
 
         backward.setIcon(new ResourceImageIcon("icons/ScrollLeft.gif"));
         backward.setToolTipText("&lt;");
-        backward.setVerticalTextPosition(backward.TOP);
-        backward.setHorizontalTextPosition(backward.RIGHT);
+        backward.setVerticalTextPosition(TOP);
+        backward.setHorizontalTextPosition(RIGHT);
         backward.setShowAsFormComponent(false);
         backward.addActionListener(this);
 
         forward.setIcon(new ResourceImageIcon("icons/ScrollRight.gif"));
         forward.setToolTipText("&gt;");
-        forward.setVerticalTextPosition(forward.TOP);
-        forward.setHorizontalTextPosition(forward.RIGHT);
+        forward.setVerticalTextPosition(TOP);
+        forward.setHorizontalTextPosition(RIGHT);
         forward.setShowAsFormComponent(false);
         forward.addActionListener(this);
 
@@ -104,7 +104,7 @@ public class SAnchorYearMonthChooser
     }
 
     public void set(Calendar c) {
-        set(c.get(c.MONTH), c.get(c.YEAR));
+        set(c.get(Calendar.MONTH), c.get(Calendar.YEAR));
     }
 
 
