@@ -32,6 +32,8 @@ import java.util.Stack;
  *   </write>
  *   </template>
  * <%@ import, include %> are supported.
+ * This is a simple parser, that does not yet acknowledge that the tags
+ * may occur in string-constants, so don't confuse this parser by adding them.
  */
 public class TemplateParser {
     private final static String INDENT       = "    ";
@@ -63,7 +65,7 @@ public class TemplateParser {
     private final static int INCLUDE      = 4;
     private final static int END_TEMPLATE = 5;
 
-    // state machine
+    // state machine states.
     //private final static int IN_START_COMMON_JAVA = 0;
     private final static int IN_COMMON_JAVA = 1;
     private final static int IN_WRITE_JAVA  = 2;
@@ -78,7 +80,7 @@ public class TemplateParser {
     private final String pkg;
     private final String forClassName;
     private final JavaBuffer writeJavaCode;
-    private final JavaBuffer classJavaCode;
+    private final JavaBuffer commonJavaCode;
     private final File sourcefile;
     private final File cwd;
     private final StringPool stringPool;
@@ -105,9 +107,8 @@ public class TemplateParser {
         this.openBraces = new Stack();
         this.anyError = false;
         writeJavaCode = new JavaBuffer(2, INDENT);
-        classJavaCode = new JavaBuffer(1, INDENT);
+        commonJavaCode = new JavaBuffer(1, INDENT);
         stringPool = new StringPool( VAR_PREFIX, VAR_LEN );
-        state = IN_COMMON_JAVA;
     }
 
     /**
@@ -144,9 +145,9 @@ public class TemplateParser {
         }
         
         // common stuff.
-        if (classJavaCode.length() > 0) {
+        if (commonJavaCode.length() > 0) {
             out.println ("\n//--- code from common area in template.");
-            out.print( classJavaCode.toString() );
+            out.print( commonJavaCode.toString() );
             out.println ("\n//--- end code from common area in template.");
         }
         
@@ -185,18 +186,23 @@ public class TemplateParser {
      */
     public void parse(PlafReader reader) throws IOException {
         StringBuffer tempBuffer = new StringBuffer();
-        in = reader; // we need this here and there.
+        in = reader; // for error reporting ..
         int trans;
+        /*
+         * we are now in the common area in java mode.
+         */
+        state = IN_COMMON_JAVA;
         skipWhitespace(reader);
         for (;;) {
             switch (state) {
                 /*
                  * states within the common (non-write) area.
+                 * The common area starts by default in JAVA-mode.
                  */
             case IN_COMMON_JAVA:   // (initial Common)
                 trans = findTransitions(reader, tempBuffer, 
                                         stateTransitionTags);
-                classJavaCode.append(tempBuffer);
+                commonJavaCode.append(tempBuffer);
                 tempBuffer.setLength(0);                
                 switch (trans) {
                 case END_JAVA:  // %>
@@ -236,7 +242,7 @@ public class TemplateParser {
             case IN_COMMON_TMPL: 
                 trans = findTransitions(reader, tempBuffer,
                                         stateTransitionTags);
-                generateTemplateWriteCalls(tempBuffer, classJavaCode);
+                generateTemplateWriteCalls(tempBuffer, commonJavaCode);
                 switch (trans) {
                 case START_JAVA: // <%
                     state = IN_COMMON_JAVA;

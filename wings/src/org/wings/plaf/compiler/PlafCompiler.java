@@ -11,15 +11,13 @@
  *
  * Please see COPYING for the complete licence.
  *
- * ... experimental ...
- **** TEST TEST TEST TEST TEST TEST TEST ***
  * Plaf Compiler
  */
 
 package org.wings.plaf.compiler;
 
-import java.io.*;
-import java.lang.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import org.wings.template.parser.SGMLTag;
 

@@ -13,17 +13,25 @@
  */
 package org.wings.plaf.compiler;
 
+/**
+ * Buffer for generated java code that behaves a bit like a StringBuffer.
+ * The code append()ed is indented according to the brace structure; So
+ * statements for if/while etc. are not indented correctly, if these are not
+ * braced.
+ * Strings are as well not handled: so if there is a '{' '}' in any String,
+ * this will influence the output as well.
+ *
+ * <p>Overall: Good enough for code generation.
+ */
 public class JavaBuffer {
     final String indentString;
     final StringBuffer output;
     int braceDepth;
     boolean nextIndent;
-    boolean skipWhiteMode;
 
     public JavaBuffer(int initialDepth, String istring) {
 	output = new StringBuffer();
         braceDepth = 0;
-        skipWhiteMode = false;
         nextIndent = true;        // first line.
         braceDepth = initialDepth;
         indentString = istring;
@@ -32,7 +40,7 @@ public class JavaBuffer {
     /*
      * indent with the current depth.
      */
-    private void indent() {
+    private void indentIfNeeded() {
         if (nextIndent) {
             for (int i = 0; i < braceDepth; ++i) {
                 output.append( indentString );
@@ -49,41 +57,44 @@ public class JavaBuffer {
 	    switch (c) {
 	    case ' ' :
 	    case '\t':
-		if (!skipWhiteMode) output.append(c);
+		if (!nextIndent) output.append(c);
 		break;
 	    case '\n':
 		output.append(c);
                 nextIndent = true;
-                skipWhiteMode = true;
 		break;
             case '{': if (c == '{') ++braceDepth; // fall through
             case '}': if (c == '}') --braceDepth; // fall through
 	    default:
-                indent();
+                indentIfNeeded();
 		output.append(c);
-                skipWhiteMode = false;
 	    }
 	}
         return this;
     }
 
     /**
-     * removes all whitespace, that are at the end of the current buffer.
-     */
-    public void removeTailWhitespace() {
-        int length = output.length();
-        while (Character.isWhitespace(output.charAt(length-1)))
-            --length;
-        output.setLength(length);
-    }
-
-    /**
-     * removes a newline at the end of the buffer, if any.
+     * removes spaces up to - and including - the first newline encountered 
+     * at the end of the buffer, if any.
      */
     public void removeTailNewline() {
         int length = output.length();
-        if (output.charAt(length-1) == '\n')
-            output.setLength(length-1);
+        boolean done = false;
+        do {
+            --length;
+            char c = output.charAt(length);
+            switch (c) {
+            case ' ' :
+            case '\t':
+                break;
+            case '\n':
+                --length; // fall through.
+            default:
+                done = true;
+            }
+        }
+        while (!done);
+        output.setLength(length+1);
     }
 
     public String toString() { return output.toString(); }

@@ -13,8 +13,10 @@
  */
 package org.wings.plaf.compiler;
 
-import java.util.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.HashMap;
 
 /*
  * temporary; copied together - just to make a prelimary
@@ -196,11 +198,11 @@ public class AttributeParser {
      *             and may be private some time
      * @return true if character is an SGML delimiter
      */
-    public static boolean isDelimiter(char c) {
+    private boolean isDelimiter(char c) {
         return c == '<' || c == '=' || c == '>';
     }
 
-    public static int skipWhiteSpace(Reader r) 
+    private int skipWhiteSpace(Reader r) 
 	throws IOException {
 	int c, len=0;
 	do {
