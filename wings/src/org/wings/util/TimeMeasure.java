@@ -27,37 +27,42 @@ import java.text.MessageFormat;
  * der Referenzwert (1.0).
  */
 /**
- * TODO: documentation
+ * Some simple stop watch. It allows to measure multiple time periods
+ * and prints them. Usage: call start(comment) and stop() for
+ * each period of time.
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class TimeMeasure
 {
-    /*
-     * Hier werden alle Messungen abgelegt.
-     */
-    protected final ArrayList measures = new ArrayList();
+    protected final static double RESOLUTION = 100.0;
 
-    /*
-     * Die aktuelle Messung. Wird bei jedem Aufruf von start zurÅckgesetzt.
+    /**
+     * List of measurements.
      */
-    protected Measure actual;
+    protected final ArrayList measures;
 
     /**
      * Message formatter
      */
-    protected MessageFormat formatter;
+    protected final MessageFormat formatter;
 
-    /*
-     * Erzeugt eine neue Messeinrichtung.
+    /**
+     * the current time measurement.
+     */
+    protected Measure current;
+
+    /**
+     * Simple TimeMesaure with default format.
      */
     public TimeMeasure() {
-        this (new MessageFormat ("{0}\t: {1}\t {2}\n"));
+        this (new MessageFormat ("{0}\t: {1}\t {2}x\n"));
     }
 
     /**
-     * A new TimeMeasure which reports in a specific format.
+     * A new TimeMeasure which reports in a specific format. The
+     * format is a standard MessageFormat with the following variables:
      * <ul>
      * <li><code>{0}</code> the measurement comment</li>
      * <li><code>{1}</code> the time it took</li>
@@ -66,11 +71,12 @@ public class TimeMeasure
      * </ul>
      */
     public TimeMeasure (MessageFormat formatter) {
+        this.measures = new ArrayList();
         this.formatter = formatter;
     }
 
-    /*
-     * Lˆscht alle vorangegangenen Messungen.
+    /**
+     * Reset of all Measurements.
      */
     public void reset() {
         measures.clear();
@@ -81,26 +87,23 @@ public class TimeMeasure
      * @param comment  Die Beschreibung der Messung.
      */
     public void start(String comment) {
-        actual = new Measure();
-        actual.comment = comment;
-        actual.start = System.currentTimeMillis();
+        current = new Measure(comment);
     }
 
     /*
      * Startet eine neue Messsung.
      * @param comment  Die Beschreibung der Messung.
-     */
     public Object generate(String comment) {
-        actual = new Measure();
+        current = new Measure();
         actual.comment = comment;
         measures.add(actual);
         return actual;
     }
+     */
 
     /*
      * Addiert eine Messsung zu einer bestehenden.
      * @param comment  Die Beschreibung der Messung.
-     */
     public void addToMeasure(Object measure) {
         int index = measures.indexOf(measure);
         if ( index<0 ) {
@@ -114,89 +117,110 @@ public class TimeMeasure
 
         actual.start = System.currentTimeMillis();
     }
+     */
 
-    /*
-     * Beendet die aktuelle Messsung und speichert diese.
+    /**
+     * stop current time measurement and store it.
      */
     public void stop() {
-        if ( actual!=null ) {
-            actual.stop = System.currentTimeMillis();
-            actual.duration += actual.stop-actual.start;
-            measures.add(actual);
-            actual = null;
+        if ( current != null ) {
+            current.stop();
+            measures.add(current);
+            current = null;
         }
     }
 
-    /*
-     * Errechnet die Zeitdauer (in Millisekunden) der lÑngsten Messung.
+    /**
+     * determines the time duration of the longest or shortest time interval.
+     * @param findShortest boolean 'true', if we are looking for the shortest
+     *                     time interval; 'false' if we are looking for the
+     *                     longest.
      */
-    private long slowest() {
-        Measure m;
-        long slowest = -1;
-
-        for ( int i=0; i<measures.size(); i++ ) {
-            m = (Measure)measures.get(i);
-            slowest = Math.max(slowest, m.duration);
+    private long findReferenceValue(boolean findShortest) {
+        long result = findShortest ? Long.MAX_VALUE : -1;
+        
+        Iterator it = measures.iterator();
+        while (it.hasNext()) {
+            Measure m = (Measure) it.next();
+            result = (findShortest
+                      ? Math.min(result, m.getDuration())
+                      : Math.max(result, m.getDuration()));
         }
-
-        return slowest;
+        return result;
     }
 
-    /*
-     * Erzeugt eine formatierte Ausgaben alle Messergebnisse. Die
-     * Ausgabe ist nicht sortiert, gibt aber die relativen Unterschiede in der
-     * Dauer der einzelnen Messungen an. Die Messung mit der lÑngsten Dauer ist
-     * der Referenzwert (1.0).
-     */
     public String print() {
-        StringBuffer erg = new StringBuffer();
-        long slowest = slowest();
-        for ( int i=0; i<measures.size(); i++ ) {
-            Measure m = (Measure)measures.get(i);
-            Object multiple = null;
-            if (m.duration > 0) {
-                long zwerg = (long)(((double)slowest*100)/(m.duration));
-                multiple = ((double) zwerg / 100) + " x";
+        return print(false);
+    }
+
+    /**
+     * creates a formatted output (using the MessageFormat) of all
+     * results. The output is sorted in the in the sequence the time
+     * measurements took place.
+     * Writes the relative time to either the shortest or the longest
+     * time interval.
+     * @param shortestIsReference boolean true, if the shortest time interval
+     *                            is the reference value (1.0). False, if the
+     *                            longest is the reference.
+     */
+    public String print(boolean shortestIsReference) {
+        StringBuffer result = new StringBuffer();
+        long reference = findReferenceValue(shortestIsReference);
+        Iterator it = measures.iterator();
+        while (it.hasNext()) {
+            Measure m = (Measure) it.next();
+            String factor = " -- ";
+            long duration = m.getDuration();
+            if (reference > 0) {
+                long tmp = (long)((duration * RESOLUTION ) / reference);
+                factor = String.valueOf(tmp / RESOLUTION);
             }
-            else
-                multiple = "";
-            Object[] args = {m.comment, (m.duration + "ms"), multiple};
-            erg.append (formatter.format (args));
+            Object[] args = {m.getComment(), (duration + "ms"), factor};
+            result.append (formatter.format (args));
         }
-        return erg.toString();
+        return result.toString();
     }
 
     public String toString() {
         return print();
     }
 
-    /*
-     * In dieser Klasse werden die einzelnen Messwerte einer Messung abgelegt.
+    /**
+     * A class to store one period of time.
      */
-    class Measure {
-        /*
-         * Der Zeitpunkt des Starts der Messung (System.currentTimeMillis())
+    private final static class Measure {
+        /**
+         * start time.
          */
-        long start;
+        private final long start;
 
-        /*
-         * Der Zeitpunkt des Endes der Messung (System.currentTimeMillis())
+        /**
+         * stop time.
          */
-        long stop;
+        private long stop;
 
-        /*
+        /**
          * Die Gesamtdauer der Messung
          */
-        long duration;
+        private long duration;
 
-        /*
-         * Die Beschreibung der Messung.
+        /**
+         * Description.
          */
-        String comment;
+        private String comment;
 
-        public String toString() {
-            return comment;
+        public Measure(String comment) {
+            start = System.currentTimeMillis();
+            this.comment = comment;
         }
+        
+        public void stop() {
+            stop = System.currentTimeMillis();
+            duration = stop - start;
+        }
+
+        public long getDuration() { return duration; }
+        public String getComment() { return comment; }
     }
 }
 
