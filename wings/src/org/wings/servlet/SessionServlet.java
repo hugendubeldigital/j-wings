@@ -360,6 +360,17 @@ public abstract class SessionServlet
         session.setExternalizeManager( em );
     }
 
+
+    /**
+     * get the frame
+     *
+     * @return the frame for this session
+     */
+    public SFrame getFrame() {
+        return frame;
+    }
+
+
     /**
      * init static variables and DB connetion
      */
