@@ -71,7 +71,7 @@ public class ExternalizeManager
      * If already an externalizer was set, the old externalizer
      * is told cleanAll() and the new one will then be used.
      */
-    public void setExternalizer( Externalizer ext ) {
+    public void setExternalizer(Externalizer ext) {
         if ( externalizer != null )
             externalizer.cleanAll();
         externalizer = ext;
@@ -82,7 +82,10 @@ public class ExternalizeManager
      *
      */
     protected void finalize() {
-        externalizer.cleanAll();
+        if ( externalizer != null ) {
+            externalizer.cleanAll();
+            externalizer = null;
+        }
     }
 
     /**
@@ -91,27 +94,35 @@ public class ExternalizeManager
      * @return
      * @throws java.io.IOException
      */
-    public String externalize( Object obj )
+    public String externalize(Object obj)
         throws java.io.IOException
     {
+        if ( externalizer == null )
+            throw new IllegalStateException("no externalizer");
+
         String name = null;
-        ObjectHandler handler = getObjectHandler( obj.getClass() );
+        ObjectHandler handler = getObjectHandler(obj.getClass());
         if ( obj != null && handler != null ) {
             Session session = SessionManager.getSession();
             name = externalizer.externalize(obj, handler, session);
         }
+
         return name;
     }
 
     public String externalize(Object obj, String mimeType)
         throws java.io.IOException
     {
+        if ( externalizer == null )
+            throw new IllegalStateException("no externalizer");
+
         String name = null;
         ObjectHandler handler = getObjectHandler(mimeType);
-        if (obj != null && handler != null) {
+        if ( obj != null && handler != null ) {
             Session session = SessionManager.getSession();
             name = externalizer.externalize(obj, handler, session);
         }
+
         return name;
     }
 
@@ -119,22 +130,20 @@ public class ExternalizeManager
      * Adds an object handler. If an object handler is already
      * registered for one class, it will be replaced.
      */
-    public void addObjectHandler(ObjectHandler handler)
-    {
+    public void addObjectHandler(ObjectHandler handler) {
         if ( handler != null ) {
             Class c = handler.getSupportedClass();
             if ( c != null )
-                handlerByClass.put( c, handler );
+                handlerByClass.put(c, handler);
 
             String mimeType = handler.getMimeType(null);
-            if (mimeType != null)
+            if ( mimeType != null )
                 handlerByMimeType.put(mimeType, handler);
         }
     }
 
-    public void addObjectHandler(ObjectHandler handler, String mimeType)
-    {
-        if (handler != null && mimeType != null)
+    public void addObjectHandler(ObjectHandler handler, String mimeType) {
+        if ( handler != null && mimeType != null )
 	    handlerByMimeType.put(mimeType, handler);
     }
 
@@ -143,13 +152,12 @@ public class ExternalizeManager
      *
      * @return
      */
-    public ObjectHandler getObjectHandler(Class c)
-    {
+    public ObjectHandler getObjectHandler(Class c) {
         ObjectHandler handler = null;
         if ( c != null ) {
-            handler = (ObjectHandler) handlerByClass.get(c);
+            handler = (ObjectHandler)handlerByClass.get(c);
             if ( handler == null )
-                handler = getObjectHandler( c.getSuperclass() );
+                handler = getObjectHandler(c.getSuperclass());
         }
         return handler;
     }
@@ -157,8 +165,7 @@ public class ExternalizeManager
     /**
      * returns an object handler for a mime type
      */
-    public ObjectHandler getObjectHandler(String mimeType)
-    {
+    public ObjectHandler getObjectHandler(String mimeType) {
         ObjectHandler handler = null;
         if (mimeType != null && mimeType.length() > 0) {
             handler = (ObjectHandler)handlerByMimeType.get(mimeType);
@@ -171,8 +178,9 @@ public class ExternalizeManager
     /**
      * this is for the session destroyer
      */
-    public void actionPerformed( ActionEvent evt ) {
-        externalizer.clean();
+    public void actionPerformed(ActionEvent evt) {
+        if ( externalizer != null )
+            externalizer.clean();
     }
 }
 
