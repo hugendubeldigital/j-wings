@@ -81,7 +81,7 @@ public class OptionPaneExample
             }});
 
         add(yesno);
-        add(new SLabel("<br />"));
+        add(new SSpacer(1, VERTICAL));
         add(new SSeparator());
 
         SHRef href =  new SHRef("View Source Code");
