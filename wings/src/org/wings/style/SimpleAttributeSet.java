@@ -27,7 +27,7 @@ import java.io.*;
 public class SimpleAttributeSet
     implements AttributeSet, Serializable, Cloneable
 {
-    private final transient Map map;
+    private final Map map;
 
     /**
      * create a SimpleAttributeSet from the given HashMap.
@@ -40,7 +40,7 @@ public class SimpleAttributeSet
      * Creates a new, empty atribute set.
      */
     public SimpleAttributeSet() {
-        this(new HashMap(3));
+        this(new HashMap(8));
     }
     
     /**
@@ -58,7 +58,7 @@ public class SimpleAttributeSet
      *
      * @return true if the set is empty else false
      */
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return map.isEmpty();
     }
 
@@ -67,11 +67,11 @@ public class SimpleAttributeSet
      *
      * @return the count
      */
-    public int size() {
+    public final int size() {
         return map.size();
     }
     
-    public void clear() {
+    public final void clear() {
 	map.clear();
     }
     
@@ -81,7 +81,7 @@ public class SimpleAttributeSet
      * @param attrName the attribute name
      * @return true if the attribute is defined
      */
-    public boolean contains(String name) {
+    public final boolean contains(String name) {
 	return map.containsKey(name);
     }
 
@@ -90,7 +90,7 @@ public class SimpleAttributeSet
      *
      * @return the names as an <code>Enumeration</code>
      */
-    public Set names() {
+    public final Set names() {
         return map.keySet();
     }
 
@@ -100,7 +100,7 @@ public class SimpleAttributeSet
      * @param name the attribute name
      * @return the value
      */
-    public String get(String name) {
+    public final String get(String name) {
         return (String)map.get(name);
     }
 
@@ -110,7 +110,7 @@ public class SimpleAttributeSet
      * @param name the attribute name
      * @param value the attribute value
      */
-    public String put(String name, String value) {
+    public final String put(String name, String value) {
         if (value == null)
             return remove(name);
         return (String)map.put(name, value);
