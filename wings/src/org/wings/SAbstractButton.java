@@ -17,8 +17,7 @@ package org.wings;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import java.util.ArrayList;
+import javax.swing.event.EventListenerList;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
@@ -56,7 +55,7 @@ import org.wings.io.Device;
  */
 public class SAbstractButton
     extends SComponent
-    implements SGetListener, Selectable
+    implements Selectable, RequestListener //SGetListener
 {
     /** the text the button is showing */
     protected String text;
@@ -70,7 +69,12 @@ public class SAbstractButton
     /**
      * TODO: documentation
      */
+    protected EventListenerList listenerList = new EventListenerList();
+
+    /**
+     * TODO: documentation
     protected ArrayList actionListener = new ArrayList(2);
+    */
 
     /**
      * TODO: documentation
@@ -209,34 +213,37 @@ public class SAbstractButton
     /**
      * TODO: documentation
      *
-     * @param al
+     * @param listener
      */
-    public void addActionListener(ActionListener al) {
-        actionListener.add(al);
+    public void addActionListener(ActionListener listener) {
+        listenerList.add(ActionListener.class, listener);
     }
 
     /**
      * TODO: documentation
      *
-     * @param al
+     * @param listener
      */
-    public void removeActionListener(ActionListener al) {
-        actionListener.remove(al);
+    public void removeActionListener(ActionListener listener) {
+        listenerList.remove(ActionListener.class, listener);
     }
 
     /**
-     * TODO: documentation
-     *
+     * Fire a ActionEvent at each registered listener.
      */
     protected void fireActionPerformed() {
-        if ( actionCommand==null )
+        if (actionCommand == null)
             actionCommand = getText();
-        ActionEvent e = new ActionEvent(this,
-                                        ActionEvent.ACTION_PERFORMED,
-                                        actionCommand);
-
-        for ( int i=0; i<actionListener.size(); i++ )
-            SForm.fireActionEvent((ActionListener)actionListener.get(i), e);
+        ActionEvent e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, actionCommand);
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i] == ActionListener.class) {
+                ((ActionListener)listeners[i+1]).actionPerformed(e);
+            }
+        }
     }
 
     /**
@@ -299,6 +306,14 @@ public class SAbstractButton
     }
 
     public void getPerformed(String action, String value) {
+        SForm.addArmedComponent(this);
+    }
+
+    public void fireIntermediateEvents() {
+        // TODO: fire item events
+    }
+
+    public void fireFinalEvents() {
         fireActionPerformed();
     }
 }

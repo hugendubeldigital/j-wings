@@ -310,7 +310,7 @@ public class STree
 
     /**
      * Returns JTreePath instances representing the path between index0
-     * and index1 (including index1).  Returns null if there is no tree.
+     * and index1 (including index1).
      *
      * @param index0  an int specifying a display row, where 0 is the
      *                first row in the display
@@ -812,9 +812,7 @@ public class STree
     }
 
     /**
-     * Creates and returns an instance of TreeModelHandler. The returned
-     * object is responsible for updating the expanded state when the
-     * TreeModel changes.
+     * Creates an instance of TreeModelHandler.
      */
     protected TreeModelListener createTreeModelListener() {
         return new TreeModelHandler();
@@ -875,13 +873,6 @@ public class STree
     /**
      * EmptySelectionModel is a TreeSelectionModel that does not allow
      * anything to be selected.
-     * <p>
-     * Warning: serialized objects of this class will not be compatible with
-     * future swing releases.  The current serialization support is appropriate
-     * for short term storage or RMI between Swing1.0 applications.  It will
-     * not be possible to load serialized Swing1.0 objects with future releases
-     * of Swing.  The JDK1.2 release of Swing will be the compatibility
-     * baseline for the serialized form of Swing objects.
      */
     protected static class EmptySelectionModel extends DefaultTreeSelectionModel
     {

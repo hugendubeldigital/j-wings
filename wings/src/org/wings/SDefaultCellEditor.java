@@ -59,11 +59,6 @@ public class SDefaultCellEditor
         editorForm.add(editorPanel);
         editorPanel.add(editorComponent);
         this.delegate = new EditorDelegate() {
-            /**
-             * TODO: documentation
-             *
-             * @param v
-             */
             public void setValue(Object v) {
                 super.setValue(v);
 
@@ -73,30 +68,14 @@ public class SDefaultCellEditor
                     ((STextField)editorComponent).setText("");
             }
 
-            /**
-             * TODO: documentation
-             *
-             * @return
-             */
             public Object getCellEditorValue() {
                 return ((STextField)editorComponent).getText();
             }
 
-            /**
-             * TODO: documentation
-             *
-             * @param anEvent
-             * @return
-             */
             public boolean startCellEditing(EventObject anEvent) {
                 return true;
             }
 
-            /**
-             * TODO: documentation
-             *
-             * @return
-             */
             public boolean stopCellEditing() {
                 return true;
             }
@@ -111,7 +90,7 @@ public class SDefaultCellEditor
     /**
      * Constructs a DefaultCellEditor object that uses a check box.
      *
-     * @param x  a JCheckBox object ...
+     * @param x  a SCheckBox object ...
      */
     public SDefaultCellEditor(SCheckBox x) {
         createDefaultIcons();
@@ -160,10 +139,6 @@ public class SDefaultCellEditor
              * @return
              */
             public boolean startCellEditing(EventObject anEvent) {
-                // PENDING(alan)
-                if (anEvent instanceof AWTEvent) {
-                    return true;
-                }
                 return false;
             }
 
@@ -179,39 +154,6 @@ public class SDefaultCellEditor
 
         ((SCheckBox)editorComponent).addActionListener(delegate);
     }
-
-    /**
-     * Constructs a DefaultCellEditor object that uses a combo box.
-     *
-     * @param x  a JComboBox object ...
-     */
-    /*
-     public DefaultCellEditor(JComboBox x) {
-     this.editorComponent = x;
-     this.delegate = new EditorDelegate() {
-     public void setValue(Object x) {
-     super.setValue(x);
-     ((JComboBox)editorComponent).setSelectedItem(x);
-     }
-
-     public Object getCellEditorValue() {
-     return ((JComboBox)editorComponent).getSelectedItem();
-     }
-
-     public boolean startCellEditing(EventObject anEvent) {
-     if (anEvent instanceof AWTEvent) {
-     return true;
-     }
-     return false;
-     }
-
-     public boolean stopCellEditing() {
-     return true;
-     }
-     };
-     ((JComboBox)editorComponent).addItemListener(delegate);
-     }
-     */
 
     /**
      * Returns a reference to the editor component.
@@ -273,7 +215,6 @@ public class SDefaultCellEditor
         return delegate.isCellEditable(anEvent);
     }
 
-    // implements javax.swing.CellEditor
     /**
      * TODO: documentation
      *
@@ -281,11 +222,9 @@ public class SDefaultCellEditor
      * @return
      */
     public boolean shouldSelectCell(EventObject anEvent) {
-        boolean retValue = true;
-
-        // By default we want the cell the be selected so
+        // By default we want the cell to be selected so
         // we return true
-        return retValue;
+        return true;
     }
 
     // implements javax.swing.CellEditor

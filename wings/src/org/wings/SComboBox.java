@@ -200,8 +200,8 @@ public class SComboBox
     /**
      * Selects the item at index <code>index</code>.
      *
-     * @param index an int specifying the list item to select, where 0 specifies
-     *                the first item in the list
+     * @param index the item to be selected
+     *
      * @beaninfo
      *   preferred: true
      *  description: The item at index is selected.
@@ -238,9 +238,6 @@ public class SComboBox
 
     /** 
      * Adds an item to the item list.
-     * This method works only if the SComboBox uses the default data model.
-     * SComboBox uses the default data model when created with the 
-     * empty constructor and no other model has been set.
      *
      * @param object the Object to add to the list
      */
@@ -251,9 +248,6 @@ public class SComboBox
 
     /** 
      * Inserts an item into the item list at a given index. 
-     * This method works only if the SComboBox uses the default data model.
-     * SComboBox uses the default data model when created with the 
-     * empty constructor and no other model has been set.
      *
      * @param object the Object to add to the list
      * @param index    an int specifying the position at which to add the item
@@ -278,9 +272,6 @@ public class SComboBox
 
     /**  
      * Removes the item at <code>index</code>
-     * This method works only if the SComboBox uses the default data model.
-     * SComboBox uses the default data model when created with the 
-     * empty constructor and no other model has been set.
      *
      * @param index  an int specifying the idex of the item to remove, where 0
      *                 indicates the first item in the list
@@ -292,9 +283,6 @@ public class SComboBox
 
     /** 
      * Removes all items from the item list.
-     * This method works only if the SComboBox uses the default data model.
-     * SComboBox uses the default data model when created with the empty constructor
-     * and no other model has been set.
      */
     public void removeAllItems() {
         checkMutableComboBoxModel();
@@ -381,8 +369,7 @@ public class SComboBox
     }
 
     /**
-     * Notify all listeners that have registered interest for
-     * notification on this event type.
+     * Notify all listeners that have registered as ItemListeners.
      *  
      * @see EventListenerList
      */
@@ -402,8 +389,7 @@ public class SComboBox
     }   
 
     /**
-     * Notify all listeners that have registered interest for
-     * notification on this event type.
+     * Notify all listeners that have registered as ActionListeners.
      *  
      * @see EventListenerList
      */
@@ -427,8 +413,7 @@ public class SComboBox
     }
 
     /**
-     * This method is called when the selected item changes. Its default implementation
-     *  notifies the item listeners
+     * This method is called when the selected item changes.
      */
     protected void selectedItemChanged() {
         if (lastSelectedItem != null) {
@@ -447,10 +432,9 @@ public class SComboBox
     }
 
     /** 
-     * Returns an array containing the selected item. This method is implemented for 
-     * compatibility with ItemSelectable.
+     * Returns an array containing the selected item.
      *
-     * @returns an array of Objects containing one element -- the selected item
+     * @returns an array of Objects containing the selected item
      */
     public Object[] getSelectedObjects() {
         Object selectedObject = getSelectedItem();
@@ -460,8 +444,9 @@ public class SComboBox
             return new Object[] { selectedObject };
     }
 
-    /** This method is public as an implementation side effect. 
-     *  do not call or override. 
+    /**
+     * This method is public as an implementation side effect. 
+     * do not call or override.
      *
      * @see javax.swing.event.ListDataListener
      */
@@ -474,7 +459,7 @@ public class SComboBox
     }
 
     /**
-     * Invoked items have been added to the internal data model.
+     * Invoked when items have been added to the internal data model.
      * The "interval" includes the first and last values added. 
      *
      * @see javax.swing.event.ListDataListener
@@ -507,8 +492,8 @@ public class SComboBox
     /**
      * Returns the list item at the specified index.
      *
-     * @param index  an int indicating the list position, where the first
-     *               item starts at zero
+     * @param index  an int indicating the list position
+     *
      * @return the Object at that list position
      */
     public Object getItemAt(int index) {

@@ -23,11 +23,7 @@ import java.util.HashMap;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
+import javax.swing.event.*;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableModel;
 
@@ -52,7 +48,12 @@ public class STable
      */
     private static final String cgClassID = "TableCG";
 
-    protected ListSelectionSupport selectionSupport;
+    protected int selectionMode = SConstants.NO_SELECTION;
+
+    /**
+     * TODO: documentation
+     */
+    protected EventListenerList listenerList = new EventListenerList();
 
     protected Selectable[] selects = null;
 
@@ -112,8 +113,6 @@ public class STable
      */
     public void setModel(TableModel tm) {
         super.setModel(tm);
-        if ( selectionSupport == null )
-            selectionSupport = new ListSelectionSupport(this);
         initSelectables();
     }
 
@@ -122,26 +121,26 @@ public class STable
      *
      */
     protected void initSelectables() {
-        if ( getSelectionMode() != SConstants.NO_SELECTION ) {
-            if ( selectGroup == null )
+        if (getSelectionMode() != SConstants.NO_SELECTION) {
+            if (selectGroup == null)
                 selectGroup = new SButtonGroup();
             else
                 selectGroup.removeAll();
 
-            if ( selects != null ) {
+            if (selects != null) {
                 for (int i=0; i < selects.length; i++)
                     selects[i].setSelected(false);
 
-                if ( selects.length<getRowCount() ) {
+                if (selects.length<getRowCount()) {
                     addSelectables(selects.length, getRowCount()-1);
                 }
-                else if ( selects.length>getRowCount() ) {
+                else if (selects.length>getRowCount()) {
                     deleteSelectables(getRowCount(), selects.length-1);
                 }
             }
             else {
                 selects = new Selectable[model.getRowCount()];
-                for ( int i=0; i<model.getRowCount(); i++ )
+                for (int i=0; i<model.getRowCount(); i++)
                     selects[i] = generateSelectable(i);
             }
         }
@@ -152,7 +151,7 @@ public class STable
      *
      */
     public void checkSelectables() {
-        if ( selects == null || getRowCount() != selects.length ) {
+        if (selects == null || getRowCount() != selects.length) {
             // System.err.println("checkSelectables() wird tatsächlich gebraucht !!!");
             initSelectables();
         }
@@ -166,7 +165,7 @@ public class STable
      */
     protected Selectable generateSelectable(int row) {
         SCheckBox tmp = null;
-        if ( getSelectionMode() == SConstants.SINGLE_SELECTION ) {
+        if (getSelectionMode() == SConstants.SINGLE_SELECTION) {
             tmp = new SRadioButton();
             selectGroup.add(tmp);
         }
@@ -186,7 +185,7 @@ public class STable
      * @param sel
      */
     protected void deactivateSelectable(Selectable sel) {
-        if ( sel != null ) {
+        if (sel != null) {
             sel.setParent(null);
             sel.removeActionListener(this);
         }
@@ -196,11 +195,11 @@ public class STable
     public void setParent(SContainer p) {
         super.setParent(p);
 
-        if ( editorComp != null )
+        if (editorComp != null)
             editorComp.setParent(p);
 
-        if ( selects != null )
-            for ( int i=0; i<selects.length; i++ )
+        if (selects != null)
+            for (int i=0; i<selects.length; i++)
                 selects[i].setParent(p);
     }
 
@@ -241,7 +240,7 @@ public class STable
      */
     public void setDefaultEditor(Class columnClass, STableCellEditor r) {
         editors.remove(columnClass);
-        if ( editors != null )
+        if (editors != null)
             editors.put(columnClass, r);
     }
 
@@ -260,12 +259,12 @@ public class STable
      * @see     #getColumnClass
      */
     public STableCellEditor getDefaultEditor(Class columnClass) {
-        if ( columnClass == null ) {
+        if (columnClass == null) {
             return null;
         }
         else {
             Object r = editors.get(columnClass);
-            if ( r != null ) {
+            if (r != null) {
                 return (STableCellEditor)r;
             }
             else {
@@ -308,24 +307,24 @@ public class STable
      * @return  false if for any reason the cell cannot be edited.
      */
     public boolean editCellAt(int row, int column, EventObject e){
-        if ( isEditing() ) {
+        if (isEditing()) {
             // Try to stop the current editor
-            if ( cellEditor != null ) {
+            if (cellEditor != null) {
                 boolean stopped = cellEditor.stopCellEditing();
-                if ( !stopped )
+                if (!stopped)
                     return false;       // The current editor not resigning
             }
         }
 
-        if ( !isCellEditable(row, column) )
+        if (!isCellEditable(row, column))
             return false;
 
         STableCellEditor editor = getCellEditor(row, column);
-        if ( editor != null ) {
+        if (editor != null) {
             // prepare editor
             editorComp = prepareEditor(editor, row, column);
 
-            if ( editor.isCellEditable(e) ) {
+            if (editor.isCellEditable(e)) {
                 editorComp.setParent(getParent());
                 //this.add(editorComp);
                 setCellEditor(editor);
@@ -350,7 +349,7 @@ public class STable
      * @see #setValueAt
      */
     public boolean isCellEditable(int row, int col) {
-        if ( col >= super.getColumnCount() || row == -1 )
+        if (col >= super.getColumnCount() || row == -1)
             return false;
         else
             return getModel().isCellEditable(row, col);
@@ -364,7 +363,7 @@ public class STable
      * @see     #editingRow
      */
     public boolean isEditing() {
-        return ( cellEditor == null ) ? false : true;
+        return (cellEditor == null) ? false : true;
     }
 
     /**
@@ -437,7 +436,7 @@ public class STable
     }
 
     /**
-     * Return an appropriate editor for the cell specified by this this row and
+     * Return an appropriate editor for the cell specified by this row and
      * column. If the TableColumn for this column has a non-null editor, return that.
      * If not, find the class of the data in this column (using getColumnClass())
      * and return the default editor for this type of data.
@@ -475,7 +474,7 @@ public class STable
      */
     public void removeEditor() {
         STableCellEditor editor = getCellEditor();
-        if ( editor != null ) {
+        if (editor != null) {
             editor.removeCellEditorListener(this);
             //remove(editorComp);
             setCellEditor(null);
@@ -499,7 +498,7 @@ public class STable
     public void editingStopped(ChangeEvent e) {
         // Take in the new value
         STableCellEditor editor = getCellEditor();
-        if ( editor != null ) {
+        if (editor != null) {
             Object value = editor.getCellEditorValue();
             setValueAt(value, editingRow, editingColumn);
             removeEditor();
@@ -545,7 +544,7 @@ public class STable
      * @return
      */
     public int getColumnCount() {
-        if ( getSelectionMode() != SConstants.NO_SELECTION ) {
+        if (getSelectionMode() != SConstants.NO_SELECTION) {
             return super.getColumnCount()+1;
         }
         else {
@@ -560,9 +559,9 @@ public class STable
      */
     public int getSelectedRowCount() {
         int count = 0;
-        if ( selects != null && getSelectionMode() != SConstants.NO_SELECTION ) {
-            for ( int i=0; i<selects.length; i++ ) {
-                if ( selects[i].isSelected() )
+        if (selects != null && getSelectionMode() != SConstants.NO_SELECTION) {
+            for (int i=0; i<selects.length; i++) {
+                if (selects[i].isSelected())
                     count++;
             }
         }
@@ -575,9 +574,9 @@ public class STable
      * @return
      */
     public int getSelectedRow() {
-        if ( selects != null && getSelectionMode() != SConstants.NO_SELECTION ) {
-            for ( int i=0; i<selects.length; i++ ) {
-                if ( selects[i].isSelected() )
+        if (selects != null && getSelectionMode() != SConstants.NO_SELECTION) {
+            for (int i=0; i<selects.length; i++) {
+                if (selects[i].isSelected())
                     return i;
             }
         }
@@ -586,10 +585,10 @@ public class STable
 
     public int[] getSelectedRows() {
         int[] erg = new int[getSelectedRowCount()];
-        if ( selects != null && getSelectionMode() != SConstants.NO_SELECTION ) {
+        if (selects != null && getSelectionMode() != SConstants.NO_SELECTION) {
             int index = 0;
-            for ( int i=0; i<selects.length; i++ ) {
-                if ( selects[i].isSelected() )
+            for (int i=0; i<selects.length; i++) {
+                if (selects[i].isSelected())
                     erg[index++]=i;
             }
         }
@@ -600,8 +599,8 @@ public class STable
      * Deselects all selected columns and rows.
      */
     public void clearSelection() {
-        if ( selects != null ) {
-            for ( int i=0; i<selects.length; i++ )
+        if (selects != null) {
+            for (int i=0; i<selects.length; i++)
                 selects[i].setSelected(false);
         }
     }
@@ -629,7 +628,7 @@ public class STable
      */
     public void setSelectionMode(int s) {
         clearSelection();
-        selectionSupport.setSelectionMode(s);
+        selectionMode = s;
         initSelectables();
     }
 
@@ -639,50 +638,43 @@ public class STable
      * @return
      */
     public int getSelectionMode() {
-        return selectionSupport.getSelectionMode();
+        return selectionMode;
     }
 
     /**
      * TODO: documentation
      *
-     * @param lsl
+     * @param listener
      */
-    public void addListSelectionListener(ListSelectionListener lsl) {
-        selectionSupport.addListSelectionListener(lsl);
+    public void addSelectionListener(ListSelectionListener listener) {
+        listenerList.add(ListSelectionListener.class, listener);
     }
 
     /**
      * TODO: documentation
      *
-     * @param lsl
+     * @param listener
      */
-    public void removeListSelectionListener(ListSelectionListener lsl) {
-        selectionSupport.removeListSelectionListener(lsl);
+    public void removeSelectionListener(ListSelectionListener listener) {
+        listenerList.remove(ListSelectionListener.class, listener);
     }
 
     /**
-     * TODO: documentation
-     *
-     * @param index
+     * Fire a SelectionEvent at each registered listener.
      */
-    protected void fireSelectionPerformed(int index) {
-        selectionSupport.fireSelectionPerformed(index);
+    protected void fireSelectionValueChanged(int index) {
+        ListSelectionEvent e = new ListSelectionEvent(this, index, index, false);
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i] == ListSelectionListener.class) {
+                ((ListSelectionListener)listeners[i+1]).valueChanged(e);
+            }
+        }
     }
 
-    /*
-     * Feuert eine ListSelectionEvent unter Umgehung der Event Queue des
-     * aktuellen Threads. Das wird immer dann benoetigt, wenn ein
-     * ListSelectionEvent durch einen anderen Event getriggert wird
-     * (z.B. ActionEvent einer Checkbox bei Table Selektion)
-     */
-    /**
-     * TODO: documentation
-     *
-     * @param index
-     */
-    protected void fireSelectionPerformedImmediately(int index) {
-        selectionSupport.fireSelectionPerformedImmediately(index);
-    }
 
     /*
      * Hier wird der SelectionPerformed Event gefeuert.
@@ -693,9 +685,9 @@ public class STable
      * @param e
      */
     public void actionPerformed(ActionEvent e) {
-        for ( int i=0; i<getRowCount(); i++ ) {
-            if ( selects[i] == e.getSource() ) {
-                fireSelectionPerformedImmediately(i);
+        for (int i=0; i<getRowCount(); i++) {
+            if (selects[i] == e.getSource()) {
+                fireSelectionValueChanged(i);
                 return;
             }
         }
@@ -711,14 +703,14 @@ public class STable
      * TODO: documentation
      */
     protected final void addSelectables(int firstrow, int lastrow) {
-        if ( getSelectionMode() != SConstants.NO_SELECTION ) {
+        if (getSelectionMode() != SConstants.NO_SELECTION) {
             // System.out.println("add " + firstrow + " : " + lastrow);
 
             firstrow = Math.max(firstrow, 0);
             lastrow = Math.min(getRowCount(), lastrow);
 
             Selectable[] newselects = new Selectable[(lastrow+1)-firstrow];
-            for ( int i=0; i<=lastrow-firstrow; i++ ) {
+            for (int i=0; i<=lastrow-firstrow; i++) {
                 // System.out.println("generate select " + (firstrow+i));
                 newselects[i] = generateSelectable(firstrow+i);
             }
@@ -742,7 +734,7 @@ public class STable
      * TODO: documentation
      */
     protected final void deleteSelectables(int firstrow, int lastrow) {
-        if ( getSelectionMode() != SConstants.NO_SELECTION ) {
+        if (getSelectionMode() != SConstants.NO_SELECTION) {
             // System.out.println("delete " + firstrow + " : " +lastrow);
             Selectable[] oldselects = selects;
 
@@ -756,7 +748,7 @@ public class STable
                              oldselects.length-(lastrow+1));
 
             // die entfernten muessen natuerlich deactiviert werden.
-            for ( int i=firstrow; i<=lastrow; i++ ) {
+            for (int i=firstrow; i<=lastrow; i++) {
                 // System.out.println("deactivate select " + i);
                 deactivateSelectable(oldselects[i]);
             }
@@ -771,22 +763,22 @@ public class STable
      * @param e
      */
     public void tableChanged(TableModelEvent e) {
-        switch ( e.getType() ) {
+        switch (e.getType()) {
         case e.INSERT:
-            if ( e.getFirstRow() >= 0 )
+            if (e.getFirstRow() >= 0)
                 addSelectables(e.getFirstRow(), e.getLastRow());
             break;
 
         case e.DELETE:
-            if ( e.getFirstRow() >= 0 )
+            if (e.getFirstRow() >= 0)
                 deleteSelectables(e.getFirstRow(), e.getLastRow());
             break;
 
         case e.UPDATE:
             // Falls sich die Daten geaendert haben, sonst sind keine
             // Aenderungen noetig.
-            if ( e.getFirstRow() <= 0 ||
-                 e.getLastRow()>selects.length )
+            if (e.getFirstRow() <= 0 ||
+                 e.getLastRow()>selects.length)
                 initSelectables();
             break;
         }

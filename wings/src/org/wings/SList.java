@@ -94,8 +94,7 @@ public class SList
     protected int start = 0;
 
     /**
-     * Construct a SList that displays the elements in the specified,
-     * non-null model.  All SList constructors delegate to this one.
+     * Construct a SList that displays the elements in the specified model.
      */
     public SList(ListModel dataModel)
     {
@@ -110,8 +109,7 @@ public class SList
 
     /**
      * Construct a SList that displays the elements in the specified
-     * array.  This constructor just delegates to the ListModel
-     * constructor.
+     * array.
      */
     public SList(final Object[] listData)
     {
@@ -127,8 +125,7 @@ public class SList
 
     /**
      * Construct a SList that displays the elements in the specified
-     * Vector.  This constructor just delegates to the ListModel
-     * constructor.
+     * Vector.
      */
     public SList(final Vector listData) {
         this ( new AbstractListModel() {
@@ -163,7 +160,7 @@ public class SList
     }
 
     /**
-     * Returns the object that renders the list items.
+     * Returns the cell renderer.
      *
      * @return the ListCellRenderer
      * @see #setCellRenderer
@@ -174,10 +171,6 @@ public class SList
 
     /**
      * Sets the renderer that's used to write out each cell in the list.
-     * <p>
-     * The default value of this property is provided by the ListCG.
-     * <p>
-     * This is a JavaBeans bound property.
      *
      * @param cellRenderer the SListCellRenderer that paints list cells
      * @see #getCellRenderer
@@ -208,12 +201,7 @@ public class SList
      * Set the foreground color for selected cells.  Cell renderers
      * can use this color to render text and graphics for selected
      * cells.
-     * <p>
-     * The default value of this property is defined by the look
-     * and feel implementation.
-     * <p>
-     * This is a JavaBeans bound property.
-     *
+     * 
      * @param selectionForeground  the Color to use in the foreground
      *                             for selected list items
      * @see #getSelectionForeground
@@ -248,11 +236,6 @@ public class SList
      * Set the background color for selected cells.  Cell renderers
      * can use this color to the fill selected cells.
      * <p>
-     * The default value of this property is defined by the look
-     * and feel implementation.
-     * <p>
-     * This is a JavaBeans bound property.
-     *
      * @param selectionBackground  the Color to use for the background
      *                             of selected cells
      * @see #getSelectionBackground
@@ -275,8 +258,7 @@ public class SList
      * Return the preferred number of visible rows. If rendered as a form
      * component it is used for the size-attribute.
      *
-     * @return an int indicating the preferred number of rows to display
-     *         without using a scrollbar
+     * @return the preferred number of rows to display
      * @see #setVisibleRowCount
      */
     public int getVisibleRowCount() {
@@ -288,11 +270,8 @@ public class SList
      * without a scollbar.
      * <p>
      * The default value of this property is 8.
-     * <p>
-     * This is a JavaBeans bound property.
      *
-     * @param visibleRowCount  an int specifying the preferred number of
-     *                         visible rows
+     * @param visibleRowCount  the preferred number of visible rows
      * @see #getVisibleRowCount
      * @beaninfo
      *       bound: true
@@ -311,10 +290,9 @@ public class SList
 
 
     /**
-     * Returns the data model that holds the list of items displayed
-     * by the SList component.
+     * Returns the data model that holds the items.
      *
-     * @return the ListModel that provides the displayed list of items
+     * @return the ListModel
      * @see #setModel
      */
     public ListModel getModel() {
@@ -322,17 +300,13 @@ public class SList
     }
 
     /**
-     * Sets the model that represents the contents or "value" of the
-     * list and clears the list selection after notifying PropertyChangeListeners.
-     * <p>
-     * This is a JavaBeans bound property.
+     * Sets the model
      *
-     * @param model  the ListModel that provides the list of items for display
+     * @param model  the ListModel that provides the list of items
      * @see #getModel
      * @beaninfo
      *       bound: true
-     *   attribute: visualUpdate true
-     * description: The object that contains the data to be drawn by this SList.
+     * description: The object that contains the data to be shownin the list.
      */
     public void setModel(ListModel model) {
         if (model == null) {
@@ -382,29 +356,13 @@ public class SList
     }
 
 
-    /**
-     * --- ListSelectionModel delegations and extensions ---
-     */
-
-
-    /**
-     * Returns an instance of DefaultListSelectionModel.  This
-     * method is used by the constructor to initialize the
-     * selectionModel property.
-     *
-     * @return The ListSelectionModel used by this SList.
-     * @see #setSelectionModel
-     * @see DefaultListSelectionModel
-     */
     protected ListSelectionModel createSelectionModel() {
         return new DefaultListSelectionModel();
     }
 
 
     /**
-     * Returns the value of the current selection model. The selection
-     * model handles the task of making single selections, selections
-     * of contiguous ranges, and non-contiguous selections.
+     * Returns the current selection model.
      *
      * @return the ListSelectionModel that implements list selections
      * @see #setSelectionModel
@@ -416,10 +374,8 @@ public class SList
 
 
     /**
-     * This method notifies SList ListSelectionListeners that
-     * the selection model has changed.  It's used to forward
-     * ListSelectionEvents from the selectionModel to the
-     * ListSelectionListeners added directly to the SList.
+     * This method notifies all ListSelectionListeners that
+     * the selection model has changed.
      *
      * @see #addListSelectionListener
      * @see #removeListSelectionListener
@@ -443,10 +399,9 @@ public class SList
     }
 
 
-    /* A ListSelectionListener that forwards ListSelectionEvents from
-     * the selectionModel to the SList ListSelectionListeners.  The
-     * forwarded events only differ from the originals in that their 
-     * source is the SList instead of the selectionModel itself.
+    /**
+     * A handler that forwards ListSelectionEvents from the selectionModel
+     * to the SList ListSelectionListeners.
      */
     private class ListSelectionHandler implements ListSelectionListener, Serializable 
     {
@@ -460,11 +415,9 @@ public class SList
 
     /**
      * Add a listener to the list that's notified each time a change
-     * to the selection occurs.  Listeners added directly to the SList
-     * will have their ListSelectionEvent.getSource() == this SList
-     * (instead of the ListSelectionModel).
+     * to the selection occurs.
      *
-     * @param listener The ListSelectionListener to add.
+     * @param listener A ListSelectionListener to be added
      * @see #getSelectionModel
      */
     public void addListSelectionListener(ListSelectionListener listener) {
@@ -491,12 +444,8 @@ public class SList
 
 
     /**
-     * Set the selectionModel for the list to a non-null ListSelectionModel
-     * implementation. The selection model handles the task of making single
-     * selections, selections of contiguous ranges, and non-contiguous
-     * selections.
-     * <p>
-     * This is a JavaBeans bound property.
+     * Set the selectionModel for the list.
+     * The selection model keeps track of which items are selected.
      *
      * @return selectionModel  the ListSelectionModel that implements
      *                         list selections
@@ -510,9 +459,6 @@ public class SList
             throw new IllegalArgumentException("selectionModel must be non null");
         }
 
-        /* Remove the forwarding ListSelectionListener from the old
-         * selectionModel, and add it to the new one, if neccessary.
-         */
         if (selectionListener != null) {
             this.selectionModel.removeListSelectionListener(selectionListener);
             selectionModel.addListSelectionListener(selectionListener);
@@ -525,30 +471,20 @@ public class SList
 
 
     /**
-     * Determines whether single-item or multiple-item
-     * selections are allowed.
-     * The following selectionMode values are allowed:
+     * Allow / permit multiple selection
      * <ul>
      * <li> <code>SINGLE_SELECTION</code>
-     *   Only one list index can be selected at a time.  In this
-     *   mode the setSelectionInterval and addSelectionInterval
-     *   methods are equivalent, and they only the first index
-     *   argument is used.
-     * <li> <code>SINGLE_INTERVAL_SELECTION</code>
-     *   One contiguous index interval can be selected at a time.
-     *   In this mode setSelectionInterval and addSelectionInterval
-     *   are equivalent.
+     *   Only one list index can be selected at a time.
      * <li> <code>MULTIPLE_INTERVAL_SELECTION</code>
-     *   In this mode, there's no restriction on what can be selected.
+     *   Multiple items can be selected.
      * </ul>
      *
-     * @param selectionMode an int specifying the type of selections
-     *        that are permissible
+     * @param selectionMode single or multiple selections
+     *
      * @see #getSelectionMode
      * @beaninfo
-     * description: The selection mode.
+     * description: The selection mode
      *        enum: SINGLE_SELECTION            ListSelectionModel.SINGLE_SELECTION
-     *              SINGLE_INTERVAL_SELECTION   ListSelectionModel.SINGLE_INTERVAL_SELECTION
      *              MULTIPLE_INTERVAL_SELECTION ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
      */
     public void setSelectionMode(int selectionMode) {
@@ -566,10 +502,6 @@ public class SList
 
 
     /**
-     * Returns the first index argument from the most recent addSelectionInterval
-     * or setSelectionInterval call.
-     * This is a convenience method that just delegates to the selectionModel.
-     *
      * @return The index that most recently anchored an interval selection.
      * @see ListSelectionModel#getAnchorSelectionIndex
      * @see #addSelectionInterval
@@ -582,10 +514,6 @@ public class SList
 
 
     /**
-     * Returns the second index argument from the most recent addSelectionInterval
-     * or setSelectionInterval call.
-     * This is a convenience method that just  delegates to the selectionModel.
-     *
      * @return The index that most recently ended a interval selection.
      * @see ListSelectionModel#getLeadSelectionIndex
      * @see #addSelectionInterval
@@ -600,9 +528,6 @@ public class SList
 
 
     /**
-     * Returns the smallest selected cell index.
-     * This is a convenience method that just delegates to the selectionModel.
-     *
      * @return The smallest selected cell index.
      * @see ListSelectionModel#getMinSelectionIndex
      * @see #addListSelectionListener
@@ -613,9 +538,6 @@ public class SList
 
 
     /**
-     * Returns the largest selected cell index.
-     * This is a convenience method that just delegates to the selectionModel.
-     *
      * @return The largest selected cell index.
      * @see ListSelectionModel#getMaxSelectionIndex
      * @see #addListSelectionListener
@@ -626,9 +548,6 @@ public class SList
 
 
     /**
-     * Returns true if the specified index is selected.
-     * This is a convenience method that just delegates to the selectionModel.
-     *
      * @return True if the specified index is selected.
      * @see ListSelectionModel#isSelectedIndex
      * @see #setSelectedIndex
@@ -640,9 +559,6 @@ public class SList
 
 
     /**
-     * Returns true if nothing is selected
-     * This is a convenience method that just delegates to the selectionModel.
-     *
      * @return True if nothing is selected
      * @see ListSelectionModel#isSelectionEmpty
      * @see #clearSelection
@@ -654,10 +570,6 @@ public class SList
 
 
     /**
-     * Clears the selection - after calling this method isSelectionEmpty()
-     * will return true.
-     * This is a convenience method that just delegates to the selectionModel.
-     *
      * @see ListSelectionModel#clearSelection
      * @see #isSelectionEmpty
      * @see #addListSelectionListener
@@ -668,10 +580,6 @@ public class SList
 
 
     /**
-     * Select the specified interval.  Both the anchor and lead indices are
-     * included.  It's not neccessary for anchor to be less than lead.
-     * This is a convenience method that just delegates to the selectionModel.
-     *
      * @param anchor The first index to select
      * @param lead The last index to select
      * @see ListSelectionModel#setSelectionInterval
@@ -685,11 +593,6 @@ public class SList
 
 
     /**
-     * Set the selection to be the union of the specified interval with current
-     * selection.  Both the anchor and lead indices are
-     * included.  It's not neccessary for anchor to be less than lead.
-     * This is a convenience method that just delegates to the selectionModel.
-     *
      * @param anchor The first index to add to the selection
      * @param lead The last index to add to the selection
      * @see ListSelectionModel#addSelectionInterval
@@ -703,11 +606,6 @@ public class SList
 
 
     /**
-     * Set the selection to be the set difference of the specified interval
-     * and the current selection.  Both the anchor and lead indices are
-     * removed.  It's not neccessary for anchor to be less than lead.
-     * This is a convenience method that just delegates to the selectionModel.
-     *
      * @param anchor The first index to remove from the selection
      * @param lead The last index to remove from the selection
      * @see ListSelectionModel#removeSelectionInterval
@@ -721,12 +619,7 @@ public class SList
 
 
     /**
-     * Sets the data model's isAdjusting property true, so that
-     * a single event will be generated when all of the selection
-     * events have finished (for example, when the mouse is being
-     * dragged over the list in selection mode).
-     *
-     * @param b the boolean value for the property value
+     * @param b the value for valueIsAdjusting
      * @see ListSelectionModel#setValueIsAdjusting
      */
     public void setValueIsAdjusting(boolean b) {
@@ -734,11 +627,7 @@ public class SList
     }
 
     /**
-     * Returns the value of the data model's isAdjusting property.
-     * This value is true if multiple changes are being made.
-     *
-     * @return true if multiple selection-changes are occuring, as
-     *         when the mouse is being dragged over the list
+     * @return the value of valueIsAdjusting
      * @see ListSelectionModel#getValueIsAdjusting
      */
     public boolean getValueIsAdjusting() {
@@ -747,10 +636,9 @@ public class SList
 
 
     /**
-     * Return an array of all of the selected indices in increasing
-     * order.
+     * Return an array of all of the selected indices.
      *
-     * @return All of the selected indices, in increasing order.
+     * @return all selected indices.
      * @see #removeSelectionInterval
      * @see #addListSelectionListener
      */
@@ -792,7 +680,7 @@ public class SList
 
 
     /**
-     * Select a set of cells.
+     * Select some cells.
      *
      * @param indices The indices of the cells to select
      * @see ListSelectionModel#addSelectionInterval
@@ -809,8 +697,7 @@ public class SList
 
 
     /**
-     * Return an array of the values for the selected cells.
-     * The returned values are sorted in increasing index order.
+     * Return the values of the selected cells.
      *
      * @return the selected values
      * @see #isSelectedIndex
@@ -843,7 +730,6 @@ public class SList
 
     /**
      * A convenience method that returns the first selected index.
-     * Returns -1 if there is no selected item.
      *
      * @return The first selected index.
      * @see #getMinSelectionIndex
@@ -856,7 +742,7 @@ public class SList
 
     /**
      * A convenience method that returns the first selected value
-     * or null, if the selection is empty.
+     * or null, if nothing is selected.
      *
      * @return The first selected value.
      * @see #getMinSelectionIndex
@@ -870,9 +756,9 @@ public class SList
 
 
     /**
-     * Selects the specified object from the list.
+     * Selects the specified object.
      *
-     * @param anObject      the Object to select     
+     * @param anObject      the Object to be selected     
      * @param shouldScroll  true if the list should scroll to display
      *                      the selected object
      */
@@ -1040,8 +926,7 @@ public class SList
     }
 
     /**
-     * Return the scrollable viewport size, i.e. the number of entries
-     * in the model.
+     * Return the scrollable viewport size.
      *
      * @return the scrollable viewport dimension
      */
@@ -1087,7 +972,7 @@ public class SList
      * @param c
      */
     public void setCellRendererPane(SCellRendererPane c) {
-        cellRendererPane=c;
+        cellRendererPane = c;
         cellRendererPane.setParent(getParent());
     }
 

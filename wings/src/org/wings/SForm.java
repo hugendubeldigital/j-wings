@@ -17,10 +17,9 @@ package org.wings;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -43,7 +42,7 @@ import org.wings.io.Device;
  */
 public class SForm
     extends SContainer
-    implements SGetListener
+    implements RequestListener //SGetListener
 {
     /**
      * @see #getCGClassID
@@ -69,7 +68,7 @@ public class SForm
     /**
      * TODO: documentation
      */
-    protected ArrayList actionListener = new ArrayList(2);
+    protected EventListenerList listenerList = new EventListenerList();
 
     /**
      * TODO: documentation
@@ -96,7 +95,7 @@ public class SForm
      * passieren. Also koennen Events nur vom erzeugenden Thread
      * gefeuert werden.
      */
-    private static final HashMap events = new HashMap();
+    private static final HashMap threads = new HashMap();
 
     /**
      * TODO: documentation
@@ -144,73 +143,46 @@ public class SForm
     /**
      * TODO: documentation
      *
-     * @param al
+     * @param listener
      */
-    public void addActionListener(ActionListener al) {
-        actionListener.add(al);
+    public void addActionListener(ActionListener listener) {
+        listenerList.add(ActionListener.class, listener);
     }
 
     /**
      * TODO: documentation
      *
-     * @param al
+     * @param listener
      */
-    public void removeActionListener(ActionListener al) {
-        actionListener.remove(al);
+    public void removeActionListener(ActionListener listener) {
+        listenerList.remove(ActionListener.class, listener);
     }
 
     /**
-     * TODO: documentation
-     *
+     * Fire a ActionEvent at each registered listener.
      */
     protected void fireActionPerformed() {
-        ActionEvent e = new ActionEvent(this,
-                                        ActionEvent.ACTION_PERFORMED,
-                                        actionCommand);
-
-        for ( int i=0; i<actionListener.size(); i++ )
-            SForm.fireActionEvent((ActionListener)actionListener.get(i), e);
-    }
-
-    /*
-     * Fuegt einen Event in die Event Queue des aktuellen Threads ein.
-     * Alle Events, die gefeuert wurden muessen vom Typ
-     * {@link FiredEvent} sein.
-     */
-    private static final void addFiredEvent(FiredEvent fe) {
-        Thread t = Thread.currentThread();
-
-        ArrayList v = (ArrayList)events.get(t);
-        if ( v==null ) {
-            v = new ArrayList(2);
-            events.put(t, v);
+        ActionEvent e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, actionCommand);
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i] == ActionListener.class) {
+                ((ActionListener)listeners[i+1]).actionPerformed(e);
+            }
         }
-
-        v.add(fe);
     }
 
-    /*
-     * Stellt einen ActionEvent in die Event Queue des aktuellen Threads
-     */
-    /**
-     * TODO: documentation
-     */
-    protected static final void fireActionEvent(ActionListener l, ActionEvent e) {
-        if ( e!=null && l!=null)
-            addFiredEvent(new FiredActionEvent(l,e));
-    }
+    public final static void addArmedComponent(RequestListener component) {
+        Thread thread = Thread.currentThread();
 
-    /*
-     * Stellt einen ListSelectionEvent in die Event Queue des aktuellen
-     * Threads
-     */
-    /**
-     * TODO: documentation
-     */
-    protected static final void fireListSelectionEvent(ListSelectionListener l,
-                                                       ListSelectionEvent e) {
-        if ( e!=null && l!=null)
-            addFiredEvent(new FiredSelectionEvent(l,e));
+        List armedComponents = (List)threads.get(thread);
+        if (armedComponents == null) {
+            armedComponents = new ArrayList(2);
+            threads.put(thread, armedComponents);
+        }
+        armedComponents.add(component);
     }
 
     /*
@@ -232,15 +204,21 @@ public class SForm
      * TODO: documentation
      */
     public static void fireEvents() {
-        Thread t = Thread.currentThread();
+        Thread thread = Thread.currentThread();
 
-        ArrayList v = (ArrayList)events.remove(t);
-        if ( v==null ) return;
-
-        for ( int i=0; i<v.size(); i++ ) {
-            FiredEvent e = (FiredEvent)v.get(i);
-            // System.out.println("FIRE EVENT " + e);
-            e.fire();
+        List armedComponents = (List)threads.remove(thread);
+        if (armedComponents != null) {
+            RequestListener component;
+            Iterator iterator = armedComponents.iterator();
+            while (iterator.hasNext()) {
+                component = (RequestListener)iterator.next();
+                component.fireIntermediateEvents();
+            }
+            iterator = armedComponents.iterator();
+            while (iterator.hasNext()) {
+                component = (RequestListener)iterator.next();
+                component.fireFinalEvents();
+            }
         }
     }
 
@@ -313,9 +291,14 @@ public class SForm
     }
 
     public void getPerformed(String name, String value) {
-        fireActionPerformed();
+        SForm.addArmedComponent(this);
     }
 
+    public void fireIntermediateEvents() {}
+
+    public void fireFinalEvents() {
+        fireActionPerformed();
+    }
 
     /**
      * Returns the name of the CGFactory class that generates the
@@ -327,69 +310,6 @@ public class SForm
      */
     public String getCGClassID() {
         return cgClassID;
-    }
-}
-
-
-/*
- * Ein ActionEvent, der in die Event Queue gestellt werden kann.
- */
-/**
- * TODO: documentation
- *
- * @author Dominik Bartenstein
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
- * @version $Revision$
- */
-class FiredActionEvent
-    implements FiredEvent
-{
-    ActionListener listener;
-    ActionEvent event;
-
-    public FiredActionEvent(ActionListener l, ActionEvent e) {
-        listener = l;
-        event = e;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     */
-    public void fire() {
-        listener.actionPerformed(event);
-    }
-}
-
-
-/*
- * Ein ListSelectionEvent, der in die Event Queue gestellt werden
- * kann.
- */
-/**
- * TODO: documentation
- *
- * @author Dominik Bartenstein
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
- * @version $Revision$
- */
-class FiredSelectionEvent
-    implements FiredEvent
-{
-    ListSelectionListener listener;
-    ListSelectionEvent event;
-
-    public FiredSelectionEvent(ListSelectionListener l, ListSelectionEvent e) {
-        listener = l;
-        event = e;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     */
-    public void fire() {
-        listener.valueChanged(event);
     }
 }
 

@@ -274,7 +274,7 @@ public class SCheckBox extends SButton
 
 
     /*
-     * Setzt, falls angehoeriger eine {@link SButtonGroup}, sich
+     * Setzt, falls angehoeriger einer {@link SButtonGroup}, sich
      * selbst als das selektierte Element.
      */
     /**
@@ -282,17 +282,11 @@ public class SCheckBox extends SButton
      *
      * @param s
      */
-    public void setSelected(boolean s) {
-        boolean oldSelection = selected;
-        selected = s;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
 
-        if ( group!=null ) {
+        if (group != null)
             group.setSelected(this, selected);
-        }
-
-        if ( oldSelection!=selected ) {
-            fireActionPerformed();
-        }
     }
 
     /**
@@ -302,6 +296,12 @@ public class SCheckBox extends SButton
      */
     public boolean isSelected() {
         return selected;
+    }
+
+    public void doClick() {
+        setSelected(!isSelected());
+
+        fireActionPerformed();
     }
 
     /**
@@ -342,15 +342,20 @@ public class SCheckBox extends SButton
 
             if (!getShowAsFormComponent()) {
                 setSelected(!isSelected());
+                SForm.addArmedComponent(this);
                 return;
             }
 
-            if ( value.endsWith("1") ) {
-                hidden=false;
+            if (value.endsWith("1")) {
+                hidden = false;
                 setSelected(true);
-            } else {
-                if ( hidden )
+                SForm.addArmedComponent(this);
+            }
+            else {
+                if (hidden) {
                     setSelected(false);
+                    SForm.addArmedComponent(this);
+                }
                 hidden = true;
             }
         }
@@ -371,6 +376,13 @@ public class SCheckBox extends SButton
         else
             return group.getNamePrefix();
     }
+
+    public void fireIntermediateEvents() {
+        // TODO: fire item events
+        fireActionPerformed();
+    }
+
+    public void fireFinalEvents() {}
 
     /**
      * Returns the name of the CGFactory class that generates the

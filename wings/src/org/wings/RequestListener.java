@@ -14,17 +14,21 @@
 
 package org.wings;
 
-/*
- * Ein Event, der in die Event Queue gestellt werden kann.
- */
 /**
  * TODO: documentation
  *
- * @author
+ * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-interface FiredEvent {
-    void fire();
+public interface RequestListener
+    extends SGetListener // for backward compatibility
+{
+    void getPerformed(String name, String value);
+    String getNamePrefix();
+    String getName();
+
+    void fireIntermediateEvents();
+    void fireFinalEvents();
 }
 
 /*

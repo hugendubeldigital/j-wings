@@ -48,27 +48,12 @@ public class SOptionPane
     /**
      * TODO: documentation
      */
-    public static final String OK_ACTION = "OK";
-
-    /**
-     * TODO: documentation
-     */
-    public static final String CANCEL_ACTION = "CANCEL";
-
-    /**
-     * TODO: documentation
-     */
     public static final String YES_ACTION = "YES";
 
     /**
      * TODO: documentation
      */
     public static final String NO_ACTION = "NO";
-
-    /**
-     * TODO: documentation
-     */
-    public static final String UNKNOWN_ACTION = "UNKNOWN";
 
     /**
      * TODO: documentation
@@ -316,8 +301,6 @@ public class SOptionPane
         else {
             fireActionPerformed(UNKNOWN_ACTION);
         }
-
-        actionListener.clear();
 
         removeAll();
     }

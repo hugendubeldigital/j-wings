@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import javax.swing.JOptionPane;
+import javax.swing.event.EventListenerList;
 
 import org.wings.*;
 import org.wings.plaf.*;
@@ -37,6 +37,21 @@ public class SDialog
      */
     private static final String cgClassID = "DialogCG";
 
+    /**
+     * TODO: documentation
+     */
+    public static final String OK_ACTION = "OK";
+
+    /**
+     * TODO: documentation
+     */
+    public static final String CANCEL_ACTION = "CANCEL";
+
+    /**
+     * TODO: documentation
+     */
+    public static final String UNKNOWN_ACTION = "UNKNOWN";
+
     /*
      * Alle die es interessiert, wann der OptionPane fertig ist. Z.B. um
      * das Ergebnis zu bekommen.
@@ -44,7 +59,7 @@ public class SDialog
     /**
      * TODO: documentation
      */
-    protected ArrayList actionListener = new ArrayList(2);
+    //protected EventListenerList listenerList = new EventListenerList();
 
     /**
      * TODO: documentation
@@ -68,41 +83,35 @@ public class SDialog
         setBorder(new SLineBorder());
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @param al
-     */
-    public void addActionListener(ActionListener al) {
-        if ( al!=null && !actionListener.contains(al) )
-            actionListener.add(al);
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @param al
-     */
-    public void removeActionListener(ActionListener al) {
-        actionListener.remove(al);
-    }
-
     /*
-     * Feuert einen ActionEvent an alle registrierten Listener.
-     * Als Command dient der Zustand des OptionPanes
-     * ({@link #getState()}
-     */
-    /**
-     * TODO: documentation
-     *
-     * @param state
-     */
-    protected void fireActionPerformed(String state) {
-        ActionEvent e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, state);
+    public void addActionListener(ActionListener listener) {
+        listenerList.add(ActionListener.class, listener);
+    }
 
-        for ( int i=0; i<actionListener.size(); i++ ) {
-            ((ActionListener)actionListener.get(i)).actionPerformed(e);
+    public void removeActionListener(ActionListener listener) {
+        listenerList.remove(ActionListener.class, listener);
+    }
+
+    protected void fireActionPerformed(ActionEvent e) {
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i] == ActionListener.class) {
+                ((ActionListener)listeners[i+1]).actionPerformed(e);
+            }
         }
+
+        listenerList = new EventListenerList();
+    }
+    */
+    protected void fireActionPerformed(String state) {
+        setActionCommand(state);
+        //ActionEvent e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, state);
+        //fireActionPerformed(e);
+        fireActionPerformed();
+        listenerList = new EventListenerList();
     }
 
     /**
@@ -114,8 +123,7 @@ public class SDialog
     }
 
     /**
-     * TODO: documentation
-     *
+     * Remove this dialog from its frame.
      */
     public void hide() {
         if (frame != null) {
@@ -128,9 +136,6 @@ public class SDialog
                 ((SInternalFrame)frame).showContentPane();
             }
         }
-
-        fireActionPerformed("hide");
-        actionListener.clear();
     }
 
     /**
@@ -158,7 +163,7 @@ public class SDialog
         else
             frame = c.getParent();
 
-        while (frame != null && !(frame instanceof SFrame || frame instanceof SInternalFrame) )
+        while (frame != null && !(frame instanceof SFrame || frame instanceof SInternalFrame))
             frame = frame.getParent();
 
         if (frame == null) {
@@ -174,6 +179,8 @@ public class SDialog
             ((SInternalFrame)frame).showOptionPane();
         }
     }
+
+    public void getPerformed(String name, String value) {}
 
     /**
      * Returns the name of the CGFactory class that generates the

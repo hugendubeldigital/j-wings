@@ -16,8 +16,7 @@ package org.wings;
 
 import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
-
-import java.util.ArrayList;
+import javax.swing.event.EventListenerList;
 
 import org.wings.plaf.*;
 import org.wings.io.Device;
@@ -30,7 +29,7 @@ import org.wings.io.Device;
  */
 public abstract class STextComponent
     extends SComponent
-    implements SGetListener
+    implements RequestListener //SGetListener
 {
     private boolean editable = true;
 
@@ -42,7 +41,7 @@ public abstract class STextComponent
     /**
      * TODO: documentation
      */
-    protected ArrayList textListener = new ArrayList(2);
+    protected EventListenerList listenerList = new EventListenerList();
 
 
     /**
@@ -118,7 +117,7 @@ public abstract class STextComponent
                 value = value.trim();
             if ( getText() == null || !getText().equals( value ) ) {
                 setText( value );
-                fireTextEvent();
+                SForm.addArmedComponent(this);
             }
         }
     }
@@ -128,8 +127,8 @@ public abstract class STextComponent
      *
      * @param al
      */
-    public void addTextListener(TextListener al) {
-        textListener.add(al);
+    public void addTextListener(TextListener listener) {
+        listenerList.add(TextListener.class, listener);
     }
 
     /**
@@ -137,20 +136,31 @@ public abstract class STextComponent
      *
      * @param al
      */
-    public void removeTextListener(TextListener al) {
-        textListener.remove(al);
+    public void removeTextListener(TextListener listener) {
+        listenerList.remove(TextListener.class, listener);
     }
 
     /**
-     * TODO: documentation
-     *
+     * Fire a TextEvent at each registered listener.
      */
-    protected void fireTextEvent() {
+    protected void fireTextValueChanged() {
         TextEvent e = new TextEvent(this, TextEvent.TEXT_VALUE_CHANGED);
-
-        for ( int i=0; i<textListener.size(); i++ )
-            ((TextListener)textListener.get(i)).textValueChanged(e);
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i] == TextListener.class) {
+                ((TextListener)listeners[i+1]).textValueChanged(e);
+            }
+        }
     }
+
+    public void fireIntermediateEvents() {
+        fireTextValueChanged();
+    }
+
+    public void fireFinalEvents() {}
 }
 
 /*
