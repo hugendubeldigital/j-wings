@@ -113,6 +113,11 @@ protected org.wings.io.StringBufferDevice getStringBufferDevice() {
     public void writeAnchorList(Device device, SList list)
         throws IOException
     {
+    // Anchor stack should be cleared, because the List renders the Anchor!
+    // don't forget to set it in a finally clause to the old value
+    Object renderStack = AnchorRenderStack.clear();
+
+    try {
     String style = Utils.style(list);
     String selectionStyle = Utils.selectionStyle(list);
         boolean renderSelection = list.getSelectionMode() != SConstants.NO_SELECTION;
@@ -196,6 +201,9 @@ protected org.wings.io.StringBufferDevice getStringBufferDevice() {
         }
 
         %></<%=list.getType()%>><%
+       }  finally {
+        AnchorRenderStack.set(renderStack);
+       }
     }
 
 <write>
