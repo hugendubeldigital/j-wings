@@ -50,7 +50,7 @@ public class TreeCG
 
     protected void installCellRenderer(STree tree) {
         STreeCellRenderer cellRenderer = tree.getCellRenderer();
-        if (cellRenderer == null || cellRenderer instanceof SDefaultTreeCellRenderer) {
+        if (cellRenderer == null || cellRenderer.getClass().equals(SDefaultTreeCellRenderer.class)) {
             cellRenderer = new SDefaultTreeCellRenderer();
             configureCellRenderer(tree, (SDefaultTreeCellRenderer)cellRenderer);
             tree.setCellRenderer(cellRenderer);
@@ -59,7 +59,7 @@ public class TreeCG
 
     protected void uninstallCellRenderer(STree tree) {
         STreeCellRenderer cellRenderer = tree.getCellRenderer();
-        if (cellRenderer != null && cellRenderer instanceof SDefaultTreeCellRenderer)
+        if (cellRenderer != null && cellRenderer.getClass().equals(SDefaultTreeCellRenderer.class))
             tree.setCellRenderer(null);
     }
 

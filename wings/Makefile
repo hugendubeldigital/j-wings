@@ -33,9 +33,9 @@ demo: dummy
 	mkdir demo/tomcat/WEB-INF/lib ;\
 	cp wings.jar demo/tomcat/WEB-INF/lib ;\
 	cd demo ;\
-	cp -P `find wingset explorer scrollpane -name "*.class" -o -name "*.gif" -o -name "*.css" -o -name "*.thtml"` ../demo/tomcat/WEB-INF/classes ;\
-	cd .. \;
-	cp demo/wingset.xml demo/tomcat/WEB-INF/web.xml
+	cp -P `find wingset explorer ldap -name "*.class" -o -name "*.gif" -o -name "*.css" -o -name "*.thtml"` ../demo/tomcat/WEB-INF/classes ;\
+	cd .. ;\
+	cp demo/demo.xml demo/tomcat/WEB-INF/web.xml
 
 htdocs: dummy javadoc
 	cd htdocs ;\

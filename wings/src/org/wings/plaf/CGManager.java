@@ -226,11 +226,9 @@ public class CGManager
       * This is a JavaBeans bound property.
       *
       * @param newLookAndFeel the LookAndFeel object
-      * @exception UnsupportedLookAndFeelException If <code>lnf.isSupportedLookAndFeel()</code> is false.
       * @see #getLookAndFeel
       */
      public void setLookAndFeel(LookAndFeel newLookAndFeel)
-         throws UnsupportedLookAndFeelException
      {
          LookAndFeel oldLookAndFeel = lookAndFeel;
          if (oldLookAndFeel != null) {
@@ -260,11 +258,10 @@ public class CGManager
       * @exception ClassNotFoundException If the LookAndFeel class could not be found.
       * @exception InstantiationException If a new instance of the class couldn't be creatd.
       * @exception IllegalAccessException If the class or initializer isn't accessible.
-      * @exception UnsupportedLookAndFeelException If <code>lnf.isSupportedLookAndFeel()</code> is false.
       */
      public void setLookAndFeel(String className)
          throws ClassNotFoundException, InstantiationException,
-         IllegalAccessException, UnsupportedLookAndFeelException
+         IllegalAccessException
      {
          Class lnfClass = Class.forName(className);
          setLookAndFeel((LookAndFeel)(lnfClass.newInstance()));

@@ -22,8 +22,8 @@ import org.wings.plaf.*;
 public final class OldLookAndFeel
     extends LookAndFeel
 {
-    public String getName() { return "XHTML"; }
-    public String getDescription() { return "XHTML Look and Feel"; }
+    public String getName() { return "XHTML 1.0"; }
+    public String getDescription() { return getName() + " Look and Feel"; }
 
     public CGDefaults getDefaults() {
         CGDefaults table = new CGDefaults();

@@ -25,8 +25,8 @@ public final class CSS1LookAndFeel
 {
     private StyleSheet styleSheet = null;
 
-    public String getName() { return ""; }
-    public String getDescription() { return " Look and Feel"; }
+    public String getName() { return "XHTML 1.0 with CSS1"; }
+    public String getDescription() { return getName() + " Look and Feel"; }
 
     public CGDefaults getDefaults() {
         System.err.println(getClass().getName() + " in action");

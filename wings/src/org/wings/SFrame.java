@@ -497,7 +497,8 @@ public class SFrame
             updateComponentTreeCG(getContentPane());
             System.err.println("lookAndFeel Change: " + pe.getPropertyName());
         }
-        System.err.println("propertyChange: " + pe.getPropertyName());
+        else
+            System.err.println("propertyChange: " + pe.getPropertyName());
     }
 
     private void updateComponentTreeCG(SComponent c) {

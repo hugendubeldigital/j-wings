@@ -26,7 +26,7 @@ import java.lang.ref.*;
  * (and restore) any listeners that are themselves serializable.  Any
  * non-serializable listeners will be skipped during serialization.
  *
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:haaf@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
 public class WeakPropertyChangeSupport
@@ -83,8 +83,7 @@ public class WeakPropertyChangeSupport
      * @param propertyName  The name of the property to listen on.
      * @param listener  The PropertyChangeListener to be added
      */
-    public synchronized void addPropertyChangeListener(
-                                                       String propertyName,
+    public synchronized void addPropertyChangeListener(String propertyName,
                                                        PropertyChangeListener listener) {
         if (children == null) {
             children = new java.util.WeakHashMap();
@@ -103,8 +102,7 @@ public class WeakPropertyChangeSupport
      * @param propertyName  The name of the property that was listened on.
      * @param listener  The PropertyChangeListener to be removed
      */
-    public synchronized void removePropertyChangeListener(
-                                                          String propertyName,
+    public synchronized void removePropertyChangeListener(String propertyName,
                                                           PropertyChangeListener listener) {
         if (children == null) {
             return;
@@ -126,7 +124,6 @@ public class WeakPropertyChangeSupport
      * @param newValue  The new value of the property.
      */
     public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-
         if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
             return;
         }
