@@ -19,9 +19,11 @@ import java.io.EOFException;
 import java.io.Reader;
 import java.io.PrintWriter;
 import java.io.FileWriter;
-import java.util.Iterator;
-import java.util.Stack;
+
 import java.util.List;
+import java.util.Stack;
+import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.StringTokenizer;
@@ -72,13 +74,15 @@ public class TemplateParser {
                                                   "%>",           // 1 End java
                                                   "<write>",      // 2
                                                   "</write>",     // 3
-                                                  "<include",     // 4
-                                                  "<template",    // 5
-                                                  "<property",    // 6
-                                                  "</template>",  // 7
-                                                  "</property>",  // 8
-                                                  "<comp-property", // 9
-                                                  "</comp-property>" }; // 10.
+                                                  "<import>",     // 4
+                                                  "<include",     // 5
+                                                  "</import>",    // 6
+                                                  "<template",    // 7
+                                                  "<property",    // 8
+                                                  "</template>",  // 9
+                                                  "</property>",  // 10
+                                                  "<comp-property", // 11
+                                                  "</comp-property>" }; // 12
 
 
     // the index for the tags. Yes: c-preprocessor and enumerations would be
@@ -87,13 +91,15 @@ public class TemplateParser {
     private final static int END_JAVA     = 1;
     private final static int START_WRITE  = 2;
     private final static int END_WRITE    = 3;
-    private final static int INCLUDE      = 4;
-    private final static int TEMPLATE     = 5;
-    private final static int START_PROP   = 6;
-    private final static int END_TEMPLATE = 7;
-    private final static int END_PROP     = 8;
-    private final static int START_C_PROP = 9;
-    private final static int END_C_PROP   = 10;
+    private final static int START_IMPORT = 4;
+    private final static int INCLUDE      = 5;
+    private final static int END_IMPORT   = 6;
+    private final static int TEMPLATE     = 7;
+    private final static int START_PROP   = 8;
+    private final static int END_TEMPLATE = 9;
+    private final static int END_PROP     = 10;
+    private final static int START_C_PROP = 11;
+    private final static int END_C_PROP   = 12;
     
     // current mode we are in - this is important for the brace depth check.
     private final static int JAVA_MODE     = 1;
@@ -108,6 +114,7 @@ public class TemplateParser {
     private final JavaBuffer commonJavaCode;
     private final SortedSet compProperties;
     private final SortedSet cgProperties;
+    private final List importList;
     private final File sourcefile;
     private final File cwd;
     private final StringPool stringPool;
@@ -138,6 +145,7 @@ public class TemplateParser {
         this.anyError      = false;
         this.cgProperties  = new TreeSet();
         this.compProperties= new TreeSet();
+        this.importList    = new ArrayList();
         this.writeJavaCode = new JavaBuffer(2, INDENT);
         this.commonJavaCode= new JavaBuffer(1, INDENT);
         this.stringPool    = new StringPool( VAR_PREFIX, VAR_LEN );
@@ -171,9 +179,9 @@ public class TemplateParser {
             out.println("// default package\n");
             outProps.add(templateName + "=" + templateName);
         }
-        //out.println ("import java.io.*;");
+
         out.println ("import java.io.IOException;\n");
-        out.println ("import org.wings.*; import org.wings.border.*;");
+        out.println ("import org.wings.*;");
         out.println ("import org.wings.border.*;");
         out.println ("import org.wings.style.*;");
         out.println ("import org.wings.io.Device;");
@@ -181,6 +189,14 @@ public class TemplateParser {
         if (cgProperties.size() > 0 || compProperties.size() > 0 ) {
             out.println ("import org.wings.plaf.CGManager;");
             out.println ("import org.wings.session.SessionManager;");
+        }
+
+        Iterator imports = importList.iterator();
+        if (imports.hasNext()) {
+            out.println("\n// user provided imports");
+        }
+        while (imports.hasNext()) {
+            out.println("import " + imports.next() + ";");
         }
 
         out.println();
@@ -480,10 +496,21 @@ public class TemplateParser {
             case START_C_PROP:
                 parseProperty(END_C_PROP);
                 break;
+            case START_IMPORT:
+                handleImport();
+                break;
             case END_TEMPLATE:
                 return;
             }
         }
+    }
+
+    private void handleImport() throws IOException, ParseException {
+        StringBuffer content = new StringBuffer();
+        if ((findTransitions(content, stateTransitionTags)) != END_IMPORT) {
+            seriousError("unexpected tag in <import> area");
+        }
+        importList.add(content.toString());
     }
 
     private void parseProperty(int endTag) throws IOException, ParseException {
