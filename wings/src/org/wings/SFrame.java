@@ -25,6 +25,7 @@ import org.wings.*;
 import org.wings.io.Device;
 import org.wings.plaf.*;
 import org.wings.style.StyleSheet;
+import org.wings.style.StyleConstants;
 import org.wings.session.Session;
 import org.wings.session.SessionManager;
 import org.wings.session.PropertyService;
@@ -134,8 +135,9 @@ public class SFrame
      *
      */
     public void addDynamicResource(DynamicResource d) {
-        if (dynamicResources == null)
+        if (dynamicResources == null) {
             dynamicResources = new HashMap();
+        }
         dynamicResources.put(d.getClass(), d);
     }
 
@@ -144,8 +146,9 @@ public class SFrame
      *
      */
     public DynamicResource getDynamicResource(Class c) {
-        if (dynamicResources == null)
+        if (dynamicResources == null) {
             dynamicResources = new HashMap();
+        }
         return (DynamicResource)dynamicResources.get(c);
     }
 
@@ -172,8 +175,15 @@ public class SFrame
      *
      * @param icon the SIcon representing the background image.
      */
-    public void setBackgroundImage(SIcon icon) {
-        backgroundImage = icon;
+    public void setBackgroundImage(SIcon img) {
+        backgroundImage = img;
+        if (img == null) {
+            removeAttribute(StyleConstants.BACKGROUND_IMAGE);
+        }
+        else {
+            setAttribute(StyleConstants.BACKGROUND_IMAGE, 
+                         "url(" + img.getURL().toString() + ")");
+        }
     }
 
     /**
@@ -191,8 +201,9 @@ public class SFrame
      * @return
      */
     public SRequestDispatcher getDispatcher() {
-        if (dispatcher == null)
+        if (dispatcher == null) {
             dispatcher = getSession().getDispatcher();
+        }
         return dispatcher;
     }
 
