@@ -16,25 +16,26 @@ package wingset;
 
 
 
-import java.awt.Color;
-import java.io.File;
 import java.io.FileWriter;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.Enumeration;
-import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.swing.event.*;
 
-import org.wings.*;
-import org.wings.event.SRequestEvent;
-import org.wings.event.SRequestListener;
-import org.wings.plaf.*;
-import org.wings.session.*;
-import org.wings.util.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import org.wings.ClasspathResource;
+import org.wings.ResourceImageIcon;
+import org.wings.SContainer;
+import org.wings.SFrame;
+import org.wings.SIcon;
+import org.wings.SLabel;
+import org.wings.SRootLayout;
+import org.wings.STabbedPane;
+import org.wings.header.Link;
+import org.wings.session.WingsStatistics;
+import org.wings.util.TimeMeasure;
 
 /**
  * TODO: documentation
@@ -142,7 +143,10 @@ public class WingSet
     public WingSet() {
         frame = new SFrame("WingSet");
         frame.setTitle("WingSet Demo");
-
+        
+        // import additional templates
+        frame.addHeader(new Link("stylesheet", null, "text/css", null, new ClasspathResource("/wingset/css/myapp.css", "text/css")));
+       
         System.out.println("new WingSet");
         stopWatch = new TimeMeasure(new MessageFormat("<html><b>{0}</b>: {1} (<i>x {2}</i>)<br/>"));
 
@@ -238,7 +242,7 @@ public class WingSet
             });
         */
 
-    }
+    }    
 }
 
 /*

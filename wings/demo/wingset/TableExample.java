@@ -14,12 +14,24 @@
 
 package wingset;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.table.*;
+import java.awt.Color;
 
-import org.wings.*;
-import org.wings.table.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
+
+import org.wings.ResourceImageIcon;
+import org.wings.SComponent;
+import org.wings.SDimension;
+import org.wings.SIcon;
+import org.wings.SLabel;
+import org.wings.SListSelectionModel;
+import org.wings.SPanel;
+import org.wings.STable;
+import org.wings.STemplateLayout;
+import org.wings.plaf.css1.TableCG;
+import org.wings.table.SDefaultTableCellRenderer;
+
+import wingset.WingSetPane;
 
 /**
  * TODO: documentation
@@ -69,9 +81,9 @@ public class TableExample
         table.setDefaultRenderer(cellRenderer);
         panel.add(table, "MultiSelectionTable");
 
-        STable formTable = new STable(new MyTableModel(7, 5));
+        STable formTable = new MyTable(new MyTableModel(7, 5));
         formTable.setName("formtable");
-        formTable.setShowGrid(true);
+        //formTable.setShowGrid(true);
         formTable.setSelectionMode(SINGLE_SELECTION);
         formTable.setDefaultRenderer(cellRenderer);
         panel.add(formTable, "SingleSelectionTable");
@@ -241,6 +253,28 @@ public class TableExample
 
 	return colorstr;
     }
+    
+    
+    /** Proof that we can do some really nice tables with j-wings.  */
+    public class MyTable extends STable {
+        private final /*static*/ TableCG myTableCG = new TableCG();
+
+        public MyTable(TableModel tm) {
+            super(tm);
+            myTableCG.setFixedTableBorderWidth("0"); 
+            setCG(myTableCG);
+            setStyle("table_style");
+            setHeaderStyle("table_hdr");
+            setIntercellPadding(new SDimension("4", "4"));
+            setIntercellSpacing(new SDimension("1", "1"));
+        }
+    
+        /** Returns the CSS style for a row (<td style="xxx") */
+        public String getRowStyle(int row) {
+            return isRowSelected(row)?"table_selected_row":(row % 2 == 0 ? "table_row1" : "table_row2");
+        }    
+    }
+    
 }
 
 /*

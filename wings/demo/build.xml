@@ -82,6 +82,7 @@
         <include name="wingset/icons/*.jpg"/>
         <include name="wingset/icons/*.jpeg"/>
         <include name="wingset/templates/*.thtml"/>
+        <include name="wingset/css/*.css"/>        
       </classes>
       <fileset dir="wingset">
         <include name="index.html"/>
