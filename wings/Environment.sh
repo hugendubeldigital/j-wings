@@ -1,8 +1,8 @@
 # source this to get your environment set up
 # adjust JAVA_HOME and JSDK_HOME to fit your needs
 
-JAVA_HOME=/usr/local/jdk1.3
-J2EE_HOME=/usr/local/j2sdkee1.2.1
+JAVA_HOME=/usr/java/jdk1.3
+J2EE_HOME=/usr/j2sdkee1.2.1
 
 DEVEL_HOME=`pwd`
 

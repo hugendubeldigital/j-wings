@@ -140,13 +140,13 @@ public class LdapWorker
 		int index = oString.indexOf("SUP") + 4;
 		String rest = null;
 		String sup = null;
-		if (index > 0)
+		if (index > 4)
 		    rest = oString.substring(index);
 		if (rest!=null) { 
 		    StringTokenizer suptok = new StringTokenizer(rest," ");
 		    sup = suptok.nextToken();
 		}
-		if (sup!=null && !sup.equals("top")) obj = obj + "TOP" +"(" + sup + ")";
+		if (sup!=null && !sup.equals("top")) obj = obj + " SUP " +"(" + sup + ")";
 		
 		objArray.add(obj);
 	    }
@@ -156,46 +156,6 @@ public class LdapWorker
 	}
 	return objArray;
     }
-    
-
-    /* //wird derzeit nicht benutzt, prueft nur ob jemand das Schreibrecht auf das Attribut hat
-    public boolean getWAccess(String dn, String attrName, String attrValue) {
-	try {
-	    ModificationItem mods = new ModificationItem(ctx.REPLACE_ATTRIBUTE,
-                new BasicAttribute(attrName, attrValue));
-	    BasicAttributes a = new BasicAttributes();
-	    
-	    if (!attrValue.equals("")) 
-		a.put(new BasicAttribute(attrName, attrValue));
-	    else 
-		a.put(new BasicAttribute(attrName, "01"));
-	    
-	    if (!attrValue.equals(""))
-		ctx.modifyAttributes(dn, ctx.REPLACE_ATTRIBUTE,a);
-	    else {
-		ctx.modifyAttributes(dn, ctx.ADD_ATTRIBUTE,a);
-		System.out.println("habe " + a.toString() + "geaendert");
-		try {
-		    ctx.modifyAttributes(dn, ctx.REMOVE_ATTRIBUTE,a);
-		    System.out.println("wieder rueckgaengig " + a.toString());
-		}
-		catch(javax.naming.directory.InvalidSearchFilterException exc) {
-		    System.out.println("habe dich entdeckt " + exc);
-		    BasicAttributes bat = new BasicAttributes();
-		    bat.put(new BasicAttribute(attrName,"aaa"));
-		    ctx.modifyAttributes(dn, ctx.REPLACE_ATTRIBUTE,bat);
-		    ctx.modifyAttributes(dn, ctx.REMOVE_ATTRIBUTE,bat);
-		}
-	    }
-	    System.out.println(a + "kann ich aendern");
-	    return true;
-	}
-	catch (Exception e) {
-	    System.out.println(e);
-	    return(false);
-	}
-	
-	}*/
     
     
     //gibt die attribute eines entry's zurueck
@@ -430,7 +390,7 @@ public class LdapWorker
     
    
     //gibt die liste von MUST und MAY attribute zurueck 
-    private Vector[] getAttributeLists(DirContext schema,ArrayList objectClasses) 
+    private Vector[] getAttributeLists(DirContext schema, ArrayList objectClasses) 
 	throws NamingException {
 	
         Vector mandatory = new Vector();
