@@ -100,6 +100,7 @@ public class WingSet
         tab.addTab("Template Layout", 
                    new ResourceImageIcon(cl, "wingset/icons/cowSmall.gif"), 
                    new TemplateExample(), "Template Layout Manager");
+        tab.add(new InteractiveTemplateExample(), "Interactive Template");
         //tab.add(new DateChooserExample(), "DateChooser");
         //form.add(tab);
         // contentPane.add(form, "WingSetApp");
