@@ -27,13 +27,13 @@ import org.wings.*;
  */
 public class WingsImage
     extends SPanel
-    implements SConstants
 {
+
     public WingsImage() {
-        add(createWingsImage());
+        add(createExample());
     }
 
-    SPanel createWingsImage() {
+    public SComponent createExample() {
         SPanel p = new SPanel();
         final SBorderLayout layout = new SBorderLayout();
         p.setLayout(layout);
@@ -51,6 +51,7 @@ public class WingsImage
         label = new SLabel("Have fun!");
         label.setHorizontalAlignment(CENTER);
         p.add(label, SBorderLayout.SOUTH);
+        
         return p;
     }
 }

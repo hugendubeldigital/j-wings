@@ -25,24 +25,10 @@ import org.wings.*;
  * @version $Revision$
  */
 public class TreeExample
-    extends SPanel
-    implements SConstants
+    extends WingSetPane
 {
-    public TreeExample() {
-        super(new SFlowDownLayout());
-
-        STree tree = new STree(new DefaultTreeModel(generateTree()));
-
-        // for ( int i=0; i<tree.getRowCount(); i++ )
-        // tree.expandRow(i);
-
-        add(tree);
-        add(new SSeparator());
-
-        SHRef href = new SHRef("View Source Code");
-        href.setReference("/demo/wingset/" +
-                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
-        add(href);
+    public SComponent createExample() {
+        return new STree(new DefaultTreeModel(generateTree()));
     }
 
     static TreeNode generateTree() {

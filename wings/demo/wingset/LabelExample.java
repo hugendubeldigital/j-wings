@@ -26,36 +26,28 @@ import org.wings.*;
  * @version $Revision$
  */
 public class LabelExample
-    extends SPanel
-    implements SConstants
+    extends WingSetPane
 {
-    public LabelExample() {
-        add(createLabelExample());
+    public SComponent createExample() {
+        SPanel all = new SPanel();
+        SBorderLayout layout = new SBorderLayout();
+        all.setLayout(layout);
 
-        add(new SSeparator());
+        Icon icon = new ResourceImageIcon(SConstants.class, "icons/Wait.gif");
 
-        SHRef href =  new SHRef("View Source Code");
-        href.setReference("/demo/wingset/" +
-                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
-        add(href);
+        final SLabel testLabel = new SLabel("LabelText");
+        testLabel.setHorizontalAlignment(LEFT);
+        testLabel.setBackground(new java.awt.Color(180, 180, 255));
+        testLabel.setIcon(icon);
+
+        all.add(createRoundRadio(testLabel), "West");
+        all.add(testLabel, "East");
+
+        return all;
     }
 
     SContainer createRoundRadio(final SLabel label) {
-        SPanel b = new SPanel();
-        try {
-            java.net.URL templateURL = 
-                getClass().getResource("/wingset/roundRadio.thtml");
-            if( templateURL == null ){
-                b.add(new SLabel("Sorry, can't find roundRadio.thtml. Are you using a JAR-File?"));
-                return b;
-            }
-            // you can of course directly give files here.
-            STemplateLayout layout = new STemplateLayout( templateURL );
-            b.setLayout( layout );
-        }
-        catch ( java.io.IOException except ) {
-            except.printStackTrace();
-        }
+        SPanel b = createResourceTemplatePanel("/wingset/roundRadio.thtml");
 
         SButtonGroup g = new SButtonGroup();
         final SRadioButton n = new SRadioButton();
@@ -152,23 +144,6 @@ public class LabelExample
         return b;
     }
 
-    SPanel createLabelExample() {
-        SPanel all = new SPanel();
-        SBorderLayout layout = new SBorderLayout();
-        all.setLayout(layout);
-
-        Icon icon = new ResourceImageIcon(SConstants.class, "icons/Wait.gif");
-
-        final SLabel testLabel = new SLabel("LabelText");
-        testLabel.setHorizontalAlignment(LEFT);
-        testLabel.setBackground(new java.awt.Color(180, 180, 255));
-        testLabel.setIcon(icon);
-
-        all.add(createRoundRadio(testLabel), "West");
-        all.add(testLabel, "East");
-
-        return all;
-    }
 }
 
 /*

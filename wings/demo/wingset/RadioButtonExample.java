@@ -25,43 +25,33 @@ import org.wings.*;
  * @version $Revision$
  */
 public class RadioButtonExample
-    extends SPanel
+    extends WingSetPane
 {
     SForm form = new SForm();
     SPanel panel= new SPanel();
     javax.swing.Icon icon = null;
 
-    public RadioButtonExample() {
-        super(new SGridLayout(2));
-
-        createExample();
-
-        SHRef href =  new SHRef("View Source Code");
-        href.setReference("/demo/wingset/" +
-                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
-        add(href);
-    }
-
-
-    void createExample() {
-        add(new SLabel("<h4>RadioButtons outside forms</h4>"));
-        add(new SLabel("<h4>Image RadioButtons outside forms</h4>"));
-        add(createRadioButtonExample());
-        add(createImageRadioButtonExample());
+    public SComponent createExample() {
+        SPanel p = new SPanel(new SGridLayout(2));
+        p.add(new SLabel("<h4>RadioButtons outside forms</h4>"));
+        p.add(new SLabel("<h4>Image RadioButtons outside forms</h4>"));
+        p.add(createRadioButtonExample());
+        p.add(createImageRadioButtonExample());
 
         SForm form = new SForm();
         form.add(new SLabel("<h4>RadioButtons in a form</h4>"));
         form.add(createRadioButtonExample());
         form.add(new SLabel("<br />"));
         form.add(new SButton("submit"));
-        add(form);
+        p.add(form);
 
         form = new SForm();
         form.add(new SLabel("<h4>Image RadioButtons in a form</h4>"));
         form.add(createImageRadioButtonExample());
         form.add(new SLabel("<br />"));
         form.add(new SButton("submit"));
-        add(form);
+        p.add(form);
+        return p;
     }
 
     SContainer createRadioButtonExample() {

@@ -1,0 +1,9 @@
+<!-- This is rendered slowly in Netscape 4
+<table width="100%" height="350" colspan=0 cellpadding=0 cellspacing=0 border=0 bgcolor="white">
+<tr><td valign=top><object name="content"></object></td></tr>
+<tr><td valign=bottom><object name="viewSource"></object></td></tr>
+</table>
+-->
+<object name="content"></object>
+<br>
+<object name="viewSource"></object>

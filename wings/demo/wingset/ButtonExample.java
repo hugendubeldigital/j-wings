@@ -27,39 +27,30 @@ import org.wings.*;
  * @version $Revision$
  */
 public class ButtonExample
-    extends SPanel
+    extends WingSetPane
 {
-    SForm form = new SForm();
-    Icon icon = new ResourceImageIcon(SButton.class, "icons/Warn.gif");
-    Icon disabledIcon = new ResourceImageIcon(SButton.class,
-                                              "icons/WarnDis.gif");
+    final Icon icon = new ResourceImageIcon(SButton.class, "icons/Warn.gif");
+    final Icon disabledIcon = new ResourceImageIcon(SButton.class,
+                                                    "icons/WarnDis.gif");
 
-    public ButtonExample() {
-        super(new SGridLayout(2));
-
-        createExample();
-
-        SHRef href = new SHRef("View Source Code");
-        href.setReference("/demo/wingset/" +
-                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
-        add(href);
-    }
-
-    void createExample() {
-        add(new SLabel("<h4>Buttons outside forms</h4>"));
-        add(new SLabel("<h4>Image buttons outside forms</h4>"));
-        add(createButtonExample());
-        add(createImageButtonExample());
-
+    public SComponent createExample() {
+        SPanel p = new SPanel(new SGridLayout(2));
+        
+        p.add(new SLabel("<h4>Buttons outside forms</h4>"));
+        p.add(new SLabel("<h4>Image buttons outside forms</h4>"));
+        p.add(createButtonExample());
+        p.add(createImageButtonExample());
+        
         SForm form = new SForm();
         form.add(new SLabel("<h4>Buttons in a form</h4>"));
         form.add(createButtonExample());
-        add(form);
-
+        p.add(form);
+            
         form = new SForm();
         form.add(new SLabel("<h4>Image buttons in a form</h4>"));
         form.add(createImageButtonExample());
-        add(form);
+        p.add(form);
+        return p;
     }
 
 

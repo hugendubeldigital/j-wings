@@ -28,10 +28,10 @@ import org.wings.*;
  * @version $Revision$
  */
 public class ListExample
-    extends SPanel
+    extends WingSetPane
 {
-    public ListExample() {
-        super(new SFlowDownLayout());
+    
+    public SComponent createExample() {
         SForm form = new SForm(new SFlowDownLayout());
 
         SPanel p = new SPanel(new SGridLayout(2,2));
@@ -42,14 +42,7 @@ public class ListExample
 
         form.add(p);
         form.add(new SButton("SUBMIT"));
-        add(form);
-
-        add(new SSeparator());
-
-        SHRef href =  new SHRef("View Source Code");
-        href.setReference("/demo/wingset/" +
-                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
-        add(href);
+        return form;
     }
 
     public SContainer createListSingleSelExample() {

@@ -26,21 +26,10 @@ import org.wings.*;
  * @version $Revision$
  */
 public class FileChooserExample
-    extends SPanel
-    implements SConstants
+    extends WingSetPane
 {
-    public FileChooserExample() {
-        add(createFileChooserExample());
 
-        add(new SSeparator());
-
-        SHRef href =  new SHRef("View Source Code");
-        href.setReference("/demo/wingset/" +
-                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
-        add(href);
-    }
-
-    SForm createFileChooserExample() {
+    public SComponent createExample() {
         SForm p = new SForm(new SFlowDownLayout());
         p.setEncodingType("multipart/form-data");
 

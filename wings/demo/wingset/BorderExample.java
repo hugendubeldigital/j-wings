@@ -27,36 +27,11 @@ import org.wings.*;
  * @version $Revision$
  */
 public class BorderExample
-    extends SPanel
-    implements SConstants
+    extends WingSetPane
 {
-    public BorderExample() {
-        add(createBorderExample());
 
-        add(new SSeparator());
-
-        SHRef href =  new SHRef("View Source Code");
-        href.setReference("/demo/wingset/" +
-                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
-        add(href);
-    }
-
-    SPanel createBorderExample() {
-        SPanel p = new SPanel();
-        try {
-            java.net.URL templateURL = 
-                getClass().getResource("/wingset/BorderExample.thtml");
-            if( templateURL == null ){
-                p.add(new SLabel("Sorry, can't find BorderExample.thtml. Are you using a JAR-File?"));
-                return p;
-            }
-            // you can of course directly give files here.
-            STemplateLayout layout = new STemplateLayout( templateURL );
-            p.setLayout( layout );
-        }
-        catch ( java.io.IOException except ) {
-            except.printStackTrace();
-        }
+    public SComponent createExample() {
+        SPanel p = createResourceTemplatePanel("/wingset/BorderExample.thtml");
         
         final SBorder raised  = new SBevelBorder(SBevelBorder.RAISED);
         final SBorder lowered = new SBevelBorder(SBevelBorder.LOWERED);

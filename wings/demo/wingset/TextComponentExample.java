@@ -24,20 +24,15 @@ import org.wings.*;
  * @version $Revision$
  */
 public class TextComponentExample
-    extends SPanel
-    implements SConstants
+    extends WingSetPane
 {
-    public TextComponentExample() {
-        add(createTextComponentExample(new STextField()));
-        add(new SSeparator());
+    public SComponent createExample() {
+        SPanel p = new SPanel();
+        p.add(createTextComponentExample(new STextField()));
+        p.add(new SSeparator());
 
-        add(createTextComponentExample(new STextArea()));
-        add(new SSeparator());
-
-        SHRef href =  new SHRef("View Source Code");
-        href.setReference("/demo/wingset/" +
-                          getClass().getName().substring(getClass().getName().indexOf('.') +1) + ".java");
-        add(href);
+        p.add(createTextComponentExample(new STextArea()));
+        return p;
     }
 
     SForm createTextComponentExample(STextComponent textComp) {
