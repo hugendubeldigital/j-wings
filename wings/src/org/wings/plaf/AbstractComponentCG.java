@@ -45,9 +45,11 @@ public abstract class AbstractComponentCG
         name = name.substring(name.lastIndexOf(".") + 1);
         long start = System.currentTimeMillis();
         configure(this, name, manager);
-        logger.fine("configure CG done in " + (System.currentTimeMillis()-start) + " ms");
-    }
 
+        logger.fine("configure CG done in " 
+                    + (System.currentTimeMillis()-start) + " ms");
+    }
+    
     /**
      * Install the appropriate CG for <code>component</code>.
      * @param component the component

@@ -119,10 +119,11 @@ public class PlafCompiler {
     /**
      * runs the compiler. This takes no parametrs, but the compiler has to 
      * be configured with the setters.
+     * @return boolean, indicating, if we has success.
      */
-    public void run() throws IllegalArgumentException {
+    public void run() throws Exception {
         if (files == null) {
-            System.err.println("no files given.");
+            System.err.println("nothing to do: no files given.");
             return;
         }
 
@@ -130,12 +131,11 @@ public class PlafCompiler {
 	for (int i=0; i < files.length; ++i) {
             TemplateParser parser = null;
             String file = files[i];
-            try {
-                PlafReader input = new PlafReader(baseDir, file);
-                // fixme: move to template parser.
-                SGMLTag tag = new SGMLTag(input);
-                while (!tag.finished()) {
-                    String name = tag.getAttribute("NAME", null);
+            PlafReader input = new PlafReader(baseDir, file);
+            // fixme: move to template parser.
+            SGMLTag tag = new SGMLTag(input);
+            while (!tag.finished()) {
+                String name = tag.getAttribute("NAME", null);
                     String forClass = tag.getAttribute("FOR", null);
                     if (name == null || forClass == null) {
                         throw new IOException (file +": 'name' and 'for' as template attributes expected");
@@ -148,31 +148,19 @@ public class PlafCompiler {
                     parser.parse(input);
                     parser.generate(destDir, properties);
                     tag = new SGMLTag(input);
-                }
             }
-            catch (IOException e) {
-                System.err.println(e.getMessage());
-            }
-            catch (ParseException pe) {  // exits parsing of current file.
-                parser.reportError(pe.getMessage());
-            }
-	}
-
-        try {
-            File propertyFile = new File(destDir, "default.properties");
-            PrintWriter writer = new PrintWriter(new FileWriter(propertyFile));
-            writer.println("# default.properties automatically generated.");
-            writer.println();
-            Iterator propIt = properties.iterator();
-            while (propIt.hasNext()) {
-                String p = (String) propIt.next();
-                writer.println(p);
-            }
-            writer.close();
         }
-        catch (IOException e) {
-            System.err.println(e.getMessage());
+        
+        File propertyFile = new File(destDir, "default.properties");
+        PrintWriter writer = new PrintWriter(new FileWriter(propertyFile));
+        writer.println("# default.properties automatically generated.");
+        writer.println();
+        Iterator propIt = properties.iterator();
+        while (propIt.hasNext()) {
+            String p = (String) propIt.next();
+            writer.println(p);
         }
+        writer.close();
     }
     
     /*
@@ -231,7 +219,12 @@ public class PlafCompiler {
                 break;
             }
         }
-        compiler.run();
+        try {
+            compiler.run();
+        }
+        catch (Exception e) {
+            System.exit(-1);
+        }
     }
     
     /**

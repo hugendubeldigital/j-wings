@@ -76,8 +76,9 @@ public class LookAndFeel
         this.classLoader = classLoader;
         this.properties = new Properties();
         InputStream in = classLoader.getResourceAsStream("default.properties");
-        if (in == null)
+        if (in == null) {
             throw new IOException ("'default.properties' not found in toplevel package in classpath.");
+        }
         this.properties.load(in);
 
         defaults = new ResourceFactory();
@@ -131,8 +132,9 @@ public class LookAndFeel
                 logger.log(Level.WARNING, null, e);
             }
         }
-        if (styleSheet == null)
+        if (styleSheet == null) {
             throw new RuntimeException("a stylsheet is required");
+        }
 
         return styleSheet;
     }
@@ -207,8 +209,10 @@ public class LookAndFeel
         while (tokens.hasMoreTokens()) {
             String token = tokens.nextToken();
             int pos = token.indexOf(":");
-            if (pos >= 0)
-                attributes.putAttribute(token.substring(0, pos), token.substring(pos + 1));
+            if (pos >= 0) {
+                attributes.putAttribute(token.substring(0, pos), 
+                                        token.substring(pos + 1));
+            }
         }
         return attributes;
     }
@@ -271,7 +275,9 @@ public class LookAndFeel
      * @param clazz class of the object
      * @return the object
      */
-    public static Object makeObject(ClassLoader classLoader, String value, Class clazz) {
+    public static Object makeObject(ClassLoader classLoader, String value, 
+                                    Class clazz) 
+    {
         try {
             if (value.startsWith("new ")) {
                 int bracket = value.indexOf("(");
@@ -287,7 +293,8 @@ public class LookAndFeel
             }
         }
         catch (NoSuchMethodException e) {
-            logger.log(Level.SEVERE, clazz.getName() + " doesn't have a single String arg constructor", e);
+            logger.log(Level.SEVERE, clazz.getName() 
+                       + " doesn't have a single String arg constructor", e);
             return null;
         }
         catch (Exception e) {
@@ -317,11 +324,9 @@ public class LookAndFeel
         return "[" + getDescription() + " - " + getClass().getName() + "]";
     }
 
-    class ResourceFactory
-        extends CGDefaults
-    {
+    class ResourceFactory extends CGDefaults {
         public ResourceFactory() { super(null); }
-
+        
         public Object get(String id, Class type) {
             Object value = get(id);
             if (value != null)
@@ -332,23 +337,27 @@ public class LookAndFeel
                 put(id, null);
                 return null;
             }
-
-            if (ComponentCG.class.isAssignableFrom(type))
+            
+            if (ComponentCG.class.isAssignableFrom(type)
+                || LayoutCG.class.isAssignableFrom(type)
+                || BorderCG.class.isAssignableFrom(type)) {
+                /*
+                 * some CG is requested. We do not check, whether the
+                 * value returned actually fulfills
+                 * type.isAssignableFrom(value.getClass());
+                 */
                 value = makeCG(property);
-            else if (LayoutCG.class.isAssignableFrom(type))
-                value = makeCG(property);
-            else if (BorderCG.class.isAssignableFrom(type))
-                value = makeCG(property);
-            else if (SIcon.class.isAssignableFrom(type))
+            }
+            else if (type.isAssignableFrom(SIcon.class))
                 value = makeIcon(property);
-            else if (Resource.class.isAssignableFrom(type))
+            else if (type.isAssignableFrom(Resource.class))
                 value = makeResource(property);
-            else if (Style.class.isAssignableFrom(type))
-                value = makeStyle(property);
-            else if (StyleSheet.class.isAssignableFrom(type))
-                value = makeStyleSheet(property);
-            else if (AttributeSet.class.isAssignableFrom(type))
+            else if (type.isAssignableFrom(AttributeSet.class))
                 value = makeAttributeSet(property);
+            else if (type.isAssignableFrom(Style.class))
+                value = makeStyle(property);
+            else if (type.isAssignableFrom(StyleSheet.class))
+                value = makeStyleSheet(property);
             else
                 value = makeObject(property, type);
 

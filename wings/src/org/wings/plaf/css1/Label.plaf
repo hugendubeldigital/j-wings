@@ -1,3 +1,4 @@
+<!-- -*- html -*- -->
 <template name="LabelCG" for="org.wings.SLabel">
 
 /* Beispiele für Properties */

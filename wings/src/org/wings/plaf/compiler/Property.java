@@ -13,20 +13,52 @@
  */
 package org.wings.plaf.compiler;
 
-final class Property {
-    String name;
-    String type;
+final class Property implements Comparable {
+    private final static String[] TEST_PKG_PREFIX = { "", 
+                                                      "java.lang.", 
+                                                      "org.wings.",
+                                                      "org.wings.style." };
+    final String name;
+    final String typeName;
+    final Class  type;
     String value;
 
-    public Property(String type, String name) {
+    public Property(String typeName, String name) 
+        throws ClassNotFoundException {
 	this.name = name;
-	this.type = type;
+        this.typeName = typeName;
+        Class tempType = null;
+        for (int i=0; i < TEST_PKG_PREFIX.length && tempType == null; ++i) {
+            String testTypeName = TEST_PKG_PREFIX[i] + typeName;
+            try {
+                tempType = Class.forName(testTypeName);
+            }
+            catch (ClassNotFoundException e) { /* ignore */ }
+        }
+        if (tempType == null) {
+            if ("int".equals(typeName)) {
+                tempType = Integer.TYPE;
+            }
+            else if ("boolean".equals(typeName)) {
+                tempType = Boolean.TYPE;
+            }
+            else {
+                throw new ClassNotFoundException("invalid type '" + typeName + "'; if this is not a misspelling, try the fully qualified name!");
+            }
+        }
+        this.type = tempType;
     }
 
-    public void setValue(String v) { value = v; }
+    public void setValue(String v) { value = v.trim(); }
     public String getValue() { return value; }
     public String getName() { return name; }
-    public String getType() { return type; }
+    public Class getType() { return type; }
+    public String getTypeName() { return typeName; }
+
+    public int compareTo(Object o) {
+        Property other = (Property) o;
+        return name.compareTo(other.name);
+    }
 }
 /*
  * Local variables:

@@ -22,7 +22,9 @@ import java.io.FileWriter;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.List;
-import java.util.Vector;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.StringTokenizer;
 
 import java.lang.reflect.Method;
 import org.wings.SComponent;
@@ -51,7 +53,8 @@ public class TemplateParser {
     private final static String INDENT       = "    ";
     private final static String VAR_PREFIX   = "__";
     private final static int    VAR_LEN      = 16;
-    
+    private final static Class[] NO_PARAMS = new Class[0];
+
     /*
      * All tags, that are relevant for the parsing process. These tags
      * in the input stream lead to state transitions. Of course, not
@@ -72,8 +75,11 @@ public class TemplateParser {
                                                   "<include",     // 4
                                                   "<template",    // 5
                                                   "<property",    // 6
-                                                  "</template>",  // 7 
-                                                  "</property>" }; // 8
+                                                  "</template>",  // 7
+                                                  "</property>",  // 8
+                                                  "<comp-property", // 9
+                                                  "</comp-property>" }; // 10.
+
 
     // the index for the tags. Yes: c-preprocessor and enumerations would be
     // better.
@@ -86,6 +92,8 @@ public class TemplateParser {
     private final static int START_PROP   = 6;
     private final static int END_TEMPLATE = 7;
     private final static int END_PROP     = 8;
+    private final static int START_C_PROP = 9;
+    private final static int END_C_PROP   = 10;
     
     // current mode we are in - this is important for the brace depth check.
     private final static int JAVA_MODE     = 1;
@@ -94,9 +102,12 @@ public class TemplateParser {
     private final String templateName;
     private final String pkg;
     private final String forClassName;
+    private final Class  componentClass;
+    private final Method  componentMethods[];
     private final JavaBuffer writeJavaCode;
     private final JavaBuffer commonJavaCode;
-    private final Vector    properties;
+    private final SortedSet compProperties;
+    private final SortedSet cgProperties;
     private final File sourcefile;
     private final File cwd;
     private final StringPool stringPool;
@@ -114,25 +125,30 @@ public class TemplateParser {
 
     public TemplateParser(String name, 
                           File cwd, File sourcefile,
-                          String pkg, String forClass) {
-	this.templateName = name;
-	this.pkg          = pkg;
-	this.forClassName = forClass;
-        this.sourcefile   = sourcefile;
-        this.cwd          = cwd;
-        this.openBraces   = new Stack();
-        this.anyError     = false;
-        properties        = new Vector();
-        writeJavaCode     = new JavaBuffer(2, INDENT);
-        commonJavaCode    = new JavaBuffer(1, INDENT);
-        stringPool        = new StringPool( VAR_PREFIX, VAR_LEN );
+                          String pkg, String forClass) 
+        throws ClassNotFoundException {
+	this.templateName  = name;
+	this.pkg           = pkg;
+	this.forClassName  = forClass;
+        this.componentClass  = Class.forName(forClassName);
+        this.componentMethods = componentClass.getMethods();
+        this.sourcefile    = sourcefile;
+        this.cwd           = cwd;
+        this.openBraces    = new Stack();
+        this.anyError      = false;
+        this.cgProperties  = new TreeSet();
+        this.compProperties= new TreeSet();
+        this.writeJavaCode = new JavaBuffer(2, INDENT);
+        this.commonJavaCode= new JavaBuffer(1, INDENT);
+        this.stringPool    = new StringPool( VAR_PREFIX, VAR_LEN );
     }
 
     /**
      * generates the Java-class that implements this CG. This method can
      * only be called after calling {@link #parse(PlafReader)}
+     * @return true, if successful.
      */
-    public void generate(File directory, List outProps) throws IOException {
+    public void generate(File directory, List outProps) throws Exception {
         if (anyError)
             return;
         if (! directory.exists()) {
@@ -144,13 +160,16 @@ public class TemplateParser {
         }
         File outFile = new File(directory, templateName + ".java");
         PrintWriter out = new PrintWriter(new FileWriter(outFile));
-        
-        out.println ("// DO NOT EDIT! Your changes will be lost: generated from '" + sourcefile.getName() + "'");
+        outProps.add("#------------------- " + templateName);        
+        out.println ("// DO NOT EDIT! Your changes will be lost: generated from '" + sourcefile.getCanonicalPath() + "'");
+
         if (pkg != null) {
             out.println ("package " + pkg + ";\n\n");
+            outProps.add(templateName + "=" + pkg + "." + templateName);
         }
         else {
             out.println("// default package\n");
+            outProps.add(templateName + "=" + templateName);
         }
         //out.println ("import java.io.*;");
         out.println ("import java.io.IOException;\n");
@@ -158,42 +177,35 @@ public class TemplateParser {
         out.println ("import org.wings.style.*;");
         out.println ("import org.wings.io.Device;");
 
-        if (properties.size() > 0) {
+        if (cgProperties.size() > 0) {
             out.println ("import org.wings.plaf.CGManager;");
             out.println ("import org.wings.session.SessionManager;");
         }
 
         out.println();
-        out.println ("public final class " + templateName 
-                     + " extends org.wings.plaf.AbstractComponentCG");
+        out.print ("public final class " + templateName);
+        
+        out.print (" implements SConstants");
         /*
          * find out the name of the interface to be implemented.
          */
-        try {
-            Class c = Class.forName(forClassName);
-            Class cgInterface = null;
-            Method methods[] = c.getMethods();
-            
-            for (int i=0; i < methods.length; i++) {
-                   if ("setCG".equals(methods[i].getName()) &&
-                       !(org.wings.plaf.ComponentCG.class
-                         .equals(methods[i].getParameterTypes()[0]))) 
-                   {
-                       cgInterface = methods[i].getParameterTypes()[0];
-                       break;
-                   }
-            }
-            if (cgInterface != null) {
-                out.println(INDENT + "implements "
-                        + cgInterface.getName());
-            }
+        Class cgInterface = null;
+        for (int i=0; i < componentMethods.length; i++) {
+            if ("setCG".equals(componentMethods[i].getName()) &&
+                !(org.wings.plaf.ComponentCG.class
+                  .equals(componentMethods[i].getParameterTypes()[0]))) 
+                {
+                    cgInterface = componentMethods[i].getParameterTypes()[0];
+                    break;
+                }
         }
-        catch (Exception e) {
-            System.err.println("cannot instantiate " + forClassName
-                               + ": " + e.getMessage());
-            
+        if (cgInterface != null) {
+            out.print(", " + cgInterface.getName());
         }
-        out.println("{");
+        else {
+            out.print(", ComponentCG");
+        }
+        out.println(" {");
         
         // collected HTML snippets
         out.println ("\n//--- byte array converted template snippets.");
@@ -210,37 +222,38 @@ public class TemplateParser {
             out.println (".getBytes();");
         }
         
-        if (properties.size() > 0) {
+        if (cgProperties.size() > 0) {
             out.println("\n//--- properties of this plaf.");
-            Iterator props = properties.iterator();
+            Iterator props = cgProperties.iterator();
             while (props.hasNext()) {
                 Property p = (Property) props.next();
-                out.print(INDENT + "private " + p.getType());
+                out.print(INDENT + "private " + p.getTypeName());
                 out.print(" " + p.getName());
                 out.print(";\n");
             }
             out.println();
             
+            /*
+             * constructor ...
+             */
             out.println(INDENT + "/**");
             out.println(INDENT + " * Initialize properties from config");
             out.println(INDENT + " */");
 
-            outProps.add("### " + templateName);
             // get settings of this CG from properties file in constructor.
             out.println(INDENT + "public " + templateName + "() {");
             out.println(INDENT + INDENT 
                         + "final CGManager manager = SessionManager.getSession().getCGManager();\n");
-            props = properties.iterator();
+            props = cgProperties.iterator();
             while (props.hasNext()) {
                 Property p = (Property) props.next();
                 String globalPropName = templateName + "." + p.getName();
-
                 out.print(INDENT + INDENT);
                 out.print("set" + capitalize(p.getName()));
-                out.print("((" + p.getType() + ") ");
+                out.print("((" + p.getTypeName() + ") ");
                 out.print("manager.getObject(\"" + globalPropName);
                 out.print("\", ");
-                out.println(p.getType() + ".class));");
+                out.println(p.getType().getName() + ".class));");
 
                 // properties come from a file with this value.
                 String pValue = p.getValue();
@@ -252,8 +265,35 @@ public class TemplateParser {
                 }
             }
             out.println(INDENT + "}\n"); // end constructor.
-            outProps.add(""); // separator.
         }
+        
+        out.println();
+        /*
+         * installCG()
+         */
+        out.print(INDENT);
+        out.println("public void installCG(final SComponent comp) {");
+        if (compProperties.size() > 0) {
+            outProps.add("# component properties set by "
+                         + templateName);
+            String shortClassName = forClassName.substring(forClassName.lastIndexOf(".") + 1);
+            out.println(INDENT + INDENT + "final " + forClassName 
+                        + " component = (" + forClassName + ") comp;");
+            out.println(INDENT + INDENT + "final CGManager manager = component.getSession().getCGManager();");
+            out.println(INDENT + INDENT + "Object value;");
+            out.println(INDENT + INDENT + "Object previous;");
+            printConfigurationSetters(out, compProperties, shortClassName+".",
+                                      outProps);
+        }
+        out.println(INDENT + "}");
+
+        /*
+         * un-installCG()
+         */
+        out.print(INDENT);
+        out.println("public void uninstallCG(final SComponent component) {");
+        // nothing for now. We could reset this to old values ..
+        out.println(INDENT + "}");
         
         // common stuff.
         if (commonJavaCode.length() > 0) {
@@ -277,25 +317,111 @@ public class TemplateParser {
         out.println ("\n//--- end code from write-template.");
         out.println ("\n" + INDENT + "}");
 
-        if (properties.size() > 0) {
+        if (cgProperties.size() > 0) {
             out.println("\n//--- setters and getters for the properties.");
-            Iterator props = properties.iterator();
+            Iterator props = cgProperties.iterator();
             while (props.hasNext()) {
                 Property p = (Property) props.next();
-                out.print(INDENT + "public " + p.getType() 
+                out.print(INDENT + "public " + p.getTypeName() 
                           + " get" + capitalize(p.getName()));
                 out.print("() { return " + p.getName() + "; }\n");
                 out.print(INDENT 
                           + "public void set" + capitalize(p.getName()));
-                out.print("(" + p.getType() + " " + p.getName() + ") { ");
+                out.print("(" + p.getTypeName() + " " + p.getName() + ") { ");
                 out.print("this." + p.getName() + " = " + p.getName() + "; }\n\n");
             }
         }
 
         out.println ("}");
         out.close();
+        outProps.add(""); // separator.
     }
 
+    public void printConfigurationSetters(PrintWriter out,
+                                          SortedSet props, String prefix,
+                                          List outProps) 
+        throws IllegalArgumentException, NoSuchMethodException {
+        String previousPropertyName = null;
+        Class  previousType = null;
+        Iterator it = props.iterator();
+        while (it.hasNext()) {
+            Property p = (Property) it.next();
+            StringBuffer setObject = new StringBuffer();
+            Class setterClass = null;
+            String resolveGetterPath = p.getName();
+            /*
+             * we either configure an object we just created, or configure
+             * something that can be reached through a path of getters.
+             */
+            if (previousPropertyName != null
+                && p.getName().startsWith(previousPropertyName)) {
+                out.println(INDENT + INDENT + "previous = value;");
+                setObject.append("((")
+                    .append(previousType.getName())
+                    .append(") previous)");
+                setterClass = previousType;
+                resolveGetterPath = resolveGetterPath.substring(previousPropertyName.length()+1);
+            }
+            else {
+                setObject.append("component");
+                setterClass = componentClass;
+            }
+
+            StringTokenizer st = new StringTokenizer(resolveGetterPath, ".");
+            int pathElements = st.countTokens();
+            while (pathElements > 1) {
+                String subProperty = (String) st.nextElement();
+                String getterName = "get" + capitalize(subProperty);
+                Method getter = setterClass.getMethod(getterName, NO_PARAMS);
+                if (getter == null) {
+                    throw new IllegalArgumentException("<property>: there is no getter '" + getterName + "'; needed to set Property " + p.getName());
+                }
+                setObject.append(".").append(getterName).append("()");
+                setterClass = getter.getReturnType();
+                if (setterClass.isPrimitive()) {
+                    throw new IllegalArgumentException("<property>: there is only a getter '" + setterClass + " " + getterName + "()'; cannot invoke a setter on a primitive.");
+                }
+                --pathElements;
+            }
+            Method setter = null;
+            String setterName = "set" 
+                + capitalize((String) st.nextElement());
+            Method setClassMethods[] = setterClass.getMethods();
+            for (int i=0; i < setClassMethods.length; ++i) {
+                Method m = setClassMethods[i];
+                if (m.getName().equals(setterName) && 
+                    m.getParameterTypes().length == 1 &&
+                    m.getParameterTypes()[0].isAssignableFrom(p.getType())) {
+                    setter = m;
+                    break;
+                }
+            }
+            if (setter == null) {
+                throw new IllegalArgumentException("<property>: there is no setter '" + setterName + "(" + p.getType().getName() + ")' in class " + setterClass.getName());
+            }
+            String globalPropName = prefix + p.getName();
+            out.print(INDENT + INDENT + "value = manager.getObject(\"");
+            out.print(globalPropName + "\", ");
+            out.println(p.getTypeName() + ".class);");
+            out.println(INDENT + INDENT + "if (value != null) {");
+            out.print(INDENT + INDENT + INDENT);
+            out.println(setObject.toString()
+                        + "." + setter.getName() 
+                        + "((" + p.getTypeName() + ") value);");
+            out.println(INDENT + INDENT + "}");
+            // append defaults to configuration file.
+            String pValue = p.getValue();
+            if (pValue == null || pValue.trim().length() == 0) {
+                outProps.add("#" + globalPropName + "=");
+            }
+            else {
+                outProps.add(globalPropName + "=" + pValue);
+            }
+            previousPropertyName = p.getName();
+            previousType = p.getType();
+        }
+    }
+    
     public void reportError(FilePosition pos, String msg) {
         System.err.println(pos.toString(cwd) + ": " + msg);
         anyError = true;
@@ -304,6 +430,10 @@ public class TemplateParser {
     public void reportError(String msg) {
         System.err.println(in.getFileStackTrace() + ": " + msg);
         anyError = true;
+    }
+
+    public void reportWarning(String msg) {
+        System.err.println(in.getFileStackTrace() + ": " + msg);
     }
 
     /**
@@ -335,7 +465,10 @@ public class TemplateParser {
                 parseWrite();  // --> write-area
                 break;
             case START_PROP:
-                parseProperty();
+                parseProperty(END_PROP);
+                break;
+            case START_C_PROP:
+                parseProperty(END_C_PROP);
                 break;
             case END_TEMPLATE:
                 return;
@@ -343,7 +476,7 @@ public class TemplateParser {
         }
     }
 
-    private void parseProperty() throws IOException, ParseException {
+    private void parseProperty(int endTag) throws IOException, ParseException {
         StringBuffer propertyTag = new StringBuffer();
         consumeTextUntil(propertyTag, ">");
         in.read(); // consume last character: '>'
@@ -353,14 +486,24 @@ public class TemplateParser {
         Property p = null;
         if (type == null || name == null)
             reportError("<property>: 'type' and 'name' attribute expected");
-        else
-            p = new Property(type, name);
+        else {
+            try {
+                p = new Property(type, name);        
+            }
+            catch (ClassNotFoundException e) {
+                throw new ParseException("<property>: " + e.getMessage());
+            }
+        }
         StringBuffer defaultVal = new StringBuffer();
-        if ((findTransitions(defaultVal, stateTransitionTags)) != END_PROP)
+        if ((findTransitions(defaultVal, stateTransitionTags)) != endTag) {
             throw new ParseException ("unexpected tag in <property> area");
+        }
         if (p != null) {
             p.setValue(defaultVal.toString());
-            properties.add(p);
+            if (endTag == END_PROP)
+                cgProperties.add(p);
+            else
+                compProperties.add(p);
         }
     }
 

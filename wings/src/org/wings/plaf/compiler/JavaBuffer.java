@@ -48,7 +48,7 @@ public class JavaBuffer {
             nextIndent = false;
         }
     }
-
+    
     public JavaBuffer append(StringBuffer b) { return append(b.toString()); }
 
     public JavaBuffer append(String s) {
