@@ -551,7 +551,7 @@ final class SessionServlet
             ExternalizeManager extManager = getSession().getExternalizeManager();
             String pathInfo = req.getPathInfo().substring(1);
             logger.fine("pathInfo: " + pathInfo);
-            
+
             /*
              * if we have no path info, or the special '_' path info
              * (that should be explained somewhere, Holger), then we
@@ -563,8 +563,7 @@ final class SessionServlet
                 || "_".equals(pathInfo) 
                 || firstRequest) {
                 logger.fine("delivering default frame");
-                firstRequest = false;
-                
+
                 if (session.frames().size() == 0)
                     throw new ServletException("no frame visible");
                 
@@ -578,6 +577,10 @@ final class SessionServlet
                 
                 Resource resource = defaultFrame.getDynamicResource(DynamicCodeResource.class);
                 externalizeIdentifier = resource.getId();
+
+                if (firstRequest)
+                    response.setDateHeader("Expires", 1000);
+                firstRequest = false;
             }
             else {
                 externalizeIdentifier = pathInfo;

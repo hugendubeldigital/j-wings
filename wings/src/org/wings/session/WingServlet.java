@@ -136,7 +136,8 @@ public final class WingServlet
             extMgr = getExternalizeManager(request);
         }
         catch (Exception e) {
-            return -1;
+            System.err.println("lastModified");
+            return System.currentTimeMillis();
         }
         String pathInfo = request.getPathInfo();
         //System.err.println("LAST MODIFIED: " + pathInfo);
@@ -252,10 +253,11 @@ public final class WingServlet
         HttpSession session = request.getSession(false);
         SessionServlet sessionServlet = null;
 
-        if ( session != null ) {
+        if (session != null) {
             sessionServlet = (SessionServlet)session.getAttribute(lookupName);
-        } else {
-            logger.info("no http session");
+        }
+        else if (response != null) {
+            logger.fine("no http session");
         }
 
         /*
@@ -287,7 +289,6 @@ public final class WingServlet
                          (session.getAttribute(lookupName)!=null));
         }
 
-
         return sessionServlet;
     }
 
@@ -314,12 +315,12 @@ public final class WingServlet
         }
         else {
             SessionServlet sessionServlet = getSessionServlet(req, null);
-            
+            //if (sessionServlet == null)
+            //    return null;
             return sessionServlet.getSession().getExternalizeManager();
         }
     }
-    
-    
+
     /**
      * TODO: documentation
      */

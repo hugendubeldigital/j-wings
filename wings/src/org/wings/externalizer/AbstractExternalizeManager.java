@@ -442,7 +442,7 @@ public abstract class AbstractExternalizeManager
         }
 
         // non-transient items can be cached by the browser
-        if (extInfo.isFinal() ) {
+        if (extInfo.isFinal() && !response.containsHeader("Expires")) {
             /*
              * This would be the correct way to do it; alas, that means, that
              * for static resources, after a day or so, no caching could take
@@ -459,7 +459,7 @@ public abstract class AbstractExternalizeManager
         } else {
             // expire in deep past ..
             // 1000 instead of 0: work around IE bug.
-            response.setDateHeader("Expires", 1000); 
+            response.setDateHeader("Expires", 1000);
         }
 
         extInfo.getExternalizer().write(extInfo.getObject(), out);
