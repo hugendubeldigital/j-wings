@@ -1,8 +1,7 @@
 <template name="AnchorCG" for="org.wings.SAnchor">
 <comp-property type="String" name="style">anchor</comp-property>
 
-<write>
-<%
+<write><%
     String style = Utils.style(component);
     if (style != null || component.getScriptListeners().length != 0) {
         %><span<%
@@ -22,6 +21,5 @@
     if (style != null || component.getScriptListeners().length != 0) {
         %></span><%
     }
-%>
-</write>
+%></write>
 </template>
