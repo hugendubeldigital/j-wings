@@ -1,4 +1,5 @@
 <template name="ButtonCG" for="org.wings.SButton">
+<property type="SIcon" name="icon">org/wings/plaf/css1/button.gif</property>
 
 void writeAnchorText(final Device device, SButton component) 
      throws IOException {

@@ -15,7 +15,7 @@
 </write>
 </template>
 
-<template name="Division" for="org.wings.SDivision">
+<template name="DivisionCG" for="org.wings.SDivision">
 <write>
 <%
   SBorder border = component.getBorder();

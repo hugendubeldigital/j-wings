@@ -1,0 +1,34 @@
+<template name="LabelCG" for="org.wings.SLabel">
+
+/* Beispiele für Properties */
+<property type="SIcon" name="defaultIcon"></property>
+<property type="String" name="fallbackText"></property>
+
+<write>
+<%
+   String text = component.getText();
+   SIcon  icon = component.getIcon();
+   
+   if (icon == null) {
+       icon = defaultIcon;
+   }
+   if (text == null) {
+       text = fallbackText;
+   }
+
+   if (icon != null) {
+      %><img src="<%=icon.getURL()%>"<%
+      if ( icon.getIconWidth() > 0) {
+         %> width="<%=icon.getIconWidth()%>"<%
+      }
+      if ( icon.getIconHeight() > 0) {
+         %> height="<%=icon.getIconWidth()%>"<%
+      }
+      %>><%
+   }
+  
+   if (text != null) {
+       %><%?text%><%
+   }
+%></write>
+</template>
