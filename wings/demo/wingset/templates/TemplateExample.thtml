@@ -12,7 +12,7 @@ or simply anything which is embedded in
 <code>&lt;object name=&quot;compname&quot;&gt&lt;/object&gt;</code>
 and are replaced by the actual component given with the 
 constraint named <code>&quot;compname&quot;</code>.
-<hr size=1 noshade>
+<hr size="1" noshade="noshade" />
 In this example we just place input elements and a tree in a table:
 <table cellpadding=2>
 <tr bgcolor=#5555FF>
@@ -23,7 +23,7 @@ In this example we just place input elements and a tree in a table:
    <td>Firstname:</td><td><input size=15 type=text name="FIRSTNAME"></td>
 </tr>
 </table>
-<hr size=1 noshade/>
+<hr size=1 noshade="noshade" />
 The constraint names of radio buttons are of the form 'NAME=VALUE':
 <table>
   <tr><td><input type=radio name="SELVAL" value="0"></td>

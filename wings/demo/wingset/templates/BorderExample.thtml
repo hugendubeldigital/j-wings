@@ -3,8 +3,8 @@
 <p>
 This example allows you to set the Border of this area
 <p>
-<table align=center>
-<tr><th align=center>Example</th><th>Border Control Panel</th></tr>
+<table align="center">
+<tr><th align="center">Example</th><th>Border Control Panel</th></tr>
 <tr><td><object name="BorderExample"></object></td>
     <td bgcolor="white"><object name="Modifier"></object></td>
 </tr>
