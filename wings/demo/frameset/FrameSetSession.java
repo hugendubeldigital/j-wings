@@ -37,8 +37,8 @@ import org.wings.io.ServletDevice;
 public class FrameSetSession
     extends SessionServlet
 {
-    private SButton menuButton = new SButton("menu");
-    private SButton mainButton = new SButton("main");
+    private SButton menuButton = new SButton("menu frame");
+    private SButton mainButton = new SButton("main frame");
 
     private int menuCount = 0;
     private int mainCount = 0;
@@ -59,9 +59,9 @@ public class FrameSetSession
 
         SFrameSet horizontal = new SFrameSet(new SFrameSetLayout("210,*", null));
         vertical.add(horizontal);
-        SFrame menuFrame = new SFrame("menu");
+        SFrame menuFrame = new SFrame("menu frame");
         horizontal.add(menuFrame);
-        SFrame mainFrame = new SFrame("main");
+        SFrame mainFrame = new SFrame("main frame");
         horizontal.add(mainFrame);
 
         setFrame(vertical);
@@ -73,36 +73,36 @@ public class FrameSetSession
         ActionListener menuIncrement = new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
                     menuCount++;
-                    menuButton.setText("menu: " + menuCount);
+                    menuButton.setText("menu frame: " + menuCount);
                 }
             };
         ActionListener mainIncrement = new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
                     mainCount++;
-                    mainButton.setText("main: " + mainCount);
+                    mainButton.setText("main frame: " + mainCount);
                 }
             };
 
         ActionListener menuDecrement = new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
                     menuCount--;
-                    menuButton.setText("menu: " + menuCount);
+                    menuButton.setText("menu frame: " + menuCount);
                 }
             };
         ActionListener mainDecrement = new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
                     mainCount--;
-                    mainButton.setText("main: " + mainCount);
+                    mainButton.setText("main frame: " + mainCount);
                 }
             };
 
-        SButton menuModifier = new SButton("menu");
+        SButton menuModifier = new SButton("reload menu frame&nbsp;&nbsp;&nbsp;&nbsp;");
         menuModifier.addActionListener(menuIncrement);
 
-        SButton mainModifier = new SButton("main");
+        SButton mainModifier = new SButton("reload main frame&nbsp;&nbsp;&nbsp;&nbsp;");
         mainModifier.addActionListener(mainIncrement);
 
-        SButton bothModifier = new SButton("both");
+        SButton bothModifier = new SButton("reload both frames&nbsp;&nbsp;&nbsp;&nbsp;");
         bothModifier.addActionListener(menuIncrement);
         bothModifier.addActionListener(mainIncrement);
 
