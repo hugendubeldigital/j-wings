@@ -59,6 +59,7 @@ public class EditObjectPanel
         removeButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
                     remove();
+                    //editor.removeAll();
                 }
             });
         buttons.add(removeButton);
@@ -155,6 +156,7 @@ public class EditObjectPanel
                 
                 getContext().destroySubcontext(dn);
                 editor.clearClassDefinitions();
+                editor.removeAll();
             }
             else
                 System.out.println("bitte child auswaehlen");

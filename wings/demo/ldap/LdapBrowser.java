@@ -294,17 +294,34 @@ public class LdapBrowser
 	extends AbstractAction
     {
 	public void actionPerformed(ActionEvent evt) {
-            //(&(sn=Geisel)(mail=*))";
+            //(||(sn=Geisel)(mail=*))";
             StringBuffer fB = new StringBuffer();
             fB.append("(&");
-            fB.append("(" + searchAttribute + "=*" + searchTextField.getText() + "*)");
+            fB.append("(|");
+            //   fB.append("(" + searchAttribute + "=*" + searchTextField.getText() + "*)");
+            //fB.append("(objectclass=PGDPerson)");
+            fB.append(getSearchFilter(searchAttribute,searchTextField.getText().trim()));
+            fB.append(")");
             fB.append("(objectclass=PGDPerson)");
             fB.append(")");
+ 
 	    String filter = fB.toString();
+            System.out.println(filter);
             overviewModel.setFilter(filter);
             //da 
             populateList(filter);
 	}
+        
+        private String getSearchFilter(String searchAttribute, String filter) {
+            StringBuffer sb = new StringBuffer();
+            StringTokenizer stk = new StringTokenizer(searchAttribute,",");
+            while (stk.hasMoreTokens()) {
+                sb.append("(");
+                sb.append(stk.nextToken() + "=*" + filter + "*)");
+            }
+            return sb.toString();
+        }
+
     }
 
     class BackAction
@@ -324,9 +341,10 @@ public class LdapBrowser
             NamingEnumeration enum = context.search(basedn, filter, cons);
             int i = 0;
             while (enum.hasMore()) {
-            i++;
+                i++;
             SearchResult searchResult = (SearchResult)enum.next();
-            namesVector.add(searchResult.getAttributes().get(searchAttribute).toString());
+            //da ist sn hart kodiert und noch nicht so schoen
+            namesVector.add(searchResult.getAttributes().get("sn").toString());
                         
         } 
             enum.close();
@@ -389,6 +407,14 @@ public class LdapBrowser
 
 	public Object getValueAt(int row, int column) {
 	    Attributes attributes = (Attributes)data.get(row);
+            
+            Attribute attr = attributes.get(overviewAttributes[column]);
+            if (attr!=null) {
+                String aValue = attr.toString();
+                int index = aValue.indexOf(":");
+                if (index>0)
+                    return(aValue.substring(index+1));
+            }
             return attributes.get(overviewAttributes[column]);
 	}
 
