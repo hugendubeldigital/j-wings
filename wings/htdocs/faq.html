@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Documentation</title>
+<meta http-equiv="Content-type" content='text/html; charset="iso-8859-1"' />
+<link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+<body>
+
+<p>
+<span class="bigwings">wingS</span>
+<span class="bigis">FAQ</span>
+</p>
+
+<ol>
+
+<li>
+<div class="question">
+What is wingS?
+</div>
+<div class="answer">
+wingS is net generation Swing.
+</div>
+<br />
+</li>
+
+<li>
+<div class="question">
+Why should I use wingS?
+</div>
+<div class="answer">
+todo
+</div>
+<br />
+</li>
+
+<li>
+<div class="question">
+What are the requirements for wingS?
+</div>
+<div class="answer">
+Several things:
+ <ul type="disc">
+  <li>
+   a computer :)
+  </li>
+  <li>
+   Java 2<br />
+   (We are using wingS with sun's JDK 1.2.2 and sun's JDK 1.3 beta.)
+  </li>
+  <li>
+   a web server capable handling serlvets<br />
+   (We are currently using Apache with JServ only; other implementations
+   which also use newer JSDKs such as Tomcat might not work yet?)
+  </li>
+  <li>
+   sun's JSDK2.0 or the LGPL'ed implementation by Paul Siegmann and Mark
+   Wielaard which is also included in Apache JServ 1.1.2.
+  </li>
+ </ul>
+</div>
+<br />
+</li>
+
+<li>
+<div class="question">
+How do I install it?
+</div>
+<div class="answer">
+todo
+</div>
+<br />
+</li>
+
+<li>
+<div class="question">
+How can I contribute?
+</div>
+<div class="answer">
+Please send your patches / fixes / extensions to 
+<a href="mailto:wings-developers@wings.to.com">wings-developers@wings.to.com</a>.
+If you like subscribe to our <a href="http://www.wings.to.com/mailinglists.html">mailing
+lists</a>. You can also get write access to our <a href="http://cvs.wings.to.com/">cvs
+repository</a>. Please visit <a href="http://www.wings.to.com/">http://www.wings.to.com/</a>
+for more information!
+</div>
+<br />
+</li>
+
+<li>
+<div class="question">
+How do I create a new servlet using wingS?
+</div>
+<div class="answer">
+This depends on the type of servlet you want to create:
+ <ul type="disc">
+  <li>
+   If you only want a very simple one, you only need one class
+   FooBarServlet which extends org.wings.servlet.SessionServlet and
+   overwrites the method postInit to do something.<br />
+   See demo/wingset/Test.java for an example.
+  </li>
+  <li>
+   Otherwise you will need at least two classes, FooBar and FooBarSession.
+   <ul type="disc">
+    <li>
+     FooBar should extend org.wings.servlet.WingServlet and overwrite the
+     method generateSessionServlet which returns new instances of
+     FooBarSession.
+    </li>
+    <li>
+     FooBarSession should extend org.wings.servlet.WingServlet and
+     overwrite the method postInit to do something.
+    </li>
+   </ul>
+   See demo/wingset/WingSet.java and demo/wingset/WingSetSession.java for
+   an axample.
+  </li>
+ </ul>
+</div>
+<br />
+</li>
+
+<li>
+<div class="question">
+What is this org.wings.session stuff?
+</div>
+<div class="answer">
+todo
+</div>
+<br />
+</li>
+
+<li>
+<div class="question">
+What is a plaf?
+</div>
+<div class="answer">
+wingS supports some kind of pluggable look and feel. Each SComponent
+delegates it's codegeneration to a special ComponentCG. There are different
+CGs for each SComponent and each plaf. For now, there exist two plafs
+xhtml/css1 and xhtml/old. Feel free to implement additional plafs like wap 
+or xml/xsl ;-)
+</div>
+<br />
+</li>
+
+<li>
+<div class="question">
+How can I use another plaf?
+</div>
+<div class="answer">
+todo
+</div>
+<br />
+</li>
+
+<li>
+<div class="question">
+How can I write a new plaf?
+</div>
+<div class="answer">
+I suggest, your first copy the most applicable from the existing plafs to a
+new package and then successively implement the CGs for each component
+</div>
+<br />
+</li>
+
+<li>
+<div class="question">
+What is an Externalizer?
+</div>
+<div class="answer">
+todo
+</div>
+<br />
+</li>
+
+<li>
+<div class="question">
+How can I use another Externalizer?
+</div>
+<div class="answer">
+todo
+</div>
+<br />
+</li>
+
+<li>
+<div class="question">
+How can I write a new Externalizer?
+</div>
+<div class="answer">
+todo
+</div>
+<br />
+</li>
+
+<li>
+<div class="question">
+Where can I find more information about wingS?
+</div>
+<div class="answer">
+Read the <a href="http://jsp2.java.sun.com/j2se/1.3/docs/api/javax/swing/package-summary.html">javax.swing API docs</a>
+or the <a href="http://java.sun.com/docs/books/tutorial/index.html">Java Tutorial</a>
+from <a href="http://www.sun.com/">Sun Microsystems</a> ;-)
+</div>
+<br />
+</li>
+
+</ol>
+
+<p><br /></p>
+<span class="bottomright">
+<a href="http://validator.w3.org/check/referer">
+<img src="http://validator.w3.org/images/vxhtml10" alt="Valid XHTML 1.0!" border="0" height="31" width="88" />
+</a>
+</span>
+
+</body>
+</html>
