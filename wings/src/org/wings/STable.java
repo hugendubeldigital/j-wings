@@ -767,17 +767,17 @@ public class STable
         editingCanceled(null);
 
         switch ( e.getType() ) {
-        case e.INSERT:
+        case TableModelEvent.INSERT:
             if (e.getFirstRow() >= 0)
                 addSelectables(e.getFirstRow(), e.getLastRow());
             break;
 
-        case e.DELETE:
+        case TableModelEvent.DELETE:
             if (e.getFirstRow() >= 0)
                 deleteSelectables(e.getFirstRow(), e.getLastRow());
             break;
 
-        case e.UPDATE:
+        case TableModelEvent.UPDATE:
             // Falls sich die Daten geaendert haben, sonst sind keine
             // Aenderungen noetig.
             if (e.getFirstRow() <= 0 ||
