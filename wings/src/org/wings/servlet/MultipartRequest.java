@@ -138,13 +138,12 @@ public class MultipartRequest
     }
 
     public String[] getParameterValues (String name) {
-        if (urlencodedRequest) return super.getParameterValues (name);
+        if (urlencodedRequest) 
+            return super.getParameterValues (name);
         Vector v = (Vector) parameters.get (name);
         if (v == null) return null;
         String result[] = new String [ v.size() ];
-        for (int i = 0; i < v.size(); i++)
-            result[i] = (String) v.elementAt (i);
-        return result;
+        return (String[]) v.toArray(result);
     }
 
     /**
@@ -250,15 +249,17 @@ public class MultipartRequest
         String boundary = extractBoundary(type);
         if (boundary == null) {
             /*
-             * this could happen due to a bug in Tomcat 3.2.2 in combination with Opera.
-             * Opera sends the boundary on a separate line, which is perfectly correct
-             * regarding the way header may be constructed (multiline headers). Alas, Tomcat
-             * fails to read the header in the content type line and thus we cannot
-             * read it.. haven't checked later versions of Tomcat, but upgrading is
+             * this could happen due to a bug in Tomcat 3.2.2 in combination
+             * with Opera.
+             * Opera sends the boundary on a separate line, which is perfectly
+             * correct regarding the way header may be constructed 
+             * (multiline headers). Alas, Tomcat fails to read the header in 
+             * the content type line and thus we cannot read it.. haven't 
+             * checked later versions of Tomcat, but upgrading is
              * definitly needed, since we cannot do anything about it here.
              * (JServ works fine, BTW.) (Henner)
              */
-            throw new IOException("Separation boundary was not specified");
+            throw new IOException("Separation boundary was not specified (BUG in Tomcat 3.* with Opera?)");
         }
 
         MultipartInputStream mimeStream = new MultipartInputStream(req.getInputStream(), req.getContentLength());
@@ -700,7 +701,17 @@ public class MultipartRequest
 
 
         /**
-         * TODO: documentation
+         * create a URL-encoded form of this uploaded file, that contains
+         * all parameters important for this file. The parameters returned
+         * are 'dir', 'name', 'type' and 'id'
+         * <ul>
+         *  <li>'dir' contains the directory in the filesystem, the file
+         *      has been stored into.</li>
+         *  <li>'name' contains the filename as provided by the user</li>
+         *  <li>'type' contains the mime-type of this file.</li>
+         *  <li>'id' contains the internal name of the file in the
+         *       filesystem.</li>
+         * </ul>
          *
          * @return
          */

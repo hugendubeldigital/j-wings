@@ -14,8 +14,11 @@
 
 package org.wings;
 
-import java.util.Hashtable;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Iterator;
+import java.util.Collection;
 import java.net.URL;
 import java.io.File;
 import java.io.IOException;
@@ -106,7 +109,7 @@ public class STemplateLayout
     /*
      * Alle Property Manager
      */
-    private static final Hashtable propertyManager = new Hashtable();
+    private static final HashMap propertyManager = new HashMap();
 
     /*
      * some default property Managers. Sets properties of components
@@ -120,8 +123,7 @@ public class STemplateLayout
         addPropertyManager(new STextAreaPropertyManager());
         addPropertyManager(new SBaseTablePropertyManager());
         addPropertyManager(new STablePropertyManager());
-//        parser = new PageParser();
-//        parser.addTagHandler (COMPONENT, TemplateTagHandler.class);
+        addPropertyManager(new SFileChooserPropertyManager());
     }
 
     /**
@@ -130,7 +132,7 @@ public class STemplateLayout
     private DataSource dataSource = null;
 
 
-    private Hashtable components = new Hashtable();
+    private HashMap components = new HashMap();
 
     /**
      * TODO: documentation
@@ -231,7 +233,7 @@ public class STemplateLayout
      * @throws java.io.IOException
      */
     public void setTemplate(File templateFile) throws java.io.IOException {
-        dataSource = new CachedFileDataSource(templateFile);
+        setTemplate(new CachedFileDataSource(templateFile));
     }
 
     /**
@@ -242,17 +244,45 @@ public class STemplateLayout
      * @throws java.io.IOException
      */
     public void setTemplate(URL templateURL) throws java.io.IOException {
-        dataSource = new CachedFileDataSource(templateURL);
+        setTemplate(new CachedFileDataSource(templateURL));
     }
 
+    /**
+     * Sets the template from the DataSource. Use this, if you hold your
+     * templates in databases etc. and write your own DataSource.
+     *
+     * @see org.wings.template.parser.DataSource
+     * @param source the datasourse this template is to be read.
+     */
+    public void setTemplate(DataSource source) {
+        dataSource = source;
+    }
+
+    /**
+     * add a component with the given constraint. The contstraint in the
+     * TemplateLayout is the value of the name attribute of the object in
+     * the HTML-template.
+     *
+     * @param c the component to be added
+     * @param constraint the string describing the
+     */
     public void addComponent(SComponent c, Object constraint) {
         if ( constraint == null )
             throw new IllegalArgumentException("null constraint not allowed here");
         components.put(constraint.toString(), c);
     }
     
-    public void removeComponent(SComponent c) {
-        // TODO: remove value from Hashtable
+    /**
+     * removes the given component.
+     * @param comp the component to be removed.
+     */
+    public void removeComponent(SComponent comp) {
+        Iterator it = components.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry e = (Map.Entry) it.next();
+            if (e.getValue() == comp)
+                it.remove();
+        }
     }
 
     /**
@@ -263,9 +293,9 @@ public class STemplateLayout
     }
 
     /**
-     *
+     * returns a map of the constraint/component.
      */
-    public Hashtable getComponents() {
+    public Map getComponentMap() {
         return components;
     }
 

@@ -184,7 +184,7 @@ public abstract class WingServlet extends HttpServlet
             req = new MultipartRequest(req, maxContentLength * 1024);
         }
         catch (IOException e) {
-            res.getOutputStream().println(e.getMessage());
+            //res.getOutputStream().println(e.getMessage());
             System.err.println(e.getMessage());
             e.printStackTrace(System.err);
         }
@@ -194,23 +194,25 @@ public abstract class WingServlet extends HttpServlet
         }
 
         if (DEBUG) {
-            MultipartRequest multi = (MultipartRequest)req;
-            debug("Files:");
-            Enumeration files = multi.getFileNames();
-            while (files.hasMoreElements()) {
-                String name = (String)files.nextElement();
-                String filename = multi.getFilename(name);
-                String type = multi.getContentType(name);
-                File f = multi.getFile(name);
-                debug("name: " + name);
-                debug("filename: " + filename);
-                debug("type: " + type);
-                if (f != null) {
-                    debug("f.toString(): " + f.toString());
-                    debug("f.getName(): " + f.getName());
-                    debug("f.exists(): " + f.exists());
-                    debug("f.length(): " + f.length());
-                    debug("\n");
+            if (req instanceof MultipartRequest) {
+                MultipartRequest multi = (MultipartRequest)req;
+                debug("Files:");
+                Enumeration files = multi.getFileNames();
+                while (files.hasMoreElements()) {
+                    String name = (String)files.nextElement();
+                    String filename = multi.getFilename(name);
+                    String type = multi.getContentType(name);
+                    File f = multi.getFile(name);
+                    debug("name: " + name);
+                    debug("filename: " + filename);
+                    debug("type: " + type);
+                    if (f != null) {
+                        debug("f.toString(): " + f.toString());
+                        debug("f.getName(): " + f.getName());
+                        debug("f.exists(): " + f.exists());
+                        debug("f.length(): " + f.length());
+                        debug("\n");
+                    }
                 }
             }
         }
