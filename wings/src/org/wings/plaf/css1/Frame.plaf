@@ -10,13 +10,14 @@
         // dynamic stylesheet resource.
         DynamicResource styleSheetResource = new DynamicStyleSheetResource(component);
         component.addDynamicResource(styleSheetResource);
-        component.addHeader(new Link("stylesheet", null, 
+	component.addHeader(new Link("stylesheet", null, 
                                      "text/css", null, 
                                      styleSheetResource));
-
+        	
         // dynamic java script resource.
         DynamicResource scriptResource = new DynamicScriptResource(component);
         component.addDynamicResource(scriptResource);
+	
         component.addHeader(new Script("JavaScript", "text/javascript", scriptResource));
 
         // static stylesheet, coming with the CG
@@ -24,13 +25,18 @@
         StaticResource staticResource = (StaticResource)cgManager
             .getObject("lookandfeel.stylesheet", Resource.class);
         staticResource.setMimeType("text/css");
+
         component.headers().add(0, new Link("stylesheet", null, 
                                      "text/css", null, 
                                      staticResource));
+
 </install>
 
 <write>
 <%
+
+    org.wings.session.Browser browser = SessionManager.getSession().getUserAgent();
+
     SFrame frame = (SFrame)component;
     try {
         String language = "en"; // TODO: ???
@@ -39,37 +45,54 @@
         String encoding = org.wings.util.LocaleCharSet.getInstance()
 	                     .getCharSet(frame.getSession().getLocale());
 
-        %><?xml version="1.0" encoding="<%=encoding%>"?><%
-        %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd"><%
-        %><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=language%>" lang="<%=language%>"><%
+
+    if ( browser.getBrowserName().equals("MSIE") &&
+         browser.getMajorVersion()<4 ) {
+        %><html>
+<%
+    } else {
+
+        %><?xml version="1.0" encoding="<%=encoding%>"?>
+<%
+        %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<%
+        %><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=language%>" lang="<%=language%>">
+<%
+    }
 
         %><head><%
         if (title != null) {
-            %><title><%=title%></title><%
+            %><title><%=title%></title>
+<%
         }
 
         if (frame.getBaseTarget() != null) {
-            %><base target="<%=frame.getBaseTarget()%>"/><%
+            %><base target="<%=frame.getBaseTarget()%>"/>
+<%
         }
 
-        %><meta http-equiv="Content-type" content="text/html; charset=<%=encoding%>"/><%
-
+        %><meta http-equiv="Content-type" content="text/html; charset=<%=encoding%>"/>
+<%
         Iterator it = headers.iterator();
         while (it.hasNext()) {
             Object next = it.next();
-            if (next instanceof Renderable)
+            if (next instanceof Renderable) {
                 ((Renderable)next).write(device);
-            else {
+             } else {
                 %><%=it.next().toString()%><%
             }
+            %>
+<% 
         }
 
-        %></head><%
+        %></head>
+<%
 
         %><body<%
         %><%|class=Utils.style(frame)%><%
 	Utils.writeEvents(device, frame);
-        %>><%
+        %>>
+<%
 
         if (frame.isVisible()) {
             frame.getLayout().write(device);
