@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import org.wings.template.parser.SGMLTag;
 
-class PlafCompiler {
+public class PlafCompiler {
     public final static String VAR_PREFIX = "__";
     
     protected String  varPrefix   = VAR_PREFIX;
@@ -56,7 +56,7 @@ class PlafCompiler {
     
     /**
      * sets the package name, the generated java classes are in.
-     * Something like 'foo.bar.baz'. Non optional.
+     * Something like 'foo.bar.baz'.
      */
     public void setPackageName(String p) { packageName = p; }
 
