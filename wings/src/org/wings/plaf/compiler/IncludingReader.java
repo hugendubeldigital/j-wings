@@ -135,11 +135,11 @@ public class IncludingReader extends Reader {
     public boolean markSupported() { return true; }
 
     public void mark(int readAheadLimit) throws IOException {
-        in.mark(readAheadLimit);
+        if (in != null) in.mark(readAheadLimit);
     }
     
     public void reset() throws IOException {
-        in.reset();
+        if (in != null) in.reset();
     }
 
 }
