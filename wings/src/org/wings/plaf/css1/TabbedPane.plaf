@@ -53,9 +53,8 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
              browser.getMajorVersion() < 5;
 
         /* selection colors set? */
-        java.awt.Color selFg = comp.getSelectionForeground();
-        final String selFgStr = "#"+
-            org.wings.plaf.xhtml.css1.Utils.toColorString(selFg==null?comp.getForeground():selFg);
+        //java.awt.Color selFg = comp.getSelectionForeground()!=null?comp.getSelectionForeground():comp.getForeground();
+        //final String selFgStr = selFg!=null?("#"+org.wings.plaf.xhtml.css1.Utils.toColorString(selFg)):null;
 
 
         /* border stuff */
