@@ -30,16 +30,23 @@ public class EtchedBorderCG
     extends DefaultBorderCG
 {
 
-    public void writeSpanAttributes(Device d, SBorder b )
-        throws IOException
+  public String getSpanAttributes( SBorder b )
     {
+      StringBuffer sb = new StringBuffer();
 	SEtchedBorder border = (SEtchedBorder)b;
 
-        writeBorderStyle(d, b, border.getEtchedType()==SEtchedBorder.RAISED ? 
-                         "ridge" : "groove");
+        sb.append(getBorderStyle(b, border.getEtchedType()==SEtchedBorder.RAISED ? 
+                         "ridge" : "groove"));
 
         // write insets/padding
-        super.writeSpanAttributes(d, b);
+        sb.append(super.getSpanAttributes(b));
+        return sb.toString();
+    }
+
+  public void writeSpanAttributes(Device d, SBorder b )
+        throws IOException
+    {
+        d.print(getSpanAttributes(b));
     }
 
 }

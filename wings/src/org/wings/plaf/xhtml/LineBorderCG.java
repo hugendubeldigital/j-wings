@@ -26,36 +26,45 @@ public class LineBorderCG
     extends DefaultBorderCG
     implements org.wings.plaf.LineBorderCG
 {
+  public String getSpanAttributes( SBorder border ) {
+    StringBuffer sb = new StringBuffer();
+    SLineBorder b = ( SLineBorder ) border;
+    java.awt.Color  color  = b.getColor();
+    java.awt.Insets insets = b.getInsets();
+    
+    /* thickness & type */
+    sb.append( "border: " );
+    sb.append( b.getThickness() );
+    sb.append( "px solid;" );
+    
+    /* color */
+    sb.append( "border-color: #" );
+    if ( color != null )
+      sb.append( org.wings.plaf.xhtml.Utils.toColorString( color ) );
+    else
+      sb.append( "000000" );
+    sb.append( ";" );
+    
+    /* padding */
+    if ( insets != null ) {
+      sb.append( "padding-top: " );
+      sb.append( insets.top );
+      sb.append( "px;padding-right: " );
+      sb.append( insets.right );
+      sb.append( "px;padding-left: " );
+      sb.append( insets.left );
+      sb.append( "px;padding-bottom: " );
+      sb.append( insets.bottom );
+      sb.append( "px;" );
+    }
+    return sb.toString();
+  }
+
     public void writeSpanAttributes( Device d, SBorder border )
         throws IOException {
-        SLineBorder b = ( SLineBorder ) border;
-        java.awt.Color  color  = b.getColor();
-        java.awt.Insets insets = b.getInsets();
         
         /* thickness & type */
-        d.print( "border: " );
-        d.print( b.getThickness() );
-        d.print( "px solid;" );
-        
-        /* color */
-        d.print( "border-color: #" );
-        if ( color != null )
-            d.print( org.wings.plaf.xhtml.Utils.toColorString( color ) );
-        else
-            d.print( "000000" );
-        d.print( ";" );
-        
-        /* padding */
-        if ( insets == null ) return;
-        d.print( "padding-top: " );
-        d.print( insets.top );
-        d.print( "px;padding-right: " );
-        d.print( insets.right );
-        d.print( "px;padding-left: " );
-        d.print( insets.left );
-        d.print( "px;padding-bottom: " );
-        d.print( insets.bottom );
-        d.print( "px;" );
+        d.print(getSpanAttributes(border));
     }
 }
 

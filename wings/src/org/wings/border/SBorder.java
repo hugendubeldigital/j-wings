@@ -84,6 +84,12 @@ public interface SBorder extends Serializable
      */
     void writeSpanAttributes(Device d) throws IOException;
 
+/**
+     * delivers the border attributes for span element.
+     *
+     */
+    String getSpanAttributes();
+
     /**
      * Returns the name of the CGFactory class that generates the
      * look and feel for this border.

@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import javax.swing.Icon;
 
-import org.wings.*; import org.wings.border.*;
+import org.wings.*;
 import org.wings.border.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
@@ -29,24 +29,30 @@ public class DefaultBorderCG
     public void writePrefix(Device d, SBorder b)
 	throws IOException
     {
-	d.print("<table><tr><td cellpadding=\"")
+/*	d.print("<table><tr><td cellpadding=\"")
 	    .print(b.getInsets().left)
-	    .print("\">");
+	    .print("\">"); */
     }
     
     public void writePostfix(Device d, SBorder b)
 	throws IOException
     {
-	d.print("</td></tr></table>");
+/*	d.print("</td></tr></table>"); */
+    }
+    
+    public String getSpanAttributes(SBorder border) {
+      StringBuffer sb = new StringBuffer();
+      sb.append("border: 1px solid;" );
+        /* color */
+      sb.append( "border-color: #000000;" );
+      return sb.toString();
+
     }
     
     public void writeSpanAttributes( Device d, SBorder border )
         throws IOException
     {
-     	/* thickness & type */
-        d.print( "border: 1px solid;" );
-        /* color */
-        d.print( "border-color: #000000;" );
+      d.print(getSpanAttributes(border));
     }
 }
 

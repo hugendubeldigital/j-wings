@@ -39,7 +39,8 @@ public class GridLayoutCG
         SGridLayout layout = (SGridLayout)l;
         SContainer container = layout.getContainer();
         List components = layout.getComponents();
-
+        SDimension dim = layout.getPreferredSize();
+      
         boolean header = layout.getHeader();
         boolean relative = layout.isRelative();
         int width = layout.getWidth();
@@ -51,13 +52,15 @@ public class GridLayoutCG
         int rows = layout.getRows();
         
         d.print("\n<table ");
-        if ( width >= 0 || Utils.hasSpanAttributes( container ) ) {
+        if (width >= 0 || Utils.hasSpanAttributes( container ) ) {
             d.print("style=\"");
             if (width >= 0) {
+              if ((dim == null) || (dim.getWidth() == null)) {
                 d.print("width:").print(width);
                 if (relative) d.print("%");
                 d.print(";");
-            }
+              }
+            } 
             Utils.writeSpanAttributes( d, (SComponent) container );
             d.print("\" ");
         }
@@ -72,17 +75,17 @@ public class GridLayoutCG
         else
             d.print(" cellpadding=\"0\"");
         
-        CGUtil.writeSize( d, container );
+        // CGUtil.writeSize( d, container );
 
         if (border > 0)
             d.print(" border=\"").print(border).print("\"");
         else
             d.print(" border=\"0\"");
 
-        if (container != null && container.getBackground() != null)
+       /* if (container != null && container.getBackground() != null)
             d.print(" bgcolor=\"#").
                 print(Utils.toColorString(container.getBackground())).print("\"");
-
+*/
         d.print(">\n");
 
         if (cols <= 0)
@@ -107,7 +110,7 @@ public class GridLayoutCG
                 d.print("<td");
 
             Utils.printTableCellAlignment(d, c);
-            if (c instanceof SContainer && c.isVisible()) {
+            if (c instanceof SContainer && c.isVisible() && Utils.hasSpanAttributes(c)) {
                // Adapt inner styles (esp. width of containers)
                // maybe better restrict to dimension styles only?
                d.print(" style=\"");
@@ -117,7 +120,8 @@ public class GridLayoutCG
                // Some containers (like SPanel) do not support 
                // background colors, hence we render the background 
                // of them using this surrounding gridlayout cell
-               Utils.printTableCellColors(d, c);
+               // Utils.printTableCellColors(d, c);
+               
             }
             d.print(">");            
 

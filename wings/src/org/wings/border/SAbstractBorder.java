@@ -146,6 +146,10 @@ public abstract class SAbstractBorder
         cg.writeSpanAttributes( d, this );
     }
 
+    public String getSpanAttributes() {
+      return cg.getSpanAttributes(this);
+    }
+    
     /**
      * sets the foreground color of the border
      * @param color

@@ -33,43 +33,61 @@ public class DefaultBorderCG
     public void writePrefix(Device d, SBorder b)
 	throws IOException
     {
+/*      System.out.println("div prefix defaultborder");
+      new Exception().printStackTrace();
 	d.print("<div style=\"");
 
         writeSpanAttributes(d, b);
         
-        d.print("\">");
+        d.print("\">"); */
     }
 
     public void writePostfix(Device d, SBorder b)
 	throws IOException
     {
-	d.print("</div>");
+/*      System.out.println("div postfix defaultborder");
+      new Exception().printStackTrace();
+	d.print("</div>"); */
     }
 
-    public void writeSpanAttributes( Device d, SBorder border )
-        throws IOException
-    {
+    public String getSpanAttributes( SBorder border ) {
+    StringBuffer sb = new StringBuffer();
 	Insets insets = border.getInsets();
 
         if (insets != null && !NO_BORDER.equals(insets)) {
-            d.print("padding:")
-                .print(insets.top).print("px ")
-                .print(insets.right).print("px ")
-                .print(insets.bottom).print("px ")
-                .print(insets.left).print("px;");
+            sb.append("padding:")
+              .append(insets.top).append("px ")
+              .append(insets.right).append("px ")
+              .append(insets.bottom).append("px ")
+              .append(insets.left).append("px;");
         }
+    return sb.toString();
+    }
+    
+    public void writeSpanAttributes( Device d, SBorder border )
+        throws IOException
+    {
+	  d.print(getSpanAttributes(border));
     }
 
-    protected void writeBorderStyle( Device d, SBorder border, String style ) 
+  protected String getBorderStyle( SBorder border, String style )  
+    {
+      StringBuffer sb = new StringBuffer();
+      
+        sb.append("border:")
+            .append(style)
+            .append(" ")
+            .append(border.getThickness())
+            .append("px;color: #")
+            .append(Utils.toColorString(border.getColor()))
+            .append(";");
+        return sb.toString();
+    }
+
+  protected void writeBorderStyle( Device d, SBorder border, String style ) 
         throws IOException 
     {
-        d.print("border:")
-            .print(style)
-            .print(" ")
-            .print(border.getThickness())
-            .print("px;color: #")
-            .print(Utils.toColorString(border.getColor()))
-            .print(";");
+        d.print(getBorderStyle(border, style));
     }
 
 }

@@ -23,16 +23,22 @@ import org.wings.io.Device;
 public final class LineBorderCG
     extends DefaultBorderCG
 {
+ public String getSpanAttributes( SBorder b )
+    {
+      StringBuffer sb = new StringBuffer();
+        SLineBorder border = (SLineBorder)b;
 
+        sb.append(getBorderStyle(b, border.getBorderStyle()));
+        
+        // write insets/padding
+        sb.append(super.getSpanAttributes(b));
+        return sb.toString();
+    }
+ 
     public void writeSpanAttributes(Device d, SBorder b )
         throws IOException
     {
-        SLineBorder border = (SLineBorder)b;
-
-        writeBorderStyle(d, b, border.getBorderStyle());
-        
-        // write insets/padding
-        super.writeSpanAttributes(d, b);
+        d.print(getSpanAttributes(b));
     }
 
 }

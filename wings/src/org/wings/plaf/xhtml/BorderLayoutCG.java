@@ -52,7 +52,7 @@ public class BorderLayoutCG
         if (east != null) cols++;
         
         d.print("\n<table cellpadding=\"0\" cellspacing=\"0\"");
-        CGUtil.writeSize( d, container );
+        // CGUtil.writeSize( d, container );
         
         if ( Utils.hasSpanAttributes( container ) ) {
             d.print(" style=\"");
@@ -62,11 +62,11 @@ public class BorderLayoutCG
         
         if (border > 0)
             d.print(" border=\"").print(border).print("\"");
-        if (container != null && container.getBackground() != null) {
+/*        if (container != null && container.getBackground() != null) {
             d.print(" bgcolor=\"#")
-                .print(Utils.toColorString(container.getBackground())).print("\">");
+                .print(Utils.toColorString(container.getBackground())).print("\"");
         }
-        else
+*/        
 	    d.print(">");
         
         if (north != null) {

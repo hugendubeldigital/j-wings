@@ -52,7 +52,7 @@ public class GridBagLayoutCG
         d.print("\n<table ");
         if ( Utils.hasSpanAttributes( container ) )
         {
-            d.print("style=\"");
+            d.print(" style=\"");
             Utils.writeSpanAttributes( d, container );
             d.print("\" ");
         }
@@ -67,7 +67,7 @@ public class GridBagLayoutCG
         else
             d.print(" cellpadding=\"0\"");
 
-        CGUtil.writeSize( d, container );
+        // CGUtil.writeSize( d, container );
 
         if (border > 0)
             d.print(" border=\"").print(border).print("\"");
@@ -102,8 +102,7 @@ public class GridBagLayoutCG
                             d.print("<td");
                         }
 
-                        Utils.printTableCellAlignment(d, comp);
-                        Utils.printTableCellColors(d, comp);
+                        Utils.printTableCellAttributes(d, comp);
 
                         int gridwidth = c.gridwidth;
                         if (gridwidth == GridBagConstraints.RELATIVE) {

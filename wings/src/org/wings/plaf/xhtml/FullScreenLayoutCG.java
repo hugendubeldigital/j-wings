@@ -41,6 +41,7 @@ public class FullScreenLayoutCG
     {
         d.print("\n<div style=\"position:absolute; z-index:1; left: 0; top: 0; width: 100%; height: 100%\">");
         super.write( d, l );
+        System.out.println("Div Fullscreenlayout");
         d.print("</div>");
     }
 }

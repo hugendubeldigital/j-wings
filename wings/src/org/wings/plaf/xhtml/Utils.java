@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import java.awt.Color;
 
-import org.wings.*; import org.wings.border.*;
+import org.wings.*; 
 import org.wings.border.*;
 import org.wings.style.*;
 import org.wings.io.Device;
@@ -170,21 +170,27 @@ public final class Utils implements SConstants
         }
     }
 
-    /** Encolors the actual table cell with the background of the contained component. */
+   /** Encolors the actual table cell with the background of the contained component. */
     public static void printTableCellColors(Device s, SComponent c) 
         throws IOException {
-        // if (c.getForeground()!=null)
-        //     s.print(" COLOR=#").
-        //         print(toColorString(c.getForeground()));
-
+/*         if (c.getForeground()!=null)
+             s.print(" COLOR=#").print(toColorString(c.getForeground()));
+*/
+        s.print(" style=\"");
         if (c.getBackground()!=null){
-            s.print(" bgcolor=\"#")
+/*           s.print(" bgcolor=\"#")
                 .print(toColorString(c.getBackground()))
                 .print("\"");
-            s.print(" style=\"background-color:#")
+ */
+            s.print("background-color:#")
                 .print(toColorString(c.getBackground()))
-                .print(";\"");
+                .print(";"); 
+        } 
+        if (c.getForeground() != null) {
+            s.print("font-color:#").print(toColorString(c.getForeground())).print(";");
+            s.print("color:#").print(toColorString(c.getForeground())).print(";");
         }
+        s.print("\""); 
     }
 
     public static void printTableCellSpan(Device s, SComponent c) {
@@ -195,7 +201,6 @@ public final class Utils implements SConstants
         throws IOException {
         printTableCellColors(s, c);
         printTableCellAlignment(s,c);
-        printTableCellSpan(s,c);
     }
 
     public static void printIcon(Device d, SIcon icon, String align) 
@@ -233,7 +238,9 @@ public final class Utils implements SConstants
       * @return false, if no attribute was set, true otherwise.
       */
     public static boolean hasSpanAttributes(SComponent component) {
-         return component != null && !component.getAttributes().isEmpty();
+         return component != null && (!component.getAttributes().isEmpty() || 
+                                       component.getBorder() != null || 
+                                       component.getPreferredSize() != null) ;
      }
     
     /**
@@ -245,7 +252,7 @@ public final class Utils implements SConstants
     	throws IOException
      {
         if (!hasSpanAttributes(component))
-           return;
+           return; 
             
         Utils.writeAttributes(d, component);
      }
@@ -279,8 +286,9 @@ public final class Utils implements SConstants
             d.print("font-family:").print(font.getFace()).print(";");
         }
         
-        if (border != null)
-            border.writeSpanAttributes(d);
+        if (border != null) {
+              border.writeSpanAttributes(d);
+        }
 
         if (dim != null) {
             if (dim.width != null) d.print("width:").print(dim.width).print(";");

@@ -63,7 +63,7 @@ public class TemplateLayoutCG
         }
 	else {
             if (Utils.hasSpanAttributes(container)) {
-                device.print("<span style=\"");
+                device.print(" <span style=\"");
                 Utils.writeSpanAttributes( device, container );
             	device.print("\">");
             }

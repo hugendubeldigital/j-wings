@@ -24,16 +24,24 @@ public final class BevelBorderCG
     extends DefaultBorderCG
 {
 
+    public String getSpanAttributes(SBorder b )
+    {
+      StringBuffer sb = new StringBuffer();
+      
+	SBevelBorder border = (SBevelBorder)b;
+
+        sb.append(getBorderStyle(b, border.getBevelType()==SBevelBorder.RAISED ? 
+                         "outset" : "inset"));
+
+        // write insets/padding
+        sb.append(super.getSpanAttributes(b));
+        return sb.toString();
+    }
+
     public void writeSpanAttributes(Device d, SBorder b )
         throws IOException
     {
-	SBevelBorder border = (SBevelBorder)b;
-
-        writeBorderStyle(d, b, border.getBevelType()==SBevelBorder.RAISED ? 
-                         "outset" : "inset");
-
-        // write insets/padding
-        super.writeSpanAttributes(d, b);
+	   d.print(getSpanAttributes(b));
     }
 }
 

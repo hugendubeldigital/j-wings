@@ -85,6 +85,10 @@ public class TitledBorderCG implements BorderCG
         d.print("</fieldset>");
     }
 
+    public String getSpanAttributes(SBorder border) {
+      return "";
+    }
+    
     /**
      * Does nothing
      * @see BorderCG#writeSpanAttributes(Device, SBorder)

@@ -30,49 +30,55 @@ import org.wings.plaf.*;
 public class BevelBorderCG
     extends DefaultBorderCG
 {
+  public String getSpanAttributes(SBorder border) {
+    StringBuffer sb = new StringBuffer();
+    SAbstractBorder b = ( SAbstractBorder ) border;
+    java.awt.Insets insets = b.getInsets();
+    java.awt.Color color = b.getColor();
+    
+    /* thickness & type */
+    sb.append( "border: ");
+    sb.append( b.getThickness() );
+    sb.append("px " );
+    sb.append(getBorderStyle(border));
+    sb.append( ";" );
+    
+    /* color */
+    sb.append( "border-color: #" );
+    if ( color != null )
+      sb.append( org.wings.plaf.xhtml.Utils.toColorString( b.getColor() ) );
+    else
+      sb.append( "000000" );
+    sb.append( ";" );
+    
+    /* padding */
+    if ( insets != null ) {
+      sb.append( "padding-top: " );
+      sb.append( insets.top );
+      sb.append( "px;padding-right: " );
+      sb.append( insets.right );
+      sb.append( "px;padding-left: " );
+      sb.append( insets.left );
+      sb.append( "px;padding-bottom: " );
+      sb.append( insets.bottom );
+      sb.append( "px;" );
+    }
+    return sb.toString();
+  }
 	public void writeSpanAttributes( Device d, SBorder border )
     	throws IOException
      {
-     	SAbstractBorder b = ( SAbstractBorder ) border;
-     	java.awt.Insets insets = b.getInsets();
-        java.awt.Color color = b.getColor();
-        
-        /* thickness & type */
-		d.print( "border: ");
-        d.print( b.getThickness() );
-        d.print("px " );
-        writeBorderStyle( d, b );
-        d.print( ";" );
-        
-        /* color */
-		d.print( "border-color: #" );
-        if ( color != null )
-			d.print( org.wings.plaf.xhtml.Utils.toColorString( b.getColor() ) );
-		else
-        	d.print( "000000" );
-		d.print( ";" );
-		
-        /* padding */
-        if ( insets == null ) return;
-        d.print( "padding-top: " );
-        d.print( insets.top );
-        d.print( "px;padding-right: " );
-        d.print( insets.right );
-        d.print( "px;padding-left: " );
-        d.print( insets.left );
-        d.print( "px;padding-bottom: " );
-        d.print( insets.bottom );
-        d.print( "px;" );
+       d.print(getSpanAttributes(border));
      }
 
-	/**
-      * "outset" or "inset"
-      */
-	protected void writeBorderStyle( Device d, SBorder b )
-    	throws IOException
-     {
-		d.print( ( ((SBevelBorder) b).getBevelType() == SBevelBorder.RAISED) ? "outset" : "inset" );
-     }
+    protected String getBorderStyle(SBorder b) {
+     return ( ( ((SBevelBorder) b).getBevelType() == SBevelBorder.RAISED) ? "outset" : "inset" );
+    }
+    
+	protected void writeBorderStyle(Device d, SBorder b) 
+    throws IOException {
+      d.print(getBorderStyle(b));
+    }
 }
 
 /*
