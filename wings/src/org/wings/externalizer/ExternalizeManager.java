@@ -161,16 +161,42 @@ public class ExternalizeManager
     }
 
     /**
-     * returns an object handler for a class
+     * Returns an object handler for a class. If one could not be found,
+     * it goes down the inheritance tree and looks for an object handler
+     * for the super classes. If one still could not be found, it goes
+     * through the list of interfaces of the class and checks for object
+     * handlers for every interface. If this also doesn't return an
+     * object handler, null is returned.
      *
      * @return
      */
     public ObjectHandler getObjectHandler(Class c) {
         ObjectHandler handler = null;
         if ( c != null ) {
+            handler = getSuperclassObjectHandler(c);
+            if ( handler == null )
+                handler = getInterfaceObjectHandler(c);
+        }
+        return handler;
+    }
+
+    private ObjectHandler getSuperclassObjectHandler(Class c) {
+        ObjectHandler handler = null;
+        if ( c != null ) {
             handler = (ObjectHandler)handlerByClass.get(c);
             if ( handler == null )
                 handler = getObjectHandler(c.getSuperclass());
+        }
+        return handler;
+    }
+
+    private ObjectHandler getInterfaceObjectHandler(Class c) {
+        ObjectHandler handler = null;
+        Class[] ifList = c.getInterfaces();
+        for ( int i = 0; i < ifList.length; i++ ) {
+            handler = (ObjectHandler)handlerByClass.get(ifList[i]);
+            if ( handler != null )
+                break;
         }
         return handler;
     }
