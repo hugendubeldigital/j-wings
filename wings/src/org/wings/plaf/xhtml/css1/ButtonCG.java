@@ -65,6 +65,36 @@ public final class ButtonCG
         if (button.isSelected())
             d.append(" style=\"color:#990000\"");
     }
+
+    boolean writeSpan(final Device d, boolean writeSpan, final SComponent component)
+        throws IOException
+    {
+        boolean spanWritten = !writeSpan;
+        final AttributeSet attributes = component.getAttributes();
+        final Style style = component.getStyle();
+
+        if (attributes.size() > 0) { // script listeners
+            if (!spanWritten) {
+                d.append("<span");
+                spanWritten = true;
+            }
+            d.append(" id=\"s_")
+                .append(component.getUnifiedId())
+                .append("\"");
+        }
+
+        if (style != null) {
+            if (!spanWritten) {
+                d.append("<span");
+                spanWritten = true;
+            }
+            style.write(d);
+        }
+
+        if (spanWritten && writeSpan)
+            d.append(">");
+        return spanWritten;
+    }
 }
 
 /*

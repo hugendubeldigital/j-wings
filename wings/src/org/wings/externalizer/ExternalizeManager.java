@@ -160,7 +160,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
      */
     public String externalize(Object obj, Set headers, int flags) {
         if ( obj == null )
-            throw new IllegalStateException("no externalizer");
+            throw new IllegalArgumentException("object must not be null");
 
         Externalizer externalizer = getExternalizer(obj.getClass());
         if (externalizer == null) {

@@ -15,6 +15,8 @@
 package org.wings.externalizer;
 
 import java.io.InputStream;
+import java.io.IOException;
+import java.util.*;
 
 import org.wings.StaticResource;
 import org.wings.RequestURL;
@@ -56,7 +58,7 @@ public class StaticResourceExternalizer
     }
 
     public void write(Object obj, java.io.OutputStream out)
-        throws java.io.IOException
+        throws IOException
     {
         ((StaticResource)obj).write(out);
     }
@@ -69,8 +71,12 @@ public class StaticResourceExternalizer
         return null;
     }
 
-    public java.util.Set getHeaders(Object obj) { return null; }
-
+    public Set getHeaders(Object obj) {
+        if (obj != null)
+            return ((StaticResource)obj).getHeaders();
+        else
+            return null;
+    }
 }
 
 /*

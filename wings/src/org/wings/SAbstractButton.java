@@ -24,7 +24,7 @@ import org.wings.io.Device;
 
 /**
  * This is the base class for all components which have a button
- * functionality. This class provides an ActionListener interface.
+ * functionality. This class handles ActionListener notification.
  *
  * @author
  * @version $Revision$

@@ -99,8 +99,8 @@ public abstract class AbstractExternalizeManager
 
     /**
      * for an externalized object with the final flag on the expired date
-     * heade is set to a big value. If the final flag is off, the browser 
-     * or proxy did not cache the object.
+     * header is set to a big value. If the final flag is off, the browser
+     * or proxy does not cache the object.
      */
     public static final int FINAL = 8;
 
@@ -272,7 +272,7 @@ public abstract class AbstractExternalizeManager
     public String externalize(Object obj, Externalizer externalizer, 
                               Set headers, int flags)
     {
-        if ( obj == null || externalizer == null )
+        if (obj == null || externalizer == null)
             throw new IllegalStateException("no externalizer");
 
         return externalize(obj, externalizer, externalizer.getMimeType(obj),

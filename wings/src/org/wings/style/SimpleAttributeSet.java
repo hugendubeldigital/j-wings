@@ -109,6 +109,8 @@ public class SimpleAttributeSet
      * @param value the attribute value
      */
     public String putAttribute(String name, String value) {
+        if (value == null)
+            return removeAttribute(name);
         return (String)map.put(name, value);
     }
 

@@ -13,6 +13,7 @@
  */
 package org.wings;
 
+import java.io.Serializable;
 import java.net.URL;
 
 /**
@@ -20,7 +21,9 @@ import java.net.URL;
  * This icon can be accessed via an URL; this URL is passed to a browser
  * that fetches it from there.
  */
-public interface SIcon {
+public interface SIcon
+    extends Serializable
+{
     /**
      * @return the width of the icon, or -1 if unknown.
      */

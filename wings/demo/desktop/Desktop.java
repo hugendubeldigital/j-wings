@@ -39,7 +39,7 @@ public class Desktop
         DefaultSession session = new DefaultSession();
         if (!LookAndFeelFactory.isDeployed("xhtml/css1")) {
             try {
-                URL url = servletConfig.getServletContext().getResource("css1.jar");
+                URL url = servletConfig.getServletContext().getResource("/css1.jar");
                 LookAndFeelFactory.deploy(url);
             }
             catch (Exception e) {

@@ -16,12 +16,20 @@ package desktop;
 
 import java.awt.event.*;
 import java.io.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
+import java.beans.PropertyChangeEvent;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.swing.*;
 
 import org.wings.*;
+import org.wings.script.JavaScriptListener;
+import org.wings.script.ScriptListener;
+import org.wings.externalizer.*;
 import org.wings.event.*;
 import org.wings.io.Device;
 import org.wings.io.ServletDevice;
@@ -30,7 +38,20 @@ import org.wings.session.*;
 import org.wings.util.*;
 
 /**
- * TODO: documentation
+ * The Desktop example demonstrates the use of internal frames as well as
+ * file upload and download.
+ * SInternalFrames work very similar to their Swing pendants. The file upload
+ * is left to the SFileChooser. Beware, that if you use one or more input
+ * elements of type="file", you have to set the encoding of the surrounding form
+ * to "multipart/form-data". This is a requirement of html. Download is a bit
+ * tricky. The text has to be externalized for example by using the class
+ * {@see org.wings.FileResource}. A JavaScriptListener, that is hooked to the
+ * java script event "onload", is installed in the frame.
+ * Look at the source, especially the method "save".
+ * <p>
+ * As of now, the menu item "save" in the "file" menu does not work as expected.
+ * It is rendered as a href outside the form. Changes to text area don't take
+ * effect. We could use javascript again, to trigger the required form submit.
  *
  * @author <a href="mailto:hengels@mercatis.de">Holger Engels</a>
  * @version $Revision$
@@ -39,22 +60,29 @@ public class Editor
     extends SInternalFrame
     implements SInternalFrameListener
 {
+    private DynamicResource saveResource;
     private SMenuBar menuBar;
+    private SToolbar toolbar;
     private STextArea textArea;
 
     private String backup;
     private String clip;
 
     public Editor() {
-	menuBar = createMenu();
-	getContentPane().add(menuBar);
-        SForm form = new SForm();
-	textArea = new STextArea();
-	textArea.setColumns(80);
-	textArea.setRows(24);
+        menuBar = createMenu();
+        getContentPane().add(menuBar);
+        toolbar = createToolbar();
+
+        textArea = new STextArea();
+        textArea.setColumns(80);
+        textArea.setRows(24);
+
+        SForm form = new SForm(new SGridLayout(1));
+        form.add(toolbar);
         form.add(textArea);
-        form.add(new SButton("Store"));
-	getContentPane().add(form);
+        getContentPane().add(form);
+
+        saveResource = new EditorDynamicResource();
 
         SIcon icon = new ResourceImageIcon(getClass(), "/desktop/penguin.png");
         setIcon(icon);
@@ -63,23 +91,23 @@ public class Editor
 
     protected SMenuBar createMenu() {
         SMenuItem saveItem = new SMenuItem("Save");
-	saveItem.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent evt) {
-		    save();
-		}
-	    });
+        saveItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                save();
+            }
+        });
         SMenuItem revertItem = new SMenuItem("Revert");
-	revertItem.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent evt) {
-		    revert();
-		}
-	    });
+        revertItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                revert();
+            }
+        });
         SMenuItem closeItem = new SMenuItem("Close");
-	closeItem.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent evt) {
-		    close();
-		}
-	    });
+        closeItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                close();
+            }
+        });
 
         SMenu fileMenu = new SMenu("File");
         fileMenu.add(saveItem);
@@ -87,23 +115,23 @@ public class Editor
         fileMenu.add(closeItem);
 
         SMenuItem cutItem = new SMenuItem("Cut");
-	cutItem.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent evt) {
-		    cut();
-		}
-	    });
+        cutItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                cut();
+            }
+        });
         SMenuItem copyItem = new SMenuItem("Copy");
-	copyItem.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent evt) {
-		    copy();
-		}
-	    });
+        copyItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                copy();
+            }
+        });
         SMenuItem pasteItem = new SMenuItem("Paste");
-	pasteItem.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent evt) {
-		    paste();
-		}
-	    });
+        pasteItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                paste();
+            }
+        });
 
         SMenu editMenu = new SMenu("Edit");
         editMenu.add(cutItem);
@@ -117,37 +145,139 @@ public class Editor
         return menuBar;
     }
 
+    protected SToolbar createToolbar() {
+        try {
+            SButton saveButton = new SButton(new ResourceImageIcon("/desktop/filesave.png"));
+            saveButton.setAttribute("border", "1px outset");
+            saveButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                    save();
+                }
+            });
+
+            SButton revertButton = new SButton(new ResourceImageIcon("/desktop/filerevert.png"));
+            revertButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                    revert();
+                }
+            });
+            SButton closeButton = new SButton(new ResourceImageIcon("/desktop/fileclose.png"));
+            closeButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                    close();
+                }
+            });
+
+            SButton cutButton = new SButton(new ResourceImageIcon("/desktop/editcut.png"));
+            cutButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                    cut();
+                }
+            });
+            SButton copyButton = new SButton(new ResourceImageIcon("/desktop/editcopy.png"));
+            copyButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                    copy();
+                }
+            });
+            SButton pasteButton = new SButton(new ResourceImageIcon("/desktop/editpaste.png"));
+            pasteButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                    paste();
+                }
+            });
+
+            SToolbar toolbar = new SToolbar();
+            toolbar.add(saveButton);
+            toolbar.add(revertButton);
+            toolbar.add(closeButton);
+            toolbar.add(cutButton);
+            toolbar.add(copyButton);
+            toolbar.add(pasteButton);
+
+            return toolbar;
+        }
+        catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace(System.err);
+        }
+        return new SToolbar();
+    }
+
     public void setText(String text) {
-	textArea.setText(text);
+        textArea.setText(text);
     }
     public String getText() { return textArea.getText(); }
 
     public void setBackup(String backup) {
-	this.backup = backup;
+        this.backup = backup;
     }
     public String getBackup() { return backup; }
 
-    public void save() {}
+    public void save() {
+        try {
+            logger.info("save");
+            // write editor content to a temporary file
+            File file = File.createTempFile("wings", "txt");
+            PrintWriter out = new PrintWriter(new FileOutputStream(file));
+            out.print(textArea.getText());
+            out.close();
+
+            // create a file resource
+            FileResource resource = new FileResource(file);
+            // advice the browser to pop the save dialog
+            Map headers = new HashMap();
+            headers.put("Content-Disposition", "attachment; filename=blub");
+            resource.setHeaders(headers.entrySet());
+
+            // java script, that is executed "onload"; loads the file resource and triggers
+            // the named event "clear"
+            final ScriptListener script = new JavaScriptListener("onload", "parent.location='" +
+                                                                           resource.getURL() + "?" +
+                                                                           "clear=X'");
+            final SFrame frame = getParentFrame();
+            frame.addScriptListener(script);
+
+            // register a request listener, that handles the named event "clear"
+            getSession().getDispatcher().register(new RequestListener() {
+                public void processRequest(String name, String[] values) {
+                    logger.info("remove java script");
+                    frame.removeScriptListener(script);
+                }
+
+                public String getName() { return "clear"; }
+                public String getNamePrefix() { return ""; }
+
+                public void fireIntermediateEvents() {}
+                public void fireFinalEvents() {}
+            });
+
+        }
+        catch (IOException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace(System.err);
+        }
+    }
 
     public void revert() {
-	textArea.setText(backup);
+        textArea.setText(backup);
     }
 
     public void close() {
-	super.dispose();
+        super.dispose();
     }
 
     public void cut() {
-	clip = textArea.getText();
-	textArea.setText("");
+        clip = textArea.getText();
+        textArea.setText("");
     }
 
     public void copy() {
-	clip = textArea.getText();
+        clip = textArea.getText();
     }
 
     public void paste() {
-	textArea.setText(textArea.getText() + clip);
+        textArea.setText(textArea.getText() + clip);
     }
 
     //--- SInternalFrameListener interface ..
@@ -160,7 +290,7 @@ public class Editor
      * Invoked when an internal frame has been closed.
      */
     public void internalFrameClosed(SInternalFrameEvent e) {
-	close();
+        close();
     }
 
     /**
@@ -182,12 +312,38 @@ public class Editor
      * Invoked when an internal frame is unmaximized.
      */
     public void internalFrameUnmaximized(SInternalFrameEvent e) {}
+
+    private class EditorDynamicResource extends DynamicResource
+    {
+        String id;
+
+        public EditorDynamicResource() {
+            super(null, "txt", "text/unknown");
+        }
+
+        public void write(Device out)
+            throws IOException
+        {
+            out.append(textArea.getText());
+        }
+
+        public String getId() {
+            if (id == null) {
+                ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
+                Map headers = new HashMap();
+                headers.put("Content-Disposition", "attachment; filename=blub");
+                id = ext.getId(ext.externalize(this, headers.entrySet(), AbstractExternalizeManager.REQUEST));
+                logger.fine("new " + getClass().getName() + " with id " + id);
+            }
+            return id;
+        }
+    }
 }
 
 /*
- * Local variables:
- * c-basic-offset: 4
- * indent-tabs-mode: nil
- * compile-command: "ant -emacs -find build.xml"
- * End:
- */
+* Local variables:
+* c-basic-offset: 4
+* indent-tabs-mode: nil
+* compile-command: "ant -emacs -find build.xml"
+* End:
+*/

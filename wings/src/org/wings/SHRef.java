@@ -33,7 +33,7 @@ public class SHRef
     /**
      * TODO: documentation
      */
-    protected String ref = null;
+    protected Object ref = null;
 
     /**
      * TODO: documentation
@@ -53,8 +53,19 @@ public class SHRef
         super.setShowAsFormComponent(false);
     }
 
-    public SHRef(String text, String ref) {
+    public SHRef(String text, Object ref) {
         super(text);
+        setReference(ref);
+        super.setShowAsFormComponent(false);
+    }
+
+    public SHRef(SIcon icon) {
+        super(icon);
+        super.setShowAsFormComponent(false);
+    }
+
+    public SHRef(SIcon icon, Object ref) {
+        super(icon);
         setReference(ref);
         super.setShowAsFormComponent(false);
     }
@@ -69,12 +80,14 @@ public class SHRef
     }
 
     /**
-     * TODO: documentation
+     * Set the value for the href parameter of the anchor.
+     * If ref is of type Resource, its <code>getUrl</code> method
+     * will be called.
      *
-     * @param url
+     * @param ref the location to link
      */
-    public void setReference(String url) {
-        ref = url;
+    public void setReference(Object ref) {
+        this.ref = ref;
     }
 
     /**
@@ -82,7 +95,7 @@ public class SHRef
      *
      * @return
      */
-    public String getReference() {
+    public Object getReference() {
         return ref;
     }
 

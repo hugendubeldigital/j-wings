@@ -48,6 +48,9 @@ public final class LabelCG
         }
     }
 
+    /**
+     * This method should be factured out ..
+     */
     boolean writeSpan(final Device d, boolean writeSpan, final SComponent component)
         throws IOException
     {

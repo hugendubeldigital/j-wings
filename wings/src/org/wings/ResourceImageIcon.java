@@ -39,7 +39,7 @@ import org.wings.externalizer.ExternalizeManager;
  * @version $Revision$
  */
 public class ResourceImageIcon
-    extends StaticResource
+    extends ClasspathResource
     implements SIcon
 {
     /**

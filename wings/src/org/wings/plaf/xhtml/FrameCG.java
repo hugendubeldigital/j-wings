@@ -61,7 +61,7 @@ public class FrameCG
         d.append(frame.getSession().getCharSet());
         d.append("\"?>\n");
         d.append("<!DOCTYPE html\n");
-	d.append("   PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n");
+        d.append("   PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n");
         d.append("   \"DTD/xhtml1-transitional.dtd\">\n");
         d.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"");
         d.append(language);

@@ -20,21 +20,48 @@ import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.plaf.xhtml.*;
-import org.wings.style.Style;
+import org.wings.style.*;
 
 public final class PanelCG
     extends org.wings.plaf.xhtml.PanelCG
 {
-    protected void writePrefix(Device d, SContainer c)
+    public void write(Device d, SComponent c)
         throws IOException
     {
-        Utils.writeDivWithStyleAttributePrefix(d, c.getStyle());
+        boolean divWritten = writeDiv(d, true, c);
+        org.wings.plaf.xhtml.Utils.writeContainerContents(d, (SContainer)c);
+        if (divWritten)
+            d.append("</div>");
     }
 
-    protected void writePostfix(Device d, SContainer c)
+    boolean writeDiv(final Device d, boolean writeDiv, final SComponent component)
         throws IOException
     {
-        Utils.writeDivWithStyleAttributePostfix(d, c.getStyle());
+        boolean divWritten = !writeDiv;
+        final AttributeSet attributes = component.getAttributes();
+        final Style style = component.getStyle();
+
+        if (attributes.size() > 0) { // script listeners
+            if (!divWritten) {
+                d.append("<div");
+                divWritten = true;
+            }
+            d.append(" id=\"s_")
+                .append(component.getUnifiedId())
+                .append("\"");
+        }
+
+        if (style != null) {
+            if (!divWritten) {
+                d.append("<div");
+                divWritten = true;
+            }
+            style.write(d);
+        }
+
+        if (divWritten && writeDiv)
+            d.append(">");
+        return divWritten;
     }
 }
 

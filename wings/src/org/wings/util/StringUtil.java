@@ -170,7 +170,24 @@ public class StringUtil
     public static String toShortestAlphaNumericString(long i, int minDigits) {
         return toString(i, MAX_RADIX, minDigits);
     }
-    
+
+    public static String delimitedString(Object[] array) {
+        if (array == null)
+            return null;
+        if (array.length == 0)
+            return "";
+
+        StringBuffer buffer = new StringBuffer("" + array[0]);
+        for (int i=1; i < array.length; i++) {
+            if (array[i] == null)
+                buffer.append(", null");
+            else {
+                buffer.append(", ");
+                buffer.append(array[i]);
+            }
+        }
+        return buffer.toString();
+    }
     /*
     public static void main(String args[]) {
         System.out.println(StringUtil.toString(9124, 10, 0));

@@ -15,12 +15,11 @@
 package org.wings.externalizer;
 
 
-import org.wings.DynamicResource;
 import org.wings.io.OutputStreamDevice;
 import java.io.*;
 import java.util.Set;
 
-import org.wings.RequestURL;
+import org.wings.*;
 
 /**
  * TODO: documentation
@@ -73,7 +72,12 @@ public class DynamicResourceExternalizer
         return null;
     }
 
-    public Set getHeaders(Object obj) { return null; }
+    public Set getHeaders(Object obj) {
+        if (obj != null)
+            return ((DynamicResource)obj).getHeaders();
+        else
+            return null;
+    }
 }
 
 /*

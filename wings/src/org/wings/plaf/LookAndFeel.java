@@ -219,7 +219,7 @@ public class LookAndFeel
      * @return the style
      */
     public static Resource makeResource(ClassLoader classLoader, String resourceName) {
-        return new StaticResource(classLoader, resourceName);
+        return new ClasspathResource(classLoader, resourceName);
     }
 
     /**

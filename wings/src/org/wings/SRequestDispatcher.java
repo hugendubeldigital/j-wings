@@ -20,6 +20,7 @@ import java.util.StringTokenizer;
 import java.util.logging.*;
 
 import org.wings.session.SessionManager;
+import org.wings.util.StringUtil;
 
 /**
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
@@ -129,32 +130,34 @@ public final class SRequestDispatcher
             epoch = name.substring(0, dividerIndex);
             name = name.substring(dividerIndex + 1);
 
-            // make ImageButtons work in Forms .. browsers return
-            // the click position as .x and .y suffix of the name
-            if (epoch.endsWith(".x") || epoch.endsWith(".X"))
-                epoch = epoch.substring(0, epoch.length()-2);
-
             if (logger.isLoggable(Level.FINER)) {
-                logger.finer("dispatch " + epoch +
-                             SConstants.UID_DIVIDER + name + " : ");
-                logger.finer(" ..... epoch " + epoch + " , ");
-                logger.finer("name " + name + "; values[ ");
-                for (int i=0; i<values.length; i++)
-                    logger.finer(values[i] + " , ");
-                logger.finer("]");
+                StringBuffer buffer = new StringBuffer("dispatch ");
+                buffer.append(epoch);
+                buffer.append(SConstants.UID_DIVIDER);
+                buffer.append(name);
+                buffer.append(": ");
+                buffer.append(StringUtil.delimitedString(values));
+                logger.finer(buffer.toString());
             }
         }
+
+        // make ImageButtons work in Forms .. browsers return
+        // the click position as .x and .y suffix of the name
+        if (name.endsWith(".x") || name.endsWith(".X"))
+            name = name.substring(0, name.length()-2);
 
         ArrayList l = (ArrayList)listener.get(name);
         if (l != null) {
             RequestListener gl = (RequestListener)l.get(0);
-            SFrame frame = ((SComponent)gl).getParentFrame();
 
-            if (epoch != null && !epoch.equals(frame.getEventEpoch())) {
-                if (logger.isLoggable(Level.FINE))
-                    logger.fine("got outdated event '" + epoch + "_" + name + "' from frame '" +
-                                frame.getUnifiedId() + " " + frame.getEventEpoch());
-                return false;
+            if (epoch != null) {
+                SFrame frame = ((SComponent)gl).getParentFrame();
+                if (!epoch.equals(frame.getEventEpoch())) {
+                    if (logger.isLoggable(Level.FINE))
+                        logger.fine("got outdated event '" + epoch + "_" + name + "' from frame '" +
+                                    frame.getUnifiedId() + " " + frame.getEventEpoch());
+                    return false;
+                }
             }
 
             logger.finer("process event '" + epoch + "_" + name + "'");

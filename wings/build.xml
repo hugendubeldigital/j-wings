@@ -88,9 +88,9 @@
 
     <copy todir="${distlib}">
       <fileset dir="${lib}">
-        <!-- usual names for jsdk ..-->
+        <!-- usual names for jsdk ..>
         <exclude name="jsdk2.0.jar" />
-        <exclude name="servlet.jar" />
+        <exclude name="servlet.jar" /-->
       </fileset>
     </copy>
   </target>

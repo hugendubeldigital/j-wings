@@ -46,7 +46,7 @@ public class DesktopSession
 
     public DesktopSession(Session session) {
         super(session);
-        System.out.println("new DeskTopSession");
+        System.out.println("new DesktopSession");
     }
 
     public void postInit(ServletConfig config) {

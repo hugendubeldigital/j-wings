@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Locale;
 
-import javax.servlet.ServletConfig;
+import javax.servlet.*;
 
 import org.wings.DefaultReloadManager;
 import org.wings.ReloadManager;
@@ -40,6 +40,7 @@ import org.wings.externalizer.ExternalizeManager;
 public class DefaultSession
     implements Session, PropertyService
 {
+    private ServletContext servletContext;
     private final Map services = new HashMap();
     private final CGManager cgManager = new CGManager();
     private ReloadManager reloadManager = null;
@@ -66,10 +67,12 @@ public class DefaultSession
         if (config == null)
             return;
         initProps(config);
+        servletContext = config.getServletContext();
     }
 
     /**
-     * TODO: documentation
+     * Copy the init parameters. They are accessible by means of
+     * the PropertyService.
      *
      * @param config
      */
@@ -79,6 +82,10 @@ public class DefaultSession
             String name = (String)params.nextElement();
             props.put(name, config.getInitParameter(name));
         }
+    }
+
+    public ServletContext getServletContext() {
+        return servletContext;
     }
 
     /**

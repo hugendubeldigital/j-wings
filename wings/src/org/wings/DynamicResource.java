@@ -158,7 +158,8 @@ public abstract class DynamicResource
     }
 
     /**
-     *
+     * Write the current document to the device.
+     * @param the device to write to
      */
     public abstract void write(Device out) throws IOException;
 }

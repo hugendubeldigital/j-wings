@@ -171,7 +171,7 @@
 
     <copy todir="${deploy}/frameset/WEB-INF/classes">
       <fileset dir="${classes}">
-        <include name="frameset/**/*" />
+        <include name="frameset/**/*"/>
       </fileset>
     </copy>
 
@@ -190,12 +190,12 @@
 
     <copy todir="${deploy}/desktop/WEB-INF/classes">
       <fileset dir="${classes}">
-        <include name="desktop/**/*" />
+        <include name="desktop/**/*"/>
       </fileset>
     </copy>
 
-    <copy file="${lib}/wings.jar" todir="${deploy}/desktop/WEB-INF/lib" />
-    <copy file="${lib}/css1.jar" todir="${deploy}/desktop" />
+    <copy file="${lib}/wings.jar" todir="${deploy}/desktop/WEB-INF/lib"/>
+    <copy file="${lib}/css1.jar" todir="${deploy}/desktop"/>
   </target>
 
   <!-- ==================== Make wars ==================== -->

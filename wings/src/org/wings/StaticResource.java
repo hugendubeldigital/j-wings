@@ -24,14 +24,6 @@ import org.wings.session.*;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.externalizer.AbstractExternalizeManager;
 
-/*
- * Diese Klasse ist nur ein Wrapper, um Eingabestroeme von Grafiken mit dem
- * ExternalizeManager mit der richtigen Endung und ohne Umweg einer neuen
- * Codierung (die z.B. keine Transparenz unterstuetzt) uebers WWW zugreifbar zu
- * machen. Zugleich muss diese Klasse aber auch zu der API der Componenten
- * passen, also ein Image bzw. ImageIcon sein. ImageIcon ist einfacher zu
- * benutzen und implementiert schon alles was benoetigt wird...
- */
 /**
  * TODO: documentation
  *
@@ -39,29 +31,19 @@ import org.wings.externalizer.AbstractExternalizeManager;
  * @author <a href="mailto:H.Zeller@acm.org">Henner Zeller</a>
  * @version $Revision$
  */
-public class StaticResource
+public abstract class StaticResource
     extends Resource
 {
     /**
-     * TODO: documentation
+     * Flags that influence the behaviour of the externalize manager
      */
-    protected ClassLoader classLoader;
+    protected int externalizerFlags = ExternalizeManager.FINAL;
 
     /**
-     * TODO: documentation
-     */
-    protected String resourceFileName;
-
-    /**
-     * TODO: documentation
-     */
-    protected int externalizerFlags = ExternalizeManager.GLOBAL | ExternalizeManager.FINAL; 
-
-    /**
-     * TODO: documentation
+     * A buffer for temporal storage of the resource
      */
     protected LimitedBuffer buffer;
-    
+
     /**
      * An ByteArrayOutputStream that buffers up to the limit
      * MAX_SIZE_TO_BUFFER.
@@ -113,33 +95,23 @@ public class StaticResource
     }
 
     /**
-     * TODO: documentation
+     * A static resource that is obtained from the specified class loader
      *
-     * @param resourceFileName
+     * @param classLoader the classLoader from which the resource is obtained
+     * @param resourceFileName the resource relative to the baseClass
      */
-    public StaticResource(String resourceFileName) {
-        this(Resource.class.getClassLoader(), resourceFileName);
+    public StaticResource(String extension, String mimeType) {
+        super(extension, mimeType);
     }
-
-    public StaticResource(Class baseClass, String resourceFileName) {
-        this(baseClass.getClassLoader(), resolveName(baseClass, resourceFileName));
-    }
-
-    public StaticResource(ClassLoader classLoader, String resourceFileName) {
-	super(null, "unknown");
-        this.classLoader = classLoader;
-        this.resourceFileName = resourceFileName;
-
-        int dotIndex = resourceFileName.lastIndexOf('.');
-        if (dotIndex > -1) {
-            extension = resourceFileName.substring(dotIndex + 1);
-	}
-    }
-
+    /**
+     * Get the id that identifies this resource as an externalized object.
+     * If the object has not been externalized yet, it will be externalized.
+     * @return the externalization id
+     */
     public String getId() {
         if (id == null) {
             ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
-            id = ext.getId(ext.externalize(this, AbstractExternalizeManager.GLOBAL));
+            id = ext.getId(ext.externalize(this, externalizerFlags));
             logger.fine("new " + getClass().getName() + " with id " + id);
         }
         return id;
@@ -208,7 +180,7 @@ public class StaticResource
     }
 
     /**
-     * TODO: documentation
+     * Return the size in bytes of the resource, if known
      *
      * @return
      */
@@ -232,7 +204,7 @@ public class StaticResource
      * @return
      */
     public String toString() {
-        return getId() + " " + resourceFileName;
+        return getId();
     }
 
     protected static String resolveName(Class baseClass, String fileName) {
@@ -255,9 +227,7 @@ public class StaticResource
         return fileName;
     }
 
-    protected final InputStream getResourceStream() {
-        return classLoader.getResourceAsStream(resourceFileName);
-    }
+    protected abstract InputStream getResourceStream() throws IOException;
 }
 
 /*

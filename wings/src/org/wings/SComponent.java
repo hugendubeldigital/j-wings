@@ -32,6 +32,7 @@ import org.wings.session.SessionManager;
 import org.wings.style.*;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.util.*;
+import org.wings.script.ScriptListener;
 
 /**
  * The basic component for all components in this package.
@@ -97,7 +98,10 @@ public abstract class SComponent
     /** Preferred size of component in pixel. */
     protected SDimension preferredSize = null;
 
+    // hzeller: why are these transient? This means, that if a session had ever been persisted all listeners are gone
     transient ArrayList componentListeners;
+
+    protected List scriptListeners = new ArrayList();
 
     /**
      * Default constructor.
@@ -198,10 +202,10 @@ public abstract class SComponent
      * @see      org.wings.SComponent#removeComponentListener
      */
     public synchronized void addComponentListener(SComponentListener l) {
-	if (l == null) {
-	    return;
-	}
-    	if ( componentListeners == null ) componentListeners = new ArrayList();
+        if (l == null) {
+            return;
+        }
+        if ( componentListeners == null ) componentListeners = new ArrayList();
         componentListeners.add( l );
     }
 
@@ -277,6 +281,42 @@ public abstract class SComponent
             break;
         }
     }
+
+    /**
+     * Adds the specified component listener to receive component events from
+     * this component.
+     * If l is null, no exception is thrown and no action is performed.
+     * @param    l   the component listener.
+     * @see      org.wings.event.SComponentEvent
+     * @see      org.wings.event.SComponentListener
+     * @see      org.wings.SComponent#removeComponentListener
+     */
+    public synchronized void addScriptListener(ScriptListener l) {
+        if (l == null)
+            return;
+
+        scriptListeners.add(l);
+    }
+
+    /**
+     * Removes the specified component listener so that it no longer
+     * receives component events from this component. This method performs
+     * no function, nor does it throw an exception, if the listener
+     * specified by the argument was not previously added to this component.
+     * If l is null, no exception is thrown and no action is performed.
+     * @param    l   the component listener.
+     * @see      org.wings.event.SComponentEvent
+     * @see      org.wings.event.SComponentListener
+     * @see      org.wings.SComponent#addComponentListener
+     */
+    public synchronized void removeScriptListener(ScriptListener l) {
+        if (l == null)
+            return;
+
+        scriptListeners.remove(l);
+    }
+
+    public List getScriptListeners() { return scriptListeners; }
 
     /**
      * Return a jvm wide unique id.
@@ -435,8 +475,7 @@ public abstract class SComponent
      * @param c the new background color
      */
     public void setBackground(Color color) {
-        setAttribute(CSSStyleSheet.getAttribute(color), 
-                     "background-color");
+        setAttribute("background-color", CSSStyleSheet.getAttribute(color));
     }
 
     /**
@@ -452,8 +491,7 @@ public abstract class SComponent
      * @param c the new foreground color
      */
     public void setForeground(Color color) {
-        setAttribute(CSSStyleSheet.getAttribute(color), 
-                     "color");
+        setAttribute("color", CSSStyleSheet.getAttribute(color));
     }
 
     /**

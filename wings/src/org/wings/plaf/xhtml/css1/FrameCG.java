@@ -20,6 +20,8 @@ import java.awt.Color;
 import java.util.Iterator;
 
 import org.wings.*;
+import org.wings.script.DynamicScriptResource;
+import org.wings.script.ScriptListener;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.style.*;
@@ -34,9 +36,13 @@ public final class FrameCG
 
         SFrame frame = (SFrame)component;
 
-        DynamicResource dynamicResource = new DynamicStyleSheetResource(frame);
-        frame.addDynamicResource(dynamicResource);
-        frame.addLink(new SLink("stylesheet", null, "text/css", null, dynamicResource));
+        DynamicResource styleSheetResource = new DynamicStyleSheetResource(frame);
+        frame.addDynamicResource(styleSheetResource);
+        frame.addLink(new SLink("stylesheet", null, "text/css", null, styleSheetResource));
+
+        DynamicResource scriptResource = new DynamicScriptResource(frame);
+        frame.addDynamicResource(scriptResource);
+        frame.addLink(new SLink("javascript", null, "application/x-javascript", null, scriptResource));
 
         CGManager cgManager = frame.getSession().getCGManager();
         Resource staticResource = (Resource)cgManager.getObject("lookandfeel.stylesheet", Resource.class);
@@ -46,32 +52,30 @@ public final class FrameCG
     protected void writeAdditionalHeaders(Device d, SFrame frame)
         throws IOException
     {
-        /*
-        StyleSheet styleSheet = frame.getStyleSheet();
-
-        if (styleSheet != null) {
-            ExternalizeManager ext = frame.getExternalizeManager();
-            String link = null;
-
-            if (ext != null) {
-                link = ext.externalize(styleSheet);
-            }
-            if (link != null) {
-                d.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
-                d.append(link);
-                d.append("\" />");
-            }
-        }
-        else {
-            System.err.println("Frame.styleSheet == null!");
-        }
-        */
-
         Iterator iterator = frame.links().iterator();
         while (iterator.hasNext()) {
             SLink link = (SLink)iterator.next();
             link.write(d);
         }
+    }
+
+    protected void writeBody(Device d, SFrame frame)
+        throws IOException
+    {
+        d.append("<body");
+        System.err.println("blubber");
+        Iterator it = frame.getScriptListeners().iterator();
+        while (it.hasNext()) {
+            ScriptListener script = (ScriptListener)it.next();
+            d.append(" ");
+            d.append(script.getEvent());
+            d.append("=\"");
+            d.append(script.getCode());
+            d.append("\"");
+        }
+        d.append(">");
+        writeContents(d, frame);
+        d.append("\n</body>\n</html>");
     }
 }
 

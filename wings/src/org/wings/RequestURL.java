@@ -191,7 +191,7 @@ public class RequestURL
 
         if (parameters != null && parameters.length() > 0) {
             erg.append(hasQuestMark ? "&" : "?");
-            erg.append(parameters);
+            erg.append(parameters.toString());
         }
 
         return erg.toString();

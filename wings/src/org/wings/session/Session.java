@@ -17,7 +17,7 @@ package org.wings.session;
 import java.beans.PropertyChangeListener;
 import java.util.Locale;
 
-import javax.servlet.ServletConfig;
+import javax.servlet.*;
 
 import org.wings.SRequestDispatcher;
 import org.wings.ReloadManager;
@@ -47,6 +47,12 @@ public interface Session
 
     void setReloadManager(ReloadManager reloadManager);
     ReloadManager getReloadManager();
+
+    /**
+     * Retrieve the ServletContext.
+     * @return the servlet context
+     */
+    ServletContext getServletContext();
 
     void putService(Object key, Service service);
     Service getService(Object key);

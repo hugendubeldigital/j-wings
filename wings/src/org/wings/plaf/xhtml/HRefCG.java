@@ -186,7 +186,19 @@ public class HRefCG
         String tooltip = hRef.getToolTipText();
 
         if (hRef.isEnabled()) {
-            d.append("<a href=\"").append(hRef.getReference()).append("\"");
+            d.append("<a");
+
+            Object ref = hRef.getReference();
+            if (ref != null) {
+                d.append(" href=\"");
+
+                if (ref instanceof Resource)
+                    d.append(((Resource)ref).getURL());
+                else if (ref instanceof String)
+                    d.append((String)ref);
+
+                d.append("\"");
+            }
 
             if (hRef.getRealTarget() != null)
                 d.append(" target=\"").append(hRef.getRealTarget()).append("\"");

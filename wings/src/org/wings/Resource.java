@@ -14,11 +14,9 @@
 
 package org.wings;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 import java.util.logging.*;
+import java.util.*;
 
 import org.wings.session.*;
 import org.wings.externalizer.ExternalizeManager;
@@ -39,6 +37,7 @@ import org.wings.externalizer.ExternalizeManager;
  * @version $Revision$
  */
 public abstract class Resource
+    implements Serializable
 {
     protected static Logger logger = Logger.getLogger("org.wings.externalizer");
 
@@ -94,6 +93,14 @@ public abstract class Resource
     public final String getMimeType() {
         return mimeType;
     }
+
+    protected Set headers;
+
+    public void setHeaders(Set headers) {
+        this.headers = headers;
+    }
+
+    public Set getHeaders() { return headers; }
 
     /**
      *
