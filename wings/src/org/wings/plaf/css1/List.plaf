@@ -38,25 +38,29 @@
                     %>><%
                 }
 
-                SComponent renderer = cellRenderer.getListCellRendererComponent(list,
-                                                                                model.getElementAt(i),
-                                                                                false, i);
-                // Hack: remove all tags, because in form selections, looks ugly.
-                org.wings.io.StringBufferDevice string = getStringBufferDevice();
-                renderer.write(string);
-                char[] chars = string.toString().toCharArray();
-                int pos = 0;
-                for (int c=0; c < chars.length; c++) {
-                    switch (chars[c]) {
-                    case '<':
-                        device.print(chars, pos, c - pos);
-                        break;
-                    case '>':
-                        pos = c+1;
+                if (cellRenderer != null) {
+                    SComponent renderer = cellRenderer.getListCellRendererComponent(list,
+                                                                                    model.getElementAt(i),
+                                                                                    false, i);
+                    // Hack: remove all tags, because in form selections, looks ugly.
+                    org.wings.io.StringBufferDevice string = getStringBufferDevice();
+                    renderer.write(string);
+                    char[] chars = string.toString().toCharArray();
+                    int pos = 0;
+                    for (int c=0; c < chars.length; c++) {
+                        switch (chars[c]) {
+                        case '<':
+                            device.print(chars, pos, c - pos);
+                            break;
+                        case '>':
+                            pos = c+1;
+                        }
                     }
+                    device.print(chars, pos, chars.length - pos);
                 }
-                device.print(chars, pos, chars.length - pos);
-
+                else {
+                    device.print(model.getElementAt(i).toString());
+                }
                 %></option><%
             }
         }
