@@ -63,15 +63,15 @@ public class BorderExample
         final SBorder line    = new SLineBorder(3);
         final SBorder empty   = new SEmptyBorder(new Insets(3,3,3,3));
         
+        /*
+         * border layout allows to set the color
+         */
         final SPanel c = new SPanel(new SBorderLayout());
-
         c.setBackground(new java.awt.Color(180, 180, 255));
-        c.add(new SLabel(new ResourceImageIcon(SConstants.class, "icons/Wait.gif")),
-              SBorderLayout.NORTH);
-        c.add(new SLabel("This is the bordered content"));
-        final SLabel borderType = new SLabel("raised");
-        c.add(borderType, SBorderLayout.SOUTH);
-
+        final SLabel borderLabel;
+        borderLabel = new SLabel(new ResourceImageIcon(SConstants.class, 
+                                                       "icons/Wait.gif"));
+        c.add(borderLabel);
         p.add(c, "BorderExample");
 
         SPanel buttons = new SPanel();
@@ -91,19 +91,19 @@ public class BorderExample
                     SButtonGroup g = (SButtonGroup) e.getSource();
                     Object button = g.getSelection();
                     if (button == rb) {
-                        borderType.setText("Raised Border");
+                        borderLabel.setText("Raised Border");
                         c.setBorder(raised);
                     }
                     else if (button == lb) {
-                        borderType.setText("Lowered Border");
+                        borderLabel.setText("Lowered Border");
                         c.setBorder(lowered);
                     }
                     else if (button == lineb) {
-                        borderType.setText("Line Border");
+                        borderLabel.setText("Line Border");
                         c.setBorder(line);
                     }
                     else if (button == eb) {
-                        borderType.setText("No Border");
+                        borderLabel.setText("No Border");
                         c.setBorder(empty);
                     }
                 }
