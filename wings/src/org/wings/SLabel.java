@@ -169,7 +169,7 @@ public class SLabel
      *        be rendered non-breakable.
      */
     public void setNoBreak(boolean breakable) {
-        noBreak = b;
+        noBreak = breakable;
     }
 
     /**
