@@ -83,13 +83,18 @@ public class PlafReader extends Reader {
      */
     public String getFileStackTrace() {
         StringBuffer result = new StringBuffer();
-        result.append(getFilePosition().toString(cwd));
-        for (int pos = fileStack.size()-1; pos > 0; --pos) {
-            result.append("\n\tincluded at ");
-            File file = (File) fileStack.elementAt(pos);
-            ColumnReader openReader = (ColumnReader) openFiles.get(file);
-            result.append(openReader.getFilePosition().toString(cwd));
+        int filesInStack = fileStack.size();
+        if (filesInStack > 1) {
+            result.append(getFilePosition().toString(cwd))
+                .append(": here in the file, that is\n");
+            for (int pos = filesInStack-1; pos > 0; --pos) {
+                File file = (File) fileStack.elementAt(pos);
+                ColumnReader openReader = (ColumnReader) openFiles.get(file);
+                result.append(openReader.getFilePosition().toString(cwd));
+                result.append(": .. included from here \n");
+            }
         }
+        result.append(getFilePosition().toString(cwd));
         return result.toString();
     }
 
