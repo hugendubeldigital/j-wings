@@ -41,6 +41,8 @@ public class ExplorerPanel
 
     private final STree explorerTree = new STree();
 
+    private final SLabel currentDirectory = new SLabel();
+
     public ExplorerPanel(String dir) {
         try {
             java.net.URL templateURL = getClass()
@@ -57,7 +59,9 @@ public class ExplorerPanel
 	add(createTable(), "FileTable");
 	add(createUpload(), "UploadForm");
 	add(createDeleteButton(), "DeleteButton");
-
+        add(currentDirectory, "currentDir");
+        
+        currentDirectory.setText("- no dir -");
         setExplorerBaseDir(dir);
     }
 
@@ -156,9 +160,12 @@ public class ExplorerPanel
                     DefaultMutableTreeNode selectedNode =
                         (DefaultMutableTreeNode)tpath.getLastPathComponent();
                     
-                    dirTableModel.setDirectory((File)selectedNode.getUserObject());
+                    File newDir = (File)selectedNode.getUserObject();
+                    dirTableModel.setDirectory(newDir);
+                    currentDirectory.setText(newDir.toString());
                 } else {
                     dirTableModel.setDirectory(null);
+                    currentDirectory.setText("- no dir -");
                 }
             } 
         });
@@ -183,8 +190,12 @@ public class ExplorerPanel
             return;
 
         for ( int i=0; i<entries.length; i++) {
-            DefaultMutableTreeNode nextNode = new DefaultMutableTreeNode(entries[i]);
-
+            DefaultMutableTreeNode nextNode = new DefaultMutableTreeNode(entries[i]) {
+                    public String toString() {
+                        return ((File) userObject).getName();
+                    }
+                };
+            
             if (entries[i].isDirectory()) {
                 root.add(nextNode);
                 appendDirTree(nextNode);
