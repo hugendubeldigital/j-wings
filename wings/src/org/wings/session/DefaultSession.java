@@ -204,7 +204,7 @@ public class DefaultSession
      * @see        org.wings.session.PropertyService#getProperty(java.lang.String, java.lang.String)
      */
     public Object setProperty(String key, Object value) {
-        System.err.print("DefaultSession.setProperty");
+        //System.err.print("DefaultSession.setProperty");
         Object old = props.put(key, value);
         propertyChangeSupport.firePropertyChange(key, old, value);
         return old;
