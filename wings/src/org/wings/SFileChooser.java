@@ -466,6 +466,7 @@ public class SFileChooser
          */
         protected void finalize() throws Throwable {
             super.finalize();
+            if (isTemp) logger.info("garbage collect file " + getName());
             cleanup();
         }
     }
