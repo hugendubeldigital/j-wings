@@ -83,6 +83,9 @@ proper : local-proper
 local-proper : local-clean
 	rm -f *.u .depend
 
+cvs-clean : local-proper
+	rm -rf CVS .cvsignore
+
 ##
 # Es interessieren nur die Abhängigkeiten von 
 # class-files, denn die Abhängigkeit
