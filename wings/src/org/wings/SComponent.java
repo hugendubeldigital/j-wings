@@ -374,6 +374,19 @@ public abstract class SComponent
      * Set the attributes.
      * @param attributes the attributes
      */
+    public void setAttribute(String name, String value) {
+        boolean changed = attributes.isDefined(name);
+
+        attributes.putAttribute(name, value);
+
+        if (changed)
+            reload(ReloadManager.RELOAD_STYLE);
+    }
+
+    /**
+     * Set the attributes.
+     * @param attributes the attributes
+     */
     public void setAttributes(AttributeSet attributes) {
         if (attributes == null)
             throw new IllegalArgumentException("null not allowed");
@@ -396,9 +409,8 @@ public abstract class SComponent
      * @param c the new background color
      */
     public void setBackground(Color color) {
-        boolean changed = attributes.putAttributes(CSSStyleSheet.getAttributes(color, "background-color"));
-        if (changed)
-            reload(ReloadManager.RELOAD_STYLE);
+        setAttribute(CSSStyleSheet.getAttribute(color), 
+                     "background-color");
     }
 
     /**
@@ -414,9 +426,8 @@ public abstract class SComponent
      * @param c the new foreground color
      */
     public void setForeground(Color color) {
-        boolean changed = attributes.putAttributes(CSSStyleSheet.getAttributes(color, "color"));
-        if (changed)
-            reload(ReloadManager.RELOAD_STYLE);
+        setAttribute(CSSStyleSheet.getAttribute(color), 
+                     "color");
     }
 
     /**
