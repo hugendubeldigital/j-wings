@@ -35,7 +35,7 @@ import org.wings.style.*;
  */
 public class LookAndFeel
 {
-    private static Logger logger = Logger.getLogger("org.wings.plaf");
+    private final static Logger logger = Logger.getLogger("org.wings.plaf");
 
     private static Map wrappers = new HashMap();
     static {

@@ -36,7 +36,7 @@ import org.wings.util.StringUtil;
  */
 public abstract class AbstractExternalizeManager
 {
-    protected static Logger _wingsLogger = Logger.getLogger("org.wings.externalizer");
+    protected static Logger logger = Logger.getLogger("org.wings.externalizer");
 
     /**
      * The identifier generated, if the {@link ExternalizeManager} did not find
@@ -85,8 +85,8 @@ public abstract class AbstractExternalizeManager
         StringUtil.toShortestAlphaNumericString(PREFIX_TIMESLICE, 2);
 
     static {
-        _wingsLogger.info("final scope expires in " + FINAL_EXPIRES + " seconds");
-        _wingsLogger.info("use prefix " + PREFIX_TIMESLICE_STRING);
+        logger.info("final scope expires in " + FINAL_EXPIRES + " seconds");
+        logger.info("use prefix " + PREFIX_TIMESLICE_STRING);
     }
     
     // Flags
@@ -397,7 +397,7 @@ public abstract class AbstractExternalizeManager
         ExternalizedInfo extInfo = getExternalizedInfo(identifier);
 
         if ( extInfo == null ) {
-            _wingsLogger.warning("identifier " + identifier + " not found");
+            logger.warning("identifier " + identifier + " not found");
             response.sendError(response.SC_NOT_FOUND);
             return;
         }

@@ -34,6 +34,7 @@ import org.wings.externalizer.AbstractExternalizeManager;
 public abstract class StaticResource
     extends Resource
 {
+    private final static Logger logger = Logger.getLogger("org.wings");
     /**
      * Flags that influence the behaviour of the externalize manager
      */
@@ -112,7 +113,7 @@ public abstract class StaticResource
         if (id == null) {
             ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
             id = ext.getId(ext.externalize(this, externalizerFlags));
-            _wingsLogger.fine("new " + getClass().getName() + " with id " + id);
+            logger.fine("new " + getClass().getName() + " with id " + id);
         }
         return id;
     }

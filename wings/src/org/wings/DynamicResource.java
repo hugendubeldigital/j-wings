@@ -36,6 +36,8 @@ import org.wings.session.*;
 public abstract class DynamicResource
     extends Resource
 {
+    private final static Logger logger = Logger.getLogger("org.wings");
+
     /**
      * The epoch of this resource. With each invalidation, this counter
      * is incremented.
@@ -81,7 +83,7 @@ public abstract class DynamicResource
         if (id == null) {
             ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
             id = ext.getId(ext.externalize(this));
-            _wingsLogger.fine("new " + getClass().getName() + " with id " + id);
+            logger.fine("new " + getClass().getName() + " with id " + id);
         }
         return id;
     }
@@ -93,10 +95,10 @@ public abstract class DynamicResource
      */
     public final void invalidate() {
         epochCache = StringUtil.toShortestAlphaNumericString(++epoch);
-        if (_wingsLogger.isLoggable(Level.FINE)) {
+        if (logger.isLoggable(Level.FINE)) {
             String name = getClass().getName();
             name = name.substring(name.lastIndexOf(".") + 1);
-            _wingsLogger.fine("[" + name + "] " +
+            logger.fine("[" + name + "] " +
                         "invalidate - epoch: " + epochCache);
         }
     }

@@ -45,6 +45,8 @@ public class SForm
     extends SContainer
     implements RequestListener
 {
+    private final static Logger logger = Logger.getLogger("org.wings");
+
     /**
      * @see #getCGClassID
      */
@@ -335,13 +337,13 @@ public class SForm
 
     public SComponent addComponent(SComponent c, Object constraint) {
         if (c instanceof SForm)
-            _wingsLogger.warning("WARNING: attempt to nest forms; won't work. ");
+            logger.warning("WARNING: attempt to nest forms; won't work. ");
         return super.addComponent(c, constraint);
     }
 
     public SComponent addComponent(SComponent c, Object constraint, int index){
         if (c instanceof SForm)
-            _wingsLogger.warning("WARNING: attempt to nest forms; won't work.");
+            logger.warning("WARNING: attempt to nest forms; won't work.");
         return super.addComponent(c, constraint, index);
     }
 

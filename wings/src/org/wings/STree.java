@@ -14,12 +14,13 @@
 
 package org.wings;
 
+import java.util.logging.Logger;
+import java.util.Enumeration;
+import java.util.ArrayList;
+
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Color;
-
-import java.util.Enumeration;
-import java.util.ArrayList;
 
 import javax.swing.tree.*;
 import javax.swing.event.*;
@@ -38,6 +39,7 @@ public class STree
     extends SComponent
     implements RequestListener, TreeSelectionListener, Scrollable
 {
+    private final static Logger logger = Logger.getLogger("org.wings");
     private static final String cgClassID = "TreeCG";
 
     /**
@@ -838,11 +840,11 @@ public class STree
         TreePath path = getPathForRow(getRow(value));
         if (path != null)
             if (model.isLeaf(path.getLastPathComponent()) || !handle) {
-                _wingsLogger.finer("toggle selection " + getRow(value));
+                logger.finer("toggle selection " + getRow(value));
                 togglePathSelection(path);
             }
             else {
-                _wingsLogger.finer("toggle expansion " + getRow(value));
+                logger.finer("toggle expansion " + getRow(value));
                 togglePathExpansion(path);
             }
     }

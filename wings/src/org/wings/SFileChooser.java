@@ -84,6 +84,7 @@ public class SFileChooser
     implements RequestListener
 {
     private static final String cgClassID = "FileChooserCG";
+    private final static Logger logger = Logger.getLogger("org.wings");
 
     /**
      * maximum visible amount of characters in the file chooser.
@@ -398,7 +399,7 @@ public class SFileChooser
                 }
             }
             catch ( Exception e ) {
-                _wingsLogger.log(Level.SEVERE, null, e);
+                logger.log(Level.SEVERE, null, e);
             }
         }
     }

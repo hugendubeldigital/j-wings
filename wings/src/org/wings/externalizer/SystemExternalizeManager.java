@@ -68,9 +68,9 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
     }
 
     protected void storeExternalizedInfo(String identifier, ExternalizedInfo extInfo) {
-        if (_wingsLogger.isLoggable(Level.FINER)) {
-            _wingsLogger.finer("store identifier " + identifier + " " + extInfo.getObject().getClass());
-            _wingsLogger.finer("flags " + extInfo.getFlags());
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer("store identifier " + identifier + " " + extInfo.getObject().getClass());
+            logger.finer("flags " + extInfo.getFlags());
         }
 
         externalized.put(identifier, extInfo);

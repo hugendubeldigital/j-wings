@@ -35,7 +35,7 @@ import org.wings.style.*;
 public abstract class AbstractComponentCG
     implements ComponentCG, SConstants, Serializable
 {
-    protected static Logger _wingsLogger = Logger.getLogger("org.wings.plaf");
+    protected static Logger logger = Logger.getLogger("org.wings.plaf");
 
     protected static final Map cache = new HashMap();
 
@@ -46,7 +46,7 @@ public abstract class AbstractComponentCG
         long start = System.currentTimeMillis();
         configure(this, name, manager);
 
-        _wingsLogger.fine("configure CG done in " 
+        logger.fine("configure CG done in " 
                     + (System.currentTimeMillis()-start) + " ms");
     }
     
@@ -61,7 +61,7 @@ public abstract class AbstractComponentCG
         className = className.substring(className.lastIndexOf(".") + 1);
 
         configure(component, className, manager);
-        _wingsLogger.fine("install CG done in " + (System.currentTimeMillis()-start) + " ms");
+        logger.fine("install CG done in " + (System.currentTimeMillis()-start) + " ms");
     }
 
     /**
@@ -82,7 +82,7 @@ public abstract class AbstractComponentCG
                     }
                 }
             }
-            _wingsLogger.finer(objectClass.getName() + " introspection_time " +
+            logger.finer(objectClass.getName() + " introspection_time " +
                           (System.currentTimeMillis()-introspection_time) + " ms");
 
             long configuration_time = System.currentTimeMillis();
@@ -96,7 +96,7 @@ public abstract class AbstractComponentCG
                 value = manager.getObject(lookupName, propertyType);
                 boolean configurable = !propertyType.isPrimitive();
 
-                _wingsLogger.finest(lookupName + "=" + value);
+                logger.finest(lookupName + "=" + value);
 
                 if (value != null) {
                     setters[i].invoke(object, new Object[] { value });
@@ -105,11 +105,11 @@ public abstract class AbstractComponentCG
                     }
                 }
             }
-            _wingsLogger.finer(objectClass.getName() + " configuration_time " +
+            logger.finer(objectClass.getName() + " configuration_time " +
                            (System.currentTimeMillis()-configuration_time) + " ms");
         }
         catch (Exception e) {
-            _wingsLogger.log(Level.SEVERE, null, e);
+            logger.log(Level.SEVERE, null, e);
         }
     }
 

@@ -24,7 +24,7 @@ import java.util.logging.*;
 public class SDimension
     implements Serializable
 {
-    private static Logger _wingsLogger = Logger.getLogger("org.wings");
+    private final static Logger logger = Logger.getLogger("org.wings");
 
     public String width = null;
     public String height = null;
@@ -100,7 +100,7 @@ public class SDimension
             return new DecimalFormat().parse(size,new ParsePosition(0)).intValue();
         }
         catch(Exception e) {
-            _wingsLogger.log(Level.WARNING, "Can not parse [" + size + "]", e);
+            logger.log(Level.WARNING, "Can not parse [" + size + "]", e);
             return -1;
         }
     }

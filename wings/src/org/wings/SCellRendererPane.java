@@ -29,6 +29,7 @@ import org.wings.io.Device;
 public class SCellRendererPane
     extends SContainer
 {
+    private final static Logger logger = Logger.getLogger("org.wings");
     /**
      * Construct a CellRendererPane object.
      */
@@ -67,10 +68,10 @@ public class SCellRendererPane
         throws IOException
     {
         if ( getParent() == null )
-            _wingsLogger.warning("SCellRendererPane: parent == null!");
+            logger.warning("SCellRendererPane: parent == null!");
 
         if ( getParentFrame() == null )
-            _wingsLogger.warning("SCellRendererPane: parentFrame == null!");
+            logger.warning("SCellRendererPane: parentFrame == null!");
 
         if ( c == null ) {
             return;

@@ -43,6 +43,7 @@ import org.wings.session.SessionManager;
 public class ReloadManagerFrame
     extends SFrame
 {
+    private final static Logger logger = Logger.getLogger("org.wings");
     public ReloadManagerFrame() {}
 
     public final SContainer getContentPane() {
@@ -135,8 +136,8 @@ public class ReloadManagerFrame
             d.append(toplevel.getURL());
             d.append("';\n");
 
-            if (_wingsLogger.isLoggable(Level.FINER))
-                _wingsLogger.finer("parent.location.href='" + toplevel.getURL() + "';\n");
+            if (logger.isLoggable(Level.FINER))
+                logger.finer("parent.location.href='" + toplevel.getURL() + "';\n");
 
             // invalidate resources
             Iterator it = dirtyResources.iterator();
@@ -157,8 +158,8 @@ public class ReloadManagerFrame
                 d.append(resource.getURL());
                 d.append("';\n");
 
-                if (_wingsLogger.isLoggable(Level.FINER))
-                    _wingsLogger.finer("parent.frame" +
+                if (logger.isLoggable(Level.FINER))
+                    logger.finer("parent.frame" +
                                  resource.getFrame().getUnifiedId() +
                                  ".location.href='" +
                                  resource.getURL() +

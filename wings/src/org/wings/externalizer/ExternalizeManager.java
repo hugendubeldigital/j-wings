@@ -84,9 +84,9 @@ public class ExternalizeManager extends AbstractExternalizeManager
     }
 
     protected final void storeExternalizedInfo(String identifier, ExternalizedInfo extInfo) {
-        if (_wingsLogger.isLoggable(Level.FINER)) {
-            _wingsLogger.finer("store identifier " + identifier + " " + extInfo.getObject().getClass());
-            _wingsLogger.finer("flags " + extInfo.getFlags());
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer("store identifier " + identifier + " " + extInfo.getObject().getClass());
+            logger.finer("flags " + extInfo.getFlags());
         }
         externalized.put(identifier, extInfo);
     }
@@ -164,7 +164,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
 
         Externalizer externalizer = getExternalizer(obj.getClass());
         if (externalizer == null) {
-            _wingsLogger.warning("could not find externalizer for " +
+            logger.warning("could not find externalizer for " +
                            obj.getClass().getName());
             return NOT_FOUND_IDENTIFIER;
         }
@@ -218,7 +218,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
 
         Externalizer externalizer = getExternalizer(mimeType);
         if ( externalizer == null ) {
-            _wingsLogger.warning("could not find externalizer for " +
+            logger.warning("could not find externalizer for " +
                            obj.getClass().getName());
             return NOT_FOUND_IDENTIFIER;
         }
