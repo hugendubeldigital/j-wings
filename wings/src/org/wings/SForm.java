@@ -77,6 +77,12 @@ public class SForm
      * TODO: documentation
      */
     protected String actionCommand;
+    
+    /**
+     * the button, that is activated, if no other button is pressed in this
+     * form.
+     */
+    private SButton defaultButton;
 
     /**
      * the WingS event thread is the servlet doGet()/doPost() context
@@ -130,6 +136,18 @@ public class SForm
      */
     public String getActionCommand() {
         return actionCommand;
+    }
+
+    /**
+     * Set the default button. The button is triggered whenever the form is
+     * triggered but no other button has been activated.
+     */
+    public void setDefaultButton(SButton defaultButton) {
+        this.defaultButton = defaultButton;
+    }
+
+    public SButton getDefaultButton() {
+        return this.defaultButton;
     }
 
     /**
@@ -238,24 +256,45 @@ public class SForm
             Iterator iterator = armedComponents.iterator();
             LinkedList formEvents = null;
             LinkedList buttonEvents = null;
+
             while (iterator.hasNext()) {
                 component = (LowLevelEventListener) iterator.next();
-                // fire form events at last
-                // there could be more than one form event (e.g. mozilla posts a
-                // hidden element even if it is in a form outside the posted
-                // form (if the form are nested
+                /* fire form events at last
+                 * there could be more than one form event (e.g. mozilla posts a
+                 * hidden element even if it is in a form outside the posted
+                 * form (if the form is nested). Forms should not be nested in HTML.
+                 */
                 if (component instanceof SForm) {
                     if (formEvents == null) {
                         formEvents = new LinkedList();
                     } // end of if ()
                     formEvents.add(component);
-                } else if (component instanceof SAbstractIconTextCompound) {
+                } 
+                else if (component instanceof SAbstractIconTextCompound) {
                     if (buttonEvents == null) {
                         buttonEvents = new LinkedList();
                     }
                     buttonEvents.add(component);
-                } else {
+                } 
+                else {
                     component.fireIntermediateEvents();
+                }
+            }
+
+            /*
+             * no buttons in forms pressed ? Then consider the default-Button.
+             */
+            if (buttonEvents == null && formEvents != null) {
+                Iterator fit = formEvents.iterator();
+                while (fit.hasNext()) {
+                    SForm form = (SForm) fit.next();
+                    SButton defaultButton = form.getDefaultButton();
+                    if (defaultButton != null) {
+                        if (buttonEvents == null) {
+                            buttonEvents = new LinkedList();
+                        }
+                        buttonEvents.add(defaultButton);
+                    }
                 }
             }
 
@@ -289,7 +328,6 @@ public class SForm
                 }
                 buttonEvents.clear();
             }
-
 
             if (formEvents != null) {
                 iterator = formEvents.iterator();
