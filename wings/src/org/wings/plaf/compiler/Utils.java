@@ -53,17 +53,35 @@ public final class Utils implements SConstants {
     // not optimized yet
     public static void quote(Device d, String s) throws IOException {
 	if (s == null) return;
-	int len = s.length();
+        char[] chars = s.toCharArray();
 	char c;
-	for (int pos = 0; pos < len; ++pos) {
-	    switch ((c = s.charAt(pos))) {
-	    case '&': d.print("&amp;"); break;
-	    case '"': d.print("&quot;");break;
-	    case '<': d.print("&lt;");  break;
-	    case '>': d.print("&gt;");  break;
-	    default: d.print(c);
+        int last = 0;
+	for (int pos = 0; pos < chars.length; ++pos) {
+            c = chars[pos];
+	    switch (c) {
+	    case '&': 
+                d.print(chars, last, (pos-last));
+                d.print("&amp;");
+                last = pos+1;
+                break;
+	    case '"': 
+                d.print(chars, last, (pos-last));
+                d.print("&quot;");
+                last = pos+1;
+                break;
+	    case '<': 
+                d.print(chars, last, (pos-last));
+                d.print("&lt;");
+                last = pos+1;
+                break;
+	    case '>':
+                d.print(chars, last, (pos-last));
+                d.print("&lt;");
+                last = pos+1;
+                break;
 	    }
 	}
+        d.print(chars, last, chars.length-last);
     }
 
     /**
@@ -205,10 +223,18 @@ public final class Utils implements SConstants {
 	Color c = new Color(255, 254, 7);
 	Device d = new org.wings.io.StringBufferDevice();
 	write(d, c);
-	quote(d, "\nThis is a <abc> string \"; foo & sons\n");
+	quote(d, "\nThis is a <abc> string \"; foo & sons\nmoin");
 	write(d, -42);
         write(d, Integer.MIN_VALUE);
 	System.out.println (d.toString());
+        
+        d = new org.wings.io.NullDevice();
+        long start = System.currentTimeMillis();
+        for (int i=0; i < 1000000; ++i) {
+            quote(d, "this is a little & foo");
+        }
+        System.err.println("took: " + (System.currentTimeMillis() - start)
+                           + "ms");
     }
 }
 

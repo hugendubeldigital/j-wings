@@ -26,8 +26,6 @@ import javax.swing.Icon;
 import org.wings.*;
 import org.wings.externalizer.*;
 import org.wings.io.Device;
-import org.wings.io.StringBufferDevice;
-import org.wings.io.DeviceBuffer;
 import org.wings.plaf.*;
 import org.wings.style.StyleSheet;
 import org.wings.session.Session;
