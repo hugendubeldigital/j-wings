@@ -226,8 +226,6 @@ public class LdapClientSession
 	    SLabel key = (SLabel)enumer.nextElement();
 	    System.out.println(key.getText());
 
-	    //Hashtable toBeChanged = new Hashtable();
-
 	    oldValue = (String)(textHashtable.get(key));
 	    System.out.println("fuer " + key + " old value " +oldValue);
 	    
@@ -237,7 +235,6 @@ public class LdapClientSession
 	    System.out.println("old value " +oldValue);
 	    
 	    if (!oldValue.equals(newValue)) {
-		//attributes = new BasicAttributes();
 		BasicAttribute attr = new BasicAttribute((String)key.getText());
 		StringTokenizer st = new StringTokenizer(newValue,",");
 		String atV;
