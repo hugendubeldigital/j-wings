@@ -12,7 +12,5 @@
     if (component.isEnabled())   { %> name="<%?namePrefix%>"<% }
     %><%|tabindex=component.getFocusTraversalIndex()%><%
     Utils.writeEvents(device, component);
-    %><%|value=component.getText()%>/><%
-%>
-</write>
+    %><%|value=component.getText()%>/></write>
 </template>
