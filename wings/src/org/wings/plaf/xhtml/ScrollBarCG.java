@@ -15,19 +15,25 @@
 package org.wings.plaf.xhtml;
 
 import java.awt.*;
+import javax.swing.Icon;
 import java.io.IOException;
 
 import org.wings.*;
 import org.wings.io.*;
 import org.wings.plaf.*;
+import org.wings.externalizer.*;
 
 public class ScrollBarCG
     extends org.wings.plaf.AbstractCG
     implements org.wings.plaf.ScrollBarCG
 {
-    public void installCG(SComponent component)
-    {
-        
+    public static final int SCROLLBAR_STEPS = 15;
+
+    Icon transIcon;
+
+    public void installCG(SComponent component) {
+        super.installCG(component);
+        transIcon = LookAndFeel.makeIcon(TabbedPaneCG.class, "/org/wings/icons/transdot.gif");
     }
 
     public void uninstallCG(SComponent component)
@@ -59,77 +65,92 @@ public class ScrollBarCG
     protected void writeScrollBar( Device d, SScrollBar sb )
     	throws IOException
      {
-     	int p = (int) ( ( 100.0f - 2.0f ) / ( float) SCROLLBAR_STEPS );
-		int s = (int) ( (float) ( 100.0f - SCROLLBAR_STEPS * p ) / 2.0f );
+         int p = (int) ( ( 100.0f - 2.0f ) / ( float) SCROLLBAR_STEPS );
+         int s = (int) ( (float) ( 100.0f - SCROLLBAR_STEPS * p ) / 2.0f );
         
-		String el_pre;
-		String el_post;
-        String el_s;
-        String fwalign;
-        String bwalign;
-
-		if ( sb.getOrientation() == SConstants.HORIZONTAL )
-         {
-         	el_pre = "";
-            el_post = "";
-			el_s = " width=\"";
-            fwalign = "valign=\"middle\" align=\"right\"";
-            bwalign = "valign=\"middle\" align=\"left\"";
-         }
-		else
-         {
-         	el_pre = "<tr>";
-            el_post = "</tr>";
-            el_s = " height=\"";
-            fwalign = "align=\"center\" valign=\"bottom\"";
-            bwalign = "align=\"center\" valign=\"top\"";
-         }
-
-		// bw
-		d.append( "<td bgcolor=\"#FFFFFF\" " );
-        d.append( bwalign );
-        d.append( el_s );
-        d.append( "1\">" );
-		sb.getComponentAt(0).write( d );
-		d.append( "</td>" );
-		d.append( el_post );
-        
-		writeSBBackground( d, sb, el_pre, el_post, el_s + p );
+         String el_pre;
+         String el_post;
+         String el_s;
+         String fwalign;
+         String bwalign;
+         String dummyIconAdr = null;
          
-		// fw
-		d.append( el_pre );
-		d.append( "<td bgcolor=\"#FFFFFF\" " );
-        d.append( fwalign );
-        d.append( el_s );
-        d.append( "1\">" );
-		sb.getComponentAt(1).write( d );
-		d.append( "</td>" );
+         ExternalizeManager ext = sb.getExternalizeManager();
+         if (ext != null &&  transIcon != null) {
+             try {
+                 dummyIconAdr = ext.externalize(transIcon);
+             }
+             catch (java.io.IOException e) {
+                 System.err.println(e.getMessage());
+                 e.printStackTrace(System.err);
+             }
+         }
+         
+         if ( sb.getOrientation() == SConstants.HORIZONTAL ) {
+             el_pre    = "";
+             el_post   = "";
+             el_s = " width=\"";
+             fwalign = "valign=\"middle\" align=\"right\"";
+             bwalign = "valign=\"middle\" align=\"left\"";
+         }
+         else {
+             el_pre    = "<tr>";
+             el_post   = "</tr>";
+             el_s = " height=\"";
+             fwalign = "align=\"center\" valign=\"bottom\"";
+             bwalign = "align=\"center\" valign=\"top\"";
+         }
+         
+         // bw
+         d.append( "<td bgcolor=\"#C6C6C6\" " );
+         d.append( bwalign );
+         d.append( el_s );
+         d.append( "1%\">" );
+         sb.getComponentAt(0).write( d );
+         d.append( "</td>" );
+         d.append( el_post );
+         
+         writeSBBackground( d, sb, dummyIconAdr, el_pre, el_post, el_s + p );
+         
+         // fw
+         d.append( el_pre );
+         d.append( "<td bgcolor=\"#C6C6C6\" " );
+         d.append( fwalign );
+         d.append( el_s );
+         d.append( "1%\">" );
+         sb.getComponentAt(1).write( d );
+         d.append( "</td>" );
      }
-     
+    
     
     /**
-      * Write the scrollbar background.
-      */
-	public void writeSBBackground( Device d, SScrollBar sb, String prefix, String postfix, String size )
+     * Write the scrollbar background.
+     */
+    public void writeSBBackground( Device d, SScrollBar sb, String fillIcon,
+                                   String prefix, String postfix, String size )
     	throws IOException
-     {
-     	int mark = (int) ( ( (double) sb.getValue() ) / ( (double) ( sb.getMaximum() - sb.getMinimum() - sb.getVisibleAmount()) / (double) SCROLLBAR_STEPS ) );
+    {
+        int range = sb.getMaximum() - sb.getMinimum();
+        int mark = (int) ( SCROLLBAR_STEPS * 
+                           ((double)(sb.getValue() - sb.getMinimum()) / (double) range));
+        int len   = (int) ( SCROLLBAR_STEPS * 
+                            ((double) sb.getVisibleAmount() / (double) range));
+
         if ( mark < 0 ) mark = 0;
         if ( mark > ( SCROLLBAR_STEPS - 1 ) ) mark = SCROLLBAR_STEPS - 1;
-		for ( int i = 0; i < SCROLLBAR_STEPS; i++ )
-         {
-         	d.append( prefix );
-            if ( mark == i )
-				d.append( "<td bgcolor=\"#000000\" " );
+        if ( len < 1) len = 1;
+        for ( int i = 0; i < SCROLLBAR_STEPS; ++i ) {
+            d.append( prefix );
+            if ( i >= mark && len-- > 0 )
+                d.append( "<td bgcolor=\"#000000\" " );
             else
-				d.append( "<td bgcolor=\"#FFFFFF\" " );
-			d.append( size );
-			d.append( "%\"><img src=\"blind.gif\" width=\"1\" height=\"1\"></td>" );
-         	d.append( postfix );
-		 }
-     }
-
-	public static final int SCROLLBAR_STEPS = 15;
+                d.append( "<td bgcolor=\"#FFFFFF\" " );
+            d.append( size ).append("%");
+            d.append( "\"><img src=\"").append(fillIcon)
+                .append("\" width=\"7\" height=\"7\"></td>" );
+            d.append( postfix );
+        }
+    }
 }
 
 /*
