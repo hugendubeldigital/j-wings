@@ -58,7 +58,7 @@ public class TemplateExample
             except.printStackTrace();
         }
         
-        c.add(new STextArea(), "DemoArea");
+        //c.add(new STextArea(), "DemoArea");
         c.add(new SLabel ((new java.util.Date()).toString()), "theLabel");
         c.add(new SButton ("Press Me"), "TESTBUTTON");
         c.add(new STextField (), "NAME");

@@ -18,32 +18,36 @@ the size parameters of the input elements are taken from the template.
 <table cellpadding=2>
 <tr>
    <td>Name:</td><td><input size=30 name="NAME"></td>
-   <td rowspan=2><object name="TREE"></object></td>
-</tr>
-<tr valign=top>
-   <td>Firstname:</td><td><input size=15 type=text name="FIRSTNAME"></td>
-</tr>
-</table>
-<hr size=1 noshade="noshade" />
-The constraint names of radio buttons are of the form 'NAME=VALUE':
+   <td rowspan=2>
 <table>
   <tr><td><input type=radio name="SELVAL" value="0"></td>
       <td><input type=radio name="SELVAL" value="1"></td>
-      <td rowspan=2><textarea name="DemoArea" rows=5 cols=40></textarea>
-      </td>
   </tr>
   <tr><td><input type=radio name="SELVAL" value="2"></td>
       <td><input type=radio name="SELVAL" value="3"></td>
   </tr>
 </table>
-
-or consider labels: <b><object name="theLabel"></object></b>
-or buttons <input type=button value="PressMe" name="TESTBUTTON">.
+</td>
+</tr>
+<tr valign=top>
+   <td>Firstname:</td><td><input size=15 type=text name="FIRSTNAME"></td>
+</tr>
+<tr><td>
+<input type=button value="PressMe" name="TESTBUTTON">
+</td></tr>
+</table>
+<hr size=1 noshade="noshade" />
+<table>
+<tr valign="top"><td>..or just place any other component; like this tree &nbsp;</td>
+<td><object name="TREE"></object></td>
+</table>
+or consider labels: <b><object name="theLabel"></object></b>.
 <p>
 This template layout manager caches the intermediate result of the internal
 parse stage, thus it is very fast generating pages. Templates can be read
 from the filesystem or from an URL, so reading them from 
 <code>Class.getResource()</code> is possible as well; or you can implement your
-own DataSource getting it from a database for instance.
+own DataSource getting it from a database for instance (if you have a 
+CMS system).
 </td></tr>
 </table>
