@@ -12,10 +12,9 @@ import java.util.Collection;
  */
 public class ResourceExternalizer implements Externalizer {
 
-    public static final ResourceExternalizer SHARED_INSTANCE = new ResourceExternalizer();
-
     private static final Class[] SUPPORTED_CLASSES = {Resource.class};
 
+    public static final ResourceExternalizer SHARED_INSTANCE = new ResourceExternalizer();
 
     public String getExtension(Object obj) {
         return ((Resource) obj).getExtension();

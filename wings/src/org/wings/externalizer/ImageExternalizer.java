@@ -30,18 +30,18 @@ import java.util.logging.Logger;
  * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
  * @version $Revision$
  */
-public class ImageExternalizer
-        implements Externalizer {
+public class ImageExternalizer implements Externalizer {
+
     private final static Logger logger = Logger.getLogger("org.wings.externalizer");
 
     public static final String FORMAT_PNG = "png";
     public static final String FORMAT_GIF = "gif";
 
-    public static final ImageExternalizer SHARED_GIF_INSTANCE = new ImageExternalizer(FORMAT_GIF);
-    public static final ImageExternalizer SHARED_PNG_INSTANCE = new ImageExternalizer(FORMAT_PNG);
-
     private static final String[] SUPPORTED_FORMATS = {FORMAT_PNG, FORMAT_GIF};
     private static final Class[] SUPPORTED_CLASSES = {Image.class};
+
+    public static final ImageExternalizer SHARED_GIF_INSTANCE = new ImageExternalizer(FORMAT_GIF);
+    public static final ImageExternalizer SHARED_PNG_INSTANCE = new ImageExternalizer(FORMAT_PNG);
 
     protected String format;
 

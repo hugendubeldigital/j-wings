@@ -27,11 +27,11 @@ import java.util.Collection;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class DynamicResourceExternalizer
-        implements Externalizer {
-    public static final DynamicResourceExternalizer SHARED_INSTANCE = new DynamicResourceExternalizer();
+public class DynamicResourceExternalizer implements Externalizer {
 
     private static final Class[] SUPPORTED_CLASSES = {DynamicResource.class};
+
+    public static final DynamicResourceExternalizer SHARED_INSTANCE = new DynamicResourceExternalizer();
 
     public String getExtension(Object obj) {
         if (obj != null)

@@ -29,10 +29,11 @@ import java.util.Collection;
  * @version $Revision$
  */
 public class StaticResourceExternalizer implements Externalizer {
-    public static final StaticResourceExternalizer SHARED_INSTANCE = new StaticResourceExternalizer();
 
     private static final Class[] SUPPORTED_CLASSES = {StaticResource.class};
 
+    public static final StaticResourceExternalizer SHARED_INSTANCE = new StaticResourceExternalizer();
+    
     public String getExtension(Object obj) {
         if (obj != null)
             return ((StaticResource) obj).getExtension();
