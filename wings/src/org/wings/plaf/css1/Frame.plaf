@@ -131,7 +131,7 @@ if ( frame.getALinkColor()!=null ) {
             if (next instanceof Renderable) {
                 ((Renderable)next).write(device);
              } else {
-                %><%=it.next().toString()%><%
+                %><%=next.toString()%><%
             }
             %>
 <%
@@ -140,7 +140,7 @@ if ( frame.getALinkColor()!=null ) {
         %></head>
 <%
 
-        %><body<%
+        %><body scroll="auto"<%
         %><%|class=Utils.style(frame)%><%
 	Utils.writeEvents(device, frame);
 	%><%|bgcolor=frame.getBackground()%><%
