@@ -712,8 +712,9 @@ public abstract class SComponent
             for (int i=0; i < descriptors.length; i++) {
                 try {
                     Method getter = descriptors[i].getReadMethod();
-                    if (getter == null || "getParent". equals(getter.getName()))
+                    if (getter == null || getter.getName().startsWith("getParent"))
                         continue;
+                    // System.out.println("invoking " + this.getClass().getName()+"."+getter.getName());
                     Object value = getter.invoke(this, null);
                     if (first)
                         first = false;
