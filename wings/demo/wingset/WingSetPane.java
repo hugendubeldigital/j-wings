@@ -30,7 +30,7 @@ abstract public class WingSetPane
     implements SConstants {
 
     // we only need this once:
-    static SLayoutManager contentLayout = 
+    SLayoutManager contentLayout = 
 	createResourceTemplate("/wingset/ContentLayout.thtml");
 
     public WingSetPane() {
