@@ -45,6 +45,8 @@ public class FastDispatcher
 
     String uniquePrefixString = "0";
 
+    protected boolean namedEvents = true;
+
     /**
      * TODO: documentation
      *
@@ -72,6 +74,10 @@ public class FastDispatcher
         }
     }
 
+    public final void setNamedEvents(boolean b) {
+        namedEvents = b;
+    }
+
     /*
      * Registiert einen Listener. In der HashMap wird das NamePrefix
      * des Listeners als key abgelegt. Der value ist eine Menge (ArrayList)
@@ -91,10 +97,22 @@ public class FastDispatcher
 
         debug("register " + key);
         addGetListener(gl, key);
+
+        if ( namedEvents ) {
+            key = gl.getName();
+            if ( key!=null && key.trim().length()>0 ) {
+                debug("register " + key);
+                addGetListener(gl, key);
+            }
+        }
     }
 
     /**
      * TODO: documentation
+     *
+     * TODO:
+     * This should remove the GetListener from the HashMap, not the Names of the
+     * GetListener (Names may change)
      *
      * @param gl
      */
@@ -107,6 +125,13 @@ public class FastDispatcher
 
         debug("unregister " + key);
         removeGetListener(gl, key);
+
+        key = gl.getName();
+        if ( key!=null && key.trim().length()>0 ) {
+            debug("unregister " + key);
+            removeGetListener(gl, key);
+        }
+
     }
 
     public boolean dispatch(String name, String[] values) {
