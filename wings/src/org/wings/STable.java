@@ -782,8 +782,9 @@ public class STable
             case TableModelEvent.UPDATE:
                 // Falls sich die Daten geaendert haben, sonst sind keine
                 // Aenderungen noetig.
-                if (e.getFirstRow() <= 0 ||
-                    e.getLastRow()>selects.length)
+                if ( selects != null && 
+                    ( e.getFirstRow() <= 0 ||
+                      e.getLastRow()>selects.length ) )
                     initSelectables();
                 break;
             }
