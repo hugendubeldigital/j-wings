@@ -84,6 +84,9 @@ public abstract class SComponent
     /** The name of the style class */
     protected String style;
 
+    /** The name of the style class */
+    protected String disabledStyle;
+
     /** The attributes */
     protected AttributeSet attributes = new SimpleAttributeSet();
 
@@ -430,6 +433,20 @@ public abstract class SComponent
      * @return the current style
      */
     public final String getStyle() { return style; }
+
+    /**
+     * Set the class of the laf-provided style.
+     * @param style the new value for style
+     */
+    public void setDisabledStyle(String value) {
+        reloadIfChange(ReloadManager.RELOAD_CODE, disabledStyle, value);
+        this.disabledStyle = value;
+    }
+
+    /**
+     * @return the current style
+     */
+    public final String getDisabledStyle() { return disabledStyle; }
 
     /**
      * Set a attribute.
