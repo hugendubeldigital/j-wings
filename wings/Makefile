@@ -30,8 +30,7 @@ htdocs: dummy doc dist
 	ln -s ../COPYING .
 	ln -s ../doc/api
 
-#dist: fun doc jar demojar
-dist: fun
+dist: fun doc jar demojar
 	mkdir dist
 	mkdir dist/lib
 	mkdir dist/doc
