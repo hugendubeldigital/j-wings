@@ -29,7 +29,7 @@ import org.wings.ReloadManager;
 import org.wings.SGetDispatcher;
 import org.wings.plaf.CGManager;
 import org.wings.util.WeakPropertyChangeSupport;
-import org.wings.externalizer.*;
+import org.wings.externalizer.ExternalizeManager;
 
 /**
  * TODO: documentation

@@ -53,7 +53,7 @@ public class URLStyleSheet
         return null;
     }
 
-    public boolean isStable() {
+    public boolean isFinal() {
         return false;
     }
 

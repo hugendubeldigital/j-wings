@@ -57,7 +57,7 @@ public class FileStyleSheet
         return null;
     }
 
-    public boolean isStable() {
+    public boolean isFinal() {
         return false;
     }
 

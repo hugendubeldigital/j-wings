@@ -102,13 +102,7 @@ public final class BevelBorderCG
 
         ExternalizeManager ext = SessionManager.getSession().getExternalizeManager();
         if (ext != null) {
-            try {
-                transAdr = ext.externalize(transIcon);
-            }
-            catch (java.io.IOException e) {
-                System.err.println(e.getMessage());
-                e.printStackTrace(System.err);
-            }
+            transAdr = ext.externalize(transIcon);
         }
 
         d.append("<img src=\"")

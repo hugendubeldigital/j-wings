@@ -16,33 +16,42 @@ package org.wings.externalizer;
 
 import java.io.InputStream;
 
-import org.wings.style.StyleSheet;
+import org.wings.ResourceImageIcon;
 
 /**
  * TODO: documentation
  *
- * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
+ * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
+ * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
  * @version $Revision$
  */
-public class StyleSheetObjectHandler
-    implements ObjectHandler
+public class ResourceImageIconExternalizer
+    implements Externalizer
 {
+    private static final Class[] SUPPORTED_CLASSES = { ResourceImageIcon.class };
+
     public String getExtension(Object obj) {
-        return "css";
+        return ((ResourceImageIcon)obj).getExtension();
     }
 
     public String getMimeType(Object obj) {
-        return "text/css";
+        if (obj == null)
+            return null;
+        return "image/" + getExtension(obj);
     }
 
-    public boolean isStable(Object obj) {
-        return ((StyleSheet)obj).isStable();
+    public int getLength(Object obj) {
+        return -1;
+    }
+
+    public boolean isFinal(Object obj) {
+        return true;
     }
 
     public void write(Object obj, java.io.OutputStream out)
         throws java.io.IOException
     {
-        InputStream in = ((StyleSheet)obj).getInputStream();
+        InputStream in = ((ResourceImageIcon)obj).getInputStream();
         byte[] buffer = new byte[2000];
         while ( in.available() > 0 ) {
             int count = in.read(buffer);
@@ -52,11 +61,16 @@ public class StyleSheetObjectHandler
         in.close();
     }
 
-    public Class getSupportedClass() {
-        return StyleSheet.class;
+    public Class[] getSupportedClasses() {
+        return SUPPORTED_CLASSES;
     }
 
-	public java.util.Set getHeaders(Object obj) { return null; }
+    public String[] getSupportedMimeTypes() {
+        return null;
+    }
+
+    public java.util.Set getHeaders(Object obj) { return null; }
+
 }
 
 /*

@@ -33,11 +33,6 @@ import org.wings.session.*;
 public class TableExample2
     extends WingServlet
 {
-    protected void initExternalizer(ServletConfig config) {
-        // we want to use the servlet externalizer
-        getExternalizeManager().setExternalizer(new ServletExternalizer(config));
-    }
-
     public SessionServlet generateSessionServlet(HttpServletRequest req)
         throws Exception
     {

@@ -30,13 +30,7 @@ public class AttributesCellRenderer
 
 			ExternalizeManager ext = baseTable.getExternalizeManager();
 			if (ext != null) {
-			    try {
-				src = ext.externalize(icon);
-			    }
-			    catch (java.io.IOException e) {
-				// dann eben nicht !!
-				e.printStackTrace();
-			    }
+                          src = ext.externalize(icon);
 			}
 
 			if (src != null) {

@@ -21,11 +21,6 @@ public class FrameSet
     extends WingServlet
 {
     protected void initExtObjectHandler(ServletConfig config) {
-        extManager.addObjectHandler(new ImageObjectHandler("gif"));
-        extManager.addObjectHandler(new ImageIconObjectHandler("gif"));
-        extManager.addObjectHandler(new ResourceImageIconObjectHandler());
-        extManager.addObjectHandler(new StyleSheetObjectHandler());
-        extManager.addObjectHandler(new TextObjectHandler("text/html", "html"));
     }
 
     public SessionServlet generateSessionServlet(HttpServletRequest req)

@@ -26,17 +26,21 @@ import Acme.JPM.Encoders.GifEncoder;
  * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
  * @version $Revision$
  */
-public class ImageIconObjectHandler
-    extends ImageObjectHandler
+public class ImageIconExternalizer
+    extends ImageExternalizer
 {
-    public ImageIconObjectHandler() {}
+    private static final Class[] SUPPORTED_CLASSES = { ImageIcon.class };
 
-    public ImageIconObjectHandler(String format) {
-        this.format = format;
+    public ImageIconExternalizer() {
+        super();
     }
 
-    public Class getSupportedClass() {
-        return ImageIcon.class;
+    public ImageIconExternalizer(String format) {
+        super(format);
+    }
+
+    public Class[] getSupportedClasses() {
+        return SUPPORTED_CLASSES;
     }
 
     public void write(Object obj, java.io.OutputStream out)

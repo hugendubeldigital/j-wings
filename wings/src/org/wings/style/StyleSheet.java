@@ -30,7 +30,7 @@ public interface StyleSheet
 
     InputStream getInputStream() throws IOException;
 
-    boolean isStable();
+    boolean isFinal();
 
     // we'll also need some getters for getting the Style associated
     // with a key

@@ -14,6 +14,8 @@
 
 package org.wings.externalizer;
 
+import java.util.Set;
+
 import org.wings.session.Session;
 
 /**
@@ -24,39 +26,112 @@ import org.wings.session.Session;
  */
 public class ExternalizedInfo
 {
-    private static long counter = 0;
-    
-    public long          timestamp;
-    public boolean       stable;
-    public String        extFileName;
-    public Object        extObject;
-    public ObjectHandler handler;
-    public Session       session;
+    private String        mimeType;
+    private Object        extObject;
+    private Externalizer  externalizer;
+    private int           flags;
+    private long          lastModified;
+    private Set           headers;
 
-    public ExternalizedInfo(Object obj, ObjectHandler hdl, Session ses) {
+    public ExternalizedInfo(Object obj, Externalizer ext, String mt, Set h, int f) {
         extObject   = obj;
-        handler     = hdl;
-        session     = ses;
-        stable      = handler.isStable(extObject);
-        extFileName = generateFileName() + "." + handler.getExtension(extObject);
-        timestamp = System.currentTimeMillis();
+        externalizer= ext;
+        mimeType = mt;
+        flags = f;
+
+        if ( externalizer==null || extObject==null )
+            throw new IllegalArgumentException("no externalizer or null object");
+
+        lastModified = System.currentTimeMillis();
+        headers = h;
     }
 
     /**
      * TODO: documentation
      *
+     * @return
      */
-    final public void touch() {
-        if ( !stable )
-            timestamp = System.currentTimeMillis();
+    public final String getMimeType() {
+        return mimeType;
     }
 
-    final public long lastModified() {
-        return timestamp;
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public final Object getObject() {
+        return extObject;
     }
 
-    final public boolean isTransient() {
-        return !stable;
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public final Externalizer getExternalizer() {
+        return externalizer;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public final Set getHeaders() {
+        return headers;
+    }
+
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public final boolean deliverOnce() {
+        return (flags & AbstractExternalizeManager.REQUEST) > 0;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public final boolean isFinal() {
+        return ( (flags & AbstractExternalizeManager.FINAL) > 0 ||
+                 externalizer.isFinal(extObject) ) &&
+            // if flags is request only, then object is not final!!
+            (flags & AbstractExternalizeManager.REQUEST) == 0;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public final String getExtension() {
+        return externalizer.getExtension(extObject);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public final int getFlags() {
+        return flags;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public final long getLastModified() {
+        if ( isFinal() ) 
+            return lastModified;
+        else
+            return -1;
     }
 
     /**
@@ -65,32 +140,40 @@ public class ExternalizedInfo
      * @return
      */
     public String toString() {
-        return extFileName + "[" + timestamp + "," +
-            ( stable ? "stable" : "transient" ) + "]";
+        return "Externalized Info";
     }
-
 
     /**
-     * generate a file name for the externalized item. Goals: 
-     * <ul>
-     *   <li> as short as possible to make generated pages with many icons 
-     *        not too big. 
-     *   <li> Make the filename uniq within the typical cache timeframe
-     * </ul>
+     * TODO: documentation
+     *
+     * @return
      */
-    protected static final String generateFileName() {
-        // FIXME: we probably should have a random prefix per Usersession
-        // if icons contain private information
-
-        // ASSUME that caches do not cache for more than
-        // one month:
-        long maxUniqLifespan = 30 * 24 * 3600; // 1 Month
-        long uniqPrefix = (System.currentTimeMillis() / 1000) % maxUniqLifespan;
-        // ASSUME that less than 1000 externalized objects are generated per
-        // second:
-        return Long.toString (uniqPrefix, Character.MAX_RADIX)+
-            "_" + (counter++ % 1000);
+    public final int hashCode() {
+        return extObject.hashCode();
     }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public final boolean equals(ExternalizedInfo e) {
+        return extObject == e.extObject &&
+            externalizer == e.externalizer;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public final boolean equals(Object o) {
+        if ( o instanceof ExternalizedInfo ) {
+            return equals((ExternalizedInfo)o);
+        }
+        return false;
+    }
+
 }
 
 /*
@@ -99,3 +182,7 @@ public class ExternalizedInfo
  * indent-tabs-mode: nil
  * End:
  */
+
+
+
+

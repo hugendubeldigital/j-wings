@@ -16,36 +16,41 @@ package org.wings.externalizer;
 
 import java.io.InputStream;
 
-import org.wings.ResourceImageIcon;
+import org.wings.style.StyleSheet;
 
 /**
  * TODO: documentation
  *
- * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
- * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
+ * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class ResourceImageIconObjectHandler
-    implements ObjectHandler
+public class StyleSheetExternalizer
+    implements Externalizer
 {
+
+    private static final Class[] SUPPORTED_CLASSES = { StyleSheet.class };
+    private static final String[] SUPPORTED_MIME_TYPES = { "text/css" };
+
     public String getExtension(Object obj) {
-        return ((ResourceImageIcon)obj).getExtension();
+        return "css";
     }
 
     public String getMimeType(Object obj) {
-        if (obj == null)
-            return null;
-        return "image/" + getExtension(obj);
+        return "text/css";
     }
 
-    public boolean isStable(Object obj) {
-        return true;
+    public boolean isFinal(Object obj) {
+        return ((StyleSheet)obj).isFinal();
+    }
+
+    public int getLength(Object obj) {
+        return -1;
     }
 
     public void write(Object obj, java.io.OutputStream out)
         throws java.io.IOException
     {
-        InputStream in = ((ResourceImageIcon)obj).getInputStream();
+        InputStream in = ((StyleSheet)obj).getInputStream();
         byte[] buffer = new byte[2000];
         while ( in.available() > 0 ) {
             int count = in.read(buffer);
@@ -55,12 +60,15 @@ public class ResourceImageIconObjectHandler
         in.close();
     }
 
-    public Class getSupportedClass() {
-        return ResourceImageIcon.class;
+    public Class[] getSupportedClasses() {
+        return SUPPORTED_CLASSES;
+    }
+
+    public String[] getSupportedMimeTypes() {
+        return SUPPORTED_MIME_TYPES;
     }
 
     public java.util.Set getHeaders(Object obj) { return null; }
-
 }
 
 /*

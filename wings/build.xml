@@ -43,7 +43,7 @@
   <target name="build" depends="jar,plaf" />
 
   <target name="compile" depends="prepare">
-    <javac srcdir="${src}" destdir="${classes}" debug="on" deprecation="on">
+    <javac srcdir="${src}" destdir="${classes}" debug="on" deprecation="off">
       <classpath refid="build.classpath" />
     </javac>
     <copy todir="${classes}">

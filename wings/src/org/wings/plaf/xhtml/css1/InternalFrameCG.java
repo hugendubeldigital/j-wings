@@ -63,29 +63,23 @@ public class InternalFrameCG
 
         ExternalizeManager ext = c.getExternalizeManager();
         if (ext != null) {
-            try {
-                if (frame.getIcon() != null)
-                    iconAdr = ext.externalize(frame.getIcon());
-
-                if (frame.isIconified())
-                    deiconifyAdr = ext.externalize(deiconify);
-
-                if (frame.isIconifyable() && !frame.isIconified())
-                    iconifyAdr = ext.externalize(iconify);
-
-                if (frame.isMaximizable() && !frame.isMaximized())
-                    maximizeAdr = ext.externalize(maximize);
-
-                if (frame.isMaximized())
-                    unmaximizeAdr = ext.externalize(unmaximize);
-
-                if (frame.isClosable())
-                    closeAdr = ext.externalize(close);
-            }
-            catch (java.io.IOException e) {
-                System.err.println(e.getMessage());
-                e.printStackTrace(System.err);
-            }
+            if (frame.getIcon() != null)
+                iconAdr = ext.externalize(frame.getIcon());
+            
+            if (frame.isIconified())
+                deiconifyAdr = ext.externalize(deiconify);
+            
+            if (frame.isIconifyable() && !frame.isIconified())
+                iconifyAdr = ext.externalize(iconify);
+            
+            if (frame.isMaximizable() && !frame.isMaximized())
+                maximizeAdr = ext.externalize(maximize);
+            
+            if (frame.isMaximized())
+                unmaximizeAdr = ext.externalize(unmaximize);
+            
+            if (frame.isClosable())
+                closeAdr = ext.externalize(close);
         }
 
         SGetAddress addr;

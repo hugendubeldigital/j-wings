@@ -30,7 +30,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.wings.*;
 import org.wings.util.*;
-import org.wings.externalizer.*;
+import org.wings.session.Session;
+import org.wings.externalizer.ExternalizeManager;
+import org.wings.externalizer.ExternalizedInfo;
 
 /**
  * TODO: documentation
@@ -47,13 +49,6 @@ public abstract class WingServlet extends HttpServlet
     public static final boolean DEBUG = true;
 
     /**
-     * if this is not a transient element, set the expiration header to
-     * this timeout, so that the browser is able to cache the item without
-     * further request.
-     */
-    protected static final int STABLE_EXPIRE = 3600 * 60 * 1000; // one hour
-
-    /**
      * The maximal length of data that is accepted in one POST request.
      * Data can be this big, if your application provides a capability
      * to upload a file (SFileChoose). This constant limits the maximum
@@ -65,15 +60,19 @@ public abstract class WingServlet extends HttpServlet
 
     private String lookupName = "SessionServlet";
 
-    protected final ExternalizeManager extManager = new ExternalizeManager();
-
-
     /**
      * TODO: documentation
      *
      */
     public WingServlet() {}
 
+    /**
+     *
+     */
+    protected ExternalizeManager createExternalizeManager(HttpServletResponse response) {
+        ExternalizeManager extManager = new ExternalizeManager(response);
+        return extManager;
+    }
 
     /**
      * preInit is called by init before doing something. <br>
@@ -82,49 +81,6 @@ public abstract class WingServlet extends HttpServlet
      * @param config the serlvet configuration
      */
     protected void preInit(ServletConfig config) throws ServletException {}
-
-
-    /**
-     * Initializes the externalize manager. Called by init().
-     *
-     * @param config the serlvet configuration
-     */
-    protected void initExternalizeManager(ServletConfig config) {
-        String timeout = config.getInitParameter("externalizer.timeout");
-        if (timeout != null) {
-            try {
-                extManager.setDestroyerTimeout(Long.parseLong(timeout));
-            }
-            catch (NumberFormatException e) {
-                System.err.println("invalid externalizer.timeout: " + timeout);
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Initializes and registers the externalizer. Called by init(). <br>
-     * Overwrite this method if you want to use another externalizer.
-     *
-     * @param config the serlvet configuration
-     */
-    protected void initExternalizer(ServletConfig config) {
-        extManager.setExternalizer(new ServletExternalizer(config));
-    }
-
-    /**
-     * Initializes and registers the object handlers which are used by the
-     * externalizer. <br>
-     * Overwrite this method if you want to change the object handlers.
-     *
-     * @param config the serlvet configuration
-     */
-    protected void initExtObjectHandler(ServletConfig config) {
-        extManager.addObjectHandler(new ImageObjectHandler());
-        extManager.addObjectHandler(new ImageIconObjectHandler());
-        extManager.addObjectHandler(new ResourceImageIconObjectHandler());
-        extManager.addObjectHandler(new StyleSheetObjectHandler());
-    }
 
     /**
      * TODO: documentation
@@ -175,9 +131,6 @@ public abstract class WingServlet extends HttpServlet
             }
         }
 
-        initExternalizeManager(config);
-        initExternalizer(config);
-        initExtObjectHandler(config);
         initMaxContentLength(config);
 
         servletConfig = config;
@@ -193,17 +146,6 @@ public abstract class WingServlet extends HttpServlet
      */
     protected void postInit(ServletConfig config) throws ServletException {
     }
-
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public final ExternalizeManager getExternalizeManager() {
-        return extManager;
-    }
-
 
     /**
      * This factory returns a new SessionServlet used to handle
@@ -274,18 +216,19 @@ public abstract class WingServlet extends HttpServlet
         doGet(req, res);
     }
 
-    private final SessionServlet newSession(HttpServletRequest req)
+    private final SessionServlet newSession(HttpServletRequest request,
+                                            HttpServletResponse response)
         throws ServletException
     {
         try {
             log("generating new Session Servlet");
             debug("generating new Session Servlet");
 
-            HttpSession session = req.getSession(true);
+            HttpSession session = request.getSession(true);
 
-            SessionServlet sessionServlet = generateSessionServlet(req);
+            SessionServlet sessionServlet = generateSessionServlet(request);
             sessionServlet.setParent(this);
-            sessionServlet.setExternalizeManager(getExternalizeManager());
+            sessionServlet.setExternalizeManager(createExternalizeManager(response));
             sessionServlet.init(servletConfig);
             session.setAttribute(lookupName, sessionServlet);
 
@@ -299,17 +242,18 @@ public abstract class WingServlet extends HttpServlet
 
     static final Boolean initializer = new Boolean(true);
 
-    public final SessionServlet getSessionServlet(HttpServletRequest req) 
+    public final SessionServlet getSessionServlet(HttpServletRequest request,
+                                                  HttpServletResponse response) 
         throws ServletException 
     {
-        HttpSession session = req.getSession(false);
+        HttpSession session = request.getSession(false);
         SessionServlet sessionServlet = null;
 
         if (session != null)
             sessionServlet = (SessionServlet)session.getAttribute(lookupName);
         
         if (sessionServlet == null)
-            sessionServlet = newSession(req);
+            sessionServlet = newSession(request, response);
 
         return sessionServlet;
     }
@@ -330,55 +274,29 @@ public abstract class WingServlet extends HttpServlet
      * cached, so this method returns '-1' if this is not an externalize
      * request.
      */
-    protected long getLastModified(HttpServletRequest request) {
-        if (isExternalizeRequest(request)) {
-            ExternalizedInfo info;
+    protected long getLastModified(HttpServletRequest req) {
+        if (isExternalizeRequest(req)) {
 
-            info = ServletExternalizer.getExternalizedInfo(request
-                                                           .getPathInfo());
-            if (info == null) {
-                debug ("info is null!");
-                return -1;
+            try {
+                SessionServlet sessionServlet = null;
+                synchronized (initializer) {
+                    sessionServlet = getSessionServlet(req, null);
+                }
+                
+                Session session = sessionServlet.getSession();
+                
+                ExternalizedInfo info = 
+                    session.getExternalizeManager().getExternalizedInfo(req.getPathInfo().substring(1));
+                
+                if (info == null) {
+                    debug ("info is null!");
+                    return -1;
+                }
+                return info.getLastModified();
+            } catch ( Exception e ) {
             }
-            return info.lastModified();
         }
         return -1;
-    }
-    
-    /**
-     * externalizes a resource.
-     */
-    protected void externalize(String path,
-                               HttpServletResponse response) 
-        throws ServletException, IOException {
-        ExternalizedInfo info;
-        info = ServletExternalizer.getExternalizedInfo(path);
-        if (info == null)
-            return;
-        Set headers = info.handler.getHeaders(info.extObject);
-        if (headers != null) {
-            for (Iterator it = headers.iterator(); it.hasNext();) {
-                Map.Entry entry = (Map.Entry) it.next();
-                response.addHeader((String) entry.getKey(), 
-                                    (String) entry.getValue());
-            }
-        }
-        response.setContentType(info.handler.getMimeType(info.extObject));
-        
-        // non-transient items can be cached by the browser
-        if (!info.isTransient()) {
-            response.setDateHeader("Expires", 
-                                   info.lastModified() + STABLE_EXPIRE);
-        }
-        OutputStream out = response.getOutputStream();
-        try {
-            info.handler.write(info.extObject, out);
-        }
-        catch (Exception e) { 
-            /* ignore */
-        }
-        out.flush();
-        out.close();
     }
     
     /**
@@ -388,6 +306,9 @@ public abstract class WingServlet extends HttpServlet
                             HttpServletResponse response)
         throws ServletException, IOException
     {
+        org.wings.util.TimeMeasure m = new TimeMeasure();
+        m.start("doGet");
+        try {
         /* 
          * make sure, that our context ends with '/'. Otherwise redirect
          * to the same location with appended slash. 
@@ -414,20 +335,22 @@ public abstract class WingServlet extends HttpServlet
             return;
         }
         
+        SessionServlet sessionServlet = null;
+        synchronized (initializer) {
+            sessionServlet = getSessionServlet(req, response);
+        }
+
         /*
          * we either have a request for externalization
          * (if there is something in the path info) or just a normal
          * request to this servlet.
          */
         if (isExternalizeRequest(req)) {
-            externalize(pathInfo, response);
+            sessionServlet.getSession().getExternalizeManager().deliver(pathInfo.substring(1), response);
             return;
         }
 
-        SessionServlet sessionServlet = null;
-        synchronized (initializer) {
-            sessionServlet = getSessionServlet(req);
-        }
+
 
         if (DEBUG) {
             if (req.getParameterValues("exit")!=null) {
@@ -441,6 +364,11 @@ public abstract class WingServlet extends HttpServlet
         }
 
         sessionServlet.doGet(req, response);
+
+        } finally {
+            m.stop();
+            debug(m.print());
+        }
     }
 
     private static final void debug(String msg) {

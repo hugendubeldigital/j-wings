@@ -39,13 +39,7 @@ public final class FrameCG
             String link = null;
 
             if (ext != null) {
-                try {
-                    link = ext.externalize(styleSheet);
-                }
-                catch (java.io.IOException e) {
-                    // dann eben nicht !!
-                    e.printStackTrace(System.err);
-                }
+                link = ext.externalize(styleSheet);
             }
             if (link != null) {
                 d.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");

@@ -25,18 +25,36 @@ import com.keypoint.*;
  * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
  * @version $Revision$
  */
-public class ImageObjectHandler
-    implements ObjectHandler
+public class ImageExternalizer
+    implements Externalizer
 {
     public static final String FORMAT_PNG = "png";
     public static final String FORMAT_GIF = "gif";
 
-    protected String format = FORMAT_PNG;
+    private static final String[] SUPPORTED_FORMATS = { FORMAT_PNG, FORMAT_GIF };
+    private static final Class[] SUPPORTED_CLASSES = { Image.class };
 
-    public ImageObjectHandler() {}
+    protected String format;
+    protected final String[] supportedMimeTypes = new String[1];
 
-    public ImageObjectHandler(String format) {
+    public ImageExternalizer() {
+        this(FORMAT_PNG);
+    }
+
+    public ImageExternalizer(String format) {
         this.format = format;
+
+        checkFormat();
+
+        supportedMimeTypes[0] = getMimeType(null);
+    }
+
+    protected void checkFormat() {
+        for ( int i=0; i<SUPPORTED_FORMATS.length; i++ ) {
+            if ( SUPPORTED_FORMATS[i].equals(format) )
+                return;
+        }
+        throw new IllegalArgumentException("Unsupported Format " + format);
     }
 
     public String getExtension(Object obj) {
@@ -47,12 +65,20 @@ public class ImageObjectHandler
         return "image/" + format;
     }
 
-    public boolean isStable(Object obj) {
+    public int getLength(Object obj) {
+        return -1;
+    }
+
+    public boolean isFinal(Object obj) {
         return false;
     }
 
-    public Class getSupportedClass() {
-        return Image.class;
+    public Class[] getSupportedClasses() {
+        return SUPPORTED_CLASSES;
+    }
+
+    public String[] getSupportedMimeTypes() {
+        return supportedMimeTypes;
     }
 
     public void write(Object obj, java.io.OutputStream out)

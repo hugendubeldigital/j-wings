@@ -66,7 +66,7 @@ public class ResourceStyleSheet
         return is;
     }
 
-    public boolean isStable() {
+    public boolean isFinal() {
         return true;
     }
 

@@ -88,13 +88,7 @@ public class ScrollBarCG
          
          ExternalizeManager ext = sb.getExternalizeManager();
          if (ext != null &&  transIcon != null) {
-             try {
-                 dummyIconAdr = ext.externalize(transIcon);
-             }
-             catch (java.io.IOException e) {
-                 System.err.println(e.getMessage());
-                 e.printStackTrace(System.err);
-             }
+             dummyIconAdr = ext.externalize(transIcon);
          }
          
          if ( sb.getOrientation() == SConstants.HORIZONTAL ) {

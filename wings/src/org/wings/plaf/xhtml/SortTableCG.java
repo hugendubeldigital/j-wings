@@ -143,35 +143,26 @@ public class SortTableCG
                 sortTable.getServerAddress()
                     .add(sortTable.getNamePrefix()+"=u"+c).write(d);
                 d.append("\">");
-                try {
-                    if (SSortTable.DEFAULT_SORT_UP != null) {
-                        ExternalizeManager ext = sortTable.getExternalizeManager();
-                        d.append("<img src=\"")
-                            .append(ext.externalize(SSortTable.DEFAULT_SORT_UP)).
-                            append("\" border=\"0\" />");
-                    } else
-                        d.append("u&nbsp;");
-                } catch (java.io.IOException e) {
+                if (SSortTable.DEFAULT_SORT_UP != null) {
+                    ExternalizeManager ext = sortTable.getExternalizeManager();
+                    d.append("<img src=\"")
+                        .append(ext.externalize(SSortTable.DEFAULT_SORT_UP)).
+                        append("\" border=\"0\" />");
+                } else
                     d.append("u&nbsp;");
-                }
                 d.append("</a>");
 
                 d.append("<a href=\"");
                 sortTable.getServerAddress()
                     .add(sortTable.getNamePrefix()+"=d"+c).write(d);
                 d.append("\">");
-                try {
-                    if (SSortTable.DEFAULT_SORT_DOWN != null) {
-                        ExternalizeManager ext = sortTable.getExternalizeManager();
-                        d.append("<img src=\"")
-                            .append(ext.externalize(SSortTable.DEFAULT_SORT_DOWN)).
-                            append("\" border\"=0\" />");
-                    } else
-                        d.append("d&nbsp;");
-
-                } catch (java.io.IOException e) {
+                if (SSortTable.DEFAULT_SORT_DOWN != null) {
+                    ExternalizeManager ext = sortTable.getExternalizeManager();
+                    d.append("<img src=\"")
+                        .append(ext.externalize(SSortTable.DEFAULT_SORT_DOWN)).
+                        append("\" border\"=0\" />");
+                } else
                     d.append("d&nbsp;");
-                }
                 d.append("</a>");
                 d.append("</th></tr></table>");
             }

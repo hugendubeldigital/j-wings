@@ -52,13 +52,7 @@ public final class DialogCG
 
         ExternalizeManager ext = c.getExternalizeManager();
         if (ext != null) {
-            try {
-                closeAdr = ext.externalize(close);
-            }
-            catch (java.io.IOException e) {
-                System.err.println(e.getMessage());
-                e.printStackTrace(System.err);
-            }
+            closeAdr = ext.externalize(close);
         }
 
         SGetAddress addr;

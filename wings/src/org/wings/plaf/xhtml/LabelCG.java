@@ -167,12 +167,7 @@ public class LabelCG
         if (ic != null) {
             ExternalizeManager ext = label.getExternalizeManager();
             if (ext != null) {
-                try {
-                    iAdr = ext.externalize(ic);
-                } catch (java.io.IOException e) {
-                    // dann eben nicht !!
-                    e.printStackTrace();
-                }
+                iAdr = ext.externalize(ic);
             }
         }
 

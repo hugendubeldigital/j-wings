@@ -14,19 +14,12 @@
 
 package org.wings.externalizer;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.net.URL;
-import java.util.Iterator;
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.Collections;
 
-import org.wings.util.Timer;
-import org.wings.session.Session;
-import org.wings.session.SessionManager;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * TODO: documentation
@@ -34,70 +27,106 @@ import org.wings.session.SessionManager;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public class ExternalizeManager
-    implements ActionListener
+public class ExternalizeManager extends AbstractExternalizeManager
 {
     /**
      * TODO: documentation
      */
-    protected final Map handlerByClass = new HashMap();
-    protected final Map handlerByMimeType = new HashMap();
+    private static final boolean DEBUG = true;
 
-    private static ExternalizeManager sharedInstance = null;
+    /**
+     *
+     */
+    private static final Externalizer[] DEFAULT_EXTERNALIZERS = {
+        new ImageExternalizer(ImageExternalizer.FORMAT_PNG),
+        new ImageExternalizer(ImageExternalizer.FORMAT_GIF),
+        new ImageIconExternalizer(ImageExternalizer.FORMAT_PNG),
+        new ImageIconExternalizer(ImageExternalizer.FORMAT_GIF),
+        new ResourceImageIconExternalizer(),
+        new TextExternalizer(),
+        new StyleSheetExternalizer(),
+    };
 
     /**
      * TODO: documentation
      */
-    protected Externalizer externalizer = null;
+    protected final HashMap externalizerByClass = new HashMap();
 
     /**
      * TODO: documentation
      */
-    protected static long DEFAULT_DESTROYER_SLEEP = 5 * 60 * 1000; // 5 min
+    protected final HashMap externalizerByMimeType = new HashMap();
 
-    protected Timer sessionDestroyer;
+    /**
+     * TODO: documentation
+     */
+    protected final Map externalized = Collections.synchronizedMap( new HashMap() );
 
 
     /**
      * TODO: documentation
      *
      */
-    public ExternalizeManager() {
-        sessionDestroyer = new Timer(DEFAULT_DESTROYER_SLEEP, this);
-        sessionDestroyer.start();
-    }
-
-
-    /**
-     * Sets the externalizer. Should be only called once.
-     * If already an externalizer was set, the old externalizer
-     * is told cleanAll() and the new one will then be used.
-     */
-    public void setExternalizer(Externalizer ext) {
-        if ( externalizer != null )
-            externalizer.cleanAll();
-        externalizer = ext;
+    public ExternalizeManager(HttpServletResponse response) {
+        this(response, true);
     }
 
     /**
      * TODO: documentation
      *
      */
-    protected void finalize() {
-        if ( externalizer != null ) {
-            externalizer.cleanAll();
-            externalizer = null;
+    public ExternalizeManager(HttpServletResponse response,
+                              boolean initWithDefaultExternalizers) {
+        super(response);
+        if ( initWithDefaultExternalizers )
+            addDefaultExternalizers();
+    }
+
+    /**
+     *
+     */
+    public final void addDefaultExternalizers() {
+        for ( int i=0; i<DEFAULT_EXTERNALIZERS.length; i++ ) {
+            addExternalizer(DEFAULT_EXTERNALIZERS[i]);
         }
-        sessionDestroyer.stop();
     }
-
 
     /**
      * TODO: documentation
      *
      */
-    public void setDestroyerTimeout(long timeout) {
-        sessionDestroyer.setDelay(timeout);
+    protected final void storeExternalizedInfo(String identifier,
+                                               ExternalizedInfo extInfo) {
+        debug("store identifier " + identifier);
+        debug("flags " + extInfo.getFlags());
+
+
+        externalized.put(identifier, extInfo);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     */
+    public final ExternalizedInfo getExternalizedInfo(String identifier) {
+        if ( identifier == null || identifier.length() < 1 )
+            return null;
+        
+        // SystemExternalizeManager hat negative Identifier
+        if ( identifier.charAt(0) == '-' ) {
+            return SystemExternalizeManager.getSharedInstance().
+                getExternalizedInfo(identifier);
+        }
+
+        return (ExternalizedInfo)externalized.get(identifier);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     */
+    protected final void removeExternalizedInfo(String identifier) {
+        externalized.remove(identifier);
     }
 
 
@@ -105,128 +134,198 @@ public class ExternalizeManager
      * TODO: documentation
      *
      * @return
-     * @throws java.io.IOException
      */
-    public String externalize(Object obj)
-        throws java.io.IOException
-    {
-        if ( externalizer == null )
-            throw new IllegalStateException("no externalizer");
-
-        String name = null;
-        ObjectHandler handler = getObjectHandler(obj.getClass());
-        if ( handler == null ) {
-            System.err.println("could not find externalizer for " + obj.getClass().getName());
-        }
-        else if ( obj != null ) {
-            Session session = SessionManager.getSession();
-            name = externalizer.externalize(obj, handler, session);
-        }
-
-        return name;
+    public String externalize(Object obj) {
+        return externalize(obj, SESSION);
     }
 
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public String externalize(Object obj, Set headers) {
+        return externalize(obj, headers, SESSION);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public String externalize(Object obj, int flags) {
+        return externalize(obj, (Set)null, flags);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public String externalize(Object obj, Set headers, int flags) {
+        if ( obj == null )
+            throw new IllegalStateException("no externalizer");
+
+        Externalizer externalizer = getExternalizer(obj.getClass());
+        if ( externalizer == null ) {
+            System.err.println("could not find externalizer for " +
+                               obj.getClass().getName());
+            return notFoundIdentifier;
+        }
+
+        return externalize(obj, externalizer, flags);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
     public String externalize(Object obj, String mimeType)
-        throws java.io.IOException
     {
-        if ( externalizer == null )
-            throw new IllegalStateException("no externalizer");
-
-        String name = null;
-        ObjectHandler handler = getObjectHandler(mimeType);
-        if ( handler == null ) {
-            System.err.println("could not find externalizer for " + mimeType);
-        }
-        else if ( obj != null ) {
-            Session session = SessionManager.getSession();
-            name = externalizer.externalize(obj, handler, session);
-        }
-
-        return name;
+        return externalize(obj, mimeType, SESSION);
     }
 
     /**
-     * Adds an object handler. If an object handler is already
-     * registered for one class, it will be replaced.
+     * TODO: documentation
+     *
+     * @return
      */
-    public void addObjectHandler(ObjectHandler handler) {
-        if ( handler != null ) {
-            Class c = handler.getSupportedClass();
-            if ( c != null )
-                handlerByClass.put(c, handler);
-
-            String mimeType = handler.getMimeType(null);
-            if ( mimeType != null )
-                handlerByMimeType.put(mimeType, handler);
-        }
-    }
-
-    public void addObjectHandler(ObjectHandler handler, String mimeType) {
-        if ( handler != null && mimeType != null )
-	    handlerByMimeType.put(mimeType, handler);
+    public String externalize(Object obj, String mimeType, Set headers) 
+    {
+        return externalize(obj, mimeType, headers, SESSION);
     }
 
     /**
-     * Returns an object handler for a class. If one could not be found,
-     * it goes down the inheritance tree and looks for an object handler
+     * TODO: documentation
+     *
+     * @return
+     */
+    public String externalize(Object obj, String mimeType, int flags)
+    {
+        return externalize(obj, mimeType, null, flags);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public String externalize(Object obj, String mimeType, 
+                              Set headers, int flags)
+    {
+        if ( obj == null )
+            throw new IllegalStateException("no externalizer");
+        
+        if ( mimeType == null )
+            return externalize(obj);
+
+        Externalizer externalizer = getExternalizer(mimeType);
+        if ( externalizer == null ) {
+            System.err.println("could not find externalizer for " +
+                               obj.getClass().getName());
+            return notFoundIdentifier;
+        }
+
+        return externalize(obj, externalizer, headers, flags);
+    }
+
+    /**
+     * Adds an externalizer. If an externalizer is already
+     * registered for a class or a mime type, it will be replaced.
+     */
+    public void addExternalizer(Externalizer externalizer) {
+        if ( externalizer != null ) {
+            Class c[] = externalizer.getSupportedClasses();
+            if ( c != null )
+                for ( int i=0; i<c.length; i++ ) 
+                    if ( c[i]!=null )
+                        externalizerByClass.put(c[i], externalizer);
+
+            String mimeTypes[] = externalizer.getSupportedMimeTypes();
+            if ( mimeTypes != null )
+                for ( int i=0; i<mimeTypes.length; i++ ) 
+                    if ( mimeTypes[i]!=null &&
+                         mimeTypes[i].trim().length()>0 )
+                        externalizerByMimeType.put(mimeTypes[i].trim().toLowerCase(), 
+                                              externalizer);
+        }
+    }
+    
+    /**
+     * Adds an Externalizer
+     */
+    public void addExternalizer(Externalizer externalizer, String mimeType) {
+        if ( externalizer != null && mimeType != null )
+	    externalizerByMimeType.put(mimeType, externalizer);
+    }
+
+    /**
+     * Returns an object externalizer for a class. If one could not be found,
+     * it goes down the inheritance tree and looks for an object externalizer
      * for the super classes. If one still could not be found, it goes
      * through the list of interfaces of the class and checks for object
-     * handlers for every interface. If this also doesn't return an
-     * object handler, null is returned.
+     * externalizers for every interface. If this also doesn't return an
+     * object externalizer, null is returned.
      *
      * @return
      */
-    public ObjectHandler getObjectHandler(Class c) {
-        ObjectHandler handler = null;
+    public Externalizer getExternalizer(Class c) {
+        Externalizer externalizer = null;
         if ( c != null ) {
-            handler = getSuperclassObjectHandler(c);
-            if ( handler == null )
-                handler = getInterfaceObjectHandler(c);
+            externalizer = getSuperclassExternalizer(c);
+            if ( externalizer == null )
+                externalizer = getInterfaceExternalizer(c);
         }
-        return handler;
+        return externalizer;
     }
 
-    private ObjectHandler getSuperclassObjectHandler(Class c) {
-        ObjectHandler handler = null;
+    /**
+     *
+     */
+    private Externalizer getSuperclassExternalizer(Class c) {
+        Externalizer externalizer = null;
         if ( c != null ) {
-            handler = (ObjectHandler)handlerByClass.get(c);
-            if ( handler == null )
-                handler = getObjectHandler(c.getSuperclass());
+            externalizer = (Externalizer)externalizerByClass.get(c);
+            if ( externalizer == null )
+                externalizer = getExternalizer(c.getSuperclass());
         }
-        return handler;
+        return externalizer;
     }
 
-    private ObjectHandler getInterfaceObjectHandler(Class c) {
-        ObjectHandler handler = null;
+    /**
+     *
+     */
+    private Externalizer getInterfaceExternalizer(Class c) {
+        Externalizer externalizer = null;
         Class[] ifList = c.getInterfaces();
         for ( int i = 0; i < ifList.length; i++ ) {
-            handler = (ObjectHandler)handlerByClass.get(ifList[i]);
-            if ( handler != null )
+            externalizer = (Externalizer)externalizerByClass.get(ifList[i]);
+            if ( externalizer != null )
                 break;
         }
-        return handler;
+        return externalizer;
     }
 
     /**
-     * returns an object handler for a mime type
+     * returns an object externalizer for a mime type
      */
-    public ObjectHandler getObjectHandler(String mimeType) {
-        ObjectHandler handler = null;
+    public Externalizer getExternalizer(String mimeType) {
+        Externalizer externalizer = null;
         if (mimeType != null && mimeType.length() > 0) {
-            handler = (ObjectHandler)handlerByMimeType.get(mimeType);
-            if (handler == null)
-                handler = getObjectHandler(mimeType.substring(0, mimeType.indexOf('/')));
+            externalizer = (Externalizer)externalizerByMimeType.get(mimeType);
+            if (externalizer == null)
+                externalizer = getExternalizer(mimeType.substring(0, mimeType.indexOf('/')));
         }
-        return handler;
+        return externalizer;
     }
 
-    /**
-     * this is for the session destroyer
-     */
-    public void actionPerformed(ActionEvent evt) {
-        if ( externalizer != null )
-            externalizer.clean();
+    private static final void debug(String msg) {
+        if (DEBUG) {
+            org.wings.util.DebugUtil.printDebugMessage(ExternalizeManager.class, msg);
+        }
     }
+
 }
 
 /*
