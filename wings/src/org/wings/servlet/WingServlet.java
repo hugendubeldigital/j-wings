@@ -298,6 +298,22 @@ public abstract class WingServlet
 
     static final Boolean initializer = new Boolean(true);
 
+    public final SessionServlet getSessionServlet(HttpServletRequest req) 
+        throws ServletException 
+    {
+        HttpSession session = req.getSession(false);
+
+        SessionServlet sessionServlet = null;
+
+        if ( session != null )
+            sessionServlet = (SessionServlet)session.getValue(lookupName);
+
+        if ( sessionServlet == null )
+            return newSession(req);
+        else
+            return sessionServlet;
+    }
+
     /**
      * TODO: documentation
      */
@@ -308,12 +324,7 @@ public abstract class WingServlet
         SessionServlet sessionServlet = null;
 
         synchronized (initializer) {
-            HttpSession session = req.getSession(false);
-            if ( session != null )
-                sessionServlet = (SessionServlet)session.getValue(lookupName);
-
-            if ( sessionServlet == null )
-                sessionServlet = newSession(req);
+            sessionServlet = getSessionServlet(req);
         }
 
         if ( DEBUG ) {
