@@ -41,56 +41,69 @@ public class SPageScroller
 {
 
     /**
-     * Default maximum amount of page buttons.
+     * Default maximum amount of page clickables.
      */
     private static final int DEFAULT_DIRECT_PAGES = 10;
 
     /**
      *
      */
-    private static final SEmptyBorder DEFAULT_DIRECT_BUTTON_BORDER = 
-        new SEmptyBorder(5,5,5,5);
+    private static final SEmptyBorder DEFAULT_DIRECT_CLICKABLE_BORDER = 
+        new SEmptyBorder(0,5,0,5);
 
-    /**
-     * Access to the default Icons for buttons
-     */
-    private static final int FORWARD = 0;
-    private static final int BACKWARD = 1;
+    public static final int FORWARD = 0;
+    public static final int BACKWARD = 1;
+    public static final int FIRST = 2;
+    public static final int LAST = 3;
 
     /**
      * Icons for both layout modes, both directions and enabled resp. disabled
      **/
     private final static SIcon[][][] DEFAULT_ICONS =
-        new SIcon[2][2][SAbstractButton.ICON_COUNT];
+        new SIcon[2][4][SClickable.ICON_COUNT];
 
     // Initialisiert (laedt) die Default Images
     static {
-        String[] postfixes = new String[2];
+        String[] postfixes = new String[4];
+        String[] prefixes = new String[4];
         for ( int orientation=0; orientation<2; orientation++ ) {
+            prefixes[BACKWARD] = "";
+            prefixes[FORWARD] = "";
+            prefixes[FIRST] = "Margin";
+            prefixes[LAST] = "Margin";
             if ( orientation==SConstants.VERTICAL ) {
                 postfixes[BACKWARD] = "Up";
                 postfixes[FORWARD] = "Down";
+                postfixes[FIRST] = "Up";
+                postfixes[LAST] = "Down";
             }
             else {
                 postfixes[BACKWARD] = "Left";
                 postfixes[FORWARD] = "Right";
+                postfixes[FIRST] = "Left";
+                postfixes[LAST] = "Right";
             }
 
             for ( int direction=0; direction<postfixes.length; direction++ ) {
-                DEFAULT_ICONS[orientation][direction][SAbstractButton.ENABLED_ICON] =
-                    new ResourceImageIcon("org/wings/icons/Scroll" +
-                                          postfixes[direction] + ".gif");
-                DEFAULT_ICONS[orientation][direction][SAbstractButton.DISABLED_ICON] =
-                    new ResourceImageIcon("org/wings/icons/DisabledScroll"
+                DEFAULT_ICONS[orientation][direction][SClickable.ENABLED_ICON] =
+                    new ResourceImageIcon("org/wings/icons/"
+                                          + prefixes[direction]
+                                          + "Scroll"
                                           + postfixes[direction] + ".gif");
-                DEFAULT_ICONS[orientation][direction][SAbstractButton.PRESSED_ICON] =
-                    new ResourceImageIcon("org/wings/icons/PressedScroll"
+                DEFAULT_ICONS[orientation][direction][SClickable.DISABLED_ICON] =
+                    new ResourceImageIcon("org/wings/icons/Disabled" 
+                                          + prefixes[direction]
+                                          + "Scroll"
                                           + postfixes[direction] + ".gif");
-                DEFAULT_ICONS[orientation][direction][SAbstractButton.ROLLOVER_ICON] =
-                    new ResourceImageIcon("org/wings/icons/RolloverScroll"
+                DEFAULT_ICONS[orientation][direction][SClickable.PRESSED_ICON] =
+                    new ResourceImageIcon("org/wings/icons/Pressed"
+                                          + prefixes[direction]
+                                          + "Scroll"
                                           + postfixes[direction] + ".gif");
-                DEFAULT_ICONS[orientation][direction][SAbstractButton.ROLLOVER_SELECTED_ICON] =
-                    new ResourceImageIcon("org/wings/icons/RolloverSelectedScroll"
+                DEFAULT_ICONS[orientation][direction][SClickable.ROLLOVER_ICON] =
+                    new ResourceImageIcon("org/wings/icons/Rollover"
+                                          + prefixes[direction]
+                                          + "Scroll"
                                           + postfixes[direction] + ".gif");
             }
         }
@@ -98,7 +111,7 @@ public class SPageScroller
 
 
     /**
-     * Actual amount of page buttons; depends on the number of elemnts in the
+     * Actual amount of page clickables; depends on the number of elemnts in the
      * model and on the models extent.
      * @see setDirectPages()
      */
@@ -110,37 +123,11 @@ public class SPageScroller
      */
     protected int layoutMode;
     
-    /** */
-    private final SClickable forwardPage = new SClickable();
+    /** contains the clickables forward, backward, first, last */
+    protected SClickable[] clickables = new SClickable[4];
 
-    /** */
-    private final SClickable backwardPage = new SClickable();
-
-    /** contains the direct page buttons. Size of this array is extend */
-    protected SClickable[] directPageButtons;
-
-    /**
-     * Icons for backward direction, the icon set of a button consists of 7 icons:
-     * enabled, disabled, selected, disabled_selected, rollover,
-     * rollover_selected, pressed. we
-     * don't need selected here, but we support it
-     **/
-    private final SIcon[] backwardIcons = new SIcon[SClickable.ICON_COUNT];
-
-    /**
-     * Icons for forward direction, the icon set of a button consists of 7 icons:
-     * enabled, disabled, selected, disabled_selected, rollover,
-     * rollover_selected, pressed. we 
-     * don't need selected here, but we support it
-     **/
-    private final SIcon[] forwardIcons = new SIcon[SClickable.ICON_COUNT];
-
-    /**
-     * Icons for both directions, the icon set of a button consists of 7 icons:
-     * enabled, disabled, selected, disabled_selected, rollover,
-     * rollover_selected, pressed.  
-     **/
-    private final SIcon[] directIcons = new SIcon[SClickable.ICON_COUNT];
+    /** contains the direct page clickables. Size of this array is extend */
+    protected SClickable[] directPageClickables;
 
     /**
      * Creates a scrollbar with the specified orientation,
@@ -159,10 +146,15 @@ public class SPageScroller
     public SPageScroller(int orientation, int value, int extent, int min, int max) {
         super(value, extent, min, max);
 
-        forwardPage.setRequestTarget(this);
-        backwardPage.setRequestTarget(this);
+        for ( int i=0; i<clickables.length; i++ ) {
+            clickables[i] = new SClickable();
+            clickables[i].setRequestTarget(this);
+        }
 
         setOrientation(orientation);
+        setMarginVisible(false);
+        setHorizontalAlignment(CENTER);
+        setVerticalAlignment(CENTER);
 
         setLayout(new SBorderLayout());
 
@@ -197,6 +189,58 @@ public class SPageScroller
     }
 
     /**
+     * to set your favorite icons and text of the clickable. Icons will be
+     * reset to default, if you change the layout mode {@link #setLayoutMode}
+     * @see FORWARD
+     * @see BACKWARD
+     * @see FIRST
+     * @see LAST
+     **/
+    public SClickable getClickable(int clickable) {
+        return clickables[clickable];
+    }
+
+    /**
+     * Are margin buttons visible
+     * @see FIRST
+     * @see LAST
+     **/
+    public final boolean isMarginVisible() {
+        return clickables[FIRST].isVisible()  ||
+            clickables[LAST].isVisible();
+    }
+
+    /**
+     * Are margin buttons visible
+     * @see FIRST
+     * @see LAST
+     **/
+    public final void setMarginVisible(boolean b) {
+        clickables[FIRST].setVisible(b);
+        clickables[LAST].setVisible(b);
+    }
+
+    /**
+     * Are step buttons visible
+     * @see FORWARD
+     * @see BACKWARD
+     **/
+    public final boolean isStepVisible() {
+        return clickables[BACKWARD].isVisible()  ||
+            clickables[FORWARD].isVisible();
+    }
+
+    /**
+     * Are step buttons visible
+     * @see FORWARD
+     * @see BACKWARD
+     **/
+    public final void setStepVisible(boolean b) {
+        clickables[FORWARD].setVisible(b);
+        clickables[BACKWARD].setVisible(b);
+    }
+
+    /**
      * set how to layout components
      * {@link VERTICAL} or {@link HORIZONTAL}
      **/
@@ -206,6 +250,7 @@ public class SPageScroller
         case SConstants.HORIZONTAL:
             layoutMode = orientation;
             resetIcons();
+            initLayout();
             break;
         default:
             throw new IllegalArgumentException("layout mode must be one of: VERTICAL, HORIZONTAL");
@@ -213,40 +258,24 @@ public class SPageScroller
     }
 
     /**
-     * Sets the proper icons for buttonstatus enabled resp. disabled.
+     * Sets the default icons 
      */
     public void resetIcons() {
-        for ( int i=0; i<forwardIcons.length; i++ ) {
-            forwardIcons[i] = DEFAULT_ICONS[layoutMode][FORWARD][i];
+        for ( int i=0; i<clickables.length; i++ ) {
+            clickables[i].setIcons(DEFAULT_ICONS[layoutMode][i]);
         } 
-        forwardPage.setIcons(forwardIcons);
-
-        for ( int i=0; i<backwardIcons.length; i++ ) {
-            backwardIcons[i] = DEFAULT_ICONS[layoutMode][BACKWARD][i];
-        } 
-        backwardPage.setIcons(backwardIcons);
-
-        for ( int i=0; i<directIcons.length; i++ ) {
-            directIcons[i] = null;
-        }
-
-        if ( directPageButtons!=null) {
-            for ( int i=0; i<directPageButtons.length; i++ ) {
-                directPageButtons[i].setIcons(directIcons);
-            }
-        }
     }
 
     /**
-     * Sets the amount of page buttons to <code>count</code>.
+     * Sets the amount of page clickables to <code>count</code>.
      */
     public final int getDirectPages() {
         return directPages;
     }
 
     /**
-     * Sets the amount of page buttons to <code>count</code>.
-     * @param count : New amount of page buttons.
+     * Sets the amount of page clickables to <code>count</code>.
+     * @param count : New amount of page clickables.
      */
     public void setDirectPages(int count) {
         if ( directPages!=count ) {
@@ -255,13 +284,22 @@ public class SPageScroller
         }
     }
 
+    public final int getPageCount() {
+        return (getMaximum()+(getExtent()-1)-getMinimum())/getExtent();
+    }
+
+    public final int getActualPage() {
+        return (getValue()-getMinimum()+getExtent()-1)/getExtent();
+    }
+
     /**
      * TODO: documentation
      *
      */
-    protected SClickable createDirectPageButton() {
+    protected SClickable createDirectPageClickable() {
         SClickable result = new SClickable();
-        result.setBorder(DEFAULT_DIRECT_BUTTON_BORDER);
+        result.setBorder(DEFAULT_DIRECT_CLICKABLE_BORDER);
+        result.setHorizontalAlignment(CENTER);
         return result;
     }
 
@@ -270,10 +308,10 @@ public class SPageScroller
      *
      */
     protected void initScrollers() {
-        directPageButtons = new SClickable[directPages];
-        for (int i = 0; i<directPageButtons.length; i++) {
-            directPageButtons[i] = createDirectPageButton();
-            directPageButtons[i].setRequestTarget(this);
+        directPageClickables = new SClickable[directPages];
+        for (int i = 0; i<directPageClickables.length; i++) {
+            directPageClickables[i] = createDirectPageClickable();
+            directPageClickables[i].setRequestTarget(this);
         }
 
         initLayout();
@@ -286,23 +324,39 @@ public class SPageScroller
     protected void initLayout() {
         removeAllComponents();
 
+        SPanel forwardPanel = null;
+        SPanel backwardPanel = null;
         SPanel middlePanel = null;
         if ( layoutMode==SConstants.VERTICAL) {
-            add(backwardPage, SBorderLayout.NORTH);
-            add(forwardPage, SBorderLayout.SOUTH);
             middlePanel = new SPanel(new SFlowDownLayout());
+
+            backwardPanel = new SPanel(new SFlowDownLayout());
+            add(backwardPanel, SBorderLayout.NORTH);
+
+            forwardPanel = new SPanel(new SFlowDownLayout());
+            add(forwardPanel, SBorderLayout.SOUTH);
         }
         else {
-            add(backwardPage, SBorderLayout.WEST);
-            add(forwardPage, SBorderLayout.EAST);
             middlePanel = new SPanel(new SFlowLayout());
+
+            backwardPanel = new SPanel(new SFlowLayout());
+            add(backwardPanel, SBorderLayout.WEST);
+
+            forwardPanel = new SPanel(new SFlowLayout());
+            add(forwardPanel, SBorderLayout.EAST);
+
         }
+
+        backwardPanel.add(clickables[FIRST]);
+        backwardPanel.add(clickables[BACKWARD]);
+        forwardPanel.add(clickables[FORWARD]);
+        forwardPanel.add(clickables[LAST]);
 
         add(middlePanel, SBorderLayout.CENTER);
 
-        // Buttons fuer die Seiten einfuegen
-        for (int i = 0; i<directPageButtons.length; i++) {
-            middlePanel.add(directPageButtons[i]);
+        // Clickables fuer die Seiten einfuegen
+        for (int i = 0; i<directPageClickables.length; i++) {
+            middlePanel.add(directPageClickables[i]);
         }
 
 
@@ -319,52 +373,56 @@ public class SPageScroller
      */
     protected void refreshComponents() {
         // lower bound
-        backwardPage.setEnabled(getValue() > getMinimum());
+        clickables[BACKWARD].setEnabled(getValue() > getMinimum());
+        clickables[FIRST].setEnabled(clickables[BACKWARD].isEnabled());
 
-        if ( backwardPage.isEnabled() ) {
-            backwardPage.setEvent(getEventParameter(getValue()-getExtent()));
+        if ( clickables[BACKWARD].isEnabled() ) {
+            clickables[BACKWARD].setEvent(getEventParameter(getValue()-getExtent()));
+            clickables[FIRST].setEvent(getEventParameter(getMinimum()));
         }
 
         // upper bound: maximum - extent
-        forwardPage.setEnabled(getValue() < getMaximum()-getExtent());
+        clickables[FORWARD].setEnabled(getValue() < getMaximum()-getExtent());
+        clickables[LAST].setEnabled(clickables[FORWARD].isEnabled());
 
-        if ( forwardPage.isEnabled() ) {
-            forwardPage.setEvent(getEventParameter(getValue()+getExtent()));
+        if ( clickables[FORWARD].isEnabled() ) {
+            clickables[FORWARD].setEvent(getEventParameter(getValue()+getExtent()));
+            clickables[LAST].setEvent(getEventParameter(getMaximum()-getExtent()));
         }
 
 
         // overall pages 
-        int pages = (getMaximum()+(getExtent()-1)-getMinimum())/getExtent();
+        int pages = getPageCount();
 
-        int actualPage = (getValue()-getMinimum()+getExtent()-1)/getExtent();
+        int actualPage = getActualPage();
 
         // prefer forward
         int firstDirectPage = actualPage - (directPages-1)/2;
         firstDirectPage = Math.min(firstDirectPage, pages-directPages);
         firstDirectPage = Math.max(firstDirectPage, 0);
 
-        // reset alle page buttons
-        for ( int i=0; i<directPageButtons.length; i++ ) {
-            directPageButtons[i].setVisible(false);
+        // reset alle page clickables
+        for ( int i=0; i<directPageClickables.length; i++ ) {
+            directPageClickables[i].setVisible(false);
         }
 
         for ( int i=0; 
-              i<Math.min(directPageButtons.length, pages-firstDirectPage);
+              i<Math.min(directPageClickables.length, pages-firstDirectPage);
               i++ ) {
 
             int page = firstDirectPage+i;
 
-            directPageButtons[i].setText(formatDirectPageLabel(page));
-            directPageButtons[i].setVisible(true);
+            directPageClickables[i].setText(formatDirectPageLabel(page));
+            directPageClickables[i].setVisible(true);
 
-            directPageButtons[i].setEvent(getEventParameter(page*getExtent()));
+            directPageClickables[i].setEvent(getEventParameter(page*getExtent()));
 
             if ( page==actualPage ) {
-                directPageButtons[i].setEnabled(false);
-                directPageButtons[i].setSelected(true);
+                directPageClickables[i].setEnabled(false);
+                directPageClickables[i].setSelected(true);
             } else {
-                directPageButtons[i].setEnabled(true);
-                directPageButtons[i].setSelected(false);
+                directPageClickables[i].setEnabled(true);
+                directPageClickables[i].setSelected(false);
             }
             
         }
