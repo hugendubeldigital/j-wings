@@ -53,7 +53,7 @@ public final class IFrameScrollPaneCG
                     String url = frame.getServerAddress().getAbsoluteAddress();
                     url = url.substring(0, url.lastIndexOf('/') + 1);
 		    url += ext.externalize(document);
-		    d.append("<iframe src=\"");
+		    d.append("<iframe frameborder=\"0\" src=\"");
                     d.append(url);
                     d.append("\" width=\"");
                     d.append(scrollPane.getHorizontalExtent());

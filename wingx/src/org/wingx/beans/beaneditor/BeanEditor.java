@@ -265,7 +265,7 @@ public class BeanEditor
         }
         catch (InvocationTargetException e) {
             Throwable t = e.getTargetException();
-            System.err.println(t.getMessage());
+            System.err.println("InvocationTargetException: " + t.getMessage());
             t.printStackTrace(System.err);
         }
         catch (IllegalAccessException e) {
