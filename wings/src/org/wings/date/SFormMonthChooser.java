@@ -133,11 +133,11 @@ public class SFormMonthChooser
     }
 
     /*
-     * Ergebnis ist >=1 und <=12!!
+     * Ergebnis ist >=0 und <=11!!
      */
     public int normalize(int d) {
-        d = Math.min(d, 12);
-        d = Math.max(d, 1);
+        d = Math.min(d, 11);
+        d = Math.max(d, 0);
         return d;
     }
 
