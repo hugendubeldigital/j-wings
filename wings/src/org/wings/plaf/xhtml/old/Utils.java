@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.awt.Color;
 
 import org.wings.*;
-import org.wings.plaf.*;
 import org.wings.io.Device;
 
 /**
