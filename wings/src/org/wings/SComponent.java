@@ -15,7 +15,6 @@
 package org.wings;
 
 
-
 import java.awt.Color;
 import java.awt.Font;
 import java.beans.*;
@@ -24,6 +23,7 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.logging.*;
 import javax.swing.event.EventListenerList;
+
 import org.wings.border.SBorder;
 import org.wings.event.*;
 import org.wings.externalizer.ExternalizeManager;
@@ -44,10 +44,9 @@ import org.wings.util.StringUtil;
  *
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
-  */
+ */
 public abstract class SComponent
-    implements SConstants, Cloneable, Serializable, Renderable
-{
+    implements SConstants, Cloneable, Serializable, Renderable {
 
     public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
@@ -113,7 +112,7 @@ public abstract class SComponent
 
     /** The tooltip for this component. */
     protected String tooltip = null;
-    
+
     /** The focus traversal Index */
     protected int focusTraversalIndex = -1;
 
@@ -146,8 +145,8 @@ public abstract class SComponent
     }
 
     public void setBorder(SBorder border) {
-        if ( firePropertyChangeEvents ) {
-            if ( this.border!=border ) {
+        if (firePropertyChangeEvents) {
+            if (this.border != border) {
                 SBorder oldBorder = this.border;
 
                 this.border = border;
@@ -174,7 +173,7 @@ public abstract class SComponent
      */
     public void setParent(SContainer p) {
         parent = p;
-        if ( p!=null )
+        if (p != null)
             setParentFrame(p.getParentFrame());
         else
             setParentFrame(null);
@@ -186,7 +185,7 @@ public abstract class SComponent
      * @param f the frame
      */
     protected void setParentFrame(SFrame f) {
-        if ( f!=parentFrame ) {
+        if (f != parentFrame) {
             unregister();
             parentFrame = f;
             register();
@@ -256,16 +255,15 @@ public abstract class SComponent
      * @param aEvent report this event to all listeners
      * @see org.wings.event.SComponentListener
      */
-    protected void fireComponentChangeEvent( SComponentEvent aEvent )
-    {
+    protected void fireComponentChangeEvent(SComponentEvent aEvent) {
         // maybe the better way to do this is to user the getListenerList
         // and iterate through all listeners, this saves the creation of
         // an array but it must cast to the apropriate listener
         Object[] listeners = getListenerList();
-        for ( int i = listeners.length-2; i>=0; i -= 2 ) {
-            if ( listeners[i]==SComponentListener.class ) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == SComponentListener.class) {
                 // Lazily create the event:
-                processComponentEvent((SComponentListener) listeners[i+1],
+                processComponentEvent((SComponentListener)listeners[i + 1],
                                       aEvent);
             }
         }
@@ -289,22 +287,21 @@ public abstract class SComponent
      * @see         org.wings.event.SComponentListener
      * @see         org.wings.SComponent#addComponentListener
      */
-    protected void processComponentEvent(SComponentListener listener, SComponentEvent e)
-    {
+    protected void processComponentEvent(SComponentListener listener, SComponentEvent e) {
         int id = e.getID();
-        switch(id) {
-        case SComponentEvent.COMPONENT_RESIZED:
-            listener.componentResized(e);
-            break;
-        case SComponentEvent.COMPONENT_MOVED:
-            listener.componentMoved(e);
-            break;
-        case SComponentEvent.COMPONENT_SHOWN:
-            listener.componentShown(e);
-            break;
-        case SComponentEvent.COMPONENT_HIDDEN:
-            listener.componentHidden(e);
-            break;
+        switch (id) {
+            case SComponentEvent.COMPONENT_RESIZED:
+                listener.componentResized(e);
+                break;
+            case SComponentEvent.COMPONENT_MOVED:
+                listener.componentMoved(e);
+                break;
+            case SComponentEvent.COMPONENT_SHOWN:
+                listener.componentShown(e);
+                break;
+            case SComponentEvent.COMPONENT_HIDDEN:
+                listener.componentHidden(e);
+                break;
         }
     }
 
@@ -432,7 +429,9 @@ public abstract class SComponent
     /**
      * @return the current style
      */
-    public String getStyle() { return style; }
+    public String getStyle() {
+        return style;
+    }
 
     /**
      * Set the class of the laf-provided style.
@@ -446,7 +445,9 @@ public abstract class SComponent
     /**
      * @return the current style
      */
-    public String getDisabledStyle() { return disabledStyle; }
+    public String getDisabledStyle() {
+        return disabledStyle;
+    }
 
     /**
      * Set a attribute.
@@ -507,7 +508,7 @@ public abstract class SComponent
      * @param c the new background color
      */
     public void setBackground(Color color) {
-        setAttribute(Style.BACKGROUND_COLOR, 
+        setAttribute(Style.BACKGROUND_COLOR,
                      CSSStyleSheet.getAttribute(color));
     }
 
@@ -574,8 +575,8 @@ public abstract class SComponent
      */
     public void setVisible(boolean visible) {
         final boolean old = SComponent.this.visible;
-        if ( firePropertyChangeEvents ) {
-            if ( this.visible!=visible ) {
+        if (firePropertyChangeEvents) {
+            if (this.visible != visible) {
                 this.visible = visible;
                 firePropertyChange(VISIBLE_PROPERTY,
                                    Boolean.valueOf(!visible),
@@ -587,8 +588,8 @@ public abstract class SComponent
         if (fireComponentChangeEvents && (visible != old)) {
             fireComponentChangeEvent(
                 new SComponentEvent(this, visible
-                    ? SComponentEvent.COMPONENT_SHOWN
-                    : SComponentEvent.COMPONENT_HIDDEN));
+                                          ? SComponentEvent.COMPONENT_SHOWN
+                                          : SComponentEvent.COMPONENT_HIDDEN));
         }
     }
 
@@ -617,8 +618,8 @@ public abstract class SComponent
      * @param v true if the component is enabled, false otherwise
      */
     public void setEnabled(boolean enabled) {
-        if ( firePropertyChangeEvents ) {
-            if ( this.enabled!=enabled ) {
+        if (firePropertyChangeEvents) {
+            if (this.enabled != enabled) {
                 this.enabled = enabled;
                 firePropertyChange(ENABLED_PROPERTY,
                                    Boolean.valueOf(!enabled),
@@ -653,8 +654,8 @@ public abstract class SComponent
      * @param n the new name for this component
      */
     public void setName(String name) {
-        if ( firePropertyChangeEvents ) {
-            if ( isDifferent(this.name, name) ) {
+        if (firePropertyChangeEvents) {
+            if (isDifferent(this.name, name)) {
                 this.name = name;
 
                 firePropertyChange(NAME_PROPERTY,
@@ -672,7 +673,7 @@ public abstract class SComponent
      * The component will be registered with the ReloadManager.
      *
      * @param aspect the aspect to reload; this is one of the constants
-     *               defined in ReloadManager: 
+     *               defined in ReloadManager:
      *               <code>ReloadManager.RELOAD_*</code>
      */
     public final void reload(int aspect) {
@@ -685,14 +686,14 @@ public abstract class SComponent
      * fashion, changed. Convenience method for {@link #reload(int)}
      *
      * @param aspect the aspect to reload; this is one of the constants
-     *               defined in ReloadManager: 
+     *               defined in ReloadManager:
      *               <code>ReloadManager.RELOAD_*</code>
      * @param oldVal the old value of some property
      * @param newVal the new value of some property
      */
-    protected final void reloadIfChange(int aspect, 
+    protected final void reloadIfChange(int aspect,
                                         Object oldVal, Object newVal) {
-        if (!((oldVal == newVal)||(oldVal != null && oldVal.equals(newVal)))) {
+        if (!((oldVal == newVal) || (oldVal != null && oldVal.equals(newVal)))) {
             //System.err.println(getClass().getName() + ": reload. old:" + oldVal + "; new: "+ newVal);
             reload(aspect);
         }
@@ -704,14 +705,14 @@ public abstract class SComponent
      * fashion, changed. Convenience method for {@link #reload(int)}
      *
      * @param aspect the aspect to reload; this is one of the constants
-     *               defined in ReloadManager: 
+     *               defined in ReloadManager:
      *               <code>ReloadManager.RELOAD_*</code>
      * @param oldVal the old value of some property
      * @param newVal the new value of some property
      */
-    protected final void reloadIfChange(int aspect, 
+    protected final void reloadIfChange(int aspect,
                                         int oldVal, int newVal) {
-        if ( oldVal!=newVal ) {
+        if (oldVal != newVal) {
             reload(aspect);
         }
     }
@@ -722,14 +723,14 @@ public abstract class SComponent
      * fashion, changed. Convenience method for {@link #reload(int)}
      *
      * @param aspect the aspect to reload; this is one of the constants
-     *               defined in ReloadManager: 
+     *               defined in ReloadManager:
      *               <code>ReloadManager.RELOAD_*</code>
      * @param oldVal the old value of some property
      * @param newVal the new value of some property
      */
-    protected final void reloadIfChange(int aspect, 
+    protected final void reloadIfChange(int aspect,
                                         boolean oldVal, boolean newVal) {
-        if ( oldVal!=newVal ) {
+        if (oldVal != newVal) {
             reload(aspect);
         }
     }
@@ -740,14 +741,14 @@ public abstract class SComponent
      * fashion, changed. Convenience method for {@link #reload(int)}
      *
      * @param aspect the aspect to reload; this is one of the constants
-     *               defined in ReloadManager: 
+     *               defined in ReloadManager:
      *               <code>ReloadManager.RELOAD_*</code>
      * @param oldVal the old value of some property
      * @param newVal the new value of some property
      */
-    protected final void reloadIfChange(int aspect, 
+    protected final void reloadIfChange(int aspect,
                                         byte oldVal, byte newVal) {
-        if ( oldVal!=newVal ) {
+        if (oldVal != newVal) {
             reload(aspect);
         }
     }
@@ -758,14 +759,14 @@ public abstract class SComponent
      * fashion, changed. Convenience method for {@link #reload(int)}
      *
      * @param aspect the aspect to reload; this is one of the constants
-     *               defined in ReloadManager: 
+     *               defined in ReloadManager:
      *               <code>ReloadManager.RELOAD_*</code>
      * @param oldVal the old value of some property
      * @param newVal the new value of some property
      */
-    protected final void reloadIfChange(int aspect, 
+    protected final void reloadIfChange(int aspect,
                                         short oldVal, short newVal) {
-        if ( oldVal!=newVal ) {
+        if (oldVal != newVal) {
             reload(aspect);
         }
     }
@@ -776,14 +777,14 @@ public abstract class SComponent
      * fashion, changed. Convenience method for {@link #reload(int)}
      *
      * @param aspect the aspect to reload; this is one of the constants
-     *               defined in ReloadManager: 
+     *               defined in ReloadManager:
      *               <code>ReloadManager.RELOAD_*</code>
      * @param oldVal the old value of some property
      * @param newVal the new value of some property
      */
-    protected final void reloadIfChange(int aspect, 
+    protected final void reloadIfChange(int aspect,
                                         long oldVal, long newVal) {
-        if ( oldVal!=newVal ) {
+        if (oldVal != newVal) {
             reload(aspect);
         }
     }
@@ -794,14 +795,14 @@ public abstract class SComponent
      * fashion, changed. Convenience method for {@link #reload(int)}
      *
      * @param aspect the aspect to reload; this is one of the constants
-     *               defined in ReloadManager: 
+     *               defined in ReloadManager:
      *               <code>ReloadManager.RELOAD_*</code>
      * @param oldVal the old value of some property
      * @param newVal the new value of some property
      */
-    protected final void reloadIfChange(int aspect, 
+    protected final void reloadIfChange(int aspect,
                                         float oldVal, float newVal) {
-        if ( oldVal!=newVal ) {
+        if (oldVal != newVal) {
             reload(aspect);
         }
     }
@@ -812,14 +813,14 @@ public abstract class SComponent
      * fashion, changed. Convenience method for {@link #reload(int)}
      *
      * @param aspect the aspect to reload; this is one of the constants
-     *               defined in ReloadManager: 
+     *               defined in ReloadManager:
      *               <code>ReloadManager.RELOAD_*</code>
      * @param oldVal the old value of some property
      * @param newVal the new value of some property
      */
-    protected final void reloadIfChange(int aspect, 
+    protected final void reloadIfChange(int aspect,
                                         double oldVal, double newVal) {
-        if ( oldVal!=newVal ) {
+        if (oldVal != newVal) {
             reload(aspect);
         }
     }
@@ -830,19 +831,20 @@ public abstract class SComponent
      * fashion, changed. Convenience method for {@link #reload(int)}
      *
      * @param aspect the aspect to reload; this is one of the constants
-     *               defined in ReloadManager: 
+     *               defined in ReloadManager:
      *               <code>ReloadManager.RELOAD_*</code>
      * @param oldVal the old value of some property
      * @param newVal the new value of some property
      */
-    protected final void reloadIfChange(int aspect, 
+    protected final void reloadIfChange(int aspect,
                                         char oldVal, char newVal) {
-        if ( oldVal!=newVal ) {
+        if (oldVal != newVal) {
             reload(aspect);
         }
     }
+
     /**
-     * Let the code generator deletate write the component's code 
+     * Let the code generator deletate write the component's code
      * to the device. The code generator is the actual 'plaf'.
      *
      * @param s the Device to write into
@@ -854,12 +856,11 @@ public abstract class SComponent
             if (visible) {
                 cg.write(s, this);
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             System.err.println(t.getMessage());
             t.printStackTrace(System.err);
             logger.log(Level.SEVERE, "exception during code generation for " +
-                       getClass().getName(), t);
+                                     getClass().getName(), t);
         }
     }
 
@@ -873,7 +874,7 @@ public abstract class SComponent
 
 
     /**
-     * Generic implementation for generating a string that represents 
+     * Generic implementation for generating a string that represents
      * the components configuration.
      * @return a string containing all properties
      */
@@ -885,8 +886,8 @@ public abstract class SComponent
             BeanInfo info = Introspector.getBeanInfo(getClass());
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
 
-            boolean first=true;
-            for (int i=0; i < descriptors.length; i++) {
+            boolean first = true;
+            for (int i = 0; i < descriptors.length; i++) {
                 try {
                     Method getter = descriptors[i].getReadMethod();
                     if (getter == null || getter.getName().startsWith("getParent"))
@@ -898,42 +899,45 @@ public abstract class SComponent
                     else
                         buffer.append(",");
                     buffer.append(descriptors[i].getName() + "=" + value);
+                } catch (Exception e) {
                 }
-                catch (Exception e) {}
             }
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
 
         buffer.append("]");
         return buffer.toString();
     }
 
     /**
-     * Encodes a low level event id for using it in a request parameter. Every 
+     * Encodes a low level event id for using it in a request parameter. Every
      * {@link LowLevelEventListener} should encode its LowLevelEventId before
      * using it in a request parameter. This encoding adds consistency checking
-     * for outtimed requests ("Back Button") 
+     * for outtimed requests ("Back Button")
      */
     public final String encodeLowLevelEventId(String lowLevelEventId) {
         if (getParentFrame() != null)
-            return (getParentFrame().getEventEpoch() 
-                    + SConstants.UID_DIVIDER 
+            if (!(this instanceof LowLevelEventListener) ||
+                ((LowLevelEventListener)this).checkEpoch()) {
+                return (getParentFrame().getEventEpoch()
+                    + SConstants.UID_DIVIDER
                     + lowLevelEventId);
+            }
         return lowLevelEventId;
     }
 
     /**
-     * Encodes a low level event id for using it in a request parameter. Every 
+     * Encodes a low level event id for using it in a request parameter. Every
      * {@link LowLevelEventListener} should encode its LowLevelEventId before
      * using it in a request parameter. This encoding adds consistency checking
-     * for outtimed requests ("Back Button") 
+     * for outtimed requests ("Back Button")
      */
     public final String getEncodedLowLevelEventId() {
         return encodeLowLevelEventId(getLowLevelEventId());
     }
 
     /**
-     * Default implementation of the method in 
+     * Default implementation of the method in
      * {@link LowLevelEventListener}.
      */
     public String getLowLevelEventId() {
@@ -944,7 +948,7 @@ public abstract class SComponent
      * @deprecated use encodeLowLevelEventId(getLowLevelEventId)
      */
     public String getNamePrefix() {
-        if ( this instanceof LowLevelEventListener ) {
+        if (this instanceof LowLevelEventListener) {
             return encodeLowLevelEventId(((LowLevelEventListener)this).
                                          getLowLevelEventId());
         }
@@ -991,7 +995,9 @@ public abstract class SComponent
      *
      * @return the tooltip text
      */
-    public String getToolTipText() { return tooltip; }
+    public String getToolTipText() {
+        return tooltip;
+    }
 
     /**
      * The index in which the focus is traversed using Tab. This is
@@ -1025,8 +1031,7 @@ public abstract class SComponent
     public Object clone() {
         try {
             return super.clone();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -1092,10 +1097,9 @@ public abstract class SComponent
      * @see #putClientProperty
      */
     public final Object getClientProperty(Object key) {
-        if(clientProperties == null) {
+        if (clientProperties == null) {
             return null;
-        }
-        else {
+        } else {
             return getClientProperties().get(key);
         }
     }
@@ -1128,11 +1132,10 @@ public abstract class SComponent
 
         if (value != null) {
             getClientProperties().put(key, value);
-        } 
-        else {
+        } else {
             getClientProperties().remove(key);
         }
-        
+
         firePropertyChange(key.toString(), oldValue, value);
     }
 
@@ -1189,11 +1192,9 @@ public abstract class SComponent
     public void updateCG() {
         if (getSession() == null) {
             logger.warning("no session yet.");
-        }
-        else if (getSession().getCGManager() == null) {
+        } else if (getSession().getCGManager() == null) {
             logger.warning("no CGManager");
-        }
-        else {
+        } else {
             setCG((ComponentCG)getSession().getCGManager().getCG(this));
         }
         if (border != null)
@@ -1215,11 +1216,10 @@ public abstract class SComponent
     /**
      * Invite a ComponentVisitor.
      * Invokes visit(SComponent) on the ComponentVisitor.
-     * @param visitor the visitor to be invited 
+     * @param visitor the visitor to be invited
      */
     public void invite(ComponentVisitor visitor)
-        throws Exception
-    {
+        throws Exception {
         visitor.visit(this);
     }
 
@@ -1244,7 +1244,7 @@ public abstract class SComponent
     }
 
     /**
-     * If true the component paints every pixel within its bounds. 
+     * If true the component paints every pixel within its bounds.
      * Otherwise, the component may not paint some or all of its
      * pixels, allowing the underlying pixels to show through.
      * <p>
@@ -1261,8 +1261,8 @@ public abstract class SComponent
      *  description: The component's opacity
      */
     public void setOpaque(boolean opaque) {
-        if ( firePropertyChangeEvents ) {
-            if ( this.opaque!=opaque ) {
+        if (firePropertyChangeEvents) {
+            if (this.opaque != opaque) {
                 this.opaque = opaque;
                 firePropertyChange(OPAQUE_PROPERTY,
                                    Boolean.valueOf(!opaque),
@@ -1277,19 +1277,19 @@ public abstract class SComponent
      * use this method for changing a variable. if a new value is different
      * from the old value set the new one and notify e.g. the reloadmanager...
      */
-    protected static final boolean isDifferent(Object oldObject, 
+    protected static final boolean isDifferent(Object oldObject,
                                                Object newObject) {
-        if ( oldObject==newObject )
+        if (oldObject == newObject)
             return false;
 
-        if ( oldObject==null )
+        if (oldObject == null)
             return true;
 
         return !oldObject.equals(newObject);
     }
 
     protected final void addEventListener(Class type, EventListener listener) {
-        if ( listeners==null ) {
+        if (listeners == null) {
             listeners = new EventListenerList();
         }
 
@@ -1297,7 +1297,7 @@ public abstract class SComponent
     }
 
     protected final void removeEventListener(Class type, EventListener listener) {
-        if ( listeners!=null ) {
+        if (listeners != null) {
             listeners.remove(type, listener);
         }
     }
@@ -1309,7 +1309,7 @@ public abstract class SComponent
      * @see EventListenerList
      */
     protected final int getListenerCount(Class type) {
-        if ( listeners!=null ) {
+        if (listeners != null) {
             return listeners.getListenerCount(type);
         } else {
             return 0;
@@ -1325,7 +1325,7 @@ public abstract class SComponent
      * @see EventListenerList
      */
     protected final Object[] getListenerList() {
-        if ( listeners==null ) {
+        if (listeners == null) {
             return EMPTY_OBJECT_ARRAY;
         } else {
             return listeners.getListenerList();
@@ -1339,10 +1339,10 @@ public abstract class SComponent
      * @see EventListenerList
      */
     protected final EventListener[] getListeners(Class type) {
-        if ( listeners!=null ) {
+        if (listeners != null) {
             return listeners.getListeners(type);
         } else {
-            return (EventListener[]) Array.newInstance(type, 0);
+            return (EventListener[])Array.newInstance(type, 0);
         }
     }
 
@@ -1354,7 +1354,7 @@ public abstract class SComponent
      * @param listener
      */
     public final void addPropertyChangeListener(PropertyChangeListener listener) {
-        if ( listener==null )
+        if (listener == null)
             throw new IllegalArgumentException("null parameter not allowed");
 
         addEventListener(PropertyChangeListener.class, listener);
@@ -1371,12 +1371,12 @@ public abstract class SComponent
      * @param listener
      */
     public final void removePropertyChangeListener(PropertyChangeListener listener) {
-        if ( listener==null )
+        if (listener == null)
             throw new IllegalArgumentException("null parameter not allowed");
 
         removeEventListener(PropertyChangeListener.class, listener);
 
-        if ( getListenerCount(PropertyChangeListener.class)==0 ) {
+        if (getListenerCount(PropertyChangeListener.class) == 0) {
             setFirePropertyChangeEvents(false);
         }
     }
@@ -1400,6 +1400,7 @@ public abstract class SComponent
     public final boolean getFirePropertyChangeEvents() {
         return firePropertyChangeEvents;
     }
+
     /**
      * Reports a bound property change.
      *
@@ -1408,10 +1409,10 @@ public abstract class SComponent
      * @param oldValue the old value of the property (as a byte)
      * @param newValue the new value of the property (as a byte)
      * @see #firePropertyChange(java.lang.String, java.lang.Object,
-     *		java.lang.Object)
+        *		java.lang.Object)
      */
     public void firePropertyChange(String propertyName, byte oldValue, byte newValue) {
-        if ( firePropertyChangeEvents && (oldValue != newValue)) {
+        if (firePropertyChangeEvents && (oldValue != newValue)) {
             firePropertyChange(propertyName, new Byte(oldValue), new Byte(newValue));
         }
     }
@@ -1424,12 +1425,12 @@ public abstract class SComponent
      * @param oldValue the old value of the property (as a char)
      * @param newValue the new value of the property (as a char)
      * @see #firePropertyChange(java.lang.String, java.lang.Object,
-     *		java.lang.Object)
+        *		java.lang.Object)
      */
-     public void firePropertyChange(String propertyName, char oldValue, char newValue) {
-         if ( firePropertyChangeEvents && (oldValue != newValue)) {
-             firePropertyChange(propertyName, new Character(oldValue), new Character(newValue));
-         }
+    public void firePropertyChange(String propertyName, char oldValue, char newValue) {
+        if (firePropertyChangeEvents && (oldValue != newValue)) {
+            firePropertyChange(propertyName, new Character(oldValue), new Character(newValue));
+        }
     }
 
     /**
@@ -1440,10 +1441,10 @@ public abstract class SComponent
      * @param oldValue the old value of the property (as a short)
      * @param newValue the old value of the property (as a short)
      * @see #firePropertyChange(java.lang.String, java.lang.Object,
-     *		java.lang.Object)
+        *		java.lang.Object)
      */
     public void firePropertyChange(String propertyName, short oldValue, short newValue) {
-        if ( firePropertyChangeEvents && (oldValue != newValue)) {
+        if (firePropertyChangeEvents && (oldValue != newValue)) {
             firePropertyChange(propertyName, new Short(oldValue), new Short(newValue));
         }
     }
@@ -1456,10 +1457,10 @@ public abstract class SComponent
      * @param oldValue the old value of the property (as an int)
      * @param newValue the new value of the property (as an int)
      * @see #firePropertyChange(java.lang.String, java.lang.Object,
-     *		java.lang.Object)
+        *		java.lang.Object)
      */
     public void firePropertyChange(String propertyName, int oldValue, int newValue) {
-        if ( firePropertyChangeEvents && (oldValue != newValue)) {
+        if (firePropertyChangeEvents && (oldValue != newValue)) {
             firePropertyChange(propertyName, new Integer(oldValue), new Integer(newValue));
         }
     }
@@ -1472,10 +1473,10 @@ public abstract class SComponent
      * @param oldValue the old value of the property (as a long)
      * @param newValue the new value of the property (as a long)
      * @see #firePropertyChange(java.lang.String, java.lang.Object,
-     *		java.lang.Object)
+        *		java.lang.Object)
      */
     public void firePropertyChange(String propertyName, long oldValue, long newValue) {
-        if ( firePropertyChangeEvents && (oldValue != newValue)) {
+        if (firePropertyChangeEvents && (oldValue != newValue)) {
             firePropertyChange(propertyName, new Long(oldValue), new Long(newValue));
         }
     }
@@ -1488,10 +1489,10 @@ public abstract class SComponent
      * @param oldValue the old value of the property (as a float)
      * @param newValue the new value of the property (as a float)
      * @see #firePropertyChange(java.lang.String, java.lang.Object,
-     *		java.lang.Object)
+        *		java.lang.Object)
      */
     public void firePropertyChange(String propertyName, float oldValue, float newValue) {
-        if ( firePropertyChangeEvents && (oldValue != newValue)) {
+        if (firePropertyChangeEvents && (oldValue != newValue)) {
             firePropertyChange(propertyName, new Float(oldValue), new Float(newValue));
         }
     }
@@ -1504,10 +1505,10 @@ public abstract class SComponent
      * @param oldValue the old value of the property (as a double)
      * @param newValue the new value of the property (as a double)
      * @see #firePropertyChange(java.lang.String, java.lang.Object,
-     *		java.lang.Object)
+        *		java.lang.Object)
      */
     public void firePropertyChange(String propertyName, double oldValue, double newValue) {
-        if ( firePropertyChangeEvents && (oldValue != newValue)) {
+        if (firePropertyChangeEvents && (oldValue != newValue)) {
             firePropertyChange(propertyName, new Double(oldValue), new Double(newValue));
         }
     }
@@ -1520,12 +1521,12 @@ public abstract class SComponent
      * @param oldValue the old value of the property (as a boolean)
      * @param oldValue the old value of the property (as a boolean)
      * @see #firePropertyChange(java.lang.String, java.lang.Object,
-     *		java.lang.Object)
+        *		java.lang.Object)
      */
     public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
-        if ( firePropertyChangeEvents && (oldValue != newValue)) {
-        firePropertyChange(propertyName, oldValue ? Boolean.TRUE : Boolean.FALSE, 
-                           newValue ? Boolean.TRUE : Boolean.FALSE);
+        if (firePropertyChangeEvents && (oldValue != newValue)) {
+            firePropertyChange(propertyName, oldValue ? Boolean.TRUE : Boolean.FALSE,
+                               newValue ? Boolean.TRUE : Boolean.FALSE);
         }
     }
 
@@ -1538,7 +1539,7 @@ public abstract class SComponent
      */
     protected final void firePropertyChange(String property,
                                             Object oldValue, Object newValue) {
-        if ( firePropertyChangeEvents ) {
+        if (firePropertyChangeEvents) {
 
             PropertyChangeEvent event = null;
 
@@ -1546,12 +1547,12 @@ public abstract class SComponent
             // and iterate through all listeners, this saves the creation of
             // an array but it must cast to the apropriate listener
             Object[] listeners = getListenerList();
-            for ( int i = listeners.length-2; i>=0; i -= 2 ) {
-                if ( listeners[i]==PropertyChangeListener.class ) {
+            for (int i = listeners.length - 2; i >= 0; i -= 2) {
+                if (listeners[i] == PropertyChangeListener.class) {
                     // Lazily create the event:
-                    if ( event==null )
+                    if (event == null)
                         event = new PropertyChangeEvent(this, property, oldValue, newValue);
-                    ((PropertyChangeListener) listeners[i+1]).propertyChange(event);
+                    ((PropertyChangeListener)listeners[i + 1]).propertyChange(event);
                 }
             }
 
@@ -1592,24 +1593,24 @@ public abstract class SComponent
     }
 
     public final void fireRenderEvent(int type) {
-        if ( fireRenderEvents ) {
+        if (fireRenderEvents) {
             // maybe the better way to do this is to user the getListenerList
             // and iterate through all listeners, this saves the creation of
             // an array but it must cast to the apropriate listener
             Object[] listeners = getListenerList();
-            for ( int i = listeners.length-2; i>=0; i -= 2 ) {
-                if ( listeners[i]==SRenderListener.class ) {
+            for (int i = listeners.length - 2; i >= 0; i -= 2) {
+                if (listeners[i] == SRenderListener.class) {
                     // Lazily create the event:
-                    if ( renderEvent==null ) {
+                    if (renderEvent == null) {
                         renderEvent = new SRenderEvent(this);
                     } // end of if ()
-                    
-                    switch ( type ) {
+
+                    switch (type) {
                         case START_RENDERING:
-                            ((SRenderListener)listeners[i+1]).startRendering(renderEvent);
+                            ((SRenderListener)listeners[i + 1]).startRendering(renderEvent);
                             break;
                         case DONE_RENDERING:
-                            ((SRenderListener)listeners[i+1]).doneRendering(renderEvent);
+                            ((SRenderListener)listeners[i + 1]).doneRendering(renderEvent);
                             break;
                     } // end of switch ()
                 }
