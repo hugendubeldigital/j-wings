@@ -320,7 +320,7 @@ public class SCheckBox extends SButton
      * @param s
      */
     public void setSelected(boolean selected) {
-        boolean oldSelected = selected;
+        boolean oldSelected = this.selected;
         this.selected = selected;
 
         if (group != null)
