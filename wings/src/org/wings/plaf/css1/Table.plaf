@@ -116,10 +116,19 @@
         String currentRowStyle = rowStyle!=null ? rowStyle :
 	  (table.isRowSelected(r) ?  selectionStyle : style );
 
-        %><tr<%|class=currentRowStyle%>><%
+        %><tr<%|class=currentRowStyle%><%
+
+        if ( table.getSelectClickCount()>0 ) {
+            RequestURL rowSelectionAddr = table.getRequestURL();
+            rowSelectionAddr.addParameter(table,
+                                          table.getToggleSelectionParameter(r,-1));
+            %> onclick="location.href='<%=rowSelectionAddr.toString()%>';"<%
+        }
+
+        %>><%
 
         boolean selectionWritten = ((selectionMode == SListSelectionModel.NO_SELECTION)
-                                   || (rowSelectionColumn < 0));
+                                   || (rowSelectionColumn < 0) || table.getSelectClickCount()>0 );
 
         for (int c = startCol; c < endCol; c++) {
             if (!selectionWritten && (c >= rowSelectionColumn)) {
@@ -169,7 +178,7 @@
 
         final String compStyle = comp.getStyle();
         %><%|class=compStyle%><%
-	comp.setStyle(null);
+	    comp.setStyle(null);
 
         switch (comp.getHorizontalAlignment()) {
         case LEFT_ALIGN: 
@@ -195,41 +204,58 @@
              break;
         }
 
-        // close <td..>
-        %>><%
+        if ( table.getEditClickCount()!=2 ) {
+            // close <td..>
+            %>><%
 
-        boolean pushedURL = false;
-        if (!isEditingCell && table.isCellEditable(row, col)) {
-            if (comp instanceof ClickableRenderComponent) {
-                if ( table.getShowAsFormComponent() ) {
-                    AnchorRenderStack.push(Utils.event(table), table.getEditParameter(row, col));
+            boolean pushedURL = false;
+            if (!isEditingCell && table.isCellEditable(row, col)) {
+                if (comp instanceof ClickableRenderComponent) {
+                    if ( table.getShowAsFormComponent() ) {
+                        AnchorRenderStack.push(Utils.event(table), table.getEditParameter(row, col));
+                    } else {
+                        RequestURL editAddr = table.getRequestURL();
+                        editAddr.addParameter(table,
+                                              table.getEditParameter(row, col));
+                        AnchorRenderStack.push(editAddr, null);
+                    }
+                    pushedURL = true;
                 } else {
                     RequestURL editAddr = table.getRequestURL();
                     editAddr.addParameter(table,
                                           table.getEditParameter(row, col));
-                    AnchorRenderStack.push(editAddr, null);
+                    %><a href="<%=editAddr.toString()%>"><%
+                    writeIcon(device, editIcon);
+                    %></a>&nbsp;<%
                 }
-                pushedURL = true;
             }
-            else {
+
+            rendererPane.writeComponent(device, comp, table);
+
+            if (pushedURL) {
+                AnchorRenderStack.pop();
+            }
+
+            comp.setStyle(compStyle);
+            %></td>
+<%
+        } else {
+
+
+            if (!isEditingCell && table.isCellEditable(row, col)) {
                 RequestURL editAddr = table.getRequestURL();
                 editAddr.addParameter(table,
                                       table.getEditParameter(row, col));
-                %><a href="<%=editAddr.toString()%>"><%
-                writeIcon(device, editIcon);
-                %></a>&nbsp;<%
+                %> ondblclick="location.href='<%=editAddr.toString()%>';"<%
             }
-        }
+            %>><%
 
-        rendererPane.writeComponent(device, comp, table);
+            rendererPane.writeComponent(device, comp, table);
 
-        if (pushedURL) {
-            AnchorRenderStack.pop();
-        }
-
-        comp.setStyle(compStyle);
-        %></td>
+            comp.setStyle(compStyle);
+            %></td>
 <%
+        }
     }
 
     protected void writeDefaultFormRowSelection(Device device, STable table, 

@@ -44,7 +44,7 @@ import org.wings.style.*;
  */
 public class STable
     extends SComponent
-    implements TableModelListener, Scrollable, CellEditorListener, LowLevelEventListener, SSelectionComponent {
+    implements TableModelListener, Scrollable, CellEditorListener, LowLevelEventListener, SSelectionComponent, SForm.FormComponent {
     /**
      * <p>stores the ID of the class to access the <code>ComponentGenerator</code>.</p>
      * @see #getCGClassID
@@ -1418,6 +1418,28 @@ public class STable
      */
     public void setSelectedIcon(SIcon selectedIcon) {
         fSelectedIcon = selectedIcon;
+    }
+
+
+    protected int editClickCount = 1;
+
+    public int getEditClickCount() {
+        return editClickCount;
+    }
+
+    public void setEditClickCount(int editClickCount) {
+        this.editClickCount = editClickCount;
+    }
+
+
+    protected int selectClickCount = 0;
+
+    public int getSelectClickCount() {
+        return selectClickCount;
+    }
+
+    public void setSelectClickCount(int selectClickCount) {
+        this.selectClickCount = selectClickCount;
     }
 
 }
