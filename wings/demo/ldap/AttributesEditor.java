@@ -1,9 +1,12 @@
 package ldap;
 
 import java.util.*;
+import java.io.*;
 import javax.naming.*;
 import javax.naming.directory.*;
 import java.awt.Color; 
+
+import java.util.logging.*;
 
 import org.wings.*;
 import org.wings.event.*;
@@ -14,7 +17,13 @@ import ldap.editors.*;
 public class AttributesEditor
     extends SPanel
 {
-    private List rows = new LinkedList();
+  private final static Logger logger = Logger.getLogger("ldap");
+  static Properties order;
+
+  private String [] orderString = {"cn","sn","uid","uidnumber","gidnumber","homedirectory","userpassword","jpegphoto","telephonenumber","mail","physicaldeliveryofficename","street","postalcode","l","st","team","seit","taetigkeitsbereiche","werdegang","zusatzausbildungen","descriptor","gecos","loginshell"};
+  
+  private List rows = new LinkedList();
+  private List oClasses = new LinkedList();
   
     private Comparator comparator = new RowComparator();
   
@@ -37,13 +46,20 @@ public class AttributesEditor
 
     public void clearClassDefinitions() {
 	rows.clear();
+        oClasses.clear();
     }
 
     public void addClassDefinition(Attributes classDefinition)
 	throws NamingException
     {
 	removeAll();
-
+        
+        String objectClass = (String)(classDefinition.get("name").get(0));
+        int index = objectClass.indexOf(":");
+        objectClass = objectClass.substring(index+1);
+        oClasses.add(objectClass);
+        
+               
 	mayAttributeDefinitions = LDAP.getAttributeDefinitions(getSchema(), classDefinition, LDAP.MAY);
 	Iterator it = mayAttributeDefinitions.entrySet().iterator();
 	while (it.hasNext()) {
@@ -61,16 +77,41 @@ public class AttributesEditor
 	    Row row = new Row(attributes, LDAP.MUST);
 	    rows.add(row);
 	}
-
-	Collections.sort(rows, comparator);
+        
+        if ((oClasses.contains("pgdPerson")) && (oClasses.contains("posixAccount")))
+          sortByDefinedOrder(rows);
+        else  
+          Collections.sort(rows, comparator);
+        
+        
 	it = rows.iterator();
 	while (it.hasNext()) {
+
 	    Row row = (Row)it.next();
 	    add(row.label);
 	    add(row.component);
 	    add(row.message);
 	}
     }
+
+  private void sortByDefinedOrder(List rows)
+  {
+    for (int i = 0;i<orderString.length;i++)
+      {
+        boolean found = false;
+        int j = 0;
+        while(!found && j<rows.size()) {
+          String id = ((Row)rows.get(j)).id.toLowerCase();
+          if (id.equals(orderString[i])) {
+            Row r1 = (Row)rows.get(i);
+            rows.set(i,rows.get(j));
+            rows.set(j,r1);
+            found = true;
+          }
+          j++;
+        }
+      }
+  }
 
     public void setData(Attributes attributes)
 	throws NamingException
@@ -103,25 +144,30 @@ public class AttributesEditor
             if (row.maymust == LDAP.MUST && attribute.size() == 0)
               addMessage(row.id, "required");
           }
+
           catch (NamingException e) {
             addMessage(row.id, e.getMessage());
+            //row.message.setText( e.getMessage());
+            return null;
           }
 	}
 	return attributes;
     }
 
     public void addMessage(String id, String message) {
-	if (id == null)
+     	if (id == null)
 	    throw new IllegalArgumentException("id must not be null");
 
 	Iterator it = rows.iterator();
 	while (it.hasNext()) {
 	    Row row = (Row)it.next();
-	    if (id.equals(row.id)) {
-		row.message.setText(message);
+            if (id.equals(row.id)) {
+              System.out.println(row.id);
+              row.message.setText(message);
 		messages = true;
 		return;
 	    }
+
 	}
     }
 
@@ -151,7 +197,7 @@ public class AttributesEditor
 	    this.id = (String)attributes.get("NAME").get(0);
 	    this.label = new SLabel(this.id);
 	    this.editor = EditorFactory.getEditor(attributes);
-	    this.message = new SLabel();
+	    this.message = new SLabel("");
 	    this.component = editor.createComponent(attributes);
 	    this.maymust = maymust;
             
@@ -161,25 +207,25 @@ public class AttributesEditor
 	    this.message.setAttribute("color", "red");
 	}
     }
-
-    private DirContext schema = null;
-
-    protected DirContext getSchema()
-        throws NamingException
+  
+  private DirContext schema = null;
+  
+  protected DirContext getSchema()
+    throws NamingException
     {
-        if (schema == null) {
-            Session session = getSession();
+      if (schema == null) {
+        Session session = getSession();
 	    DirContext context = new InitialDirContext(new Hashtable(getSession().getProperties()));
 	    schema = context.getSchema("");
         }
-        return schema;
+      return schema;
     }
-
-    class RowComparator
-	implements Comparator
-    {
-	public int compare(Object o1, Object o2) {
-	    Row r1 = (Row)o1;
+  
+  class RowComparator
+    implements Comparator
+  {
+    public int compare(Object o1, Object o2) {
+      Row r1 = (Row)o1;
 	    Row r2 = (Row)o2;
 
 	    if (r1.maymust == LDAP.MUST && r2.maymust == LDAP.MAY)
@@ -195,3 +241,5 @@ public class AttributesEditor
 	}
     }
 }
+
+

@@ -15,7 +15,8 @@ public class PasswordEditor
     private final static Logger logger = Logger.getLogger("ldap.editors");
 
     public SComponent createComponent(Attributes attributes) {
-	int cols = 80;
+
+ 	int cols = 80;
 	try {
 	    Attribute syntaxAttribute = attributes.get("SYNTAX");
 	    if (syntaxAttribute != null) {
@@ -67,8 +68,11 @@ public class PasswordEditor
 	    t2 == null || t2.length() == 0)
 	    return null;
 
-	if (!t1.equals(t2))
-	    throw new NamingException("confirmation differs");
+	if (!t1.equals(t2)) {
+          System.out.println("verschiedene   Passworrter");
+  	    throw new NamingException("confirmation differs");
+        }
+	   
 
 	return new BasicAttribute(id, t1);
     }

@@ -11,7 +11,7 @@ import org.wings.*;
 import org.wings.session.*;
 
 public class EditObjectPanel
-    extends SForm
+    extends SPanel
 {
     private final static Logger logger = Logger.getLogger("ldap");
 
@@ -33,7 +33,7 @@ public class EditObjectPanel
         throws NamingException
     {
         super(new SFlowDownLayout());
-        setEncodingType("multipart/form-data");
+        //setEncodingType("multipart/form-data");
         
         //objectClassBundle = ResourceBundle.getBundle("ldap.objectclass.names", getSession().getLocale());
         //attributeBundle = ResourceBundle.getBundle("ldap.attribute.names", getSession().getLocale());

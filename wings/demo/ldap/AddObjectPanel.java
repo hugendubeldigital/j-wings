@@ -162,7 +162,9 @@ public class AddObjectPanel
             }
             
             Attributes attributes = editor.getData();
-            Attributes specifiedAttributes = new BasicAttributes();
+            //vielleicht muss if wieder weg
+            if (attributes !=null) {
+                Attributes specifiedAttributes = new BasicAttributes();
 
             NamingEnumeration enum = attributes.getAll();
             HashMap dnMap = new HashMap();
@@ -216,6 +218,7 @@ public class AddObjectPanel
             cancelButton.setVisible(false);
             addButton.setVisible(true);
             objectClassList.setVisible(true);
+            }
         }
 	catch (InvalidAttributeValueException e) {
 	    String message = e.getMessage();
@@ -231,6 +234,7 @@ public class AddObjectPanel
 	catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
 	}
+        
     }
 
     protected void cancel() {
