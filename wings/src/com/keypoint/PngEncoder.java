@@ -162,7 +162,7 @@ public class PngEncoder extends Object
         }
         width = image.getWidth( null );
         height = image.getHeight( null );
-        this.image = image;
+//        this.image = image;
 
         /*
          * start with an array that is big enough to hold all the pixels

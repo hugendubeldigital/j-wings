@@ -140,7 +140,7 @@ public class PngEncoderB extends PngEncoder
         }
         width = image.getWidth( null );
         height = image.getHeight( null );
-        this.image = image;
+//        this.image = image;
 
         if (!establishStorageInfo())
         {
