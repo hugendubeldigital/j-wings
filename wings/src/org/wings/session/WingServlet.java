@@ -217,16 +217,6 @@ public final class WingServlet
             sessionServlet.init(servletConfig, request, response);
 
             Session session = sessionServlet.getSession();
-            /* the request URL is needed already in the setup-phase. Note,
-             * that at this point, the URL will always be encoded, since
-             * we (or better: the servlet engine) does not know yet, if setting
-             * a cookie will be successful (it has to await the response).
-             * Subsequent requests might decide, _not_ to encode the sessionid
-             * in the URL (see SessionServlet::doGet())                   -hen
-             */
-            RequestURL requestURL = new RequestURL("", SessionServlet.getSessionEncoding(response));
-
-            session.setProperty("request.url", requestURL);
 
             sessionServlet.setParent(this);
 

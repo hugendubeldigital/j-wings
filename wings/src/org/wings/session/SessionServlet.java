@@ -239,12 +239,16 @@ final class SessionServlet
             session = new Session();
             SessionManager.setSession(session);
 
-            // set request.url in session, if used in constructor of wings main classs
-            if (request.isRequestedSessionIdValid()) {
-                // this will fire an event, if the encoding has changed ..
-                ((PropertyService) session).setProperty("request.url",
-                                                        new RequestURL("", getSessionEncoding(response)));
-            }
+            /* the request URL is needed already in the setup-phase. Note,
+             * that at this point, the URL will always be encoded, since
+             * we (or better: the servlet engine) does not know yet, if setting
+             * a cookie will be successful (it has to await the response).
+             * Subsequent requests might decide, _not_ to encode the sessionid
+             * in the URL (see SessionServlet::doGet())                   -hen
+             */
+            RequestURL requestURL = new RequestURL("", getSessionEncoding(response));
+
+            session.setProperty("request.url", requestURL);
 
             session.init(config, request);
 
