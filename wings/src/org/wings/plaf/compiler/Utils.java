@@ -50,7 +50,6 @@ public final class Utils implements SConstants {
     /**
      * writes an {X|HT}ML quoted string according to RFC 1866.
      * '"', '<', '>', '&'  become '&quot;', '&lt;', '&gt;', '&amp;'
-     * Spaces become a protected space &nbsp;
      */
     // not optimized yet
     private static void quote(Device d, String s) throws IOException {
@@ -60,7 +59,15 @@ public final class Utils implements SConstants {
         int last = 0;
 	for (int pos = 0; pos < chars.length; ++pos) {
             c = chars[pos];
-	    switch (c) {
+            // write special characters as code ..
+            if (c < 32 || c > 127) {
+                d.print(chars, last, (pos-last));
+                d.print("&#");
+                d.print((int) c);
+                d.print(";");
+                last = pos+1;
+            }
+	    else switch (c) {
 	    case '&': 
                 d.print(chars, last, (pos-last));
                 d.print("&amp;");
@@ -81,11 +88,19 @@ public final class Utils implements SConstants {
                 d.print("&gt;");
                 last = pos+1;
                 break;
-	    case ' ':
-                d.print(chars, last, (pos-last));
-                d.print("&nbsp;");
-                last = pos+1;
-                break;
+                /*
+                 * watchout: we cannot replace _space_ by &nbsp;
+                 * since non-breakable-space is a different
+                 * character: isolatin-char 160, not 32. 
+                 * This will result in a confusion in forms:
+                 *   - the user enters space, presses submit
+                 *   - the form content is written to the Device by wingS,
+                 *     space is replaced by &nbsp;
+                 *   - the next time the form is submitted, we get
+                 *     isolatin-char 160, _not_ space.
+                 * (at least Konqueror behaves this correct; mozilla does not)
+                 *                                                       Henner
+                 */
 	    }
 	}
         d.print(chars, last, chars.length-last);
