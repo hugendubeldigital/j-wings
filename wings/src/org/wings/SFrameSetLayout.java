@@ -21,6 +21,7 @@ import java.util.*;
 import org.wings.io.Device;
 import org.wings.plaf.*;
 import org.wings.session.*;
+import org.wings.externalizer.ExternalizeManager;
 
 /**
  * TODO: documentation
@@ -174,7 +175,7 @@ public class SFrameSetLayout
 	throws IOException
     {
 	String src = getSession().getExternalizeManager()
-	    .externalize(frame.show(), "text/html");
+	    .externalize(frame.show(), "text/html", ExternalizeManager.REQUEST);
 
 	d.append("<frame src=\"")
 	    .append(src)
