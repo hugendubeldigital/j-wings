@@ -528,6 +528,23 @@ public class STabbedPane
      * @see #removeTabAt
      */
     public SComponent addComponent(SComponent component, 
+                                   Object constraints) {
+        return addComponent(component, constraints, pages.size());
+    }
+
+    /**
+     * Adds a <i>component</i> at the specified tab index.  If constraints
+     * is a String or an Icon, it will be used for the tab title,
+     * otherwise the component's name will be used as the tab title.
+     * Cover method for insertTab().
+     * @param component The component to be displayed when this tab is clicked.
+     * @constraints the object to be displayed in the tab
+     * @param index the position to insert this new tab
+     *
+     * @see #insertTab
+     * @see #removeTabAt
+     */
+    public SComponent addComponent(SComponent component, 
                                    Object constraints, int index) {
         SIcon icon = constraints instanceof SIcon ? (SIcon)constraints : null;
         String title = constraints instanceof String ? (String)constraints : null;

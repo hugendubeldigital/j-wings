@@ -367,7 +367,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param c the component to add
      * @return the added component
      */
-    public final SComponent addComponent(SComponent c) {
+    public SComponent addComponent(SComponent c) {
         return addComponent(c, null);
     }
 
@@ -379,7 +379,7 @@ public class SContainer extends SComponent implements ClickableRenderComponent
      * @param constraint the constraint for this component
      * @return the added component
      */
-    public final SComponent addComponent(SComponent c, Object constraint) {
+    public SComponent addComponent(SComponent c, Object constraint) {
         return addComponent(c, constraint, getComponentList().size());
     }
 
