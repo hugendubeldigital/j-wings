@@ -30,7 +30,7 @@ import org.wings.plaf.*;
  * @version $Revision$
  */
 public class SInternalFrame
-    extends SContainer
+    extends SRootContainer
     implements RequestListener
 {
     /**
@@ -63,16 +63,10 @@ public class SInternalFrame
 
     /**
      * TODO: documentation
-     */
-    protected SContainer contentPane = new SContainer();
-
-    /**
-     * TODO: documentation
      *
      */
     public SInternalFrame() {
-        setLayout(new SStackLayout());
-        super.addComponent(getContentPane(), null);
+        super();
     }
 
     public void setIconifyable(boolean v) {
@@ -173,60 +167,6 @@ public class SInternalFrame
      */
     public String getTitle() {
         return title;
-    }
-
-    /**
-     * Use getContentPane().addComponent(c) instead.
-     */
-    public final SComponent addComponent(SComponent c, Object constraint) {
-        throw new IllegalArgumentException("use getContentPane().addComponent()");
-    }
-
-    /**
-     * Use getContentPane().removeComponent(c) instead.
-     */
-    public final boolean removeComponent(SComponent c) {
-        throw new IllegalArgumentException("use getContentPane().removeComponent()");
-    }
-
-    
-    /**
-     * @return the number of Dialogs that belong to this SInternalFrame
-     */
-    public final int getDialogCount() {
-        return getComponentCount() - 1;
-    }
-
-
-    /**
-     * TODO: documentation
-     */
-    public final void pushDialog(SDialog dialog) {
-        super.addComponent(dialog, null);
-        dialog.setFrame(this);
-    }
-
-    /**
-     * TODO: documentation
-     */
-    public final SDialog popDialog() {
-        int count = getComponentCount();
-        if (count <= 1)
-            throw new IllegalStateException("there's no dialog left!");
-
-        SDialog dialog = (SDialog)getComponent(count - 1);
-        super.removeComponent(dialog);
-        dialog.setFrame((SFrame)null);
-        return dialog;
-    }
-
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public SContainer getContentPane() {
-        return contentPane;
     }
 
     /**
@@ -359,39 +299,6 @@ public class SInternalFrame
 
     public String getCGClassID() {
         return cgClassID;
-    }
-
-    private class SStackLayout extends SAbstractLayoutManager
-    {
-        private SContainer container = null;
-
-        public SStackLayout() {}
-
-        public void updateCG() {}
-        public void addComponent(SComponent c, Object constraint) {}
-        public void removeComponent(SComponent c) {}
-
-        public SComponent getComponentAt(int i) {
-            return (SComponent)getComponent(i);
-        }
-
-        public void setContainer(SContainer c) {
-            container = c;
-        }
-
-        /**
-         * Allways write code for the topmost component.
-         *
-         * @param s
-         * @throws IOException
-         */
-        public void write(Device s)
-            throws IOException
-        {
-            int topmost = getComponentCount() - 1;
-            SComponent comp = (SComponent)getComponent(topmost);
-            comp.write(s);
-        }
     }
 
     public void setCG(InternalFrameCG cg) {

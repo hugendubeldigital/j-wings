@@ -30,7 +30,7 @@ import org.wings.session.Session;
 import org.wings.session.SessionManager;
 import org.wings.util.*;
 
-/*
+/**
  * The frame is the root component in every component hierarchie.
  * A SessionServlet requires an instance of SFrame to render the page.
  * SFrame consists of some header informaton (metas, headers, style sheet)
@@ -43,7 +43,7 @@ import org.wings.util.*;
  * @version $Revision$
  */
 public class SFrame
-    extends SContainer
+    extends SRootContainer
     implements PropertyChangeListener
 {
     /**
@@ -57,11 +57,6 @@ public class SFrame
      *  The Title of the Frame.
      */
     protected String title;
-
-    /**
-     * The container for the contentPane.
-     */
-    protected final SContainer contentPane = new SContainer();
 
     protected String baseTarget = null;
 
@@ -116,8 +111,6 @@ public class SFrame
      *
      */
     public SFrame() {
-        super.setLayout(new SStackLayout());
-        super.addComponent(getContentPane(), null);
         getSession().addPropertyChangeListener("lookAndFeel", this);
         getSession().addPropertyChangeListener("request.url", this);
     }
@@ -189,20 +182,6 @@ public class SFrame
     }
 
     /**
-     * Use getContentPane().addComponent(c) instead.
-     */
-    public SComponent addComponent(SComponent c, Object constraint) {
-        throw new IllegalArgumentException("use getContentPane().addComponent()");
-    }
-
-    /**
-     * Use getContentPane().removeComponent(c) instead.
-     */
-    public boolean removeComponent(SComponent c) {
-        throw new IllegalArgumentException("use getContentPane().removeComponent()");
-    }
-
-    /**
      * TODO: documentation
      *
      * @return
@@ -240,41 +219,6 @@ public class SFrame
      */
     public String getEventEpoch() {
         return getDynamicResource(DynamicCodeResource.class).getEpoch();
-    }
-
-    /**
-     * TODO: documentation
-     */
-    public final void pushDialog(SDialog dialog) {
-        super.addComponent(dialog, null);
-        int count = getComponentCount();
-        System.err.println("pushDialog: " + count);
-        dialog.setFrame(this);
-        reload(ReloadManager.RELOAD_CODE);
-    }
-
-    /**
-     * TODO: documentation
-     */
-    public final SDialog popDialog() {
-        int count = getComponentCount();
-        if (count <= 1)
-            throw new IllegalStateException("there's no dialog left!");
-
-        SDialog dialog = (SDialog)getComponent(count - 1);
-        super.removeComponent(dialog);
-        dialog.setFrame((SFrame)null);
-        System.err.println("popDialog: " + count);
-
-        reload(ReloadManager.RELOAD_CODE);
-        return dialog;
-    }
-
-    /**
-     * TODO: documentation
-     */
-    public SContainer getContentPane() {
-        return contentPane;
     }
 
     /**
