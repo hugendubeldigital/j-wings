@@ -211,7 +211,7 @@ public class DefaultSession
      *             or the default value if there is no property with that key.
      * @see        org.wings.session.PropertyService#getProperties()
      */
-    public Object getProperty(String key, Object def) {
+    public synchronized Object getProperty(String key, Object def) {
         Object value = props.get(key);
         if (value == null)
             value = def;
@@ -228,7 +228,7 @@ public class DefaultSession
      * @see        org.wings.session.PropertyService#getProperty(java.lang.String)
      * @see        org.wings.session.PropertyService#getProperty(java.lang.String, java.lang.String)
      */
-    public Object setProperty(String key, Object value) {
+    public synchronized Object setProperty(String key, Object value) {
         //System.err.print("DefaultSession.setProperty");
         Object old = props.put(key, value);
         propertyChangeSupport.firePropertyChange(key, old, value);
@@ -255,14 +255,16 @@ public class DefaultSession
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
-    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+    public void addPropertyChangeListener(String propertyName, 
+                                          PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(propertyName,listener);
     }
 
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+    public void removePropertyChangeListener(String propertyName, 
+                                             PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(propertyName,listener);
     }
-
+    
     private Locale locale = Locale.getDefault();
 
     /**
