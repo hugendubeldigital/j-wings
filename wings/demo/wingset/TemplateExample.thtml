@@ -6,8 +6,13 @@ other layout manager it allows to place arbitrary elements, but you can
 write a simple HTML-page being the template for your components. Thus,
 this is a very flexible approach. The <em>constraints</em> of this
 layout manager is are just the names of the components. The
-<hr size=1 noshade><code>&lt;object name=&quot;compname&quot;&gt&lt;/object&gt;</code><hr size=1 noshade> are
-replaced by the actual component.
+<hr size=1 noshade>
+<table bgcolor=white cellpadding=10 border=1><tr><td>
+<code>&lt;object name=&quot;compname&quot;&gt&lt;/object&gt;</code>
+</td></tr></table>
+<hr size=1 noshade>
+tags are replaced by the actual component given with the 
+constraint <code>compname</code>.
 In this example input fields or whole trees in hideously colored tables:
 <table cellpadding=2>
 <tr bgcolor=blue>
