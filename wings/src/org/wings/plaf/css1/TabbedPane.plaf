@@ -14,285 +14,285 @@
   <property type="String" name="imageAlign">absmiddle</property>
 
 public DynamicResource installStyleSheet(STabbedPane comp) {
-		return new TabbedPaneStyleSheet(comp);
+        return new TabbedPaneStyleSheet(comp);
 }
 
 public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
-	private StyleSheet fStyleSheet = new CSSStyleSheet();
-	private STabbedPane comp;
+    private StyleSheet fStyleSheet = new CSSStyleSheet();
+    private STabbedPane comp;
 
-	public TabbedPaneStyleSheet(STabbedPane comp)
-	{
-		super(comp.getParentFrame(), "css", "text/css");
-		this.comp = comp;		
+    public TabbedPaneStyleSheet(STabbedPane comp)
+    {
+        super(comp.getParentFrame(), "css", "text/css");
+        this.comp = comp;        
         comp.getParentFrame().addDynamicResource(this);
         comp.getParentFrame().addHeader(new org.wings.header.Link("stylesheet", null, "text/css", null, this));
-	}
-	
-	public void write(Device d) throws IOException {
-		org.wings.session.Browser browser = SessionManager.getSession().getUserAgent();
-		boolean asForm = comp.getShowAsFormComponent();
-		int pm = comp.getTabPlacement();
+    }
+    
+    public void write(Device d) throws IOException {
+        org.wings.session.Browser browser = SessionManager.getSession().getUserAgent();
+        boolean asForm = comp.getShowAsFormComponent();
+        int pm = comp.getTabPlacement();
 
-		boolean hasIcons = false;
-		int tabHeight = 0;
-		int tc = comp.getTabCount();
-		for (int i = 0; i < tc; ++i) {
-			SIcon icn = comp.getIconAt(i);
-			if (icn == null) continue;
-			hasIcons = true;
-			tabHeight = Math.max(tabHeight, icn.getIconHeight());
-		}
+        boolean hasIcons = false;
+        int tabHeight = 0;
+        int tc = comp.getTabCount();
+        for (int i = 0; i < tc; ++i) {
+            SIcon icn = comp.getIconAt(i);
+            if (icn == null) continue;
+            hasIcons = true;
+            tabHeight = Math.max(tabHeight, icn.getIconHeight());
+        }
 
-		/* ns4 and styles */
-		boolean oldNS = 
-			(browser.getBrowserName().equals("Netscape") ||
-			 browser.getBrowserName().equals("Mozilla")) &&
-			 browser.getMajorVersion() > 0 &&
-			 browser.getMajorVersion() < 5;
+        /* ns4 and styles */
+        boolean oldNS = 
+            (browser.getBrowserName().equals("Netscape") ||
+             browser.getBrowserName().equals("Mozilla")) &&
+             browser.getMajorVersion() > 0 &&
+             browser.getMajorVersion() < 5;
 
-		/* selection colors set? */
-		java.awt.Color selFg = comp.getSelectionForeground();
-		String selFgStr = "#"+
-			org.wings.plaf.xhtml.css1.Utils.toColorString(selFg==null?comp.getForeground():selFg);
-		
-		
-		/* border stuff */
-		String borderWidth = "1px";
-		String borderType = "outset";
+        /* selection colors set? */
+        java.awt.Color selFg = comp.getSelectionForeground();
+        String selFgStr = "#"+
+            org.wings.plaf.xhtml.css1.Utils.toColorString(selFg==null?comp.getForeground():selFg);
+        
+        
+        /* border stuff */
+        String borderWidth = "1px";
+        String borderType = "outset";
 
-		SimpleAttributeSet attrset = new SimpleAttributeSet();
+        SimpleAttributeSet attrset = new SimpleAttributeSet();
         
         //# CONTENT
-		attrset.put(StyleConstants.BACKGROUND_COLOR,	CSSStyleSheet.getAttribute(comp.getBackground()));
-        attrset.put(StyleConstants.BORDER_STYLE, 		borderType);
-        attrset.put(StyleConstants.BORDER_TOP_WIDTH,	pm==SConstants.TOP?"0px":borderWidth);
-        attrset.put(StyleConstants.BORDER_BOTTOM_WIDTH,	pm==SConstants.BOTTOM?"0px":borderWidth);
-        attrset.put(StyleConstants.BORDER_LEFT_WIDTH,	pm==SConstants.LEFT?"0px":borderWidth);
-        attrset.put(StyleConstants.BORDER_RIGHT_WIDTH,	pm==SConstants.RIGHT?"0px":borderWidth);
-        attrset.put(StyleConstants.PADDING, 			"5px");
+        attrset.put(StyleConstants.BACKGROUND_COLOR,    CSSStyleSheet.getAttribute(comp.getBackground()));
+        attrset.put(StyleConstants.BORDER_STYLE,         borderType);
+        attrset.put(StyleConstants.BORDER_TOP_WIDTH,    pm==SConstants.TOP?"0px":borderWidth);
+        attrset.put(StyleConstants.BORDER_BOTTOM_WIDTH,    pm==SConstants.BOTTOM?"0px":borderWidth);
+        attrset.put(StyleConstants.BORDER_LEFT_WIDTH,    pm==SConstants.LEFT?"0px":borderWidth);
+        attrset.put(StyleConstants.BORDER_RIGHT_WIDTH,    pm==SConstants.RIGHT?"0px":borderWidth);
+        attrset.put(StyleConstants.PADDING,             "5px");
         attrset.putAll(comp.getAttributes());
-		fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_content", attrset));
-		
-		//# BUTTON CELL
-		attrset = (SimpleAttributeSet) attrset.clone();
-		attrset.put(StyleConstants.TEXT_ALIGN,			comp.getTabPlacement()==SConstants.LEFT?"right":"left");
-		attrset.put(StyleConstants.FONT_FAMILY,			"Verdana,Arial,Helvetica");
-		if (asForm)
-			attrset.put(StyleConstants.FONT_SIZE,		"1px");
-        attrset.put(StyleConstants.BORDER_STYLE, 		borderType);
-        attrset.put(StyleConstants.BORDER_TOP_WIDTH,	pm==SConstants.BOTTOM?"0px":borderWidth);
-        attrset.put(StyleConstants.BORDER_BOTTOM_WIDTH,	pm==SConstants.TOP?"0px":borderWidth);
-        attrset.put(StyleConstants.BORDER_LEFT_WIDTH,	pm==SConstants.RIGHT?"0px":borderWidth);
-        attrset.put(StyleConstants.BORDER_RIGHT_WIDTH,	pm==SConstants.LEFT?"0px":borderWidth);
-        attrset.put(StyleConstants.MARGIN, 				"0px");
-		attrset.put(StyleConstants.PADDING,				"0px");
-		fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnpanel", attrset));
-		
-		// # no selection
-		attrset = (SimpleAttributeSet) attrset.clone();
-		if (hasIcons) {
-			attrset.put(StyleConstants.HEIGHT,
-				(tabHeight+(browser.getBrowserName().equals("MSIE")?2:5))+"px");
-		}
+        fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_content", attrset));
+        
+        //# BUTTON CELL
+        attrset = (SimpleAttributeSet) attrset.clone();
+        attrset.put(StyleConstants.TEXT_ALIGN,            comp.getTabPlacement()==SConstants.LEFT?"right":"left");
+        attrset.put(StyleConstants.FONT_FAMILY,            "Verdana,Arial,Helvetica");
+        if (asForm)
+            attrset.put(StyleConstants.FONT_SIZE,        "1px");
+        attrset.put(StyleConstants.BORDER_STYLE,         borderType);
+        attrset.put(StyleConstants.BORDER_TOP_WIDTH,    pm==SConstants.BOTTOM?"0px":borderWidth);
+        attrset.put(StyleConstants.BORDER_BOTTOM_WIDTH,    pm==SConstants.TOP?"0px":borderWidth);
+        attrset.put(StyleConstants.BORDER_LEFT_WIDTH,    pm==SConstants.RIGHT?"0px":borderWidth);
+        attrset.put(StyleConstants.BORDER_RIGHT_WIDTH,    pm==SConstants.LEFT?"0px":borderWidth);
+        attrset.put(StyleConstants.MARGIN,                 "0px");
+        attrset.put(StyleConstants.PADDING,                "0px");
+        fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnpanel", attrset));
+        
+        // # no selection
+        attrset = (SimpleAttributeSet) attrset.clone();
+        if (hasIcons) {
+            attrset.put(StyleConstants.HEIGHT,
+                (tabHeight+(browser.getBrowserName().equals("MSIE")?2:5))+"px");
+        }
         attrset.putAll(comp.getAttributes());
-		attrset.remove(StyleConstants.PADDING);
-		attrset.remove(StyleConstants.TEXT_ALIGN);
+        attrset.remove(StyleConstants.PADDING);
+        attrset.remove(StyleConstants.TEXT_ALIGN);
         if (!browser.getBrowserName().equals("MSIE"))
         {
-	        attrset.put(StyleConstants.PADDING_LEFT,	"2px");
-	        attrset.put(StyleConstants.PADDING_RIGHT,	"2px");
-	        attrset.put(StyleConstants.PADDING_TOP,		"2px");
-	        attrset.put(StyleConstants.PADDING_BOTTOM,	"2px");
-	    }
+            attrset.put(StyleConstants.PADDING_LEFT,    "2px");
+            attrset.put(StyleConstants.PADDING_RIGHT,    "2px");
+            attrset.put(StyleConstants.PADDING_TOP,        "2px");
+            attrset.put(StyleConstants.PADDING_BOTTOM,    "2px");
+        }
 
-		if (!asForm || oldNS)
-		{
-			attrset.remove(StyleConstants.BORDER_STYLE);
-			attrset.remove(StyleConstants.BORDER_TOP_WIDTH);
-			attrset.remove(StyleConstants.BORDER_LEFT_WIDTH);
-			attrset.remove(StyleConstants.BORDER_RIGHT_WIDTH);
-			attrset.remove(StyleConstants.BORDER_BOTTOM_WIDTH);
-        	attrset.remove(StyleConstants.PADDING);
-        	attrset.remove(StyleConstants.MARGIN);
-	        attrset.remove(StyleConstants.PADDING_LEFT);
-	        attrset.remove(StyleConstants.PADDING_RIGHT);
-	        attrset.remove(StyleConstants.PADDING_TOP);
-	        attrset.remove(StyleConstants.PADDING_BOTTOM);
-		}
+        if (!asForm || oldNS)
+        {
+            attrset.remove(StyleConstants.BORDER_STYLE);
+            attrset.remove(StyleConstants.BORDER_TOP_WIDTH);
+            attrset.remove(StyleConstants.BORDER_LEFT_WIDTH);
+            attrset.remove(StyleConstants.BORDER_RIGHT_WIDTH);
+            attrset.remove(StyleConstants.BORDER_BOTTOM_WIDTH);
+            attrset.remove(StyleConstants.PADDING);
+            attrset.remove(StyleConstants.MARGIN);
+            attrset.remove(StyleConstants.PADDING_LEFT);
+            attrset.remove(StyleConstants.PADDING_RIGHT);
+            attrset.remove(StyleConstants.PADDING_TOP);
+            attrset.remove(StyleConstants.PADDING_BOTTOM);
+        }
 
-		if (asForm) {
-			attrset.put(StyleConstants.BACKGROUND_COLOR, CSSStyleSheet.getAttribute(comp.getBackground().darker()));
-			attrset.put(StyleConstants.MARGIN_LEFT,			"0px");
-			attrset.put(StyleConstants.PADDING_LEFT,		"0px");
-			attrset.put(StyleConstants.MARGIN,				"0px");
-			attrset.put(StyleConstants.PADDING,				"0px");
-		}
-		else {
-			attrset.put(StyleConstants.COLOR, CSSStyleSheet.getAttribute(comp.getForeground()));
-			attrset.put(StyleConstants.DISPLAY, "inline");
-			attrset.put(StyleConstants.BORDER_TOP, "black 1px solid");
-			attrset.put(StyleConstants.PADDING_TOP, "2px");
-			attrset.put(StyleConstants.PADDING_BOTTOM, "2px");
-			attrset.put(StyleConstants.WHITE_SPACE, "nowrap");
-		}
-		attrset.put(StyleConstants.FONT_STYLE,				"normal");
-		fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnnonsel", attrset));
-		fStyleSheet.putStyle(new Style("a.tp_"+comp.getComponentId()+"_btnnonsel", attrset));
-		
-		/* disabled not selected button wo icon */
-		SimpleAttributeSet woicn = (SimpleAttributeSet) attrset.clone();
-		woicn.put(StyleConstants.FONT_STYLE,				"italic");
-		fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnnonseldis", woicn));
-		
-		// # icon styles
-		if (hasIcons && asForm && !oldNS) {
-			String borderColorLight = CSSStyleSheet.getAttribute(comp.getBackground().brighter());
-			String borderColorDark  = CSSStyleSheet.getAttribute(comp.getBackground().darker());
-		
-			// # not selected icon
-			SimpleAttributeSet icn = new SimpleAttributeSet();
-			icn.put(StyleConstants.BACKGROUND_COLOR, 	CSSStyleSheet.getAttribute(comp.getBackground().darker()));
-			icn.put(StyleConstants.BORDER_COLOR,		borderColorLight);
-			icn.put(StyleConstants.BORDER_STYLE,		"solid");
-        	icn.put(StyleConstants.BORDER_TOP_WIDTH,	pm==SConstants.BOTTOM?"0px":borderWidth);
-        	icn.put(StyleConstants.BORDER_BOTTOM_WIDTH,	pm==SConstants.TOP?"0px":borderWidth);
-        	icn.put(StyleConstants.BORDER_LEFT_WIDTH,	pm==SConstants.RIGHT?"0px":borderWidth);
-			icn.put(StyleConstants.BORDER_RIGHT_WIDTH, 	"0px");
-			icn.put(StyleConstants.VERTICAL_ALIGN, 		pm==SConstants.BOTTOM?"bottom":"top");
-			icn.put(StyleConstants.MARGIN,				"0px");
-			icn.put(StyleConstants.PADDING_RIGHT,		"0px");
-			icn.put(StyleConstants.PADDING_LEFT,		"2px");
-			icn.put(StyleConstants.PADDING_TOP,			"2px");
-			fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_icnnonsel", icn));
+        if (asForm) {
+            attrset.put(StyleConstants.BACKGROUND_COLOR, CSSStyleSheet.getAttribute(comp.getBackground().darker()));
+            attrset.put(StyleConstants.MARGIN_LEFT,            "0px");
+            attrset.put(StyleConstants.PADDING_LEFT,        "0px");
+            attrset.put(StyleConstants.MARGIN,                "0px");
+            attrset.put(StyleConstants.PADDING,                "0px");
+        }
+        else {
+            attrset.put(StyleConstants.COLOR, CSSStyleSheet.getAttribute(comp.getForeground()));
+            attrset.put(StyleConstants.DISPLAY, "inline");
+            attrset.put(StyleConstants.BORDER_TOP, "black 1px solid");
+            attrset.put(StyleConstants.PADDING_TOP, "2px");
+            attrset.put(StyleConstants.PADDING_BOTTOM, "2px");
+            attrset.put(StyleConstants.WHITE_SPACE, "nowrap");
+        }
+        attrset.put(StyleConstants.FONT_STYLE,                "normal");
+        fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnnonsel", attrset));
+        fStyleSheet.putStyle(new Style("a.tp_"+comp.getComponentId()+"_btnnonsel", attrset));
+        
+        /* disabled not selected button wo icon */
+        SimpleAttributeSet woicn = (SimpleAttributeSet) attrset.clone();
+        woicn.put(StyleConstants.FONT_STYLE,                "italic");
+        fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnnonseldis", woicn));
+        
+        // # icon styles
+        if (hasIcons && asForm && !oldNS) {
+            String borderColorLight = CSSStyleSheet.getAttribute(comp.getBackground().brighter());
+            String borderColorDark  = CSSStyleSheet.getAttribute(comp.getBackground().darker());
+        
+            // # not selected icon
+            SimpleAttributeSet icn = new SimpleAttributeSet();
+            icn.put(StyleConstants.BACKGROUND_COLOR,     CSSStyleSheet.getAttribute(comp.getBackground().darker()));
+            icn.put(StyleConstants.BORDER_COLOR,        borderColorLight);
+            icn.put(StyleConstants.BORDER_STYLE,        "solid");
+            icn.put(StyleConstants.BORDER_TOP_WIDTH,    pm==SConstants.BOTTOM?"0px":borderWidth);
+            icn.put(StyleConstants.BORDER_BOTTOM_WIDTH,    pm==SConstants.TOP?"0px":borderWidth);
+            icn.put(StyleConstants.BORDER_LEFT_WIDTH,    pm==SConstants.RIGHT?"0px":borderWidth);
+            icn.put(StyleConstants.BORDER_RIGHT_WIDTH,     "0px");
+            icn.put(StyleConstants.VERTICAL_ALIGN,         pm==SConstants.BOTTOM?"bottom":"top");
+            icn.put(StyleConstants.MARGIN,                "0px");
+            icn.put(StyleConstants.PADDING_RIGHT,        "0px");
+            icn.put(StyleConstants.PADDING_LEFT,        "2px");
+            icn.put(StyleConstants.PADDING_TOP,            "2px");
+            fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_icnnonsel", icn));
 
-			// # selected icon
-			icn = (SimpleAttributeSet) icn.clone();
-			icn.put(StyleConstants.BACKGROUND_COLOR, CSSStyleSheet.getAttribute(comp.getBackground()));
-			fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_icnsel", icn));
-			
-			/* not selected button with icon */
-			SimpleAttributeSet plusicn = (SimpleAttributeSet) attrset.clone();
-			plusicn.put(StyleConstants.BORDER_LEFT_WIDTH, "0px");
-			fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnicnnonsel", plusicn));
+            // # selected icon
+            icn = (SimpleAttributeSet) icn.clone();
+            icn.put(StyleConstants.BACKGROUND_COLOR, CSSStyleSheet.getAttribute(comp.getBackground()));
+            fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_icnsel", icn));
+            
+            /* not selected button with icon */
+            SimpleAttributeSet plusicn = (SimpleAttributeSet) attrset.clone();
+            plusicn.put(StyleConstants.BORDER_LEFT_WIDTH, "0px");
+            fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnicnnonsel", plusicn));
 
-			/* disabled not selected button with icon */
-			plusicn = (SimpleAttributeSet) attrset.clone();
-			plusicn.put(StyleConstants.FONT_STYLE, "italic");
-			fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnicnnonseldis", plusicn));
-		}
+            /* disabled not selected button with icon */
+            plusicn = (SimpleAttributeSet) attrset.clone();
+            plusicn.put(StyleConstants.FONT_STYLE, "italic");
+            fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnicnnonseldis", plusicn));
+        }
 
-		// # selection wo icon
-		attrset = (SimpleAttributeSet) attrset.clone();
-		if (asForm) {
-			attrset.put(StyleConstants.BACKGROUND_COLOR, CSSStyleSheet.getAttribute(comp.getBackground()));
-		}
-		else {
-			attrset.put(StyleConstants.BACKGROUND_COLOR, CSSStyleSheet.getAttribute(comp.getSelectionBackground()));
-		}
-		// attrset = (SimpleAttributeSet) attrset.clone();
-		attrset.remove(StyleConstants.BACKGROUND_IMAGE);
-		attrset.put(StyleConstants.FONT_STYLE,				"bold");
-		fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnsel", attrset));
-		fStyleSheet.putStyle(new Style("a.tp_"+comp.getComponentId()+"_btnsel", attrset));
+        // # selection wo icon
+        attrset = (SimpleAttributeSet) attrset.clone();
+        if (asForm) {
+            attrset.put(StyleConstants.BACKGROUND_COLOR, CSSStyleSheet.getAttribute(comp.getBackground()));
+        }
+        else {
+            attrset.put(StyleConstants.BACKGROUND_COLOR, CSSStyleSheet.getAttribute(comp.getSelectionBackground()));
+        }
+        // attrset = (SimpleAttributeSet) attrset.clone();
+        attrset.remove(StyleConstants.BACKGROUND_IMAGE);
+        attrset.put(StyleConstants.FONT_STYLE,                "bold");
+        fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnsel", attrset));
+        fStyleSheet.putStyle(new Style("a.tp_"+comp.getComponentId()+"_btnsel", attrset));
 
-		// # disabled wo icon
-		woicn = (SimpleAttributeSet) attrset.clone();
-		woicn.put(StyleConstants.FONT_STYLE, 		"italic");
-		fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnseldis", woicn));
-		
-		
-		// # selection with icon
-		if (hasIcons && asForm && !oldNS) {
-			SimpleAttributeSet plusicn = (SimpleAttributeSet) attrset.clone();
-			plusicn.put(StyleConstants.BORDER_LEFT_WIDTH, "0px");
-			fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnicnsel", plusicn));
+        // # disabled wo icon
+        woicn = (SimpleAttributeSet) attrset.clone();
+        woicn.put(StyleConstants.FONT_STYLE,         "italic");
+        fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnseldis", woicn));
+        
+        
+        // # selection with icon
+        if (hasIcons && asForm && !oldNS) {
+            SimpleAttributeSet plusicn = (SimpleAttributeSet) attrset.clone();
+            plusicn.put(StyleConstants.BORDER_LEFT_WIDTH, "0px");
+            fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnicnsel", plusicn));
 
-			/* disabled */
-			plusicn = (SimpleAttributeSet) attrset.clone();
-			plusicn.put(StyleConstants.FONT_STYLE, "italic");
-			fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnicnseldis", plusicn));
-		}
-		
-		fStyleSheet.write(d);
-	}
+            /* disabled */
+            plusicn = (SimpleAttributeSet) attrset.clone();
+            plusicn.put(StyleConstants.FONT_STYLE, "italic");
+            fStyleSheet.putStyle(new Style(".tp_"+comp.getComponentId()+"_btnicnseldis", plusicn));
+        }
+        
+        fStyleSheet.write(d);
+    }
 }
 
   <write>
 <table 
-  	<%
-  	if (component.getPreferredSize() != null)
-  	{
-  		%><%|width=component.getPreferredSize().getWidth()%><%
-  		%><%|height=component.getPreferredSize().getHeight()%><%
-  	}
-  	else
-  		%>width="100%"<%
-	%> cellpadding="0" cellspacing="0" border="0">
-	<tr>
-	<%
+      <%
+      if (component.getPreferredSize() != null)
+      {
+          %><%|width=component.getPreferredSize().getWidth()%><%
+          %><%|height=component.getPreferredSize().getHeight()%><%
+      }
+      else
+          %>width="100%"<%
+    %> cellpadding="0" cellspacing="0" border="0">
+    <tr>
+    <%
 
-	SComponent contents;
+    SComponent contents;
     contents = component.getComponent(0);
     SComponent selComp = component.getSelectedComponent();
 
-	switch (component.getTabPlacement())
-	{
-		case SConstants.LEFT:
-			writeTabs(device, component);
-        	%><td<%
-        	%><%|class="tp_"+component.getComponentId()+"_content"%><%
-        	org.wings.plaf.xhtml.Utils.printTableCellAlignment(device, selComp);
-			%>><%
-        	contents.write(device);
-        	break;
+    switch (component.getTabPlacement())
+    {
+        case SConstants.LEFT:
+            writeTabs(device, component);
+            %><td<%
+            %><%|class="tp_"+component.getComponentId()+"_content"%><%
+            org.wings.plaf.xhtml.Utils.printTableCellAlignment(device, selComp);
+            %>><%
+            contents.write(device);
+            break;
         case SConstants.TOP:
-			writeTabs(device, component);
-        	%></tr><tr><td<%
-        	%><%|class="tp_"+component.getComponentId()+"_content"%><%
-        	org.wings.plaf.xhtml.Utils.printTableCellAlignment(device, selComp);
-			%>><%
-        	contents.write(device);
-        	break;
+            writeTabs(device, component);
+            %></tr><tr><td<%
+            %><%|class="tp_"+component.getComponentId()+"_content"%><%
+            org.wings.plaf.xhtml.Utils.printTableCellAlignment(device, selComp);
+            %>><%
+            contents.write(device);
+            break;
         case SConstants.RIGHT:
-			%><td<%
-        	%><%|class="tp_"+component.getComponentId()+"_content"%><%
-        	org.wings.plaf.xhtml.Utils.printTableCellAlignment(device, selComp);
-			%>><%
-        	contents.write(device);
-        	%></td><%
-        	writeTabs(device, component);
-        	break;
+            %><td<%
+            %><%|class="tp_"+component.getComponentId()+"_content"%><%
+            org.wings.plaf.xhtml.Utils.printTableCellAlignment(device, selComp);
+            %>><%
+            contents.write(device);
+            %></td><%
+            writeTabs(device, component);
+            break;
         case SConstants.BOTTOM:
-			%><td<%
-        	%><%|class="tp_"+component.getComponentId()+"_content"%><%
-        	org.wings.plaf.xhtml.Utils.printTableCellAlignment(device, selComp);
-			%>><%
-        	contents.write(device);
-        	%></td></tr><tr><%
-        	writeTabs(device, component);
-        	break;
-	}
-	%></td></tr></table>
+            %><td<%
+            %><%|class="tp_"+component.getComponentId()+"_content"%><%
+            org.wings.plaf.xhtml.Utils.printTableCellAlignment(device, selComp);
+            %>><%
+            contents.write(device);
+            %></td></tr><tr><%
+            writeTabs(device, component);
+            break;
+    }
+    %></td></tr></table>
 </write>
 
 protected void writeTabs(Device device, STabbedPane component) throws IOException
 {
-	  boolean vert = component.getTabPlacement() == SConstants.LEFT ||
-				     component.getTabPlacement() == SConstants.RIGHT;
-	%><td valign="top"<%
-	%><%|class="tp_"+component.getComponentId()+"_btnpanel"%><%
-	%><%|align=(component.getTabPlacement()==SConstants.LEFT?"right":"left")%><%
-	if (component.getTabPlacement()==SConstants.LEFT ||
-		component.getTabPlacement()==SConstants.RIGHT)
-	{
-		%>width="1"><%
-	}
-	else
-	{
-		%>height="1"><%
-	}
-	
+      boolean vert = component.getTabPlacement() == SConstants.LEFT ||
+                     component.getTabPlacement() == SConstants.RIGHT;
+    %><td valign="top"<%
+    %><%|class="tp_"+component.getComponentId()+"_btnpanel"%><%
+    %><%|align=(component.getTabPlacement()==SConstants.LEFT?"right":"left")%><%
+    if (component.getTabPlacement()==SConstants.LEFT ||
+        component.getTabPlacement()==SConstants.RIGHT)
+    {
+        %>width="1"><%
+    }
+    else
+    {
+        %>height="1"><%
+    }
+    
       final int maxTabsPerLine = component.getMaxTabsPerLine();
       boolean newLine = true;
       boolean selected = false;
@@ -301,104 +301,104 @@ protected void writeTabs(Device device, STabbedPane component) throws IOExceptio
       
       if (component.getShowAsFormComponent()) {
       
-      	/* get tab height */
-		int tabHeight = 0;
-		for (int i = 0; i < loops; ++i) {
-			SIcon icn = component.getIconAt(i);
-			if (icn == null) continue;
-			tabHeight = Math.max(tabHeight, icn.getIconHeight());
-		}
+          /* get tab height */
+        int tabHeight = 0;
+        for (int i = 0; i < loops; ++i) {
+            SIcon icn = component.getIconAt(i);
+            if (icn == null) continue;
+            tabHeight = Math.max(tabHeight, icn.getIconHeight());
+        }
       
-      	for (int i = 0; i < loops; i++) {
-		    SIcon icon = component.isEnabledAt(i)?
-		        component.getIconAt(i) :
-		        component.getDisabledIconAt(i);
-			if (icon != null) {
-	      		%><input type="image" border="0"<%
-	      		%><%|src=icon.getURL()%><%
-	      		%><%|style="padding-bottom: "+(tabHeight-icon.getIconHeight()+2)+"px"%><%
-	      		%><%|name=component.getEncodedLowLevelEventId()+"_"+i%><%
-	      		String cls = component.getSelectedIndex() == i?"_icnsel":"_icnnonsel";
-	      		%><%|class="tp_"+component.getComponentId()+cls%><%
-	      		%>><%
-			}
-			String title = component.getTitleAt(i);
-			if (title != null &&
-				title.trim().length() > 0)
-			{
-	      		%><input type="submit" border="0"<%
-	      		%><%|value=title%><%
-	      		if (component.getStyleAt(i) == null) {
-		      		String cls = "_btn"+
-		      			(icon!=null?"icn":"") +
-		      			(component.getSelectedIndex() == i?"sel":"nonsel");
-		      		if (!component.isEnabledAt(i)) {
-		      			cls+="dis";
-		      		}
-		      		else {
-		      			%><%|name=component.getEncodedLowLevelEventId()+"_"+i%><%
-		      		}
-		      		%><%|class="tp_"+component.getComponentId()+cls%><%
-		      	}
-		      	else {
-		      		%><%|class=component.getStyleAt(i)%><%
-		      	}
-		      		
-	      		%>><%
-	      		if (!SessionManager.getSession().getUserAgent().hasGecko())
-	      			%> <%
-	      	}
-      		if (vert) %><br><%
-      	}
+          for (int i = 0; i < loops; i++) {
+            SIcon icon = component.isEnabledAt(i)?
+                component.getIconAt(i) :
+                component.getDisabledIconAt(i);
+            if (icon != null) {
+                  %><input type="image" border="0"<%
+                  %><%|src=icon.getURL()%><%
+                  %><%|style="padding-bottom: "+(tabHeight-icon.getIconHeight()+2)+"px"%><%
+                  %><%|name=component.getEncodedLowLevelEventId()+"_"+i%><%
+                  String cls = component.getSelectedIndex() == i?"_icnsel":"_icnnonsel";
+                  %><%|class="tp_"+component.getComponentId()+cls%><%
+                  %>><%
+            }
+            String title = component.getTitleAt(i);
+            if (title != null &&
+                title.trim().length() > 0)
+            {
+                  %><input type="submit" border="0"<%
+                  %><%|value=title%><%
+                  if (component.getStyleAt(i) == null) {
+                      String cls = "_btn"+
+                          (icon!=null?"icn":"") +
+                          (component.getSelectedIndex() == i?"sel":"nonsel");
+                      if (!component.isEnabledAt(i)) {
+                          cls+="dis";
+                      }
+                      else {
+                          %><%|name=component.getEncodedLowLevelEventId()+"_"+i%><%
+                      }
+                      %><%|class="tp_"+component.getComponentId()+cls%><%
+                  }
+                  else {
+                      %><%|class=component.getStyleAt(i)%><%
+                  }
+                      
+                  %>><%
+                  if (!SessionManager.getSession().getUserAgent().hasGecko())
+                      %> <%
+              }
+              if (vert) %><br><%
+          }
       }
       else
       {
-	      for (int i=0; i < loops; ++i) {
-		  selected = (i == component.getSelectedIndex());
-		  %><img align="absmiddle"<%
-		  if (newLine || vert) {
-		      if (selected) { %><%|src=firstIconSelected.getURL()%><% }
-		      else          { %><%|src=firstIconNormal.getURL()%><% }
-		      newLine = false;
-		  }
-		  else {
-		      if (selectedBefore) {
-			  %><%|src=connectIconSelectedRight.getURL()%><%
-		      }
-		      else if (selected) {
-			  %><%|src=connectIconSelectedLeft.getURL()%><%
-		      }
-		      else {
-			  %><%|src=connectIconNormal.getURL()%><%
-		      }
-		  }
-		  %> /><% // close image tag.
-		  selected = (i == component.getSelectedIndex());
-		  String style_btn = "tp_"+component.getComponentId()+(selected?"_btnsel":"_btnnonsel");
+          for (int i=0; i < loops; ++i) {
+          selected = (i == component.getSelectedIndex());
+          %><img align="absmiddle"<%
+          if (newLine || vert) {
+              if (selected) { %><%|src=firstIconSelected.getURL()%><% }
+              else          { %><%|src=firstIconNormal.getURL()%><% }
+              newLine = false;
+          }
+          else {
+              if (selectedBefore) {
+              %><%|src=connectIconSelectedRight.getURL()%><%
+              }
+              else if (selected) {
+              %><%|src=connectIconSelectedLeft.getURL()%><%
+              }
+              else {
+              %><%|src=connectIconNormal.getURL()%><%
+              }
+          }
+          %> /><% // close image tag.
+          selected = (i == component.getSelectedIndex());
+          String style_btn = "tp_"+component.getComponentId()+(selected?"_btnsel":"_btnnonsel");
 
-		  writeAnchor(device, component, i, style_btn);
+          writeAnchor(device, component, i, style_btn);
 
-		  if ( vert || (maxTabsPerLine > 0 && ((i+1) % maxTabsPerLine == 0) )) {
-	      	      %><img<%
-	              %><%|align="absmiddle"%><%
-		      if (selected) { %><%|src=lastIconSelected.getURL()%><% }
-		      else          { %><%|src=lastIconNormal.getURL()%><% }
-		      %> /><br /><%
-		      newLine = true;
-		  }
-		  selectedBefore = selected;
-		  if (vert)
-		  	  	%><br><%
-	       }
-	       if (!newLine) {
-	             // closed tab if not already written..
-	              %><img align="absmiddle"<%
-		      if (selected) { %><%|src=lastIconSelected.getURL()%><% }
-		      else          { %><%|src=lastIconNormal.getURL()%><% }
-		      %> /><%
-	       }
-	    }
-	    %></td><%
+          if ( vert || (maxTabsPerLine > 0 && ((i+1) % maxTabsPerLine == 0) )) {
+                    %><img<%
+                  %><%|align="absmiddle"%><%
+              if (selected) { %><%|src=lastIconSelected.getURL()%><% }
+              else          { %><%|src=lastIconNormal.getURL()%><% }
+              %> /><br /><%
+              newLine = true;
+          }
+          selectedBefore = selected;
+          if (vert)
+                    %><br><%
+           }
+           if (!newLine) {
+                 // closed tab if not already written..
+                  %><img align="absmiddle"<%
+              if (selected) { %><%|src=lastIconSelected.getURL()%><% }
+              else          { %><%|src=lastIconNormal.getURL()%><% }
+              %> /><%
+           }
+        }
+        %></td><%
 }
 
 /* Display icon and /or text in one link. A link is always displayed,
@@ -423,36 +423,36 @@ protected void writeAnchor(final Device device, STabbedPane tabbed, int index, S
         ? tabbed.getIconAt(index) 
         : tabbed.getDisabledIconAt(index);
     if (icon != null) {
-	    %><img align="top" border="0" src="<%
-	    %><%=icon.getURL()%>"<%
-	    %><%|width=icon.getIconWidth()%><%
-	    %><%|height=icon.getIconHeight()%><%
-	    %><%|alt=tooltip%> /><%
-	}
-	
-	String bname = SessionManager.getSession().getUserAgent().getBrowserName();
-	if ("Konqueror".equals(bname)) {
-		text = org.wings.plaf.xhtml.Utils.escapeSpecialChars(text);
-		text = text.replaceAll(" ", "&nbsp;");
-		%><%#text%></a><%
-	}
-	else if ("Opera".equals(bname)) {
-		%><%=text%><%
-		%></a> <%
-	}
-	else {
-		%><%=text%></a><%
-	}
+        %><img align="top" border="0" src="<%
+        %><%=icon.getURL()%>"<%
+        %><%|width=icon.getIconWidth()%><%
+        %><%|height=icon.getIconHeight()%><%
+        %><%|alt=tooltip%> /><%
+    }
+    
+    String bname = SessionManager.getSession().getUserAgent().getBrowserName();
+    if ("Konqueror".equals(bname)) {
+        text = org.wings.plaf.xhtml.Utils.escapeSpecialChars(text);
+        text = text.replaceAll(" ", "&nbsp;");
+        %><%#text%></a><%
+    }
+    else if ("Opera".equals(bname)) {
+        %><%=text%><%
+        %></a> <%
+    }
+    else {
+        %><%=text%></a><%
+    }
 }
 
 
 protected void writeAnchorAddress(Device device, STabbedPane tabbed, int index) 
     throws IOException
 {
-	RequestURL addr = tabbed.getRequestURL();
-	addr.addParameter(
-		tabbed.encodeLowLevelEventId(tabbed.getLowLevelEventId())+"="+index);
-	%><%#addr.toString()%><%
+    RequestURL addr = tabbed.getRequestURL();
+    addr.addParameter(
+        tabbed.encodeLowLevelEventId(tabbed.getLowLevelEventId())+"="+index);
+    %><%#addr.toString()%><%
 }
 
 </template>

@@ -85,8 +85,8 @@ public class STabbedPane
     /** The dynamic attributes of selected tabs */
     protected AttributeSet selectionAttributes = new SimpleAttributeSet();
 
-	/** used form tabs or links */
-	protected boolean showAsFormComponent = false;
+    /** used form tabs or links */
+    protected boolean showAsFormComponent = false;
 
     private Logger fLogger = Logger.getLogger("org.wings.STabbedPane");
 
