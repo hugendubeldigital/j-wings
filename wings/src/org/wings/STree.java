@@ -37,7 +37,7 @@ import org.wings.style.*;
  */
 public class STree
     extends SComponent
-    implements LowLevelEventListener, Scrollable
+    implements LowLevelEventListener, Scrollable, SSelectionComponent
 {
     private final static Logger logger = Logger.getLogger("org.wings");
     private static final String cgClassID = "TreeCG";
@@ -1190,7 +1190,7 @@ public class STree
      */
     public void setSelectionBackground(Color color) {
         boolean changed = 
-            selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, Style.BACKGROUND_COLOR));
+            selectionAttributes.putAll(CSSStyleSheet.getAttributes(color, Style.BACKGROUND_COLOR));
         if (changed)
             reload(ReloadManager.RELOAD_STYLE);
     }
@@ -1209,7 +1209,7 @@ public class STree
      */
     public void setSelectionForeground(Color color) {
         boolean changed = 
-            selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, Style.COLOR));
+            selectionAttributes.putAll(CSSStyleSheet.getAttributes(color, Style.COLOR));
         if (changed)
             reload(ReloadManager.RELOAD_STYLE);
     }

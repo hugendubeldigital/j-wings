@@ -25,9 +25,11 @@ public interface SSelectionComponent
     void setSelectionStyle(Style selectionStyle);
     Style getSelectionStyle();
 
+    /*
     void setSelectionAttribute(String name, String value);
     String getSelectionAttribute(String name);
     String removeSelectionAttribute(String name);
+    */
     void setSelectionAttributes(AttributeSet selectionAttributes);
     AttributeSet getSelectionAttributes();
 }

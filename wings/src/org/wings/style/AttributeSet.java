@@ -45,7 +45,7 @@ public interface AttributeSet extends Renderable
      * @param attrName the attribute name
      * @return true if the attribute has a value specified
      */
-    public boolean isDefined(String name);
+    public boolean contains(String name);
 
     /**
      * Fetches the value of the given attribute.
@@ -54,7 +54,7 @@ public interface AttributeSet extends Renderable
      * @param key the non-null key of the attribute binding
      * @return the value
      */
-    public String getAttribute(String key);
+    public String get(String key);
 
     /**
      * Returns an enumeration over the names of the attributes in the set.
@@ -74,7 +74,7 @@ public interface AttributeSet extends Renderable
      * @param name the name
      * @param value the value
      */
-    public String putAttribute(String name, String value);
+    public String put(String name, String value);
 
     /**
      * Creates a new attribute set similar to this one except that it contains
@@ -82,14 +82,14 @@ public interface AttributeSet extends Renderable
      *
      * @param attributes the set of attributes
      */
-    public boolean putAttributes(AttributeSet attributes);
+    public boolean putAll(AttributeSet attributes);
 
     /**
      * Removes an attribute with the given <code>name</code>.
      *
      * @param name the attribute name
      */
-    public String removeAttribute(String name);
+    public String remove(String name);
 
     /**
      * clear the contents of this AttributeSet.

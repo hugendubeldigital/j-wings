@@ -104,7 +104,7 @@ public class CSSStyleSheet
 	 * If the vertical alignment is set to either superscirpt or
 	 * subscript we reduce the font size by 2 points.
 	 */
-	String vAlign = (String)a.getAttribute(Style.VERTICAL_ALIGN);
+	String vAlign = (String)a.get(Style.VERTICAL_ALIGN);
 
 	if (vAlign != null) {
 	    if ((vAlign.indexOf("sup") >= 0) ||
@@ -113,11 +113,11 @@ public class CSSStyleSheet
 	    }
 	}
 
-	String family = (String)a.getAttribute(Style.FONT_FAMILY);
+	String family = (String)a.get(Style.FONT_FAMILY);
         anyFontAttribute |= (family != null);
 
 	int style = Font.PLAIN;
-	String weight = (String)a.getAttribute(Style.FONT_WEIGHT);
+	String weight = (String)a.get(Style.FONT_WEIGHT);
 	if (weight == null)
 	    ;
 	else if (weight.equals("bold")) {
@@ -134,7 +134,7 @@ public class CSSStyleSheet
 	}
         anyFontAttribute |= (weight != null);
 
-	String styleValue = (String)a.getAttribute(Style.FONT_STYLE);
+	String styleValue = (String)a.get(Style.FONT_STYLE);
 	if ((styleValue != null) && (styleValue.indexOf(Style.ITALIC) >= 0))
 	    style |= Font.ITALIC;
         anyFontAttribute |= (styleValue != null);
@@ -148,7 +148,7 @@ public class CSSStyleSheet
      * is specified.
      */
     private static int getFontSize(AttributeSet attr) {
-	String value = (String)attr.getAttribute(Style.FONT_SIZE);
+	String value = (String)attr.get(Style.FONT_SIZE);
 	if (value == null)
             return -1;
 	try {
@@ -232,7 +232,7 @@ public class CSSStyleSheet
     }
 
     static Color getColor(AttributeSet a, String key) {
-	String cv = (String)a.getAttribute(key);
+	String cv = (String)a.get(key);
 	if (cv != null) {
 	    return stringToColor(cv);
 	}
@@ -451,23 +451,23 @@ public class CSSStyleSheet
 	AttributeSet attributes = new SimpleAttributeSet();
 	if (font == null)
 	    return attributes;
-	attributes.putAttribute(Style.FONT_FAMILY, font.getFace());
+	attributes.put(Style.FONT_FAMILY, font.getFace());
 
 	int style = Font.PLAIN;
 	if ((font.getStyle() & Font.ITALIC) > 0)
-	    attributes.putAttribute(Style.FONT_STYLE, "italic");
+	    attributes.put(Style.FONT_STYLE, "italic");
 
 	if ((font.getStyle() & Font.BOLD) > 0)
-	    attributes.putAttribute(Style.FONT_WEIGHT, "bold");
+	    attributes.put(Style.FONT_WEIGHT, "bold");
 
-	attributes.putAttribute(Style.FONT_SIZE, font.getSize() + "pt");
+	attributes.put(Style.FONT_SIZE, font.getSize() + "pt");
 	return attributes;
     }
 
     public static AttributeSet getAttributes(Color color, String key) {
 	AttributeSet attributes = new SimpleAttributeSet();
 	if (color != null)
-	    attributes.putAttribute(key, colorToHex(color));
+	    attributes.put(key, colorToHex(color));
 	return attributes;
     }
 
@@ -573,7 +573,7 @@ public class CSSStyleSheet
 	 */
 	public void handleValue(String value) {
 	    if (propertyName != null) {
-		declaration.putAttribute(propertyName, value);
+		declaration.put(propertyName, value);
 	    }
 	    propertyName = null;
 	}

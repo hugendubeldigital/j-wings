@@ -17,10 +17,7 @@ package org.wings.style;
 import java.io.IOException;
 import java.lang.reflect.*;
 
-import org.wings.SComponent;
-import org.wings.SContainer;
-import org.wings.SFrame;
-import org.wings.DynamicResource;
+import org.wings.*;
 import org.wings.io.Device;
 import org.wings.util.ComponentVisitor;
 
@@ -62,17 +59,31 @@ public class DynamicStyleSheetResource
             this.out = out;
         }
         
-        private void writeAttributesFrom(SComponent component) 
-            throws IOException {
-            AttributeSet attributes = component.getAttributes();
-            if (attributes.size() == 0)
-                return;
-            out.print("._" + component.getComponentId());
+        private void writeAttributesFrom(SComponent component)
+            throws IOException
+        {
+            {
+                AttributeSet attributes = component.getAttributes();
+                if (attributes.size() > 0)
+                    writeAttributes("._" + component.getComponentId(), attributes);
+            }
+
+            if (component instanceof SSelectionComponent) {
+                AttributeSet attributes = ((SSelectionComponent)component).getSelectionAttributes();
+                if (attributes.size() > 0)
+                    writeAttributes(".__" + component.getComponentId(), attributes);
+            }
+        }
+        
+        private void writeAttributes(String name, AttributeSet attributes)
+            throws IOException
+        {
+            out.print(name);
             out.print(" {");
             attributes.write(out);
             out.print("}\n");
         }
-        
+
         public void visit(SComponent component) throws IOException {
             writeAttributesFrom(component);
         }

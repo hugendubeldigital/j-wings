@@ -440,7 +440,7 @@ public abstract class SComponent
      * @param value the attribute value
      */
     public void setAttribute(String name, String value) {
-        String oldVal = attributes.putAttribute(name, value);
+        String oldVal = attributes.put(name, value);
         reloadIfChange(ReloadManager.RELOAD_STYLE, oldVal, value);
     }
 
@@ -449,7 +449,7 @@ public abstract class SComponent
      * @param name the attribute name
      */
     public final String getAttribute(String name) {
-        return attributes.getAttribute(name);
+        return attributes.get(name);
     }
 
     /**
@@ -457,8 +457,8 @@ public abstract class SComponent
      * @param name the attribute name
      */
     public String removeAttribute(String name) {
-        if ( attributes.isDefined(name) ) {
-            String value = attributes.removeAttribute(name);
+        if (attributes.contains(name)) {
+            String value = attributes.remove(name);
 
             reload(ReloadManager.RELOAD_STYLE);
 
@@ -540,7 +540,7 @@ public abstract class SComponent
      * @param f the new font
      */
     public void setFont(SFont font) {
-        boolean changed = attributes.putAttributes(CSSStyleSheet.getAttributes(font));
+        boolean changed = attributes.putAll(CSSStyleSheet.getAttributes(font));
         if (changed) {
             reload(ReloadManager.RELOAD_STYLE);
         }

@@ -128,6 +128,14 @@ public class LookAndFeel
             try {
                 InputStream in = classLoader.getResourceAsStream(properties.getProperty("lookandfeel.stylesheet"));
                 ((CSSStyleSheet)styleSheet).read(in);
+                if (logger.isLoggable(Level.FINEST)) {
+                    System.out.println("sucessfully parsed the lookandfeel.stylesheet:");
+                    Iterator it = styleSheet.styles().iterator();
+                    while (it.hasNext()) {
+                        Style style = (Style)it.next();
+                        System.out.println("" + style);
+                    }
+                }
             }
             catch (Exception e) {
                 logger.log(Level.WARNING, null, e);
@@ -199,8 +207,8 @@ public class LookAndFeel
             String token = tokens.nextToken();
             int pos = token.indexOf(":");
             if (pos >= 0) {
-                attributes.putAttribute(token.substring(0, pos), 
-                                        token.substring(pos + 1));
+                attributes.put(token.substring(0, pos), 
+                               token.substring(pos + 1));
             }
         }
         return attributes;

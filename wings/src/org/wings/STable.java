@@ -44,7 +44,7 @@ import org.wings.style.*;
  */
 public class STable
     extends SComponent
-    implements TableModelListener, Scrollable, CellEditorListener, LowLevelEventListener
+    implements TableModelListener, Scrollable, CellEditorListener, LowLevelEventListener, SSelectionComponent
 {
     /**
      * @see #getCGClassID
@@ -100,10 +100,6 @@ public class STable
      * TODO: documentation
      */
     protected final HashMap editors = new HashMap();
-
-    /** Icon used for buttons that start editing in a cell. */
-    transient protected SIcon editIcon;
-
 
     /** The style of selected cells */
     protected Style selectionStyle;
@@ -932,20 +928,6 @@ public class STable
     }
 
     /**
-     * Sets the icon used for the buttons that start editing in a cell.
-     */
-    public void setEditIcon(SIcon newIcon) {
-        editIcon = newIcon;
-    }
-
-    /**
-     * Returns the icon used for the buttons that start editing in a cell.
-     */
-    public SIcon getEditIcon() {
-        return editIcon;
-    }
-
-    /**
      * @param style the style of selected cells
      */
     public void setSelectionStyle(Style selectionStyle) {
@@ -984,7 +966,7 @@ public class STable
      * @param c the new background color
      */
     public void setSelectionBackground(Color color) {
-        boolean changed = selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, Style.BACKGROUND_COLOR));
+        boolean changed = selectionAttributes.putAll(CSSStyleSheet.getAttributes(color, Style.BACKGROUND_COLOR));
         if (changed)
             reload(ReloadManager.RELOAD_STYLE);
     }
@@ -1002,7 +984,7 @@ public class STable
      * @param color the foreground color of selected cells
      */
     public void setSelectionForeground(Color color) {
-        boolean changed = selectionAttributes.putAttributes(CSSStyleSheet.getAttributes(color, Style.COLOR));
+        boolean changed = selectionAttributes.putAll(CSSStyleSheet.getAttributes(color, Style.COLOR));
         if (changed)
             reload(ReloadManager.RELOAD_STYLE);
     }
@@ -1076,7 +1058,7 @@ public class STable
      * @param c the new background color
      */
     public void setHeaderBackground(Color color) {
-        boolean changed = headerAttributes.putAttributes(CSSStyleSheet.getAttributes(color, "background-color"));
+        boolean changed = headerAttributes.putAll(CSSStyleSheet.getAttributes(color, "background-color"));
         if (changed)
             reload(ReloadManager.RELOAD_STYLE);
     }
@@ -1094,7 +1076,7 @@ public class STable
      * @param c the new foreground color
      */
     public void setHeaderForeground(Color color) {
-        boolean changed = headerAttributes.putAttributes(CSSStyleSheet.getAttributes(color, "color"));
+        boolean changed = headerAttributes.putAll(CSSStyleSheet.getAttributes(color, "color"));
         if (changed)
             reload(ReloadManager.RELOAD_STYLE);
     }

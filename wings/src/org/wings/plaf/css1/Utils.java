@@ -56,11 +56,12 @@ public final class Utils
         return null;
     }
 
-    static String selectionStyle(SSelectionComponent component) {
-        if (component.getSelectionAttributes().size() > 0)
-            return "_" + ((SComponent)component).getComponentId();
-        else if (component.getSelectionStyle() != null)
-            return component.getSelectionStyle().getName();
+    static String selectionStyle(SComponent component) {
+        SSelectionComponent sel = (SSelectionComponent)component;
+        if (sel.getSelectionAttributes().size() > 0)
+            return "__" + component.getComponentId();
+        else if (sel.getSelectionStyle() != null)
+            return sel.getSelectionStyle().getName();
         return null;
     }
 }

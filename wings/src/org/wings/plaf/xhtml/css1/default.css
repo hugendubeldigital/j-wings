@@ -93,6 +93,10 @@ FORM {
    font-weight: bold 
 }
 
+.selection {
+  background-color: #99cccc
+}
+
 .list {
    border-style: none;
    border-width: 0px;
@@ -104,10 +108,6 @@ FORM {
    color: #000000
 }
 
-.listselection {
-   background-color: #99cccc
-}
-
 .tree {
    border-style: none;
    border-width: 0px;
@@ -117,10 +117,6 @@ FORM {
    font-weight: normal;
    font-style: normal;
    color: #000000
-}
-
-.treenodeselection {
-   background-color: #99cccc
 }
 
 .treenodenonselection {
@@ -142,10 +138,6 @@ FORM {
 .tableheader {
    font-weight: bold;
    background-color: #dedede
-}
-
-.tableselection {
-   background-color: #99cccc;
 }
 
 .tablenonselection {

@@ -40,7 +40,7 @@ import org.wings.style.*;
  */
 public class STabbedPane 
     extends SContainer
-    implements SConstants
+    implements SConstants, SSelectionComponent
 {
     /**
      * @see #getCGClassID
@@ -148,8 +148,8 @@ public class STabbedPane
      * @param value the selectionAttribute value
      */
     public void setSelectionAttribute(String name, String value) {
-        boolean changed = selectionAttributes.isDefined(name);
-        selectionAttributes.putAttribute(name, value);
+        boolean changed = selectionAttributes.contains(name);
+        selectionAttributes.put(name, value);
 
         if (changed)
             reload(ReloadManager.RELOAD_STYLE);
@@ -160,7 +160,7 @@ public class STabbedPane
      * @param name the selectionAttribute name
      */
     public String getSelectionAttribute(String name) {
-        return selectionAttributes.getAttribute(name);
+        return selectionAttributes.get(name);
     }
 
     /**
@@ -168,8 +168,8 @@ public class STabbedPane
      * @param name the selectionAttribute name
      */
     public String removeSelectionAttribute(String name) {
-        if ( selectionAttributes.isDefined(name) ) {
-            String value = selectionAttributes.removeAttribute(name);
+        if ( selectionAttributes.contains(name) ) {
+            String value = selectionAttributes.remove(name);
 
             reload(ReloadManager.RELOAD_STYLE);
 

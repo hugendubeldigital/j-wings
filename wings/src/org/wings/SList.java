@@ -69,7 +69,7 @@ import org.wings.io.Device;
  */
 public class SList
     extends SComponent
-    implements Scrollable, LowLevelEventListener
+    implements Scrollable, LowLevelEventListener, SSelectionComponent
 {
     /**
      * @see #getCGClassID
@@ -262,10 +262,10 @@ public class SList
      * @param value the selectionAttribute value
      */
     public void setSelectionAttribute(String name, String value) {
-        boolean changed = selectionAttributes.isDefined(name);
+        boolean changed = selectionAttributes.contains(name);
 
         if (changed) {
-            selectionAttributes.putAttribute(name, value);
+            selectionAttributes.put(name, value);
             reload(ReloadManager.RELOAD_STYLE);
         }
     }
@@ -275,7 +275,7 @@ public class SList
      * @param name the selectionAttribute name
      */
     public final String getSelectionAttribute(String name) {
-        return selectionAttributes.getAttribute(name);
+        return selectionAttributes.get(name);
     }
 
     /**
@@ -283,8 +283,8 @@ public class SList
      * @param name the selectionAttribute name
      */
     public String removeSelectionAttribute(String name) {
-        if ( selectionAttributes.isDefined(name) ) {
-            String value = selectionAttributes.removeAttribute(name);
+        if ( selectionAttributes.contains(name) ) {
+            String value = selectionAttributes.remove(name);
 
             reload(ReloadManager.RELOAD_STYLE);
 

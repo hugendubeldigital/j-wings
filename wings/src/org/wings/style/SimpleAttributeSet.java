@@ -50,7 +50,7 @@ public class SimpleAttributeSet
      */
     public SimpleAttributeSet(AttributeSet source) {
         this();
-        putAttributes(source);
+        putAll(source);
     }
 
     /**
@@ -81,7 +81,7 @@ public class SimpleAttributeSet
      * @param attrName the attribute name
      * @return true if the attribute is defined
      */
-    public boolean isDefined(String name) {
+    public boolean contains(String name) {
 	return map.containsKey(name);
     }
 
@@ -100,7 +100,7 @@ public class SimpleAttributeSet
      * @param name the attribute name
      * @return the value
      */
-    public String getAttribute(String name) {
+    public String get(String name) {
         return (String)map.get(name);
     }
 
@@ -110,9 +110,9 @@ public class SimpleAttributeSet
      * @param name the attribute name
      * @param value the attribute value
      */
-    public String putAttribute(String name, String value) {
+    public String put(String name, String value) {
         if (value == null)
-            return removeAttribute(name);
+            return remove(name);
         return (String)map.put(name, value);
     }
 
@@ -121,12 +121,12 @@ public class SimpleAttributeSet
      *
      * @param attributes the set of attributes to add
      */
-    public boolean putAttributes(AttributeSet attributes) {
+    public boolean putAll(AttributeSet attributes) {
 	boolean changed = false;
         Iterator names = attributes.names().iterator();
         while (names.hasNext()) {
             String name = (String)names.next();
-            changed = changed || (putAttribute(name, attributes.getAttribute(name)) != null);
+            changed = changed || (put(name, attributes.get(name)) != null);
         }
 	return changed;
     }
@@ -136,7 +136,7 @@ public class SimpleAttributeSet
      *
      * @param name the attribute name
      */
-    public String removeAttribute(String name) {
+    public String remove(String name) {
         return (String)map.remove(name);
     }
 
@@ -151,7 +151,7 @@ public class SimpleAttributeSet
 	SimpleAttributeSet attr;
 	try {
 	    attr = (SimpleAttributeSet)super.clone();
-	    attr.putAttributes(this);
+	    attr.putAll(this);
 	} catch (CloneNotSupportedException cnse) {
 	    attr = null;
 	}
@@ -183,7 +183,7 @@ public class SimpleAttributeSet
         Iterator names = other.names().iterator();
         while (names.hasNext()) {
             String name = (String)names.next();
-            if (!other.getAttribute(name).equals(getAttribute(name)))
+            if (!other.get(name).equals(get(name)))
                 return false;
         }
         return true;

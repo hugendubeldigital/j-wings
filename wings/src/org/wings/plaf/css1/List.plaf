@@ -4,6 +4,9 @@
    new org.wings.SDefaultListCellRenderer()
 </comp-property>
 
+<comp-property type="Style" name="style">list</comp-property>
+<comp-property type="Style" name="selectionStyle">listselection</comp-property>
+
     protected void writeFormList(Device device, SList list)
         throws IOException
     {
@@ -76,24 +79,13 @@
     public void writeAnchorList(Device device, SList list)
         throws IOException
     {
-        String style = (list.getStyle() != null) ? list.getStyle().getName() : null;
-        final String attr = (list.getAttributes().size() > 0) ? ("_" + list.getComponentId()) : null;
-
-        boolean renderSelection = list.getSelectionMode()!=SConstants.NO_SELECTION;
-
+	String style = Utils.style(list);
+	String selectionStyle = Utils.selectionStyle(list);
+        boolean renderSelection = list.getSelectionMode() != SConstants.NO_SELECTION;
         String orderType = list.getOrderType();
 
-        if (style != null && attr != null) {
-            %><span class="<%=style%>"><%
-            %><<%=list.getType()%> class="<%=attr%>"<%
-        }
-        else {
-	    if (style == null)
-                style = attr;
-            %><<%=list.getType()%><%
-            %><%|class=style%><%
-        }
-
+        %><<%=list.getType()%><%
+        %><%|class=style%><%
         %><%|type=list.getOrderType()%><%
         %><%|start=list.getStart()%><%
         %>><%
@@ -118,7 +110,13 @@
                 Object o = model.getElementAt(i);
                 boolean selected = list.isSelectedIndex(i);
 		
-                %><li><%
+                if (renderSelection && selected) {
+                    %><li<%
+                    %><%|class=selectionStyle%>><%
+                }
+                else {
+                    %><li><%
+                }
 
                 SComponent renderer = cellRenderer.getListCellRendererComponent(list,
                                                                                 model.getElementAt(i),
@@ -134,16 +132,22 @@
                       AnchorRenderStack.push(selectionAddr, null);
   		      rendererPane.writeComponent(device, renderer, list);
                       AnchorRenderStack.pop();
-                   } else {
+                   }
+                   else {
    		      /*
 		       * if it is not a ClickableRenderComponent, then surround it with
 		       * <a href=".."></a> and hope for the best...
 		       */
 		       %><a href="<%
-		       %><%=selectionAddr.toString()%><%
-		       %>"><%
-		    rendererPane.writeComponent(device, renderer, list);
-		    %></a><%
+		       %><%=selectionAddr.toString()%>"<%
+                       if (selected) {
+                           %><%|class=selectionStyle%>><%
+                       }
+                       else {
+		           %>><%
+                       }
+                       rendererPane.writeComponent(device, renderer, list);
+                       %></a><%
 		   }
                 } else {
 		    rendererPane.writeComponent(device, renderer, list);
