@@ -65,7 +65,7 @@ public class GridLayoutCG
 	}
 
         if (border > 0)
-            d.append(" border=").append(border).append("\"");
+            d.append(" border=\"").append(border).append("\"");
         else
             d.append(" border=\"0\"");
 

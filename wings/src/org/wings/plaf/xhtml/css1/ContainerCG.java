@@ -28,13 +28,13 @@ public final class ContainerCG
     protected void writePrefix(Device d, SContainer c)
         throws IOException
     {
-	Utils.writeSpanWithStyleAttributePrefix(d, c.getStyle());
+	Utils.writeDivWithStyleAttributePrefix(d, c.getStyle());
     }
 
     protected void writePostfix(Device d, SContainer c)
         throws IOException
     {
-	Utils.writeSpanWithStyleAttributePostfix(d, c.getStyle());
+	Utils.writeDivWithStyleAttributePostfix(d, c.getStyle());
     }
 }
 

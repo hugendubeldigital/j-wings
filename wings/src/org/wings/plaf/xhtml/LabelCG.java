@@ -186,12 +186,12 @@ public class LabelCG
         if (iAdr != null) {
             d.append("<img src=\"").append(iAdr).append("\"");
             if (align != null)
-                d.append(" valign=").append(align);
+                d.append(" valign=\"").append(align).append("\"");
             if (ic != null) {
-                d.append(" width=").append(ic.getIconWidth());
-                d.append(" height=").append(ic.getIconHeight());
+                d.append(" width=\"").append(ic.getIconWidth()).append("\"");
+                d.append(" height=\"").append(ic.getIconHeight()).append("\"");
             }
-            d.append(" border=0");
+            d.append(" border=\"0\"");
 
             if (tooltip != null) {
                 d.append(" alt=\"").append(tooltip).append("\"");
@@ -199,7 +199,7 @@ public class LabelCG
                 d.append(" alt=\"").append(text).append("\"");
             }
 
-            d.append(">");
+            d.append(" />");
         }
     }
 }

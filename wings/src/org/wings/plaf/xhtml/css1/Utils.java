@@ -125,6 +125,26 @@ public final class Utils implements SConstants
 
         d.append("</span>");
     }
+
+    public static void writeDivWithStyleAttributePrefix(Device d, Style style)
+        throws IOException
+    {
+        if (style == null)
+            return;
+ 
+        d.append("<div");
+        Utils.writeStyleAttribute(d, style);
+        d.append(">");
+    }
+ 
+    public static void writeDivWithStyleAttributePostfix(Device d, Style style)
+        throws IOException
+    {
+        if (style == null)
+            return;
+ 
+        d.append("</div>");
+    }                                                                                                             
 }
 
 /*
