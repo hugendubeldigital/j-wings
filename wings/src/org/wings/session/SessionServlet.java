@@ -578,11 +578,17 @@ final class SessionServlet
             if (outputDevice != null) {
                 try { outputDevice.close(); } catch (Exception e) {}
             }
+
             getSession().getReloadManager().clear();
 
             // make sure that the session association to the thread is removed
             // from the SessionManager
             SessionManager.removeSession();
+
+            session.setServletRequest(null);
+            session.setServletResponse(null);
+
+            SForm.clearArmedComponents();
         }
     }
 
@@ -668,7 +674,7 @@ final class SessionServlet
      * @param event
      */
     public void valueUnbound(HttpSessionBindingEvent event) {
-        session.destroy();
+        destroy();
     }
 
     /**
@@ -694,6 +700,9 @@ final class SessionServlet
             setParent(null);
             session.destroy();
             session = null;
+            errorFrame = null;
+            errorStackTraceLabel = null;
+            errorMessageLabel = null;
         }
         catch (Exception e) {
             logger.throwing(SessionServlet.class.getName(), "destroy", e);
