@@ -24,13 +24,12 @@ import org.wings.*;
 import org.wings.plaf.*;
 
 /**
- * TODO: documentation
+ * TODO: Creates A Modal Dialog
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class SDialog
-    extends SForm
+public class SDialog extends SForm
 {
     /**
      * @see #getCGClassID
@@ -38,56 +37,77 @@ public class SDialog
     private static final String cgClassID = "DialogCG";
 
     /**
-     * TODO: documentation
+     * The Title of the Dialog Frame
      */
-    public static final String OK_ACTION = "OK";
-
-    /**
-     * TODO: documentation
-     */
-    public static final String CANCEL_ACTION = "CANCEL";
-
-    /**
-     * TODO: documentation
-     */
-    public static final String UNKNOWN_ACTION = "UNKNOWN";
-
     protected String title;
 
-    /*
-     * Alle die es interessiert, wann der OptionPane fertig ist. Z.B. um
-     * das Ergebnis zu bekommen.
-     */
-    /**
-     * TODO: documentation
-     */
-    //protected EventListenerList listenerList = new EventListenerList();
 
     /**
-     * TODO: documentation
+     * The parent of the Dialog
      */
     protected SRootContainer root = null;
 
+
     /**
-     * TODO: documentation
-     *
-     * @param layout
+     * Creates a non Modal Dialog without parent <code>SFrame</code> or <code>SDialog</code>
+     * and without Title
      */
-    public SDialog(SLayoutManager layout) {
-        super(layout);
+    public SDialog() {
+      this((SFrame)null, false);
+    }
+
+
+    /**
+     * Creates a non-modal dialog without a title with 
+     * specifed parent <code>SFrame</code> as its owner.
+     *
+     * @param owner the parent <code>SFrame</code> 
+     */
+    public SDialog(SFrame owner) {
+        this(owner, false);
     }
 
     /**
-     * TODO: documentation
+     * Creates a modal or non-modal dialog without a title and
+     * with the specified owner <code>Frame</code>.
      *
+     * @param owner the parent <code>SFrame</code> 
+     * @param modal  true for a modal dialog, false for one that allows
+     *               others windows to be active at the same time
+     *               currently not very usefull with Wings
      */
-    public SDialog() {}
+    public SDialog(SFrame owner, boolean modal) {
+        this(owner, null, modal);
+    }
 
     /**
-     * TODO: documentation
+     * Creates a non-modal dialog with the specified title and
+     * with the specified owner frame.
      *
-     * @param t
+     * @param owner the parent <code>SFrame</code> 
+     * @param title  the <code>String</code> to display as titke
      */
+    public SDialog(SFrame owner, String title) {
+        this(owner, title, false);     
+    }
+
+    /**
+     * Creates a modal or non-modal dialog with the specified title 
+     * and the specified owner <code>SFrame</code>.  All constructors
+     * defer to this one.
+     *
+     * @param owner the parent <code>SFrame</code> 
+     * @param title  the <code>String</code> to display as titke
+     * @param modal  true for a modal dialog, false for one that allows
+     *               other windows to be active at the same time
+     *               currently not very usefull with Wings
+     */
+    public SDialog(SFrame owner, String title, boolean modal) {
+      super();
+      setTitle(title);
+      setFrame(owner);
+    }
+
     public void setTitle(String t) {
         if ( t==null )
             title = "";
@@ -95,11 +115,13 @@ public class SDialog
             title = t;
     }
     /**
-     * TODO: documentation
+     * Emits the current Title of the Dialog
      *
-     * @return
+     * @return Title of the Dialog
      */
-    public String getTitle() { return title; }
+    public String getTitle() { 
+      return title; 
+    }
 
     protected void fireActionPerformed(String state) {
         setActionCommand(state);
@@ -110,7 +132,7 @@ public class SDialog
     }
 
     /**
-     * TODO: documentation
+     * Removes all <code>SComponents</code> from the pane
      *
      */
     public void dispose() {
@@ -126,6 +148,15 @@ public class SDialog
         }
     }
 
+    public void setVisible(boolean visible) {
+      super.setVisible(visible);
+      if (visible) {
+        if (root != null) show(root);
+      } else {
+        if (isVisible()) hide();
+      }
+    }
+    
     /**
      * sets the root container in which this dialog is to be displayed.
      */

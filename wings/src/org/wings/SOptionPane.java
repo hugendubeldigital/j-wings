@@ -39,40 +39,54 @@ import org.wings.plaf.*;
  */
 public class SOptionPane
     extends SDialog
-    implements ActionListener
-{
+implements ActionListener {
     /**
      * @see #getCGClassID
      */
     private static final String cgClassID = "OptionPaneCG";
 
     /**
-     * TODO: documentation
+   * Actionb Performed Value if Yes is Choosen
      */
     public static final String YES_ACTION = "YES";
 
     /**
-     * TODO: documentation
+   * Action Performed Value if No is choosen
      */
     public static final String NO_ACTION = "NO";
 
     /**
-     * TODO: documentation
+   * Action Performed Value if Ok is choosen
+   */
+  public static final String OK_ACTION = "OK";
+
+  /**
+   * Action Performed Value if Cancel is choosen
      */
+  public static final String CANCEL_ACTION = "CANCEL";
+
+  /**
+   * Action Performed Value Unknow
+   */
+  public static final String UNKNOWN_ACTION = "UNKNOWN";
+
+  /**
+   * Return value if Ok is choosen
+   */
     public static final int OK_OPTION = JOptionPane.OK_OPTION;
 
     /**
-     * TODO: documentation
+   * Return value if Cancel is choosen
      */
     public static final int CANCEL_OPTION = JOptionPane.CANCEL_OPTION;
 
     /**
-     * TODO: documentation
+   * Return Value if Yes is choosen
      */
     public static final int YES_OPTION = JOptionPane.YES_OPTION;
 
     /**
-     * TODO: documentation
+   * Return value if no is choosen
      */
     public static final int NO_OPTION = JOptionPane.NO_OPTION;
 
@@ -88,35 +102,60 @@ public class SOptionPane
     public static final int DEFAULT_OPTION = JOptionPane.DEFAULT_OPTION;
 
     /**
-     * TODO: documentation
+   * Used for showConfirmDialog.
      */
     public static final int OK_CANCEL_OPTION = JOptionPane.OK_CANCEL_OPTION;
 
     /**
-     * TODO: documentation
+   *  Used for showConfirmDialog.
      */
     public static final int OK_CANCEL_RESET_OPTION = OK_CANCEL_OPTION + 1000;
 
     /**
-     * TODO: documentation
+   *  Used for showConfirmDialog.
      */
     public static final int YES_NO_OPTION = JOptionPane.YES_NO_OPTION;
 
     /**
-     * TODO: documentation
+   *  Used for showConfirmDialog.
      */
     public static final int YES_NO_RESET_OPTION = YES_NO_OPTION + 1000;
 
     /**
-     * TODO: documentation
+   *  Used for showConfirmDialog.
      */
     public static final int YES_NO_CANCEL_OPTION = JOptionPane.YES_NO_CANCEL_OPTION;
 
     /**
-     * TODO: documentation
+   *  Used for showConfirmDialog.
      */
     public static final int YES_NO_CANCEL_RESET_OPTION = YES_NO_CANCEL_OPTION + 1000;
 
+  //
+  // Message types. Used UI to determine the kind of icon to display,
+  // and possibly what behavior to give based on the type.
+  //
+    /*
+     * Error messages.
+     */
+  public static final int  ERROR_MESSAGE = javax.swing.JOptionPane.ERROR_MESSAGE;
+    /*
+     * Information messages.
+     */
+  public static final int  INFORMATION_MESSAGE = javax.swing.JOptionPane.INFORMATION_MESSAGE;
+    /*
+     * Warning messages.
+     */
+  public static final int  WARNING_MESSAGE = javax.swing.JOptionPane.WARNING_MESSAGE;
+    /*
+     * Questions.
+     */
+  public static final int  QUESTION_MESSAGE = javax.swing.JOptionPane.QUESTION_MESSAGE;
+    /*
+     * No icon.
+     */
+  public static final int   PLAIN_MESSAGE = javax.swing.JOptionPane.PLAIN_MESSAGE;
+  
     /**
      * ContentPane with border layout.
      */
@@ -133,57 +172,59 @@ public class SOptionPane
     private final SContainer images = new SPanel();
 
     /**
-     * TODO: documentation
+   * Panel with Option Buttons
      */
-    protected final SContainer optionButtons =
-        new SPanel(new SFlowLayout( RIGHT ));
+  protected final SContainer optionButtons =  new SPanel(new SFlowLayout( RIGHT ));
 
     /**
-     * TODO: documentation
+   * OK Button
      */
     protected final SButton optionOK = createButton("OK");
 
     /**
-     * TODO: documentation
+   * Cancel Button
      */
     protected final SButton optionCancel = createButton("Cancel");
 
     /**
-     * TODO: documentation
+   * Yes Button
      */
     protected final SButton optionYes = createButton("Yes");
 
     /**
-     * TODO: documentation
+   * No Button
      */
     protected final SButton optionNo = createButton("No");
 
     /**
-     * TODO: documentation
+   * Reset Button
      */
     private final SResetButton optionReset = createResetButton("Reset");
 
     /**
-     * TODO: documentation
+   * Icon for Inform Dialog
      */
-    protected static final SIcon messageImage =
-        new ResourceImageIcon("org/wings/icons/Inform.gif");
+  protected static final SIcon messageImage = new ResourceImageIcon("org/wings/icons/Inform.gif");
 
     /**
-     * TODO: documentation
+   * Icon for Input Dialog
      */
-    protected static final SIcon questionImage =
-        new ResourceImageIcon("org/wings/icons/Question.gif");
+  protected static final SIcon questionImage = new ResourceImageIcon("org/wings/icons/Question.gif");
 
     /**
-     * TODO: documentation
+   * Icon for Show Confirm Dialog
      */
-    protected static final SIcon yesnoImage =
-        new ResourceImageIcon("org/wings/icons/Question.gif");
+  protected static final SIcon yesnoImage =  new ResourceImageIcon("org/wings/icons/Question.gif");
 
-    protected final SLabel messageLabel  = new SLabel(messageImage);
-    protected final SLabel questionLabel = new SLabel(questionImage);
-    protected final SLabel yesnoLabel    = new SLabel(yesnoImage);
+  /**
+   * Icon for Error Dialog
+   */
+  protected static final SIcon errorImage =  new ResourceImageIcon("org/wings/icons/Warn.gif");
+  
+//  protected final SLabel messageLabel  = new SLabel(messageImage);
+//  protected final SLabel questionLabel = new SLabel(questionImage);
+//  protected final SLabel yesnoLabel    = new SLabel(yesnoImage);
+  protected final SLabel imageLabel = new SLabel();
 
     /**
      * The chosen option
@@ -194,15 +235,148 @@ public class SOptionPane
      */
     protected Object selected = null;
 
+    /*
+     * Icon used in pane.
+     */
+  protected SIcon                 icon;
+    /*
+     * Message to display.
+     */
+  protected Object                message;
+    /*
+     * Options to display to the user.
+     */
+  protected Object[]              options;
+    /*
+     * Value that should be initialy selected in options.
+     */
+  protected Object                initialValue;
+
+  /*
+   * Message type. 
+   */
+  protected int                   messageType;
+  
     /**
-     * TODO: documentation
-     *
+   * Default Conbstructor for <code>SOptionPane</code>
+   * Against the Standard Swing Implementation there is no Standard Message
      */
     public SOptionPane() {
+    this("");
+  }
+  
+    /*
+     * Creates a instance of <code>SOptionPane</code> with a message
+     *
+     * @param message the <code>Object</code> to display
+     */
+  public SOptionPane(Object message) {
+    this(message, PLAIN_MESSAGE);
+  }
+  
+    /*
+     * Creates an instance of <code>SOptionPane</code> to display a message
+     * with the specified message and the default options,
+     *
+     * @param message the <code>Object</code> to display
+     * @param messageType the type of message to be displayed:
+     *                    ERROR_MESSAGE, INFORMATION_MESSAGE, WARNING_MESSAGE,
+     *                    QUESTION_MESSAGE, or PLAIN_MESSAGE
+     */
+  public SOptionPane(Object message, int messageType) {
+    this(message, messageType, DEFAULT_OPTION);
+  }
+  
+  /**
+   * Creates an instance of <code>JOptionPane</code> to display a message
+   * with the specified message type and options.
+   *
+   * @param message the <code>Object</code> to display
+   * @param messageType the type of message to be displayed:
+   *                    ERROR_MESSAGE, INFORMATION_MESSAGE, WARNING_MESSAGE,
+   *                    QUESTION_MESSAGE, or PLAIN_MESSAGE
+   * @param optionType the options to display in the pane:
+   *                   DEFAULT_OPTION, YES_NO_OPTION, YES_NO_CANCEL_OPTION
+   *                   OK_CANCEL_OPTION
+   */
+  public SOptionPane(Object message, int messageType, int optionType) {
+    this(message, messageType, optionType, null);
+  }
+  
+  /**
+   * Creates an instance of <code>JOptionPane</code> to display a message
+   * with the specified message type, options, and icon.
+   *
+   * @param message the <code>Object</code> to display
+   * @param messageType the type of message to be displayed:
+   *                    ERROR_MESSAGE, INFORMATION_MESSAGE, WARNING_MESSAGE,
+   *                    QUESTION_MESSAGE, or PLAIN_MESSAGE
+   * @param optionType the options to display in the pane:
+   *                   DEFAULT_OPTION, YES_NO_OPTION, YES_NO_CANCEL_OPTION
+   *                   OK_CANCEL_OPTION
+   * @param icon the <code>Icon</code> image to display
+   */
+  public SOptionPane(Object message, int messageType, int optionType,  SIcon icon) {
+    this(message, messageType, optionType, icon, null);
+  }
+  
+  /**
+   * Creates an instance of JOptionPane to display a message
+   * with the specified message type, icon, and options.
+   * None of the options is initially selected.
+   * <p>
+   * The options objects should contain either instances of
+   * <code>Component</code>s, (which are added directly) or
+   * <code>Strings</code> (which are wrapped in a <code>JButton</code>).
+   * If you provide <code>Component</code>s, you must ensure that when the
+   * <code>Component</code> is clicked it messages <code>setValue</code>
+   * in the created <code>JOptionPane</code>.
+   *
+   * @param message the <code>Object</code> to display
+   * @param messageType the type of message to be displayed:
+   *                    ERROR_MESSAGE, INFORMATION_MESSAGE, WARNING_MESSAGE,
+   *                    QUESTION_MESSAGE, or PLAIN_MESSAGE
+   * @param optionType the options to display in the pane:
+   *                   DEFAULT_OPTION, YES_NO_OPTION, YES_NO_CANCEL_OPTION
+   *                   OK_CANCEL_OPTION; only meaningful if the
+   *                   <code>options</code> parameter is <code>null</code>
+   * @param icon the <code>Icon</code> image to display
+   * @param options  the choices the user can select
+   */
+  public SOptionPane(Object message, int messageType, int optionType,  SIcon icon, Object[] options) {
+    this(message, messageType, optionType, icon, options, null);
+  }
+  
+  /**
+   * Creates an instance of <code>JOptionPane</code> to display a message
+   * with the specified message type, icon, and options, with the
+   * initially-selected option specified.
+   *
+   * @param message the <code>Object</code> to display
+   * @param messageType the type of message to be displayed:
+   *                    ERROR_MESSAGE, INFORMATION_MESSAGE, WARNING_MESSAGE,
+   *                    QUESTION_MESSAGE, or PLAIN_MESSAGE
+   * @param optionType the options to display in the pane:
+   *                   DEFAULT_OPTION, YES_NO_OPTION, YES_NO_CANCEL_OPTION
+   *                   OK_CANCEL_OPTION; only meaningful if the
+   *                   <code>options</code> parameter is <code>null</code>
+   * @param icon the Icon image to display
+   * @param options  the choices the user can select
+   * @param initialValue the choice that is initially selected
+   */
+  public SOptionPane(Object message, int messageType, int optionType, SIcon icon, Object[] options, Object initialValue) {
+    this.message = message;
+    this.options = options;
+    this.initialValue = initialValue;
+    this.icon = icon;
         SGridLayout layout = new SGridLayout(1);
         layout.setBorder(1);
         setLayout(layout);
         initPanel();
+    setOptionType(optionType);
+    setMessageType(messageType);
+    // value = UNINITIALIZED_VALUE;
+    // inputValue = UNINITIALIZED_VALUE;
     }
 
     /*
@@ -223,12 +397,15 @@ public class SOptionPane
         optionButtons.add(optionNo);
         optionButtons.add(optionReset);
         
-        images.add(messageLabel);
+/*    images.add(messageLabel);
         messageLabel.setToolTipText("info");
         images.add(questionLabel);
         questionLabel.setToolTipText("question");
         images.add(yesnoLabel);
         yesnoLabel.setToolTipText("question");
+*/
+    images.add(imageLabel);
+    imageLabel.setToolTipText("");
 
         contents.add(optionData, SBorderLayout.CENTER);
         contents.add(images, SBorderLayout.WEST);
@@ -238,7 +415,9 @@ public class SOptionPane
     }
 
     /**
-     * TODO: documentation
+   * Generic Button creation
+   *
+   * @param label the <code>String</code> to display on the button
      */
     protected final SButton createButton(String label) {
         SButton b = new SButton(label);
@@ -306,9 +485,10 @@ public class SOptionPane
         optionNo.setVisible(false);
         optionReset.setVisible(false);
 
-        messageLabel.setVisible(false);
-        questionLabel.setVisible(false);
-        yesnoLabel.setVisible(false);
+//    messageLabel.setVisible(false);
+//    questionLabel.setVisible(false);
+//    yesnoLabel.setVisible(false);
+    imageLabel.setVisible(false);
     }
 
     SContainer customButtons = null;
@@ -339,6 +519,62 @@ public class SOptionPane
     }
 
     /**
+   * Sets the option pane's message type.
+   * Dependent to the MessageType there wil be displayed a different Message Label
+   * @param newType an integer specifying the kind of message to display:
+   *                ERROR_MESSAGE, INFORMATION_MESSAGE, WARNING_MESSAGE,
+   *                QUESTION_MESSAGE, or PLAIN_MESSAGE
+   *
+   * description: The option pane's message type.
+   */
+  public void setMessageType(int newType) {
+    switch(newType) {
+      case ERROR_MESSAGE: {
+        imageLabel.setIcon(errorImage);
+        imageLabel.setToolTipText("Error");
+        break;
+      }
+      case INFORMATION_MESSAGE: {
+        //informationLabel.setVisible(true);
+        imageLabel.setIcon(messageImage);
+        imageLabel.setToolTipText("Information");
+        break;
+      }
+      case WARNING_MESSAGE: {
+        imageLabel.setIcon(yesnoImage);
+        imageLabel.setToolTipText("Warning");
+        //warningLabel.setVisble(true);
+        break;
+      }
+      case QUESTION_MESSAGE: {
+        //questionLabel.setVisible(true);
+        imageLabel.setIcon(questionImage);
+        imageLabel.setToolTipText("Question");
+        break;
+      }
+      case PLAIN_MESSAGE:
+      default: {
+        imageLabel.setIcon(null);
+        imageLabel.setToolTipText("");
+        //questionLabel.setIcon(null);
+      }
+    }
+    
+    messageType = newType;
+  }
+  
+  /**
+   * Returns the message type.
+   *
+   * @return an integer specifying the message type
+   *
+   * @see #setMessageType
+   */
+  public int getMessageType() {
+    return messageType;
+  }
+  
+  /**
      * returns, whether this OptionPane is cancelable. This may be used
      * from the renderer to add additional cancel buttons.
      */
@@ -428,36 +664,28 @@ public class SOptionPane
     /**
      * TODO: documentation
      */
-    public static void showMessageDialog(SComponent parent,
-                                         Object message,
-                                         ActionListener al) {
+  public static void showMessageDialog(SComponent parent, Object message, ActionListener al) {
         showMessageDialog(parent, message, null, 0, al);
     }
 
     /**
      * TODO: documentation
      */
-    public static void showMessageDialog(SComponent parent,
-                                         Object message) {
+  public static void showMessageDialog(SComponent parent, Object message) {
         showMessageDialog(parent, message, null, 0, null);
     }
 
     /**
      * TODO: documentation
      */
-    public static void showMessageDialog(SComponent parent,
-                                         Object message,
-                                         String title) {
+  public static void showMessageDialog(SComponent parent, Object message, String title) {
         showMessageDialog(parent, message, title, 0, null);
     }
 
     /**
      * TODO: documentation
      */
-    public static void showMessageDialog(SComponent parent,
-                                         Object message, String title,
-                                         int messageType,
-                                         ActionListener al) {
+  public static void showMessageDialog(SComponent parent, Object message, String title, int messageType, ActionListener al) {
         SOptionPane p = new SOptionPane();
 
         p.showPlainMessage(parent, message, title);
@@ -467,9 +695,7 @@ public class SOptionPane
     /**
      * TODO: documentation
      */
-    public static void showPlainMessageDialog(SComponent parent,
-                                              Object message,
-                                              String title) {
+  public static void showPlainMessageDialog(SComponent parent, Object message, String title) {
         showPlainMessageDialog(parent, message, title, 0, null);
     }
 
@@ -477,53 +703,45 @@ public class SOptionPane
     /**
      * TODO: documentation
      */
-    public static void showPlainMessageDialog(SComponent parent,
-                                              Object message, String title,
-                                              int messageType,
-                                              ActionListener al) {
+  public static void showPlainMessageDialog(SComponent parent, Object message, String title, int messageType, ActionListener al) {
         SOptionPane p = new SOptionPane();
 
         p.showPlainMessage(parent, message, title);
         p.addActionListener(al);
-
-        p.messageLabel.setVisible(false);
+    p.setMessageType(PLAIN_MESSAGE);
+//    p.messageLabel.setVisible(false);
     }
 
     /**
      * TODO: documentation
      */
-    public void showPlainMessage(SComponent parent, Object message,
-                                 String title) {
+  public void showPlainMessage(SComponent parent, Object message,  String title) {
         showOption(parent, title, message);
 
         setOptionType(DEFAULT_OPTION);
-
-        messageLabel.setVisible(true);
+    setMessageType(PLAIN_MESSAGE);
+//    messageLabel.setVisible(true);
     }
 
 
     /**
      * TODO: documentation
      */
-    public void showQuestion(SComponent parent,
-                              Object message, String title) {
+  public void showQuestion(SComponent parent,  Object message, String title) {
         showOption(parent, title, message);
         
         setOptionType(OK_CANCEL_OPTION);
-
-        questionLabel.setVisible(true);
+    setMessageType(QUESTION_MESSAGE);
+//    questionLabel.setVisible(true);
     }
 
-    public void showInput(SComponent parent,
-                          Object message, 
-                          SComponent inputElement,
-                          String title) {
+  public void showInput(SComponent parent,  Object message,  SComponent inputElement,  String title) {
         showOption(parent, title, message);
         optionData.add(inputElement);
         
         setOptionType(OK_CANCEL_OPTION);
-
-        questionLabel.setVisible(true);
+    setMessageType(QUESTION_MESSAGE);
+//    questionLabel.setVisible(true);
     }
 
     /**
@@ -537,10 +755,7 @@ public class SOptionPane
     // }
 
 
-    public static void showInputDialog(SComponent parent,
-                                       Object question, String title,
-                                       SComponent inputElement,
-                                       ActionListener al) {
+  public static void showInputDialog(SComponent parent, Object question, String title, SComponent inputElement, ActionListener al) {
         SOptionPane p = new SOptionPane();
 
         p.showInput(parent, question, inputElement, title);
@@ -550,9 +765,7 @@ public class SOptionPane
     /**
      * TODO: documentation
      */
-    public static void showQuestionDialog(SComponent parent,
-                                          Object question, String title,
-                                          ActionListener al) {
+  public static void showQuestionDialog(SComponent parent, Object question, String title,  ActionListener al) {
         SOptionPane p = new SOptionPane();
 
         p.showQuestion(parent, question, title);
@@ -562,67 +775,55 @@ public class SOptionPane
     /**
      * TODO: documentation
      */
-    public static void showPlainQuestionDialog(SComponent parent,
-                                               Object question, String title,
-                                               ActionListener al) {
+  public static void showPlainQuestionDialog(SComponent parent, Object question, String title, ActionListener al) {
         SOptionPane p = new SOptionPane();
 
         p.showQuestion(parent, question, title);
         p.addActionListener(al);
-
-        p.questionLabel.setVisible(false);
+    p.setMessageType(PLAIN_MESSAGE);
+//    p.questionLabel.setVisible(false);
     }
 
 
     /**
      * TODO: documentation
      */
-    public static void showConfirmDialog(SComponent parent,
-                                         Object message, String title) {
+  public static void showConfirmDialog(SComponent parent, Object message, String title) {
         showConfirmDialog(parent, message, title, 0, null);
     }
 
     /**
      * TODO: documentation
      */
-    public static void showConfirmDialog(SComponent parent,
-                                         Object message, String title,
-                                         ActionListener al) {
+  public static void showConfirmDialog(SComponent parent, Object message, String title, ActionListener al) {
         showConfirmDialog(parent, message, title, 0, al);
     }
 
     /**
      * TODO: documentation
      */
-    public static void showConfirmDialog(SComponent parent,
-                                         Object message, String title,
-                                         int type) {
+  public static void showConfirmDialog(SComponent parent, Object message, String title, int type) {
         showYesNoDialog(parent, message, title, null);
     }
 
     /**
      * TODO: documentation
      */
-    public static void showConfirmDialog(SComponent parent,
-                                         Object message, String title,
-                                         int type,
-                                         ActionListener al) {
+  public static void showConfirmDialog(SComponent parent, Object message, String title, int type, ActionListener al) {
         showYesNoDialog(parent, message, title, al);
     }
 
-    public void showYesNo(SComponent parent, Object question,
-                          String title) {
+  public void showYesNo(SComponent parent, Object question, String title) {
         showOption(parent, title, question);
         setOptionType(YES_NO_OPTION);
-
-        yesnoLabel.setVisible(true);
+    setMessageType(INFORMATION_MESSAGE);
+//    yesnoLabel.setVisible(true);
     }
 
     /**
      * TODO: documentation
      */
-    public static void showYesNoDialog(SComponent parent, Object question,
-                                       String title, ActionListener al) {
+  public static void showYesNoDialog(SComponent parent, Object question, String title, ActionListener al) {
         SOptionPane p = new SOptionPane();
         p.addActionListener(al);
 
