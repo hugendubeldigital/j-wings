@@ -554,6 +554,7 @@ public class SProgressBar extends SComponent {
      */
     private class ModelListener implements ChangeListener, Serializable {
         public void stateChanged(ChangeEvent e) {
+	    reload(ReloadManager.RELOAD_CODE);
             fireStateChanged();
         }
     }
@@ -664,6 +665,7 @@ public class SProgressBar extends SComponent {
             if (model != null) {
                 model.setExtent(0);
             }
+	    reload(ReloadManager.RELOAD_CODE);
         }
     }
 
@@ -827,6 +829,9 @@ public class SProgressBar extends SComponent {
 
 /*
    $Log$
+   Revision 1.3  2002/11/18 14:50:48  ahaaf
+   o reload code on model change
+
    Revision 1.2  2002/10/29 19:00:59  ahaaf
    o use property constants
    o remove tabs
