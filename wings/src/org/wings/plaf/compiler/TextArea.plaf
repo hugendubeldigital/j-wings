@@ -1,0 +1,12 @@
+<template name="TextArea" for="org.wings.STextArea">
+<%@ include file="Common.plaf">
+<textarea cols="<%?columns%>" rows="<%?rows%>"<%
+if (!component.isEditable()) %> readonly="1"<%;
+if (component.isEnabled())   %> name="<%?namePrefix%>"<%;
+printStyle(<%?style%>); 
+switch (<%?lineWrap%>) {
+   case STextArea.VIRTUAL_WRAP : %> wrap="virtual"<%; break;
+   case STextArea.PHYSICAL_WRAP: %> wrap="physical"<%; break;
+};
+%>><%?text%></textarea>
+</template>
