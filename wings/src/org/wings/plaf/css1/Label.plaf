@@ -46,6 +46,7 @@ public void writeAnchorStart(Device device, AnchorProperties anchor, SLabel labe
             %><a href="<%=anchor.getURL().toString()%>"<%|target=anchor.getTarget()%><%
         }
         Utils.writeToolTip(device, label);
+        %>><%
     }
 }
 
