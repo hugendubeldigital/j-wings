@@ -1,0 +1,159 @@
+<project name="wingS Demo" default="main" basedir=".">
+  <path id="build.classpath">
+    <pathelement path="${java.class.path}/" />
+    <fileset dir="../build/dist/lib">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+
+  <target name="init">
+    <property name="home"    value="."/>
+    <property name="src"     value="."/>
+    <property name="build"   value="build"/>
+    <property name="classes" value="build/classes"/>
+    <property name="deploy"  value="build/deploy"/>
+    <property name="lib"     value="../build/dist/lib"/>
+
+    <property file="build.properties" />
+  </target>
+
+  <!-- ==================== Preparations ==================== -->
+
+  <target name="prepare" depends="init">
+    <tstamp/>
+    <mkdir dir="${build}"/>
+    <mkdir dir="${build}/classes"/>
+    <mkdir dir="${build}/deploy"/>
+  </target>
+
+
+  <!-- ==================== Build wingS ==================== -->
+  <target name="build" depends="prepare">
+    <javac srcdir="${src}" destdir="${classes}" debug="off">
+      <classpath refid="build.classpath" />
+    </javac>
+    <copy todir="${classes}">
+      <fileset dir="${src}">
+        <include name="**/*.properties" />
+        <include name="**/*.gif" />
+        <include name="**/*.css" />
+        <include name="**/*.thtml" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="wingset" depends="build">
+    <mkdir dir="${build}/deploy/wingset"/>
+    <mkdir dir="${build}/deploy/wingset/WEB-INF"/>
+    <mkdir dir="${build}/deploy/wingset/WEB-INF/lib"/>
+    <mkdir dir="${build}/deploy/wingset/WEB-INF/classes"/>
+
+    <copy file="wingset.xml" tofile="${build}/deploy/wingset/WEB-INF/web.xml"/>
+
+    <copy todir="${build}/deploy/wingset/WEB-INF/classes">
+      <fileset dir="${classes}">
+        <include name="wingset/**/*" />
+      </fileset>
+    </copy>
+
+    <copy todir="${build}/deploy/wingset/WEB-INF/lib">
+      <fileset dir="${lib}">
+        <exclude name="j2ee.jar"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="ldap" depends="build">
+    <mkdir dir="${build}/deploy/ldap"/>
+    <mkdir dir="${build}/deploy/ldap/WEB-INF"/>
+    <mkdir dir="${build}/deploy/ldap/WEB-INF/lib"/>
+    <mkdir dir="${build}/deploy/ldap/WEB-INF/classes"/>
+
+    <copy file="ldap.xml" tofile="${build}/deploy/ldap/WEB-INF/web.xml"/>
+
+    <copy todir="${build}/deploy/ldap/WEB-INF/classes">
+      <fileset dir="${classes}">
+        <include name="ldap/**/*" />
+      </fileset>
+    </copy>
+
+    <copy todir="${build}/deploy/ldap/WEB-INF/lib">
+      <fileset dir="${lib}">
+        <exclude name="j2ee.jar"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="explorer" depends="build">
+    <mkdir dir="${build}/deploy/explorer"/>
+    <mkdir dir="${build}/deploy/explorer/WEB-INF"/>
+    <mkdir dir="${build}/deploy/explorer/WEB-INF/lib"/>
+    <mkdir dir="${build}/deploy/explorer/WEB-INF/classes"/>
+
+    <copy file="explorer.xml" tofile="${build}/deploy/explorer/WEB-INF/web.xml"/>
+
+    <copy todir="${build}/deploy/explorer/WEB-INF/classes">
+      <fileset dir="${classes}">
+        <include name="explorer/**/*" />
+      </fileset>
+    </copy>
+
+    <copy todir="${build}/deploy/explorer/WEB-INF/lib">
+      <fileset dir="${lib}">
+        <exclude name="j2ee.jar"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+  <!-- ==================== Make wars ==================== -->
+  <target name="deploy" depends="build">
+    <war warfile="${deploy}/wingset.war" webxml="wingset.xml">
+      <lib dir="${lib}">
+        <exclude name="j2ee.jar"/>
+      </lib>
+      <classes dir="build/classes">
+        <include name="wingset/**/*" />
+      </classes>
+    </war>
+
+    <war warfile="${deploy}/ldap.war" webxml="ldap.xml">
+      <lib dir="${lib}">
+        <exclude name="j2ee.jar"/>
+      </lib>
+      <classes dir="build/classes">
+        <include name="ldap/**/*" />
+      </classes>
+    </war>
+
+    <war warfile="${deploy}/explorer.war" webxml="explorer.xml">
+      <lib dir="${lib}">
+        <exclude name="j2ee.jar"/>
+      </lib>
+      <classes dir="build/classes">
+        <include name="explorer/**/*" />
+      </classes>
+    </war>
+  </target>
+
+
+  <!-- ==================== Admin ==================== -->
+  <target name="clean" depends="init">
+    <deltree dir="${build}"/>
+    <deltree dir="${deploy}"/>
+  </target>
+
+  <target name="cleansource" depends="init">
+    <delete>
+      <fileset dir="${src}">
+        <include name="**/*.class" />
+        <include name="**/*.u" />
+        <include name="**/*~" />
+      </fileset>
+    </delete>
+  </target>
+
+  <target name="all" depends="clean,build,deploy"/>
+  <target name="main" depends="build"/>
+  <target name="webapps" depends="wingset,ldap,explorer"/>
+</project>

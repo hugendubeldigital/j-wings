@@ -1,0 +1,89 @@
+<project name="wingS" default="main" basedir=".">
+  <path id="build.classpath">
+    <pathelement path="${java.class.path}/" />
+    <fileset dir="lib">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+
+  <target name="init">
+    <property name="home"    value="."/>
+    <property name="src"     value="src"/>
+    <property name="build"   value="build"/>
+    <property name="classes" value="build/classes"/>
+    <property name="dist"    value="build/dist"/>
+    <property name="doc"     value="doc"/>
+    <property name="lib"     value="lib"/>
+
+    <property file="build.properties" />
+  </target>
+
+  <!-- ==================== Preparations ==================== -->
+
+  <target name="prepare" depends="init">
+    <tstamp/>
+    <mkdir dir="${build}"/>
+    <mkdir dir="${build}/classes"/>
+    <mkdir dir="${build}/doc"/>
+    <mkdir dir="${build}/doc/api"/>
+    <mkdir dir="${build}/dist"/>
+    <mkdir dir="${build}/dist/lib"/>
+  </target>
+
+
+  <!-- ==================== Build wingS ==================== -->
+  <target name="build" depends="prepare">
+    <javac srcdir="${src}" destdir="${classes}" debug="off">
+      <classpath refid="build.classpath" />
+    </javac>
+    <copy todir="${classes}">
+      <fileset dir="${src}">
+        <include name="**/*.properties" />
+        <include name="**/*.gif" />
+        <include name="**/*.css" />
+      </fileset>
+    </copy>
+
+    <jar jarfile="${dist}/lib/wings.jar" basedir="${classes}" />
+
+    <copy todir="${dist}/lib">
+      <fileset dir="${lib}">
+        <exclude name="jsdk2.0.jar"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- ==================== Generate API Docs ==================== -->
+  <target name="doc" depends="prepare">
+    <javadoc packagenames="*"
+             maxmemory="128m"
+             sourcepath="${src}"
+             destdir="${build}/doc/api"
+	     classpathref="build.classpath"
+             version="true"
+             use="true"
+             windowtitle="wingS"
+             doctitle="wingS"
+             bottom="wingS swings ;-)"
+    />
+  </target>
+
+  <!-- ==================== Admin ==================== -->
+  <target name="clean" depends="init">
+    <deltree dir="${build}"/>
+    <deltree dir="${deploy}"/>
+  </target>
+
+  <target name="cleansource" depends="init">
+    <delete>
+      <fileset dir="${src}">
+        <include name="**/*.class" />
+        <include name="**/*.u" />
+        <include name="**/*~" />
+      </fileset>
+    </delete>
+  </target>
+
+  <target name="all" depends="clean,build"/>
+  <target name="main" depends="build"/>
+</project>

@@ -13,32 +13,26 @@ import java.util.HashMap;
 
 public class LdapWorker
 {
-    private static final int BASE = SearchControls.OBJECT_SCOPE;
-    private static final int ONE  = SearchControls.ONELEVEL_SCOPE;
-    private static final int SUB  = SearchControls.SUBTREE_SCOPE;
+    private DirContext ctx;
 
-    private LdapTreeNode root;
-
-    
-    DirContext ctx;
     private boolean success = true;
     private String baseDN;
     private String bindDN;
     private String password;
     private String server;
-    
+
     public LdapWorker (String s, String base, String bind, String p) {
-	
 	setBaseDN(base);
 	setBindDN(bind);
 	setServer(s);
 
 	this.password = p;
 	Hashtable env = new Hashtable();
-	env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
+	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 	env.put(Context.PROVIDER_URL, "ldap://" + getServer());
-	env.put(Context.SECURITY_PRINCIPAL,getBindDN());
-	env.put(Context.SECURITY_CREDENTIALS,"secret");
+	env.put(Context.SECURITY_PRINCIPAL, getBindDN());
+	env.put(Context.SECURITY_CREDENTIALS, password);
+
 	try {
 	    ctx = new InitialDirContext(env);
 	}
@@ -82,7 +76,7 @@ public class LdapWorker
     //veraendert attribute eines entry's mit dem DN=dn
     public boolean modifyAttributes(String dn, BasicAttributes attributes) {
 	try {
-	    ctx.modifyAttributes(dn,ctx.REPLACE_ATTRIBUTE,attributes);
+	    ctx.modifyAttributes(dn, ctx.REPLACE_ATTRIBUTE, attributes);
 	    return true;
 	}
 	catch(Exception e) {
@@ -225,7 +219,7 @@ public class LdapWorker
 	
 	attrs = new String [] {"objectclass"};
 	try {
-	    results = search(searchbase, "(objectclass=*)",attrs, ONE);
+	    results = search(searchbase, "(objectclass=*)",attrs, SearchControls.ONELEVEL_SCOPE);
 	}
 	catch (NamingException e) {
 	    System.err.println(e);
@@ -244,7 +238,7 @@ public class LdapWorker
 	    matchAttrs.put(new BasicAttribute(attrName));
 	    //Search for objects that have those matching attributes
 	    
-	    NamingEnumeration enum = search(dn, "(objectclass=*)",new String[] {attrName},BASE);
+	    NamingEnumeration enum = search(dn, "(objectclass=*)",new String[] {attrName}, SearchControls.OBJECT_SCOPE);
 	    while (enum.hasMore()) {
 		SearchResult sr = (SearchResult)enum.next();
 		BasicAttributes bas = (BasicAttributes)sr.getAttributes();

@@ -140,15 +140,12 @@ public class LdapClientSession
         settingsForm.add(connectButton);
         settingsForm.add(disconnectButton);
 
-        try
-        {
-            mainPanel = new SForm(new STemplateLayout(getClass().getResource("ldapclientlayout.html")));
+        try {
+            mainPanel = new SForm(new STemplateLayout(getClass().getResource("ldapclientlayout.thtml")));
 	    mainPanel.setEncodingType("multipart/form-data");
         }
-        catch(Exception e)
-        {
-            System.err.println("LdapClientSession::initGUI() -> "+e);
-            System.exit(0);
+        catch(Exception e) {
+            System.err.println("LdapClientSession::initGUI() -> " + e);
         }
 
         mainPanel.setEncodingType("multipart/form-data");
