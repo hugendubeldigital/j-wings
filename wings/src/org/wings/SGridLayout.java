@@ -42,8 +42,8 @@ public class SGridLayout
      */
     protected ArrayList components = new ArrayList(2);
 
-    protected int rows = 0;
-    protected int cols = 0;
+    protected int rows = 1;
+    protected int cols = 1;
 
     protected int border = 0;
 
@@ -55,11 +55,21 @@ public class SGridLayout
     protected int cellSpacing = -1;
 
     /**
+     * creates a new grid layout with 1 row and 1 column extent
+     **/
+    
+    public SGridLayout() {
+      this.setWidth(100);
+      this.setRelative(true);
+    }
+    
+    /**
      * creats a new grid layout with the given number of columns
      *
      * @param cols number of columns
      */
     public SGridLayout(int cols) {
+        this();
         setColumns(cols);
     }
 
@@ -70,8 +80,8 @@ public class SGridLayout
      * @param cols number of columns
      */
     public SGridLayout(int rows, int cols) {
+        this(cols);
         setRows(rows);
-        setColumns(cols);
     }
 
     /**
