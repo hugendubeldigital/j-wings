@@ -216,6 +216,7 @@ public class LdapWorker
     //gibt die attribute eines dn's zurueck
     public Attributes getDNAttributes(String dn)
     {
+	System.out.println("bei dn "  +dn);
 	ArrayList attrList = new ArrayList();
 	Hashtable h = new Hashtable();
 	Attributes a = null;
@@ -292,19 +293,19 @@ public class LdapWorker
 	
     }
 
-    public Object getOAttributeValues (String o,String attr) {
+    public Object getOAttributeValues (String o,String attrName) {
 	Object val = null;
 	System.out.println(o);
 	try {
 	    Attributes matchAttrs = new BasicAttributes(true); // ignore attribute name case
-	    matchAttrs.put(new BasicAttribute(attr));
+	    matchAttrs.put(new BasicAttribute(attrName));
 	    //matchAttrs.put(new BasicAttribute("cn", o));
 	    //Search for objects that have those matching attributes
 	    System.out.println(o + "," + "dc=tiscon,dc=de");
-	    System.out.println(attr);
+	    System.out.println(attrName);
 	    SearchControls c = new SearchControls();
 	    c.setSearchScope(0);
-	    c.setReturningAttributes(new String[] {attr});
+	    c.setReturningAttributes(new String[] {attrName});
 	    NamingEnumeration enum = ctx.search(o + "," + "dc=tiscon,dc=de", "(objectclass=*)",c);
 	    
 	    
@@ -312,7 +313,7 @@ public class LdapWorker
 		SearchResult sr = (SearchResult)enum.next();
 		System.out.println("hallo>>>" + sr.getName());
 	     BasicAttributes bas = (BasicAttributes)sr.getAttributes();
-	     BasicAttribute ba = (BasicAttribute)bas.get(attr);
+	     BasicAttribute ba = (BasicAttribute)bas.get(attrName);
 	     val = ba.get();
 		 }
 	}
@@ -322,8 +323,8 @@ public class LdapWorker
 	return val;
     }
     
-
-    public HashMap  getAttributeValues(String attribute) {
+    //attribute-dn mapping
+    public HashMap  getAttributeValues(String attribute,String baseDN) {
 	
 	ArrayList attrList = new ArrayList();
 	HashMap peopleDNMap = new HashMap(); 
@@ -334,7 +335,7 @@ public class LdapWorker
 	matchAttrs.put(new BasicAttribute("cn"));
          
          // Search for objects that have those matching attributes
-	//NamingEnumeration enum = ctx.search("dc=tiscon,dc=de", matchAttrs);
+	//NamingEnumeration enum = ctx.search("", matchAttrs);
 	NamingEnumeration enum = ctx.search("dc=tiscon,dc=de", matchAttrs);
 
      

@@ -36,30 +36,39 @@ public class LdapBrowserSession
 {
     private final static String NOT_CONNECTED = "not connected";
     private final static String [] attributes = {"mail","cn"}; 
+    private HashMap viewAttributes;
 
     private LdapWorker worker = null;
 
     //private STabbedPane tabbedPane;
     private SForm listForm;
+    //private SForm tableForm;
     private SForm tableForm;
     private String server;
-    private String baseDN;
+    final private String baseDN = "dc=tiscon,dc=de";
     private String bindDN = "";
     private String password = "";
     private String peopleName = "cn";
-    ArrayList selList = null;
+    ArrayList selList = new ArrayList();
     int count = 0;
     SList personList;
     SButton submit;
     STable peopleTable;
     HashMap peopleDN;
+    SButton view;
+    SPanel viewPanel;
 
     public LdapBrowserSession(Session session) {
-        super(session);
+	
+	super(session);
         System.out.println("I`m starting now");
+	viewAttributes = new HashMap();
+	viewAttributes.put("name","cn");
+	viewAttributes.put("e-mail","mail");
+	viewAttributes.put("foto", "jpegPhoto");
 	//connection ohne dialog
 	server = ((PropertyService)getSession()).getProperty("ldap.server.host");
-	baseDN = ((PropertyService)getSession()).getProperty("ldap.server.basedn");
+	//baseDN = ((PropertyService)getSession()).getProperty("ldap.server.basedn");
 	//bindDN = ((PropertyService)getSession()).getProperty("ldap.server.binddn");
 	//pasword = ((PropertyService)getSession()).getProperty("ldap.server.password");
 	peopleName = ((PropertyService)getSession()).getProperty("ldap.server.peoplename");
@@ -91,11 +100,12 @@ public class LdapBrowserSession
     }
 
     void initGUI() {
-	getFrame().getContentPane().setLayout(new SFlowLayout());
+	getFrame().getContentPane().setLayout(new SFlowDownLayout());
 	
 		
 	listForm = new SForm(new SFlowDownLayout());
 	tableForm = new SForm(new SFlowDownLayout());
+	//tableForm = new SPanel(new SFlowDownLayout());
 	
 	personList = new SList();
 	submit = new SButton("submit");
@@ -103,6 +113,13 @@ public class LdapBrowserSession
 	peopleTable = new STable(new LdapTableModel());
 	peopleTable.setShowGrid(true);
         peopleTable.setBorderLines(new Insets(1,1,1,1));
+	peopleTable.setSelectionMode(SINGLE_SELECTION);
+
+	view = new SButton("view");
+	view.addActionListener(this); 
+	
+	viewPanel = new SPanel(new SGridLayout(2));
+
 	
 	personList.setSelectionMode(MULTIPLE_SELECTION);
 	personList.addListSelectionListener(this);
@@ -110,24 +127,92 @@ public class LdapBrowserSession
 	addListElements(personList);
 	
 	tableForm.add(peopleTable);
+	tableForm.add(view);
 	listForm.add(personList);
 	listForm.add(submit);
 	getFrame().getContentPane().add(listForm);
 	getFrame().getContentPane().add(tableForm);	
+	getFrame().getContentPane().add(viewPanel);
     }
 
     
     public void actionPerformed(ActionEvent evt) {
+	System.out.println ("source ist " + evt.getSource().toString());
 	if ((SButton)evt.getSource() == submit) {
-	    peopleTable.setModel(new LdapTableModel());
+	    tableForm.removeAll();
+	    //peopleTable.setModel(new LdapTableModel());
+	    peopleTable = new STable(new LdapTableModel());
+	    peopleTable.setBorderLines(new Insets(2,2,2,2));
+	    peopleTable.setSelectionMode(SINGLE_SELECTION);
+
+	    tableForm.add(peopleTable);
+	    tableForm.add(view);
 	}
+
+	else 
 	
+	    if ((SButton)evt.getSource() == view) {
+		int row = peopleTable.getSelectedRow();
+		LdapTableModel model = (LdapTableModel)peopleTable.getModel();
+		System.out.println("value at(" + row+",0)");
+		String value = (String)model.getValueAt(row,0);
+		String dn = (String)peopleDN.get(value);
+		System.out.println("die dn ist" + dn);
+		System.out.println("base DN ist " + baseDN);
+		viewPanel.removeAll();
+		
+		BasicAttributes attrs = (BasicAttributes)getLdapWorker().getDNAttributes(dn + "," + baseDN);
+		try {
+		    NamingEnumeration en = attrs.getAll();
+		    while (en!=null && en.hasMoreElements()) {
+			BasicAttribute attr = (BasicAttribute)en.nextElement();
+			String label = attr.getID();
+			//HashSet c = (HashSet)viewAttributes.keySet();
+			AbstractCollection c = (AbstractCollection)viewAttributes.values();
+			if (c.contains(label)) {
+			    NamingEnumeration aValues = attr.getAll();
+			    while (aValues!=null && aValues.hasMore()) {
+				Object i = aValues.next();
+				if (i.getClass().getName() == "java.lang.String") {
+				    String values = "";
+				    if(!values.equals("")) {
+					values = values + "," + i;
+				    }
+				    else {
+					values = (String)i;
+				    }
+				viewPanel.add(new SLabel(label));
+				viewPanel.add(new SLabel(values));
+				}
+				if (i.getClass().getName() == "[B") {
+				//byte hallo [] = (byte [])i;
+				//System.out.println(hallo[3]);
+				    if (label.equals("jpegPhoto")) { 
+					viewPanel.add(new SLabel(label));
+					viewPanel.add(new SLabel(new ImageIcon((byte [])i)));
+				    }
+				    if (label.equals("userPassword")) { 
+					SLabel attrLabel = new SLabel(label);
+					STextField attrField = new STextField(i.toString());
+					viewPanel.add(new SLabel(label));
+					viewPanel.add(new SLabel("*******"));
+				    }
+				//System.out.println("binary");
+				}
+			    }
+			}
+		    }
+		}
+		catch (NamingException exc){
+		    System.out.println(exc);
+		}
+	    }
     }
     
 
     private void addListElements(SList list) {
 	worker = getLdapWorker();
-	peopleDN = worker.getAttributeValues(peopleName);
+	peopleDN = worker.getAttributeValues(peopleName,baseDN);
 	//ArrayList people = worker.getAttributeValues(peopleName);
 	Set keys = peopleDN.keySet(); 
 	list.setListData(keys.toArray());
@@ -148,17 +233,25 @@ public class LdapBrowserSession
     class LdapTableModel extends AbstractTableModel {
 	
 	
-	final String[] columnNames = {"mail","cn","sn"};
+	final String[] columnNames = {"cn","sn"};
 	final int COLS = columnNames.length;
 	final int ROWS = getSelectedPeopleCount();
 	Object[][] data = new Object[ROWS][COLS];
 	
 	LdapTableModel() {
+	    ArrayList l = getSelList();
+	    int i = 0 ;
+	    while (i < l.size()){
+		System.out.println(i + "   " + l.get(i));
+		i++;
+	    }
 	    if (ROWS > 0) {
 	    for (int c=0; c < COLS; c++) {
-		for (int r=0; r < ROWS; r++)
-		    //data[r][c] = worker.getOAttributeValues((String)getSelList().get(r),columnNames[c]);
+		for (int r=0; r < ROWS; r++) {
 		    data[r][c] = worker.getOAttributeValues((String)peopleDN.get((String)getSelList().get(r)),columnNames[c]);
+		    System.out.println("row " + r + "col " + c + "value "+ data[r][c]);
+		}
+		
 	    }
 	    }
 	} 
@@ -181,16 +274,20 @@ public class LdapBrowserSession
 	
     }
     
-    private void setSelList(ArrayList l)
+    private void setSelList(Object [] people)
     {
-	this.selList = l;
-
+	if (selList!=null)
+	    selList.clear();
+	for (int i=0;i<people.length;i++) {
+	    selList.add(people[i]);
+	    //System.out.println(selPeople[i]);
+	}
     }
 
     public ArrayList getSelList() {
 	return selList;
     }
-
+  
     private void setSelectedPeopleCount(int count) {
 	this.count = count;
     }
@@ -202,14 +299,8 @@ public class LdapBrowserSession
     
     public void valueChanged(ListSelectionEvent e) {
 	SList source = (SList)e.getSource();
-	ArrayList selList = new ArrayList();
 	Object [] selPeople = source.getSelectedValues();
 	setSelectedPeopleCount(selPeople.length);
-	for (int i=0;i<selPeople.length;i++) {
-	    selList.add((String)selPeople[i]);
-	    //System.out.println(selPeople[i]);
-		
-	}
-	setSelList(selList);
+	setSelList(selPeople);
     }
 }

@@ -293,20 +293,47 @@ public class LdapClientSession
 	    while (en!=null && en.hasMoreElements()) {
 		BasicAttribute attr = (BasicAttribute)en.nextElement();
 		String label = attr.getID();
-	    String values = "";
+		String values = "";
 	    NamingEnumeration aValues = attr.getAll();
 	    while (aValues!=null && aValues.hasMore()) {
-		if ( !values.equals("")) 
-		    values = values + "," + aValues.next();
-		else 
-		    values = (String)aValues.next();
+		Object i = aValues.next();
+		System.out.println("label " + label + "class" + i.getClass().getName());
+		if (i.getClass().getName() == "java.lang.String") {
+		    if(!values.equals("")) {
+			values = values + "," + i;
+		    }
+		    else {
+			values = (String)i;
+		    }
+		    SLabel attrLabel = new SLabel(label);
+		    STextField attrField = new STextField((String)values);
+		    componentTable.put(attrLabel,attrField);
+		    textHashtable.put(attrLabel,values);
+		}
+		if (i.getClass().getName() == "[B") {
+		    byte hallo [] = (byte [])i;
+		    System.out.println(hallo[3]);
+		    if (label.equals("jpegPhoto")) { 
+			SLabel attrLabel = new SLabel(label);
+			SLabel photo = new SLabel(new ImageIcon((byte [])i));
+			componentTable.put(attrLabel,photo);
+		    }
+		    if (label.equals("userPassword")) { 
+			SLabel attrLabel = new SLabel(label);
+			STextField attrField = new STextField(i.toString());
+			componentTable.put(attrLabel,attrField);
+			textHashtable.put(attrLabel,i.toString());
+		    }
+		    System.out.println("binary");
+		}
 	    }
-	    SLabel attrLabel = new SLabel(label);
-	    STextField attrField = new STextField(values);
-	    componentTable.put(attrLabel,attrField);
-	    textHashtable.put(attrLabel,values);
-	    System.out.println("cT*" + label +"*");
-	    System.out.println(values);
+	    //SLabel attrLabel = new SLabel(label);
+	    //STextField attrField = new STextField((String)values);
+	    //componentTable.put(attrLabel,attrField);
+	    //textHashtable.put(attrLabel,values);
+	    //System.out.println("cT*" + label +"*");
+	    //System.out.println(values);
+
 	    
 	    
 	    }
@@ -337,7 +364,7 @@ public class LdapClientSession
 	while (compEnum!=null && compEnum.hasMoreElements()) {
 	    Object key = compEnum.nextElement();
 		attrPanel.add((SLabel)key);
-		attrPanel.add((STextField)componentTable.get(key));
+		attrPanel.add((SComponent)componentTable.get(key));
 	}
 	attrPanel.add(commitButton);
     }
