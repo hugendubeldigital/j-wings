@@ -64,7 +64,7 @@ public class FileExternalizer
 
     public FileExternalizer( String dir, String addr ) {
         if ( dir == null || addr == null ) {
-            throw new IllegalStateException("FileExtDir and FileExtURL required in initArgs");
+            throw new IllegalStateException("externalizer.file.path and externalizer.file.url required in initArgs");
         }
 
         fileDir = dir;
