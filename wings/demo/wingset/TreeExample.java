@@ -84,7 +84,6 @@ public class TreeExample
             
             group.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        // plaf might have changed.
                         if (plusButton.isSelected()) {
                             PropertyAccessor.setProperty(tree.getCG(), 
                                                          "collapseControlIcon",

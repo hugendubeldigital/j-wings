@@ -3,7 +3,8 @@
 
 <property type="SIcon" name="clickableFallbackIcon">org/wings/icons/Pencil.gif</property>
 
-void writeIcon(Device device, SIcon icon, AnchorProperties anchor) 
+void writeIcon(Device device, SIcon icon, SLabel label,
+	       AnchorProperties anchor) 
      throws IOException {
      if (icon != null) {
         if (anchor != null) { 
@@ -11,6 +12,9 @@ void writeIcon(Device device, SIcon icon, AnchorProperties anchor)
         }
 
         %><img<%
+        if (label.isImageAbsBottom()) {
+	    %> align="absbottom"<%
+	}
         /*
 	 * write optional attributes ..
 	 */
@@ -93,7 +97,7 @@ void writeText(Device device, SLabel label, AnchorProperties anchor)
           %><span class="<%=attr%>"><%
           spans++;
       }
-      writeIcon(device, icon, anchor);
+      writeIcon(device, icon, component, anchor);
       if (spans == 1) { %></span><% }
       if (spans == 2) { %></span></span><% }
    }
@@ -140,7 +144,7 @@ void writeText(Device device, SLabel label, AnchorProperties anchor)
                   %><br/><%
 	       }
 	       // the rendered icon in the center
-	       writeIcon(device, icon, anchor);
+	       writeIcon(device, icon, component, anchor);
 	       %></td><td<%
                %><%|class=attr%><%
                %>><% 
@@ -152,7 +156,7 @@ void writeText(Device device, SLabel label, AnchorProperties anchor)
 	       %><tr><td></td><td align="center"<%
                %><%|class=attr%><%
                %>><%
-	       writeIcon(device, icon, anchor); 
+	       writeIcon(device, icon, component, anchor); 
 	       %></td><td></td></tr><%
        }
 

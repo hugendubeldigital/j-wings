@@ -54,7 +54,7 @@ public class SLabel
     private int horizontalTextPosition = RIGHT;
     private int iconTextGap = 1;
     private boolean noBreak = false;
-    private boolean alignText = false;
+    private boolean imageAbsBottom = false;
 
     private boolean escapeSpecialChars = true;
 
@@ -144,13 +144,21 @@ public class SLabel
     }
 
     /**
-     * TODO: documentation
      *
      * @param t
      */
-    public void setAlignText(boolean t) {
-        alignText = t;
+    public void setImageAbsBottom(boolean t) {
+        imageAbsBottom = t;
     }
+
+    /**
+     *
+     * @param t
+     */
+    public boolean isImageAbsBottom() {
+        return imageAbsBottom;
+    }
+
 
     /**
      * TODO: documentation
