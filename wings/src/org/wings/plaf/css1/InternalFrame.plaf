@@ -33,7 +33,7 @@ private void writeWindowIcon(Device device, SInternalFrame frame,
         text = "wingS";
     }
 
-    %><table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><%
+    %><table cellpadding="0" cellspacing="0" width="100%" style="border: solid 1px"><tr><%
 
     // left icon
     if (frame.getIcon() != null) {

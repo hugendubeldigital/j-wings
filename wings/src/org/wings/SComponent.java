@@ -26,9 +26,7 @@ import javax.swing.event.EventListenerList;
 
 import org.wings.border.SBorder;
 import org.wings.event.*;
-import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.Device;
-import org.wings.io.StringBufferDevice;
 import org.wings.plaf.*;
 import org.wings.plaf.ComponentCG;
 import org.wings.script.ScriptListener;
@@ -37,7 +35,6 @@ import org.wings.session.Session;
 import org.wings.session.SessionManager;
 import org.wings.style.*;
 import org.wings.util.*;
-import org.wings.util.StringUtil;
 
 /**
  * The basic component implementation for all components in this package.

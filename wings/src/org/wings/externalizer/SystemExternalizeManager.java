@@ -36,8 +36,7 @@ public class SystemExternalizeManager extends AbstractExternalizeManager
      */
     private static final SystemExternalizeManager sharedInstance = new SystemExternalizeManager();
   
-    private static final String MY_PREFIX_TIMESLICE_STRING = "-" + 
-        AbstractExternalizeManager.PREFIX_TIMESLICE_STRING;
+    private final String MY_PREFIX_TIMESLICE_STRING = "-" + PREFIX_TIMESLICE_STRING;
 
     /**
      * TODO: documentation

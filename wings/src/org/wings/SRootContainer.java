@@ -20,7 +20,7 @@ import org.wings.io.Device;
 
 /**
  * A root container.
- * The classes derived from this class ({@link SFrame} and 
+ * The classes derived from this class ({@link SFrame} and
  * {@link SInternalFrame}) render in the content pane of this RootContainer.
  *
  * <p>The RootContainer has a stack of components. Ususally, the stack

@@ -67,31 +67,26 @@ public abstract class AbstractExternalizeManager
     /**
      * in seconds
      */
-    public static final int UNIQUE_TIMESLICE = 20;
+    public final int UNIQUE_TIMESLICE = 20;
 
     /**
      * in seconds; Computed from UNIQUE_TIMESLICE; do not change.
      */
-    public static final long FINAL_EXPIRES = 
+    public final long FINAL_EXPIRES =
         (StringUtil.MAX_RADIX*StringUtil.MAX_RADIX - 1) * UNIQUE_TIMESLICE;
 
     /**
      * Prefix for the externalized ID; long. Computed, do not change.
      */
-    protected static final long PREFIX_TIMESLICE = 
+    protected final long PREFIX_TIMESLICE =
         ((System.currentTimeMillis()/1000)%FINAL_EXPIRES)/UNIQUE_TIMESLICE;
 
     /**
      * String prefix for externalized ID as String. Computed, do not change.
      */
-    protected static final String PREFIX_TIMESLICE_STRING = 
+    protected final String PREFIX_TIMESLICE_STRING =
         StringUtil.toShortestAlphaNumericString(PREFIX_TIMESLICE, 2);
 
-    static {
-        logger.info("final scope expires in " + FINAL_EXPIRES + " seconds");
-        logger.info("use prefix " + PREFIX_TIMESLICE_STRING);
-    }
-    
     // Flags
 
     /**
@@ -148,6 +143,9 @@ public abstract class AbstractExternalizeManager
      *
      */
     public AbstractExternalizeManager() {
+        logger.info("final scope expires in " + FINAL_EXPIRES + " seconds");
+        logger.info("use prefix " + PREFIX_TIMESLICE_STRING);
+
         reverseExternalized = Collections.synchronizedMap( new HashMap() );
     }
 
@@ -396,7 +394,7 @@ public abstract class AbstractExternalizeManager
         
         if ( extInfo == null ) {
             logger.warning("identifier " + identifier + " not found");
-            response.sendError(response.SC_NOT_FOUND);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
         deliver(extInfo, response, out);
@@ -445,24 +443,23 @@ public abstract class AbstractExternalizeManager
             }
         }
 
-        // non-transient items can be cached by the browser
-        if (extInfo.isFinal() && !response.containsHeader("Expires")) {
+        if (!response.containsHeader("Expires")) {
             /*
-             * This would be the correct way to do it; alas, that means, that
-             * for static resources, after a day or so, no caching could take
-             * place, since the last modification was at the first time, the
-             * resource was externalized (since it doesn't change).
-             * .. have to think about it.
-             */
-            //response.setDateHeader("Expires", 
+            * This would be the correct way to do it; alas, that means, that
+            * for static resources, after a day or so, no caching could take
+            * place, since the last modification was at the first time, the
+            * resource was externalized (since it doesn't change).
+            * .. have to think about it.
+            */
+            //response.setDateHeader("Expires",
             //                      (1000*FINAL_EXPIRES)
             //                       + extInfo.getLastModified());
             // .. so do this for now, which is the best approximation of what
             // we want.
-            response.setDateHeader("Expires", 
-                                   System.currentTimeMillis() 
+            response.setDateHeader("Expires",
+                                   System.currentTimeMillis()
                                    + (1000 * FINAL_EXPIRES));
-        } 
+        }
 
         extInfo.getExternalizer().write(extInfo.getObject(), out);
     }
