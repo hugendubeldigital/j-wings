@@ -78,6 +78,12 @@ protected int getMenuLevel(SMenu menu) {
         }
         %></td></tr></table><%
     }
+    if (menu.isPopupMenuVisible()) {
+        %><script language="Javascript">
+            toggle_menu('<%=menuId%>', '<%=popupId%>', <%=level%>);
+          </script>
+        <%
+    }
 %>
 </write>
 </template>

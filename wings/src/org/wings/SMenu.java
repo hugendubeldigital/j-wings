@@ -27,13 +27,13 @@ import org.wings.externalizer.ExternalizeManager;
 /**
  * TODO: documentation
  *
- * @author <a href="mailto:andre@lison.de">Andre Lison</a>
+ * @author <a href="mailto:andre.lison@general-bytes.com">Andre Lison</a>
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
 public class SMenu extends SMenuItem {
     private static final String cgClassID = "MenuCG";
-
+    private boolean popupMenuVisible = false;
     protected final ArrayList menuItems = new ArrayList();
 
     /**
@@ -137,6 +137,25 @@ public class SMenu extends SMenuItem {
 
     public void setCG(MenuBarCG cg) {
         super.setCG(cg);
+    }
+    
+    /**
+      * Sets the visibility of the menu's popup.
+      * If the menu is not enabled, this method will have no effect.
+      * @param b a boolean value -- true to make the menu visible, false to hide it
+      */
+    public void setPopupMenuVisible(boolean b) {
+        if (!isEnabled())
+            return;
+        popupMenuVisible = b;
+    }
+    
+    /**
+      * Returns true if the menu's popup window is visible.
+      * @return true if the menu is visible, else false.
+      */
+    public boolean isPopupMenuVisible() {
+        return popupMenuVisible;
     }
 }
 
