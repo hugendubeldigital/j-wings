@@ -13,14 +13,15 @@
  */
 package org.wings.plaf.css1;
 
-import java.io.IOException;
-import java.util.*;
-
-import org.wings.*; 
-import org.wings.border.*;
-import org.wings.script.*;
-import org.wings.style.*;
+import org.wings.*;
 import org.wings.io.Device;
+import org.wings.script.ScriptListener;
+import org.wings.style.DynamicStyleSheetResource;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Utils.java
@@ -28,52 +29,49 @@ import org.wings.io.Device;
  * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
  * @version $Revision$
  */
-public final class Utils
-{
+public final class Utils {
 
     final static char[] hexDigits = {
-        '0' , '1' , '2' , '3' , '4' , '5' ,
-        '6' , '7' , '8' , '9' , 'a' , 'b' ,
-        'c' , 'd' , 'e' , 'f'};
+        '0', '1', '2', '3', '4', '5',
+        '6', '7', '8', '9', 'a', 'b',
+        'c', 'd', 'e', 'f'};
 
-    private Utils() {}
+    private Utils() {
+    }
 
     /**
      * Renders a container
      */
-    static void renderContainer(Device d, SContainer c)
-        throws IOException
-    {
+    public static void renderContainer(Device d, SContainer c)
+            throws IOException {
         SLayoutManager layout = c.getLayout();
 
         if (layout != null) {
             layout.write(d);
-        }
-        else {
-            for (int i=0; i < c.getComponentCount(); i++)
+        } else {
+            for (int i = 0; i < c.getComponentCount(); i++)
                 c.getComponent(i).write(d);
         }
     }
 
-    static void writeEvents(Device d, SComponent c)
-        throws IOException
-    {
+    public static void writeEvents(Device d, SComponent c)
+            throws IOException {
         ScriptListener[] listeners = c.getScriptListeners();
-        if (  listeners.length>0 ) {
+        if (listeners.length > 0) {
             Map eventScripts = new HashMap();
-            for ( int i=0; i<listeners.length; i++ ) {
+            for (int i = 0; i < listeners.length; i++) {
                 ScriptListener script = listeners[i];
                 String eventScriptCode = script.getCode();
                 String event = script.getEvent();
                 if (eventScripts.containsKey(event)) {
                     String savedEventScriptCode = (String) eventScripts.get(event);
                     eventScriptCode = savedEventScriptCode
-                        + (savedEventScriptCode.trim().endsWith(";") ? "" : ";")
-                        + eventScriptCode;
+                                      + (savedEventScriptCode.trim().endsWith(";") ? "" : ";")
+                                      + eventScriptCode;
                 }
-                eventScripts.put(event,  eventScriptCode);
+                eventScripts.put(event, eventScriptCode);
             } // end of for ()
-        
+
             Iterator it = eventScripts.keySet().iterator();
             while (it.hasNext()) {
                 String event = (String) it.next();
@@ -87,19 +85,19 @@ public final class Utils
         } // end of if ()
     }
 
-    static String style(SComponent component) {
+    public static String style(SComponent component) {
         if (component.getAttributes().size() > 0)
-            return (DynamicStyleSheetResource.NORMAL_ATTR_PREFIX 
+            return (DynamicStyleSheetResource.NORMAL_ATTR_PREFIX
                     + component.getComponentId());
         else if (component.getStyle() != null)
             return component.getStyle();
         return null;
     }
 
-    static String selectionStyle(SComponent component) {
-        SSelectionComponent sel = (SSelectionComponent)component;
+    public static String selectionStyle(SComponent component) {
+        SSelectionComponent sel = (SSelectionComponent) component;
         if (sel.getSelectionAttributes().size() > 0)
-            return (DynamicStyleSheetResource.SELECT_ATTR_PREFIX 
+            return (DynamicStyleSheetResource.SELECT_ATTR_PREFIX
                     + component.getComponentId());
         else if (sel.getSelectionStyle() != null)
             return sel.getSelectionStyle();
@@ -124,7 +122,7 @@ public final class Utils
      * using it in a request parameter. This encoding adds consistency checking
      * for outtimed requests ("Back Button")
      */
-    static String event(SComponent component) {    
+    public static String event(SComponent component) {
         return component.getEncodedLowLevelEventId();
         //return event(component, component.getLowLevelEventId());
     }
@@ -137,36 +135,36 @@ public final class Utils
     final static byte[] VALIGN_BOTTOM = " valign=\"bottom\"".getBytes();
     final static byte[] VALIGN_BASELINE = " valign=\"baseline\"".getBytes();
 
-    static void printTableCellAlignment(Device d, SComponent c) 
-        throws IOException {
+    public static void printTableCellAlignment(Device d, SComponent c)
+            throws IOException {
         switch (c.getHorizontalAlignment()) {
-        case SConstants.NO_ALIGN:
-        case SConstants.LEFT:
-            break;
-        case SConstants.CENTER:
-            d.write(ALIGN_CENTER);
-            break;
-        case SConstants.RIGHT:
-            d.write(ALIGN_RIGHT);
-            break;
-        case SConstants.JUSTIFY:
-            d.write(ALIGN_JUSTIFY);
-            break;
+            case SConstants.NO_ALIGN:
+            case SConstants.LEFT:
+                break;
+            case SConstants.CENTER:
+                d.write(ALIGN_CENTER);
+                break;
+            case SConstants.RIGHT:
+                d.write(ALIGN_RIGHT);
+                break;
+            case SConstants.JUSTIFY:
+                d.write(ALIGN_JUSTIFY);
+                break;
         }
-    
+
         switch (c.getVerticalAlignment()) {
-        case SConstants.NO_ALIGN:
-        case SConstants.CENTER:
-            break;
-        case SConstants.TOP:
-            d.write(VALIGN_TOP);
-            break;
-        case SConstants.BOTTOM:
-            d.write(VALIGN_BOTTOM);
-            break;
-        case SConstants.BASELINE:
-            d.write(VALIGN_BASELINE);
-            break;
+            case SConstants.NO_ALIGN:
+            case SConstants.CENTER:
+                break;
+            case SConstants.TOP:
+                d.write(VALIGN_TOP);
+                break;
+            case SConstants.BOTTOM:
+                d.write(VALIGN_BOTTOM);
+                break;
+            case SConstants.BASELINE:
+                d.write(VALIGN_BASELINE);
+                break;
         }
     }
 
@@ -176,8 +174,7 @@ public final class Utils
         do {
             buf[--digits] = hexDigits[rgb & 15];
             rgb >>>= 4;
-        }
-        while (digits!=0);
+        } while (digits != 0);
 
         return new String(buf);
     }
@@ -187,7 +184,7 @@ public final class Utils
     }
 
     public static void writeAttributes(Device d, SComponent component)
-        throws IOException {
+            throws IOException {
 
         java.awt.Color fgColor = component.getForeground();
         SFont font = component.getFont();
@@ -196,11 +193,11 @@ public final class Utils
             d.print("font-color:#").print(toColorString(fgColor)).print(";");
             d.print("color:#").print(toColorString(fgColor)).print(";");
         }
-        if ( font != null) {
+        if (font != null) {
             int style = font.getStyle();
             d.print("font-size:").print(font.getSize()).print("pt;");
-            d.print("font-style:").print((style & java.awt.Font.ITALIC) > 0 ?"italic;":"normal;");
-            d.print("font-weight:").print((style & java.awt.Font.BOLD) > 0 ?"bold;":"normal;");
+            d.print("font-style:").print((style & java.awt.Font.ITALIC) > 0 ? "italic;" : "normal;");
+            d.print("font-weight:").print((style & java.awt.Font.BOLD) > 0 ? "bold;" : "normal;");
             d.print("font-family:").print(font.getFace()).print(";");
         }
 
