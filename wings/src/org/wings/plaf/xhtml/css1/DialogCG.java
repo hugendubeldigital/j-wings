@@ -26,15 +26,9 @@ import org.wings.style.Style;
 
 import org.wings.util.CGUtil;
 
-public final class DialogCG
+public class DialogCG
     extends org.wings.plaf.xhtml.DialogCG
 {
-    private SIcon close;
-
-    public void installCG(SComponent component) {
-        super.installCG(component);
-        close = component.getSession().getCGManager().getIcon("InternalFrameCG.closeIcon");
-    }
 
     public void write(Device d, SComponent c)
         throws IOException
@@ -59,20 +53,6 @@ public final class DialogCG
             .append("</b></td>");
         cols ++;
 
-        if (close != null) {
-            SFrame frame = dialog.getParentFrame();
-            addr = frame.getRequestURL();
-            addr.addParameter(frame.getNamePrefix() +
-                              "=" + SInternalFrameEvent.INTERNAL_FRAME_CLOSED);
-
-            d.append("<td bgcolor=\"#dedede\" width=\"16\" class=\"framebutton\"><a href=\"")
-                .append(addr)
-                .append("\"><img src=\"")
-                .append(close.getURL())
-                .append("\" width=\"16\" height=\"16\" border=\"0\"></a></td>");
-            cols ++;
-        }
-
         d.append("</tr>\n");
 
         d.append("<tr><td colspan=\"" + cols)
@@ -82,6 +62,7 @@ public final class DialogCG
         org.wings.plaf.xhtml.Utils.writeContainerContents(d, dialog);
         d.append("</td></tr>\n</table>\n");
         d.append("</td></tr>\n</table>\n");
+        writePostfix(d, dialog);
     }
 
     protected void writePrefix(Device d, SDialog dialog)
