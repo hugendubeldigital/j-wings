@@ -23,12 +23,7 @@ import java.util.StringTokenizer;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import org.wings.FastDispatcher;
-import org.wings.SForm;
-import org.wings.SFrame;
-import org.wings.SGetDispatcher;
-import org.wings.SLabel;
-import org.wings.STemplateLayout;
+import org.wings.*;
 
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.ServletDevice;
@@ -68,7 +63,7 @@ public abstract class SessionServlet
     /**
      * TODO: documentation
      */
-    protected final SGetDispatcher dispatcher = new FastDispatcher();
+    private SGetDispatcher dispatcher = null;
 
     /**
      * TODO: documentation
@@ -403,6 +398,15 @@ public abstract class SessionServlet
         session.setExternalizeManager(em);
     }
 
+    /**
+     * set the frame
+     *
+     * @return set the frame(set) for this session
+     */
+    public final void setFrame(SFrame frame) {
+        this.frame = frame;
+        frame.setBaseTarget(getSession().getReloadManager().getTarget());
+    }
 
     /**
      * get the frame
@@ -411,7 +415,7 @@ public abstract class SessionServlet
      */
     public final SFrame getFrame() {
         if (frame == null)
-            frame = new SFrame();
+            setFrame(new SFrame());
 
         return frame;
     }
@@ -431,7 +435,6 @@ public abstract class SessionServlet
         session.init(config);
         SessionManager.setSession(session);
         initErrorTemplate(config);
-        getFrame().setDispatcher(getDispatcher());
         postInit(config);
     }
 
@@ -446,6 +449,8 @@ public abstract class SessionServlet
      * TODO: documentation
      */
     public final SGetDispatcher getDispatcher() {
+        if (dispatcher == null)
+            dispatcher = session.getDispatcher();
         return dispatcher;
     }
 
@@ -454,15 +459,16 @@ public abstract class SessionServlet
      * danach zu dispatchen.
      * TODO muss noch vervollstaendigt werden.
      */
-    private final void dispatchPostQuery(String query) {
+    private final boolean dispatchPostQuery(String query) {
         if (query == null)
-            return;
+            return false;
         // hier noch get Parameter der Form parsen und dispatchen!!
         debug("Dispatch Form Get");
         String paramName = query.substring(0, query.indexOf("="));
         String value = query.substring(query.indexOf("=")+1);
         String[] values = {value};
-        dispatcher.dispatch(paramName, values);
+        getDispatcher().dispatch(paramName, values);
+        return true;
     }
 
 
@@ -503,7 +509,6 @@ public abstract class SessionServlet
                                          HttpServletResponse response)
         throws ServletException, IOException
     {
-
         SessionManager.setSession(session);
 
         try {
@@ -527,23 +532,24 @@ public abstract class SessionServlet
         try {
             ServletRequest asreq = new ServletRequest(req);
 
-
             if ( DEBUG )
                 measure.start("time to dispatch");
 
+            boolean eventsContained = false;
             Enumeration en = null;
             en = req.getParameterNames();
-            while ( en.hasMoreElements() ) {
+            while (en.hasMoreElements()) {
                 String paramName = (String)en.nextElement();
                 String[] value = req.getParameterValues(paramName);
-                if ( !dispatcher.dispatch(paramName, value) )
+                if (!getDispatcher().dispatch(paramName, value))
                     asreq.addParam(paramName,value);
+                else
+                    eventsContained = true;
             }
 
-            if ( req.getMethod().toUpperCase().equals("POST")) {
-                dispatchPostQuery(req.getQueryString());
+            if (req.getMethod().toUpperCase().equals("POST")) {
+                eventsContained = dispatchPostQuery(req.getQueryString()) || eventsContained;
             }
-            dispatcher.dispatchDone();
 
             if ( DEBUG ) {
                 measure.stop();
@@ -552,13 +558,15 @@ public abstract class SessionServlet
 
             SForm.fireEvents();
 
+            // moved this beyound SForm.fireEvents()
+            getDispatcher().dispatchDone();
+
             if ( DEBUG ) {
                 measure.stop();
                 measure.start("time to process request");
             }
 
-            if ( generateCode ) {
-
+            if (generateCode) {
                 // default content ist text/html
                 response.setContentType("text/html;charset=" + session.getCharSet());
                 
@@ -568,14 +576,21 @@ public abstract class SessionServlet
                                    "max-age=0, no-cache, must-revalidate");
                 // 1000 (one second after Jan 01 1970) because of some IE bug:
                 response.setDateHeader("Expires", 1000); 
-
             }
-                
+
             processRequest(asreq, response);
-                
-            if ( generateCode ) {
-                // writes directly to the ServletDevice
-                getFrame().write(new ServletDevice(response.getOutputStream()));
+
+            System.err.println("eventsContained: " + eventsContained);
+
+            if (generateCode) {
+                SComponent reload = null;
+                if (eventsContained)
+                    reload = getSession().getReloadManager().getManagerComponent();
+
+                if (reload == null)
+                    reload = getFrame();
+
+                reload.write(new ServletDevice(response.getOutputStream()));
             }
 
             if ( DEBUG ) {
@@ -680,7 +695,8 @@ public abstract class SessionServlet
 
         try {
             SFrame f = getFrame();
-            if ( f != null )
+            // traverse all frames in a frameset ?
+            if (f != null && f.getContentPane() != null)
                 f.getContentPane().removeAll();
             // remove all elements in ExternalizerCache ?
         }

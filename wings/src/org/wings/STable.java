@@ -423,7 +423,10 @@ public class STable
      * @see #editingColumn
      */
     public void setEditingColumn(int aColumn) {
+        int oldEditingColumn = editingColumn;
         editingColumn = aColumn;
+        if (editingColumn != oldEditingColumn)
+            reload();
     }
 
     /**
@@ -432,7 +435,10 @@ public class STable
      * @see #editingRow
      */
     public void setEditingRow(int aRow) {
+        int oldEditingRow = editingRow;
         editingRow = aRow;
+        if (editingRow != oldEditingRow)
+            reload();
     }
 
     /**
@@ -502,6 +508,7 @@ public class STable
             Object value = editor.getCellEditorValue();
             setValueAt(value, editingRow, editingColumn);
             removeEditor();
+            reload();
         }
     }
 
@@ -513,6 +520,7 @@ public class STable
      */
     public void editingCanceled(ChangeEvent e) {
         removeEditor();
+        reload();
     }
 
     /**
@@ -673,6 +681,7 @@ public class STable
                 ((ListSelectionListener)listeners[i+1]).valueChanged(e);
             }
         }
+        reload();
     }
 
 
@@ -791,6 +800,7 @@ public class STable
         } else {
             initSelectables();
         }
+        reload();
     }
 
     /**

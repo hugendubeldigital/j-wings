@@ -66,6 +66,8 @@ public class SFrame
 
     SGetAddress serverAddress = new SGetAddress();
 
+    protected String baseTarget = null;
+
     /**
      * A List containing meta tags for the html header.
      */
@@ -106,7 +108,7 @@ public class SFrame
     /**
      * TODO: documentation
      */
-    protected transient SGetDispatcher dispatcher = null;
+    private transient SGetDispatcher dispatcher = null;
 
     private Session session;
 
@@ -183,27 +185,15 @@ public class SFrame
     /**
      * Use getContentPane().addComponent(c) instead.
      */
-    public final SComponent addComponent(SComponent c, Object constraint) {
+    public SComponent addComponent(SComponent c, Object constraint) {
         throw new IllegalArgumentException("use getContentPane().addComponent()");
     }
 
     /**
      * Use getContentPane().removeComponent(c) instead.
      */
-    public final boolean removeComponent(SComponent c) {
+    public boolean removeComponent(SComponent c) {
         throw new IllegalArgumentException("use getContentPane().removeComponent()");
-    }
-
-    /*
-     * Setzt den Dispatcher auch im optionPane und ContentPane .. ja ???
-     */
-    /**
-     * TODO: documentation
-     *
-     * @param d
-     */
-    public void setDispatcher(SGetDispatcher d) {
-        dispatcher = d;
     }
 
     /**
@@ -212,6 +202,8 @@ public class SFrame
      * @return
      */
     public SGetDispatcher getDispatcher() {
+        if (dispatcher == null)
+            dispatcher = getSession().getDispatcher();
         return dispatcher;
     }
 
@@ -233,6 +225,32 @@ public class SFrame
         if (session == null)
             session = SessionManager.getSession();
         return session;
+    }
+
+    private int uniquePrefix = 0;
+
+    private String uniquePrefixString = "0";
+
+    /**
+     * TODO: documentation
+     *
+     */
+    public void dispatchDone() {
+        System.err.println("frame " + getTitle() + " dispatch done");
+        uniquePrefix++;
+        if (uniquePrefix < 0)
+            uniquePrefix = 0;
+
+        uniquePrefixString = Long.toString(uniquePrefix);
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public String getUniquePrefix() {
+        return uniquePrefixString;
     }
 
     /**
@@ -260,7 +278,7 @@ public class SFrame
     /**
      * TODO: documentation
      */
-    public final SContainer getContentPane() {
+    public SContainer getContentPane() {
         return contentPane;
     }
 
@@ -289,9 +307,16 @@ public class SFrame
     /**
      * TODO: documentation
      */
-    public final void setServer(String path) {
+    public void setServer(String path) {
         serverAddress.clear();
         serverAddress.setAbsoluteAddress(path);
+    }
+
+    /**
+     * Set server address.
+     */
+    protected void setServerAddress(SGetAddress serverAddress) {
+        this.serverAddress = serverAddress;
     }
 
     /**
@@ -311,17 +336,29 @@ public class SFrame
         if ( DEBUG && serverAddress.getRelativeAddress()==null && getParent()!=null )
             System.out.println("Frame " + serverAddress);
 
-        SGetAddress addr = (SGetAddress)serverAddress.clone();
-        return addr;
+        return (SGetAddress)serverAddress.clone();
     }
 
-    /*
-     * nur der Inhalt des Tags, also z.B. <PRE>name="keywords" lang="de"
-     * content="Ferien, Griechenland, Sonnenschein"<PRE>
+    /**
+     * Set the base target
      */
+    public void setBaseTarget(String baseTarget) {
+        this.baseTarget = baseTarget;
+    }
 
     /**
      * TODO: documentation
+     *
+     * @return
+     */
+    public String getBaseTarget() {
+        return baseTarget;
+    }
+
+    /*
+     * Add meta tags in the form of three attributes.
+     * For example:
+     * <PRE>name="keywords" lang="de" content="Ferien, Griechenland, Sonnenschein"<PRE>
      *
      * @param m
      */

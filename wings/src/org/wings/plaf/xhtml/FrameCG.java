@@ -69,6 +69,11 @@ public class FrameCG
         d.append(title);
         d.append("</title>\n");
 
+        if (frame.getBaseTarget() != null)
+            d.append("<base target=\"")
+                .append(frame.getBaseTarget())
+                .append("\" />");
+
         d.append("<meta http-equiv=\"Content-type\" content='text/html; charset=\"");
         d.append(frame.getSession().getCharSet());
         d.append("\"' />\n");

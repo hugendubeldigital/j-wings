@@ -37,7 +37,7 @@ public class TimeMeasure
     /*
      * Hier werden alle Messungen abgelegt.
      */
-    protected Vector measures = new Vector();
+    protected final ArrayList measures = new ArrayList();
 
     /*
      * Die aktuelle Messung. Wird bei jedem Aufruf von start zurÅckgesetzt.
@@ -73,7 +73,7 @@ public class TimeMeasure
      * Lˆscht alle vorangegangenen Messungen.
      */
     public void reset() {
-        measures.removeAllElements();
+        measures.clear();
     }
 
     /*
@@ -93,7 +93,7 @@ public class TimeMeasure
     public Object generate(String comment) {
         actual = new Measure();
         actual.comment = comment;
-        measures.addElement(actual);
+        measures.add(actual);
         return actual;
     }
 
@@ -109,8 +109,8 @@ public class TimeMeasure
             return;
         }
 
-        actual = (Measure)measures.elementAt(index);
-        measures.removeElementAt(index);
+        actual = (Measure)measures.get(index);
+        measures.remove(index);
 
         actual.start = System.currentTimeMillis();
     }
@@ -122,7 +122,7 @@ public class TimeMeasure
         if ( actual!=null ) {
             actual.stop = System.currentTimeMillis();
             actual.duration += actual.stop-actual.start;
-            measures.addElement(actual);
+            measures.add(actual);
             actual = null;
         }
     }
@@ -135,7 +135,7 @@ public class TimeMeasure
         long slowest = -1;
 
         for ( int i=0; i<measures.size(); i++ ) {
-            m = (Measure)measures.elementAt(i);
+            m = (Measure)measures.get(i);
             slowest = Math.max(slowest, m.duration);
         }
 
@@ -152,7 +152,7 @@ public class TimeMeasure
         StringBuffer erg = new StringBuffer();
         long slowest = slowest();
         for ( int i=0; i<measures.size(); i++ ) {
-            Measure m = (Measure)measures.elementAt(i);
+            Measure m = (Measure)measures.get(i);
             Object multiple = null;
             if (m.duration > 0) {
                 long zwerg = (long)(((double)slowest*100)/(m.duration));

@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import org.wings.session.SessionManager;
+
 /*
  * FastDispatcher.java
  *
@@ -40,10 +42,6 @@ public class FastDispatcher
     public static final boolean DEBUG = false;
 
     HashMap listener = new HashMap();
-
-    int uniquePrefix = 0;
-
-    String uniquePrefixString = "0";
 
     protected boolean namedEvents = true;
 
@@ -138,22 +136,11 @@ public class FastDispatcher
         boolean erg = false;
 
         int dividerIndex = name.indexOf(SConstants.UID_DIVIDER);
+        String prefix = null;
+
         // kein Alias
-        if ( dividerIndex>0 ) {
-            String prefix = name.substring(0, dividerIndex);
-
-            try {
-                long lPrefix = Long.parseLong(prefix);
-                if ( lPrefix>=0 && (lPrefix<uniquePrefix ||
-                                    lPrefix>uniquePrefix) ) {
-                    debug("parameter " + name + " is out of time");
-                    return false;
-                }
-            }
-            catch (Exception e) {
-                return false;
-            }
-
+        if (dividerIndex > 0) {
+            prefix = name.substring(0, dividerIndex);
             name = name.substring(dividerIndex+1);
 
             // make ImageButtons work in Forms ..
@@ -172,14 +159,26 @@ public class FastDispatcher
         }
 
         ArrayList l = (ArrayList)listener.get(name);
-        if ( l!=null )
-            for ( int i=0; i<l.size(); i++ ) {
-                SGetListener gl = (SGetListener)l.get(i);
-                for ( int j=0; j<values.length; j++ )
+        if (l != null) {
+            SGetListener gl = (SGetListener)l.get(0);
+            SFrame frame = gl.getParentFrame();
+            if (prefix != null && !prefix.equals(frame.getUniquePrefix())) {
+                debug("parameter '" + name + "' is out of date");
+                // do not fire those outdated events but enforce immediate reload of the frame
+                System.err.println("outdated events from frame " + frame.getTitle());
+                SessionManager.getSession().getReloadManager().markDirty(frame);
+                // hack! We claim, that we have fired events although we haven't, because we want
+                // send the reload manager frame, not the frameset
+                return true;
+            }
+
+            for (int i=0; i<l.size(); i++) {
+                gl = (SGetListener)l.get(i);
+                for (int j=0; j<values.length; j++)
                     gl.getPerformed(name, values[j]);
                 erg = true;
             }
-
+        }
         return erg;
     }
 
@@ -188,21 +187,19 @@ public class FastDispatcher
      *
      */
     public void dispatchDone() {
-        uniquePrefix++;
-        if ( uniquePrefix<0 )
-            uniquePrefix = 0;
-
-        uniquePrefixString = Long.toString(uniquePrefix);
+        System.err.println("Dispatcher.dispatchDone");
+        SComponent[] components = SessionManager.getSession().getReloadManager().getDirtyComponents();
+        if (components != null)
+            for (int i=0; i < components.length; i++)
+                components[i].getParentFrame().dispatchDone();
     }
 
-    /**
-     * TODO: documentation
-     *
-     * @return
-     */
-    public String getUniquePrefix() {
-        return uniquePrefixString;
+    private String target = null;
+
+    public void setTarget(String target) {
+        this.target = target;
     }
+    public String getTarget() { return target; }
 
     /**
      * TODO: documentation

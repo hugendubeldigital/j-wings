@@ -73,6 +73,11 @@ public abstract class SComponent
     private static final String cgClassID = "ComponentCG";
 
     /**
+     *
+     */
+    private transient Session session = null;
+
+    /**
      * The code generation delegate, which is responsible for
      * the visual representation of a component.
      */
@@ -235,17 +240,9 @@ public abstract class SComponent
      * @return an id
      */
     public final String getUnifiedIdString() {
-        if ( unifiedIdString==null )
+        if (unifiedIdString == null)
             unifiedIdString = Integer.toString(unifiedId);
         return unifiedIdString;
-    }
-
-    /**
-     * Return a jvm wide unique prefix.
-     * @return a prefix
-     */
-    public static final synchronized int getUnifiedPrefix() {
-        return UNIFIED_PREFIX++;
     }
 
     /**
@@ -254,10 +251,10 @@ public abstract class SComponent
      * @return the session
      */
     public Session getSession() {
-        if (getParentFrame() == null)
-            return SessionManager.getSession();
-        else
-            return getParentFrame().getSession();
+        if (session == null)
+            session = SessionManager.getSession();
+
+        return session;
     }
 
     /**
@@ -323,7 +320,11 @@ public abstract class SComponent
      * @param s the style
      */
     public void setStyle(Style s) {
+        Style old = style;
         style = s;
+        if ((old == null && style != null) ||
+            (old != null && !old.equals(style)))
+            reload();
     }
 
     /**
@@ -341,7 +342,11 @@ public abstract class SComponent
      * @param c the new background color
      */
     public void setBackground(Color c) {
+        Color old = background;
         background = c;
+        if ((old == null && background != null) ||
+            (old != null && !old.equals(background)))
+            reload();
     }
 
     /**
@@ -359,7 +364,11 @@ public abstract class SComponent
      * @param c the new foreground color
      */
     public void setForeground(Color c) {
+        Color old = foreground;
         foreground = c;
+        if ((old == null && foreground != null) ||
+            (old != null && !old.equals(foreground)))
+            reload();
     }
 
     /**
@@ -377,7 +386,7 @@ public abstract class SComponent
      * @param f the new font
      */
     public void setFont(Font f) {
-        if ( f==null ) {
+        if (f == null) {
             setFont((SFont)null);
             return;
         }
@@ -397,7 +406,10 @@ public abstract class SComponent
      * @param f the new font
      */
     public void setFont(SFont f) {
+        SFont old = font;
         font = f;
+        if (!font.equals(old))
+            reload();
     }
 
     /**
@@ -415,7 +427,10 @@ public abstract class SComponent
      * @param v wether this component wil show or not
      */
     public void setVisible(boolean v) {
+        boolean old = visible;
         visible = v;
+        if (old != visible)
+            reload();
     }
 
     /**
@@ -442,8 +457,11 @@ public abstract class SComponent
      *
      * @param v true if the component is enabled, false otherwise
      */
-    public void setEnabled(boolean v) {
-        enabled = v;
+    public void setEnabled(boolean e) {
+        boolean old = enabled;
+        enabled = e;
+        if (old != enabled)
+            reload();
     }
 
     /**
@@ -544,6 +562,14 @@ public abstract class SComponent
     public void appendBorderPostfix(Device s) { }
 
     /**
+     * Mark the component as subject to reload.
+     * The component will be registered with the ReloadManager.
+     */
+    public final void reload() {
+        getSession().getReloadManager().markDirty(this);
+    }
+
+    /**
      * Let the delegate write the component's code to the device.
      *
      * @param s the Device to write into
@@ -607,8 +633,8 @@ public abstract class SComponent
      * @return a unique name prefix
      */
     public String getNamePrefix() {
-        if ( getDispatcher()!=null )
-            return getDispatcher().getUniquePrefix() + SConstants.UID_DIVIDER
+        if (getParentFrame() != null)
+            return getParentFrame().getUniquePrefix() + SConstants.UID_DIVIDER
                 + getUnifiedIdString() + SConstants.UID_DIVIDER;
         else
             return getUnifiedIdString() + SConstants.UID_DIVIDER;
@@ -888,6 +914,10 @@ public abstract class SComponent
             cg.installCG(this);
         }
         firePropertyChange("CG", oldCG, newCG);
+
+        if ((cg == null && oldCG != null) ||
+            (cg != null && !cg.equals(oldCG)))
+            reload();
     }
 
     /**

@@ -169,8 +169,8 @@ public class SButtonGroup
     public String getNamePrefix() {
         if ( buttons!=null && buttons.size()>0 ) {
             SCheckBox b = (SCheckBox)buttons.get(0);
-            if ( b.getDispatcher()!=null )
-                return b.getDispatcher().getUniquePrefix() + SConstants.UID_DIVIDER
+            if (b.getParentFrame() != null)
+                return b.getParentFrame().getUniquePrefix() + SConstants.UID_DIVIDER
                     + unifiedId + SConstants.UID_DIVIDER;
         }
         return unifiedId + SConstants.UID_DIVIDER;

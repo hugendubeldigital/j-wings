@@ -23,6 +23,10 @@ import java.util.Locale;
 
 import javax.servlet.ServletConfig;
 
+import org.wings.DefaultReloadManager;
+import org.wings.FastDispatcher;
+import org.wings.ReloadManager;
+import org.wings.SGetDispatcher;
 import org.wings.plaf.CGManager;
 import org.wings.util.WeakPropertyChangeSupport;
 import org.wings.externalizer.*;
@@ -38,7 +42,9 @@ public class DefaultSession
 {
     private final Map services = new HashMap();
     private final CGManager cgManager = new CGManager();
+    private ReloadManager reloadManager = null;
     private ExternalizeManager extManager = null;
+    private SGetDispatcher dispatcher = new FastDispatcher();
     private Properties props = new Properties();
 
     /**
@@ -104,6 +110,34 @@ public class DefaultSession
      */
     public CGManager getCGManager() {
         return cgManager;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     */
+    public void setReloadManager(ReloadManager reloadManager) {
+        this.reloadManager = reloadManager;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public ReloadManager getReloadManager() {
+        if (reloadManager == null)
+            reloadManager = new DefaultReloadManager();
+        return reloadManager;
+    }
+
+    /**
+     * TODO: documentation
+     *
+     * @return
+     */
+    public SGetDispatcher getDispatcher() {
+        return dispatcher;
     }
 
     /**

@@ -42,7 +42,9 @@ public interface SGetDispatcher
      */
     boolean dispatch(String name, String[] values);
     void dispatchDone();
-    String getUniquePrefix();
+
+    void setTarget(String target);
+    String getTarget();
 }
 
 /*

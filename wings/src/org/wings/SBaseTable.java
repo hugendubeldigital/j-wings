@@ -156,7 +156,10 @@ public class SBaseTable
      * @param hv
      */
     public void setHeaderVisible(boolean hv) {
+        boolean oldHeaderVisible = headerVisible;
         headerVisible = hv;
+        if (oldHeaderVisible != headerVisible)
+            reload();
     }
 
     /**
@@ -174,8 +177,8 @@ public class SBaseTable
      * @param b
      */
     public void setShowGrid(boolean b) {
-        showHorizontalLines = b;
-        showVerticalLines = b;
+        setShowHorizontalLines(b);
+        setShowVerticalLines(b);
     }
 
     /**
@@ -184,7 +187,11 @@ public class SBaseTable
      * @param w
      */
     public void setWidth(String w) {
+        String oldWidth = width;
         width = w;
+        if ((width == null && oldWidth != null) ||
+            width != null && !width.equals(oldWidth))
+            reload();
     }
 
     /**
@@ -202,7 +209,10 @@ public class SBaseTable
      * @param b
      */
     public void setShowHorizontalLines(boolean b) {
+        boolean oldShowHorizontalLines = showHorizontalLines;
         showHorizontalLines = b;
+        if (showHorizontalLines != oldShowHorizontalLines)
+            reload();
     }
 
     /**
@@ -220,7 +230,10 @@ public class SBaseTable
      * @param b
      */
     public void setShowVerticalLines(boolean b) {
+        boolean oldShowVerticalLines = showVerticalLines;
         showVerticalLines = b;
+        if (showVerticalLines != oldShowVerticalLines)
+            reload();
     }
 
     /**
@@ -243,7 +256,11 @@ public class SBaseTable
      * @param d
      */
     public void setIntercellSpacing(Dimension d) {
+        Dimension oldIntercellSpacing = intercellSpacing;
         intercellSpacing = d;
+        if ((intercellSpacing == null && oldIntercellSpacing != null) ||
+            intercellSpacing != null && !intercellSpacing.equals(oldIntercellSpacing))
+            reload();
     }
 
     /**
@@ -266,7 +283,11 @@ public class SBaseTable
      * @param d
      */
     public void setIntercellPadding(Dimension d) {
+        Dimension oldIntercellPadding = intercellPadding;
         intercellPadding = d;
+        if ((intercellPadding == null && oldIntercellPadding != null) ||
+            intercellPadding != null && !intercellPadding.equals(oldIntercellPadding))
+            reload();
     }
 
     /**
@@ -284,11 +305,19 @@ public class SBaseTable
      * @param tm
      */
     public void setModel(TableModel tm) {
+        if (model != null)
+            model.removeTableModelListener(this);
+
+        TableModel oldModel = model;
         model = tm;
-        if ( model==null )
+        if (model == null)
             model = defaultModel;
 
         model.addTableModelListener(this);
+
+        if ((model == null && oldModel != null) ||
+            model != null && !model.equals(oldModel))
+            reload();
     }
 
     /**
@@ -453,11 +482,11 @@ public class SBaseTable
      * @param e
      */
     public void tableChanged(TableModelEvent e) {
+        reload();
     }
 
 
-    public void getPerformed(String action, String value) {
-    }
+    public void getPerformed(String action, String value) {}
 
     /**
      * TODO: documentation
@@ -494,7 +523,11 @@ public class SBaseTable
      * @param d
      */
     public void setViewportSize(Rectangle d) {
+        Rectangle oldViewport = viewport;
         viewport = d;
+        if ((viewport == null && oldViewport != null) ||
+            viewport != null && !viewport.equals(oldViewport))
+            reload();
     }
 
     /**

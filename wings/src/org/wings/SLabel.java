@@ -190,7 +190,11 @@ public class SLabel
      * @param i
      */
     public void setIcon(Icon i) {
+        Icon oldIcon = icon;
         icon = i;
+        if ((icon == null && oldIcon != null) ||
+            (icon != null && !icon.equals(oldIcon)))
+            reload();
     }
 
     /**
@@ -209,7 +213,11 @@ public class SLabel
      * @param url
      */
     public void setIcon(String url) {
+        String oldIconAddress = iconAddress;
         iconAddress = url;
+        if ((iconAddress == null && oldIconAddress != null) ||
+            (iconAddress != null && !iconAddress.equals(oldIconAddress)))
+            reload();
     }
 
     /**
@@ -236,7 +244,11 @@ public class SLabel
      * @param i
      */
     public void setDisabledIcon(Icon i) {
+        Icon oldDisabledIcon = disabledIcon;
         disabledIcon = i;
+        if ((disabledIcon == null && oldDisabledIcon != null) ||
+            (disabledIcon != null && !disabledIcon.equals(oldDisabledIcon)))
+            reload();
     }
 
     /**
@@ -255,7 +267,11 @@ public class SLabel
      * @param url
      */
     public void setDisabledIcon(String url) {
+        String oldDisabledIconAddress = disabledIconAddress;
         disabledIconAddress = url;
+        if ((disabledIconAddress == null && oldDisabledIconAddress != null) ||
+            (disabledIconAddress != null && !disabledIconAddress.equals(oldDisabledIconAddress)))
+            reload();
     }
 
     /**
@@ -294,7 +310,11 @@ public class SLabel
      * @param t
      */
     public void setText(String t) {
+        String oldText = text;
         text = t;
+        if ((text == null && oldText != null) ||
+            (text != null && !text.equals(oldText)))
+            reload();
     }
 
     /**

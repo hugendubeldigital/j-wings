@@ -403,10 +403,11 @@ public class SContainer
      */
     public Object clone() {
         try {
-            // ein bisschen kompliziert, muss aber alle Elemente einzeln
-            // klonen !!
             SContainer erg = (SContainer)super.clone();
-            // erg.components = new ArrayList(2);
+            // componentList and constraintList contain references to the
+            // original components / constraints
+            erg.componentList.clear();
+            erg.constraintList.clear();
             for ( int i=0; i<getComponentCount(); i++ ) {
                 erg.addComponent((SComponent)getComponentAt(i).clone());
             }

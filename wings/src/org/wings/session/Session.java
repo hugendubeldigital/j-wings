@@ -19,6 +19,8 @@ import java.util.Locale;
 
 import javax.servlet.ServletConfig;
 
+import org.wings.SGetDispatcher;
+import org.wings.ReloadManager;
 import org.wings.plaf.CGManager;
 import org.wings.externalizer.ExternalizeManager;
 
@@ -39,15 +41,18 @@ public interface Session
      */
     void init(ServletConfig config);
 
+    // do we really need this???
     void setExternalizeManager(ExternalizeManager em);
+    ExternalizeManager getExternalizeManager();
+
+    void setReloadManager(ReloadManager reloadManager);
+    ReloadManager getReloadManager();
 
     void putService(Object key, Service service);
-
     Service getService(Object key);
 
     CGManager getCGManager();
-
-    ExternalizeManager getExternalizeManager();
+    SGetDispatcher getDispatcher();
 
     void addPropertyChangeListener(PropertyChangeListener listener);
 

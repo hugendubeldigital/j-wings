@@ -172,7 +172,11 @@ public class SCheckBox extends SButton
      * @param i
      */
     public void setSelectedIcon(Icon i) {
+        Icon oldSelectedIcon = selectedIcon;
         selectedIcon = i;
+        if ((selectedIcon == null && oldSelectedIcon != null) ||
+            selectedIcon != null && !selectedIcon.equals(oldSelectedIcon))
+            reload();
     }
 
     /**
@@ -191,7 +195,11 @@ public class SCheckBox extends SButton
      * @param url
      */
     public void setSelectedIcon(String url) {
+        String oldSelectedIconAddress = selectedIconAddress;
         selectedIconAddress = url;
+        if ((selectedIconAddress == null && oldSelectedIconAddress != null) ||
+            selectedIconAddress != null && !selectedIconAddress.equals(oldSelectedIconAddress))
+            reload();
     }
 
     /**
@@ -218,7 +226,11 @@ public class SCheckBox extends SButton
      * @param i
      */
     public void setDisabledSelectedIcon(Icon i) {
+        Icon oldDisabledSelectedIcon = disabledSelectedIcon;
         disabledSelectedIcon = i;
+        if ((disabledSelectedIcon == null && oldDisabledSelectedIcon != null) ||
+            disabledSelectedIcon != null && !disabledSelectedIcon.equals(oldDisabledSelectedIcon))
+            reload();
     }
 
     /**
@@ -237,7 +249,11 @@ public class SCheckBox extends SButton
      * @param url
      */
     public void setDisabledSelectedIcon(String url) {
+        String oldDisabledSelectedIconAddress = disabledSelectedIconAddress;
         disabledSelectedIconAddress = url;
+        if ((disabledSelectedIconAddress == null && oldDisabledSelectedIconAddress != null) ||
+            disabledSelectedIconAddress != null && !disabledSelectedIconAddress.equals(oldDisabledSelectedIconAddress))
+            reload();
     }
 
     /**
@@ -304,10 +320,13 @@ public class SCheckBox extends SButton
      * @param s
      */
     public void setSelected(boolean selected) {
+        boolean oldSelected = selected;
         this.selected = selected;
 
         if (group != null)
             group.setSelected(this, selected);
+        if (oldSelected != selected)
+            reload();
     }
 
     /**

@@ -279,7 +279,11 @@ public class SAbstractButton
      * @param t
      */
     public void setText(String t) {
+        String oldText = text;
         text = t;
+        if ((text == null && oldText != null) ||
+            text != null && !text.equals(oldText))
+            reload();
     }
 
     /**

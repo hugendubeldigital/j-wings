@@ -158,7 +158,11 @@ public class SButton extends SAbstractButton
      * @param i
      */
     public void setIcon(Icon i) {
+        Icon oldIcon = icon;
         icon = i;
+        if ((icon == null && oldIcon != null) ||
+            icon != null && !icon.equals(oldIcon))
+            reload();
     }
 
     /**
@@ -177,7 +181,11 @@ public class SButton extends SAbstractButton
      * @param url
      */
     public void setIcon(String url) {
+        String oldIconAddress = iconAddress;
         iconAddress = url;
+        if ((iconAddress == null && oldIconAddress != null) ||
+            iconAddress != null && !iconAddress.equals(oldIconAddress))
+            reload();
     }
 
     /**
@@ -204,7 +212,11 @@ public class SButton extends SAbstractButton
      * @param i
      */
     public void setDisabledIcon(Icon i) {
+        Icon oldDisabledIcon = disabledIcon;
         disabledIcon = i;
+        if ((disabledIcon == null && oldDisabledIcon != null) ||
+            disabledIcon != null && !disabledIcon.equals(oldDisabledIcon))
+            reload();
     }
 
     /**
@@ -223,7 +235,11 @@ public class SButton extends SAbstractButton
      * @param url
      */
     public void setDisabledIcon(String url) {
+        String oldDisabledIconAddress = disabledIconAddress;
         disabledIconAddress = url;
+        if ((disabledIconAddress == null && oldDisabledIconAddress != null) ||
+            disabledIconAddress != null && !disabledIconAddress.equals(oldDisabledIconAddress))
+            reload();
     }
 
     /**

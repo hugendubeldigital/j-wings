@@ -20,11 +20,13 @@ package org.wings;
  * @author <a href="mailto:haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
-public interface SGetListener {
+public interface SGetListener
+{
     void getPerformed(String name, String value);
-    String getNamePrefix();
 
+    String getNamePrefix();
     String getName();
+    SFrame getParentFrame();
 }
 
 /*
