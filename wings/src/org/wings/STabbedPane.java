@@ -739,12 +739,15 @@ public class STabbedPane
      */
     public void setComponentAt(int index, SComponent component) {
         Page page = getPageAt(index);
-        if ( component != page.component ) {
-            if ( page.component != null ) {
-                contents.removeComponent(page.component);
-            }
-            page.component = component;
-            contents.addComponent(page.component, page.component.getNamePrefix());
+        if ( component == page.component ) return;
+        
+        if ( page.component != null ) {
+            contents.removeComponent(page.component);
+        }
+        page.component = component;
+        contents.addComponent(page.component, page.component.getNamePrefix());
+        if ( getSelectedIndex() == index ) {
+            card.show(page.component);
         }
     }
 
