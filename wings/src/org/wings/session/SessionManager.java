@@ -31,8 +31,10 @@ public class SessionManager
      *
      * @return the Session
      */
-    public static Session getSession() {
-        return (Session)sessions.get(Thread.currentThread());
+    public static Session getSession() 
+    {
+    	Session s = (Session)sessions.get(Thread.currentThread());
+        return s;
     }
 
     /**

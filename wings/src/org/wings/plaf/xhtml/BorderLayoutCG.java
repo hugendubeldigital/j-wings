@@ -19,6 +19,7 @@ import java.util.*;
 
 import org.wings.*;
 import org.wings.io.*;
+import org.wings.util.CGUtil;
 import org.wings.plaf.*;
 
 public class BorderLayoutCG
@@ -50,13 +51,14 @@ public class BorderLayoutCG
         if (center != null) cols++;
         if (east != null) cols++;
 
-        d.append("\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"");
+        d.append("\n<table cellpadding=\"0\" cellspacing=\"0\"");
+		CGUtil.writeSize( d, (SAbstractLayoutManager) l );
         if (border > 0)
             d.append(" border=\"").append(border).append("\"");
         if (container != null && container.getBackground() != null)
             d.append(" bgcolor=\"#").
                 append(Utils.toColorString(container.getBackground())).append("\">");
-	else
+		else
 	    d.append(">");
 
         if (north != null) {
@@ -103,7 +105,7 @@ public class BorderLayoutCG
         d.append("\n</table>");
     }
 
-    private void writeComponent(Device d, SComponent c)
+    protected void writeComponent(Device d, SComponent c)
 	throws IOException
     {
         c.write(d);

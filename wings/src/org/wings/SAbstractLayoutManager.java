@@ -15,6 +15,7 @@
 package org.wings;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.io.IOException;
 
 import org.wings.io.Device;
@@ -50,6 +51,16 @@ public abstract class SAbstractLayoutManager
 
     /** The container using this layout */
     protected SContainer container;
+
+    /**
+      * Preferred size of component in pixel.
+      */
+    protected Dimension preferredSize = null;
+    
+    /**
+      * Preferred size of component in percantage of browser window.
+      */
+    protected Dimension preferredPercentageSize = null;
 
 
     protected SAbstractLayoutManager() {
@@ -119,4 +130,63 @@ public abstract class SAbstractLayoutManager
 	container = c;
     }
     public SContainer getContainer() { return container; }
+
+	/**
+      * Set the preferred size of the receiving {@link SLayoutManager} in pixel.
+      * It is not guaranteed that the {@link SLayoutManager} accepts this property because of
+      * missing implementations in the {@link SLayoutManager } cg or html properties.
+      * If <i>width</i> or <i>height</i> is zero, it is ignored and the browser
+      * defines the size.
+      * @see #getPreferredSize
+      * @see #getPreferredPercentageSize
+      */
+	public final void setPreferredSize( Dimension preferredSize )
+     {
+     	this.preferredSize = preferredSize;
+     }
+
+	/**
+      * Get the preferred size of this {@link SLayoutManager }.
+      * @see #setPreferredSize
+      * @see #setPreferredPercentageSize
+      */
+	public final Dimension getPreferredSize()
+     {
+		return this.preferredSize;
+     }
+
+	/**
+      * Set the preferred size of the receiving {@link SLayoutManager} in percentage of browser window size.
+      * It is not guaranteed that the {@link SLayoutManager} accepts this property because of
+      * missing implementations in the component cg or html properties.
+      * If <i>width</i> or <i>height</i> is zero, it is ignored and the browser
+      * defines the size.
+      * If a fixed size is set, these settings are ignored.
+      * @see #getPreferredSize
+      * @see #getPreferredPercentageSize
+      * @param preferredPercentageSize Dimension with <i>width</i> and <i>height</i> between <tt>0</tt> and <tt>100</tt>.
+      */
+	public final void setPreferredPercentageSize( Dimension preferredPercentageSize )
+     {
+     	if ( preferredPercentageSize.width < 0||
+        		preferredPercentageSize.width > 100 ||
+        		preferredPercentageSize.height < 0 ||
+        		preferredPercentageSize.height > 100
+			)
+			throw new IllegalArgumentException( "Dimension values have to be between 0 and 100");
+                
+     	this.preferredPercentageSize = preferredPercentageSize;
+     }
+
+	/**
+      * Get the preferred size of the receiving {@link SLayoutManager} in percentage of browser window size.
+      * @see #setPreferredSize
+      * @see #setPreferredPercentageSize
+      */
+	public final Dimension getPreferredPercentageSize( )
+     {
+     	return this.preferredPercentageSize;
+     }
+
+
 }

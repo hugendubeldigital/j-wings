@@ -322,3 +322,43 @@ H3 {
    text-align: center;
    vertical-align: middle;
 }
+
+.menu {  
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	background-color: #CCCCCC;
+	border-color: #EEEEEE #999999 #999999 #eeeeee;
+	overflow: visible;
+	position: relative;
+	visibility: visible;
+	z-index: auto;
+	clip:  rect(   );
+	padding-right: 0px;
+	padding-left: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	border-style: solid;
+	border-top-width: 2px;
+	border-right-width: 2px;
+	border-bottom-width: 2px;
+	border-left-width: 2px
+}
+
+.pdmenu {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	background-color: #CCCCCC;
+	border-color: #EEEEEE #999999 #999999 #eeeeee;
+	overflow: visible;
+	position: absolute;
+	visibility: visible;
+	padding-right: 2px;
+	padding-left: 2px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	border-style: solid;
+	border-top-width: 2px;
+	border-right-width: 2px;
+	border-bottom-width: 2px;
+	border-left-width: 2px
+}

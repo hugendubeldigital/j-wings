@@ -20,6 +20,7 @@ import java.util.*;
 import javax.swing.Icon;
 
 import org.wings.*;
+import org.wings.util.CGUtil;
 import org.wings.io.*;
 import org.wings.plaf.*;
 import org.wings.externalizer.ExternalizeManager;
@@ -77,7 +78,7 @@ public class BaseTableCG
         Dimension intercellSpacing = table.getIntercellSpacing();
 
         d.append("<table");
-        writeSize( d, table );
+        CGUtil.writeSize( d, table );
 
         int thickness = 0;
         if (borderLines != null) {

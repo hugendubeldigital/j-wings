@@ -21,6 +21,7 @@ import java.util.*;
 import org.wings.*;
 import org.wings.externalizer.ExternalizeManager;
 import org.wings.io.*;
+import org.wings.util.CGUtil;
 import org.wings.plaf.*;
 import org.wings.plaf.xhtml.*;
 import org.wings.style.*;
@@ -40,7 +41,7 @@ public final class TableCG
         Style style = table.getStyle();
 
         d.append("<table");
-        writeSize( d, table );
+        CGUtil.writeSize( d, table );
 
         int thickness = 0;
         if (borderLines != null) {
