@@ -26,7 +26,8 @@ import org.wings.UploadFilterManager;
  * A utility class to handle <tt>multipart/form-data</tt> requests,
  * the kind of requests that support file uploads.  This class can
  * receive arbitrarily large files (up to an artificial limit you can set),
- * and fairly efficiently too.
+ * and fairly efficiently too. And it knows and works around several browser
+ * bugs that don't know how to upload files correctly.
  *
  * A client can upload files using an HTML form with the following structure.
  * Note that not all browsers support file uploads.
@@ -285,7 +286,10 @@ public class MultipartRequest
         int current = 0, last = -1;
         boolean done = false;
 
-        String actualParam = null;
+        String currentParam = null;
+        
+        File uploadFile = null;
+        OutputStream fileStream = null;
 
         try {
             while(current != -1) {
@@ -305,10 +309,9 @@ public class MultipartRequest
                 headers = parseHeader(header.toString());
                 header.setLength(0);
                 
-                actualParam = (String)headers.get("name"); 
+                currentParam = (String)headers.get("name"); 
                 
-                if (headers.size() == 1) {                  // .. it's not a file
-                    
+                if (headers.size() == 1) {              // .. it's not a file
                     int i;
                     int blength = boundary.length();
                     while ((current = mimeStream.read()) != -1) {
@@ -321,9 +324,9 @@ public class MultipartRequest
                                 }
                             }
                             if (i == blength) {             // end of part ..
-                                putParameter( actualParam,
-                                              (buffer.toString()).substring(0, buffer.length()-
-                                                                            boundary.length()-4));
+                                putParameter( currentParam,
+                                              (buffer.toString()).substring(0,
+                                                                            buffer.length()-boundary.length()-4));
                                 break;
                             }
                         }
@@ -341,11 +344,12 @@ public class MultipartRequest
                         
                         String contentType = (String)headers.get("content-type");
                         
-                        File file = File.createTempFile("wings_uploaded","tmp");
+                        uploadFile=File.createTempFile("wings_uploaded","tmp");
                         
                         UploadedFile upload = new UploadedFile(filename,
-                                                               contentType, file);
-                        OutputStream fileStream = new FileOutputStream(file);
+                                                               contentType, 
+                                                               uploadFile);
+                        fileStream = new FileOutputStream(uploadFile);
                         
                         fileStream = UploadFilterManager.createFilterInstance(name, fileStream);
                         
@@ -374,7 +378,7 @@ public class MultipartRequest
                         files.put(name, upload);
                         putParameter(name, upload.toString());
                     }
-                    else {                              // workaround for some netscape bug
+                    else {                  // workaround for some netscape bug
                         int i;
                         int blength = boundary.length();
                         while ((current = mimeStream.read()) != -1) {
@@ -401,8 +405,10 @@ public class MultipartRequest
                     System.err.println("na so was: " + current);
             }
         } catch ( IOException ex ) {
-            // IOException, notify component which process actual param
-            setException(actualParam, ex);
+            // cleanup and store the exception for notification of SFileChooser
+            try { fileStream.close(); } catch (Exception ign) {}
+            if (uploadFile != null) uploadFile.delete();
+            setException(currentParam, ex);
         }
     }
 
