@@ -23,6 +23,7 @@ public interface BorderCG
 {
     void writePrefix(Device d, SBorder c) throws IOException;
     void writePostfix(Device d, SBorder c) throws IOException;
+    void writeSpanAttributes( Device d, SBorder border ) throws IOException;
 }
 
 /*

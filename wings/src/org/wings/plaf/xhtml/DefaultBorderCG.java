@@ -38,6 +38,15 @@ public class DefaultBorderCG
     {
 	d.append("</td></tr></table>");
     }
+    
+	public void writeSpanAttributes( Device d, SBorder border )
+    	throws IOException
+     {
+     	/* thickness & type */
+		d.append( "border: 1px solid;" );
+        /* color */
+		d.append( "border-color: #000000;" );
+     }
 }
 
 /*

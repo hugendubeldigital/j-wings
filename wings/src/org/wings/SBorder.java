@@ -31,6 +31,7 @@ public interface SBorder {
 
     void writePrefix(Device d) throws IOException;
     void writePostfix(Device d) throws IOException;
+    void writeSpanAttributes( Device d ) throws IOException;
 
     String getCGClassID();
     void updateCG();

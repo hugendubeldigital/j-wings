@@ -25,6 +25,30 @@ import org.wings.plaf.*;
 public class BevelBorderCG
     extends DefaultBorderCG
 {
+	public void writeSpanAttributes( Device d, SBorder border )
+    	throws IOException
+     {
+     	SBevelBorder b = ( SBevelBorder ) border;
+		String borderStyle = ( b.getBevelType() == SBevelBorder.RAISED) ? "outset" : "inset";
+     	java.awt.Insets insets = b.getInsets();
+        
+        /* thickness & type */
+		d.append( "border: 1px " );
+        d.append( borderStyle );
+        d.append( ";" );
+        
+        /* padding */
+        if ( insets == null ) return;
+        d.append( "padding-top: " );
+        d.append( insets.top );
+        d.append( "px; padding-right: " );
+        d.append( insets.right );
+        d.append( "px; padding-left: " );
+        d.append( insets.left );
+        d.append( "px; padding-bottom: " );
+        d.append( insets.bottom );
+        d.append( "px;" );
+     }
 }
 
 /*

@@ -132,6 +132,16 @@ public class SAbstractBorder
     {
 	cg.writePostfix(d, this);
     }
+    
+    /**
+      * Write border attributes for span element.
+      */
+    public void writeSpanAttributes( Device d )
+    	throws IOException
+     {
+		cg.writeSpanAttributes( d, this );
+     }
+     
 }
 
 /*

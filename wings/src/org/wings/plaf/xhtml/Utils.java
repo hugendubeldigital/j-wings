@@ -184,6 +184,56 @@ public final class Utils implements SConstants
         appendTableCellAlignment(s,c);
         appendTableCellSpan(s,c);
     }
+    
+    
+    /**
+      * Test, if either background-, foreground color, font or border is set.
+      * @return false, if no attribute was set, true otherwise.
+      */
+    public static boolean hasSpanAttributes( SComponent component )
+     {
+		return
+        		component.getBackground() != null || 
+        		component.getForeground() != null ||
+                component.getFont() != null ||
+                component.getBorder() != null
+                ;
+     }
+    
+    /**
+      * Write all span-attributes except the <i>class</i>.
+      * @return null, if not attribute was set, otherwise the attributes in css syntax otherwise.
+      */
+	public static void writeSpanAttributes( Device d, SComponent component )
+    	throws IOException
+     {
+        if ( ! hasSpanAttributes( component ) )
+            return;
+            
+        java.awt.Color bgcolor = component.getBackground();
+        java.awt.Color fgcolor = component.getForeground();
+        SFont font = component.getFont();
+        SBorder border = component.getBorder();
+        
+        StringBuffer strb = new StringBuffer();
+
+        if ( bgcolor != null ) d.append( "background-color: #" + toColorString( bgcolor ) + "; " );
+        if ( fgcolor != null ) d.append( "font-color: #" + toColorString( fgcolor ) + "; " );
+        if ( font != null )
+         {
+         	int style = font.getStyle();
+         	d.append( "font-size: " + font.getSize() + "pt; " );
+         	d.append( "font-style: " + (( style | java.awt.Font.ITALIC ) > 0 ?"italic;":"normal;") );
+            d.append( "font-weight: " + (( style | java.awt.Font.BOLD ) > 0 ?"bold;":"normal;") );
+            d.append( "font-family: " + font.getFace() );
+		 }
+        
+        if ( border != null )
+         {
+         	border.writeSpanAttributes( d );
+         } 
+     }
+
 }
 
 /*

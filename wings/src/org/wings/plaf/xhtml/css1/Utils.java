@@ -115,18 +115,18 @@ public final class Utils implements SConstants
         throws IOException
     {
     	Style style = component.getStyle();
-        java.awt.Color bgcolor = component.getBackground();
-        if ( style == null &&  bgcolor == null )
+        boolean hasAttr = org.wings.plaf.xhtml.Utils.hasSpanAttributes( component );
+        if ( style == null && ! hasAttr )
             return;
 
-        d.append("<span");
-        Utils.writeStyleAttribute(d, style );
-        if ( bgcolor != null )
+        d.append("<span " );
+        if ( hasAttr )
          {
-         	d.append( "style=\"" );
-        	Utils.writeBackgroundAttribute(d, component );
-            d.append( "\"" );
+         	d.append( "style=\"");
+			org.wings.plaf.xhtml.Utils.writeSpanAttributes( d, component );
+        	d.append( "\" " );
 		 }
+        writeStyleAttribute( d, style );
         d.append(">");
     }
 
@@ -193,12 +193,6 @@ public final class Utils implements SConstants
 	  append(value).append("\" />\n");
     }
     
-    static void writeBackgroundAttribute( Device d, SComponent component )
-     {
-     	java.awt.Color cl;
-		if ( ( ( cl = component.getBackground() ) != null ) )
-         	d.append( "background-color: #" + org.wings.plaf.xhtml.Utils.toColorString( cl ) + "; " );
-	 }
 }
 
 /*

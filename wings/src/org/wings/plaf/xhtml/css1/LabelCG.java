@@ -28,7 +28,6 @@ public final class LabelCG
         throws IOException
     {
         String text = label.getText();
-        System.out.println("Using " + getClass().toString() );
         if (text != null && text.trim().length() > 0) {
             final boolean noBreak  = label.isNoBreak();
             final boolean escape   = label.isEscapeSpecialChars();
