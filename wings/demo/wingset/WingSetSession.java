@@ -53,6 +53,7 @@ public class WingSetSession
     }
 
     void initGUI() {
+        getFrame().setTitle("WingSet - wingS Demo");
         SContainer contentPane = getFrame().getContentPane();
         try {
             java.net.URL templateURL = 
