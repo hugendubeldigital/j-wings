@@ -115,12 +115,19 @@ public class ExplorerComponents {
         p.add(chooser);
 
         SButton submit = new SButton("upload");
-        submit.addActionListener(new ActionListener() {
+        p.add(submit);
+
+        p.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                writeFile(chooser.getSelectedFile(), chooser.getFilename());
+                try {
+                    writeFile(chooser.getSelectedFile(), 
+                              chooser.getFilename());
+                }
+                catch (IOException uploadProblem) {
+                    // set message..
+                }
             }
         });
-        p.add(submit);
 
         return p;
     }
