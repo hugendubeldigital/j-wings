@@ -14,12 +14,12 @@
 
 package org.wings.externalizer;
 
+import org.wings.DynamicResource;
+import org.wings.Renderable;
+import org.wings.io.Device;
+
 import java.io.IOException;
 import java.util.Collection;
-
-import org.wings.Renderable;
-import org.wings.DynamicResource;
-import org.wings.io.Device;
 
 /**
  * TODO: documentation
@@ -28,21 +28,22 @@ import org.wings.io.Device;
  * @version $Revision$
  */
 public class DynamicResourceExternalizer
-    implements Externalizer
-{
-    private static final Class[] SUPPORTED_CLASSES = { DynamicResource.class };
+        implements Externalizer {
+    public static final DynamicResourceExternalizer SHARED_INSTANCE = new DynamicResourceExternalizer();
+
+    private static final Class[] SUPPORTED_CLASSES = {DynamicResource.class};
 
     public String getExtension(Object obj) {
         if (obj != null)
-            return ((DynamicResource)obj).getExtension();
-        else 
+            return ((DynamicResource) obj).getExtension();
+        else
             return "";
     }
 
     public String getMimeType(Object obj) {
         if (obj != null)
-            return ((DynamicResource)obj).getMimeType();
-        else 
+            return ((DynamicResource) obj).getMimeType();
+        else
             return "unknown";
     }
 
@@ -55,13 +56,12 @@ public class DynamicResourceExternalizer
     }
 
     public String getEpoch(Object obj) {
-        return ((DynamicResource)obj).getEpoch();
+        return ((DynamicResource) obj).getEpoch();
     }
 
     public void write(Object obj, Device out)
-        throws IOException
-    {
-        ((Renderable)obj).write(out);
+            throws IOException {
+        ((Renderable) obj).write(out);
     }
 
     public Class[] getSupportedClasses() {
@@ -74,7 +74,7 @@ public class DynamicResourceExternalizer
 
     public Collection getHeaders(Object obj) {
         if (obj != null)
-            return ((DynamicResource)obj).getHeaders();
+            return ((DynamicResource) obj).getHeaders();
         else
             return null;
     }

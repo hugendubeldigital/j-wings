@@ -14,9 +14,9 @@
 
 package org.wings.externalizer;
 
-import java.awt.Image;
-import javax.swing.ImageIcon;
 import org.wings.io.Device;
+
+import javax.swing.*;
 
 /**
  * TODO: documentation
@@ -25,9 +25,12 @@ import org.wings.io.Device;
  * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
  * @version $Revision$
  */
-public class ImageIconExternalizer extends ImageExternalizer
-{
-    private static final Class[] SUPPORTED_CLASSES = { ImageIcon.class };
+public class ImageIconExternalizer extends ImageExternalizer {
+    private static final Class[] SUPPORTED_CLASSES = {ImageIcon.class};
+
+    public static final ImageIconExternalizer SHARED_GIF_INSTANCE = new ImageIconExternalizer(FORMAT_GIF);
+    public static final ImageIconExternalizer SHARED_PNG_INSTANCE = new ImageIconExternalizer(FORMAT_PNG);
+
 
     public ImageIconExternalizer() {
         super();
@@ -42,9 +45,8 @@ public class ImageIconExternalizer extends ImageExternalizer
     }
 
     public void write(Object obj, Device out)
-        throws java.io.IOException
-    {
-        super.write(((ImageIcon)obj).getImage(), out);
+            throws java.io.IOException {
+        super.write(((ImageIcon) obj).getImage(), out);
     }
 }
 

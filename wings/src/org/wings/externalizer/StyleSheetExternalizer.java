@@ -14,11 +14,10 @@
 
 package org.wings.externalizer;
 
-import java.io.InputStream;
-
 import org.wings.Renderable;
-import org.wings.style.StyleSheet;
 import org.wings.io.Device;
+import org.wings.style.StyleSheet;
+
 import java.util.Collection;
 
 /**
@@ -27,11 +26,12 @@ import java.util.Collection;
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class StyleSheetExternalizer implements Externalizer
-{
+public class StyleSheetExternalizer implements Externalizer {
 
-    private static final Class[] SUPPORTED_CLASSES = { StyleSheet.class };
-    private static final String[] SUPPORTED_MIME_TYPES = { "text/css" };
+    public static final StyleSheetExternalizer SHARED_INSTANCE = new StyleSheetExternalizer();
+
+    private static final Class[] SUPPORTED_CLASSES = {StyleSheet.class};
+    private static final String[] SUPPORTED_MIME_TYPES = {"text/css"};
 
     public String getExtension(Object obj) {
         return "css";
@@ -42,7 +42,7 @@ public class StyleSheetExternalizer implements Externalizer
     }
 
     public boolean isFinal(Object obj) {
-        return ((StyleSheet)obj).isFinal();
+        return ((StyleSheet) obj).isFinal();
     }
 
     public int getLength(Object obj) {
@@ -50,9 +50,8 @@ public class StyleSheetExternalizer implements Externalizer
     }
 
     public void write(Object obj, Device out)
-        throws java.io.IOException
-    {
-        ((Renderable)obj).write(out);
+            throws java.io.IOException {
+        ((Renderable) obj).write(out);
     }
 
     public Class[] getSupportedClasses() {
@@ -63,7 +62,9 @@ public class StyleSheetExternalizer implements Externalizer
         return SUPPORTED_MIME_TYPES;
     }
 
-    public Collection getHeaders(Object obj) { return null; }
+    public Collection getHeaders(Object obj) {
+        return null;
+    }
 }
 
 /*

@@ -14,13 +14,12 @@
 
 package org.wings.externalizer;
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.*;
-
 import org.wings.Renderable;
 import org.wings.StringResource;
 import org.wings.io.Device;
+
+import java.io.IOException;
+import java.util.Collection;
 
 /**
  * TODO: documentation
@@ -29,27 +28,28 @@ import org.wings.io.Device;
  * @author <a href="mailto:mreinsch@to.com">Michael Reinsch</a>
  * @version $Revision$
  */
-public class StringResourceExternalizer implements Externalizer
-{
-    private static final Class[] SUPPORTED_CLASSES = { StringResource.class };
+public class StringResourceExternalizer implements Externalizer {
+    public static final StringResourceExternalizer SHARED_INSTANCE = new StringResourceExternalizer();
+
+    private static final Class[] SUPPORTED_CLASSES = {StringResource.class};
 
     public String getExtension(Object obj) {
-        if ( obj!=null )
-            return ((StringResource)obj).getExtension();
-        else 
+        if (obj != null)
+            return ((StringResource) obj).getExtension();
+        else
             return "";
     }
 
     public String getMimeType(Object obj) {
-        if ( obj!=null )
-            return ((StringResource)obj).getMimeType();
-        else 
+        if (obj != null)
+            return ((StringResource) obj).getMimeType();
+        else
             return "unknown";
     }
 
     public int getLength(Object obj) {
-        if ( obj!=null )
-            return ((StringResource)obj).getLength();
+        if (obj != null)
+            return ((StringResource) obj).getLength();
         return -1;
     }
 
@@ -58,9 +58,8 @@ public class StringResourceExternalizer implements Externalizer
     }
 
     public void write(Object obj, Device out)
-        throws IOException
-    {
-        ((Renderable)obj).write(out);
+            throws IOException {
+        ((Renderable) obj).write(out);
     }
 
     public Class[] getSupportedClasses() {
@@ -73,7 +72,7 @@ public class StringResourceExternalizer implements Externalizer
 
     public Collection getHeaders(Object obj) {
         if (obj != null)
-            return ((StringResource)obj).getHeaders();
+            return ((StringResource) obj).getHeaders();
         else
             return null;
     }

@@ -14,10 +14,11 @@
 
 package org.wings.externalizer;
 
-import java.util.*;
-import java.util.logging.*;
-
-import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * TODO: documentation
@@ -30,14 +31,14 @@ public class ExternalizeManager extends AbstractExternalizeManager {
      *
      */
     private static final Externalizer[] DEFAULT_EXTERNALIZERS = {
-        new ImageExternalizer(ImageExternalizer.FORMAT_PNG),
-        new ImageExternalizer(ImageExternalizer.FORMAT_GIF),
-        new ImageIconExternalizer(ImageExternalizer.FORMAT_PNG),
-        new ImageIconExternalizer(ImageExternalizer.FORMAT_GIF),
-        new StaticResourceExternalizer(),
-        new StringResourceExternalizer(),
-        new DynamicResourceExternalizer(),
-        new ResourceExternalizer(),
+        ImageExternalizer.SHARED_PNG_INSTANCE,
+        ImageExternalizer.SHARED_GIF_INSTANCE,
+        ImageIconExternalizer.SHARED_PNG_INSTANCE,
+        ImageIconExternalizer.SHARED_GIF_INSTANCE,
+        StaticResourceExternalizer.SHARED_INSTANCE,
+        StringResourceExternalizer.SHARED_INSTANCE,
+        DynamicResourceExternalizer.SHARED_INSTANCE,
+        ResourceExternalizer.SHARED_INSTANCE,
     };
 
     /**
@@ -58,7 +59,6 @@ public class ExternalizeManager extends AbstractExternalizeManager {
 
     /**
      * TODO: documentation
-     *
      */
     public ExternalizeManager() {
         this(true);
@@ -66,7 +66,6 @@ public class ExternalizeManager extends AbstractExternalizeManager {
 
     /**
      * TODO: documentation
-     *
      */
     public ExternalizeManager(boolean initWithDefaultExternalizers) {
         if (initWithDefaultExternalizers) {
@@ -130,7 +129,7 @@ public class ExternalizeManager extends AbstractExternalizeManager {
         // SystemExternalizeManager hat Minus as prefix.
         if (identifier.charAt(0) == '-') {
             return SystemExternalizeManager.getSharedInstance().
-                getExternalizedResource(identifier);
+                    getExternalizedResource(identifier);
         }
 
         return (ExternalizedResource) externalized.get(identifier);
@@ -321,7 +320,7 @@ public class ExternalizeManager extends AbstractExternalizeManager {
             if (externalizer == null) {
                 if (mimeType.indexOf('/') >= 0)
                     externalizer =
-                        getExternalizer(mimeType.substring(0, mimeType.indexOf('/')));
+                    getExternalizer(mimeType.substring(0, mimeType.indexOf('/')));
             }
         }
         return externalizer;

@@ -5,79 +5,81 @@
 package org.wings.externalizer;
 
 import org.wings.io.Device;
-import java.io.StringReader;
-import java.io.Reader;
 
-import org.wings.RequestURL;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.Collection;
 
-public class TextExternalizer
-    implements Externalizer
-{
-    private static final Class[] SUPPORTED_CLASSES = { String.class };
+public class TextExternalizer implements Externalizer {
+
+    private static final Class[] SUPPORTED_CLASSES = {String.class};
 
     protected String extension;
     protected String mimeType;
     protected final String[] supportedMimeTypes = new String[1];
 
-    
+
     public TextExternalizer(String mimeType, String extension) {
-	this.mimeType = mimeType;
-	this.extension = extension;
-        
+        this.mimeType = mimeType;
+        this.extension = extension;
+
         supportedMimeTypes[0] = mimeType;
     }
 
     public TextExternalizer(String mimeType) {
         this(mimeType, "txt");
     }
+
     public TextExternalizer() {
         this("text/plain", "txt");
     }
-    
+
     public void setExtension(String extension) {
-	this.extension = extension;
+        this.extension = extension;
     }
+
     public String getExtension(Object obj) {
-	return extension;
+        return extension;
     }
-    
-    public  void setMimeType(String mimeType) {
-	this.mimeType = mimeType;
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
+
     public String getMimeType(Object obj) {
-	return mimeType;
+        return mimeType;
     }
-    
+
     public boolean isFinal(Object obj) {
-	return true;
+        return true;
     }
-    
+
     public int getLength(Object obj) {
-	return -1;
+        return -1;
     }
-    
+
     public void write(Object obj, Device out)
-	throws java.io.IOException
-    {
-	Reader reader = new StringReader((String)obj);
-	char[] buffer = new char[2048];
-	int num;
-	while ((num = reader.read(buffer)) > 0) {
-	    out.print(buffer, 0, num);
-	}
-	reader.close();
+            throws java.io.IOException {
+        Reader reader = new StringReader((String) obj);
+        char[] buffer = new char[2048];
+        int num;
+        while ((num = reader.read(buffer)) > 0) {
+            out.print(buffer, 0, num);
+        }
+        reader.close();
     }
-    
+
     public Class[] getSupportedClasses() {
-	return SUPPORTED_CLASSES;
+        return SUPPORTED_CLASSES;
     }
 
     public String[] getSupportedMimeTypes() {
-	return supportedMimeTypes;
+        return supportedMimeTypes;
     }
 
-    public Collection getHeaders(Object obj) { return null; }
+    public Collection getHeaders(Object obj) {
+        return null;
+    }
 }
 
 /*
