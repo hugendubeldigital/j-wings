@@ -227,7 +227,6 @@ public class SComboBox
 	    selectingItem = false;
 
             if ( !delayEvent ) {
-                System.out.println("event in place");
 
                 if (selectedItemReminder != dataModel.getSelectedItem()) {
                     // in case a users implementation of ComboBoxModel
@@ -240,7 +239,6 @@ public class SComboBox
 
                 delayedEvent = false;
             } else {
-                System.out.println("delayed Event");
                 delayedEvent = true;
             }
 
@@ -623,7 +621,6 @@ public class SComboBox
     }
 
     public void fireFinalEvents() {
-        System.out.println("fire final event");
         if ( delayedEvent ) {
             if (selectedItemReminder != dataModel.getSelectedItem()) {
                 // in case a users implementation of ComboBoxModel
