@@ -117,6 +117,21 @@ public abstract class STextComponent
         return text;
     }
 
+    /**
+     * Appends the given text to the end of the document. Does nothing 
+     * if the string is null or empty.
+     *
+     * @param str the text to append.
+     */
+    public void append(String str) {
+        if (str == null) return;
+        StringBuffer buf = new StringBuffer();
+        if (text != null) buf.append(text);
+        buf.append(str);
+        text = buf.toString();
+        reload(ReloadManager.RELOAD_CODE);
+    }
+
     public void processLowLevelEvent(String action, String[] values) {
         if ( isEditable() && isEnabled() ) {
             // System.out.println("getPerformed " + action + " : " + value);
