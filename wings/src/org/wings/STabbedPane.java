@@ -668,6 +668,7 @@ public class STabbedPane
      * Returns the component at <i>index</i>.
      *
      * @see #setComponentAt
+     * @deprecated use {@link #getComponent(int)} instead for swing conformity
      */
     public SComponent getComponentAt(int index) {
         return ((Page)pages.get(index)).component;
