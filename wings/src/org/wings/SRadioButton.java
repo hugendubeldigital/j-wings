@@ -94,21 +94,9 @@ public class SRadioButton
     }
 
     public void processLowLevelEvent(String action, String[] values) {
-        System.out.println("got command " + action);
-
-        for (int i=0; i<values.length; i++) {
-            System.out.println("got event " + i + " " + values[i] + 
-                               " parsed " + parseSelectionToggle(values[i])); 
-        } // end of for (int i=0; i<; i++)
-        
-
-
-
         boolean origSelected = isSelected();
 
         if ( isRenderedAsFormInput() ) {
-            System.out.println("rendered as form input");
-
             if ( getGroup()==null ) {
                 // one hidden and one checked event from the form says select
                 // it, else deselect it (typically only the hidden event)
@@ -127,7 +115,6 @@ public class SRadioButton
                 // it, else deselect it (typically only the hidden event)
                 setSelected(eventCount==2);
             } // end of if ()
-            System.out.println("set selection to " + isSelected());
         } else {
             if ( getGroup()!=null ) {
                 getGroup().setDelayEvents(true);
@@ -152,7 +139,6 @@ public class SRadioButton
     protected boolean parseSelectionToggle(String toggleParameter) {
 	// a button/image in a form has no value, so just toggle selection...
 	if ( getShowAsFormComponent() ) {
-            System.out.println("form component");
 	    return !isSelected();
 	} // end of if ()
 
