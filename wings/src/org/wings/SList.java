@@ -26,6 +26,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListDataListener;
 
 import org.wings.plaf.ListCG;
 import org.wings.style.*;
@@ -66,7 +67,7 @@ import org.wings.io.Device;
  */
 public class SList
     extends SComponent
-    implements Scrollable, LowLevelEventListener, SSelectionComponent, ClickableRenderComponent
+    implements Scrollable, LowLevelEventListener, SSelectionComponent, ClickableRenderComponent, ListDataListener
 {
     /**
      * @see #getCGClassID
@@ -139,7 +140,9 @@ public class SList
             throw new IllegalArgumentException("dataModel must not be null");
         }
 
+        if (this.dataModel != null) this.dataModel.removeListDataListener(this);
         this.dataModel = dataModel;
+        this.dataModel.addListDataListener(this);
         selectionModel = createSelectionModel();
     }
 
@@ -403,6 +406,7 @@ public class SList
         if ( isDifferent(dataModel, model) ) {
             clearSelection();
             dataModel = model;
+            dataModel.addListDataListener(this);
             reload(ReloadManager.RELOAD_CODE);
         }
     }
@@ -1151,6 +1155,22 @@ public class SList
         return "r" + Integer.toString(index);
     }
 
+    /****
+     * Changes of the List Model should reflect in a reload if possible 
+     **/
+    
+    public void contentsChanged(javax.swing.event.ListDataEvent e) {
+      reload(ReloadManager.RELOAD_CODE);
+    }
+    
+    public void intervalAdded(javax.swing.event.ListDataEvent e) {
+      reload(ReloadManager.RELOAD_CODE);
+    }
+    
+    public void intervalRemoved(javax.swing.event.ListDataEvent e) {
+      reload(ReloadManager.RELOAD_CODE);
+    }
+    
 }
 
 /*
