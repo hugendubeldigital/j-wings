@@ -28,6 +28,12 @@ import org.wings.io.Device;
  */
 public final class Utils implements SConstants
 {
+
+  final static char[] hexDigits = { 
+    '0' , '1' , '2' , '3' , '4' , '5' , 
+    '6' , '7' , '8' , '9' , 'a' , 'b' , 
+    'c' , 'd' , 'e' , 'f'};
+
     public static void writeBorderPrefix(Device d, SBorder border)
         throws IOException
     {
@@ -83,6 +89,80 @@ public final class Utils implements SConstants
 
         return escaped.toString();
     }
+
+  public static String toColorString(int rgb) {
+    char[] buf = new char[6];
+    int digits = 6;
+    do {
+      buf[--digits] = hexDigits[rgb & 15];
+      rgb >>>= 4;
+    } while (digits!=0);
+    
+    return new String(buf);
+  }
+
+  public static String toColorString(java.awt.Color c) {
+    return toColorString(c.getRGB());
+  }
+
+  public static void appendTableCellAlignment(Device s, SComponent c) {
+    switch ( c.getHorizontalAlignment() ) {
+    case NO_ALIGN:
+      break;
+    case CENTER:
+      s.append(" align=\"center\"");
+      break;
+    case LEFT:
+      s.append(" align=\"left\"");
+      break;
+    case RIGHT:
+      s.append(" align=\"right\"");
+      break;
+    case JUSTIFY:
+      s.append(" align=\"justify\"");
+      break;
+    }
+    
+    switch ( c.getVerticalAlignment() ) {
+    case NO_ALIGN:
+    case CENTER:
+      break;
+    case TOP:
+      s.append(" valign=\"top\"");
+      break;
+    case BOTTOM:
+      s.append(" valign=\"bottom\"");
+      break;
+    case BASELINE:
+      s.append(" valign=\"baseline\"");
+      break;
+    }
+
+  }
+
+  public static void appendTableCellColors(Device s, SComponent c) {
+    /*    if ( c.getForeground()!=null ) 
+      s.append(" COLOR=#").
+      append(toColorString(c.getForeground()));*/
+    if ( c.getBackground()!=null ) 
+      s.append(" bgcolor=#").
+        append(toColorString(c.getBackground()));
+  }
+
+  public static void appendTableCellSpan(Device s, SComponent c) {
+    if ( c.getRowSpan()>0 ) 
+      s.append(" rowspan=").append(c.getRowSpan());
+
+    if ( c.getColSpan()>0 ) 
+      s.append(" colspan=").append(c.getColSpan());
+  }
+
+
+  public static void appendTableCellAttributes(Device s, SComponent c) {
+    appendTableCellColors(s, c);
+    appendTableCellAlignment(s,c);
+    appendTableCellSpan(s,c);
+  }
 }
 
 /*
