@@ -123,11 +123,15 @@ public final class TabbedPaneCG
             button.write(d);
 
             if ( maxTabsPerLine > 0 && ((i+1) % maxTabsPerLine == 0) ) {
+                d.append("<img src=\"").append(lastAdr).append("\" />");
                 d.append("<br />");
                 newLine = true;
             }
         }
-        d.append("<img src=\"").append(lastAdr).append("\" />");
+        if (!newLine) {
+            // closed tab if not already written..
+            d.append("<img src=\"").append(lastAdr).append("\" />");
+        }
 
         d.append("<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"1\"><tr><td>");
 
