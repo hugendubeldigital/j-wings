@@ -138,7 +138,8 @@ public class ExternalizeManager extends AbstractExternalizeManager {
     public final void removeExternalizedResource(String identifier) {
         identifier = stripIdentifier(identifier);
         if (identifier == null) return;
-        externalized.remove(identifier);
+        Object externalizedResource = externalized.remove(identifier);
+        reverseExternalized.remove(externalizedResource);
     }
 
 
