@@ -40,7 +40,8 @@
     %><%|border=thickness%><%
     %><%|cellspacing=((intercellSpacing != null) ? intercellSpacing.width : null)%><%
     %><%|cellpadding=((intercellPadding != null) ? intercellPadding.width : null)%><%
-    %>><%
+    %>>
+<%
 
     int startRow = 0;
     int startCol = 0;
@@ -170,7 +171,8 @@
         }
 
         comp.setStyle(compStyle);
-        %></td><%
+        %></td>
+<%
     }
 
     protected void writeDefaultFormRowSelection(Device device, STable table, 
@@ -201,7 +203,8 @@
         	%> value="<%=table.getToggleSelectionParameter(row,-1)%>"<%
         	%> name="<%=table.encodeLowLevelEventId(table.getLowLevelEventId())%>"<%
         }
-        %>></td><%
+        %>></td>
+<%
     }
 
     protected void writeRowSelection(Device device, STable table, 
@@ -249,7 +252,8 @@
             %></a><%
         }
 
-        %></td><%
+        %></td>
+<%
 	comp.setStyle(compStyle);
     }
 
@@ -266,14 +270,16 @@
 	comp.setStyle(null);
         %>><%
         rendererPane.writeComponent(device, comp, table);
-        %></th><%
+        %></th>
+<%
 	comp.setStyle(compStyle);
     }
 
     protected void writeEmptyHeaderCell(Device device, STable table)
         throws IOException
     {
-        %><th>&nbsp;</th><%
+        %><th>&nbsp;</th>
+<%
     }
 
     private void writeIcon(Device device, SIcon icon)
