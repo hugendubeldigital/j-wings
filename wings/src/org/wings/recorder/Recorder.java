@@ -145,6 +145,7 @@ public class Recorder
     }
 
     private void writeCode() {
+        PrintWriter out = null;
         if (list == null || list.size() == 0)
             return;
         try {
@@ -155,7 +156,7 @@ public class Recorder
             }
 
             file = new File(scriptName + ".java");
-            PrintWriter out = new PrintWriter(new FileWriter(file));
+            out = new PrintWriter(new FileWriter(file));
             out.println("import org.wings.recorder.*;");
             out.println();
             out.println("public class " + scriptName);
@@ -211,6 +212,8 @@ public class Recorder
         }
         catch (Exception e) {
             e.printStackTrace();
+        } finally {
+          try { out.close(); } catch (Exception ign) {};
         }
     }
 
