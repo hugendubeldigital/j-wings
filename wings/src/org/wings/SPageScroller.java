@@ -482,6 +482,8 @@ public class SPageScroller
         super.setExtent(value);
         unitIncrement = value;
         blockIncrement = value;
+        // make sure we have a valid value!
+        setValue(getValue());
     }
 
     /**
@@ -493,6 +495,8 @@ public class SPageScroller
         super.setVisibleAmount(value);
         unitIncrement = value;
         blockIncrement = value;
+        // make sure we have a valid value!
+        setValue(getValue());
     }
 
     /**
