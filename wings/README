@@ -18,5 +18,7 @@ in this directory
 You find the wings.jar in build/dist/lib
 
 
-To make the demo-wars look at demo/README
-
+- To make the demo-wars look at demo/README
+- To build the tutorial, see doc/tutorial/hellowings/README
+- For a skeleton you can use to start writing your
+  own application, look at doc/tutorial/hellowings/skeleton.
