@@ -5,15 +5,16 @@ This is an example for the Template Layout Manager. Like any
 other layout manager it allows to place arbitrary elements, but you can
 write a simple HTML-page being the template for your components. Thus,
 this is a very flexible approach. The <em>constraints</em> of this
-layout manager is are just the names of the components. The
+layout manager are just the names of the components. The tags in the following
+codesnippet of the template:
 <hr size=1 noshade>
 <table bgcolor=white cellpadding=10 border=1><tr><td>
 <code>&lt;object name=&quot;compname&quot;&gt&lt;/object&gt;</code>
 </td></tr></table>
 <hr size=1 noshade>
-tags are replaced by the actual component given with the 
-constraint <code>compname</code>.
-In this example input fields or whole trees in hideously colored tables:
+are replaced by the actual component given with the 
+constraint named <code>&quot;compname&quot;</code>.
+In this example input fields or tree widgets in hideously colored tables:
 <table cellpadding=2>
 <tr bgcolor=blue>
    <td>Name:</td><td><object name="NAME">Name-object</object></td>
@@ -25,7 +26,10 @@ In this example input fields or whole trees in hideously colored tables:
 </table>
 or consider labels: <b><object name="theLabel"></object></b>
 or buttons <object name="TESTBUTTON"></object>.
-This layout Manager caches the intermediate result of the internal
-parse stage, thus it is very fast generating pages.
+This template layout manager caches the intermediate result of the internal
+parse stage, thus it is very fast generating pages. Templates can be read
+from the filesystem or from an URL, so reading them from 
+<code>Class.getResource()</code> is possible as well; or you can implement your
+own DataSource getting it from a database for instance.
 </td></tr>
 </table>
