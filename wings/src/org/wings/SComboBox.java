@@ -223,12 +223,12 @@ public class SComboBox
 
             if ( !delayEvent ) {
 
-                if (isDifferent(selectedItemReminder , dataModel.getSelectedItem())) {
+         //       if (isDifferent(selectedItemReminder , dataModel.getSelectedItem())) {
                     // in case a users implementation of ComboBoxModel
                     // doesn't fire a ListDataEvent when the selection
                     // changes.
                     selectedItemChanged();
-                }
+          //      }
 
                 fireActionEvent();
 
@@ -594,7 +594,7 @@ public class SComboBox
         // last will win!!
         for ( int i=0; i<values.length; i++ ) {
             try {
-                selectedIndex = Integer.parseInt(values[i]);
+                if (values[i].length() > 0) selectedIndex = Integer.parseInt(values[i]);
             }
             catch (Exception ex) {
                 // ignore, some illegal request.. (maybe log it)
@@ -635,9 +635,9 @@ public class SComboBox
                 // doesn't fire a ListDataEvent when the selection
                 // changes.
                 selectedItemChanged();
+                fireActionEvent();
             }
             
-            fireActionEvent();
             
             delayedEvent = false;
         }
