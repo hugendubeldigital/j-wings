@@ -209,6 +209,10 @@ public class SDialog extends SForm
         while (frame != null && !(frame instanceof SRootContainer)) {
             frame = frame.getParent();
         }
+
+        if (frame == null) {
+            frame = SessionManager.getSession().getRootFrame();
+        }
         
         if (frame == null) {
             throw new IllegalArgumentException("Component has no root container");
