@@ -64,7 +64,8 @@ public class STabbedPane
      */
     protected Color buttonOrigBackground;
 
-    int maxTabsPerLine = -1;
+    /** the maximum tabs per line */
+    protected int maxTabsPerLine = -1;
 
     SContainer buttons = new SContainer();
 
@@ -86,13 +87,12 @@ public class STabbedPane
     protected Style selectionStyle;
 
     /**
-     * TODO: documentation
-     *
+     * Creates a new empty Tabbed Pane with the tabs at the top.
+     * @see #addTab
      */
     public STabbedPane() {
         this(TOP);
     }
-
 
     /**
      * Creates an empty TabbedPane with the specified tab placement
@@ -551,6 +551,20 @@ public class STabbedPane
         pages.clear();
     }
 
+
+    /**
+     * Sets the maximum tabs per line. tabs <= 0: No maximum.
+     */
+    public void setMaxTabsPerLine(int tabs) {
+        maxTabsPerLine = tabs;
+    }
+
+    /**
+     * Returns the maximum tabs per line.
+     */
+    public int getMaxTabsPerLine() {
+        return maxTabsPerLine;
+    }
 
     /**
      * Returns the tab title at <i>index</i>.

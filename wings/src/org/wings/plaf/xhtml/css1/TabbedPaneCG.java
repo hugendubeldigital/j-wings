@@ -46,6 +46,7 @@ public final class TabbedPaneCG
 
         String firstAdr = null;
         String transAdr = null;
+        int maxTabsPerLine = pane.getMaxTabsPerLine();
 
         ExternalizeManager ext = c.getExternalizeManager();
         if (ext != null && firstIcon != null) {
@@ -94,8 +95,12 @@ public final class TabbedPaneCG
                 button.setStyle(pane.getStyleAt(pane.getSelectedIndex()));
 
             button.write(d);
+
+            if ( maxTabsPerLine > 0 && ((i+1) % maxTabsPerLine == 0) ) {
+                d.append("<br />");
+            }
         }
-        
+
         d.append("<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"1\"><tr><td>");
 
         contents.write(d);
