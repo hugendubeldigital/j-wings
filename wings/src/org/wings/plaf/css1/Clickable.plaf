@@ -90,9 +90,9 @@ SimpleURL getURL(SAbstractClickable clickable) {
 
     if ( url==null ) {
         AnchorProperties anchor	= AnchorRenderStack.get();
-	    if ( anchor!=null ) {
+	if ( anchor!=null ) {
 	        url = anchor.getURL();
-	    }
+        }
     }
 
     return url;

@@ -20,22 +20,30 @@ import org.wings.SimpleURL;
  */
 public final class AnchorProperties {
     private final SimpleURL url;
+    private final String toolTipText;
     private final String target;
     private final String formEventName;
     private final String formEventValue;
 
-    public AnchorProperties(SimpleURL url, String target) {
+    public AnchorProperties(SimpleURL url, String target, String toolTipText) {
         this.url = url;
         this.target = target;
         this.formEventName = null;
         this.formEventValue = null;
+        this.toolTipText = toolTipText;
     }
 
-    public AnchorProperties(String pFormEventName, String pFormEventValue) {
+    public AnchorProperties(String pFormEventName, String pFormEventValue,
+                            String toolTipText) {
         formEventName = pFormEventName;
         formEventValue = pFormEventValue;
         this.url = null;
         this.target = null;
+        this.toolTipText = toolTipText;
+    }
+
+    public String getToolTipText() {
+        return toolTipText;
     }
 
     public SimpleURL getURL() {

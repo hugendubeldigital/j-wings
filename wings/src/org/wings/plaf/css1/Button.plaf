@@ -50,6 +50,7 @@ protected void writeAnchorText(final Device device, SAbstractButton abstractButt
         } else {
             %><a href="<%=anchorProperties.getURL().toString()%>"<%
         }
+        %><%|title=anchorProperties.getToolTipText()%><%
     }
     else {
         %><span<%
@@ -148,6 +149,7 @@ protected void writeAnchorIcon(final Device device, SAbstractButton abstractButt
         } else {
             %><a href="<%=anchorProperties.getURL().toString()%>"<%
         }
+        %><%|title=anchorProperties.getToolTipText()%><%
     } else {
         %><span<%
     }

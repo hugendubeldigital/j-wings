@@ -180,7 +180,8 @@
 	                               component.getSelectionParameter(row, false));
             
             if ( cellComp instanceof ClickableRenderComponent ) {
-                AnchorRenderStack.push(selectionAddr, null);
+                AnchorRenderStack.push(selectionAddr, null, 
+                                       cellComp.getToolTipText());
                 rendererPane.writeComponent(device, cellComp, component);
                 AnchorRenderStack.pop();
             } 

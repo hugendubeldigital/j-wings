@@ -216,12 +216,12 @@
 		     * show a link around it ..
 		     */
                     if ( table.getShowAsFormComponent() ) {
-                        AnchorRenderStack.push(Utils.event(table), table.getEditParameter(row, col));
+                        AnchorRenderStack.push(Utils.event(table), table.getEditParameter(row, col), null);
                     } else {
                         RequestURL editAddr = table.getRequestURL();
                         editAddr.addParameter(table,
                                               table.getEditParameter(row, col));
-                        AnchorRenderStack.push(editAddr, null);
+                        AnchorRenderStack.push(editAddr, null, null);
                     }
                     pushedURL = true;
                 } 
@@ -327,11 +327,11 @@
         %>><%
         if (comp instanceof ClickableRenderComponent) {
             if ( table.getShowAsFormComponent() ) {
-                AnchorRenderStack.push(Utils.event(table), table.getToggleSelectionParameter(row, col));
+                AnchorRenderStack.push(Utils.event(table), table.getToggleSelectionParameter(row, col), null);
             } else {
                 RequestURL toggleSelectionAddr = table.getRequestURL();
                 toggleSelectionAddr.addParameter(table, table.getToggleSelectionParameter(row, col));
-                AnchorRenderStack.push(toggleSelectionAddr, null);
+                AnchorRenderStack.push(toggleSelectionAddr, null, null);
             }
         }
         else {

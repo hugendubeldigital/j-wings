@@ -41,10 +41,11 @@ public void writeText(Device device, SLabel label, AnchorProperties anchor) thro
 public void writeAnchorStart(Device device, AnchorProperties anchor) throws IOException {
     if ( anchor!=null ) {
         if ( anchor.isFormAnchor() ) {
-            %><a href="" onclick="return submitForm(event, '<%=anchor.getFormEventName()%>','<%=anchor.getFormEventValue()%>')"><%
+            %><a href="" onclick="return submitForm(event, '<%=anchor.getFormEventName()%>','<%=anchor.getFormEventValue()%>')"<%
         } else {
-            %><a href="<%=anchor.getURL().toString()%>"><%
+            %><a href="<%=anchor.getURL().toString()%>"<%
         }
+        %><%|title=anchor.getToolTipText()%>><%
     }
 }
 

@@ -166,9 +166,11 @@ protected org.wings.io.StringBufferDevice getStringBufferDevice() {
 
        if ( renderer instanceof ClickableRenderComponent ) {
            if ( list.getShowAsFormComponent() ) {
-                AnchorRenderStack.push(Utils.event(list), list.getToggleSelectionParameter(i));
+                AnchorRenderStack.push(Utils.event(list), 
+                             list.getToggleSelectionParameter(i),
+			     null);
            } else {
-                AnchorRenderStack.push(selectionAddr, null);
+                AnchorRenderStack.push(selectionAddr, null, null);
            }
             rendererPane.writeComponent(device, renderer, list);
                   AnchorRenderStack.pop();
@@ -208,10 +210,11 @@ protected org.wings.io.StringBufferDevice getStringBufferDevice() {
 
     if ( anchor!=null ) {
         if ( anchor.isFormAnchor() ) {
-            %><a href="" onclick="return submitForm(event, '<%=anchor.getFormEventName()%>','<%=anchor.getFormEventValue()%>')"><%
+            %><a href="" onclick="return submitForm(event, '<%=anchor.getFormEventName()%>','<%=anchor.getFormEventValue()%>')"<%
         } else {
-            %><a href="<%=anchor.getURL().toString()%>"><%
+            %><a href="<%=anchor.getURL().toString()%>"<%
         }
+        %><%|title=anchor.getToolTipText()%>><%
     }
 
     SList list = (SList)component;

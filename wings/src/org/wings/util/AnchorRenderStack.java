@@ -49,14 +49,16 @@ public class AnchorRenderStack {
     /**
      * Push a new URL.
      */
-    public static void push(SimpleURL url, String target) {
+    public static void push(SimpleURL url, String target, String toolTipText) {
         FastStack s = (FastStack) eventURLStack.get();
-        s.push(new AnchorProperties(url, target));
+        s.push(new AnchorProperties(url, target, toolTipText));
     }
 
-    public static void push(String formEventName, String formEventValue) {
+    public static void push(String formEventName, String formEventValue, 
+                            String toolTipText) {
         FastStack s = (FastStack) eventURLStack.get();
-        s.push(new AnchorProperties(formEventName, formEventValue));
+        s.push(new AnchorProperties(formEventName, formEventValue, 
+                                    toolTipText));
     }
 
 

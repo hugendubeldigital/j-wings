@@ -11,7 +11,9 @@
     }
 
     try {
-        AnchorRenderStack.push(component.getURL(), component.getTarget());
+        AnchorRenderStack.push(component.getURL(), 
+	                       component.getTarget(),
+			       component.getToolTipText());
         Utils.renderContainer(device, component);
     }
     finally {
