@@ -33,7 +33,7 @@ public class DynamicCodeResource extends DynamicResource
      *
      */
     public DynamicCodeResource(SFrame f) {
-        super(f, ".html", "text/xhtml");
+        super(f, "html", "text/html");
     }
 
     /**

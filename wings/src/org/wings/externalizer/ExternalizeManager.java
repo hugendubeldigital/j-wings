@@ -46,6 +46,7 @@ public class ExternalizeManager extends AbstractExternalizeManager
         new TextExternalizer(),
         new TextExternalizer("text/html", "html"),
         new StyleSheetExternalizer(),
+        new DynamicResourceExternalizer(),
     };
 
     /**

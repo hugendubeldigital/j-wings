@@ -570,16 +570,6 @@ public abstract class SessionServlet
                     measure.start("time to process request");
                 }
                     
-                // default content ist text/html
-                response.setContentType("text/html;charset=" + session.getCharSet());
-
-                // Page must not be cached since higly dynamic
-                response.setHeader("Pragma", "no-cache");
-                response.setHeader("Cache-Control",
-                                   "max-age=0, no-cache, must-revalidate");
-                // 1000 (one second after Jan 01 1970) because of some IE bug:
-                response.setDateHeader("Expires", 1000);
-
                 processRequest(asreq, response);
 
 
@@ -587,10 +577,10 @@ public abstract class SessionServlet
                 DynamicResource resource = 
                     (DynamicResource)extManager.getExternalizedObject(request.getResource());
 
-                if ( resource==null )
+                if ( resource==null ) 
                     resource = getFrame().getDynamicResource(DynamicCodeResource.class);
-
-                resource.write(new ServletDevice(response.getOutputStream()));
+                    
+                extManager.deliver(resource.getId(), response);
 
                 if (DEBUG) {
                     measure.stop();

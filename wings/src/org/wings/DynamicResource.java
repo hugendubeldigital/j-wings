@@ -57,8 +57,7 @@ public abstract class DynamicResource
     /**
      *
      */
-    private final String id = 
-        SessionManager.getSession().getExternalizeManager().externalize(this);
+    private String id;
 
     /**
      *
@@ -74,6 +73,11 @@ public abstract class DynamicResource
         this.frame = frame;
         this.extension = extension;
         this.mimeType = mimeType;
+
+        // nur Id, ohne session Encoding!
+        id = frame.getExternalizeManager().getId(frame.getExternalizeManager().externalize(this));
+        System.err.println("Externalize DynamicResource " + id);
+
     }
 
     /**

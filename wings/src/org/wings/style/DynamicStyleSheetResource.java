@@ -12,7 +12,7 @@ public class DynamicStyleSheetResource
     extends DynamicResource
 {
     public DynamicStyleSheetResource(SFrame frame) {
-        super(frame, ".css", "text/css");
+        super(frame, "css", "text/css");
     }
 
     public void write(Device out)

@@ -266,7 +266,7 @@ public abstract class WingServlet extends HttpServlet
      * returns, whether this request is to serve an externalize request.
      */
     protected boolean isExternalizeRequest(HttpServletRequest request) {
-        return false;
+        return isSystemExternalizeRequest(request);
     }
 
     /**
@@ -274,7 +274,8 @@ public abstract class WingServlet extends HttpServlet
      */
     protected boolean isSystemExternalizeRequest(HttpServletRequest request) {
         String pathInfo = request.getPathInfo();
-        return (pathInfo != null && pathInfo.charAt(1)=='-');
+
+        return (pathInfo != null && pathInfo.length()>1 && pathInfo.charAt(1)=='-');
     }
 
     /**

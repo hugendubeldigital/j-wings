@@ -31,6 +31,9 @@ public class DefaultReloadManager
     protected final HashMap dirtyResources = new HashMap();
 
     public void markDirty(DynamicResource d) {
+        if ( d==null )
+            return;
+
         HashSet resources = (HashSet)dirtyResources.get(d.getClass());
 
         if ( resources==null ) {

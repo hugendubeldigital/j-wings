@@ -350,6 +350,17 @@ public abstract class AbstractExternalizeManager
         return identifier + sessionEncoding;
     }
 
+    /**
+     * externalizes (make a java object available for a browser) the object in
+     * extInfo. 
+     *
+     * @return a URL for accessing the externalized object relative to the base URL.
+     */
+    public String getId(String url)
+    {
+        return url.substring(0, url.length()-sessionEncoding.length());
+    }
+
 
     /**
      * delivers a externalized object identfied with the given identifier to a
