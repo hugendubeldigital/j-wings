@@ -103,7 +103,47 @@ public final class Utils implements SConstants
 
         d.append(" class=\"");
         d.append(id);
-        d.append("\"");
+        d.append("\"; ");
+    }
+
+	/**
+      * Write component class and background-color.
+      * @param d the device to write to
+      * @param component the component to get style and bg-color from
+      */
+    public static void writeSpanWithStyleAttributePrefix(Device d, SComponent component )
+        throws IOException
+    {
+    	Style style = component.getStyle();
+        java.awt.Color bgcolor = component.getBackground();
+        if ( style == null &&  bgcolor == null )
+            return;
+
+        d.append("<span");
+        Utils.writeStyleAttribute(d, style );
+        if ( bgcolor != null )
+         {
+         	d.append( "style=\"" );
+        	Utils.writeBackgroundAttribute(d, component );
+            d.append( "\"" );
+		 }
+        d.append(">");
+    }
+
+
+	/**
+      * Write ending <tt>&ls;/span&gt;</tt>-attribute, if
+      * component has either style or background-color defined.
+      * @param d the device to write to
+      * @param component the component to get style and bg-color from
+      */
+    public static void writeSpanWithStyleAttributePostfix(Device d, SComponent component )
+        throws IOException
+    {
+        if ( component.getStyle() == null && component.getBackground() == null )
+            return;
+
+        d.append("</span>");
     }
 
     public static void writeSpanWithStyleAttributePrefix(Device d, Style style)
@@ -152,6 +192,13 @@ public final class Utils implements SConstants
 	  append(name).append("\" value=\"").
 	  append(value).append("\" />\n");
     }
+    
+    static void writeBackgroundAttribute( Device d, SComponent component )
+     {
+     	java.awt.Color cl;
+		if ( ( ( cl = component.getBackground() ) != null ) )
+         	d.append( "background-color: #" + org.wings.plaf.xhtml.Utils.toColorString( cl ) + "; " );
+	 }
 }
 
 /*

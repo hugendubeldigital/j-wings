@@ -36,6 +36,7 @@ public class LabelCG
     public void write(Device d, SComponent component)
         throws IOException
     {
+        System.out.println("Using " + getClass().toString() );
         SLabel label = (SLabel)component;
 
         Icon icon = label.getIcon();
@@ -121,7 +122,7 @@ public class LabelCG
             if (escape)
                 text = Utils.escapeSpecialChars(text);
             d.append(text);
-
+            
             if (noBreak)
                 d.append("</nobr>");
         }

@@ -213,8 +213,10 @@ public class ButtonCG
         throws IOException
     {
         String tooltip = button.getToolTipText();
-
-        if (button.isEnabled()) {
+		java.awt.Color c;
+        
+        if (button.isEnabled()) 
+        {
             d.append("<a href=\"");
             writeAnchorAddress(d, button);
             d.append("\"");
@@ -246,6 +248,7 @@ public class ButtonCG
         if (button.isEnabled()) {
             d.append("</a>");
         }
+
     }
 
     protected void writeFormButton(Device d, SButton button)

@@ -176,6 +176,7 @@ public class STable
          {
          	clearSelection();
 			selects[ index0 ].setSelected( true );
+            fireSelectionValueChanged( index0 );
             return;
          }
 
@@ -183,6 +184,7 @@ public class STable
          {
          	for ( ; index0 <= index1; index0++ )
 				selects[ index0 ].setSelected( true );
+			fireSelectionValueChanged( index0 );
          }
 
 		return;
