@@ -96,7 +96,8 @@ public class SButton extends SAbstractButton {
         // got an event, that is a select...
         SForm.addArmedComponent(this);
 
-        actionCommandToFire = values[0];
+        actionCommandToFire = getActionCommand();   // At First the user supplied Action command
+        if (actionCommandToFire == null) actionCommandToFire = values[0]; // If there is nothing, throws system supplied
     }   
 
     public void fireFinalEvents() {
