@@ -1,4 +1,11 @@
 <template name="Button" for="org.wings.SButton">
+<%@ include file="foo.plaf">
+
+<%!void foo() {%>
+  Hallo Welt
+<%!}%>
+
+<write>
 <%!
   SIcon		icon = component.getIcon();
   String	text = component.getText();
@@ -39,4 +46,5 @@ if (verticalTextPosition == BOTTOM) {%>
 </table>
 }
 %>
+</write>
 </template>
