@@ -20,7 +20,12 @@ import org.wings.plaf.*;
 
 /**
  * TODO: documentation
- *
+ * A button implementation. 
+ * This is also a button for usage in a renderer (e.g {@link STableCellRenderer}). 
+ * This button implementation encodes its action command into the low level
+ * event and fires the encoded action command and not the actual action command,
+ * if an low level event triggers a button press.
+
  * @author <a href="mailto:armin.haaf@mercatis.de">Armin Haaf</a>
  * @version $Revision$
  */
@@ -87,6 +92,40 @@ public class SButton extends SAbstractButton
      */
     protected boolean parseSelectionToggle(String toggleParameter) {
         return true;
+    }
+
+    public String getSelectionParameter() {
+        return getActionCommand()!=null ? getActionCommand() : "1";
+    }
+
+    /**
+     * store here the action command which is set in an action event. 
+     * if this is null, the actual action command is used.
+     *
+     */
+    protected String actionCommandToFire;
+
+    /**
+     * Fire an ActionEvent, use actionCommandToFire if not null, else use actionCommand
+     */
+    protected void fireActionPerformed() {
+	if ( actionCommandToFire!=null ) {
+	    fireActionEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
+					    actionCommandToFire));
+	    actionCommandToFire = null;
+	} else {
+	    super.fireActionPerformed();
+	} /// end of if ()
+    }
+
+    public void processLowLevelEvent(String action, String[] values) {
+
+	// a button can have only one event per request...
+        if (  values.length>0 ) {
+	    // set the action command to fire at fireFinalEvents.
+	    actionCommandToFire = values[0];
+            SForm.addArmedComponent(this);
+        }
     }
 
 }
