@@ -136,18 +136,18 @@ public class PlafCompiler {
             SGMLTag tag = new SGMLTag(input);
             while (!tag.finished()) {
                 String name = tag.getAttribute("NAME", null);
-                    String forClass = tag.getAttribute("FOR", null);
-                    if (name == null || forClass == null) {
-                        throw new IOException (file +": 'name' and 'for' as template attributes expected");
-                    }
-                    if (verbose) {
-                        System.err.println ("template for " + name);
-                    }
-                    parser = new TemplateParser(name, baseDir, new File(file),
-                                                packageName, forClass);
-                    parser.parse(input);
-                    parser.generate(destDir, properties);
-                    tag = new SGMLTag(input);
+                String forClass = tag.getAttribute("FOR", null);
+                if (name == null || forClass == null) {
+                    throw new IOException (file +": 'name' and 'for' as template attributes expected");
+                }
+                if (verbose) {
+                    System.err.println ("template for " + name);
+                }
+                parser = new TemplateParser(name, baseDir, new File(file),
+                                            packageName, forClass);
+                parser.parse(input);
+                parser.generate(destDir, properties);
+                tag = new SGMLTag(input);
             }
         }
         
