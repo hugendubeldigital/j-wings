@@ -75,6 +75,7 @@
   </target>
 
   <target name="ldap" depends="compile">
+    <touch file="ldap.properties"/>
     <filter filtersfile="ldap.properties"/>
     <copy toFile="${build.etc}/ldap.xml"
           file="ldap/ldap.xml"
