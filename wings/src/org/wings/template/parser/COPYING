@@ -1,5 +1,6 @@
 # $Id$
-These classes are basically the same found
-in the ApachJSSI-Servlet by the Java Apache Project.
+These classes in this directory org.wings.template.parser
+are basically the same found in the ApachJSSI-Servlet 
+by the Java Apache Project.
 These classes are distributed under the more relaxed
 BSD-like Apache license.
