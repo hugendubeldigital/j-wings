@@ -87,6 +87,7 @@ public class BeanEditor
         }
 
         setPropertyDescriptors(descriptors);
+        customPropertyDescriptors = false;
     }
 
     protected EditorAdapter getEditorAdapter(SPropertyEditor propertyEditor) {
@@ -102,7 +103,7 @@ public class BeanEditor
 	    editor = new STextFieldEditorAdapter();
 	}
 	else {
-	    System.err.println("Warning: Property has non-displayabale editor. Using label.");
+	    System.err.println(propertyEditor.getClass().getName() + " is non-displayabale. Using label.");
             editor = new SLabelEditorAdapter();
 	}
 	return editor;

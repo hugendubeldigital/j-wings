@@ -19,17 +19,16 @@ import org.wingx.beans.*;
 public class CustomEditorAdapter
     extends AbstractEditorAdapter
 {
-    protected SPanel container;
     protected SComponent custom;
 
     public void setEditor(SPropertyEditor editor) {
 	super.setEditor(editor);
 	custom = editor.getCustomEditor();
-	container.add(custom);
+	((SContainer)getPanel()).add(custom);
     }
 
     public SComponent getComponent() {
-        return container;
+        return getPanel();
     }
 
     public void setValue(Object obj) {

@@ -47,7 +47,7 @@ public abstract class AbstractEditorAdapter
 	    return component;
     }
 
-    private SComponent getPanel() {
+    protected SComponent getPanel() {
 	if (panel == null) {
 	    panel = new SPanel();
 	    panel.add(component);
