@@ -552,7 +552,7 @@ public class SOptionPane
                                         Object message, String title) {
         showOption(parent, title, message);
         setTitle(title);
-        setOptionType(OK_CANCEL_RESET_OPTION);
+        setOptionType(OK_CANCEL_OPTION);
 
         questionImage.setVisible(true);
     }
