@@ -460,6 +460,7 @@ public class SOptionPane
      * @param e
      */
     public void actionPerformed(ActionEvent e) {
+        System.out.println("soption pane action " + e);
         hide();
         selected = e.getSource();
 

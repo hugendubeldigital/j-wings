@@ -4,7 +4,7 @@
    %><form method="<% 
    if (component.isPostMethod()) { %>post<% } else { %>get<% }
    %>"<%
-   %>name="<%=Utils.event(component)%>"<%
+   %> name="<%=component.getName()%>"<%
    Utils.writeEvents(device, component);
    %><%|class=Utils.style(component)%><%
    %><%|enctype=component.getEncodingType()%><%

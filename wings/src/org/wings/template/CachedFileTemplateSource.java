@@ -105,6 +105,7 @@ public class CachedFileTemplateSource
             while (pos < len) {
                 pos += in.read (filebuffer, pos, len - pos);
             }
+            in.close();
         }
     }
 

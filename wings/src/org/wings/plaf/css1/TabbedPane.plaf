@@ -133,10 +133,10 @@ public class TabbedPaneStyleSheet extends org.wings.DynamicResource {
 
         if (asForm) {
             attrset.put(StyleConstants.BACKGROUND_COLOR, CSSStyleSheet.getAttribute(comp.getBackground().darker()));
-            attrset.put(StyleConstants.MARGIN_LEFT,            "0px");
-            attrset.put(StyleConstants.PADDING_LEFT,        "0px");
-            attrset.put(StyleConstants.MARGIN,                "0px");
-            attrset.put(StyleConstants.PADDING,                "0px");
+            attrset.put(StyleConstants.MARGIN_LEFT, "0px");
+            attrset.put(StyleConstants.PADDING_LEFT, "0px");
+            attrset.put(StyleConstants.MARGIN, "0px");
+            attrset.put(StyleConstants.PADDING, "0px");
         }
         else {
             attrset.put(StyleConstants.COLOR, CSSStyleSheet.getAttribute(comp.getForeground()));

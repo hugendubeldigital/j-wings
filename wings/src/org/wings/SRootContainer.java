@@ -74,12 +74,11 @@ public abstract class SRootContainer extends SContainer {
         int count = getComponentCount();
         if (count <= 1)
             throw new IllegalStateException("there's no dialog left!");
-        
-        SDialog dialog = (SDialog)getComponent(count - 1);
-        super.remove(dialog);
-        dialog.setFrame((SFrame)null);
+
+		SDialog dialog = (SDialog)getComponent(count - 1);
+        super.removeComponent(dialog);
         logger.info("popDialog: " + count);
-        
+        dialog.setFrame((SFrame)null);
         reload(ReloadManager.RELOAD_CODE);
         return dialog;
     }

@@ -163,8 +163,9 @@ public class SDialog extends SForm
      * Remove this dialog from its frame.
      */
     public void hide() {
+        System.out.println("hide dialog");
         if (owner != null) {
-            owner.removeDialog(this);
+            owner.popDialog();
         }
     }
 
@@ -195,9 +196,9 @@ public class SDialog extends SForm
      * @param c
      */
     public void show(SComponent c) {
-        if ( c==null ) {
+        System.out.println("show dialog");
+        if (c == null)
             c = SessionManager.getSession().getRootFrame();
-        }
 
         SContainer frame = null;
         if (c instanceof SContainer)
@@ -217,8 +218,7 @@ public class SDialog extends SForm
         if (frame == null) {
             throw new IllegalArgumentException("Component has no root container");
         }
-        owner = (SRootContainer) frame;
-
+        owner = (SRootContainer)frame;
         owner.pushDialog(this);
     }
 

@@ -183,6 +183,18 @@
              break;
         }
 
+        switch (comp.getVerticalAlignment()) {
+        case TOP_ALIGN:
+             %> valign="top"<%
+             break;
+        case CENTER_ALIGN:
+             %> valign="center"<% 
+             break;
+        case BOTTOM_ALIGN:
+             %> align="bottom"<%
+             break;
+        }
+
         // close <td..>
         %>><%
 

@@ -48,7 +48,7 @@ public class GridBagLayoutCG
         if (grid.cols == 0) {
             return;
         }
-        
+
         d.print("\n<table ");
         if ( Utils.hasSpanAttributes( container ) )
         {
@@ -56,7 +56,7 @@ public class GridBagLayoutCG
             Utils.writeSpanAttributes( d, container );
             d.print("\" ");
         }
-        
+
         if (cellSpacing >= 0)
             d.print(" cellspacing=\"").print(cellSpacing).print("\"");
         else
@@ -66,7 +66,7 @@ public class GridBagLayoutCG
             d.print(" cellpadding=\"").print(cellPadding).print("\"");
         else
             d.print(" cellpadding=\"0\"");
-        
+
         CGUtil.writeSize( d, container );
 
         if (border > 0)
@@ -74,10 +74,11 @@ public class GridBagLayoutCG
         else
             d.print(" border=\"0\"");
 
+        /*
         if (container != null && container.getBackground() != null)
             d.print(" bgcolor=\"#").
                 print(Utils.toColorString(container.getBackground())).print("\"");
-
+        */
         d.print(">\n");
 
 
@@ -100,7 +101,7 @@ public class GridBagLayoutCG
                         } else {
                             d.print("<td");
                         }
-                    
+
                         Utils.printTableCellAlignment(d, comp);
 
                         int gridwidth = c.gridwidth;
@@ -140,7 +141,7 @@ public class GridBagLayoutCG
 
                         d.print(">");
                         comp.write(d);
-                        
+
                         if (row == grid.firstRow && header) {
                             d.print("</th>\n");
                         } else {
