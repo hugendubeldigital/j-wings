@@ -224,9 +224,6 @@ public final class Session
         setServletRequest(request);
         setUserAgentFromRequest(request);
 
-        if (config == null)
-            return;
-
         initProps(config);
         initMaxContentLength(config);
 
