@@ -28,6 +28,7 @@ import org.wings.event.SRenderEvent;
 import org.wings.event.SRenderListener;
 import org.wings.session.Session;
 import org.wings.session.WingServlet;
+import org.wings.session.WingsStatistics;
 
 /**
  * TODO: documentation
@@ -122,10 +123,10 @@ public class MemUsageExample extends WingSetPane
                     totalMemory.setText(getByteString(total));
                     freeMemory.setText(getByteString(free));
                     usedMemory.setText(getByteString(total-free));
-                    overallSessions.setText(Integer.toString(Session.getOverallSessions()));
-                    activeSessions.setText(Integer.toString(Session.getActiveSessions()));
-                    requestCount.setText(Integer.toString(WingServlet.getRequestCount()));
-                    uptime.setText(getUptimeString(WingServlet.getUptime()));
+                    overallSessions.setText(Integer.toString(WingsStatistics.getStatistics().getOverallSessionCount()));
+                    activeSessions.setText(Integer.toString(WingsStatistics.getStatistics().getActiveSessionCount()));
+                    requestCount.setText(Integer.toString(WingsStatistics.getStatistics().getRequestCount()));
+                    uptime.setText(getUptimeString(WingsStatistics.getStatistics().getUptime()));
                 }
                 
                 public void doneRendering(SRenderEvent e) {}
