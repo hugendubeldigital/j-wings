@@ -14,27 +14,20 @@
 
 package org.wings;
 
-import java.util.ArrayList;
-import java.util.logging.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import org.wings.plaf.DialogCG;
+import org.wings.session.SessionManager;
 
-import javax.swing.event.EventListenerList;
-
-import org.wings.*;
-import org.wings.plaf.*;
-import org.wings.session.*;
+import java.util.logging.Logger;
 
 /**
  * As opposed to Swing, wingS dialogs are non modal. However, the dismission of
  * the dialog is propagated by means of ActionEvents. The action command of the
  * event tells, what kind of user activity caused the dialog to dismiss.
- * 
+ *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
  * @version $Revision$
  */
-public class SDialog extends SForm
-{
+public class SDialog extends SForm {
     private final static Logger logger = Logger.getLogger("org.wings");
 
     /**
@@ -57,6 +50,10 @@ public class SDialog extends SForm
      */
     protected String title;
 
+    protected String titleStyle;
+
+    protected String contentStyle;
+
     /**
      * TODO: documentation
      */
@@ -75,13 +72,14 @@ public class SDialog extends SForm
      * Creates a Dialog without parent <code>SFrame</code> or <code>SDialog</code>
      * and without Title
      */
-    public SDialog() {}
+    public SDialog() {
+    }
 
 
     /**
      * Creates a dialog with the specifed parent <code>SFrame</code> as its owner.
      *
-     * @param owner the parent <code>SFrame</code> 
+     * @param owner the parent <code>SFrame</code>
      */
     public SDialog(SFrame owner) {
         this.owner = owner;
@@ -90,7 +88,7 @@ public class SDialog extends SForm
     /**
      * Creates a dialog with the specified title and the specified owner frame.
      *
-     * @param owner the parent <code>SFrame</code> 
+     * @param owner the parent <code>SFrame</code>
      * @param title  the <code>String</code> to display as titke
      */
     public SDialog(SFrame owner, String title) {
@@ -106,8 +104,8 @@ public class SDialog extends SForm
             reload(ReloadManager.RELOAD_CODE);
     }
 
-    public String getTitle() { 
-      return title; 
+    public String getTitle() {
+        return title;
     }
 
     /**
@@ -116,7 +114,7 @@ public class SDialog extends SForm
      * @param i
      */
     public void setIcon(SIcon i) {
-        if ( i!=icon || i!=null && !i.equals(icon) ) {
+        if (i != icon || i != null && !i.equals(icon)) {
             icon = i;
             reload(ReloadManager.RELOAD_CODE);
         }
@@ -137,7 +135,10 @@ public class SDialog extends SForm
         if (old != closable)
             reload(ReloadManager.RELOAD_CODE);
     }
-    public boolean isClosable() { return closable; }
+
+    public boolean isClosable() {
+        return closable;
+    }
 
     public void setClosed(boolean v) {
         v &= isClosable();
@@ -146,7 +147,26 @@ public class SDialog extends SForm
         if (old != closed)
             reload(ReloadManager.RELOAD_CODE);
     }
-    public boolean isClosed() { return closed; }
+
+    public boolean isClosed() {
+        return closed;
+    }
+
+    public String getTitleStyle() {
+        return titleStyle;
+    }
+
+    public void setTitleStyle(String pTitleStyle) {
+        titleStyle = pTitleStyle;
+    }
+
+    public String getContentStyle() {
+        return contentStyle;
+    }
+
+    public void setContentStyle(String pContentStyle) {
+        contentStyle = pContentStyle;
+    }
 
     // fireFinalEvents() somewhere up the stack
     protected void fireActionPerformed(String state) {
@@ -173,14 +193,14 @@ public class SDialog extends SForm
     }
 
     public void setVisible(boolean visible) {
-      if (visible) {
-        if (owner != null) show(owner);
-      } else {
-        if (isVisible()) hide();
-      }
-      super.setVisible(visible);
+        if (visible) {
+            if (owner != null) show(owner);
+        } else {
+            if (isVisible()) hide();
+        }
+        super.setVisible(visible);
     }
-     
+
     /**
      * sets the root container in which this dialog is to be displayed.
      */
@@ -205,7 +225,7 @@ public class SDialog extends SForm
 
         SContainer frame = null;
         if (c instanceof SContainer)
-            frame = (SContainer)c;
+            frame = (SContainer) c;
         else
             frame = c.getParent();
 
@@ -217,25 +237,30 @@ public class SDialog extends SForm
         if (frame == null) {
             frame = SessionManager.getSession().getRootFrame();
         }
-        
+
         if (frame == null) {
             throw new IllegalArgumentException("Component has no root container");
         }
-        owner = (SRootContainer)frame;
+        owner = (SRootContainer) frame;
         owner.pushDialog(this);
     }
 
     // LowLevelEventListener interface. Handle own events.
     public void processLowLevelEvent(String name, String[] values) {
-        switch (new Integer(values[0]).intValue()) {
-        case org.wings.event.SInternalFrameEvent.INTERNAL_FRAME_CLOSED:
-            setClosed(true);
-            actionCommand = CLOSE_ACTION;
-            break;
-            
-        default:
-            // form event
-            actionCommand = DEFAULT_ACTION;
+        // is this a window event?
+        try {
+            switch (new Integer(values[0]).intValue()) {
+                case org.wings.event.SInternalFrameEvent.INTERNAL_FRAME_CLOSED:
+                    setClosed(true);
+                    actionCommand = CLOSE_ACTION;
+                    break;
+
+                default:
+                    // form event
+                    actionCommand = DEFAULT_ACTION;
+            }
+        } catch (NumberFormatException ex) {
+            // no window event...
         }
         SForm.addArmedComponent(this); // trigger later invocation of fire*()
     }
