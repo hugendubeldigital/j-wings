@@ -463,6 +463,10 @@ public abstract class AbstractExternalizeManager
 
         extInfo.getExternalizer().write(extInfo.getObject(), out);
     }
+
+    public void clear() {
+        reverseExternalized.clear();
+    }
 }
 
 /*

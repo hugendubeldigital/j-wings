@@ -335,6 +335,13 @@ public class ExternalizeManager extends AbstractExternalizeManager
         }
         return externalizer;
     }
+
+    public void clear() {
+        super.clear();
+        externalizerByClass.clear();
+        externalizerByMimeType.clear();
+        externalized.clear();
+    }
 }
 
 /*

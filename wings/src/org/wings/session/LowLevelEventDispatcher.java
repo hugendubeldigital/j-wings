@@ -213,6 +213,10 @@ public final class LowLevelEventDispatcher
         }
         return true;
     }
+
+    void clear() {
+        listener.clear();
+    }
 }
 
 /*
