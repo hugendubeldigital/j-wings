@@ -17,6 +17,7 @@ package org.wings.session;
 import java.beans.PropertyChangeListener;
 import java.util.*;
 import java.util.logging.*;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.swing.event.EventListenerList;
@@ -297,9 +298,22 @@ public class Session
         return StringUtil.toShortestAlphaNumericString(getUniqueId());
     }
 
+    /**
+     * Get the maximum content length (file size) for a post
+     * request.
+     * @return maximum size in kB (1024 Byte)
+     * @see org.wings.session.MultipartRequest
+     */
     public final int getMaxContentLength() {
         return maxContentLength;
     }
+    
+    /**
+     * Set the maximum content length (file size) for a post
+     * request.
+     * @param l size in kB (1024 Byte)
+     * @see org.wings.session.MultipartRequest
+     */
     public final void setMaxContentLength(int l) {
         maxContentLength = l;
     }
