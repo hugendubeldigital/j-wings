@@ -69,7 +69,6 @@ public class TableCG
     public void writePrefix(Device d, STable table)
         throws IOException
     {
-        String width = table.getWidth();
         Insets borderLines = table.getBorderLines();
         boolean showHorizontalLines = table.getShowHorizontalLines();
         boolean showVerticalLines = table.getShowVerticalLines();
@@ -77,8 +76,7 @@ public class TableCG
         Dimension intercellSpacing = table.getIntercellSpacing();
 
         d.append("<table");
-        if (width != null)
-            d.append(" width=\"").append(width).append("\"");
+		writeSize( d, table );
 
         int thickness = 0;
         if (borderLines != null) {

@@ -40,8 +40,7 @@ public final class TableCG
         Style style = table.getStyle();
 
         d.append("<table");
-        if (width != null)
-            d.append(" width=\"").append(width).append("\"");
+        writeSize( d, table );
 
         int thickness = 0;
         if (borderLines != null) {

@@ -185,6 +185,7 @@ public class SBaseTable
      * TODO: documentation
      *
      * @param w
+     * @deprecated use <i>setPreferredSize</i> in {@link SComponent} instead.
      */
     public void setWidth(String w) {
         String oldWidth = width;
@@ -198,6 +199,7 @@ public class SBaseTable
      * TODO: documentation
      *
      * @return
+     * @deprecated use <i>getPreferredSize</i> in {@link SComponent} instead.
      */
     public String getWidth() {
         return width;
