@@ -64,6 +64,7 @@ private void writeWindowIcon(Device device, SDialog dialog,
         %><form method="<%=(dialog.isPostMethod()) ? "post" : "get"%>"<%
         %><%|enctype=dialog.getEncodingType()%><%
         %><%|action=dialog.getRequestURL()%><%
+        Utils.writeEvents(device, dialog);
         %>><%
 
         Utils.renderContainer(device, dialog);

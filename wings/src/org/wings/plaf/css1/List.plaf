@@ -15,8 +15,7 @@
         %><%|name=list.getNamePrefix()%><%
         %><%|size=list.getVisibleRowCount()%><%
         %><%|multiple=(list.getSelectionMode() == SConstants.MULTIPLE_SELECTION) ? "multiple" : null%><%
-
-	// writeEvents();
+	Utils.writeEvents(device, list);
         %>><%
 
         javax.swing.ListModel model = list.getModel();

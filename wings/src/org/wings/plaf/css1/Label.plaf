@@ -22,6 +22,7 @@ void writeIcon(Device device, SIcon icon, SLabel label,
         %><%|src=icon.getURL()%><%
         %><%|width=icon.getIconWidth()%><%
         %><%|height=icon.getIconHeight()%><%
+        Utils.writeEvents(device, label);
         %> /><%
 
         if (anchor != null) {
@@ -38,7 +39,9 @@ void writeText(Device device, SLabel label, AnchorProperties anchor)
 
         if (noBreak) { %><nobr><% }
         if (anchor != null) { 
-	    %><a href="<%=anchor.getURL()%>"<%|target=anchor.getTarget()%>><% 
+	    %><a href="<%=anchor.getURL()%>"<%|target=anchor.getTarget()%><%
+            Utils.writeEvents(device, label);
+            %>><%
         }
 	if (label.isEscapeSpecialChars()) {
             %><%=text%><%

@@ -3,7 +3,7 @@
 <%
     %><textarea<%
     %><%|class=Utils.style(component)%><%
-    /* writeEvents() */
+    Utils.writeEvents(device, component);
     %><%|cols=component.getColumns()%><%
     %><%|rows=component.getRows()%><%
     if (!component.isEditable()) { %> readonly="1"<% }

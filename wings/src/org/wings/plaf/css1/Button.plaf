@@ -34,7 +34,7 @@ void writeAnchorText(final Device device, SAbstractButton abstractButton, String
         %><a href="<%
         writeAnchorAddress(device, abstractButton);
         %>"<%
-        // writeEvents();
+	Utils.writeEvents(device, abstractButton);
     }
     else {
         %><span<%
@@ -121,8 +121,8 @@ void writeAnchorIcon(final Device device, SAbstractButton abstractButton, String
 
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
+    Utils.writeEvents(device, abstractButton);
     %><%|alt=tooltip%> /><%
-    // writeEvents();
 
     if (abstractButton.isEnabled() && (!(abstractButton instanceof SRadioButton) || !abstractButton.isSelected())) {
         %></a><%
@@ -148,7 +148,7 @@ void writeFormText(final Device device, SAbstractButton abstractButton, String a
     %> name="<%=abstractButton.getEncodedLowLevelEventId()%>"<%
     %><%|tabindex=abstractButton.getFocusTraversalIndex()%><%
     %><%|class=attr%><%
-    // writeEvents();
+    Utils.writeEvents(device, abstractButton);
     if (abstractButton instanceof SButton) {
        String text = abstractButton.getText();
        if (text != null && text.length() > 0) {

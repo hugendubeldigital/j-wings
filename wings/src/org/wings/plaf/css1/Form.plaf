@@ -4,7 +4,7 @@
    %><form method="<% 
    if (component.isPostMethod()) { %>post<% } else { %>get<% }
    %>"<%
-
+   Utils.writeEvents(device, component);
    %><%|class=Utils.style(component)%><%
    %><%|enctype=component.getEncodingType()%><%
    %><%|action=component.getRequestURL()%><%

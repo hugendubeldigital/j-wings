@@ -140,7 +140,7 @@ FORM {
    background-color: #dedede
 }
 
-.tablenonselection {
+.table {
    background-color: #ffffff;
 }
 
@@ -148,14 +148,7 @@ FORM {
    color: #000044;
 }
 
-.tabbedpane {
-   color: #000000;
-   text-decoration: none;
-   font-family: sans-serif;
-   font-weight: normal
-}
-
-.tabselected {
+.tabbedpaneselection {
    display: inline;
    color: #000000;
    background-color: #AAAAFF;
@@ -168,7 +161,7 @@ FORM {
    white-space: nowrap
 }
 
-.tabnotselected {
+.tabbedpane {
    display: inline;
    color: #000000;
    font-family: sans-serif;

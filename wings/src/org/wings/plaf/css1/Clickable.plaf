@@ -28,9 +28,11 @@ void writeText(final Device device, SClickable clickable, String attr)
 
     if ( writeAnchor ) {
         %><a href="<%=url%>"<% 
+        Utils.writeEvents(device, clickable);
     }
     else {
         %><span<%
+        Utils.writeEvents(device, clickable);
     }
     %><%|class=attr%>><%
 

@@ -5,7 +5,7 @@
 <%
     %><input type="reset"<%
     %><%|class=Utils.style(component)%><%
-    // writeEvents();
+    Utils.writeEvents(device, component);
     %><%|value=component.getText()%>/><%
 %></write>
 </template>

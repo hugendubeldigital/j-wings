@@ -36,7 +36,7 @@ void writeAnchorText(final Device device, SCheckBox checkBox, String attr)
         %><a href="<%
         writeAnchorAddress(device, checkBox);
         %>"<%
-        // writeEvents();
+        Utils.writeEvents(device, checkBox);
     }
     else {
         %><span<%
@@ -111,8 +111,8 @@ void writeAnchorIcon(final Device device, SCheckBox checkBox, String attr)
 
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
+    Utils.writeEvents(device, checkBox);
     %><%|alt=tooltip%> /><%
-    // writeEvents();
 
     if (checkBox.isEnabled()) {
         %></a><%
@@ -147,7 +147,7 @@ void writeFormIcon(final Device device, SCheckBox checkBox, String attr)
     %><%=checkBox.getNamePrefix()%>"<%
     %><%|tabindex=checkBox.getFocusTraversalIndex()%><%
     %><%|class=attr%><%
-    // writeEvents();
+    Utils.writeEvents(device, checkBox);
     %><%|id=checkBox.getComponentId()%><%
     %><%|value=checkBox.getSelectionParameter()%><%
     if (checkBox.isSelected()) {

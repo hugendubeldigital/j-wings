@@ -34,7 +34,7 @@ public class CSSStyleSheet
     }
 
     public void putStyle(Style style) {
-        map.put(style.getName(), style);
+        map.put(style.getSelector(), style);
 	style.setSheet(this);
     }
 

@@ -10,8 +10,7 @@
         %><select size="1"<%
         %><%|class=Utils.style(comboBox)%><%
         %><%|name=comboBox.getNamePrefix()%><%
-
-	// writeEvents();
+	Utils.writeEvents(device, comboBox);
         %>><%
 
         javax.swing.ComboBoxModel model = comboBox.getModel();

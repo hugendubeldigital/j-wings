@@ -36,10 +36,11 @@ void writeAnchorText(final Device device, SRadioButton radioButton, String attr)
         %><a href="<%
         writeAnchorAddress(device, radioButton);
         %>"<%
-        // writeEvents();
+        Utils.writeEvents(device, radioButton);
     }
     else {
         %><span<%
+        Utils.writeEvents(device, radioButton);
     }
     %><%|class=attr%>><%
 
@@ -111,8 +112,8 @@ void writeAnchorIcon(final Device device, SRadioButton radioButton, String attr)
 
     %><%|width=icon.getIconWidth()%><%
     %><%|height=icon.getIconHeight()%><%
+    Utils.writeEvents(device, radioButton);
     %><%|alt=tooltip%> /><%
-    // writeEvents();
 
     if (radioButton.isEnabled() && !radioButton.isSelected()) {
         %></a><%

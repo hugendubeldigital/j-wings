@@ -1,6 +1,6 @@
 <template name="TabbedPaneCG" for="org.wings.STabbedPane">
+  <comp-property type="Style" name="style">tabselected</comp-property>
   <comp-property type="Style" name="selectionStyle">tabselected</comp-property>
-  <property type="Style" name="tabNonSelectedStyle">tabnotselected</property>
 
   <property type="SIcon" name="firstIconNormal">org/wings/icons/TabbedPaneFirst.gif</property>
   <property type="SIcon" name="connectIconNormal">org/wings/icons/TabbedPaneNormal.gif</property>
@@ -62,7 +62,7 @@
 	  selected = (i == component.getSelectedIndex());
 	  button.setStyle(selected 
 	                  ? component.getSelectionStyle() 
-			  : tabNonSelectedStyle);
+			  : component.getStyle());
 	  
 	  button.write(device);
 	  

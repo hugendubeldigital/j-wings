@@ -30,12 +30,12 @@ public class TestLookAndFeel
     public void testLookAndFeel()
 	throws IOException
     {
-	URL url = getClass().getResource("css1.jar");
-	ClassLoader classLoader = new URLClassLoader(new URL[] { url });
+	URL url = getClass().getResource("/css1.jar");
+	ClassLoader classLoader = new URLClassLoader(new URL[] { url }, getClass().getClassLoader());
 	LookAndFeel laf = new LookAndFeel(classLoader);
 
 	// makeCG
-	ComponentCG componentCG = (ComponentCG)laf.makeCG("org.wings.plaf.xhtml.css1.FrameCG");
+	ComponentCG componentCG = (ComponentCG)laf.makeCG("org.wings.plaf.css1.ButtonCG");
 	Assert.assertNotNull(componentCG);
 	LayoutCG layoutCG = (LayoutCG)laf.makeCG("org.wings.plaf.xhtml.css1.BorderLayoutCG");
 	Assert.assertNotNull(layoutCG);

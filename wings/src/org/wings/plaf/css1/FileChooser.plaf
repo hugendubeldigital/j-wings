@@ -14,6 +14,7 @@
 
     // maxLength = maxContent removed, since it does not work.
     %><input type="file" name="<%=component.getNamePrefix()%>"<%
+    Utils.writeEvents(device, component);
     %><%|size=columns%><%
     %><%|accept=component.getFileNameFilter()%><%
     %><%|style=Utils.style(component)%>/><%

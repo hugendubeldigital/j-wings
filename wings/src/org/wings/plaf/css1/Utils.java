@@ -14,9 +14,11 @@
 package org.wings.plaf.css1;
 
 import java.io.IOException;
+import java.util.*;
 
 import org.wings.*; 
 import org.wings.border.*;
+import org.wings.script.*;
 import org.wings.style.*;
 import org.wings.io.Device;
 
@@ -44,6 +46,20 @@ public final class Utils
         else {
             for (int i=0; i < c.getComponentCount(); i++)
                 c.getComponentAt(i).write(d);
+        }
+    }
+
+    static void writeEvents(Device d, SComponent c)
+        throws IOException
+    {
+        Iterator it = c.getScriptListeners().iterator();
+        while (it.hasNext()) {
+            ScriptListener script = (ScriptListener)it.next();
+            d.print(" ");
+            d.print(script.getEvent());
+            d.print("=\"");
+            d.print(script.getCode());
+            d.print("\"");
         }
     }
 
