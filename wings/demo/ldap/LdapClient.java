@@ -14,11 +14,12 @@
 
 package ldap;
 
+import java.net.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
  
 import org.wings.*;
-import org.wings.externalizer.*;
+import org.wings.plaf.*;
 import org.wings.servlet.*;
 import org.wings.session.*;
 
@@ -31,7 +32,18 @@ public class LdapClient
     {
         // create new default session and set plaf
         DefaultSession session = new DefaultSession();
-        session.getCGManager().setLookAndFeel(new org.wings.plaf.xhtml.css1.CSS1LookAndFeel());
+
+        if (!LookAndFeelFactory.isDeployed("xhtml/css1")) {
+            try {
+                URL url = servletConfig.getServletContext().getResource("css1.jar");
+                LookAndFeelFactory.deploy(url);
+            }
+            catch (Exception e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace(System.err);
+            }
+        }
+        session.getCGManager().setLookAndFeel("xhtml/css1");
  
         // return a new wingset session
         return new LdapClientSession(session);        

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-
-<!--DOCTYPE web-app
+<!DOCTYPE web-app
     PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
-    "http://java.sun.com/j2ee/dtds/web-app_2.2.dtd"-->
+    "http://java.sun.com/j2ee/dtds/web-app_2.2.dtd">
 
 <web-app>
   <servlet>
@@ -18,11 +17,11 @@
     </init-param>
     <init-param>
       <param-name>ldap.server.basedn</param-name>
-      <param-value>dc=engels, dc=de</param-value>
+      <param-value>dc=to,dc=com</param-value>
     </init-param>
     <init-param>
       <param-name>ldap.server.binddn</param-name>
-      <param-value>cn=Manager, dc=engels, dc=de</param-value>
+      <param-value>cn=manager,dc=to,dc=com</param-value>
     </init-param>
   </servlet>
 
@@ -35,15 +34,15 @@
     </servlet-class>
     <init-param>
       <param-name>ldap.server.host</param-name>
-      <param-value>192.168.10.21:389</param-value>
+      <param-value>localhost:389</param-value>
     </init-param>
     <init-param>
       <param-name>ldap.server.basedn</param-name>
-      <param-value>dc=engels, dc=de</param-value>
+      <param-value>dc=to,dc=com</param-value>
     </init-param>
     <init-param>
       <param-name>ldap.server.binddn</param-name>
-      <param-value>cn=admin, dc=engels, dc=de</param-value>
+      <param-value>cn=manager,dc=to,dc=com</param-value>
     </init-param>
     <init-param>
       <param-name>ldap.server.password</param-name>

@@ -81,6 +81,7 @@ public class LdapWorker
 	return success;
     }
 
+    public DirContext getContext() { return ctx; }
 
     //veraendert attribute eines entry's mit dem DN=dn
     public boolean modifyAttributes(String dn, BasicAttributes attributes) {

@@ -108,9 +108,9 @@ public class LdapClientSession
     }
     
     void initGUI() {
+        SContainer contentPane = getFrame().getContentPane();
         tabbedPane = new STabbedPane();
-        getFrame().getContentPane().setLayout(new SFlowLayout());
-        getFrame().getContentPane().add(tabbedPane);
+        contentPane.setLayout(new SFlowLayout());
 	
         settingsForm = new SForm(new SGridLayout(2));
         tabbedPane.add(settingsForm, "Connection Settings");
@@ -158,8 +158,8 @@ public class LdapClientSession
 	
         //mainPanel.setEncodingType("multipart/form-data");
 	
-	Image img = Toolkit.getDefaultToolkit().createImage(getClass().getResource("images/LDAPworm.gif"));
-        mainPanel.add(new SImage( img ) ,"BOTTOMIMAGE");
+        mainPanel.add(new SLabel( new ResourceImageIcon(LdapClient.class, 
+                                                        "images/LDAPworm.gif")), "BOTTOMIMAGE");
 	
         tabbedPane.add(mainPanel, "Browser");
 	
@@ -227,8 +227,9 @@ public class LdapClientSession
 	
         addPanel = new AddObjectsPanel();
         tabbedPane.add(addPanel, "Add new Object");
-	
-	
+
+        contentPane.add(tabbedPane);
+
         connectButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		    worker = new LdapWorker(server.getText(),
@@ -282,10 +283,7 @@ public class LdapClientSession
 		    bindDN.setVisible(true);
 		    bindDNPassword.setVisible(true);
 		    baseDN.setVisible(true);
-		    server.setText("");
-		    bindDN.setText("");
 		    bindDNPassword.setText("");
-		    baseDN.setText("");
 		}
 	    });
     }
@@ -303,7 +301,7 @@ public class LdapClientSession
     private void createTreeModel(final LdapWorker c) {
 	TreeNode root = null;
 	if (c != null)
-	    root = new LdapTreeNode(c, null, c.getBaseDN());
+	    root = new LdapTreeNode(c.getContext(), null, c.getBaseDN());
 	else
 	    root = new DefaultMutableTreeNode(NOT_CONNECTED);
 
@@ -418,9 +416,9 @@ public class LdapClientSession
 	    LdapTreeNode parent = (LdapTreeNode)nd.getParent();
 	    DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
 	    if (parent!=null) {
-		//parent.removeChild(node);
-		//model.removeNodeFromParent(nd);
-		model.nodesWereRemoved(parent,new int[]{parent.getIndex(node)}, new Object[] {node});
+		//parent.remove(node);
+		model.removeNodeFromParent(nd);
+		//model.nodesWereRemoved(parent,new int[]{parent.getIndex(node)}, new Object[] {node});
 	    }
 	}
     }
@@ -461,6 +459,7 @@ public class LdapClientSession
 	existentAttrsF.removeAll();
 
 	LdapWorker worker = getLdapWorker();
+        System.err.println("selecting: " + getDN());
 	BasicAttributes attributes = (BasicAttributes)worker.getDNAttributes(getDN());
 
 	try {

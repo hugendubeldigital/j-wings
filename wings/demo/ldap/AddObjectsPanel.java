@@ -329,8 +329,12 @@ public class AddObjectsPanel
 	    DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
 	    LdapTreeNode root = (LdapTreeNode)model.getRoot();
 	    LdapTreeNode parent = getParentForNewNode(root, dnText.getText().trim());
-	    LdapTreeNode newNode = new LdapTreeNode(worker, parent,dnText.getText().trim());
-	    parent.addChild(newNode);
+            String part = dnText.getText();
+            part = part.substring(0, part.indexOf(",")).trim();
+
+	    System.out.println("name: " + part);
+	    LdapTreeNode newNode = new LdapTreeNode(worker.getContext(), parent, part);
+	    parent.add(newNode);
 	    model.nodesWereInserted(parent, new int[] {parent.getChildCount()-1});
 	    worker.addNewEntry(dnText.getText().trim(),vals); 
 	    

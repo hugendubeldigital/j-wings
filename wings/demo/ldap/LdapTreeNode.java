@@ -2,123 +2,162 @@ package ldap;
 
 import javax.naming.*;
 import javax.naming.directory.*;
-import javax.swing.tree.TreeNode;
-import java.util.Enumeration;
-import java.util.ArrayList;
-import java.util.Collections;
+import javax.swing.tree.*;
+import java.util.*;
 
-public class LdapTreeNode implements TreeNode {
-    
+public class LdapTreeNode
+    implements MutableTreeNode 
+{
+    private static String[] RETURNING_ATTRIBUTES = new String [] { "objectclass" };
+    private static String SEARCH_FILTER = "(objectclass=*)";
+
     private String dn;
 
-    /**
-     * @label parent 
-     */
+    private DirContext context;
     private LdapTreeNode parent;
-    ArrayList children = null;
-    private LdapWorker worker;
+    private ArrayList children = null;
 
-    public LdapTreeNode(LdapWorker worker, LdapTreeNode parent, String dn) {
-
-	this.worker = worker;
+    public LdapTreeNode(DirContext context, LdapTreeNode parent, String dn) {
+	this.context = context;
 	this.dn = dn;
 	this.parent = parent;
-	
     }
-    
+
     public LdapTreeNode(String dn) {
 	this.dn = dn;
     }
-    
-    
+
     public TreeNode getChildAt(int childIndex) {
-	if (children==null) {
+	if (children == null)
 	    getChildren();
-	}
+
 	return (TreeNode)children.get(childIndex);
     }
     
-    
     public int getChildCount() {
+	if (children == null)
+	    getChildren();
+
 	return children.size();
     }
 
-    
+    public void setParent(MutableTreeNode node) {
+        this.parent = parent;
+    }
     public TreeNode getParent() {
-	return (TreeNode)parent;
-	}
+	return parent;
+    }
 
-    
+    public void removeFromParent() {
+        this.parent = null;
+    }
+
+    public void add(MutableTreeNode child) {
+	child.setParent(this);
+	children.add(child);
+    }
+
+    public void insert(MutableTreeNode child, int index) {
+	child.setParent(this);
+	children.add(index, child);
+    }
+
+    public void remove(MutableTreeNode child) {
+	children.remove(child);
+    }
+
+    public void remove(int index) {
+	children.remove(index);
+    }
+
+    public void setUserObject(Object object) {
+        dn = (String)object;
+    }
+
     public int getIndex(TreeNode node) {
-	if (children ==null) {
+	if (children == null)
 	    getChildren();
-	}
+
 	return children.indexOf(node);
     }
 
-    
     public boolean getAllowsChildren() {
 	return true;
     }
 
-    
     public boolean isLeaf() {
-	if (children == null) {
+	if (children == null)
 	    getChildren();
-	}
-	if (children.isEmpty()) return true;
-	else return false;
-	}
+
+        return children.isEmpty();
+    }
 
     public Enumeration children() {
-	if (children == null )getChildren();
+	if (children == null)
+            getChildren();
+
 	return Collections.enumeration(children);
     }
-    
+
     private void getChildren() {
-	NamingEnumeration results = worker.list(dn);
-	children = new ArrayList();
-	try {
-	    while (results != null && results.hasMoreElements()) {
-		SearchResult sr  = (SearchResult)results.next(); 
-		System.out.println("fuer list" + sr.getName());
-		children.add(new LdapTreeNode(worker,this,sr.getName() + "," + dn));
-	    }
-	}
-	catch (NamingException e) {
-	    System.err.println(e);
-	    
-	}
-    }
-    
-    public String getDN() {
-	return dn;
+        try {
+            children = new ArrayList();
+
+            SearchControls constraints = new SearchControls();
+            constraints.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+            constraints.setReturningAttributes(RETURNING_ATTRIBUTES);
+
+            NamingEnumeration results = context.search(getDN(), SEARCH_FILTER, constraints);
+            while (results != null && results.hasMoreElements()) {
+                SearchResult sr  = (SearchResult)results.next(); 
+                children.add(new LdapTreeNode(context, this, sr.getName()));
+            }
+        }
+        catch (NamingException e) {
+            System.err.println(e);
+        }
     }
 
+    public String getDN() {
+        if (getParent() == null || !(getParent() instanceof LdapTreeNode))
+            return dn;
+        else
+            return dn + "," + ((LdapTreeNode)getParent()).getDN();
+    }
 
     public String toString() {
-	LdapTreeNode parent = (LdapTreeNode)getParent();
-	if (parent != null) {
-	    String parentDn = new String(parent.getDN());
-	    String thisDn = dn;
-	    int at = thisDn.indexOf(parentDn);
-	    return thisDn.substring(0,at-1);
-	}
-	return dn;
+        return dn;
     }
 
-    
-    public void addChild(LdapTreeNode child) {
-	child.parent = this;
-	children.add(child);
+    public static void main(String[] args) {
+        String server = args[0];
+        String bindDN = args[1];
+        String passwd = args[2];
+        String rootDN = args[3];
+
+	Hashtable env = new Hashtable();
+	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+	env.put(Context.PROVIDER_URL, "ldap://" + server);
+	env.put(Context.SECURITY_PRINCIPAL, bindDN);
+	env.put(Context.SECURITY_CREDENTIALS, passwd);
+
+	try {
+	    DirContext context = new InitialDirContext(env);
+            LdapTreeNode node = new LdapTreeNode(context, null, rootDN);
+
+            DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+            root.add(node);
+
+            Enumeration enum = root.breadthFirstEnumeration();
+            while (enum.hasMoreElements())
+                System.out.println("" + enum.nextElement());
+	}
+	catch(NamingException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace(System.err);
+	}
     }
-    
-    public void removeChild(LdapTreeNode child) {
-	children.remove(child);
-    }
-    
 }
-                                                                                                               
 
 /*
  * Local variables:
