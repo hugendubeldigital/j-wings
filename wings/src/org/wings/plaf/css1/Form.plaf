@@ -6,6 +6,7 @@ SBorder border = component.getBorder();
 Utils.renderBorderPrefix(device, border);
 %>
 <form method="<% form.getMethod() ? %>post<% : %>get<%; %>"<%
+Utils.printStyle(device, component.getStyle());
 Utils.printOptAttr(device, "enctype", component.getEncodingType());
 %> action="<%?serverAddress%>">
 <input type="hidden" name="<%?namePrefix%>" \
