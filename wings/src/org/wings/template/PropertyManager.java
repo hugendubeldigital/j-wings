@@ -26,8 +26,23 @@ import org.wings.SComponent;
  */
 public interface PropertyManager
 {
-    void setProperty(SComponent comp, String name, String value);
-    Class[] getSupportedClasses();
+
+    /**
+     * Describe <code>setProperty</code> method here.
+     *
+     * @param comp a <code>SComponent</code> value
+     * @param name a <code>String</code> value
+     * @param value a <code>String</code> value
+     * @return a <code>boolean</code> value
+     */
+    public void setProperty(SComponent comp, String name, String value);
+
+    /**
+     * Describe <code>getSupportedClasses</code> method here.
+     *
+     * @return a <code>Class[]</code> value
+     */
+    public Class[] getSupportedClasses();
 }
 
 /*
