@@ -17,12 +17,8 @@ package wingset;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.tree.TreeNode;
-import org.wings.SComponent;
-import org.wings.SLabel;
-import org.wings.SMenu;
-import org.wings.SMenuBar;
-import org.wings.SMenuItem;
-import org.wings.SPanel;
+import javax.swing.DefaultComboBoxModel;
+import org.wings.*;
 
 
 /**
@@ -79,11 +75,21 @@ public class MenuExample extends WingSetPane
     }
 
     public SComponent createExample() {
-        SPanel panel = new SPanel();
+        SForm panel = new SForm();
         selectionLabel = new SLabel("nothing selected");
-
         panel.add(createMenuBar(TreeExample.ROOT_NODE), "MenuBar");
+        panel.add(new SLabel("<html><br>Form components disappear, if needed. Selected Menu: "), "Intro");
         panel.add(selectionLabel, "SelectionLabel");
+        panel.add(new SLabel("<html><hr><br>combobox(disappear) :"));
+        panel.add(new SComboBox(new DefaultComboBoxModel(ListExample.createElements())), "ComboBox");
+        panel.add(new SLabel("<html><br>list(disappear):"));
+        SList list = new SList(ListExample.createListModel());
+        list.setVisibleRowCount(3);
+        panel.add(list, "List");
+        panel.add(new SLabel("<html><br>textfield(stay visible):"));
+        panel.add(new STextField("wingS is great"), "TextField");
+        panel.add(new SLabel("<html><br>textarea(stay visible):"));
+        panel.add(new STextArea("wingS is a great framework for implementing complex web applications"), "TextArea");
 
         return panel;
     }

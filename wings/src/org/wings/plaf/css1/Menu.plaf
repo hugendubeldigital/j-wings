@@ -1,96 +1,95 @@
-<template name="MenuCG" 
+<template name="MenuCG"
           for="org.wings.SMenu"
           extends="org.wings.plaf.css1.MenuItemCG">
 
+<import>java.io.*</import>
 <import>org.wings.script.*</import>
 
 public static final SIcon RIGHT_ARROW = new ResourceImageIcon("org/wings/icons/ArrowRight.gif");
 
-public static final JavaScriptListener ENTER_ITEM =
-	new JavaScriptListener("onMouseOver", "enter_item(this)",
-            "function enter_item(item) {\n" +
-            "    item.setAttribute('class', 'amenuitem');\n" +
-            "}\n");
+public static final JavaScriptListener SCRIPT_LOADER =
+	new JavaScriptListener("", "", loadScript());
 
-public static final JavaScriptListener EXIT_ITEM =
-	new JavaScriptListener("onMouseOut", "exit_item(this)",
-            "function exit_item(item) {\n" +
-            "    item.setAttribute('class', 'menuitem');\n" +
-            "}\n");
+public static String loadScript() {
+    try {
+        InputStream in = MenuCG.class.getClassLoader().getResourceAsStream("org/wings/plaf/css1/Menu.js");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        StringBuffer buffer = new StringBuffer();
+        String line;
+        while ((line = reader.readLine()) != null)
+            buffer.append(line).append("\n");
 
-public static final JavaScriptListener TOGGLE_MENU =
-	new JavaScriptListener("onMouseDown", "",
-            "{var active_popups = new Array();\n" +
-            "function toggle_menu(menuId, popupId,depth) {\n" +
-            "    var popup = document.getElementById(popupId);\n" +
-            "    var menu = document.getElementById(menuId);\n" +
-            "    var show = (popup.style.display == 'none');\n" +
-            "    for ( var i=depth; i<active_popups.length; i++ ) {\n" +
-            "        if (active_popups[i] != null) {\n" +
-            "            active_popups[i].parentNode.setAttribute('class', 'menu');\n" +
-            "            active_popups[i].style.display = 'none'\n" +
-            "            active_popups[i] = null;\n" +
-            "        }\n" +
-            "    }\n" +
-            "    if (show == true) {\n" +
-            "        popup.style.left = menu.offsetWidth;\n" +
-            "        popup.style.display = 'inline'\n" +
-            "        popup.style.zIndex = depth+1\n" +
-            "        active_popups[depth] = popup;\n" +
-            "    }\n" +
-            "}}\n");
-
+        return buffer.toString();
+    }
+    catch (Exception e) {
+        e.printStackTrace();
+        return "";
+    }
+}
 
 <install>
-        component.addScriptListener(ENTER_ITEM);
-        component.addScriptListener(EXIT_ITEM);
-        component.addScriptListener(TOGGLE_MENU);
+        component.addScriptListener(SCRIPT_LOADER);
 </install>
 
-protected int getMenuLevel(SMenu menu) {
-    if ( menu.getParentMenu()!=null ) {
-	return getMenuLevel(menu.getParentMenu()) + 1;
-    } else {
-	return 0;
+protected void writePopup(final Device device, SMenu menu)
+    throws IOException
+{
+    String parentId = menu.getParentMenu() != null ? "'" + menu.getParentMenu().getComponentId() + "_pop'" : "null";
+    String componentId = menu.getComponentId();
+    String popupId = componentId + "_pop";
+
+    %><table id="<%=popupId%>" class="pdmenu" style="display:none"><%
+
+    for (int i = 0; i < menu.getMenuComponentCount(); i++) {
+        String hookId = menu.getMenuComponent(i).getComponentId() + "_hook";
+        %><tr id="<%=hookId%>"><td><%
+        menu.getMenuComponent(i).write(device);
+        %></td><td><%
+        if (menu.getMenuComponent(i) instanceof SMenu) {
+            %>&nbsp;<img border="0" align="middle" src="<%=RIGHT_ARROW.getURL()%>"<%
+            %><%|width=RIGHT_ARROW.getIconWidth()%><%
+            %><%|height=RIGHT_ARROW.getIconHeight()%>/><%
+        }
+        %></td></tr><%
     }
+    %></table><%
+
+    for (int i = 0; i < menu.getMenuComponentCount(); i++) {
+        if ( menu.getMenuComponent(i) instanceof SMenu ) {
+             writePopup(device, (SMenu)menu.getMenuComponent(i));
+        }
+    }
+}
+
+protected void writeItem(final Device device, SMenuItem menu)
+    throws IOException
+{
+    String parentId = menu.getParentMenu() != null ? "'" + menu.getParentMenu().getComponentId() + "_pop'" : "null";
+    String componentId = menu.getComponentId();
+    String popupId = componentId + "_pop";
+    String hookId = componentId + "_hook";
+
+    // parent, hook, menu
+    %><a href="#" id="<%=componentId%>" onMouseDown="Menu.prototype.toggle(<%=parentId%>,'<%=hookId%>','<%=popupId%>')" class="menuitem"<%
+    if (menu.isEnabled()) {
+        %> onMouseOver="enter_item(this)"<%
+        %> onMouseOut="exit_item(this)"<%
+    }
+    %>><%
+
+    if (menu.getParentMenu() == null)
+        writeItemContent(device, menu);
+    else
+        writeItemContent(device, menu);
+    %></a><%
 }
 
 <write>
 <%
-    SMenu menu = component;	
-
-    String menuClass = menu.isEnabled() ? "amenu" : "menu";
-    String popupId = "pop_" + menu.getComponentId();
-    String menuId = "menu_" + menu.getComponentId();
-    int level = getMenuLevel(menu);
-    boolean enabled = menu.isEnabled();
-
-    if ( enabled ) {
-        %><div id="<%=menuId%>" class="menu"> <a href="#" <%
-        %>onMouseDown="toggle_menu('<%=menuId%>', '<%=popupId%>', <%=level%>)"><%
-    }
-
-    if ( menu.getParent()==null ) {	
-        writeMenuItem(device, menu, RIGHT_ARROW, false);
-    } else {
-        writeMenuItem(device, menu, null, false);
-    }
-
-    if ( enabled ) {
-        %></a></div><%
-        %><table id="<%=popupId%>" class="pdmenu" style="display:none"><tr><td><%
-
-        for ( int i=0; i<menu.getMenuComponentCount(); i++ ) {
-            menu.getMenuComponent(i).write(device);
-        }
-        %></td></tr></table><%
-    }
-    if (menu.isPopupMenuVisible()) {
-        %><script language="Javascript">
-            toggle_menu('<%=menuId%>', '<%=popupId%>', <%=level%>);
-          </script>
-        <%
-    }
+    SMenu menu = component;
+    writeItem(device, menu);
+    if (menu.getParentMenu() == null)
+        writePopup(device, menu);
 %>
 </write>
 </template>

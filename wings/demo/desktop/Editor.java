@@ -271,6 +271,7 @@ public class Editor
                     
                     public void fireIntermediateEvents() {}
                     public void fireFinalEvents() {}
+		    public boolean isEnabled() { return true; }
                 });
 
         }

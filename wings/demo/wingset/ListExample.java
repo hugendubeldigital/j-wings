@@ -98,7 +98,7 @@ public class ListExample
         comboBox.setModel(new DefaultComboBoxModel(createElements()));
     }
 
-    private Object[] createElements() {
+    public static  Object[] createElements() {
         SLabel color = new SLabel("");
         color.setForeground(Color.green);
         color.setText(Color.green.toString());
@@ -113,7 +113,7 @@ public class ListExample
         return values;
     }
 
-    private ListModel createListModel() {
+    public static  ListModel createListModel() {
         final SLabel img =
             new SLabel(javaCup);
 

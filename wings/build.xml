@@ -98,6 +98,7 @@
       </fileset>
       <fileset dir="src">
         <include name="org/wings/plaf/xhtml/css1/default.css" />
+	<include name="org/wings/plaf/css1/*.js" />
       </fileset>
     </jar>
   </target>

@@ -22,7 +22,7 @@
                      %><td width="100%"></td><%
                      rightAligned = true;
                  }
-                 %><td><%
+                 %><td id="<%=mbar.getComponentAt(i).getComponentId() + "_hook"%>"><%
 	             mbar.getComponentAt(i).write(device);
                  %></td><%
              }

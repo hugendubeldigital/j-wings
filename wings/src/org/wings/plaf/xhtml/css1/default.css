@@ -208,7 +208,10 @@ FORM {
 }
 
 .menuitem {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
 	background-color: #CCCCCC;
+	white-space: nowrap;
 	border-width: 1px;
 	border-color: #CCCCCC #CCCCCC #CCCCCC #CCCCCC;
 	border-style: solid;
@@ -217,7 +220,11 @@ FORM {
 }
 
 .amenuitem {
-	background-color: #CCCCCC;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+  	color: #ffffff;
+	background-color: #5555AA;
+	white-space: nowrap;
 	border-width: 1px;
 	border-color: #EEEEEE #999999 #999999 #EEEEEE;
 	border-style: solid;
@@ -225,7 +232,7 @@ FORM {
 	margin: 0px;
 }
 
-.menuseparator {
+.separator {
 	color: #CCCCCC;
 	height: 0px;
 	white-space: 0;
