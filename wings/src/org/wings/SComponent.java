@@ -371,8 +371,9 @@ public abstract class SComponent
     public Style getStyle() { return style; }
 
     /**
-     * Set the attributes.
-     * @param attributes the attributes
+     * Set a attribute.
+     * @param name the attribute name
+     * @param value the attribute value
      */
     public void setAttribute(String name, String value) {
         boolean changed = attributes.isDefined(name);
@@ -382,6 +383,31 @@ public abstract class SComponent
         if (changed)
             reload(ReloadManager.RELOAD_STYLE);
     }
+
+    /**
+     * return the value of an attribute.
+     * @param name the attribute name
+     */
+    public String getAttribute(String name) {
+        return attributes.getAttribute(name);
+    }
+
+    /**
+     * remove an attribute
+     * @param name the attribute name
+     */
+    public String removeAttribute(String name) {
+        if ( attributes.isDefined(name) ) {
+            String value = attributes.removeAttribute(name);
+
+            reload(ReloadManager.RELOAD_STYLE);
+
+            return value;
+        }
+
+        return null;
+    }
+
 
     /**
      * Set the attributes.
