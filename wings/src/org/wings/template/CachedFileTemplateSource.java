@@ -87,6 +87,9 @@ public class CachedFileTemplateSource
 
         private void checkModified() {
             if (file == null)
+                // this leads to quiet error in case the file is not found.
+                // better would be a FileNotFoundException.
+                // not changing it bc we are concentrating on wings2 (OL).
                 return;
             long timestamp = file.lastModified();
             if (lastModified != timestamp) {

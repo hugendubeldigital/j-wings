@@ -120,7 +120,7 @@
 	// end of row with newline.
         %></tr>
 <%
-        %></thead><tfoot></tfoot></div>
+        %></thead>
 <%
     }
 
@@ -167,7 +167,7 @@
     String selectionStyle = Utils.selectionStyle(table);
     int selectionMode = table.getSelectionModel().getSelectionMode();
     int rowSelectionColumn = table.getRowSelectionColumn();
-        %><tbody style="overflow:auto">
+        %><tbody>
 <%
 
     for (int r = /*(isScroll2 ? 0 : */startRow/*)*/; r < /*(isScroll2 ? table.getRowCount() : */endRow/*)*/; r++) {
@@ -206,7 +206,7 @@
         %></tr>
 <%
     }
-     %></tbody>
+     %></tbody><tfoot></tfoot>
 <%
 
     %></table><%

@@ -14,10 +14,6 @@
 <property type="String"  name="documentType"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd"></property>
 
 
-/*
-public static final JavaScriptListener DATE_CHOOSER_SCRIPT_LOADER =
-	new JavaScriptListener("", "", loadScript("org/wings/plaf/css1/DateChooser.js"));
-*/
 public static final JavaScriptListener FORM_SCRIPT_LOADER =
 	new JavaScriptListener("", "", loadScript("org/wings/plaf/css1/Form.js"));
 
