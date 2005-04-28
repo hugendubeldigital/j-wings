@@ -77,31 +77,24 @@ public class DynamicStyleSheetResource
                 AttributeSet attributes = component.getAttributes();
                 if (attributes.size() > 0)
                     writeAttributes("." + NORMAL_ATTR_PREFIX 
-                                    + component.getComponentId(), component);
+                                    + component.getComponentId(), component, attributes);
             }
 
             if (component instanceof SSelectionComponent) {
                 AttributeSet attributes = ((SSelectionComponent)component).getSelectionAttributes();
                 if (attributes.size() > 0)
-                    writeSelectionAttributes("." + SELECT_ATTR_PREFIX 
+                    writeAttributes("." + SELECT_ATTR_PREFIX 
                                     + component.getComponentId(), component, attributes);
             }
             
         }
         
-        private void writeSelectionAttributes(String name, SComponent comp, AttributeSet attributes) throws IOException {
-            out.print(name);
-            out.print(" {");
-            attributes.write(out);
-            out.print("}\n");
-        }
-
-        private void writeAttributes(String name, SComponent comp)
+        private void writeAttributes(String name, SComponent comp, AttributeSet attributes)
             throws IOException
         {
             out.print(name);
             out.print(" {");
-            comp.getAttributes().write(out);
+            attributes.write(out);
             if (comp.getBorder() != null) out.print(comp.getBorder().getSpanAttributes());
             out.print("}\n");
         }
