@@ -83,12 +83,19 @@ public class DynamicStyleSheetResource
             if (component instanceof SSelectionComponent) {
                 AttributeSet attributes = ((SSelectionComponent)component).getSelectionAttributes();
                 if (attributes.size() > 0)
-                    writeAttributes("." + SELECT_ATTR_PREFIX 
-                                    + component.getComponentId(), component);
+                    writeSelectionAttributes("." + SELECT_ATTR_PREFIX 
+                                    + component.getComponentId(), component, attributes);
             }
             
         }
         
+        private void writeSelectionAttributes(String name, SComponent comp, AttributeSet attributes) throws IOException {
+            out.print(name);
+            out.print(" {");
+            attributes.write(out);
+            out.print("}\n");
+        }
+
         private void writeAttributes(String name, SComponent comp)
             throws IOException
         {
