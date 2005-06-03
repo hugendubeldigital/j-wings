@@ -200,6 +200,7 @@ public class WingSet
         tab.add(new DateChooserExample(), "DateChooser");
         tab.add(new MemUsageExample(), "Memory Usage");
         tab.add(new JavaScriptListenerExample(), "Script Listener");
+        tab.add(new DesktopPaneExample(), "Desktop Pane");
 
         //tab.add(new DateChooserExample(), "DateChooser");
         //form.add(tab);
