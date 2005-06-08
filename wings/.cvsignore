@@ -1,9 +1,0 @@
-wings.jar
-wings-demo.jar
-build
-.emacs.desktop
-build.properties
-dist
-*.ipr
-*.iws
-prj.el
