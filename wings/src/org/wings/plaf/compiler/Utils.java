@@ -114,14 +114,28 @@ public final class Utils implements SConstants {
         d.print(chars, last, chars.length - last);
     }
 
+    /**
+     * writes STring as is
+     */
     public static void writeRaw(Device d, String s) throws IOException {
         if (s == null) return;
         d.print(s);
     }
 
+    /**
+     * writes String quoted but without newline replacement 
+     */
     public static void writeQuoted(Device d, String s) throws IOException {
         if (s == null) return;
         quote(d, s, false);
+    }
+
+    /**
+     * writes String quoted but without newline replacement 
+     */
+    public static void writeQuoted(Device d, String s, boolean newLine) throws IOException {
+        if (s == null) return;
+        quote(d, s, newLine);
     }
 
     /**
