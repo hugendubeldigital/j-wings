@@ -15,7 +15,6 @@
 package org.wings;
 
 import org.wings.plaf.*;
-import org.wings.io.Device;
 
 /**
  * TODO: documentation
@@ -28,16 +27,16 @@ public class STextArea
 {
     private static final String cgClassID = "TextAreaCG";
 
-    private int rows = 5;
+    private int rows = 0;
 
-    private int columns = 20;
+    private int columns = 0;
 
     /**
      * allowed parameters
      * are off(0), virtual(1), physical(2)
      * default value is off
      */
-    private int lineWrap = SConstants.VIRTUAL_WRAP;
+    private int lineWrap = SConstants.NO_WRAP;
 
 
     /**
