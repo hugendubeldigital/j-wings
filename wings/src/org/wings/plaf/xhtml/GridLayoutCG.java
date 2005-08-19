@@ -115,6 +115,7 @@ public class GridLayoutCG
                // maybe better restrict to dimension styles only?
                d.print(" style=\"");
                Utils.writeAttributes(d,  c);
+               d.print( createInlineStylesForGaps( layout.getHgap(), layout.getVgap() ).toString() );
                d.print("\"");                        
                        
                // Some containers (like SPanel) do not support 
@@ -122,6 +123,12 @@ public class GridLayoutCG
                // of them using this surrounding gridlayout cell
                // Utils.printTableCellColors(d, c);
                
+            } else if ( layout.getHgap() > 0 || layout.getVgap() > 0 ) {
+                
+                d.print(" style=\"");
+                d.print( createInlineStylesForGaps( layout.getHgap(), layout.getVgap() ).toString() );
+                d.print("\"");   
+                
             }
             d.print(">");            
 
@@ -140,8 +147,25 @@ public class GridLayoutCG
 
         d.print("</table>");
     }
-}
 
+
+    protected static StringBuffer createInlineStylesForGaps(int hgap, int vgap) {
+        StringBuffer inlineStyle = new StringBuffer();
+        if (hgap > 0 || vgap > 0) {
+            int hPaddingTop = (int) Math.round((vgap < 0 ? 0 : vgap) / 2.0);
+            int hPaddingBottom = (int) Math.round((vgap < 0 ? 0 : vgap) / 2.0 + 0.1); // round up
+            int vPaddingLeft = (int) Math.round((hgap < 0 ? 0 : hgap) / 2.0);
+            int vPaddingRight = (int) Math.round((hgap < 0 ? 0 : hgap) / 2.0 + 0.1); // round up
+            if (hPaddingBottom == hPaddingTop && hPaddingTop == vPaddingRight && vPaddingRight == vPaddingLeft) {
+                inlineStyle.append("padding:").append(hPaddingTop).append("px;");
+            } else {
+                inlineStyle.append("padding:").append(hPaddingTop).append("px ").append(vPaddingRight).append("px ")
+                        .append(hPaddingBottom).append("px ").append(vPaddingLeft).append("px;");
+            }
+        }
+        return inlineStyle;
+    }
+}
 /*
  * Local variables:
  * c-basic-offset: 4
