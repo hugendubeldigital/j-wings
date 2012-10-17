@@ -548,7 +548,7 @@ final class SessionServlet
                                         HttpServletResponse response,
                                         ExternalizedResource extInfo)
             throws IOException {
-        return new ServletDevice(response.getOutputStream());
+        return new ServletDevice(response.getOutputStream(),getSession().getCharacterEncoding());
     }
 
 
@@ -608,7 +608,7 @@ final class SessionServlet
             errorStackTraceLabel.setText(stackTrace.toString());
             // if there is a message, print it, otherwise print "none".
             errorMessageLabel.setText(e.getMessage()!=null?e.getMessage():"none");
-            errorFrame.write(new ServletDevice(out));
+            errorFrame.write(new ServletDevice(out, getSession().getCharacterEncoding()));
         } catch (Exception ex) {
             log.fatal("Exception handling failed.", ex);
         }

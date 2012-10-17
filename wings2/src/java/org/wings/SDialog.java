@@ -1,5 +1,4 @@
 /*
- * $Id$
  * Copyright 2000,2005 wingS development team.
  *
  * This file is part of wingS (http://www.j-wings.org).
@@ -16,15 +15,16 @@ package org.wings;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wings.plaf.DialogCG;
-import org.wings.session.SessionManager;
 
 /**
+ * Top-level window with a title and a border that is typically
+ * used to take some form of input from the user.
+ * <p/>
  * As opposed to Swing, wingS dialogs are non modal. However, the dismission of
  * the dialog is propagated by means of ActionEvents. The action command of the
  * event tells, what kind of user activity caused the dialog to dismiss.
  *
  * @author <a href="mailto:engels@mercatis.de">Holger Engels</a>
- * @version $Revision$
  */
 public class SDialog extends SForm {
     private final transient static Log log = LogFactory.getLog(SDialog.class);
@@ -83,6 +83,10 @@ public class SDialog extends SForm {
         this.title = title;
     }
 
+    /**
+     * Sets the title of the dialog.
+     * @param t the title displayed in the dialog's border; a null value results in an empty title
+     */
     public void setTitle(String t) {
         String oldTitle = title;
         title = t;
@@ -91,6 +95,11 @@ public class SDialog extends SForm {
             reload();
     }
 
+    /**
+     * Gets the title of the dialog. The title is displayed in the dialog's border.
+     *
+     * @return the title of this dialog window. The title may be null.
+     */
     public String getTitle() {
         return title;
     }
@@ -146,7 +155,7 @@ public class SDialog extends SForm {
     public void hide() {
         log.debug("hide dialog");
         if (owner != null)
-            owner.popDialog();
+            owner.removeDialog(this);
         visible = false;
     }
 
@@ -177,7 +186,7 @@ public class SDialog extends SForm {
     public void show(SComponent c) {
         log.debug("show dialog");
         if (c == null)
-            c = SessionManager.getSession().getRootFrame();
+            c = getSession().getRootFrame();
 
         SContainer frame = null;
         if (c instanceof SContainer)
@@ -191,7 +200,7 @@ public class SDialog extends SForm {
         }
 
         if (frame == null) {
-            frame = SessionManager.getSession().getRootFrame();
+            frame = getSession().getRootFrame();
         }
 
         if (frame == null) {
@@ -199,6 +208,7 @@ public class SDialog extends SForm {
         }
         owner = (SRootContainer) frame;
         owner.pushDialog(this);
+        visible = true;
     }
 
     // LowLevelEventListener interface. Handle own events.
@@ -209,7 +219,7 @@ public class SDialog extends SForm {
         try {
             switch (new Integer(values[0]).intValue()) {
                 case org.wings.event.SInternalFrameEvent.INTERNAL_FRAME_CLOSED:
-                    setClosed(true);
+                     setClosed(true);
                     actionCommand = CLOSE_ACTION;
                     break;
 
@@ -221,9 +231,6 @@ public class SDialog extends SForm {
             // no window event...
         }
         SForm.addArmedComponent(this); // trigger later invocation of fire*()
-    }
-
-    public void fireFinalEvents() {
     }
 
     public void setCG(DialogCG cg) {
