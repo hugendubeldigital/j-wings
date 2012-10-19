@@ -6,3 +6,5 @@ wings2/build/
 wingx/build/
 wingx/dist/
 wingx/lib/
+wings2/.classpath
+wings2/.project
