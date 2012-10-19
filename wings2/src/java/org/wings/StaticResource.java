@@ -103,7 +103,7 @@ public abstract class StaticResource extends Resource {
          * write to the stream. If the output size exceeds the limit,
          * then set the stream to error state.
          */
-        public void write(byte[] b, int off, int len) {
+        public synchronized void write(byte[] b, int off, int len) {
             if (!withinLimit) return;
             withinLimit = (count + len < maxSizeToBuffer);
             if (withinLimit)

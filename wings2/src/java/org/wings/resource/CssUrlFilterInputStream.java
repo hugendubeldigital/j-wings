@@ -54,7 +54,7 @@ public class CssUrlFilterInputStream extends BufferedInputStream {
     /* (non-Javadoc)
      * @see java.io.InputStream#read()
      */
-    public int read() throws IOException {
+    public synchronized int read() throws IOException {
         int result = 0;
         if (state == STATE_SUBST) {
             result = readFromUrlBuffer();
@@ -137,7 +137,7 @@ public class CssUrlFilterInputStream extends BufferedInputStream {
     /* (non-Javadoc)
      * @see java.io.InputStream#read(byte[], int, int)
      */
-    public int read(byte[] b, int off, int len) throws IOException {
+    public synchronized int read(byte[] b, int off, int len) throws IOException {
         int i = 0;
         for (i = off; i < (off+len);i++) {
             byte tempByte = (byte)read();
