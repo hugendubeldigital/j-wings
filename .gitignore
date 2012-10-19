@@ -8,3 +8,5 @@ wingx/dist/
 wingx/lib/
 wings2/.classpath
 wings2/.project
+*~
+wings2/copy.sh
