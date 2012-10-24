@@ -20,6 +20,8 @@ import org.wings.SComponent;
 import org.wings.STextArea;
 import org.wings.io.Device;
 
+import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
+
 public class TextAreaCG extends AbstractComponentCG implements
         org.wings.plaf.TextAreaCG {
 
@@ -72,7 +74,7 @@ public class TextAreaCG extends AbstractComponentCG implements
 
             Utils.writeEvents(device, component);
             device.print(">");
-            Utils.writeRaw(device, component.getText());
+            Utils.writeRaw(device, StringEscapeUtils.escapeHtml( component.getText() ) );
             device.print("</textarea>\n");
         }
     }
