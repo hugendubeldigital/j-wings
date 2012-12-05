@@ -37,7 +37,7 @@ public class LabelCG extends AbstractComponentCG implements
             writeText(device, text);
         }
         else if (icon != null && text == null)
-            writeIcon(device, icon);
+            writeIcon(device, icon, label);
         else if (icon != null && text != null) {
             new IconTextCompound() {
                 protected void text(Device d) throws IOException {
@@ -59,6 +59,17 @@ public class LabelCG extends AbstractComponentCG implements
         Utils.optAttribute(device, "src", icon.getURL());
         Utils.optAttribute(device, "width", icon.getIconWidth());
         Utils.optAttribute(device, "height", icon.getIconHeight());
+        device.print(" alt=\"");
+        device.print(icon.getIconTitle());
+        device.print("\"/>");
+    }
+    
+    protected void writeIcon(Device device, SIcon icon, SLabel label) throws IOException {
+        device.print("<img");
+        Utils.optAttribute(device, "src", icon.getURL());
+        Utils.optAttribute(device, "width", icon.getIconWidth());
+        Utils.optAttribute(device, "height", icon.getIconHeight());
+        Utils.writeEvents(device, label);        
         device.print(" alt=\"");
         device.print(icon.getIconTitle());
         device.print("\"/>");
