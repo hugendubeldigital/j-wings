@@ -274,6 +274,14 @@ public final class LowLevelEventDispatcher
                 unregister(gl);
                 return false;
             }
+            if (!epoch.equals(frame.getEventEpoch())) {
+                if (log.isDebugEnabled()) {
+                    log.debug("### got outdated event '" + epoch + SConstants.UID_DIVIDER + name
+                            + "' from frame '" + frame.getName() + "'; expected epoch: " + frame.getEventEpoch());
+                }
+                frame.fireInvalidLowLevelEventListener(gl);
+                return false;
+            }
         }
         return true;
     }
