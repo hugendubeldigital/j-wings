@@ -343,26 +343,12 @@ final class SessionServlet
             handleLocale(req);
 
             Enumeration en = req.getParameterNames();
-            Cookie[] cookies = req.getCookies();
 
             // are there parameters/low level events to dispatch
             if (en.hasMoreElements()) {
                 // only fire DISPATCH_START if we have parameters to dispatch
                 session.fireRequestEvent(SRequestEvent.DISPATCH_START);
 
-                if (cookies != null) {
-                    //dispatch cookies
-                    for (int i = 0; i < cookies.length; i++) {
-                        Cookie cookie = cookies[i];
-                        String paramName = (String) cookie.getName();
-                        String value = cookie.getValue();
-    
-                        if (log.isDebugEnabled())
-                            log.debug("dispatching cookie " + paramName + " = " + value);
-    
-                        session.getDispatcher().dispatch(paramName, new String[] { value });
-                    }
-                }
                 while (en.hasMoreElements()) {
                     String paramName = (String) en.nextElement();
                     String[] value = req.getParameterValues(paramName);
