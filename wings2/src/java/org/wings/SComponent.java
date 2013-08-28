@@ -29,6 +29,7 @@ import org.wings.script.ScriptListener;
 import org.wings.session.LowLevelEventDispatcher;
 import org.wings.session.Session;
 import org.wings.session.SessionManager;
+import org.wings.session.WingsInjectionProvider;
 import org.wings.style.CSSAttributeSet;
 import org.wings.style.CSSProperty;
 import org.wings.style.CSSSelector;
@@ -192,7 +193,23 @@ public abstract class SComponent
      * The method updateCG is called to get a cg delegate installed.
      */
     public SComponent() {
+        handleInjection();
         updateCG();
+    }
+
+    private void handleInjection() {
+        final Session mySession = getSession();
+        if ( mySession == null) {
+            log.warn("no session yet.");
+            return;
+        }
+        final WingsInjectionProvider injectionProvider = mySession.getInjectionProvider();
+        if ( injectionProvider == null ) {
+            log.debug( "No Injection Provider set" );
+            return;
+        }
+        
+        injectionProvider.inject( this );
     }
 
     public SBorder getBorder() {

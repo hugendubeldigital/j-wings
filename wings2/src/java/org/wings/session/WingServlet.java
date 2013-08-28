@@ -197,7 +197,7 @@ public final class WingServlet
             RequestURL requestURL = new RequestURL("", SessionServlet.getSessionEncoding(response));
 
             session.setProperty("request.url", requestURL);
-
+            
             sessionServlet.setParent(this);
 
             log.debug("time to create a new session " + (System.currentTimeMillis() - timestamp));

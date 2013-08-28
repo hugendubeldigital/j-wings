@@ -25,6 +25,7 @@ import org.wings.io.Device;
 import org.wings.io.DeviceFactory;
 import org.wings.io.ServletDevice;
 import org.wings.resource.DynamicCodeResource;
+import org.wings.util.StringUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -216,6 +217,8 @@ final class SessionServlet
 
             session = new Session();
             SessionManager.setSession(session);
+            
+            initInjectionProvider( session, config.getInitParameter("wings.injectionProvider") );
 
             // set request.url in session, if used in constructor of wings main classs
             if (request.isRequestedSessionIdValid()) {
@@ -240,6 +243,12 @@ final class SessionServlet
                     mainClass = Class.forName(mainClassName);
                 }
                 Object main = mainClass.newInstance();
+                
+                final WingsInjectionProvider injectionProvider = session.getInjectionProvider();
+                if ( injectionProvider != null ) {
+                    injectionProvider.inject( main );
+                }
+                
             } catch (Exception ex) {
                 log.fatal("could not load wings.mainclass: " +
                         config.getInitParameter("wings.mainclass"), ex);
@@ -251,6 +260,26 @@ final class SessionServlet
             // session also. So remove it here.
             SessionManager.removeSession();
         }
+    }
+
+    private static void initInjectionProvider( final Session session, final String injectionProviderClassName ) {
+        if ( injectionProviderClassName == null || "".equals( injectionProviderClassName.trim() ) ) {
+            return;
+        }
+        try {
+            @SuppressWarnings( "unchecked" )
+            final Class<WingsInjectionProvider> injectionProviderClass = (Class<WingsInjectionProvider>) Class.forName( injectionProviderClassName, true, Thread.currentThread()
+                    .getContextClassLoader() );
+            final WingsInjectionProvider provider = injectionProviderClass.newInstance();
+            session.setInjectionProvider( provider );
+        } catch ( ClassNotFoundException e ) {
+            log.error( "Konnte " + injectionProviderClassName + " nicht laden: " + e.getMessage(), e );
+        } catch ( InstantiationException e ) {
+            log.error( "Konnte " + injectionProviderClassName + " nicht instanziieren: " + e.getMessage(), e );
+        } catch ( IllegalAccessException e ) {
+            log.error( "Konnte " + injectionProviderClassName + " nicht instanziieren: " + e.getMessage(), e );
+        }
+        
     }
 
     /**

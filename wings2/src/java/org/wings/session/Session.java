@@ -125,6 +125,8 @@ public class Session
     private boolean localeFromHeader = true;
     
     private DragAndDropManager dndManager;
+    
+    private WingsInjectionProvider injectionProvider;
 
     /**
      * Which locales are supported by this servlet. If null, every locale from
@@ -825,6 +827,14 @@ public class Session
             dndManager = new DragAndDropManager();
         }
         return dndManager;
+    }
+
+    public WingsInjectionProvider getInjectionProvider() {
+        return injectionProvider;
+    }
+
+    public void setInjectionProvider( WingsInjectionProvider provider ) {
+        injectionProvider = provider;
     }
     
 }
