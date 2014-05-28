@@ -187,8 +187,6 @@ public class FrameCG implements org.wings.plaf.FrameCG {
         component.addDynamicResource(scriptResource);
         component.addHeader(new Script("text/javascript", scriptResource));
 
-        component.addHeader(new Script("text/javascript", new DefaultURLResource("../dwr/engine.js")));
-
         Iterator iter = javascriptResourceKeys.iterator();
         while (iter.hasNext()) {
             String jsResKey = (String) iter.next();
@@ -294,15 +292,8 @@ public class FrameCG implements org.wings.plaf.FrameCG {
         Utils.write(device, encoding);
         device.print("\"/>\n");
 
-        Collection callableNames = CallableManager.getInstance().callableNames();
-
-        Collection allHeaders = new ArrayList(headers.size() + callableNames.size());
+        Collection allHeaders = new ArrayList(headers.size());
         allHeaders.addAll(headers);
-        for (Iterator iterator = callableNames.iterator(); iterator.hasNext();) {
-            String name = (String) iterator.next();
-            Script header = new Script("text/javascript", new DefaultURLResource("../dwr/interface/" + name + ".js"));
-            allHeaders.add(header);
-        }
 
         for (Iterator iterator = allHeaders.iterator(); iterator.hasNext();) {
             Object next = iterator.next();
