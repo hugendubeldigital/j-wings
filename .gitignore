@@ -11,3 +11,6 @@ wings2/.project
 *~
 wings2/copy.sh
 wings2/.settings/
+
+.idea
+idea-build/
