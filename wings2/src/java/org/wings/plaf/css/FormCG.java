@@ -16,14 +16,13 @@ package org.wings.plaf.css;
 
 import org.wings.*;
 import org.wings.io.Device;
-import org.wings.session.SessionManager;
+import org.wings.util.CGObjectUtil;
 
 import java.io.IOException;
 
 public class FormCG extends AbstractComponentCG implements org.wings.plaf.FormCG {
 
-    private static final SIcon BLIND_ICON = (SIcon) SessionManager.getSession()
-            .getCGManager().getObject("FormCG.blindIcon", SIcon.class);
+    private static final String BLIND_ICON_OBJ = "FormCG.blindIcon";
     
     protected void writeContent(final Device device, final SComponent c) throws IOException {
         final SForm component = (SForm) c;
@@ -63,8 +62,10 @@ public class FormCG extends AbstractComponentCG implements org.wings.plaf.FormCG
         * so it fell back to the old behaviour. So changed that style to no-padding,
         * no-margin, no-whatever (HZ).
         */
+        final SimpleURL blindIconURL = CGObjectUtil.getObject(BLIND_ICON_OBJ, SIcon.class).getURL();
+
         device.print("><input type=\"image\" name=\"_capture_enter1\" border=\"0\" ");
-        Utils.optAttribute(device, "src", BLIND_ICON.getURL());
+        Utils.optAttribute(device, "src", blindIconURL);
         device.print(" width=\"0\" height=\"0\" tabindex=\"\" style=\"border:none;padding:0px;margin:0px;position:absolute\"/>");
 
         // Not sure: Think this was for optionally expiring old GET views?!
@@ -80,7 +81,7 @@ public class FormCG extends AbstractComponentCG implements org.wings.plaf.FormCG
 
         // Enter capture at end of form
         device.print("<input type=\"image\" name=\"_capture_enter2\" border=\"0\" ");
-        Utils.optAttribute(device, "src", BLIND_ICON.getURL());
+        Utils.optAttribute(device, "src", blindIconURL);
         device.print(" width=\"0\" height=\"0\" tabindex=\"\" style=\"border:none;padding:0px;margin:0px;position:absolute\"/>");
 
         device.print("</form>");

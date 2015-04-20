@@ -13,13 +13,7 @@
  */
 package org.wings.plaf.css.msie;
 
-import java.io.IOException;
-
-import org.wings.RequestURL;
-import org.wings.SComponent;
-import org.wings.SConstants;
-import org.wings.SFrame;
-import org.wings.STable;
+import org.wings.*;
 import org.wings.event.SParentFrameEvent;
 import org.wings.event.SParentFrameListener;
 import org.wings.externalizer.ExternalizeManager;
@@ -30,12 +24,13 @@ import org.wings.plaf.css.Utils;
 import org.wings.resource.ClasspathResource;
 import org.wings.resource.DefaultURLResource;
 import org.wings.session.SessionManager;
+import org.wings.util.CGObjectUtil;
+
+import java.io.IOException;
 
 public class TableCG extends org.wings.plaf.css.TableCG implements SParentFrameListener, MSIEButtonFix {
 
-    private static final String FORMS_JS = (String) SessionManager
-    .getSession().getCGManager().getObject("JScripts.form",
-            String.class);
+    private static final String FORMS_JS_OBJ = "JScripts.form";
 
     protected void writeButtonStart(Device device, STable table, String parameter) throws IOException {
         device.print("<button  onclick=\"addHiddenField(this.form,'");
@@ -56,7 +51,7 @@ public class TableCG extends org.wings.plaf.css.TableCG implements SParentFrameL
 
     public void parentFrameAdded(SParentFrameEvent e) {
         SFrame parentFrame = e.getParentFrame();
-        ClasspathResource res = new ClasspathResource(FORMS_JS, "text/javascript");
+        ClasspathResource res = new ClasspathResource(CGObjectUtil.getObject(FORMS_JS_OBJ, String.class), "text/javascript");
         String jScriptUrl = SessionManager.getSession().getExternalizeManager().externalize(res, ExternalizeManager.GLOBAL);
         parentFrame.addHeader(new Script("text/javascript", new DefaultURLResource(jScriptUrl)));
     }

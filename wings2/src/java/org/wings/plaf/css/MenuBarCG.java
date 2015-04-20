@@ -29,6 +29,7 @@ import org.wings.resource.ClasspathResource;
 import org.wings.resource.DefaultURLResource;
 import org.wings.script.JavaScriptListener;
 import org.wings.session.SessionManager;
+import org.wings.util.CGObjectUtil;
 
 import java.io.IOException;
 
@@ -44,15 +45,11 @@ public class MenuBarCG extends AbstractComponentCG implements
     /**
      * the menu javascript needs this script as a helper (browser detection).
      */
-    public static final String UTILS_JS = (String) SessionManager
-    .getSession().getCGManager().getObject("JScripts.utils",
-            String.class);
+    public static final String UTILS_JS_OBJ = "JScripts.utils";
     /**
      * javascript with the menu magic
      */
-    private static final String MENU_JS = (String) SessionManager
-    .getSession().getCGManager().getObject("JScripts.menu",
-            String.class);
+    private static final String MENU_JS_OBJ = "JScripts.menu";
     /**
      * handler for clicks outside of menu. these clicks possibly close the menu.
      */
@@ -137,8 +134,8 @@ public class MenuBarCG extends AbstractComponentCG implements
      */
     private void addListenersToParentFrame(SFrame parentFrame) {
         parentFrame.addScriptListener(BODY_ONCLICK_SCRIPT);
-        addExternalizedHeader(parentFrame, UTILS_JS, "text/javascript");
-        addExternalizedHeader(parentFrame, MENU_JS, "text/javascript");
+        addExternalizedHeader(parentFrame, CGObjectUtil.getObject(UTILS_JS_OBJ, String.class), "text/javascript");
+        addExternalizedHeader(parentFrame, CGObjectUtil.getObject(MENU_JS_OBJ, String.class), "text/javascript");
     }
 
     /** 

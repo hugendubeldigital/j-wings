@@ -18,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wings.border.SBorder;
 import org.wings.border.SEmptyBorder;
 import org.wings.plaf.OptionPaneCG;
-import org.wings.session.SessionManager;
+import org.wings.util.CGObjectUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -188,26 +188,22 @@ public class SOptionPane
     /**
      * Icon for Inform Dialog
      */
-    private static final SIcon messageImage = (SIcon) SessionManager.getSession()
-    .getCGManager().getObject("SOptionPane.messageIcon", SIcon.class);
+    private static final String messageImageObj = "SOptionPane.messageIcon";
 
     /**
      * Icon for Input Dialog
      */
-    private static final SIcon questionImage = (SIcon) SessionManager.getSession()
-    .getCGManager().getObject("SOptionPane.questionIcon", SIcon.class);
+    private static final String questionImageObj = "SOptionPane.questionIcon";
 
     /**
      * Icon for Show Confirm Dialog
      */
-    private static final SIcon yesnoImage = (SIcon) SessionManager.getSession()
-    .getCGManager().getObject("SOptionPane.yesnoIcon", SIcon.class);
+    private static final String yesnoImageObj = "SOptionPane.yesnoIcon";
 
     /**
      * Icon for Error Dialog
      */
-    private static final SIcon errorImage = (SIcon) SessionManager.getSession()
-    .getCGManager().getObject("SOptionPane.errorIcon", SIcon.class);
+    private static final String errorImageObj = "SOptionPane.errorIcon";
 
     //  protected final SLabel messageLabel  = new SLabel(messageImage);
     //  protected final SLabel questionLabel = new SLabel(questionImage);
@@ -492,20 +488,20 @@ public class SOptionPane
         switch (newType) {
             case ERROR_MESSAGE:
                 {
-                    imageLabel.setIcon(errorImage);
+                    imageLabel.setIcon(CGObjectUtil.getObject(errorImageObj, SIcon.class));
                     imageLabel.setToolTipText("Error");
                     break;
                 }
             case INFORMATION_MESSAGE:
                 {
                     //informationLabel.setVisible(true);
-                    imageLabel.setIcon(messageImage);
+                    imageLabel.setIcon(CGObjectUtil.getObject(messageImageObj, SIcon.class));
                     imageLabel.setToolTipText("Information");
                     break;
                 }
             case WARNING_MESSAGE:
                 {
-                    imageLabel.setIcon(yesnoImage);
+                    imageLabel.setIcon(CGObjectUtil.getObject(yesnoImageObj, SIcon.class));
                     imageLabel.setToolTipText("Warning");
                     //warningLabel.setVisble(true);
                     break;
@@ -513,7 +509,7 @@ public class SOptionPane
             case QUESTION_MESSAGE:
                 {
                     //questionLabel.setVisible(true);
-                    imageLabel.setIcon(questionImage);
+                    imageLabel.setIcon(CGObjectUtil.getObject(questionImageObj, SIcon.class));
                     imageLabel.setToolTipText("Question");
                     break;
                 }

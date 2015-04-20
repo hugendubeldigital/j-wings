@@ -18,7 +18,7 @@ import org.wings.SComponent;
 import org.wings.SIcon;
 import org.wings.SSpacer;
 import org.wings.io.Device;
-import org.wings.session.SessionManager;
+import org.wings.util.CGObjectUtil;
 
 import java.io.IOException;
 
@@ -26,19 +26,20 @@ public class SpacerCG extends AbstractComponentCG implements org.wings.plaf.Spac
     /**
      * The default invisible icon.
      */
-    private static final SIcon BLIND_ICON = (SIcon) SessionManager.getSession()
-    .getCGManager().getObject("SpacerCG.blindIcon", SIcon.class);
+    private static final String BLIND_ICON_OBJ = "SpacerCG.blindIcon";
 
     public void writeContent(final Device device, final SComponent c) throws IOException {
+        final SIcon blindIcon = CGObjectUtil.getObject(BLIND_ICON_OBJ, SIcon.class);
+
         final SSpacer component = (SSpacer) c;
         int height = component.getPreferredSize().getHeightInt();
         int width = component.getPreferredSize().getWidthInt();
         device.print("<img");
-        Utils.optAttribute(device, "src", BLIND_ICON.getURL());
+        Utils.optAttribute(device, "src", blindIcon.getURL());
         Utils.optAttribute(device, "width", width);
         Utils.optAttribute(device, "height", height);
         device.print(" alt=\"");
-        device.print(BLIND_ICON.getIconTitle());
+        device.print(blindIcon.getIconTitle());
         device.print("\"/>");
     }
 }

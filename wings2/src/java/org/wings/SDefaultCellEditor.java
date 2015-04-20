@@ -15,6 +15,7 @@ package org.wings;
 
 import org.wings.session.SessionManager;
 import org.wings.table.STableCellEditor;
+import org.wings.util.CGObjectUtil;
 
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
@@ -35,14 +36,12 @@ public class SDefaultCellEditor
     /**
      * The default ok button icon.
      */
-    private static final SIcon OK_BUTTON_ICON = (SIcon) SessionManager.getSession()
-    .getCGManager().getObject("SDefaultCellEditor.okIcon", SIcon.class);
+    private static final String OK_BUTTON_ICON_OBJ = "SDefaultCellEditor.okIcon";
 
     /**
      * The default cancel button icon.
      */
-    private static final SIcon CANCEL_BUTTON_ICON = (SIcon) SessionManager.getSession()
-    .getCGManager().getObject("SDefaultCellEditor.cancelIcon", SIcon.class);
+    private static final String CANCEL_BUTTON_ICON_OBJ = "SDefaultCellEditor.cancelIcon";
 
     /**
      * Label for displaying (error)-messages. It is unvisible, until a message
@@ -198,11 +197,11 @@ public class SDefaultCellEditor
      */
     protected void initButtons() {
         ok.addActionListener(fireEventListener);
-        ok.setIcon(OK_BUTTON_ICON);
+        ok.setIcon(CGObjectUtil.getObject(OK_BUTTON_ICON_OBJ, SIcon.class));
         ok.setToolTipText("ok");
 
         cancel.addActionListener(fireEventListener);
-        cancel.setIcon(CANCEL_BUTTON_ICON);
+        cancel.setIcon(CGObjectUtil.getObject(CANCEL_BUTTON_ICON_OBJ, SIcon.class));
         cancel.setToolTipText("cancel");
 
         editorPanel.add(ok);

@@ -27,6 +27,7 @@ import org.wings.resource.ClasspathResource;
 import org.wings.resource.DefaultURLResource;
 import org.wings.session.SessionManager;
 import org.wings.style.CSSSelector;
+import org.wings.util.CGObjectUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -37,9 +38,7 @@ import java.util.Map;
  *
  */
 public class TabbedPaneCG extends org.wings.plaf.css.TabbedPaneCG implements SParentFrameListener, MSIEButtonFix {
-    private static final String FORMS_JS = (String) SessionManager
-    .getSession().getCGManager().getObject("JScripts.form",
-            String.class);
+    private static final String FORMS_JS_OBJ = "JScripts.form";
 
 
     /* (non-Javadoc)
@@ -64,7 +63,7 @@ public class TabbedPaneCG extends org.wings.plaf.css.TabbedPaneCG implements SPa
 
     public void parentFrameAdded(SParentFrameEvent e) {
         SFrame parentFrame = e.getParentFrame();
-        ClasspathResource res = new ClasspathResource(FORMS_JS, "text/javascript");
+        ClasspathResource res = new ClasspathResource(CGObjectUtil.getObject(FORMS_JS_OBJ, String.class), "text/javascript");
         String jScriptUrl = SessionManager.getSession().getExternalizeManager().externalize(res, ExternalizeManager.GLOBAL);
         parentFrame.addHeader(new Script("text/javascript", new DefaultURLResource(jScriptUrl)));
     }

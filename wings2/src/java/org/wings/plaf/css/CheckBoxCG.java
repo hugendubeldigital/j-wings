@@ -14,33 +14,29 @@
 package org.wings.plaf.css;
 
 
-import org.wings.*;
+import org.wings.RequestURL;
+import org.wings.SAbstractButton;
+import org.wings.SComponent;
+import org.wings.SIcon;
 import org.wings.io.Device;
-import org.wings.session.SessionManager;
+import org.wings.util.CGObjectUtil;
 
 import java.io.IOException;
 
 public class CheckBoxCG extends ButtonCG implements org.wings.plaf.CheckBoxCG {
-    private static final SIcon ICON_DISABLEDSELECTED = (SIcon) SessionManager
-            .getSession().getCGManager().getObject("SCheckBox.disabledSelectedIcon", SIcon.class);
+    private static final String ICON_DISABLEDSELECTED_OBJ = "SCheckBox.disabledSelectedIcon";
 
-    private static final SIcon ICON_DISABLED = (SIcon) SessionManager
-            .getSession().getCGManager().getObject("SCheckBox.disabledIcon", SIcon.class);
+    private static final String ICON_DISABLED_OBJ = "SCheckBox.disabledIcon";
 
-    private static final SIcon ICON_PRESSED = (SIcon) SessionManager
-            .getSession().getCGManager().getObject("SCheckBox.pressedIcon", SIcon.class);
+    private static final String ICON_PRESSED_OBJ = "SCheckBox.pressedIcon";
 
-    private static final SIcon ICON_ROLLOVERSELECTED = (SIcon) SessionManager
-            .getSession().getCGManager().getObject("SCheckBox.rolloverSelectedIcon", SIcon.class);
+    private static final String ICON_ROLLOVERSELECTED_OBJ = "SCheckBox.rolloverSelectedIcon";
 
-    private static final SIcon ICON_ROLLOVER = (SIcon) SessionManager
-            .getSession().getCGManager().getObject("SCheckBox.rolloverIcon", SIcon.class);
+    private static final String ICON_ROLLOVER_OBJ = "SCheckBox.rolloverIcon";
 
-    private static final SIcon ICON_DEFAULT = (SIcon) SessionManager
-            .getSession().getCGManager().getObject("SCheckBox.icon", SIcon.class);
+    private static final String ICON_DEFAULT_OBJ = "SCheckBox.icon";
 
-    private static final SIcon ICON_SELECTED = (SIcon) SessionManager
-                .getSession().getCGManager().getObject("SCheckBox.selectedIcon", SIcon.class);
+    private static final String ICON_SELECTED_OBJ = "SCheckBox.selectedIcon";
     
     protected boolean useIconsInForms = false;
     
@@ -61,13 +57,13 @@ public class CheckBoxCG extends ButtonCG implements org.wings.plaf.CheckBoxCG {
 
     protected void installIcons(final SAbstractButton button) {
         org.wings.plaf.CGManager manager = button.getSession().getCGManager();
-        button.setIcon(ICON_DEFAULT);
-        button.setSelectedIcon(ICON_SELECTED);
-        button.setRolloverIcon(ICON_ROLLOVER);
-        button.setRolloverSelectedIcon(ICON_ROLLOVERSELECTED);
-        button.setPressedIcon(ICON_PRESSED);
-        button.setDisabledIcon(ICON_DISABLED);
-        button.setDisabledSelectedIcon(ICON_DISABLEDSELECTED);
+        button.setIcon(CGObjectUtil.getObject(ICON_DEFAULT_OBJ, SIcon.class));
+        button.setSelectedIcon(CGObjectUtil.getObject(ICON_SELECTED_OBJ, SIcon.class));
+        button.setRolloverIcon(CGObjectUtil.getObject(ICON_ROLLOVER_OBJ, SIcon.class));
+        button.setRolloverSelectedIcon(CGObjectUtil.getObject(ICON_ROLLOVERSELECTED_OBJ, SIcon.class));
+        button.setPressedIcon(CGObjectUtil.getObject(ICON_PRESSED_OBJ, SIcon.class));
+        button.setDisabledIcon(CGObjectUtil.getObject(ICON_DISABLED_OBJ, SIcon.class));
+        button.setDisabledSelectedIcon(CGObjectUtil.getObject(ICON_DISABLEDSELECTED_OBJ, SIcon.class));
     }
 
     public void writeContent(final Device device, final SComponent component)

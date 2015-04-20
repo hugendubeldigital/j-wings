@@ -23,7 +23,6 @@ import org.wings.header.Link;
 import org.wings.header.Script;
 import org.wings.io.Device;
 import org.wings.plaf.CGManager;
-import org.wings.plaf.css.dwr.CallableManager;
 import org.wings.resource.ClassPathStylesheetResource;
 import org.wings.resource.ClasspathResource;
 import org.wings.resource.DefaultURLResource;
@@ -36,6 +35,7 @@ import org.wings.session.BrowserType;
 import org.wings.session.SessionManager;
 import org.wings.style.CSSSelector;
 import org.wings.style.DynamicStyleSheetResource;
+import org.wings.util.CGObjectUtil;
 
 import java.io.IOException;
 import java.util.*;
@@ -62,17 +62,13 @@ public class FrameCG implements org.wings.plaf.FrameCG {
     /**
      * javascript needed for Drag and Drop support
      */
-    private static final String DND_JS = (String) SessionManager
-    .getSession().getCGManager().getObject("JScripts.dnd",
-            String.class);
-    
+    private static final String DND_JS_OBJ = "jscripts.dnd";
+
     /**
      * javascript needed for Drag and Drop support
      */
-    private static final String WZ_DND_JS = (String) SessionManager
-    .getSession().getCGManager().getObject("JScripts.wzdragdrop",
-            String.class);
-    
+    private static final String WZ_DND_JS_OBJ = "jscripts.wzdragdrop";
+
     private String documentType = STRICT_DOCTYPE;
 
     private Boolean renderXmlDeclaration = Boolean.FALSE;
@@ -149,13 +145,9 @@ public class FrameCG implements org.wings.plaf.FrameCG {
         return null;
     }
 
-    public static final String UTILS_SCRIPT = (String) SessionManager
-            .getSession().getCGManager().getObject("JScripts.utils",
-                    String.class);
+    private static final String UTILS_SCRIPT_OBJ = "JScripts.utils";
 
-    public static final String FORM_SCRIPT = (String) SessionManager
-            .getSession().getCGManager().getObject("JScripts.form",
-                    String.class);
+    private static final String FORM_SCRIPT_OBJ = "JScripts.form";
 
     public static final JavaScriptListener FOCUS_SCRIPT =
             new JavaScriptListener("onfocus", "storeFocus(event)");
@@ -201,8 +193,8 @@ public class FrameCG implements org.wings.plaf.FrameCG {
             component.headers().add(i, new Link("stylesheet", null, "text/css", null, new DefaultURLResource((String) externalizedBrowserCssUrls.get(i))));;
         }
 
-        addExternalizedHeader(component, UTILS_SCRIPT, "text/javascript");
-        addExternalizedHeader(component, FORM_SCRIPT, "text/javascript");
+        addExternalizedHeader(component, CGObjectUtil.getObject(UTILS_SCRIPT_OBJ, String.class), "text/javascript");
+        addExternalizedHeader(component, CGObjectUtil.getObject(FORM_SCRIPT_OBJ, String.class), "text/javascript");
         component.addScriptListener(FOCUS_SCRIPT);
         component.addScriptListener(SCROLL_POSITION_SCRIPT);
         CaptureDefaultBindingsScriptListener.install(component);
@@ -358,7 +350,7 @@ public class FrameCG implements org.wings.plaf.FrameCG {
                 if (dragIter.hasNext()) {
                     // this needs to be added to the body, so use device.print()
                     // TODO: is caching by the VM enough or make this only initialize once?
-                    ClasspathResource res = new ClasspathResource(WZ_DND_JS, "text/javascript");
+                    ClasspathResource res = new ClasspathResource(CGObjectUtil.getObject(WZ_DND_JS_OBJ, String.class), "text/javascript");
                     String jScriptUrl = frame.getSession().getExternalizeManager().externalize(res, ExternalizeManager.GLOBAL);
                     device.print("<script type=\"text/javascript\" src=\"");
                     device.print(jScriptUrl);
@@ -410,7 +402,7 @@ public class FrameCG implements org.wings.plaf.FrameCG {
                 device.print("';\n");
                 device.print("//-->\n</script>");
                 // TODO: is caching by the VM enough or make this only initialize once?
-                ClasspathResource res = new ClasspathResource(DND_JS, "text/javascript");
+                ClasspathResource res = new ClasspathResource(CGObjectUtil.getObject(DND_JS_OBJ, String.class), "text/javascript");
                 String jScriptUrl = SessionManager.getSession().getExternalizeManager().externalize(res, ExternalizeManager.GLOBAL);
                 device.print("<script type=\"text/javascript\" src=\"");
                 device.print(jScriptUrl);

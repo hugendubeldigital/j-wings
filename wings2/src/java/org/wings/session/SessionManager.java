@@ -27,7 +27,20 @@ import org.apache.commons.logging.LogFactory;
  */
 public class SessionManager {
     private final transient static Log log = LogFactory.getLog(SessionManager.class);
-    private static final ThreadLocal currentSession = new ThreadLocal();
+    private static ThreadLocal<Session> currentSession = null;
+
+    /**
+     * Lazy and synchronized initialize the ThreadLocal to avoid race-conditions.
+     *
+     * @return ThreadLocal possibly holding the current session if available.
+     */
+    private static synchronized ThreadLocal<Session> getCurrentSession() {
+        if (currentSession == null) {
+            currentSession = new ThreadLocal<Session>();
+        }
+
+        return currentSession;
+    }
 
     /**
      * Get the Session that is currently associated with this Thread.
@@ -35,7 +48,7 @@ public class SessionManager {
      * @return the Session
      */
     public static Session getSession() {
-        return (Session) currentSession.get();
+        return (Session) getCurrentSession().get();
     }
 
     /**
@@ -46,12 +59,10 @@ public class SessionManager {
      * @param session the Session
      */
     public static void setSession(Session session) {
-        currentSession.set(session);
+        getCurrentSession().set(session);
     }
 
     public static void removeSession() {
-        currentSession.set(null);
+        getCurrentSession().set(null);
     }
 }
-
-
